@@ -50,7 +50,9 @@ Generated\ Files/
 TestResult.xml
 nunit-*.xml
 
+# Remove TS client things
 client/dist
+client/.env
 
 # Build Results of an ATL Project
 [Dd]ebugPS/
