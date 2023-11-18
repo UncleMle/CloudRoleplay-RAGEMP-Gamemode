@@ -17,4 +17,8 @@
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql.Design" Version="1.1.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="client\src\client\Authentication\" />
+  </ItemGroup>
+
 </Project>

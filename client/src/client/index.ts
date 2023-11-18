@@ -1,15 +1,6 @@
-import { SHARED_CONSTANTS } from '@shared/constants';
+import PlayerWelcome from "./PlayerWelcome/PlayerWelcome";
+import playerAuthentication from "./Authentication/PlayerAuthentication";
 
-mp.events.add('playerReady', () => {
-	mp.console.logInfo(`${mp.players.local.name} is ready!`);
-	mp.console.logInfo(SHARED_CONSTANTS.HELLO_WORLD);
-
-	mp.players.local.customProperty = 1;
-	mp.console.logInfo(`customProperty: ${mp.players.local.customProperty}`);
-
-	mp.players.local.customMethod = () => {
-		mp.console.logInfo(`customMethod called.`);
-	};
-
-	mp.players.local.customMethod();
-});
+// initialize client classes.
+new PlayerWelcome();
+new playerAuthentication();

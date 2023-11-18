@@ -1,0 +1,10 @@
+{
+  "maxplayers": 100,
+  "name": "[RP] Cloud RP Dev server",
+  "gamemode": "freeroam",
+  "stream-distance": 300.0,
+  "announce": false,
+  "csharp": "enabled",
+  "port": 22005,
+  "allow-cef-debugging": true
+}

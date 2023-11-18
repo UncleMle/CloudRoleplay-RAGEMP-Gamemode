@@ -6,6 +6,7 @@ namespace CloudRP
 {
     internal class Program
     {
+        // Console app for EF migrations
         public static void Main(string[] args)
         {
 
