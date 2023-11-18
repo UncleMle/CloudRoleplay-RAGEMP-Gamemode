@@ -53,6 +53,10 @@ nunit-*.xml
 # Remove TS client things
 client/dist
 client/.env
+client/node_modules
+
+# Remove frontend client UI things
+client-ui/dist
 
 # Build Results of an ATL Project
 [Dd]ebugPS/
