@@ -13,7 +13,7 @@ namespace CloudRP.Authentication
     internal class Account : Script
     {
         [Table("accounts")]
-        public class account
+        public class AccountModel
         {
             [Key]
             [Column("id")]
