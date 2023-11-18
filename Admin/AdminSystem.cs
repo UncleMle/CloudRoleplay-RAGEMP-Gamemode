@@ -19,8 +19,13 @@ namespace CloudRP.Admin
         [Command("makeaccount")]
         public void makeAccount(Player player) {
             NAPI.Chat.SendChatMessageToPlayer(player, "Make");
-            
+        }
 
+        [Command("browser", "~o~/browser [browserName]")]
+        public void browser(Player player, string browserName)
+        {
+            player.TriggerEvent("browser:pushRouter", browserName);
+            NAPI.Chat.SendChatMessageToPlayer(player, "Triggered browser:pushRouter for browser " + browserName);
         }
 
         [Command("register")]
@@ -35,7 +40,7 @@ namespace CloudRP.Admin
 
             // When created like this, the context will be immediately deleted AKA disposed. 
             // This will make sure you don't have slowdowns with database calls if one day your server becomes popular
-            using (var dbContext = new DefaultDbContext())
+            using (DefaultDbContext dbContext = new DefaultDbContext())
             {
                 // Add this account data to the current context
                 dbContext.accounts.Add(account);

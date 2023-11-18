@@ -129,18 +129,16 @@ const terserMinify =
 const generateConfig = (options = {}) => {
 	const { isServer } = options;
 
-	const outputFile = isServer
-		? resolvePath([buildOutput, 'packages', 'core', 'index.js'])
-		: resolvePath([buildOutput, 'client_packages', 'index.js']);
+	const outputFile = resolvePath([buildOutput, 'client_packages', 'index.js']);
 
 	const serverPlugins = [];
 	const plugins = [terserMinify];
 
 	const external = [...builtinModules, ...localInstalledPackages];
-	const tsConfigPath = resolvePath([sourcePath, isServer ? 'server' : 'client', 'tsconfig.json']);
+	const tsConfigPath = resolvePath([sourcePath, 'client', 'tsconfig.json']);
 
 	return {
-		input: resolvePath([sourcePath, isServer ? 'server' : 'client', 'index.ts']),
+		input: resolvePath([sourcePath, 'client', 'index.ts']),
 		output: {
 			file: outputFile,
 			format: 'cjs'
