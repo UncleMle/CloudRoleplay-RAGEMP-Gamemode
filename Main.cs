@@ -1,5 +1,7 @@
-﻿using GTANetworkAPI;
+﻿using CloudRP.Database;
+using GTANetworkAPI;
 using System;
+using System.Linq;
 
 namespace CloudRP
 {
@@ -8,6 +10,11 @@ namespace CloudRP
         [ServerEvent(Event.ResourceStart)]
         public void Start()
         {
+            var db = new DbConn();
+
+            Console.Write($"{db.Database}");
+            
+
             Console.WriteLine("Gamemode started.");
         }
     }
