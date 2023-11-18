@@ -1,0 +1,4 @@
+﻿<meta>
+    <info name="CloudRP" description="Cloud RP Server" />
+    <script src="bin/Debug/netcoreapp3.1/CloudRP.dll" />
+</meta>
