@@ -29,8 +29,8 @@ namespace CloudRP.Admin
             // create a new Account object
             var account = new Account
             {
-                Username = "unclemole",
-                Password = "examplepswrd"
+                username = "unclemole",
+                password = "examplepswrd"
             };
 
             // When created like this, the context will be immediately deleted AKA disposed. 
