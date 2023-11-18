@@ -1,24 +1,25 @@
-﻿
-
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
 using CloudRP.Authentication;
 using Microsoft.EntityFrameworkCore;
-using static CloudRP.Authentication.Account;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace CloudRP.Database
 {
-    internal class DbConn : DbContext 
+    public class DefaultDbContext : DbContext
     {
-        public DbSet<AccountModel> Accounts { get; set; }
+        // Connection string, more details below 
+        private const string connectionString = "Server=localhost;Database=cloud_rp;Uid=root;Pwd=rootadmin13";
 
+        // Initialize a new MySQL connection with the given connection parameters 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("server=127.0.0.1;port=3306;database=cloud_rp;user=root;password=rootadmin13;");
+            optionsBuilder.UseMySql(connectionString);
         }
 
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
-        }
-
+        // Account model class created somewhere else 
+        public DbSet<Account> accounts { get; set; }
     }
 }

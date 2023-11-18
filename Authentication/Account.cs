@@ -3,24 +3,17 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using GTANetworkAPI;
+
 
 
 namespace CloudRP.Authentication
 {
-    internal class Account : Script
+    public class Account
     {
-        [Table("accounts")]
-        public class AccountModel
-        {
-            [Key]
-            [Column("id")]
-            public int account_id { get; set;}
+        [Key]
+        public int Id { get; set; }
 
-            [Column("username")]
-            public string username { get; set;}
-        }
+        public string Username { get; set; }
+        public string Password { get; set; }
     }
 }

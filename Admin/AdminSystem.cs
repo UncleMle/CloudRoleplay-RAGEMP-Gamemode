@@ -19,20 +19,29 @@ namespace CloudRP.Admin
         [Command("makeaccount")]
         public void makeAccount(Player player) {
             NAPI.Chat.SendChatMessageToPlayer(player, "Make");
-
-            using (var db = new DbConn())
-            {
-
-                AccountModel account = new AccountModel();
-
-                account.username = "unclemole";
-
-                db.Accounts.Add(account);
-                db.SaveChanges();
-            }
-
             
 
+        }
+
+        [Command("register")]
+        public void createAccount(Player player)
+        {
+            // create a new Account object
+            var account = new Account
+            {
+                Username = "unclemole",
+                Password = "examplepswrd"
+            };
+
+            // When created like this, the context will be immediately deleted AKA disposed. 
+            // This will make sure you don't have slowdowns with database calls if one day your server becomes popular
+            using (var dbContext = new DefaultDbContext())
+            {
+                // Add this account data to the current context
+                dbContext.accounts.Add(account);
+                // And finally insert the data into the database
+                dbContext.SaveChanges();
+            }
         }
     }
 }
