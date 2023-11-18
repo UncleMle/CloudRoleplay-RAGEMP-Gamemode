@@ -57,6 +57,8 @@ client/node_modules
 
 # Remove frontend client UI things
 client-ui/dist
+client-ui/.env
+client-ui/node_modules
 
 # Build Results of an ATL Project
 [Dd]ebugPS/

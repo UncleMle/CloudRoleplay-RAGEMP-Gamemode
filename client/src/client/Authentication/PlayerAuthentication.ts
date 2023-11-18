@@ -1,4 +1,4 @@
-class playerAuthentication {
+class PlayerAuthentication {
 	constructor() {
 		mp.events.add("playerReady", () => {
 
@@ -8,4 +8,4 @@ class playerAuthentication {
 	}
 }
 
-export default playerAuthentication;
+export default PlayerAuthentication;

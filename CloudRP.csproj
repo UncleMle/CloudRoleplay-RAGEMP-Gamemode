@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <Folder Include="client\src\client\Authentication\" />
+    <Folder Include="client\src\client\BrowserSystem\" />
   </ItemGroup>
 
 </Project>

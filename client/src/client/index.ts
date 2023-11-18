@@ -1,6 +1,8 @@
 import PlayerWelcome from "./PlayerWelcome/PlayerWelcome";
-import playerAuthentication from "./Authentication/PlayerAuthentication";
+import PlayerAuthentication from "./Authentication/PlayerAuthentication";
+import BrowserSystem from "./BrowserSystem/BrowserSystem";
 
 // initialize client classes.
 new PlayerWelcome();
-new playerAuthentication();
+new PlayerAuthentication();
+new BrowserSystem();
