@@ -32,7 +32,7 @@ namespace CloudRP.Admin
         public void createAccount(Player player)
         {
             // create a new Account object
-            var account = new Account
+            Account account = new Account
             {
                 username = "unclemole",
                 password = "examplepswrd"
