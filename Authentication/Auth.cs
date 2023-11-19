@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Collections;
 using CloudRP.Admin;
+using CloudRP.Utils;
 
 namespace CloudRP.Authentication
 {
@@ -29,7 +30,7 @@ namespace CloudRP.Authentication
 
                 if(findAccount != null)
                 {
-                    bool passwordHashCompare = comparePassword(findAccount.password, userCredentials.password);
+                    bool passwordHashCompare = AuthUtils.comparePassword(findAccount.password, userCredentials.password);
 
                     if (passwordHashCompare)
                     {
@@ -41,10 +42,9 @@ namespace CloudRP.Authentication
                         };
 
                         addUserKey(player, user);
-
-                        player.TriggerEvent("client:loginEnd");
-
                         welcomeUser(player, user);
+
+                        PlayerData.PlayersData.setPlayerAccountData(player, user);
 
                         Console.WriteLine($"User {findAccount.username} (#{findAccount.account_id}) has logged in.");
                     } else {
@@ -89,54 +89,27 @@ namespace CloudRP.Authentication
             player.TriggerEvent("client:loginStart");
         }
 
+        public static Dictionary<Player, User> getServerUserData()
+        {
+            return UserData;
+        }
+
         void welcomeUser(Player player, User user)
         {
-            if(user.adminLevel > 0)
+            player.TriggerEvent("client:loginEnd");
+
+            if (user.adminLevel > 0)
             {
                 string adminRank = RankList.adminRanksList[user.adminLevel];
                 string adminRankColour = "!{"+RankList.adminRanksColours[user.adminLevel]+"}";
 
-                NAPI.Chat.SendChatMessageToPlayer(player, "!{red}[STAFF]!{white} "+ $"Welcome {adminRankColour}{adminRank}" + "!{white}" + user.username);
+                NAPI.Chat.SendChatMessageToPlayer(player, "!{red}[STAFF]!{white} "+ $"Welcome {adminRankColour}{adminRank} " + "!{white}" + user.username);
             } else
             {
                 NAPI.Chat.SendChatMessageToPlayer(player, $"Welcome back to Cloud RP {user.username}");
             }
 
         }
-
-
-        string hashPasword(string password)
-        {
-            byte[] salt = new byte[16];
-            new RNGCryptoServiceProvider().GetBytes(salt);
-
-            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 100000);
-            byte[] hash = pbkdf2.GetBytes(20);
-
-            byte[] hashBytes = new byte[36];
-            Array.Copy(salt, 0, hashBytes, 0, 16);
-            Array.Copy(hash, 0, hashBytes, 16, 20);
-
-            string savedPasswordHash = Convert.ToBase64String(hashBytes);
-            return savedPasswordHash;
-        }
-
-        bool comparePassword(string savedHash, string passwordTwo)
-        {
-            bool isTheSame = true;
-
-            byte[] hashBytes = Convert.FromBase64String(savedHash);
-            byte[] salt = new byte[16];
-            Array.Copy(hashBytes, 0, salt, 0, 16);
-            var pbkdf2 = new Rfc2898DeriveBytes(passwordTwo, salt, 100000);
-            byte[] hash = pbkdf2.GetBytes(20);
-            for (int i = 0; i < 20; i++)
-                if (hashBytes[i + 16] != hash[i])
-                    isTheSame = false;
-
-            return isTheSame;
-        }
-
 
     }
 
@@ -151,8 +124,9 @@ namespace CloudRP.Authentication
     {
         public int accountId { get; set; }
         public int playerId { get; set; }
-        public string username { get; set; }
+        public string username { get; set; } 
         public int adminLevel { get; set; }
+        public bool adminDuty { get; set; } = false;
     }
 
 }

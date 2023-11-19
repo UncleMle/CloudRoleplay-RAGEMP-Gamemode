@@ -1,5 +1,7 @@
 ﻿using CloudRP.Authentication;
 using CloudRP.Database;
+using CloudRP.PlayerData;
+using CloudRP.Utils;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
@@ -10,43 +12,43 @@ namespace CloudRP.Admin
 {
     internal class AdminSystem : Script
     {
-        [Command("makeadmin")]
-        public void makeAdmin(Player player)
+        [Command("aduty")]
+        public void onAduty(Player player)
         {
-            NAPI.Chat.SendChatMessageToPlayer(player, "Example chat message");
-        }
+            User userData = PlayerData.PlayersData.getPlayerAccountData(player);
 
-        [Command("makeaccount")]
-        public void makeAccount(Player player) {
-            NAPI.Chat.SendChatMessageToPlayer(player, "Make");
-        }
-
-        [Command("browser", "~o~/browser [browserName]")]
-        public void browser(Player player, string browserName)
-        {
-            player.TriggerEvent("browser:pushRouter", browserName);
-            NAPI.Chat.SendChatMessageToPlayer(player, "Triggered browser:pushRouter for browser " + browserName);
-        }
-
-        [Command("register")]
-        public void createAccount(Player player)
-        {
-            // create a new Account object
-            Account account = new Account
+            if(userData != null && userData.adminLevel > 0)
             {
-                username = "unclemole",
-                password = "examplepswrd"
-            };
+                userData.adminDuty = !userData.adminDuty;
 
-            // When created like this, the context will be immediately deleted AKA disposed. 
-            // This will make sure you don't have slowdowns with database calls if one day your server becomes popular
-            using (DefaultDbContext dbContext = new DefaultDbContext())
+                if(userData.adminDuty)
+                {
+                    AdminUtils.sendMessageToAllStaff($"{userData.username} is on duty ({userData.adminDuty})");
+                } else
+                {
+                    AdminUtils.sendMessageToAllStaff($"{userData.username} is off duty ({userData.adminDuty})");
+                }
+
+                PlayersData.setPlayerAccountData(player, userData);
+
+            } else AdminUtils.sendNoAuth(player);
+
+        }
+
+        [Command("staff")]
+        public void staff(Player player)
+        {
+            int index = 0;
+            foreach (var item in AdminUtils.gatherStaff())
             {
-                // Add this account data to the current context
-                dbContext.accounts.Add(account);
-                // And finally insert the data into the database
-                dbContext.SaveChanges();
+                index++;
+                User user = item.Value;
+                string duty = user.adminDuty ? "[!{green}On-Duty!{white}]" : "[!{red}Off-Duty!{white}]";
+
+                NAPI.Chat.SendChatMessageToPlayer(player, index + $". {user.username} {duty}");
             }
         }
+
+        
     }
 }
