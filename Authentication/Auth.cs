@@ -7,6 +7,8 @@ using System.Text;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Newtonsoft.Json;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace CloudRP.Authentication
 {
@@ -25,6 +27,23 @@ namespace CloudRP.Authentication
             UserCredentials userCredentials = JsonConvert.DeserializeObject<UserCredentials>(data);
 
             Console.WriteLine($"{userCredentials.username} {userCredentials.password} {userCredentials.rememberMe}");
+
+            using (DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                var findAccount = dbContext.accounts.Where<Account>(b => b.username == userCredentials.username);
+                Account accountFound = findAccount.FirstOrDefault();
+
+                if(accountFound != null)
+                {
+                    Console.WriteLine("An account was found with username "+userCredentials.username+ " with account id "+ accountFound.account_id);
+                } else {
+                    Console.WriteLine("no acount was found");
+                    return;
+                }
+
+                
+
+            }
 
             /*
             Account account = new Account

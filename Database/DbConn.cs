@@ -22,4 +22,10 @@ namespace CloudRP.Database
         // Account model class created somewhere else 
         public DbSet<Account> accounts { get; set; }
     }
+
+    public class BaseEntity
+    {
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
+    }
 }
