@@ -4,6 +4,7 @@ using System.Text;
 
 namespace CloudRP.Admin
 {
+
     public enum AdminRanks
     {
         Admin_None = 0,

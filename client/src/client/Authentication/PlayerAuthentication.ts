@@ -44,7 +44,6 @@ class PlayerAuthentication {
 		mp.players.local.freezePosition(false);
 		this.LoginCamera.delete();
 		mp.events.call("chat:activate");
-		mp.gui.chat.push("example mesg");
 	}
 }
 

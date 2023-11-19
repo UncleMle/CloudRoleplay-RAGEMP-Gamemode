@@ -47,7 +47,7 @@ class BrowserSystem {
 	}
 
 	init() {
-		mp.gui.chat.push("Browser has been started under address " + this._browserBaseUrl);
+		//mp.gui.chat.push("Browser has been started under address " + this._browserBaseUrl);
 	}
 
 	disableAfkTimer() {

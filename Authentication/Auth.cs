@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Collections;
+using CloudRP.Admin;
 
 namespace CloudRP.Authentication
 {
@@ -21,8 +22,6 @@ namespace CloudRP.Authentication
         public void recieveAuthInfo(Player player, string data)
         {
             UserCredentials userCredentials = JsonConvert.DeserializeObject<UserCredentials>(data);
-
-            Console.WriteLine($"{userCredentials.username} {userCredentials.password} {userCredentials.rememberMe}");
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
@@ -41,9 +40,11 @@ namespace CloudRP.Authentication
                             adminLevel = findAccount.admin_status,
                         };
 
-                        UserData.Add(player, user);
+                        addUserKey(player, user);
 
                         player.TriggerEvent("client:loginEnd");
+
+                        welcomeUser(player, user);
 
                         Console.WriteLine($"User {findAccount.username} (#{findAccount.account_id}) has logged in.");
                     } else {
@@ -61,7 +62,22 @@ namespace CloudRP.Authentication
         [ServerEvent(Event.PlayerDisconnected)]
         public void OnPlayerDisconnect(Player player, DisconnectionType type, string reason)
         {
+            removeUserKey(player);
+        }
+
+        void addUserKey(Player player, User user)
+        {
             if(UserData.ContainsKey(player))
+            {
+                removeUserKey(player);
+            }
+
+            UserData.Add(player, user);
+        }
+
+        void removeUserKey(Player player)
+        {
+            if (UserData.ContainsKey(player))
             {
                 UserData.Remove(player);
             }
@@ -73,6 +89,20 @@ namespace CloudRP.Authentication
             player.TriggerEvent("client:loginStart");
         }
 
+        void welcomeUser(Player player, User user)
+        {
+            if(user.adminLevel > 0)
+            {
+                string adminRank = RankList.adminRanksList[user.adminLevel];
+                string adminRankColour = "!{"+RankList.adminRanksColours[user.adminLevel]+"}";
+
+                NAPI.Chat.SendChatMessageToPlayer(player, "!{red}[STAFF]!{white} "+ $"Welcome {adminRankColour}{adminRank}" + "!{white}" + user.username);
+            } else
+            {
+                NAPI.Chat.SendChatMessageToPlayer(player, $"Welcome back to Cloud RP {user.username}");
+            }
+
+        }
 
 
         string hashPasword(string password)
