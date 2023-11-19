@@ -49,7 +49,10 @@ export default {
     };
   },
   watch: {
-    inputText(newType) {
+      /*
+      inputText(newType) {
+
+      Command drop down system 
       var result = [];
       if (newType.length && newType[0] === "/") {
         result = this.allCmds.filter(keyword => {
@@ -60,8 +63,9 @@ export default {
             return (this.queryCmds = []);
           return this.queryCmds.push(cmdList);
         });
-      }
+      }  
     }
+    */
   },
 
   methods: {
@@ -71,12 +75,14 @@ export default {
           console.log(e.keyCode);
 
           if (e.keyCode == KEY_T) {
+              this.active = true;
+              this.showChat = true;
               this.enableChatInput(true);
+
+              return true;
           }
           if (e.keyCode == KEY_ENTER) {
               let text = this.inputText;
-
-              this.push(this.inputText);
               this.enableChatInput(false);
 
               if (text.charAt(0) !== "/") {
@@ -114,7 +120,10 @@ export default {
 
       if (enable !== this.showInput && window.mp) {
         window.mp.invoke("focus", enable);
-        window.mp.invoke("setTypingInChatState", enable);
+          window.mp.invoke("setTypingInChatState", enable);
+
+          this.$nextTick().then(() => this.$refs.input.focus());
+
 
         this.showInput = enable;
         this.inputText = "";
@@ -133,7 +142,11 @@ export default {
         this.enableChatInput(false);
       }
       this.showChat = toggle;
-    },
+      },
+      setCaretPosition(ctrl, pos) {
+          ctrl.focus();
+          ctrl.setSelectionRange(pos, pos);
+      }
   },
   created() {
     if (window.mp) {
@@ -155,7 +168,7 @@ export default {
   },
   mounted() {
     this.showChat = true;
-    document.addEventListener("keydown", this.addKeyListener);
+      document.addEventListener("keydown", this.addKeyListener);
   }
 };
 </script>
