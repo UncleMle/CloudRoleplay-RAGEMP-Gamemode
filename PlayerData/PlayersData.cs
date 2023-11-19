@@ -21,5 +21,12 @@ namespace CloudRP.PlayerData
             User playerData = player.GetData<User>(_sharedAccountDataIdentifier);
             return playerData;
         }
+
+        public static void togglePlayerChat(Player player, bool toggle)
+        {
+            string mutationName = "setChatStatus";
+
+            player.TriggerEvent("client:recieveUiMutation", mutationName, "toggle", toggle);
+        }
     }
 }

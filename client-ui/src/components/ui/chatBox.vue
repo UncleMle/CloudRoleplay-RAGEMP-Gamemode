@@ -1,5 +1,5 @@
 <template>
-    <div v-if="showChat">
+    <div v-if="chatState">
         <div id="chat" v-if="showChat">
             <ul id="chat_messages">
                 <li v-for="(item, message) in chatMessages" :key="'B' + message" v-html="item.toString()">
@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 
 export default {
     data() {
@@ -28,6 +29,11 @@ export default {
             countPos: 0,
             queryCmds: []
         };
+    },
+    computed: {
+        ...mapGetters({
+            chatState: "getChatStatus"
+        })
     },
     methods: {
         addKeyListener(e) {
@@ -112,6 +118,7 @@ export default {
         }
     },
     mounted() {
+        console.log(this.chatState);
         document.addEventListener("keydown", this.addKeyListener);
     }
 };

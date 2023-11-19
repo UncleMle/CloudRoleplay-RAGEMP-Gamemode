@@ -2,7 +2,7 @@ import { BrowserEnv } from "../enums";
 import { F2 } from './ClientButtons';
 
 const _REMOVE_TIMER_NATIVE: string = "0xF4F2C0D4EE209E20";
-const _sharedCharacterDataIdentifier: string = "PlayerAccountData";
+//const _sharedCharacterDataIdentifier: string = "PlayerAccountData";
 let isFunctionPressed: boolean;
 let isClientTyping: boolean;
 
@@ -29,12 +29,17 @@ class BrowserSystem {
 			},
 			"render": () => {
 				mp.players.local.isTypingInTextChat ? isClientTyping = true : isClientTyping = false;
-
-				if (!mp.players.local.getVariable(_sharedCharacterDataIdentifier) && mp.players.local.browserInstance) {
-					//mp.events.call("")
-				}
-
 				this.disableAfkTimer();
+			},
+			'client:recieveUiMutation': (mutationName: string, key: string, value: any) => {
+				if (this._browserInstance) {
+					mp.console.logInfo(`store.commit('${mutationName}', {
+						${key}: ${value}
+					})`);
+					this._browserInstance.execute(`store.commit('${mutationName}', {
+						${key}: ${value}
+					})`);
+				}
 			},
 			'browser:sendObject': (eventName: string, _object: object) => {
 				mp.events.callRemote(eventName, _object);

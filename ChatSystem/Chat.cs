@@ -22,6 +22,9 @@ namespace CloudRP.ChatSystem
         public void onChatMessage(Player player, string message)
         {
             User userData = PlayersData.getPlayerAccountData(player);
+
+            if (userData == null) return;
+
             string prefix = "";
             string suffix = " !{grey}says:!{white} ";
 
