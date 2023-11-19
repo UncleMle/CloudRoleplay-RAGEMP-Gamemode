@@ -9,18 +9,14 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Collections;
 
 namespace CloudRP.Authentication
 {
     internal class Auth : Script
     {
-        [ServerEvent(Event.PlayerConnected)]
-        public void onPlayerConnected(Player player)
-        {
-            NAPI.Chat.SendChatMessageToAll($"Player {player.Name}");
-        }
+        public static readonly Dictionary<Player, User> UserData = new Dictionary<Player, User>();
 
-        // Authenticate Events
         [RemoteEvent("server:recieveAuthInfo")]
         public void recieveAuthInfo(Player player, string data)
         {
@@ -30,39 +26,54 @@ namespace CloudRP.Authentication
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
-                var findAccount = dbContext.accounts.Where<Account>(b => b.username == userCredentials.username);
-                Account accountFound = findAccount.FirstOrDefault();
+                Account findAccount = dbContext.accounts.Where(b => b.username == userCredentials.username).FirstOrDefault();
 
-                if(accountFound != null)
+                if(findAccount != null)
                 {
-                    Console.WriteLine("An account was found with username "+userCredentials.username+ " with account id "+ accountFound.account_id);
+                    bool passwordHashCompare = comparePassword(findAccount.password, userCredentials.password);
+
+                    if (passwordHashCompare)
+                    {
+                        User user = new User
+                        {
+                            username = findAccount.username,
+                            accountId = findAccount.account_id,
+                            adminLevel = findAccount.admin_status,
+                        };
+
+                        UserData.Add(player, user);
+
+                        player.TriggerEvent("client:loginEnd");
+
+                        Console.WriteLine($"User {findAccount.username} (#{findAccount.account_id}) has logged in.");
+                    } else {
+                        Console.WriteLine("Password was doesn't match account");
+                    }
+
                 } else {
                     Console.WriteLine("no acount was found");
                     return;
-                }
-
-                
+                } 
 
             }
-
-            /*
-            Account account = new Account
-            {
-                username = "unclemole",
-                password = "examplepswrd"
-            };
-
-            // When created like this, the context will be immediately deleted AKA disposed. 
-            // This will make sure you don't have slowdowns with database calls if one day your server becomes popular
-            using (DefaultDbContext dbContext = new DefaultDbContext())
-            {
-                // Add this account data to the current context
-                dbContext.accounts.Add(account);
-                // And finally insert the data into the database
-                dbContext.SaveChanges();
-            }
-            */
         }
+
+        [ServerEvent(Event.PlayerDisconnected)]
+        public void OnPlayerDisconnect(Player player, DisconnectionType type, string reason)
+        {
+            if(UserData.ContainsKey(player))
+            {
+                UserData.Remove(player);
+            }
+        }
+
+        [ServerEvent(Event.PlayerConnected)]
+        public void onPlayerConnected(Player player)
+        {
+            player.TriggerEvent("client:loginStart");
+        }
+
+
 
         string hashPasword(string password)
         {
@@ -105,4 +116,13 @@ namespace CloudRP.Authentication
         public string password { get; set; }
         public bool rememberMe { get; set; }
     }
+
+    class User
+    {
+        public int accountId { get; set; }
+        public int playerId { get; set; }
+        public string username { get; set; }
+        public int adminLevel { get; set; }
+    }
+
 }

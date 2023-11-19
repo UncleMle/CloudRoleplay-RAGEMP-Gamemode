@@ -1,6 +1,7 @@
 ﻿using CloudRP.Authentication;
 using CloudRP.Database;
 using GTANetworkAPI;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using static CloudRP.Authentication.Account;
@@ -12,22 +13,7 @@ namespace CloudRP
         [ServerEvent(Event.ResourceStart)]
         public void Start()
         {
-            var account = new Account
-            {
-                username = "unclemole",
-                password = "examplepswrd"
-            };
-
-            // When created like this, the context will be immediately deleted AKA disposed. 
-            // This will make sure you don't have slowdowns with database calls if one day your server becomes popular
-            using (var dbContext = new DefaultDbContext())
-            {
-                // Add this account data to the current context
-                dbContext.accounts.Add(account);
-                // And finally insert the data into the database
-                dbContext.SaveChanges();
-            }
-            Console.WriteLine("Gamemode started.");
+            Console.WriteLine("Gamemode started");
         }
     }
 }

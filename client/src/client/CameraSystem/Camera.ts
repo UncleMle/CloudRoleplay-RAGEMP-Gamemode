@@ -36,7 +36,7 @@ class Camera {
 
     create() {
         if(Camera.Current_Cam !== null && this.camera && mp.cameras.exists(this.camera)) {
-            this.delete(this.camera);
+            this.delete();
         }
         this.camera = mp.cameras.new(this.identifier, this.position, new mp.Vector3(0, 0, 0), 40);
         this.camera.pointAtCoord(this.pointAtCoord.x, this.pointAtCoord.y, this.pointAtCoord.z);
@@ -60,8 +60,8 @@ class Camera {
         this.range = 0.0;
     }
 
-    delete(camera: CameraMp) {
-        camera.destroy();
+    delete() {
+        this.camera?.destroy();
         mp.game.cam.renderScriptCams(false, false, 0, false, false);
         mp.game.invoke(CLEAR_FOCUS);
         Camera.Current_Cam = null;

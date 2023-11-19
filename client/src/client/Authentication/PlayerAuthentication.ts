@@ -1,5 +1,7 @@
 import Camera from "../CameraSystem/Camera";
 
+//const START_SPAWN_VECTOR: Vector3 = new mp.Vector3(-811.6, 174.9, 76.8);
+
 class PlayerAuthentication {
 	public LoginCamera: Camera;
 
@@ -15,12 +17,10 @@ class PlayerAuthentication {
 				mp.events.call("browser:pushRouter", "login");
 				this.LoginCamera.startMoving(7100.0);
 				this.LoginCamera.setActive();
-
 				this.freezeAndBlurClient();
-
 			},
 			"client:loginEnd": () => {
-				mp.events.call("browser:pushRouter", "/");
+				this.endClientLogin();
 			}
 		})
 	}
@@ -34,7 +34,17 @@ class PlayerAuthentication {
 		mp.game.cam.renderScriptCams(true, false, 0, true, false);
 		mp.game.graphics.transitionToBlurred(100);
 		mp.players.local.freezePosition(true);
-		mp.players.local.setAlpha(0);
+	}
+
+	endClientLogin() {
+		mp.events.call("browser:pushRouter", "/");
+		mp.game.ui.displayRadar(true);
+		mp.players.local.setAlpha(255);
+		mp.game.graphics.transitionFromBlurred(100);
+		mp.players.local.freezePosition(false);
+		this.LoginCamera.delete();
+		mp.events.call("chat:activate");
+		mp.gui.chat.push("example mesg");
 	}
 }
 
