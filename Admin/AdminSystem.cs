@@ -15,7 +15,7 @@ namespace CloudRP.Admin
         [Command("aduty")]
         public void onAduty(Player player)
         {
-            User userData = PlayerData.PlayersData.getPlayerAccountData(player);
+            User userData = PlayersData.getPlayerAccountData(player);
 
             if(userData != null && userData.adminLevel > 0)
             {
@@ -49,6 +49,37 @@ namespace CloudRP.Admin
             }
         }
 
-        
+        [Command("client", "~r~/client [ename]")]
+        public void eventTrigger(Player player, string eventName) {
+            if (eventName == null) return;
+
+            if(PlayersData.getPlayerAccountData(player).adminLevel > 7)
+            {
+                player.TriggerEvent(eventName);
+                AdminUtils.staffSay(player, $"Triggered clientside event {eventName}");
+            }
+        }
+
+        [Command("a", "~r~/adminchat [message]", GreedyArg = true, Alias = "adminchat")]
+        public void adminChat(Player player, string message)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+            if (userData.adminLevel > 0)
+            {
+                Dictionary<Player, User> onlineAdmins = AdminUtils.gatherStaff();
+
+                string colouredAdminRank = AdminUtils.getColouredAdminRank(userData);
+
+                foreach (KeyValuePair<Player, User> entry in onlineAdmins)
+                {
+                    User staff = entry.Value;
+
+                    NAPI.Chat.SendChatMessageToPlayer(entry.Key, "!{red}" + $"[AdminChat] " + "!{white}" + colouredAdminRank + staff.adminName + " !{grey}says:!{white} " + message);
+                }
+            }
+
+        }
+
+
     }
 }

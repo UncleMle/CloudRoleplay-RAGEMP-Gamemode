@@ -9,15 +9,16 @@ namespace CloudRP.PlayerData
     internal class PlayersData : Script
     {
         private static readonly string _sharedAccountDataIdentifier = "PlayerAccountData";
+        private static readonly string _sharedCharacterDataIdentifier = "PlayerCharacterData";
 
         public static void setPlayerAccountData(Player player, User userData)
         {
             player.SetData(_sharedAccountDataIdentifier, userData);
         }
 
-        public static User? getPlayerAccountData(Player player)
+        public static User getPlayerAccountData(Player player)
         {
-            User? playerData = player.GetData<User>(_sharedAccountDataIdentifier);
+            User playerData = player.GetData<User>(_sharedAccountDataIdentifier);
             return playerData;
         }
     }

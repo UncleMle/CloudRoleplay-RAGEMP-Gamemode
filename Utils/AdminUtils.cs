@@ -1,4 +1,6 @@
-﻿using CloudRP.Authentication;
+﻿using CloudRP.Admin;
+using CloudRP.Authentication;
+using CloudRP.PlayerData;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
@@ -27,7 +29,7 @@ namespace CloudRP.Utils
 
         public static Dictionary<Player, User> gatherStaff()
         {
-            Dictionary<Player, User> onlinePlayers = Authentication.Auth.getServerUserData();
+            Dictionary<Player, User> onlinePlayers = Auth.UserData;
             Dictionary<Player, User> onlineStaff = new Dictionary<Player, User>();
 
 
@@ -43,6 +45,20 @@ namespace CloudRP.Utils
             }
 
             return onlineStaff;
+        }
+
+        public static string getColouredAdminRank(User user)
+        {
+            string adminRank = RankList.adminRanksList[user.adminLevel];
+            string adminRankColour = "!{" + RankList.adminRanksColours[user.adminLevel] + "}";
+
+
+            return $"{adminRankColour}[{adminRank}] " + "!{white}";
+        }
+
+        public static void staffSay(Player player, string message)
+        {
+            NAPI.Chat.SendChatMessageToPlayer(player, "!{red}[STAFF]!{white} " + message);
         }
     }
 }

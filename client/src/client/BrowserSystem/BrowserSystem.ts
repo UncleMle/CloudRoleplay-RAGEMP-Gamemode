@@ -2,6 +2,7 @@ import { BrowserEnv } from "../enums";
 import { F2 } from './ClientButtons';
 
 const _REMOVE_TIMER_NATIVE: string = "0xF4F2C0D4EE209E20";
+const _sharedCharacterDataIdentifier: string = "PlayerAccountData";
 let isFunctionPressed: boolean;
 let isClientTyping: boolean;
 
@@ -13,6 +14,7 @@ class BrowserSystem {
 
 	constructor() { 
 		this._browserInstance = mp.browsers.new(this._browserBaseUrl);
+		mp.players.local.browserInstance = this._browserInstance;
 		this.clientAuthenticated = mp.players.local.getVariable("client:authStatus");
 		this.init();
 
@@ -27,6 +29,11 @@ class BrowserSystem {
 			},
 			"render": () => {
 				mp.players.local.isTypingInTextChat ? isClientTyping = true : isClientTyping = false;
+
+				if (!mp.players.local.getVariable(_sharedCharacterDataIdentifier) && mp.players.local.browserInstance) {
+					//mp.events.call("")
+				}
+
 				this.disableAfkTimer();
 			},
 			'browser:sendObject': (eventName: string, _object: object) => {

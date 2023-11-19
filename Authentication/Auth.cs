@@ -13,6 +13,7 @@ using System.Collections;
 using CloudRP.Admin;
 using CloudRP.Utils;
 
+
 namespace CloudRP.Authentication
 {
     internal class Auth : Script
@@ -39,6 +40,8 @@ namespace CloudRP.Authentication
                             username = findAccount.username,
                             accountId = findAccount.account_id,
                             adminLevel = findAccount.admin_status,
+                            adminName = findAccount.admin_name,
+                            emailAddress = findAccount.email_address,
                         };
 
                         addUserKey(player, user);
@@ -89,25 +92,18 @@ namespace CloudRP.Authentication
             player.TriggerEvent("client:loginStart");
         }
 
-        public static Dictionary<Player, User> getServerUserData()
-        {
-            return UserData;
-        }
-
         void welcomeUser(Player player, User user)
         {
             player.TriggerEvent("client:loginEnd");
 
             if (user.adminLevel > 0)
             {
-                string adminRank = RankList.adminRanksList[user.adminLevel];
-                string adminRankColour = "!{"+RankList.adminRanksColours[user.adminLevel]+"}";
+                string colouredRank = AdminUtils.getColouredAdminRank(user);
 
-                NAPI.Chat.SendChatMessageToPlayer(player, "!{red}[STAFF]!{white} "+ $"Welcome {adminRankColour}{adminRank} " + "!{white}" + user.username);
-            } else
-            {
-                NAPI.Chat.SendChatMessageToPlayer(player, $"Welcome back to Cloud RP {user.username}");
+
+                NAPI.Chat.SendChatMessageToPlayer(player, "!{red}[STAFF]!{white} " + $"Welcome {colouredRank}" + user.adminName);
             }
+            NAPI.Chat.SendChatMessageToPlayer(player, Chat.CloudRP + $"Welcome back to Cloud RP {user.username}");
 
         }
 
@@ -127,6 +123,8 @@ namespace CloudRP.Authentication
         public string username { get; set; } 
         public int adminLevel { get; set; }
         public bool adminDuty { get; set; } = false;
+        public string adminName { get; set; }
+        public string emailAddress { get; set; }    
     }
 
 }

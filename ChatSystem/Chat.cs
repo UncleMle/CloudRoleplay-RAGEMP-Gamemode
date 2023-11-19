@@ -1,4 +1,7 @@
-﻿using GTANetworkAPI;
+﻿using CloudRP.Authentication;
+using CloudRP.PlayerData;
+using CloudRP.Utils;
+using GTANetworkAPI;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -18,7 +21,21 @@ namespace CloudRP.ChatSystem
         [ServerEvent(Event.ChatMessage)]
         public void onChatMessage(Player player, string message)
         {
-            NAPI.Chat.SendChatMessageToAll("Player "+player.SocialClubName+" says: "+ message);
+            User userData = PlayersData.getPlayerAccountData(player);
+            string prefix = "";
+            string suffix = " !{grey}says:!{white} ";
+
+            if(userData.adminDuty)
+            {
+                string adminRank = AdminUtils.getColouredAdminRank(userData);
+                prefix += adminRank + "!{red}" + $"{userData.adminName}" + "!{white} ";
+            } else
+            {
+                prefix += $"{userData.username}";
+            }
+
+            NAPI.Chat.SendChatMessageToAll(prefix + suffix + message);
+
         }
     }
 }
