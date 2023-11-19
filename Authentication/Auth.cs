@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Newtonsoft.Json;
 
 namespace CloudRP.Authentication
 {
@@ -19,15 +20,12 @@ namespace CloudRP.Authentication
 
         // Authenticate Events
         [RemoteEvent("server:recieveAuthInfo")]
-        public void recieveAuthInfo(Player player,  string username, string password)
+        public void recieveAuthInfo(Player player, string data)
         {
-            if (username == null|| password == null) return;
-            string passwordHash = HashPasword(password);
+            UserCredentials userCredentials = JsonConvert.DeserializeObject<UserCredentials>(data);
 
-            bool passwordCompares = ComparePassword(passwordHash, "examplepassword");
+            Console.WriteLine($"{userCredentials.username} {userCredentials.password} {userCredentials.rememberMe}");
 
-            Console.WriteLine(passwordCompares);
-            
             /*
             Account account = new Account
             {
@@ -47,7 +45,7 @@ namespace CloudRP.Authentication
             */
         }
 
-        string HashPasword(string password)
+        string hashPasword(string password)
         {
             byte[] salt = new byte[16];
             new RNGCryptoServiceProvider().GetBytes(salt);
@@ -63,18 +61,15 @@ namespace CloudRP.Authentication
             return savedPasswordHash;
         }
 
-        bool ComparePassword(string savedHash, string passwordTwo)
+        bool comparePassword(string savedHash, string passwordTwo)
         {
             bool isTheSame = true;
 
             byte[] hashBytes = Convert.FromBase64String(savedHash);
-            /* Get the salt */
             byte[] salt = new byte[16];
             Array.Copy(hashBytes, 0, salt, 0, 16);
-            /* Compute the hash on the password the user entered */
             var pbkdf2 = new Rfc2898DeriveBytes(passwordTwo, salt, 100000);
             byte[] hash = pbkdf2.GetBytes(20);
-            /* Compare the results */
             for (int i = 0; i < 20; i++)
                 if (hashBytes[i + 16] != hash[i])
                     isTheSame = false;
@@ -83,5 +78,12 @@ namespace CloudRP.Authentication
         }
 
 
+    }
+
+    class UserCredentials
+    {
+        public string username { get; set; }
+        public string password { get; set; }
+        public bool rememberMe { get; set; }
     }
 }

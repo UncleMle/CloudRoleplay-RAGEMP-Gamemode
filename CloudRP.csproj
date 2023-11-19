@@ -21,6 +21,7 @@
   <ItemGroup>
     <Folder Include="client\src\client\Authentication\" />
     <Folder Include="client\src\client\BrowserSystem\" />
+    <Folder Include="client\src\client\CameraSystem\" />
   </ItemGroup>
 
 </Project>
