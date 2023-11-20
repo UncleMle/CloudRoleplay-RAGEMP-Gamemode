@@ -95,37 +95,19 @@ namespace CloudRP.Admin
             {
                 Vector3 playerPosition = player.Position;
                 float playerRotation = player.Rotation.Z;
+                
+                Vehicle vehicleBuild = VehicleSystem.buildVehicle(vehName, playerPosition, playerRotation, userData.accountId);
 
-                uint vehicleHash = NAPI.Util.GetHashKey(vehName);
-                Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicleHash, playerPosition, playerRotation, 255, 255, "ADMIN", 255, false, true, 0);
+                if (vehicleBuild == null) return;
 
-                DbVehicle vehicleInsert = new DbVehicle
-                {
-                    CreatedDate = DateTime.Now,
-                    UpdatedDate = DateTime.Now,
-                    owner_id = userData.accountId,
-                    position_x = playerPosition.X,
-                    position_y = playerPosition.Y,
-                    position_z = playerPosition.Z,
-                    rotation = playerRotation,
-                    vehicle_spawn_hash = vehicleHash,
-                    vehicle_name = vehName
-                };
-
-                using (DefaultDbContext dbContext = new DefaultDbContext())
-                {
-                    dbContext.vehicles.Add(vehicleInsert);
-                    dbContext.SaveChanges();
-                }
-
-                player.SetIntoVehicle(veh, 0);
+                player.SetIntoVehicle(vehicleBuild, 0);
 
                 AdminUtils.staffSay(player, $"Spawned in vehicle {vehName}");
             }
             else AdminUtils.sendNoAuth(player);
         }
 
-        [Command("bringv", "~r~/bringv [vehicleId]")]
+        [Command("bringv", "~r~/bringv [vehicleId]", Alias = "vbring")]
         public void bringVehicle(Player player, int vehicleId)
         {
             User userData = PlayersData.getPlayerAccountData(player);

@@ -117,6 +117,52 @@ namespace CloudRP.Vehicles
             saveVehiclePosition(vehicle);
         }
 
+        public static Vehicle buildVehicle(string vehName, Vector3 position, float rotation, int ownerId)
+        {
+            string vehiclePlate = "notset";
+            uint vehicleHash = NAPI.Util.GetHashKey(vehName);
+            DbVehicle vehicleData = null;
+
+            using (DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                DbVehicle vehicleInsert = new DbVehicle
+                {
+                    CreatedDate = DateTime.Now,
+                    UpdatedDate = DateTime.Now,
+                    owner_id = ownerId,
+                    position_x = position.X,
+                    position_y = position.Y,
+                    position_z = position.Z,
+                    rotation = rotation,
+                    vehicle_spawn_hash = vehicleHash,
+                    vehicle_name = vehName,
+                    numberplate = "null"
+                };
+
+                dbContext.vehicles.Add(vehicleInsert);
+                dbContext.SaveChanges();
+
+                DbVehicle findJustInserted = dbContext.vehicles.Find(vehicleInsert.vehicle_id);
+
+                vehiclePlate = $"U_{vehicleInsert.vehicle_id}";
+                findJustInserted.numberplate = vehiclePlate;
+
+                vehicleData = dbContext.vehicles.Find(vehicleInsert.vehicle_id);
+
+                dbContext.vehicles.Update(vehicleInsert);
+                dbContext.SaveChanges();
+            }
+
+            if (vehicleData == null) return null;
+
+            Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicleHash, position, rotation, 255, 255, vehiclePlate, 255, false, true, 0);
+
+            veh.SetData(_vehicleSharedDataIdentifier, vehicleData);
+            veh.SetSharedData(_vehicleSharedDataIdentifier, vehicleData);
+
+            return veh;
+        }
+
         public static Vehicle findVehicleById(int vehicleId)
         {
             List<Vehicle> allVehicles = NAPI.Pools.GetAllVehicles();
