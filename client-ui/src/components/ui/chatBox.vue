@@ -40,7 +40,7 @@ export default {
             const KEY_T = 84;
             const KEY_ENTER = 13;
 
-            if (!this.showChat) return;
+            if (!this.chatState) return;
 
             if (e.keyCode == KEY_T) {
                 this.active = true;

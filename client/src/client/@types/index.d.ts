@@ -2,8 +2,15 @@ declare global {
 	interface PlayerMp {
 		customProperty: number;
 		browserInstance: BrowserMp;
-		customMethod(): void;
 	}
 }
 
-export {};
+export interface UserData {
+	accountId: number,
+	playerId: number,
+	username: string,
+	adminLevel: number,
+	adminDuty: boolean,
+	adminName: string,
+	emailAddress: string
+}

@@ -22,6 +22,8 @@
     <Folder Include="client\src\client\Authentication\" />
     <Folder Include="client\src\client\BrowserSystem\" />
     <Folder Include="client\src\client\CameraSystem\" />
+    <Folder Include="client\src\client\Constants\" />
+    <Folder Include="client\src\client\PlayerMethods\" />
   </ItemGroup>
 
 </Project>

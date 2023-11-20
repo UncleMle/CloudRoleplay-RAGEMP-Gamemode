@@ -12,7 +12,6 @@ namespace CloudRP.Admin
 {
     internal class AdminSystem : Script
     {
-        public bool test;
 
         [Command("aduty")]
         public void onAduty(Player player)
@@ -80,14 +79,6 @@ namespace CloudRP.Admin
                 }
             }
 
-        }
-
-        [Command("togchat")]
-        public void togChat(Player player)
-        {
-            test = !test;
-            PlayersData.togglePlayerChat(player, test);
-            Console.WriteLine(test);
         }
 
 

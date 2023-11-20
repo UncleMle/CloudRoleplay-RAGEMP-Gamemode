@@ -1,8 +1,8 @@
+import toggleChat from "../PlayerMethods/ToggleChat";
 import { BrowserEnv } from "../enums";
 import { F2 } from './ClientButtons';
+import { _REMOVE_TIMER_NATIVE, _sharedCharacterDataIdentifier } from '../Constants/Constants';
 
-const _REMOVE_TIMER_NATIVE: string = "0xF4F2C0D4EE209E20";
-//const _sharedCharacterDataIdentifier: string = "PlayerAccountData";
 let isFunctionPressed: boolean;
 let isClientTyping: boolean;
 
@@ -16,7 +16,6 @@ class BrowserSystem {
 		this._browserInstance = mp.browsers.new(this._browserBaseUrl);
 		mp.players.local.browserInstance = this._browserInstance;
 		this.clientAuthenticated = mp.players.local.getVariable("client:authStatus");
-		this.init();
 
 		mp.events.add({
 			"guiReady": () => {
@@ -29,13 +28,18 @@ class BrowserSystem {
 			},
 			"render": () => {
 				mp.players.local.isTypingInTextChat ? isClientTyping = true : isClientTyping = false;
+
+				if (this._browserInstance && !mp.players.local.getVariable(_sharedCharacterDataIdentifier)) {
+					toggleChat(false);
+				}
+
+				mp.console.logInfo("Shared acc data: " + JSON.stringify(mp.players.local.getVariable(_sharedCharacterDataIdentifier)));
+
+
 				this.disableAfkTimer();
 			},
 			'client:recieveUiMutation': (mutationName: string, key: string, value: any) => {
 				if (this._browserInstance) {
-					mp.console.logInfo(`store.commit('${mutationName}', {
-						${key}: ${value}
-					})`);
 					this._browserInstance.execute(`store.commit('${mutationName}', {
 						${key}: ${value}
 					})`);
@@ -48,7 +52,7 @@ class BrowserSystem {
 
 		mp.keys.bind(F2, false, function () {
 			isFunctionPressed = !isFunctionPressed;
-			if (isClientTyping) return
+			//if (isClientTyping) return
 			if (isFunctionPressed && !mp.game.ui.isPauseMenuActive()) {
 				mp.gui.cursor.show(true, true);
 			}
@@ -56,10 +60,6 @@ class BrowserSystem {
 				mp.gui.cursor.show(false, false);
 			}
 		})
-	}
-
-	init() {
-		//mp.gui.chat.push("Browser has been started under address " + this._browserBaseUrl);
 	}
 
 	disableAfkTimer() {

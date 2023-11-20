@@ -14,6 +14,7 @@ namespace CloudRP.PlayerData
         public static void setPlayerAccountData(Player player, User userData)
         {
             player.SetData(_sharedAccountDataIdentifier, userData);
+            player.SetOwnSharedData(_sharedAccountDataIdentifier, userData);
         }
 
         public static User getPlayerAccountData(Player player)
