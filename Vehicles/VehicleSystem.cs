@@ -58,7 +58,7 @@ namespace CloudRP.Vehicles
             Vector3 spawnPosition = new Vector3(vehicle.position_x, vehicle.position_y, vehicle.position_z);
             float rotation = vehicle.rotation;
 
-            Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicle.vehicle_spawn_hash, spawnPosition, rotation, 255, 255, "ADMIN", 255, false, true, 0);
+            Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicle.vehicle_spawn_hash, spawnPosition, rotation, 255, 255, vehicle.numberplate, 255, false, true, 0);
 
             veh.SetSharedData(_vehicleSharedDataIdentifier, vehicle);
             veh.SetData(_vehicleSharedDataIdentifier, vehicle);
@@ -66,42 +66,73 @@ namespace CloudRP.Vehicles
             return veh;
         }
 
-        public static void saveVehiclePositions(object source, System.Timers.ElapsedEventArgs e)
+        public static void saveVehiclePositions(object source, ElapsedEventArgs e)
         {
-            List<Vehicle> allVehicles =  NAPI.Pools.GetAllVehicles();
+            List<Vehicle> allVehicles = NAPI.Pools.GetAllVehicles();
 
             foreach (var vehicle in allVehicles)
             {
                 try
                 {
-                    DbVehicle vehicleData = vehicle.GetData<DbVehicle>(_vehicleSharedDataIdentifier);
-                    if (vehicleData == null) return;
-                    
-                    using (DefaultDbContext dbContext = new DefaultDbContext())
-                    {
-                        DbVehicle findVehicle = dbContext.vehicles.Find(vehicleData.vehicle_id);
-                        if (findVehicle == null) return;
-
-                        Console.WriteLine(findVehicle.vehicle_name);
-
-                        if (findVehicle == null) return;
-
-                        findVehicle.position_x = vehicle.Position.X;
-                        findVehicle.position_y = vehicle.Position.Y;
-                        findVehicle.position_z = vehicle.Position.Z;
-
-                        Console.WriteLine($"Updated vehicle position for vehicle {findVehicle.vehicle_id}");
-
-                        dbContext.SaveChanges();
-                        
-                    }
+                    saveVehiclePosition(vehicle);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex);
                 }
             }
+        }
 
+        public static void saveVehiclePosition(Vehicle vehicle)
+        {
+            DbVehicle vehicleData = vehicle.GetData<DbVehicle>(_vehicleSharedDataIdentifier);
+            if (vehicleData == null) return;
+
+            using (DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                DbVehicle findVehicle = dbContext.vehicles.Find(vehicleData.vehicle_id);
+
+                if (findVehicle == null) return;
+
+                findVehicle.position_x = vehicle.Position.X;
+                findVehicle.position_y = vehicle.Position.Y;
+                findVehicle.position_z = vehicle.Position.Z;
+
+                Console.WriteLine($"Updated vehicle position for vehicle {findVehicle.vehicle_id}");
+
+                dbContext.SaveChanges();
+            }
+
+        }
+
+        public static void bringVehicleToPlayer(Player player, Vehicle vehicle, bool putInVehicle)
+        {
+            vehicle.Position = player.Position;
+            
+            if(putInVehicle)
+            {
+                player.SetIntoVehicle(vehicle, 0);
+            }
+
+            saveVehiclePosition(vehicle);
+        }
+
+        public static Vehicle findVehicleById(int vehicleId)
+        {
+            List<Vehicle> allVehicles = NAPI.Pools.GetAllVehicles();
+            Vehicle foundVehicle = null;
+
+            foreach (var vehicle in allVehicles)
+            {
+                DbVehicle vehicleData = vehicle.GetData<DbVehicle>(_vehicleSharedDataIdentifier);
+
+                if(vehicleData.vehicle_id == vehicleId)
+                {
+                    foundVehicle = vehicle;
+                }
+            }
+
+            return foundVehicle;
         }
     }
 }

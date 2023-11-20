@@ -19,7 +19,11 @@ namespace CloudRP.Vehicles
         [Required]
         public string vehicle_name { get; set; }
 
+        [Required]
         public uint vehicle_spawn_hash { get; set; }
+
+        [Required]
+        public string numberplate { get; set; }
 
         [Required]
         public float position_x { get; set; }

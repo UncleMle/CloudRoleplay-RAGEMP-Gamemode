@@ -6,6 +6,7 @@ using CloudRP.Vehicles;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using System.Xml.Linq;
 using static CloudRP.Authentication.Account;
@@ -20,21 +21,23 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if(userData != null && userData.adminLevel > (int)AdminRanks.Admin_SeniorSupport)
+            if (userData != null && userData.adminLevel > (int)AdminRanks.Admin_SeniorSupport)
             {
                 userData.adminDuty = !userData.adminDuty;
 
-                if(userData.adminDuty)
+                if (userData.adminDuty)
                 {
                     AdminUtils.sendMessageToAllStaff($"{AdminUtils.staffPrefix} {userData.adminName} is on duty");
-                } else
+                }
+                else
                 {
                     AdminUtils.sendMessageToAllStaff($"{AdminUtils.staffPrefix} {userData.adminName} is off duty");
                 }
 
                 PlayersData.setPlayerAccountData(player, userData);
 
-            } else AdminUtils.sendNoAuth(player);
+            }
+            else AdminUtils.sendNoAuth(player);
         }
 
         [Command("staff")]
@@ -52,10 +55,11 @@ namespace CloudRP.Admin
         }
 
         [Command("client", "~r~/client [ename]")]
-        public void eventTrigger(Player player, string eventName) {
+        public void eventTrigger(Player player, string eventName)
+        {
             if (eventName == null) return;
 
-            if(PlayersData.getPlayerAccountData(player).adminLevel > 7)
+            if (PlayersData.getPlayerAccountData(player).adminLevel > 7)
             {
                 player.TriggerEvent(eventName);
                 AdminUtils.staffSay(player, $"Triggered clientside event {eventName}");
@@ -83,7 +87,7 @@ namespace CloudRP.Admin
         }
 
         [Command("veh", "~r~/veh [vehName]")]
-        public void CMD_veh(Player player, string vehName)
+        public void spawnVehicle(Player player, string vehName)
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
@@ -119,6 +123,27 @@ namespace CloudRP.Admin
                 AdminUtils.staffSay(player, $"Spawned in vehicle {vehName}");
             }
             else AdminUtils.sendNoAuth(player);
+        }
+
+        [Command("bringv", "~r~/bringv [vehicleId]")]
+        public void bringVehicle(Player player, int vehicleId)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if (userData.adminLevel > (int)AdminRanks.Admin_SeniorSupport && userData.adminDuty || userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            {
+                Vehicle findVehicleById = VehicleSystem.findVehicleById(vehicleId);
+
+                if(findVehicleById == null)
+                {
+                    AdminUtils.staffSay(player, $"No vehicle with ID {vehicleId} was found.");
+                    return;
+                }
+
+                VehicleSystem.bringVehicleToPlayer(player, findVehicleById, true);
+
+                AdminUtils.staffSay(player, $"Brought vehicle with ID {vehicleId}");
+            }
         }
     }
 }
