@@ -6,7 +6,6 @@ const getUserData = (): UserData | undefined => {
 	if (!sharedData) return;
 
 	return sharedData as UserData;
-
 }
 
 export default getUserData;

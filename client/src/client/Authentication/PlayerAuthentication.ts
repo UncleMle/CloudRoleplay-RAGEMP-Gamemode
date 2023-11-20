@@ -1,8 +1,6 @@
 import Camera from "../CameraSystem/Camera";
 import toggleChat from "../PlayerMethods/ToggleChat";
 
-//const START_SPAWN_VECTOR: Vector3 = new mp.Vector3(-811.6, 174.9, 76.8);
-
 class PlayerAuthentication {
 	public LoginCamera: Camera;
 
