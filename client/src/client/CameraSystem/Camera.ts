@@ -20,19 +20,21 @@ class Camera {
         this.create();
 		Camera.Current_Cam = this;
 
-		mp.events.add("render", () => {
-			if (Camera.Current_Cam === null || !Camera.Current_Cam.isMoving) return;
-			let position = Camera.Current_Cam.camera.getCoord();
-
-			Camera.Current_Cam.camera.setCoord(position.x + Camera.Current_Cam.speed, position.y, position.z);
-
-			if (position.x + Camera.Current_Cam.speed >= Camera.Current_Cam.position.x + (Camera.Current_Cam.range / 2)
-				|| position.x + Camera.Current_Cam.speed <= Camera.Current_Cam.position.x - (Camera.Current_Cam.range / 2)) {
-
-				Camera.Current_Cam.speed *= -1;
-			}
-		})
+		mp.events.add("render", Camera.handleCameraMovement);
     }
+
+	public static handleCameraMovement() {
+		if (Camera.Current_Cam === null || !Camera.Current_Cam.isMoving) return;
+		let position = Camera.Current_Cam.camera.getCoord();
+
+		Camera.Current_Cam.camera.setCoord(position.x + Camera.Current_Cam.speed, position.y, position.z);
+
+		if (position.x + Camera.Current_Cam.speed >= Camera.Current_Cam.position.x + (Camera.Current_Cam.range / 2)
+			|| position.x + Camera.Current_Cam.speed <= Camera.Current_Cam.position.x - (Camera.Current_Cam.range / 2)) {
+
+			Camera.Current_Cam.speed *= -1;
+		}
+	}
 
     create() {
         if(Camera.Current_Cam !== null && this.camera && mp.cameras.exists(this.camera)) {

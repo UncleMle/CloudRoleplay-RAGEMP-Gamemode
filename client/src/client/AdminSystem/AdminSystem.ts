@@ -1,5 +1,6 @@
 import { UserData } from "../@types";
 import { _TEXT_R_WHITE, _sharedCharacterDataIdentifier } from '../Constants/Constants';
+import getTargetData from "../PlayerMethods/getTargetData";
 import getUserData from "../PlayerMethods/getUserData";
 
 class AdminSystem {
@@ -9,29 +10,54 @@ class AdminSystem {
 	constructor() {
 		AdminSystem.LocalPlayer = mp.players.local;
 
-		mp.events.add({
-			"render": () => {
-				AdminSystem.userData = getUserData();
+		
+		mp.events.add("render", AdminSystem.renderTextOnScreen);
+		mp.events.add("entityStreamIn", AdminSystem.handleEntityStream);
+		mp.events.addDataHandler('PlayerAccountData', AdminSystem.handleFlyStart);
+	}
 
-				if (AdminSystem.userData?.adminDuty) {
-					let poz_x: string = AdminSystem.LocalPlayer.position.x.toFixed(1);
-					let poz_y: string = AdminSystem.LocalPlayer.position.y.toFixed(1);
-					let poz_z: string = AdminSystem.LocalPlayer.position.z.toFixed(1);
+	public static handleFlyStart(entity: EntityMp, value: UserData): void {
+		if (entity.type != "player") return;
 
-					let positionString = `${_TEXT_R_WHITE} X: ${poz_x} Y: ${poz_y} Z: ${poz_z}`;
+		if (value.isFlying) {
+			mp.console.logInfo("Entity alpha set to zero");
+			entity.setAlpha(0);
+		} else {
+			entity.setAlpha(255);
+		}
+	}
 
-					let msg = `~r~On duty as ${AdminSystem.userData.adminName} ${AdminSystem.userData.isFlying ? "~g~[Fly enabled]~w~" : ""}]\n${positionString}`;
+	public static renderTextOnScreen() {
+		AdminSystem.userData = getUserData();
 
-					mp.game.graphics.drawText(msg, [0.5, 0.90], {
-						font: 4,
-						color: [255, 255, 255, 255],
-						scale: [0.7, 0.7],
-						outline: false
-					});
-				}
+		if (AdminSystem.userData?.adminDuty) {
+			let poz_x: string = AdminSystem.LocalPlayer.position.x.toFixed(1);
+			let poz_y: string = AdminSystem.LocalPlayer.position.y.toFixed(1);
+			let poz_z: string = AdminSystem.LocalPlayer.position.z.toFixed(1);
 
-			}
-		})
+			let positionString = `${_TEXT_R_WHITE} X: ${poz_x} Y: ${poz_y} Z: ${poz_z}`;
+
+			let msg = `~r~On duty as ${AdminSystem.userData.adminName} ${AdminSystem.userData.isFlying ? "~g~[Fly enabled]~w~" : ""}\n${positionString}`;
+
+			mp.game.graphics.drawText(msg, [0.5, 0.90], {
+				font: 4,
+				color: [255, 255, 255, 255],
+				scale: [0.7, 0.7],
+				outline: false
+			});
+		}
+	}
+
+	public static handleEntityStream(entity: EntityMp) {
+		if (entity.type != "player") return;
+
+		let streamedEntityData: UserData | undefined = getTargetData(entity as PlayerMp);
+
+		if (!streamedEntityData) return;
+
+		if (streamedEntityData.isFlying) {
+			entity.setAlpha(0);
+		}
 
 	}
 

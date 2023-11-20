@@ -98,8 +98,6 @@ namespace CloudRP.Vehicles
                 findVehicle.position_y = vehicle.Position.Y;
                 findVehicle.position_z = vehicle.Position.Z;
 
-                Console.WriteLine($"Updated vehicle position for vehicle {findVehicle.vehicle_id}");
-
                 dbContext.SaveChanges();
             }
 

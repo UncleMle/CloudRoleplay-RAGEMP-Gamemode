@@ -7,43 +7,20 @@ let isFunctionPressed: boolean;
 
 class BrowserSystem {
 	public _browserBaseUrl: string = BrowserEnv.development;
-	public _browserInstance: BrowserMp;
+	public static _browserInstance: BrowserMp;
 	public clientAuthenticated: boolean;
 	public static IdleDate: Date = new Date();
 
 	constructor() { 
-		this._browserInstance = mp.browsers.new(this._browserBaseUrl);
-		mp.players.local.browserInstance = this._browserInstance;
+		BrowserSystem._browserInstance = mp.browsers.new(this._browserBaseUrl);
+		mp.players.local.browserInstance = BrowserSystem._browserInstance;
 		this.clientAuthenticated = mp.players.local.getVariable("client:authStatus");
 
-		mp.events.add({
-			"guiReady": () => {
-				mp.gui.chat.show(false);
-				this._browserInstance?.markAsChat();
-				mp.console.logInfo("GUI Ready and chat initiated");
-			},
-			"browser:pushRouter": (browserName: string) => {
-				this._browserInstance.execute(`router.push('${browserName}')`);
-			},
-			"render": () => {
-				BrowserSystem.disableAfkTimer();
-				BrowserSystem.disableDefaultGuiElements();
-
-				if (this._browserInstance && !mp.players.local.getVariable(_sharedCharacterDataIdentifier)) {
-					toggleChat(false);
-				}
-			},
-			'client:recieveUiMutation': (mutationName: string, key: string, value: any) => {
-				if (this._browserInstance) {
-					this._browserInstance.execute(`store.commit('${mutationName}', {
-						${key}: ${value}
-					})`);
-				}
-			},
-			'browser:sendObject': (eventName: string, _object: object) => {
-				mp.events.callRemote(eventName, _object);
-			}
-		});
+		mp.events.add("guiReady", BrowserSystem.onGuiReady);
+		mp.events.add("browser:pushRouter", BrowserSystem.handleBrowserPush);
+		mp.events.add("render", BrowserSystem.handleRender);
+		mp.events.add("client:recieveUiMutation", BrowserSystem.handleMutationChange);
+		mp.events.add("browser:sendObject", BrowserSystem.handleBrowserObject);
 
 		mp.keys.bind(F2, false, function () {
 			isFunctionPressed = !isFunctionPressed;
@@ -53,7 +30,38 @@ class BrowserSystem {
 			else {
 				mp.gui.cursor.show(false, false);
 			}
-		})
+		});
+	}
+
+	public static onGuiReady() {
+		mp.gui.chat.show(false);
+		BrowserSystem._browserInstance?.markAsChat();
+		mp.console.logInfo("GUI Ready and chat initiated");
+	}
+
+	public static handleBrowserPush(browserName: string) {
+		BrowserSystem._browserInstance.execute(`router.push('${browserName}')`);
+	}
+
+	public static handleRender() {
+		BrowserSystem.disableAfkTimer();
+		BrowserSystem.disableDefaultGuiElements();
+
+		if (BrowserSystem._browserInstance && !mp.players.local.getVariable(_sharedCharacterDataIdentifier)) {
+			toggleChat(false);
+		}
+	}
+
+	public static handleMutationChange(mutationName: string, key: string, value: any) {
+		if (BrowserSystem._browserInstance) {
+			BrowserSystem._browserInstance.execute(`store.commit('${mutationName}', {
+						${key}: ${value}
+					})`);
+		}
+	}
+
+	public static handleBrowserObject(eventName: string, _object: object) {
+		mp.events.callRemote(eventName, _object);
 	}
 
 	public static disableAfkTimer() {
