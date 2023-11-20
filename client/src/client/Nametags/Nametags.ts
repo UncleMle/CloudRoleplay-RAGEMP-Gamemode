@@ -1,68 +1,58 @@
 import { UserData } from "../@types";
-import getUserData from "../PlayerMethods/getUserData";
+import { _TEXT_R_RED, _TEXT_R_WHITE } from '../Constants/Constants';
+import getTargetData from "../PlayerMethods/getTargetData";
 
 class NameTags {
 	public static userData: UserData | undefined;
-	public static maxDistance: number = 25 * 25;
-	public static width: number = 0.03;
-	public static height: number = 0.0065;
-	public static border: number = 0.001;
-	public static color: Array4d = [255, 255, 255, 255];
+	public static LocalPlayer: PlayerMp;
+	public static ScreenRes: GetScreenResolutionResult;
 
 	constructor() {
-		mp.events.add('render', (nametags) => {
-			const graphics: GameGraphicsMp = mp.game.graphics;
-			const screenRes: GetScreenResolutionResult = graphics.getScreenResolution();
-			NameTags.userData = getUserData();
+		NameTags.LocalPlayer = mp.players.local;
+		NameTags.ScreenRes = mp.game.graphics.getScreenResolution();
 
-			if (!NameTags.userData) return;
+		mp.nametags.enabled = false;
+		mp.events.add('render', () => {
+			mp.players.forEachInRange(NameTags.LocalPlayer.position, 20, (Target) => {
+				const targetUserData: UserData | undefined = getTargetData(Target);
+				const TargetPosition = Target.position;
+				const PlayerPosition = NameTags.LocalPlayer.position;
 
-			nametags.forEach(nametag => {
-				let [player, x, y, distance] = nametag;
+				if (!targetUserData) return;
 
-				if (distance <= NameTags.maxDistance) {
-					let scale: number = (distance / NameTags.maxDistance);
+				const Distance = new mp.Vector3(PlayerPosition.x, PlayerPosition.y, PlayerPosition.z)
+					.subtract(new mp.Vector3(TargetPosition.x, TargetPosition.y, TargetPosition.z))
+					.length();
+					
+				if (Distance < 8 && NameTags.LocalPlayer.id != Target.id && NameTags.LocalPlayer.hasClearLosTo(Target.handle, 17)) {
+					const Index = Target.getBoneIndex(12844);
+					const NameTag = Target.getWorldPositionOfBone(Index);
+					const Position = mp.game.graphics.world3dToScreen2d(new mp.Vector3(NameTag.x, NameTag.y, NameTag.z + 0.4));
+
+					if (!Position) return;
+
+					let x = Position.x;
+					let y = Position.y;
+
+					let scale = Distance / 25;
 					if (scale < 0.6) scale = 0.6;
 
-					var health: number = player.getHealth();
-					health = health < 100 ? 0 : ((health - 100) / 100);
+					y -= scale * (0.005 * (NameTags.ScreenRes.y / 1080)) - parseInt('0.010');
 
-					var armour: number = player.getArmour() / 100;
+					let DefaultTagContent = `[${targetUserData.playerId}] ${targetUserData.username}`;
 
-					y -= scale * (0.005 * (screenRes.y / 1080));
-
-					graphics.drawText(NameTags.userData?.username as string, [x, y],
-						{
-							font: 4,
-							color: NameTags.color,
-							scale: [0.4, 0.4],
-							outline: true
-						});
-
-					if (NameTags.userData?.adminDuty) {
-						let y2 = y + 0.042;
-
-						if (armour > 0) {
-							let x2 = x - NameTags.width / 2 - NameTags.border / 2;
-
-							graphics.drawRect(x2, y2, NameTags.width + NameTags.border * 2, 0.0085, 0, 0, 0, 200, false);
-							graphics.drawRect(x2, y2, NameTags.width, NameTags.height, 150, 150, 150, 255, false);
-							graphics.drawRect(x2 - NameTags.width / 2 * (1 - health), y2, NameTags.width * health, NameTags.height, 255, 255, 255, 200, false);
-
-							x2 = x + NameTags.width / 2 + NameTags.border / 2;
-
-							graphics.drawRect(x2, y2, NameTags.width + NameTags.border * 2, NameTags.height + NameTags.border * 2, 0, 0, 0, 200, false);
-							graphics.drawRect(x2, y2, NameTags.width, NameTags.height, 41, 66, 78, 255, false);
-							graphics.drawRect(x2 - NameTags.width / 2 * (1 - armour), y2, NameTags.width * armour, NameTags.height, 48, 108, 135, 200, false);
-						}
-						else {
-							graphics.drawRect(x, y2, NameTags.width + NameTags.border * 2, NameTags.height + NameTags.border * 2, 0, 0, 0, 200, false);
-							graphics.drawRect(x, y2, NameTags.width, NameTags.height, 150, 150, 150, 255, false);
-							graphics.drawRect(x - NameTags.width / 2 * (1 - health), y2, NameTags.width * health, NameTags.height, 255, 255, 255, 200, false);
-						}
+					if (targetUserData.adminDuty) {
+						DefaultTagContent = `${_TEXT_R_RED}[ADMIN]${_TEXT_R_WHITE} ${targetUserData.adminName}`;
 					}
+
+					mp.game.graphics.drawText(DefaultTagContent, [x, y], {
+						font: 4,
+						color: [255, 255, 255, 255],
+						scale: [0.325, 0.325],
+						outline: false
+					});
 				}
-			})
+			});
 		})
 	}
 }

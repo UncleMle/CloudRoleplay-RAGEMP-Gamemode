@@ -14,7 +14,19 @@ namespace CloudRP.PlayerData
         public static void setPlayerAccountData(Player player, User userData)
         {
             player.SetData(_sharedAccountDataIdentifier, userData);
-            player.SetOwnSharedData(_sharedAccountDataIdentifier, userData);
+
+            // Explicitly specify data as it will be sent freely to other clients;
+            SharedData data = new SharedData
+            {
+                accountId = userData.accountId,
+                adminDuty = userData.adminDuty,
+                adminLevel = userData.adminLevel,
+                adminName = userData.adminName,
+                playerId = userData.playerId,
+                username = userData.username,
+            };
+
+            player.SetOwnSharedData(_sharedAccountDataIdentifier, data);
         }
 
         public static User getPlayerAccountData(Player player)

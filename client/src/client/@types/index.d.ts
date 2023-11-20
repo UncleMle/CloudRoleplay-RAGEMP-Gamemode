@@ -12,5 +12,4 @@ export interface UserData {
 	adminLevel: number,
 	adminDuty: boolean,
 	adminName: string,
-	emailAddress: string
 }

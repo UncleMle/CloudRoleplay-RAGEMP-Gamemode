@@ -127,4 +127,14 @@ namespace CloudRP.Authentication
         public string emailAddress { get; set; }    
     }
 
+    class SharedData
+    {
+        public int accountId { get; set; }
+        public int playerId { get; set; }
+        public string username { get; set; }
+        public int adminLevel { get; set; }
+        public bool adminDuty { get; set; } = false;
+        public string adminName { get; set; }
+    }
+
 }
