@@ -62,5 +62,16 @@ namespace CloudRP.Utils
         {
             NAPI.Chat.SendChatMessageToPlayer(player, staffPrefix + message);
         }
+
+        public static bool checkUserData(User userData)
+        {
+            if(userData.adminLevel > (int)AdminRanks.Admin_SeniorSupport && userData.adminDuty || userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
+        }
     }
 }

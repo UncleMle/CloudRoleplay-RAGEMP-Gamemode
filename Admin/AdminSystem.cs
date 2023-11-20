@@ -127,5 +127,29 @@ namespace CloudRP.Admin
                 AdminUtils.staffSay(player, $"Brought vehicle with ID {vehicleId}");
             }
         }
+
+        [Command("fly", "~r~/fly")]
+        public void fly(Player player)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(AdminUtils.checkUserData(userData))
+            {
+                userData.isFlying = !userData.isFlying;
+
+                if(userData.isFlying)
+                {
+                    AdminUtils.staffSay(player, $"Enabled fly");
+                } else
+                {
+                    AdminUtils.staffSay(player, $"Disabled fly");
+                }
+
+                PlayersData.setPlayerAccountData(player, userData);
+            }
+            else AdminUtils.sendNoAuth(player);
+
+
+        }
     }
 }

@@ -20,7 +20,8 @@ class AdminSystem {
 
 					let positionString = `${_TEXT_R_WHITE} X: ${poz_x} Y: ${poz_y} Z: ${poz_z}`;
 
-					let msg = `~r~On duty as ${AdminSystem.userData.adminName}\n${positionString}`;
+					let msg = `~r~On duty as ${AdminSystem.userData.adminName} ${AdminSystem.userData.isFlying ? "~g~[Fly enabled]~w~" : ""}]\n${positionString}`;
+
 					mp.game.graphics.drawText(msg, [0.5, 0.90], {
 						font: 4,
 						color: [255, 255, 255, 255],

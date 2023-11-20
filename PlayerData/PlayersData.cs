@@ -1,4 +1,5 @@
 ﻿using CloudRP.Authentication;
+using CloudRP.Utils;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ namespace CloudRP.PlayerData
                 adminName = userData.adminName,
                 playerId = userData.playerId,
                 username = userData.username,
+                isFlying = userData.isFlying,
             };
 
             player.SetSharedData(_sharedAccountDataIdentifier, data);

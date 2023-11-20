@@ -39,4 +39,34 @@ namespace CloudRP.Utils
             return isTheSame;
         }
     }
+
+    class UserCredentials
+    {
+        public string username { get; set; }
+        public string password { get; set; }
+        public bool rememberMe { get; set; }
+    }
+
+    class User
+    {
+        public int accountId { get; set; }
+        public int playerId { get; set; }
+        public string username { get; set; }
+        public int adminLevel { get; set; }
+        public bool adminDuty { get; set; } = false;
+        public string adminName { get; set; }
+        public string emailAddress { get; set; }
+        public bool isFlying { get; set; }
+    }
+
+    class SharedData
+    {
+        public int accountId { get; set; }
+        public int playerId { get; set; }
+        public string username { get; set; }
+        public int adminLevel { get; set; }
+        public bool adminDuty { get; set; } = false;
+        public string adminName { get; set; }
+        public bool isFlying { get; set; }
+    }
 }

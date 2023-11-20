@@ -7,9 +7,10 @@ declare global {
 
 export interface UserData {
 	accountId: number,
+	adminDuty: boolean,
+	adminLevel: number,
+	adminName: string,
 	playerId: number,
 	username: string,
-	adminLevel: number,
-	adminDuty: boolean,
-	adminName: string,
+	isFlying: boolean
 }
