@@ -18,22 +18,21 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if(userData != null && userData.adminLevel > 0)
+            if(userData != null && userData.adminLevel > (int)AdminRanks.Admin_SeniorSupport)
             {
                 userData.adminDuty = !userData.adminDuty;
 
                 if(userData.adminDuty)
                 {
-                    AdminUtils.sendMessageToAllStaff($"{userData.username} is on duty ({userData.adminDuty})");
+                    AdminUtils.sendMessageToAllStaff($"{AdminUtils.staffPrefix} {userData.adminName} is on duty");
                 } else
                 {
-                    AdminUtils.sendMessageToAllStaff($"{userData.username} is off duty ({userData.adminDuty})");
+                    AdminUtils.sendMessageToAllStaff($"{AdminUtils.staffPrefix} {userData.adminName} is off duty");
                 }
 
                 PlayersData.setPlayerAccountData(player, userData);
 
             } else AdminUtils.sendNoAuth(player);
-
         }
 
         [Command("staff")]

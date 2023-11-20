@@ -10,6 +10,8 @@ namespace CloudRP.Utils
 {
     internal class AdminUtils : Script
     {
+        public static string staffPrefix = "!{red}[STAFF]!{white} ";
+
         public static void sendNoAuth(Player player)
         {
             NAPI.Chat.SendChatMessageToPlayer(player, "!{red}[Not Authorized]!{white}] " + "you are not authorized to use this command.");

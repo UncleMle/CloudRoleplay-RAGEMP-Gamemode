@@ -4,13 +4,12 @@ import { F2 } from './ClientButtons';
 import { _REMOVE_TIMER_NATIVE, _sharedCharacterDataIdentifier } from '../Constants/Constants';
 
 let isFunctionPressed: boolean;
-let isClientTyping: boolean;
 
 class BrowserSystem {
 	public _browserBaseUrl: string = BrowserEnv.development;
 	public _browserInstance: BrowserMp;
 	public clientAuthenticated: boolean;
-	public IdleDate: Date = new Date();
+	public static IdleDate: Date = new Date();
 
 	constructor() { 
 		this._browserInstance = mp.browsers.new(this._browserBaseUrl);
@@ -27,16 +26,12 @@ class BrowserSystem {
 				this._browserInstance.execute(`router.push('${browserName}')`);
 			},
 			"render": () => {
-				mp.players.local.isTypingInTextChat ? isClientTyping = true : isClientTyping = false;
+				BrowserSystem.disableAfkTimer();
+				BrowserSystem.disableDefaultGuiElements();
 
 				if (this._browserInstance && !mp.players.local.getVariable(_sharedCharacterDataIdentifier)) {
 					toggleChat(false);
 				}
-
-				mp.console.logInfo("Shared acc data: " + JSON.stringify(mp.players.local.getVariable(_sharedCharacterDataIdentifier)));
-
-
-				this.disableAfkTimer();
 			},
 			'client:recieveUiMutation': (mutationName: string, key: string, value: any) => {
 				if (this._browserInstance) {
@@ -52,7 +47,6 @@ class BrowserSystem {
 
 		mp.keys.bind(F2, false, function () {
 			isFunctionPressed = !isFunctionPressed;
-			//if (isClientTyping) return
 			if (isFunctionPressed && !mp.game.ui.isPauseMenuActive()) {
 				mp.gui.cursor.show(true, true);
 			}
@@ -62,13 +56,24 @@ class BrowserSystem {
 		})
 	}
 
-	disableAfkTimer() {
-		const dif: number = new Date().getTime() - this.IdleDate.getTime();
+	public static disableAfkTimer() {
+		const dif: number = new Date().getTime() - BrowserSystem.IdleDate.getTime();
 		const seconds: number = dif / 1000;
 		if (Math.abs(seconds) > 29.5) {
 			mp.game.invoke(_REMOVE_TIMER_NATIVE); 
-			this.IdleDate = new Date();
+			BrowserSystem.IdleDate = new Date();
 		}
+	}
+
+	public static disableDefaultGuiElements() {
+		mp.game.ui.hideHudComponentThisFrame(8); // Vehicle class
+		mp.game.ui.hideHudComponentThisFrame(6); // Vehicle Name
+		mp.game.ui.hideHudComponentThisFrame(7); // area name
+		mp.game.ui.hideHudComponentThisFrame(9); // street name
+		mp.game.ui.hideHudComponentThisFrame(3); // cash
+		mp.game.graphics.disableVehicleDistantlights(true);
+		mp.game.ui.setRadarZoom(1100);
+		mp.game.player.setHealthRechargeMultiplier(0.0);
 	}
 }
 
