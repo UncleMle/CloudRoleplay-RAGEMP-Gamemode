@@ -60,7 +60,7 @@ namespace CloudRP.Utils
 
         public static void staffSay(Player player, string message)
         {
-            NAPI.Chat.SendChatMessageToPlayer(player, "!{red}[STAFF]!{white} " + message);
+            NAPI.Chat.SendChatMessageToPlayer(player, staffPrefix + message);
         }
     }
 }

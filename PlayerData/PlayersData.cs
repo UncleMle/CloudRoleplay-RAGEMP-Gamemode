@@ -26,7 +26,7 @@ namespace CloudRP.PlayerData
                 username = userData.username,
             };
 
-            player.SetOwnSharedData(_sharedAccountDataIdentifier, data);
+            player.SetSharedData(_sharedAccountDataIdentifier, data);
         }
 
         public static User getPlayerAccountData(Player player)

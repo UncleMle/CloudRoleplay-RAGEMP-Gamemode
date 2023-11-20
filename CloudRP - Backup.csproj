@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+     <Content Include="Bootstrapper.dll">
+        <Pack>true</Pack>
+        <PackagePath>lib\$(TargetFramework)</PackagePath>
+    </Content>
 	<PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.0">
@@ -24,12 +28,6 @@
     <Folder Include="client\src\client\Constants\" />
     <Folder Include="client\src\client\Nametags\" />
     <Folder Include="client\src\client\PlayerMethods\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Bootstrapper">
-      <HintPath>..\..\runtime\Bootstrapper.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

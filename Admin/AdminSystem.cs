@@ -6,6 +6,7 @@ using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Linq;
 using static CloudRP.Authentication.Account;
 
 namespace CloudRP.Admin
@@ -80,6 +81,20 @@ namespace CloudRP.Admin
 
         }
 
+        [Command("veh", "~r~/veh [vehName]")]
+        public void CMD_veh(Player player, string vehName)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
 
+            if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin || userData.adminLevel > (int)AdminRanks.Admin_SeniorAdmin && userData.adminDuty)
+            {
+                uint vehicleHash = NAPI.Util.GetHashKey(vehName);
+                Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicleHash, player.Position, player.Rotation.Z, 255, 255, "ADMIN", 255, false, true, 0);
+                player.SetIntoVehicle(veh, 0);
+
+                AdminUtils.staffSay(player, $"Spawned in vehicle {vehName}");
+            }
+            else AdminUtils.sendNoAuth(player);
+        }
     }
 }
