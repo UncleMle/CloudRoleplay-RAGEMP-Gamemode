@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using System.Numerics;
 
 namespace CloudRP.Vehicles
 {
@@ -20,6 +21,15 @@ namespace CloudRP.Vehicles
 
         [Required]
         public string vehicle_spawn_name { get; set; }
+
+        [Required]
+        public string position_x { get; set; }
+
+        [Required]
+        public string position_y { get; set; }
+
+        [Required]
+        public string position_z { get; set; }
 
     }
 }
