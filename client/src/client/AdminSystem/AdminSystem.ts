@@ -1,5 +1,5 @@
 import { UserData } from "../@types";
-import { _sharedCharacterDataIdentifier } from '../Constants/Constants';
+import { _TEXT_R_WHITE, _sharedCharacterDataIdentifier } from '../Constants/Constants';
 import getUserData from "../PlayerMethods/getUserData";
 
 class AdminSystem {
@@ -14,7 +14,13 @@ class AdminSystem {
 				AdminSystem.userData = getUserData();
 
 				if (AdminSystem.userData?.adminDuty) {
-					let msg = `~r~On duty as ${AdminSystem.userData.adminName}\n${AdminSystem.LocalPlayer.position}`;
+					let poz_x: string = AdminSystem.LocalPlayer.position.x.toFixed(1);
+					let poz_y: string = AdminSystem.LocalPlayer.position.y.toFixed(1);
+					let poz_z: string = AdminSystem.LocalPlayer.position.z.toFixed(1);
+
+					let positionString = `${_TEXT_R_WHITE} X: ${poz_x} Y: ${poz_y} Z: ${poz_z}`;
+
+					let msg = `~r~On duty as ${AdminSystem.userData.adminName}\n${positionString}`;
 					mp.game.graphics.drawText(msg, [0.5, 0.93], {
 						font: 4,
 						color: [255, 255, 255, 255],
