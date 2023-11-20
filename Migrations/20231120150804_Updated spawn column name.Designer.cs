@@ -3,14 +3,16 @@ using System;
 using CloudRP.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CloudRP.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231120150804_Updated spawn column name")]
+    partial class Updatedspawncolumnname
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,7 +71,7 @@ namespace CloudRP.Migrations
                     b.ToTable("accounts");
                 });
 
-            modelBuilder.Entity("CloudRP.Vehicles.DbVehicle", b =>
+            modelBuilder.Entity("CloudRP.Vehicles.Vehicle", b =>
                 {
                     b.Property<int>("vehicle_id")
                         .ValueGeneratedOnAdd()
@@ -84,24 +86,25 @@ namespace CloudRP.Migrations
                     b.Property<int>("owner_id")
                         .HasColumnType("int");
 
-                    b.Property<float>("position_x")
-                        .HasColumnType("float");
+                    b.Property<string>("position_x")
+                        .IsRequired()
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<float>("position_y")
-                        .HasColumnType("float");
+                    b.Property<string>("position_y")
+                        .IsRequired()
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<float>("position_z")
-                        .HasColumnType("float");
-
-                    b.Property<float>("rotation")
-                        .HasColumnType("float");
+                    b.Property<string>("position_z")
+                        .IsRequired()
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("vehicle_name")
                         .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<uint>("vehicle_spawn_hash")
-                        .HasColumnType("int unsigned");
+                    b.Property<string>("vehicle_spawn_hash")
+                        .IsRequired()
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("vehicle_id");
 

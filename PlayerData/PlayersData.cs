@@ -15,7 +15,7 @@ namespace CloudRP.PlayerData
         {
             player.SetData(_sharedAccountDataIdentifier, userData);
 
-            // Explicitly specify data as it will be sent freely to other clients;
+            // Explicitly specify data as it will be sent freely to other clients
             SharedData data = new SharedData
             {
                 accountId = userData.accountId,

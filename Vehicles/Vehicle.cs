@@ -8,7 +8,7 @@ using System.Numerics;
 
 namespace CloudRP.Vehicles
 {
-    public class Vehicle : BaseEntity
+    public class DbVehicle : BaseEntity
     {
         [Key]
         public int vehicle_id { get; set; }
@@ -19,17 +19,19 @@ namespace CloudRP.Vehicles
         [Required]
         public string vehicle_name { get; set; }
 
-        [Required]
-        public string vehicle_spawn_name { get; set; }
+        public uint vehicle_spawn_hash { get; set; }
 
         [Required]
-        public string position_x { get; set; }
+        public float position_x { get; set; }
 
         [Required]
-        public string position_y { get; set; }
+        public float position_y { get; set; }
 
         [Required]
-        public string position_z { get; set; }
+        public float position_z { get; set; }
+
+        [Required]
+        public float rotation { get; set;}
 
     }
 }

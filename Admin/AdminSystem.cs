@@ -2,6 +2,7 @@
 using CloudRP.Database;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
+using CloudRP.Vehicles;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
@@ -88,8 +89,31 @@ namespace CloudRP.Admin
 
             if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin || userData.adminLevel > (int)AdminRanks.Admin_SeniorAdmin && userData.adminDuty)
             {
+                Vector3 playerPosition = player.Position;
+                float playerRotation = player.Rotation.Z;
+
                 uint vehicleHash = NAPI.Util.GetHashKey(vehName);
-                Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicleHash, player.Position, player.Rotation.Z, 255, 255, "ADMIN", 255, false, true, 0);
+                Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicleHash, playerPosition, playerRotation, 255, 255, "ADMIN", 255, false, true, 0);
+
+                DbVehicle vehicleInsert = new DbVehicle
+                {
+                    CreatedDate = DateTime.Now,
+                    UpdatedDate = DateTime.Now,
+                    owner_id = userData.accountId,
+                    position_x = playerPosition.X,
+                    position_y = playerPosition.Y,
+                    position_z = playerPosition.Z,
+                    rotation = playerRotation,
+                    vehicle_spawn_hash = vehicleHash,
+                    vehicle_name = vehName
+                };
+
+                using (DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    dbContext.vehicles.Add(vehicleInsert);
+                    dbContext.SaveChanges();
+                }
+
                 player.SetIntoVehicle(veh, 0);
 
                 AdminUtils.staffSay(player, $"Spawned in vehicle {vehName}");

@@ -19,7 +19,7 @@ namespace CloudRP.Database
         }
 
         public DbSet<Account> accounts { get; set; }
-        public DbSet<Vehicle> vehicles { get; set; }
+        public DbSet<DbVehicle> vehicles { get; set; }
 
     }
 
