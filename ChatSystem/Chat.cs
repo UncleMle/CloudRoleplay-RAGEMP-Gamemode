@@ -1,4 +1,5 @@
 ﻿using CloudRP.Authentication;
+using CloudRP.Character;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
 using GTANetworkAPI;
@@ -21,9 +22,10 @@ namespace CloudRP.ChatSystem
         [ServerEvent(Event.ChatMessage)]
         public void onChatMessage(Player player, string message)
         {
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (userData == null) return;
+            if (characterData == null || userData == null) return;
 
             string prefix = "";
             string suffix = " !{grey}says:!{white} ";
@@ -34,7 +36,7 @@ namespace CloudRP.ChatSystem
                 prefix += adminRank + "!{red}" + $"{userData.adminName}" + "!{white} ";
             } else
             {
-                prefix += $"{userData.username}";
+                prefix += $"{characterData.character_name.Replace("_", " ")}";
             }
 
             NAPI.Chat.SendChatMessageToAll(prefix + suffix + message);

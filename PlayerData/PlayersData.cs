@@ -36,6 +36,7 @@ namespace CloudRP.PlayerData
         public static void setPlayerCharacterData(Player player, DbCharacter character)
         {
             player.SetData(_sharedCharacterDataIdentifier, character);
+            Console.WriteLine("charid" + character.character_id);
 
             // Explicitly specify data as it will be sent freely to other clients
             SharedDataCharacter data = new SharedDataCharacter
@@ -57,22 +58,6 @@ namespace CloudRP.PlayerData
         {
             DbCharacter character= player.GetData<DbCharacter>(_sharedCharacterDataIdentifier);
             return character;
-        }
-
-        public static void togglePlayerChat(Player player, bool toggle)
-        {
-            string mutationName = "setChatStatus";
-
-            player.TriggerEvent("client:recieveUiMutation", mutationName, "toggle", toggle);
-        }
-
-        [ServerEvent(Event.PlayerDisconnected)]
-        public void saveOnDisconnect(Player player)
-        {
-            
-
-
-
         }
     }
 }

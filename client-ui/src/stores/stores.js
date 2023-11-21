@@ -5,21 +5,26 @@ import Vuex from 'vuex';
 
 const store = new Vuex.Store({
 	state: {
-		playerInfo: {
-			characters: [],
-			notifications: [],
-			creds: [],
+		uiStates: {
+			characterSelection: false,
 			chatEnabled: false
 		}
 	},
 	getters: {
 		getChatStatus: (state, getters) => {
-			return state.playerInfo.chatEnabled;
+			return state.uiStates.chatEnabled;
+		},
+		getCharacterSelectionStatus: (state, getters) => {
+			return state.uiStates.characterSelection;
 		}
 	},
 	mutations: {
-		setChatStatus: (state, {toggle}) => {
-			state.playerInfo.chatEnabled = toggle;
+		setChatStatus: (state, { toggle }) => {
+			state.uiStates.chatEnabled = toggle;
+			return;
+		},
+		setCharacterSelection: (state, { toggle }) => {
+			state.uiStates.characterSelection = toggle;
 			return;
 		}
 	}

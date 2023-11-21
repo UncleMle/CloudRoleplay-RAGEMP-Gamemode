@@ -10,19 +10,18 @@ let isFunctionPressed: boolean;
 class BrowserSystem {
 	public _browserBaseUrl: string = BrowserEnv.development;
 	public static _browserInstance: BrowserMp;
-	public clientAuthenticated: boolean;
 	public static IdleDate: Date = new Date();
 
 	constructor() { 
 		BrowserSystem._browserInstance = mp.browsers.new(this._browserBaseUrl);
 		mp.players.local.browserInstance = BrowserSystem._browserInstance;
-		this.clientAuthenticated = mp.players.local.getVariable("client:authStatus");
 
 		mp.events.add("guiReady", BrowserSystem.onGuiReady);
 		mp.events.add("browser:pushRouter", BrowserSystem.handleBrowserPush);
 		mp.events.add("render", BrowserSystem.handleRender);
 		mp.events.add("client:recieveUiMutation", BrowserSystem.handleMutationChange);
 		mp.events.add("browser:sendObject", BrowserSystem.handleBrowserObject);
+		mp.events.add("browser:sendString", BrowserSystem.handleBrowserString);
 
 		mp.keys.bind(F2, false, function () {
 			isFunctionPressed = !isFunctionPressed;
@@ -58,12 +57,16 @@ class BrowserSystem {
 		if (BrowserSystem._browserInstance) {
 			BrowserSystem._browserInstance.execute(`store.commit('${mutationName}', {
 						${key}: ${value}
-					})`);
+			})`);
 		}
 	}
 
 	public static handleBrowserObject(eventName: string, _object: object) {
 		mp.events.callRemote(eventName, _object);
+	}
+
+	public static handleBrowserString(eventName: string, _string: string) {
+		mp.events.callRemote(eventName, _string);
 	}
 
 	public static disableAfkTimer() {

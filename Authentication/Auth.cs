@@ -13,6 +13,7 @@ using System.Collections;
 using CloudRP.Admin;
 using CloudRP.Utils;
 using CloudRP.PlayerData;
+using CloudRP.Character;
 
 
 namespace CloudRP.Authentication
@@ -78,6 +79,35 @@ namespace CloudRP.Authentication
 
         }
 
+        [RemoteEvent("server:recieveCharacterName")]
+        public void onEnterCharacterName(Player player, string name)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+            DbCharacter character = null;
+
+            if(userData != null)
+            {
+                using (DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    character = dbContext.characters.Where(b => b.character_name == name && b.owner_id == userData.accountId).FirstOrDefault();
+
+                    if (character == null)
+                    {
+                        uiHandling.sendMutationToClient(player, "setCharacterSelection", "toggle", false);
+                        return;
+                    }
+
+                    PlayersData.setPlayerCharacterData(player, character);
+                    welcomeAndSpawnPlayer(player, userData);
+                }
+            }
+            else
+            {
+                uiHandling.sendMutationToClient(player, "setCharacterSelection", "toggle", false);
+            }
+            
+        }
+
         public static void setUserToCharacterSelection(Player player, User userData)
         {
             if (userData == null) return;
@@ -85,6 +115,36 @@ namespace CloudRP.Authentication
             userData.isOnCharacterCreation = true;
 
             PlayersData.setPlayerAccountData(player, userData);
+
+            Console.WriteLine($"{userData.username} (#{userData.accountId}) has entered character selection process.");
+
+            string mutationName = "setCharacterSelection";
+
+            uiHandling.sendMutationToClient(player, mutationName, "toggle", true);
+        }
+
+        public static void createCharacter()
+        {
+
+            using (DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                DbCharacter character = new DbCharacter 
+                {
+                    character_health = 100,
+                    character_isbanned = 0,
+                    character_name = "Alex_Dover",
+                    CreatedDate = DateTime.Now,
+                    last_login = DateTime.Now,
+                    money_amount = 12000,
+                    position_x = 0,
+                    position_y = 0,
+                    UpdatedDate = DateTime.Now,
+                    play_time_minutes = 0,
+                };
+
+                dbContext.characters.Add(character);
+                dbContext.SaveChanges();
+            }
 
         }
 
