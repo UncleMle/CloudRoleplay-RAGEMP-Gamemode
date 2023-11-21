@@ -12,5 +12,15 @@ export interface UserData {
 	adminName: string,
 	playerId: number,
 	username: string,
-	isFlying: boolean
+	isFlying: boolean,
+	isFrozen: boolean
+}
+
+export interface Flight {
+	flying: boolean,
+	f: number,
+	w: number,
+	h: number,
+	l: number,
+	point_distance: number
 }

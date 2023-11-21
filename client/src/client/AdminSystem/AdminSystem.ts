@@ -20,7 +20,6 @@ class AdminSystem {
 		if (entity.type != "player") return;
 
 		if (value.isFlying) {
-			mp.console.logInfo("Entity alpha set to zero");
 			entity.setAlpha(0);
 		} else {
 			entity.setAlpha(255);

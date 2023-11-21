@@ -140,16 +140,55 @@ namespace CloudRP.Admin
                 if(userData.isFlying)
                 {
                     AdminUtils.staffSay(player, $"Enabled fly");
+                    player.TriggerEvent("admin:startFly");
                 } else
                 {
                     AdminUtils.staffSay(player, $"Disabled fly");
+                    player.TriggerEvent("admin:endFly");
                 }
 
                 PlayersData.setPlayerAccountData(player, userData);
             }
             else AdminUtils.sendNoAuth(player);
-
-
         }
+
+        [Command("freeze", "~r~/freeze [nameOrId]")]
+        public void freezePlayer(Player player, string nameOrId)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if (AdminUtils.checkUserData(userData))
+            {
+                Player getPlayer = CommandUtils.getPlayerFromNameOrId(player, nameOrId);
+
+                if (getPlayer != null)
+                {
+                    User targetPlayerData = PlayersData.getPlayerAccountData(getPlayer);
+
+                    if(targetPlayerData.isFlying || targetPlayerData.adminDuty)
+                    {
+                        CommandUtils.errorSay(player, "You cannot freeze a player that is flying or in admin duty.");
+                        return;
+                    }
+                    
+                    targetPlayerData.isFrozen = targetPlayerData.isFrozen = !targetPlayerData.isFrozen;
+                    string isFrozen = targetPlayerData.isFrozen ? "froze" : "unfroze";
+
+                    PlayersData.setPlayerAccountData(getPlayer, targetPlayerData);
+
+                    if(!targetPlayerData.isFrozen)
+                    {
+                        getPlayer.TriggerEvent("admin:events:stopFly");
+                    }
+
+                    AdminUtils.staffSay(player, $"You {isFrozen} {targetPlayerData.username}");
+                    AdminUtils.staffSay(getPlayer, $"You were {isFrozen+"n"} by Admin {userData.adminName}");
+                }
+
+
+            }
+            else AdminUtils.sendNoAuth(player);
+        }
+
     }
 }

@@ -19,7 +19,7 @@ namespace CloudRP.Utils
 
         public static void sendMessageToAllStaff(string message)
         {
-            Dictionary<Player, User> onlineStaff = AdminUtils.gatherStaff();
+            Dictionary<Player, User> onlineStaff = gatherStaff();
 
             foreach (KeyValuePair<Player, User> entry in onlineStaff)
             {

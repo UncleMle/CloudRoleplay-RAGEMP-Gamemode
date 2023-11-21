@@ -9,5 +9,6 @@ namespace CloudRP.Utils
         public static string CloudBlue = "!{#67b1e6}";
         public static string White = "!{white}";
         public static string CloudRP = CloudBlue + "[CloudRP] " + White;
+        public static string error = "!{red}[ERROR]!{white} ";
     }
 }

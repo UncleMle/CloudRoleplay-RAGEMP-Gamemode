@@ -26,6 +26,7 @@ namespace CloudRP.PlayerData
                 playerId = userData.playerId,
                 username = userData.username,
                 isFlying = userData.isFlying,
+                isFrozen = userData.isFrozen,
             };
 
             player.SetSharedData(_sharedAccountDataIdentifier, data);

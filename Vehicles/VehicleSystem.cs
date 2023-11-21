@@ -98,6 +98,8 @@ namespace CloudRP.Vehicles
                 findVehicle.position_y = vehicle.Position.Y;
                 findVehicle.position_z = vehicle.Position.Z;
 
+                findVehicle.rotation = vehicle.Rotation.Z;
+
                 dbContext.SaveChanges();
             }
 
