@@ -2,29 +2,29 @@ import Camera from "../CameraSystem/Camera";
 import toggleChat from "../PlayerMethods/ToggleChat";
 
 class PlayerAuthentication {
-	public LoginCamera: Camera;
+	public static LoginCamera: Camera;
 
 
 	constructor() {
-		this.LoginCamera = new Camera('loginCam', new mp.Vector3(-79.9, -1079.5, 310.2), new mp.Vector3(-74.8, -819.2, 326.2));
+		PlayerAuthentication.LoginCamera = new Camera('loginCam', new mp.Vector3(-79.9, -1079.5, 310.2), new mp.Vector3(-74.8, -819.2, 326.2));
 
-		mp.events.add({
-			"playerReady": () => {
-				mp.events.call("client:loginStart");
-			},
-			"client:loginStart": () => {
-				mp.events.call("browser:pushRouter", "login");
-				this.LoginCamera.startMoving(7100.0);
-				this.LoginCamera.setActive();
-				this.freezeAndBlurClient();
-			},
-			"client:loginEnd": () => {
-				this.endClientLogin();
-			}
-		})
+		mp.events.add("playerReady", PlayerAuthentication.handlePlayerReady);
+		mp.events.add("client:loginStart", PlayerAuthentication.handleLoginStart);
+		mp.events.add("client:loginEnd", PlayerAuthentication.endClientLogin);
 	}
 
-	freezeAndBlurClient() {
+	public static handleLoginStart() {
+		mp.events.call("browser:pushRouter", "login");
+	    PlayerAuthentication.LoginCamera.startMoving(7100.0);
+		PlayerAuthentication.LoginCamera.setActive();
+		PlayerAuthentication.freezeAndBlurClient();
+	}
+
+	public static handlePlayerReady() {
+		mp.events.call("client:loginStart");
+	}
+
+	public static freezeAndBlurClient() {
 		mp.game.ui.displayRadar(false);
 		mp.gui.cursor.show(true, true);
 		mp.players.local.position = new mp.Vector3(-811.6, 174.9, 76.8);
@@ -35,13 +35,13 @@ class PlayerAuthentication {
 		mp.players.local.freezePosition(true);
 	}
 
-	endClientLogin() {
+	public static endClientLogin() {
 		mp.events.call("browser:pushRouter", "/");
 		mp.game.ui.displayRadar(true);
 		mp.players.local.setAlpha(255);
 		mp.game.graphics.transitionFromBlurred(100);
 		mp.players.local.freezePosition(false);
-		this.LoginCamera.delete();
+		PlayerAuthentication.LoginCamera.delete();
 		toggleChat(true);
 	}
 }

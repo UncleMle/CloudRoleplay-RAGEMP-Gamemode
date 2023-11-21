@@ -44,5 +44,14 @@ namespace CloudRP.PlayerData
 
             player.TriggerEvent("client:recieveUiMutation", mutationName, "toggle", toggle);
         }
+
+        [ServerEvent(Event.PlayerDisconnected)]
+        public void saveOnDisconnect(Player player)
+        {
+            
+
+
+
+        }
     }
 }

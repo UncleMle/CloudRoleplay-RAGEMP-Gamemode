@@ -96,7 +96,7 @@ namespace CloudRP.Authentication
         {
             player.TriggerEvent("client:loginEnd");
 
-            if (user.adminLevel > 0)
+            if (user.adminLevel > (int)AdminRanks.Admin_None)
             {
                 string colouredRank = AdminUtils.getColouredAdminRank(user);
 

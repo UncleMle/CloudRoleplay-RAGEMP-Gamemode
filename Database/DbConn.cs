@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using CloudRP.Authentication;
+using CloudRP.Character;
 using CloudRP.Vehicles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -20,6 +21,7 @@ namespace CloudRP.Database
 
         public DbSet<Account> accounts { get; set; }
         public DbSet<DbVehicle> vehicles { get; set; }
+        public DbSet<DbCharacter> characters { get; set; }
 
     }
 
