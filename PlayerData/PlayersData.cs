@@ -36,7 +36,6 @@ namespace CloudRP.PlayerData
         public static void setPlayerCharacterData(Player player, DbCharacter character)
         {
             player.SetData(_sharedCharacterDataIdentifier, character);
-            Console.WriteLine("charid" + character.character_id);
 
             // Explicitly specify data as it will be sent freely to other clients
             SharedDataCharacter data = new SharedDataCharacter

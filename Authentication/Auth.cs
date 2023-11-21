@@ -106,6 +106,7 @@ namespace CloudRP.Authentication
             }
 
             player.Position = new Vector3(characterData.position_x, characterData.position_y, characterData.position_z);
+            player.Health = characterData.character_health;
 
             NAPI.Chat.SendChatMessageToPlayer(player, Chat.CloudRP + $"Welcome back to Cloud RP {user.username}");
 

@@ -11,10 +11,14 @@ class BrowserSystem {
 	public _browserBaseUrl: string = BrowserEnv.development;
 	public static _browserInstance: BrowserMp;
 	public static IdleDate: Date = new Date();
+	public static LocalPlayer: PlayerMp;
 
 	constructor() { 
 		BrowserSystem._browserInstance = mp.browsers.new(this._browserBaseUrl);
-		mp.players.local.browserInstance = BrowserSystem._browserInstance;
+		BrowserSystem.LocalPlayer = mp.players.local;
+
+		BrowserSystem.LocalPlayer.browserInstance = BrowserSystem._browserInstance;
+		BrowserSystem.LocalPlayer.browserRouter = "/";
 
 		mp.events.add("guiReady", BrowserSystem.onGuiReady);
 		mp.events.add("browser:pushRouter", BrowserSystem.handleBrowserPush);
@@ -41,6 +45,7 @@ class BrowserSystem {
 	}
 
 	public static handleBrowserPush(browserName: string) {
+		BrowserSystem.LocalPlayer.browserRouter = browserName;
 		BrowserSystem._browserInstance.execute(`router.push('${browserName}')`);
 	}
 
@@ -50,6 +55,10 @@ class BrowserSystem {
 
 		if (BrowserSystem._browserInstance && !getUserCharacterData()) {
 			toggleChat(false);
+		}
+
+		if (BrowserSystem.LocalPlayer.browserRouter == "login" && getUserCharacterData()) {
+			BrowserSystem.handleBrowserPush("/");
 		}
 	}
 

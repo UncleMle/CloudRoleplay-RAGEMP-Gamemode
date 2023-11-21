@@ -1,6 +1,7 @@
 import Camera from "../CameraSystem/Camera";
 import toggleChat from "../PlayerMethods/ToggleChat";
 import getUserCharacterData from "../PlayerMethods/getUserCharacterData";
+import BrowserSystem from "../BrowserSystem/BrowserSystem";
 
 class PlayerAuthentication {
 	public static LoginCamera: Camera;
@@ -12,7 +13,7 @@ class PlayerAuthentication {
 		PlayerAuthentication.LocalPlayer = mp.players.local;
 
 		mp.events.add("render", PlayerAuthentication.handleUnauthed);
-		mp.events.add("playerReady", PlayerAuthentication.handlePlayerReady);
+		mp.events.add("playerReady", PlayerAuthentication.handleLoginStart);
 		mp.events.add("client:loginStart", PlayerAuthentication.handleLoginStart);
 		mp.events.add("client:loginEnd", PlayerAuthentication.endClientLogin);
 	}
@@ -24,14 +25,10 @@ class PlayerAuthentication {
 	}
 
 	public static handleLoginStart() {
-		mp.events.call("browser:pushRouter", "login");
-	    PlayerAuthentication.LoginCamera.startMoving(7100.0);
+		BrowserSystem.handleBrowserPush("login");
+		PlayerAuthentication.LoginCamera.startMoving(7100.0);
 		PlayerAuthentication.LoginCamera.setActive();
 		PlayerAuthentication.freezeAndBlurClient();
-	}
-
-	public static handlePlayerReady() {
-		mp.events.call("client:loginStart");
 	}
 
 	public static freezeAndBlurClient() {

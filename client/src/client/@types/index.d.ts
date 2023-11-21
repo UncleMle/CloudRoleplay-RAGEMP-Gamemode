@@ -1,6 +1,6 @@
 declare global {
 	interface PlayerMp {
-		customProperty: number;
+		browserRouter: string;
 		browserInstance: BrowserMp;
 	}
 }

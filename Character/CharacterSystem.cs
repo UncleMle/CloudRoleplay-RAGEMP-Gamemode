@@ -41,12 +41,11 @@ namespace CloudRP.Character
             foreach (Player player in onlinePlayers)
             {
                 saveCharacterPosition(player);
-
             }
         }
 
         [ServerEvent(Event.PlayerDisconnected)]
-        public void onPlayerDisconect(Player player)
+        public void onPlayerDisconect(Player player, DisconnectionType type, string reason)
         {
             saveCharacterPosition(player);
         }
@@ -63,6 +62,7 @@ namespace CloudRP.Character
                 characterData.position_x = player.Position.X;
                 characterData.position_y = player.Position.Y;
                 characterData.position_z = player.Position.Z;
+                characterData.character_health = player.Health;
 
                 dbContext.characters.Update(characterData);
                 dbContext.SaveChanges();
