@@ -48,7 +48,7 @@ class AdminFly {
 		AdminFly.LocalPlayer.setInvincible(false);
 
 		mp.vehicles.forEach(veh => {
-			veh.setNoCollision(mp.players.local.handle, false);
+			veh.setNoCollision(mp.players.local.handle, true);
 		});
 	}
 

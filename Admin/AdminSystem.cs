@@ -50,19 +50,7 @@ namespace CloudRP.Admin
                 User user = item.Value;
                 string duty = user.adminDuty ? "[!{green}On-Duty!{white}]" : "[!{red}Off-Duty!{white}]";
 
-                NAPI.Chat.SendChatMessageToPlayer(player, index + $". {user.username} {duty}");
-            }
-        }
-
-        [Command("client", "~r~/client [ename]")]
-        public void eventTrigger(Player player, string eventName)
-        {
-            if (eventName == null) return;
-
-            if (PlayersData.getPlayerAccountData(player).adminLevel > 7)
-            {
-                player.TriggerEvent(eventName);
-                AdminUtils.staffSay(player, $"Triggered clientside event {eventName}");
+                AdminUtils.staffSay(player, index + $". {user.adminName} {duty}");
             }
         }
 
@@ -70,7 +58,7 @@ namespace CloudRP.Admin
         public void adminChat(Player player, string message)
         {
             User userData = PlayersData.getPlayerAccountData(player);
-            if (userData.adminLevel > 0)
+            if (userData.adminLevel > (int)AdminRanks.Admin_None)
             {
                 Dictionary<Player, User> onlineAdmins = AdminUtils.gatherStaff();
 
@@ -133,7 +121,7 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if(AdminUtils.checkUserData(userData))
+            if(AdminUtils.checkUserData(player, userData))
             {
                 userData.isFlying = !userData.isFlying;
 
@@ -149,7 +137,6 @@ namespace CloudRP.Admin
 
                 PlayersData.setPlayerAccountData(player, userData);
             }
-            else AdminUtils.sendNoAuth(player);
         }
 
         [Command("freeze", "~r~/freeze [nameOrId]")]
@@ -157,7 +144,7 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (AdminUtils.checkUserData(userData))
+            if (AdminUtils.checkUserData(player, userData))
             {
                 Player getPlayer = CommandUtils.getPlayerFromNameOrId(player, nameOrId);
 
@@ -187,7 +174,18 @@ namespace CloudRP.Admin
 
 
             }
-            else AdminUtils.sendNoAuth(player);
+        }
+
+        [Command("tpm", "~r~/tpm")]
+        public void onTeleportToWay(Player player)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(AdminUtils.checkUserData(player, userData))
+            {
+                player.TriggerEvent("admin:events:teleportWay");
+                AdminUtils.staffSay(player, "Teleported to waypoint");
+            }
         }
 
     }
