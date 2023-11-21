@@ -66,19 +66,6 @@ namespace CloudRP.Authentication
             player.TriggerEvent("client:loginStart");
         }
 
-        void welcomeAndSpawnPlayer(Player player, User user)
-        {
-            player.TriggerEvent("client:loginEnd");
-
-            if (user.adminLevel > (int)AdminRanks.Admin_None)
-            {
-                string colouredRank = AdminUtils.getColouredAdminRank(user);
-                NAPI.Chat.SendChatMessageToPlayer(player, "!{red}[STAFF]!{white} " + $"Welcome {colouredRank}" + user.adminName);
-            }
-            NAPI.Chat.SendChatMessageToPlayer(player, Chat.CloudRP + $"Welcome back to Cloud RP {user.username}");
-
-        }
-
         [RemoteEvent("server:recieveCharacterName")]
         public void onEnterCharacterName(Player player, string name)
         {
@@ -98,7 +85,7 @@ namespace CloudRP.Authentication
                     }
 
                     PlayersData.setPlayerCharacterData(player, character);
-                    welcomeAndSpawnPlayer(player, userData);
+                    welcomeAndSpawnPlayer(player, userData, character);
                 }
             }
             else
@@ -106,6 +93,22 @@ namespace CloudRP.Authentication
                 uiHandling.sendMutationToClient(player, "setCharacterSelection", "toggle", false);
             }
             
+        }
+
+        void welcomeAndSpawnPlayer(Player player, User user, DbCharacter characterData)
+        {
+            player.TriggerEvent("client:loginEnd");
+
+            if (user.adminLevel > (int)AdminRanks.Admin_None)
+            {
+                string colouredRank = AdminUtils.getColouredAdminRank(user);
+                NAPI.Chat.SendChatMessageToPlayer(player, "!{red}[STAFF]!{white} " + $"Welcome {colouredRank}" + user.adminName);
+            }
+
+            player.Position = new Vector3(characterData.position_x, characterData.position_y, characterData.position_z);
+
+            NAPI.Chat.SendChatMessageToPlayer(player, Chat.CloudRP + $"Welcome back to Cloud RP {user.username}");
+
         }
 
         public static void setUserToCharacterSelection(Player player, User userData)
