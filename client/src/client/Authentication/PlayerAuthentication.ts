@@ -47,7 +47,6 @@ class PlayerAuthentication {
 
 	public static endClientLogin() {
 		mp.console.logInfo("" + JSON.stringify(getUserCharacterData()));
-		if (!getUserCharacterData()) return;
 
 		mp.events.call("browser:pushRouter", "/");
 		mp.game.ui.displayRadar(true);

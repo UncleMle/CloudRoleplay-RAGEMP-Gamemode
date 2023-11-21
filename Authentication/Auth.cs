@@ -123,6 +123,7 @@ namespace CloudRP.Authentication
             uiHandling.sendMutationToClient(player, mutationName, "toggle", true);
         }
 
+        /* Dummy Data
         public static void createCharacter()
         {
 
@@ -147,6 +148,7 @@ namespace CloudRP.Authentication
             }
 
         }
+        */
 
     }
 
