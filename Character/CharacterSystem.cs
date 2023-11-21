@@ -40,21 +40,32 @@ namespace CloudRP.Character
 
             foreach (Player player in onlinePlayers)
             {
-                User userData = PlayersData.getPlayerAccountData(player);
-                DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+                saveCharacterPosition(player);
 
-                if (userData == null || characterData == null) return;
+            }
+        }
 
-                using (DefaultDbContext dbContext = new DefaultDbContext())
-                {
-                    characterData.position_x = player.Position.X;
-                    characterData.position_y = player.Position.Y;
-                    characterData.position_z = player.Position.Z;
+        [ServerEvent(Event.PlayerDisconnected)]
+        public void onPlayerDisconect(Player player)
+        {
+            saveCharacterPosition(player);
+        }
 
-                    dbContext.characters.Update(characterData);
-                    dbContext.SaveChanges();
-                }
+        public static void saveCharacterPosition(Player player)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
+            if (userData == null || characterData == null) return;
+
+            using (DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                characterData.position_x = player.Position.X;
+                characterData.position_y = player.Position.Y;
+                characterData.position_z = player.Position.Z;
+
+                dbContext.characters.Update(characterData);
+                dbContext.SaveChanges();
             }
         }
     }
