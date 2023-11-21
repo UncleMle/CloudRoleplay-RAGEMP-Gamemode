@@ -6,10 +6,10 @@
                 </li>
             </ul>
             <input v-show="showInput" v-model="inputText" ref="input" id="chat_msg" type="text" />
-            <li v-for="(item, cmd) in queryCmds" :key="'B' + cmd" class="suggestionDropDown">
-                <ul class="itemSel" v-html="item"></ul>
-            </li>
-        </div>
+    <li v-for="(item, cmd) in queryCmds" :key="'B' + cmd" class="suggestionDropDown">
+        <ul class="itemSel" v-html="item"></ul>
+    </li>
+    </div>
     </div>
 </template>
 
@@ -126,105 +126,105 @@ export default {
 
 
 <style scoped>
-*,
-body,
-html {
-    opacity: 1;
-    padding: 0;
-    margin: 0;
-    font-family: Myriad Pro, Segoe UI, Verdana, sans-serif;
-    font-weight: 510;
-    font-size: 16px;
-    background-color: transparent;
-    user-select: none;
-    -webkit-touch-callout: none;
-    /* iOS Safari */
-    -webkit-user-select: none;
-    /* Safari, Chrome, Opera, Samsung */
-    -khtml-user-select: none;
-    /* Konqueror HTML */
-    -moz-user-select: none;
-    /* Firefox */
-    -ms-user-select: none;
-    /* Edge, IE */
-    user-select: none;
-    /* Modern browsers */
-    outline: none;
-}
-
-#chat,
-a,
-body,
-html {
-    color: #fff;
-}
-
-body,
-html {
-    -webkit-font-smoothing: antialiased;
-    overflow: hidden;
-    -webkit-transition: all 0.4s;
-    -webkit-user-select: none;
-}
-
-#chat {
-    width: 800px;
-    line-height: 24px;
-    font-weight: 700;
-    text-shadow: -33px -33px 2 #000, 33px -33px 2 #000, -33px 33px 2 #000, 33px 33px 2 #000;
-    text-shadow: 0 0 5px #000000, 0 0 6px #000000;
-    font-family: "Arial", sans-serif;
-    font-size: 16px;
-    margin-left: 15px;
-}
-
-@media screen and (min-height: 1080px) {
-    #chat {
-        font-size: 18px !important;
-        font-weight: 700;
+    *,
+    body,
+    html {
+        opacity: 1;
+        padding: 0;
+        margin: 0;
+        font-family: Myriad Pro, Segoe UI, Verdana, sans-serif;
+        font-weight: 510;
+        font-size: 16px;
+        background-color: transparent;
+        user-select: none;
+        -webkit-touch-callout: none;
+        /* iOS Safari */
+        -webkit-user-select: none;
+        /* Safari, Chrome, Opera, Samsung */
+        -khtml-user-select: none;
+        /* Konqueror HTML */
+        -moz-user-select: none;
+        /* Firefox */
+        -ms-user-select: none;
+        /* Edge, IE */
+        user-select: none;
+        /* Modern browsers */
+        outline: none;
     }
-}
 
-#chat ul#chat_messages {
-    height: 285px;
-    margin-top: 1vh;
-    transform: rotate(180deg);
-    padding: 10px 20px;
-    list-style-type: none;
-    overflow: auto;
-}
+    #chat,
+    a,
+    body,
+    html {
+        color: #fff;
+    }
 
-#chat ul#chat_messages>li {
-    transform: rotate(-180deg);
-}
+    body,
+    html {
+        -webkit-font-smoothing: antialiased;
+        overflow: hidden;
+        -webkit-transition: all 0.4s;
+        -webkit-user-select: none;
+    }
 
-#chat input#chat_msg {
-    background-color: rgba(0, 0, 0, 0.425);
-    color: white;
-    outline: none;
-    border-left: none;
-    border-right: none;
-    border-top: none;
-    border-bottom: none;
-    width: 800px;
-    height: 3.12em;
-    padding: 0 0.5em 0 0.5em;
-    margin-top: 0.5em;
-}
+    #chat {
+        width: 800px;
+        line-height: 24px;
+        font-weight: 700;
+        text-shadow: -33px -33px 2 #000, 33px -33px 2 #000, -33px 33px 2 #000, 33px 33px 2 #000;
+        text-shadow: 0 0 5px #000000, 0 0 6px #000000;
+        font-family: "Arial", sans-serif;
+        font-size: 16px;
+        margin-left: 15px;
+    }
 
-.suggestionDropDown {
-    padding: 0 0.5em 0 0.5em;
-    background-color: rgba(0, 0, 0, 0.425);
-    color: rgb(169, 167, 167);
-    border-left: solid rgb(121, 121, 121) 3px;
-}
+    @media screen and (min-height: 1080px) {
+        #chat {
+            font-size: 18px !important;
+            font-weight: 700;
+        }
+    }
 
-::-webkit-scrollbar {
-    width: 0.4vw;
-}
+    #chat ul#chat_messages {
+        height: 285px;
+        margin-top: 1vh;
+        transform: rotate(180deg);
+        padding: 10px 20px;
+        list-style-type: none;
+        overflow: auto;
+    }
 
-::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.425);
-    border-radius: 20px;
-}
+        #chat ul#chat_messages > li {
+            transform: rotate(-180deg);
+        }
+
+    #chat input#chat_msg {
+        background-color: rgba(0, 0, 0, 0.425);
+        color: white;
+        outline: none;
+        border-left: none;
+        border-right: none;
+        border-top: none;
+        border-bottom: none;
+        width: 800px;
+        height: 3.12em;
+        padding: 0 0.5em 0 0.5em;
+        margin-top: 0.5em;
+    }
+
+    .suggestionDropDown {
+        padding: 0 0.5em 0 0.5em;
+        background-color: rgba(0, 0, 0, 0.425);
+        color: rgb(169, 167, 167);
+        border-left: solid rgb(121, 121, 121) 3px;
+    }
+
+    ::-webkit-scrollbar {
+        width: 0.4vw;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.425);
+        border-radius: 20px;
+    }
 </style>

@@ -44,19 +44,18 @@ class PlayerAuthentication {
 
 	public static endClientLogin() {
 		mp.console.logInfo("" + JSON.stringify(getUserCharacterData()));
-
-		mp.events.call("browser:pushRouter", "/");
 		mp.game.ui.displayRadar(true);
 		PlayerAuthentication.LocalPlayer.setAlpha(255);
 		mp.game.graphics.transitionFromBlurred(100);
 		mp.gui.cursor.show(false, false);
 		PlayerAuthentication.LocalPlayer.freezePosition(false);
 		toggleChat(true);
-
+		BrowserSystem.handleBrowserPush("/");
 
 		if (PlayerAuthentication.LoginCamera) {
 			PlayerAuthentication.LoginCamera.delete();
 		}
+
 	}
 }
 

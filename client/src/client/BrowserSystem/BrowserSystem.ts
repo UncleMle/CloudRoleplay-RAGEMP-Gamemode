@@ -52,13 +52,10 @@ class BrowserSystem {
 	public static handleRender() {
 		BrowserSystem.disableAfkTimer();
 		BrowserSystem.disableDefaultGuiElements();
+		mp.console.logInfo(BrowserSystem.LocalPlayer.browserRouter);
 
 		if (BrowserSystem._browserInstance && !getUserCharacterData()) {
 			toggleChat(false);
-		}
-
-		if (BrowserSystem.LocalPlayer.browserRouter == "login" && getUserCharacterData()) {
-			BrowserSystem.handleBrowserPush("/");
 		}
 	}
 

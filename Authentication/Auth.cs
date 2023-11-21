@@ -24,6 +24,9 @@ namespace CloudRP.Authentication
         public void recieveAuthInfo(Player player, string data)
         {
             UserCredentials userCredentials = JsonConvert.DeserializeObject<UserCredentials>(data);
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if (userData != null) return;
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
@@ -78,12 +81,9 @@ namespace CloudRP.Authentication
                 {
                     character = dbContext.characters.Where(b => b.character_name == name && b.owner_id == userData.accountId).FirstOrDefault();
 
-                    if (character == null)
-                    {
-                        uiHandling.sendMutationToClient(player, "setCharacterSelection", "toggle", false);
-                        return;
-                    }
+                    if (character == null) return;
 
+                    Chat.charSysPrint($"Character {character.character_name} has logged in (#{character.character_id})");
                     PlayersData.setPlayerCharacterData(player, character);
                     welcomeAndSpawnPlayer(player, userData, character);
                 }

@@ -1,14 +1,20 @@
-import { createApp } from 'vue';
-import App from './App.vue';
-import router from './router.js';
-import ChatBox from './components/ui/ChatBox.vue';
-import stores from './stores/stores';
+import Vue from 'vue'
+import App from './App.vue'
+import router from './router'
 
 import './assets/styles.css';
 
-createApp(App).use(router).use(stores).mount('#app')
+// eslint-disable-next-line
+import store from './stores/store'
+
+Vue.config.productionTip = false;
+
+const app = new Vue({
+    router,
+    store,
+    render: h => h(App)
+}).$mount('#app');
 
 
-global.router = router;
-global.chat = ChatBox;
-global.store = stores;
+global.router = app.$router;
+global.store = app.$store;

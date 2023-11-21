@@ -15,7 +15,8 @@ namespace CloudRP.Utils
         public static void charSysPrint(string str)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(_c_CharacterSystem+str);
+            Console.WriteLine(_c_CharacterSystem + str);
+            Console.ForegroundColor = ConsoleColor.White;
         }
     }
 }

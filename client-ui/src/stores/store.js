@@ -1,7 +1,9 @@
+import Vue from 'vue';
 import Vuex from 'vuex';
 
 /* eslint-disable */
 
+Vue.use(Vuex);
 
 const store = new Vuex.Store({
 	state: {
@@ -29,5 +31,5 @@ const store = new Vuex.Store({
 		}
 	}
 });
-
 export default store;
+
