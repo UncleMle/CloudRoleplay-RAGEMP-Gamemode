@@ -1,7 +1,9 @@
 import toggleChat from "../PlayerMethods/ToggleChat";
 import { BrowserEnv } from "../enums";
 import { F2 } from './ClientButtons';
-import { _REMOVE_TIMER_NATIVE, _sharedCharacterDataIdentifier } from '../Constants/Constants';
+import { _REMOVE_TIMER_NATIVE } from '../Constants/Constants';
+import getUserCharacterData from "../PlayerMethods/getUserCharacterData";
+
 
 let isFunctionPressed: boolean;
 
@@ -47,7 +49,7 @@ class BrowserSystem {
 		BrowserSystem.disableAfkTimer();
 		BrowserSystem.disableDefaultGuiElements();
 
-		if (BrowserSystem._browserInstance && !mp.players.local.getVariable(_sharedCharacterDataIdentifier)) {
+		if (BrowserSystem._browserInstance && !getUserCharacterData()) {
 			toggleChat(false);
 		}
 	}

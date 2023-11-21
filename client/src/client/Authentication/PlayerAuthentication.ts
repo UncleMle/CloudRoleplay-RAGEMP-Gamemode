@@ -1,5 +1,6 @@
 import Camera from "../CameraSystem/Camera";
 import toggleChat from "../PlayerMethods/ToggleChat";
+import getUserCharacterData from "../PlayerMethods/getUserCharacterData";
 
 class PlayerAuthentication {
 	public static LoginCamera: Camera;
@@ -36,6 +37,8 @@ class PlayerAuthentication {
 	}
 
 	public static endClientLogin() {
+		if (!getUserCharacterData()) return;
+
 		mp.events.call("browser:pushRouter", "/");
 		mp.game.ui.displayRadar(true);
 		mp.players.local.setAlpha(255);

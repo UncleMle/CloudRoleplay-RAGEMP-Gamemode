@@ -1,4 +1,5 @@
 ﻿using CloudRP.Authentication;
+using CloudRP.Character;
 using CloudRP.Utils;
 using GTANetworkAPI;
 using System;
@@ -17,7 +18,7 @@ namespace CloudRP.PlayerData
             player.SetData(_sharedAccountDataIdentifier, userData);
 
             // Explicitly specify data as it will be sent freely to other clients
-            SharedData data = new SharedData
+            SharedDataAccount data = new SharedDataAccount
             {
                 accountId = userData.accountId,
                 adminDuty = userData.adminDuty,
@@ -32,10 +33,30 @@ namespace CloudRP.PlayerData
             player.SetSharedData(_sharedAccountDataIdentifier, data);
         }
 
+        public static void setPlayerCharacterData(Player player, DbCharacter character)
+        {
+            player.SetData(_sharedCharacterDataIdentifier, character);
+
+            // Explicitly specify data as it will be sent freely to other clients
+            SharedDataCharacter data = new SharedDataCharacter
+            {
+                characterId = character.character_id,
+                characterName = character.character_name,
+            };
+
+            player.SetSharedData(_sharedCharacterDataIdentifier, data);
+        }
+
         public static User getPlayerAccountData(Player player)
         {
             User playerData = player.GetData<User>(_sharedAccountDataIdentifier);
             return playerData;
+        }
+
+        public static DbCharacter getPlayerCharacterData(Player player)
+        {
+            DbCharacter character= player.GetData<DbCharacter>(_sharedCharacterDataIdentifier);
+            return character;
         }
 
         public static void togglePlayerChat(Player player, bool toggle)

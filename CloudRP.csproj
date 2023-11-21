@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -23,7 +23,6 @@
     <Folder Include="client\src\client\CameraSystem\" />
     <Folder Include="client\src\client\Constants\" />
     <Folder Include="client\src\client\Nametags\" />
-    <Folder Include="client\src\client\PlayerMethods\" />
   </ItemGroup>
 
   <ItemGroup>

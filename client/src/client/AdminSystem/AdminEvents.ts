@@ -1,7 +1,6 @@
 import { UserData } from "../@types";
-import getUserData from "../PlayerMethods/getTargetData";
+import getUserData from "../PlayerMethods/getUserData";
 import sendNotification from "../PlayerMethods/SendNotification";
-import AdminSystem from "./AdminSystem";
 
 class AdminEvents {
 	public static LocalPlayer: PlayerMp;
@@ -15,7 +14,7 @@ class AdminEvents {
 	}
 
 	public static handleRender() {
-		let UserData: UserData | undefined = getUserData(AdminSystem.LocalPlayer);
+		let UserData: UserData | undefined = getUserData();
 		if (!UserData) return;
 
 		if (UserData.isFrozen) {

@@ -16,6 +16,11 @@ export interface UserData {
 	isFrozen: boolean
 }
 
+export interface CharacterData {
+	characterId: number,
+	characterName: string
+}
+
 export interface Flight {
 	flying: boolean,
 	f: number,

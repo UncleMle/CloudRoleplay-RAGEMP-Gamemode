@@ -1,6 +1,6 @@
 import { Flight, UserData } from '@types';
 import { _control_ids, SET_PARTICLE_FX_, _SET_FORCE_PED_FOOTSTEPS_TRACKS } from '../Constants/Constants';
-import getUserData from '../PlayerMethods/getTargetData';
+import getUserData from '../PlayerMethods/getUserData';
 import { AdminRanks } from '../enums';
 
 class AdminFly {
@@ -33,7 +33,7 @@ class AdminFly {
 	}
 
 	public static handleFlyStartup() {
-		let localUserData: UserData | undefined = getUserData(AdminFly.LocalPlayer);
+		let localUserData: UserData | undefined = getUserData();
 		if (!localUserData) return;
 
 		if (localUserData?.adminLevel > AdminRanks.Admin_SeniorSupport) {
@@ -56,7 +56,7 @@ class AdminFly {
 		AdminFly.direction = AdminFly.gameplayCam.getDirection();
 		AdminFly.coords = AdminFly.gameplayCam.getCoord();
 		AdminFly.gameControls = mp.game.controls;
-		let localUserData: UserData | undefined = getUserData(AdminFly.LocalPlayer);
+		let localUserData: UserData | undefined = getUserData();
 
 		if (!localUserData) return;
 

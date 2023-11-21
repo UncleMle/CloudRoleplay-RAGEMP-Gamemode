@@ -58,9 +58,10 @@ namespace CloudRP.Utils
         public string emailAddress { get; set; }
         public bool isFlying { get; set; }
         public bool isFrozen { get; set; } = false;
+        public bool isOnCharacterCreation { get; set; }
     }
 
-    class SharedData
+    class SharedDataAccount
     {
         public int accountId { get; set; }
         public int playerId { get; set; }
@@ -70,5 +71,12 @@ namespace CloudRP.Utils
         public string adminName { get; set; }
         public bool isFlying { get; set; }
         public bool isFrozen {get; set;}
+        public bool isOnCharacterCreation { get; set; }
+    }
+
+    class SharedDataCharacter
+    {
+        public int characterId { get; set; }
+        public string characterName { get; set; }
     }
 }

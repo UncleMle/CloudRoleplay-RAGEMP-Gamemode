@@ -12,14 +12,13 @@ using System.Linq;
 using System.Collections;
 using CloudRP.Admin;
 using CloudRP.Utils;
+using CloudRP.PlayerData;
 
 
 namespace CloudRP.Authentication
 {
     internal class Auth : Script
     {
-        public static readonly Dictionary<Player, User> UserData = new Dictionary<Player, User>();
-
         [RemoteEvent("server:recieveAuthInfo")]
         public void recieveAuthInfo(Player player, string data)
         {
@@ -44,10 +43,8 @@ namespace CloudRP.Authentication
                             emailAddress = findAccount.email_address,
                         };
 
-                        addUserKey(player, user);
-                        welcomeUser(player, user);
-
-                        PlayerData.PlayersData.setPlayerAccountData(player, user);
+                        PlayersData.setPlayerAccountData(player, user);
+                        setUserToCharacterSelection(player, user);
 
                         Console.WriteLine($"User {findAccount.username} (#{findAccount.account_id}) has logged in.");
                     } else {
@@ -62,48 +59,32 @@ namespace CloudRP.Authentication
             }
         }
 
-        [ServerEvent(Event.PlayerDisconnected)]
-        public void OnPlayerDisconnect(Player player, DisconnectionType type, string reason)
-        {
-            removeUserKey(player);
-        }
-
-        void addUserKey(Player player, User user)
-        {
-            if(UserData.ContainsKey(player))
-            {
-                removeUserKey(player);
-            }
-
-            UserData.Add(player, user);
-        }
-
-        void removeUserKey(Player player)
-        {
-            if (UserData.ContainsKey(player))
-            {
-                UserData.Remove(player);
-            }
-        }
-
         [ServerEvent(Event.PlayerConnected)]
         public void onPlayerConnected(Player player)
         {
             player.TriggerEvent("client:loginStart");
         }
 
-        void welcomeUser(Player player, User user)
+        void welcomeAndSpawnPlayer(Player player, User user)
         {
             player.TriggerEvent("client:loginEnd");
 
             if (user.adminLevel > (int)AdminRanks.Admin_None)
             {
                 string colouredRank = AdminUtils.getColouredAdminRank(user);
-
-
                 NAPI.Chat.SendChatMessageToPlayer(player, "!{red}[STAFF]!{white} " + $"Welcome {colouredRank}" + user.adminName);
             }
             NAPI.Chat.SendChatMessageToPlayer(player, Chat.CloudRP + $"Welcome back to Cloud RP {user.username}");
+
+        }
+
+        public static void setUserToCharacterSelection(Player player, User userData)
+        {
+            if (userData == null) return;
+
+            userData.isOnCharacterCreation = true;
+
+            PlayersData.setPlayerAccountData(player, userData);
 
         }
 

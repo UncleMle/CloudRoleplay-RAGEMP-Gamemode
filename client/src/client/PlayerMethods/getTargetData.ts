@@ -1,12 +1,12 @@
 import { UserData } from "../@types";
-import { _sharedCharacterDataIdentifier } from "../Constants/Constants";
+import { _sharedAccountDataIdentifier } from "../Constants/Constants";
 
-const getUserData = (target: PlayerMp): UserData | undefined => {
-	let sharedData = target.getVariable(_sharedCharacterDataIdentifier);
+const getTargetData = (target: PlayerMp): UserData | undefined => {
+	let sharedData = target.getVariable(_sharedAccountDataIdentifier);
 	if (!sharedData) return;
 
 	return sharedData as UserData;
 }
 
 
-export default getUserData;
+export default getTargetData;

@@ -31,18 +31,16 @@ namespace CloudRP.Utils
 
         public static Dictionary<Player, User> gatherStaff()
         {
-            Dictionary<Player, User> onlinePlayers = Auth.UserData;
+            List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
             Dictionary<Player, User> onlineStaff = new Dictionary<Player, User>();
 
 
-            foreach (KeyValuePair<Player, User> entry in onlinePlayers)
+            foreach(Player entry in onlinePlayers)
             {
-                Player playerData = entry.Key;
-                User userData = entry.Value;
-
-                if (userData.adminLevel > 0)
+                User userData = PlayersData.getPlayerAccountData(entry);
+                if (userData != null && userData.adminLevel > (int)AdminRanks.Admin_None)
                 {
-                    onlineStaff.Add(playerData, userData);
+                    onlineStaff.Add(entry, userData);
                 }
             }
 
