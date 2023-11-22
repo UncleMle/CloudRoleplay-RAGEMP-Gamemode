@@ -20,6 +20,13 @@ namespace CloudRP.Authentication
 {
     internal class Auth : Script
     {
+        [ServerEvent(Event.ResourceStart)]
+        public void onResourceStart()
+        {
+            Vector3 spawnPos = new Vector3(DefaultSpawn.pos_x, DefaultSpawn.pos_y, DefaultSpawn.pos_z);
+            NAPI.Server.SetDefaultSpawnLocation(spawnPos, 0);
+        }
+
         [RemoteEvent("server:recieveAuthInfo")]
         public void recieveAuthInfo(Player player, string data)
         {

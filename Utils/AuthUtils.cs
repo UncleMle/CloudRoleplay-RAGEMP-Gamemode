@@ -95,4 +95,11 @@ namespace CloudRP.Utils
         public int characterId { get; set; }
         public string characterName { get; set; }
     }
+
+    public static class DefaultSpawn
+    {
+        public static double pos_x { get { return -1035.7; } }
+        public static double pos_y { get { return -2733.4; } }
+        public static double pos_z { get { return -13.8; } }
+    }
 }

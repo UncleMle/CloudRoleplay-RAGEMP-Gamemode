@@ -28,9 +28,13 @@ namespace CloudRP.Admin
                 if (userData.adminDuty)
                 {
                     AdminUtils.sendMessageToAllStaff($"{AdminUtils.staffPrefix} {userData.adminName} is on duty");
+                    PedHash s = NAPI.Util.PedNameToModel("u_m_y_abner");
+                    player.SetSkin(s);
                 }
                 else
                 {
+                    PedHash s = NAPI.Util.PedNameToModel("mp_m_freemode_01");
+                    player.SetSkin(s);
                     AdminUtils.sendMessageToAllStaff($"{AdminUtils.staffPrefix} {userData.adminName} is off duty");
                 }
 
@@ -204,11 +208,28 @@ namespace CloudRP.Admin
                     AdminUtils.staffSay(player, $"Vehicle with id {vehicleId} deleted .");
                 } else
                 {
-                    AdminUtils.staffSay(player, $"Vehicle with id {vehicleId} coudldn't be found.");
+                    AdminUtils.staffSay(player, $"Vehicle with id {vehicleId} was not found.");
                 }
 
             }
             else AdminUtils.sendNoAuth(player);
+        }
+
+        [Command("gcv")]
+        public void getVehicleInfo(Player player, int vehicleId)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+            if(userData.adminLevel > 0)
+            {
+                DbVehicle foundVehicleData = VehicleSystem.getVehicleDataById(vehicleId);
+
+                if(foundVehicleData != null)
+                {
+                    AdminUtils.staffSay(player, $"Vehicle id: {foundVehicleData.vehicle_id} VehName: {foundVehicleData.vehicle_name}");
+                }
+
+            }
+
         }
 
         [Command("router")]

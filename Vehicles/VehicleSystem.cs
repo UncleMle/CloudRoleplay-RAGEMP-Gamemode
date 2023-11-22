@@ -188,32 +188,38 @@ namespace CloudRP.Vehicles
             return getData;
         }
 
+        public static DbVehicle getVehicleDataById(int vehicleId)
+        {
+            Vehicle vehicle = findVehicleById(vehicleId);
+            DbVehicle findData = getVehicleData(vehicle);
+
+            return findData;
+        }
+
         public static bool deleteVehicleById(int vehicleId)
         {
-            List<Vehicle> onlineVehicles = NAPI.Pools.GetAllVehicles();
-            bool operationSuccess = false;
+            bool returnRes = false;
 
-            foreach(var vehicle in  onlineVehicles)
+            try
             {
-                DbVehicle vehicleData = getVehicleData(vehicle);
+                Vehicle vehicle = findVehicleById(vehicleId);
+                DbVehicle vehicleData = getVehicleDataById(vehicleId);
 
-                if (vehicleData == null) return operationSuccess;
-
-                if (vehicleData.vehicle_id != vehicleId) return operationSuccess;
-
-                using(DefaultDbContext dbContext  = new DefaultDbContext())
+                using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
                     dbContext.vehicles.Remove(vehicleData);
+                    dbContext.SaveChanges();
                 }
 
                 vehicle.SetData<DbVehicle>(_vehicleSharedDataIdentifier, null);
-
                 vehicle.Delete();
-
-                operationSuccess = true;
+                returnRes = true;
+            } catch
+            {
+                returnRes = false;  
             }
-
-            return operationSuccess;
+            
+            return returnRes;
         }
     }
 }
