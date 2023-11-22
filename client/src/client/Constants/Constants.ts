@@ -1,4 +1,7 @@
 export const _REMOVE_TIMER_NATIVE: string = "0xF4F2C0D4EE209E20";
+export const _SWITCH_OUT_PLAYER_NATIVE: string = "0xAAB3200ED59016BC";
+export const _SWITCH_IN_PLAYER_NATIVE: string = "0xD8295AF639FD9CB8";
+export const _IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE: string = "0xD9D2CFFF49FAB35F";
 export const _sharedAccountDataIdentifier: string = "PlayerAccountData";
 export const _sharedCharacterDataIdentifier: string = "PlayerCharacterData";
 export const _TEXT_R_RED = "~r~";

@@ -141,9 +141,8 @@ namespace CloudRP.Authentication
         void welcomeAndSpawnPlayer(Player player, User user, DbCharacter characterData)
         {
             player.TriggerEvent("client:loginEnd");
+            player.TriggerEvent("client:moveSkyCamera", "up", 1);
             uiHandling.togglePlayerChat(player, true);
-            //uiHandling.toggleUiState(player, "state_loginPage", false);
-            //uiHandling.toggleUiState(player, "state_chat", true);
 
             if (user.adminLevel > (int)AdminRanks.Admin_None)
             {
@@ -156,6 +155,8 @@ namespace CloudRP.Authentication
 
             NAPI.Chat.SendChatMessageToPlayer(player, Chat.CloudRP + $"Welcome back to Cloud RP {user.username}");
             uiHandling.pushRouterToClient(player, Browsers.None);
+
+            player.TriggerEvent("client:moveSkyCamera", "down");
         }
 
         public static void setUserToCharacterSelection(Player player, User userData)
