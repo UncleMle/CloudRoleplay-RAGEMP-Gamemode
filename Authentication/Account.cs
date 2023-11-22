@@ -26,6 +26,10 @@ namespace CloudRP.Authentication
 
         public string email_address { get; set; }
 
+        public string user_ip { get; set; }
+
+        public string auto_login_key { get; set; }
+
         public int auto_login { get; set; }
 
         public int admin_status { get; set; }

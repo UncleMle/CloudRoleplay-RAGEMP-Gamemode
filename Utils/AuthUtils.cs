@@ -38,6 +38,22 @@ namespace CloudRP.Utils
 
             return isTheSame;
         }
+
+        public static string generateString(int length)
+        {
+            string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+            string result = "";
+
+            for (int i = 0; i < length; i++)
+            {
+                Random r = new Random();
+                int rInt = r.Next(0, characters.Length);
+                result += characters[rInt];
+            }
+
+            return result;
+        }
     }
 
     class UserCredentials

@@ -6,15 +6,23 @@ import './assets/styles.css';
 
 // eslint-disable-next-line
 import store from './stores/store'
+import { mapMutations, mapActions } from 'vuex';
 
 Vue.config.productionTip = false;
 
 const app = new Vue({
-    router,
-    store,
-    render: h => h(App)
-}).$mount('#app');
+  router,
+  store,
+  render: h => h(App),
+  methods: {
+		...mapMutations([
+		]),
 
+		...mapActions([
+		]),
+	},
+}).$mount('#app')
 
+global.appSys = app.$store;
 global.router = app.$router;
-global.store = app.$store;
+

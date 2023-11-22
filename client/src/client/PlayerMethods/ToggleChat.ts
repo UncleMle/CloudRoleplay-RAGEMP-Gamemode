@@ -5,7 +5,7 @@ const toggleChat = (toggle: boolean) => {
 	if (mp.players.local.browserInstance) {
 		let playerBrowser: BrowserMp = mp.players.local.browserInstance;
 
-		playerBrowser.execute(`store.commit('${_chatMutationName}', {
+		playerBrowser.execute(`appSys.commit("${_chatMutationName}", {
 			${_chatMutationKey}: ${toggle}
 		})`);
 		

@@ -50,6 +50,7 @@ namespace CloudRP.Admin
                 User user = item.Value;
                 string duty = user.adminDuty ? "[!{green}On-Duty!{white}]" : "[!{red}Off-Duty!{white}]";
 
+                
                 AdminUtils.staffSay(player, index + $". {user.adminName} {duty}");
             }
         }
@@ -83,7 +84,7 @@ namespace CloudRP.Admin
             {
                 Vector3 playerPosition = player.Position;
                 float playerRotation = player.Rotation.Z;
-                
+
                 Vehicle vehicleBuild = VehicleSystem.buildVehicle(vehName, playerPosition, playerRotation, userData.accountId);
 
                 if (vehicleBuild == null) return;
@@ -104,7 +105,7 @@ namespace CloudRP.Admin
             {
                 Vehicle findVehicleById = VehicleSystem.findVehicleById(vehicleId);
 
-                if(findVehicleById == null)
+                if (findVehicleById == null)
                 {
                     AdminUtils.staffSay(player, $"No vehicle with ID {vehicleId} was found.");
                     return;
@@ -121,15 +122,16 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if(AdminUtils.checkUserData(player, userData))
+            if (AdminUtils.checkUserData(player, userData))
             {
                 userData.isFlying = !userData.isFlying;
 
-                if(userData.isFlying)
+                if (userData.isFlying)
                 {
                     AdminUtils.staffSay(player, $"Enabled fly");
                     player.TriggerEvent("admin:startFly");
-                } else
+                }
+                else
                 {
                     AdminUtils.staffSay(player, $"Disabled fly");
                     player.TriggerEvent("admin:endFly");
@@ -152,24 +154,24 @@ namespace CloudRP.Admin
                 {
                     User targetPlayerData = PlayersData.getPlayerAccountData(getPlayer);
 
-                    if(targetPlayerData.isFlying || targetPlayerData.adminDuty)
+                    if (targetPlayerData.isFlying || targetPlayerData.adminDuty)
                     {
                         CommandUtils.errorSay(player, "You cannot freeze a player that is flying or in admin duty.");
                         return;
                     }
-                    
+
                     targetPlayerData.isFrozen = targetPlayerData.isFrozen = !targetPlayerData.isFrozen;
                     string isFrozen = targetPlayerData.isFrozen ? "froze" : "unfroze";
 
                     PlayersData.setPlayerAccountData(getPlayer, targetPlayerData);
 
-                    if(!targetPlayerData.isFrozen)
+                    if (!targetPlayerData.isFrozen)
                     {
                         getPlayer.TriggerEvent("admin:events:stopFly");
                     }
 
                     AdminUtils.staffSay(player, $"You {isFrozen} {targetPlayerData.username}");
-                    AdminUtils.staffSay(getPlayer, $"You were {isFrozen+"n"} by Admin {userData.adminName}");
+                    AdminUtils.staffSay(getPlayer, $"You were {isFrozen + "n"} by Admin {userData.adminName}");
                 }
 
 
@@ -181,12 +183,38 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if(AdminUtils.checkUserData(player, userData))
+            if (AdminUtils.checkUserData(player, userData))
             {
                 player.TriggerEvent("admin:events:teleportWay");
                 AdminUtils.staffSay(player, "Teleported to waypoint");
             }
         }
 
+        [Command("delv", "~r~/delv [vehicleId]")]
+        public void delV(Player player, int vehicleId)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            {
+                bool delVehicle = VehicleSystem.deleteVehicleById(vehicleId);
+
+                if (delVehicle)
+                {
+                    AdminUtils.staffSay(player, $"Vehicle with id {vehicleId} deleted .");
+                } else
+                {
+                    AdminUtils.staffSay(player, $"Vehicle with id {vehicleId} coudldn't be found.");
+                }
+
+            }
+            else AdminUtils.sendNoAuth(player);
+        }
+
+        [Command("router")]
+        public void pushRouter(Player player, string route)
+        {
+            uiHandling.pushRouterToClient(player, route);
+        }
     }
 }

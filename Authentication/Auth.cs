@@ -38,17 +38,21 @@ namespace CloudRP.Authentication
 
                     if (passwordHashCompare)
                     {
-                        User user = new User
-                        {
-                            username = findAccount.username,
-                            accountId = findAccount.account_id,
-                            adminLevel = findAccount.admin_status,
-                            adminName = findAccount.admin_name,
-                            emailAddress = findAccount.email_address,
-                        };
+                        User user = createUser(findAccount);
+
+                        findAccount.client_serial = player.Serial;
+                        findAccount.user_ip = player.Address;
+
+                        dbContext.Update(findAccount);
+                        dbContext.SaveChanges();
 
                         PlayersData.setPlayerAccountData(player, user);
                         setUserToCharacterSelection(player, user);
+
+                        if(userCredentials.rememberMe)
+                        {
+                            setUpAutoLogin(player, findAccount);
+                        }
 
                         Console.WriteLine($"User {findAccount.username} (#{findAccount.account_id}) has logged in.");
                     } else {
@@ -67,6 +71,7 @@ namespace CloudRP.Authentication
         public void onPlayerConnected(Player player)
         {
             player.TriggerEvent("client:loginStart");
+            uiHandling.pushRouterToClient(player, Browsers.LoginPage);
         }
 
         [RemoteEvent("server:recieveCharacterName")]
@@ -87,17 +92,58 @@ namespace CloudRP.Authentication
                     PlayersData.setPlayerCharacterData(player, character);
                     welcomeAndSpawnPlayer(player, userData, character);
                 }
-            }
-            else
+            };
+        }
+
+        [RemoteEvent("server:handlePlayerJoining")]
+        public void onPlayerJoin(Player player, string autoLoginKey)
+        {
+            if(autoLoginKey != null)
             {
-                uiHandling.sendMutationToClient(player, "setCharacterSelection", "toggle", false);
+                Account findAccount = null;
+
+                using(DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    findAccount = dbContext.accounts.Where(acc => acc.user_ip == player.Address && acc.auto_login == 1 && acc.auto_login_key == autoLoginKey && acc.client_serial == player.Serial && acc.ban_status == 0).FirstOrDefault();
+
+
+                    if (findAccount == null) return;
+
+                    User user = createUser(findAccount);
+
+                    findAccount.client_serial = player.Serial;
+                    findAccount.user_ip = player.Address;
+
+
+                    dbContext.Update(findAccount);
+                    dbContext.SaveChanges();
+
+                    PlayersData.setPlayerAccountData(player, user);
+                    setUserToCharacterSelection(player, user);
+                }
             }
-            
+        }
+
+        public static User createUser(Account accountData)
+        {
+            User user = new User
+            {
+                username = accountData.username,
+                accountId = accountData.account_id,
+                adminLevel = accountData.admin_status,
+                adminName = accountData.admin_name,
+                emailAddress = accountData.email_address,
+            };
+
+            return user;    
         }
 
         void welcomeAndSpawnPlayer(Player player, User user, DbCharacter characterData)
         {
             player.TriggerEvent("client:loginEnd");
+            uiHandling.togglePlayerChat(player, true);
+            //uiHandling.toggleUiState(player, "state_loginPage", false);
+            //uiHandling.toggleUiState(player, "state_chat", true);
 
             if (user.adminLevel > (int)AdminRanks.Admin_None)
             {
@@ -109,7 +155,7 @@ namespace CloudRP.Authentication
             player.Health = characterData.character_health;
 
             NAPI.Chat.SendChatMessageToPlayer(player, Chat.CloudRP + $"Welcome back to Cloud RP {user.username}");
-
+            uiHandling.pushRouterToClient(player, Browsers.None);
         }
 
         public static void setUserToCharacterSelection(Player player, User userData)
@@ -127,32 +173,21 @@ namespace CloudRP.Authentication
             uiHandling.sendMutationToClient(player, mutationName, "toggle", true);
         }
 
-        /* Dummy Data
-        public static void createCharacter()
+        public void setUpAutoLogin(Player player, Account userAccount)
         {
+            string randomString = AuthUtils.generateString(6);
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
-                DbCharacter character = new DbCharacter 
-                {
-                    character_health = 100,
-                    character_isbanned = 0,
-                    character_name = "Alex_Dover",
-                    CreatedDate = DateTime.Now,
-                    last_login = DateTime.Now,
-                    money_amount = 12000,
-                    position_x = 0,
-                    position_y = 0,
-                    UpdatedDate = DateTime.Now,
-                    play_time_minutes = 0,
-                };
+                userAccount.auto_login_key = randomString;
+                userAccount.auto_login = 1;
 
-                dbContext.characters.Add(character);
+                dbContext.Update(userAccount);
                 dbContext.SaveChanges();
-            }
+            };
 
+            player.TriggerEvent("client:setAuthKey", randomString);
         }
-        */
 
     }
 

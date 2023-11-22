@@ -1,21 +1,27 @@
+import BrowserSystem from "../BrowserSystem/BrowserSystem";
 import Camera from "../CameraSystem/Camera";
 import toggleChat from "../PlayerMethods/ToggleChat";
 import getUserCharacterData from "../PlayerMethods/getUserCharacterData";
-import BrowserSystem from "../BrowserSystem/BrowserSystem";
+import setUiStateChange from "../PlayerMethods/setUiStateChange";
+
+const _storage_key: string = "AutoLoginToken";
 
 class PlayerAuthentication {
 	public static LoginCamera: Camera;
 	public static LocalPlayer: PlayerMp
-
+	public static LocalStorage: StorageMp;
 
 	constructor() {
 		PlayerAuthentication.LoginCamera = new Camera('loginCam', new mp.Vector3(-79.9, -1079.5, 310.2), new mp.Vector3(-74.8, -819.2, 326.2));
 		PlayerAuthentication.LocalPlayer = mp.players.local;
+		PlayerAuthentication.LocalStorage = mp.storage;
 
 		mp.events.add("render", PlayerAuthentication.handleUnauthed);
 		mp.events.add("playerReady", PlayerAuthentication.handleLoginStart);
 		mp.events.add("client:loginStart", PlayerAuthentication.handleLoginStart);
 		mp.events.add("client:loginEnd", PlayerAuthentication.endClientLogin);
+		mp.events.add("client:setAuthKey", PlayerAuthentication.setAuthenticationKey);
+
 	}
 
 	public static handleUnauthed() {
@@ -24,11 +30,16 @@ class PlayerAuthentication {
 		}
 	}
 
+	public static setAuthenticationKey(newAuthKey: string) {
+		PlayerAuthentication.LocalStorage.data[_storage_key] = newAuthKey;
+	}
+
 	public static handleLoginStart() {
-		BrowserSystem.handleBrowserPush("login");
+		setUiStateChange("state_loginPage", true);
 		PlayerAuthentication.LoginCamera.startMoving(7100.0);
 		PlayerAuthentication.LoginCamera.setActive();
 		PlayerAuthentication.freezeAndBlurClient();
+		mp.events.callRemote("server:handlePlayerJoining", PlayerAuthentication.LocalStorage.data[_storage_key]);
 	}
 
 	public static freezeAndBlurClient() {
@@ -49,12 +60,12 @@ class PlayerAuthentication {
 		mp.game.graphics.transitionFromBlurred(100);
 		mp.gui.cursor.show(false, false);
 		PlayerAuthentication.LocalPlayer.freezePosition(false);
-		toggleChat(true);
-		BrowserSystem.handleBrowserPush("/");
-
+		BrowserSystem._browserInstance.reload(true);
+		BrowserSystem.pushRouter("/");
 		if (PlayerAuthentication.LoginCamera) {
 			PlayerAuthentication.LoginCamera.delete();
 		}
+		toggleChat(true);
 
 	}
 }

@@ -1,8 +1,6 @@
-import toggleChat from "../PlayerMethods/ToggleChat";
 import { BrowserEnv } from "../enums";
 import { F2 } from './ClientButtons';
 import { _REMOVE_TIMER_NATIVE } from '../Constants/Constants';
-import getUserCharacterData from "../PlayerMethods/getUserCharacterData";
 
 
 let isFunctionPressed: boolean;
@@ -21,11 +19,11 @@ class BrowserSystem {
 		BrowserSystem.LocalPlayer.browserRouter = "/";
 
 		mp.events.add("guiReady", BrowserSystem.onGuiReady);
-		mp.events.add("browser:pushRouter", BrowserSystem.handleBrowserPush);
 		mp.events.add("render", BrowserSystem.handleRender);
 		mp.events.add("client:recieveUiMutation", BrowserSystem.handleMutationChange);
 		mp.events.add("browser:sendObject", BrowserSystem.handleBrowserObject);
 		mp.events.add("browser:sendString", BrowserSystem.handleBrowserString);
+		mp.events.add("browser:pushRouter", BrowserSystem.pushRouter);
 
 		mp.keys.bind(F2, false, function () {
 			isFunctionPressed = !isFunctionPressed;
@@ -44,24 +42,21 @@ class BrowserSystem {
 		mp.console.logInfo("GUI Ready and chat initiated");
 	}
 
-	public static handleBrowserPush(browserName: string) {
-		BrowserSystem.LocalPlayer.browserRouter = browserName;
-		BrowserSystem._browserInstance.execute(`router.push('${browserName}')`);
-	}
-
 	public static handleRender() {
 		BrowserSystem.disableAfkTimer();
 		BrowserSystem.disableDefaultGuiElements();
-		mp.console.logInfo(BrowserSystem.LocalPlayer.browserRouter);
+	}
 
-		if (BrowserSystem._browserInstance && !getUserCharacterData()) {
-			toggleChat(false);
+	public static pushRouter(route: string) {
+		if (BrowserSystem._browserInstance) {
+			mp.console.logInfo("route pushed " + route);
+			BrowserSystem._browserInstance.execute(`router.push("${route}")`);
 		}
 	}
 
 	public static handleMutationChange(mutationName: string, key: string, value: any) {
 		if (BrowserSystem._browserInstance) {
-			BrowserSystem._browserInstance.execute(`store.commit('${mutationName}', {
+			BrowserSystem._browserInstance.execute(`appSys.commit("${mutationName}", {
 						${key}: ${value}
 			})`);
 		}

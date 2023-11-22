@@ -1,5 +1,5 @@
 export enum BrowserEnv {
-	development = "package://dist/index.html",
+	development = "localhost:3000/?#/", //"package://dist/index.html",
 	production = "http://localhost:8080/"
 }
 

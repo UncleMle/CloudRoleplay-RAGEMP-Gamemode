@@ -180,5 +180,40 @@ namespace CloudRP.Vehicles
 
             return foundVehicle;
         }
+
+        public static DbVehicle getVehicleData(Vehicle vehicle)
+        {
+            DbVehicle getData = vehicle.GetData<DbVehicle>(_vehicleSharedDataIdentifier);
+
+            return getData;
+        }
+
+        public static bool deleteVehicleById(int vehicleId)
+        {
+            List<Vehicle> onlineVehicles = NAPI.Pools.GetAllVehicles();
+            bool operationSuccess = false;
+
+            foreach(var vehicle in  onlineVehicles)
+            {
+                DbVehicle vehicleData = getVehicleData(vehicle);
+
+                if (vehicleData == null) return operationSuccess;
+
+                if (vehicleData.vehicle_id != vehicleId) return operationSuccess;
+
+                using(DefaultDbContext dbContext  = new DefaultDbContext())
+                {
+                    dbContext.vehicles.Remove(vehicleData);
+                }
+
+                vehicle.SetData<DbVehicle>(_vehicleSharedDataIdentifier, null);
+
+                vehicle.Delete();
+
+                operationSuccess = true;
+            }
+
+            return operationSuccess;
+        }
     }
 }

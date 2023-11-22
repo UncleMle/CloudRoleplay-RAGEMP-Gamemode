@@ -2,6 +2,7 @@ declare global {
 	interface PlayerMp {
 		browserRouter: string;
 		browserInstance: BrowserMp;
+		browserCurrentState: string;
 	}
 }
 
