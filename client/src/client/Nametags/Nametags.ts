@@ -1,5 +1,6 @@
-import { UserData } from "../@types";
+import { UserData, CharacterData } from "../@types";
 import { _TEXT_R_RED, _TEXT_R_WHITE } from '../Constants/Constants';
+import getTargetCharacterData from "../PlayerMethods/getTargetCharacterData";
 import getTargetData from "../PlayerMethods/getTargetData";
 
 class NameTags {
@@ -15,15 +16,17 @@ class NameTags {
 		mp.events.add('render', () => {
 			mp.players.forEachInRange(NameTags.LocalPlayer.position, 20, (Target) => {
 				const targetUserData: UserData | undefined = getTargetData(Target);
+				const targetCharacterData: CharacterData | undefined = getTargetCharacterData(Target);
 				const TargetPosition = Target.position;
 				const PlayerPosition = NameTags.LocalPlayer.position;
 
-				if (!targetUserData) return;
+				if (!targetUserData || targetUserData.isFlying || !targetCharacterData) return;
 
 				const Distance = new mp.Vector3(PlayerPosition.x, PlayerPosition.y, PlayerPosition.z)
 					.subtract(new mp.Vector3(TargetPosition.x, TargetPosition.y, TargetPosition.z))
 					.length();
-					
+
+				
 				if (Distance < 8 && NameTags.LocalPlayer.id != Target.id && NameTags.LocalPlayer.hasClearLosTo(Target.handle, 17)) {
 					const Index = Target.getBoneIndex(12844);
 					const NameTag = Target.getWorldPositionOfBone(Index);
@@ -39,7 +42,7 @@ class NameTags {
 
 					y -= scale * (0.005 * (NameTags.ScreenRes.y / 1080)) - parseInt('0.010');
 
-					let DefaultTagContent = `[${targetUserData.playerId}] ${targetUserData.username}`;
+					let DefaultTagContent = `[${targetUserData.playerId}] ${targetCharacterData.characterName.replace("_", " ")}`;
 
 					if (targetUserData.adminDuty) {
 						DefaultTagContent = `${_TEXT_R_RED}[ADMIN]${_TEXT_R_WHITE} ${targetUserData.adminName}`;
