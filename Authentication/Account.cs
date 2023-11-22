@@ -38,6 +38,8 @@ namespace CloudRP.Authentication
 
         public string admin_name { get; set; }
 
+        public string admin_ped { get; set; }
+
         public string client_serial { get; set; }
 
         public int ban_status { get; set; }

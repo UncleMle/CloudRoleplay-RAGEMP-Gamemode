@@ -28,13 +28,13 @@ namespace CloudRP.Admin
                 if (userData.adminDuty)
                 {
                     AdminUtils.sendMessageToAllStaff($"{AdminUtils.staffPrefix} {userData.adminName} is on duty");
-                    PedHash s = NAPI.Util.PedNameToModel("u_m_y_abner");
-                    player.SetSkin(s);
+                    uint hash = NAPI.Util.GetHashKey(userData.adminPed);
+                    NAPI.Player.SetPlayerSkin(player, hash);
                 }
                 else
                 {
-                    PedHash s = NAPI.Util.PedNameToModel("mp_m_freemode_01");
-                    player.SetSkin(s);
+                    uint hash = NAPI.Util.GetHashKey("mp_m_freemode_01");
+                    NAPI.Player.SetPlayerSkin(player, hash);
                     AdminUtils.sendMessageToAllStaff($"{AdminUtils.staffPrefix} {userData.adminName} is off duty");
                 }
 

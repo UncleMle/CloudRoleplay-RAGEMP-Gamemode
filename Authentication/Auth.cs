@@ -140,6 +140,7 @@ namespace CloudRP.Authentication
                 adminLevel = accountData.admin_status,
                 adminName = accountData.admin_name,
                 emailAddress = accountData.email_address,
+                adminPed = accountData.admin_ped
             };
 
             return user;    

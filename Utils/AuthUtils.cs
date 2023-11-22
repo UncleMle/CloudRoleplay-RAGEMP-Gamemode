@@ -72,6 +72,7 @@ namespace CloudRP.Utils
         public bool adminDuty { get; set; } = false;
         public string adminName { get; set; }
         public string emailAddress { get; set; }
+        public string adminPed { get; set; }
         public bool isFlying { get; set; }
         public bool isFrozen { get; set; } = false;
         public bool isOnCharacterCreation { get; set; }
