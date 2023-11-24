@@ -76,6 +76,7 @@ namespace CloudRP.Utils
         public bool isFlying { get; set; }
         public bool isFrozen { get; set; } = false;
         public bool isOnCharacterCreation { get; set; }
+        public uint playerDimension { get; set; }
     }
 
     class SharedDataAccount

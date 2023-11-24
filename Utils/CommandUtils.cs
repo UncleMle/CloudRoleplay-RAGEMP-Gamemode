@@ -8,6 +8,8 @@ namespace CloudRP.Utils
 {
     internal class CommandUtils : Script
     {
+        public static double _rp_commands_radius = 20.0;
+
         public static Player getPlayerFromNameOrId(Player player, string nameOrId)
         {
             List<Player> allPlayers = NAPI.Pools.GetAllPlayers();
@@ -60,6 +62,26 @@ namespace CloudRP.Utils
         public static void errorSay(Player player, string message)
         {
             NAPI.Chat.SendChatMessageToPlayer(player, Chat.error + message);
+        }
+
+        public static List<Player> getPlayersInRadius(Player player, double radius)
+        {
+            return NAPI.Player.GetPlayersInRadiusOfPlayer(radius, player);
+        }
+
+        public static void sendMessageToPlayersInRadius(Player player, string message, double radius)
+        {
+            List<Player> closePlayers = getPlayersInRadius(player, radius);
+            
+            foreach(Player closePlayer in closePlayers)
+            {
+                NAPI.Chat.SendChatMessageToPlayer(closePlayer, message);
+            }
+        }
+
+        public static string formatCharName(string name)
+        {
+            return name.Replace("_", " ");
         }
     }
 }

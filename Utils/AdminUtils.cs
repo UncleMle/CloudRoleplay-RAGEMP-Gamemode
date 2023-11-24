@@ -10,7 +10,7 @@ namespace CloudRP.Utils
 {
     internal class AdminUtils : Script
     {
-        public static string staffPrefix = "!{red}[STAFF]!{white} ";
+        public static string staffPrefix = "!{red}[Staff System]!{white} ";
 
         public static void sendNoAuth(Player player)
         {
@@ -59,6 +59,11 @@ namespace CloudRP.Utils
         public static void staffSay(Player player, string message)
         {
             NAPI.Chat.SendChatMessageToPlayer(player, staffPrefix + message);
+        }
+
+        public static void playerNotFound(Player player)
+        {
+            NAPI.Chat.SendChatMessageToPlayer(player, staffPrefix + "Player was not found.");
         }
 
         public static bool checkUserData(Player player, User userData)

@@ -11,6 +11,8 @@ namespace CloudRP.Utils
         public static string CloudRP = CloudBlue + "[CloudRP] " + White;
         public static string error = "!{red}[ERROR]!{white} ";
         public static string _c_CharacterSystem = "[Characters] ";
+        public static string yellow = "!{yellow}";
+        public static string red = "!{red}";
 
         public static void charSysPrint(string str)
         {

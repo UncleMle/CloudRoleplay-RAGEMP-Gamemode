@@ -41,6 +41,7 @@ namespace CloudRP.Character
 
         public int play_time_minutes { get; set; }
 
+        public uint player_dimension { get; set; }
     }
 
 }

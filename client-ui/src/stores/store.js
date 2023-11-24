@@ -7,6 +7,10 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
 	state: {
+		playerInfo: {
+			player_stats: {},
+			player_data_server: {}
+		},
 		uiStates: {
 			characterSelection: false,
 			chatEnabled: false
@@ -18,6 +22,12 @@ const store = new Vuex.Store({
 		},
 		getCharacterSelectionStatus: (state, getters) => {
 			return state.uiStates.characterSelection;
+		},
+		getPlayerStats: (state) => {
+			return state.playerInfo.player_stats;
+		},
+		getPlayerDataServer: (state) => {
+			return state.playerInfo.player_data_server;
 		}
 	},
 	mutations: {
@@ -28,6 +38,9 @@ const store = new Vuex.Store({
 		setCharacterSelection: (state, { toggle }) => {
 			state.uiStates.characterSelection = toggle;
 			return;
+		},
+		playerMutationSetter: (state, { _mutationKey, data }) => {
+			state.playerInfo[_mutationKey] = data;
 		}
 	}
 });

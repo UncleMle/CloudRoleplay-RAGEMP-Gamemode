@@ -9,6 +9,8 @@ namespace CloudRP.PlayerData
 {
     internal class uiHandling : Script
     {
+        public static string _sharedMutationStoreSetter = "playerMutationSetter";
+
         public static void togglePlayerChat(Player player, bool toggle)
         {
             string mutationName = "setChatStatus";
@@ -21,6 +23,16 @@ namespace CloudRP.PlayerData
             player.TriggerEvent("client:recieveUiMutation", mutationName, key, value);
         }
 
+        public static void sendObjectToClient(Player player, string mutationName, string key, object value)
+        {
+            player.TriggerEvent("client:recieveUiMutation", mutationName, key, value);
+        }
+
+        public static void handleObjectUiMutation(Player player, string mutationKey, object data)
+        {
+            player.TriggerEvent("browser:handlePlayerObjectMutation", mutationKey, data);
+        }
+
         public static void pushRouterToClient(Player player, string route)
         {
             player.TriggerEvent("browser:pushRouter", route);
@@ -29,7 +41,14 @@ namespace CloudRP.PlayerData
 
     public static class Browsers
     {
-        public static string None { get { return "/"; } }
-        public static string LoginPage { get { return "/login"; } }
+        public static readonly string None = "/";
+        public static readonly string LoginPage = "/login";
+        public static readonly string StatsPage = "/stats";
+    }
+
+    public static class MutationKeys
+    {
+        public static readonly string PlayerStats = "player_stats";
+        public static readonly string PlayerData = "player_data_server";
     }
 }

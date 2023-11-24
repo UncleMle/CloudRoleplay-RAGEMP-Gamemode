@@ -1,4 +1,5 @@
 ﻿using CloudRP.Authentication;
+using CloudRP.Character;
 using CloudRP.Database;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
@@ -52,10 +53,11 @@ namespace CloudRP.Admin
             {
                 index++;
                 User user = item.Value;
+                string adminRank = AdminUtils.getColouredAdminRank(user);
                 string duty = user.adminDuty ? "[!{green}On-Duty!{white}]" : "[!{red}Off-Duty!{white}]";
 
                 
-                AdminUtils.staffSay(player, index + $". {user.adminName} {duty}");
+                AdminUtils.staffSay(player, index + $". {user.adminName} {adminRank} {duty}");
             }
         }
 
@@ -63,6 +65,7 @@ namespace CloudRP.Admin
         public void adminChat(Player player, string message)
         {
             User userData = PlayersData.getPlayerAccountData(player);
+
             if (userData.adminLevel > (int)AdminRanks.Admin_None)
             {
                 Dictionary<Player, User> onlineAdmins = AdminUtils.gatherStaff();
@@ -74,6 +77,11 @@ namespace CloudRP.Admin
                     User staff = entry.Value;
 
                     NAPI.Chat.SendChatMessageToPlayer(entry.Key, "!{red}" + $"[AdminChat] " + "!{white}" + colouredAdminRank + staff.adminName + " !{grey}says:!{white} " + message);
+
+                    userData.isFlying = false;
+
+                    PlayersData.setPlayerAccountData(player, userData);
+                    player.TriggerEvent("admin:endFly");
                 }
             }
 
@@ -225,9 +233,60 @@ namespace CloudRP.Admin
 
                 if(foundVehicleData != null)
                 {
-                    AdminUtils.staffSay(player, $"Vehicle id: {foundVehicleData.vehicle_id} VehName: {foundVehicleData.vehicle_name}");
+                    AdminUtils.staffSay(player, Chat.yellow+"-----------------------------------------------------------");
+                    AdminUtils.staffSay(player, "Vehicle id: " + Chat.red + foundVehicleData.vehicle_id + Chat.White + " VehName: " + Chat.red + foundVehicleData.vehicle_name);
+                    AdminUtils.staffSay(player, "Owner id: " + Chat.red + foundVehicleData.owner_id+ Chat.White + " Numberplate: " + Chat.red + foundVehicleData.numberplate);
+                    AdminUtils.staffSay(player, Chat.yellow + "-----------------------------------------------------------");
                 }
 
+            }
+        }
+
+        [Command("setdimension", "~r~/setdimension [playerIdOrName] [dimension]", Alias = "setd")]
+        public void setDimension(Player player, string playerIdOrName, uint dimension)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(AdminUtils.checkUserData(player, userData))
+            {
+                Player getPlayer = CommandUtils.getPlayerFromNameOrId(player, playerIdOrName);
+                DbCharacter characterData = PlayersData.getPlayerCharacterData(getPlayer);
+
+                if (getPlayer == null || characterData == null)
+                {
+                    AdminUtils.playerNotFound(player);
+                    return;
+                }
+
+                characterData.player_dimension = dimension;
+                getPlayer.Dimension = dimension;
+
+                using(DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    dbContext.characters.Update(characterData);
+                    dbContext.SaveChanges();
+                }
+
+                AdminUtils.staffSay(player, $"Set {characterData.character_name}'s dimension to {dimension}");
+                AdminUtils.staffSay(getPlayer, $"Your dimension was set to {dimension} by Admin {userData.adminName}");
+            }
+        }
+
+        [Command("fix")]
+        public void onFixVehicle(Player player)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(AdminUtils.checkUserData(player, userData))
+            {
+                if(player.IsInVehicle)
+                {
+                    NAPI.Vehicle.RepairVehicle(player.Vehicle);
+                    AdminUtils.staffSay(player, " Repaired vehicle.");
+                } else
+                {
+                    AdminUtils.staffSay(player, " You must be in a vehicle to repair it.");
+                }
             }
 
         }

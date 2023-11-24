@@ -1,6 +1,6 @@
 <template>
-    <div id="app">
-        <router-view ref="routers">
+    <div id="app" class="overflow-y-scroll no-scrollbar">
+        <router-view class="absolute" ref="routers">
         </router-view>
         <ChatBox />
     </div>

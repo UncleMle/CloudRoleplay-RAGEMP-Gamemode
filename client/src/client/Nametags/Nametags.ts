@@ -13,50 +13,52 @@ class NameTags {
 		NameTags.ScreenRes = mp.game.graphics.getScreenResolution();
 
 		mp.nametags.enabled = false;
-		mp.events.add('render', () => {
-			mp.players.forEachInRange(NameTags.LocalPlayer.position, 20, (Target) => {
-				const targetUserData: UserData | undefined = getTargetData(Target);
-				const targetCharacterData: CharacterData | undefined = getTargetCharacterData(Target);
-				const TargetPosition = Target.position;
-				const PlayerPosition = NameTags.LocalPlayer.position;
+		mp.events.add('render', NameTags.renderNametags);
+	}
 
-				if (!targetUserData || targetUserData.isFlying || !targetCharacterData) return;
+	public static renderNametags() {
+		mp.players.forEachInRange(NameTags.LocalPlayer.position, 20, (Target) => {
+			const targetUserData: UserData | undefined = getTargetData(Target);
+			const targetCharacterData: CharacterData | undefined = getTargetCharacterData(Target);
+			const TargetPosition = Target.position;
+			const PlayerPosition = NameTags.LocalPlayer.position;
 
-				const Distance = new mp.Vector3(PlayerPosition.x, PlayerPosition.y, PlayerPosition.z)
-					.subtract(new mp.Vector3(TargetPosition.x, TargetPosition.y, TargetPosition.z))
-					.length();
+			if (!targetUserData || targetUserData.isFlying || !targetCharacterData) return;
 
-				
-				if (Distance < 8 && NameTags.LocalPlayer.id != Target.id && NameTags.LocalPlayer.hasClearLosTo(Target.handle, 17)) {
-					const Index = Target.getBoneIndex(12844);
-					const NameTag = Target.getWorldPositionOfBone(Index);
-					const Position = mp.game.graphics.world3dToScreen2d(new mp.Vector3(NameTag.x, NameTag.y, NameTag.z + 0.4));
+			const Distance = new mp.Vector3(PlayerPosition.x, PlayerPosition.y, PlayerPosition.z)
+				.subtract(new mp.Vector3(TargetPosition.x, TargetPosition.y, TargetPosition.z))
+				.length();
 
-					if (!Position) return;
 
-					let x = Position.x;
-					let y = Position.y;
+			if (Distance < 8 && NameTags.LocalPlayer.id != Target.id && NameTags.LocalPlayer.hasClearLosTo(Target.handle, 17)) {
+				const Index = Target.getBoneIndex(12844);
+				const NameTag = Target.getWorldPositionOfBone(Index);
+				const Position = mp.game.graphics.world3dToScreen2d(new mp.Vector3(NameTag.x, NameTag.y, NameTag.z + 0.4));
 
-					let scale = Distance / 25;
-					if (scale < 0.6) scale = 0.6;
+				if (!Position) return;
 
-					y -= scale * (0.005 * (NameTags.ScreenRes.y / 1080)) - parseInt('0.010');
+				let x = Position.x;
+				let y = Position.y;
 
-					let DefaultTagContent = `[${targetUserData.playerId}] ${targetCharacterData.characterName.replace("_", " ")}`;
+				let scale = Distance / 25;
+				if (scale < 0.6) scale = 0.6;
 
-					if (targetUserData.adminDuty) {
-						DefaultTagContent = `${_TEXT_R_RED}[ADMIN]${_TEXT_R_WHITE} ${targetUserData.adminName}`;
-					}
+				y -= scale * (0.005 * (NameTags.ScreenRes.y / 1080)) - parseInt('0.010');
 
-					mp.game.graphics.drawText(DefaultTagContent, [x, y], {
-						font: 4,
-						color: [255, 255, 255, 255],
-						scale: [0.325, 0.325],
-						outline: false
-					});
+				let DefaultTagContent = `[${targetUserData.playerId}] ${targetCharacterData.characterName.replace("_", " ")}`;
+
+				if (targetUserData.adminDuty) {
+					DefaultTagContent = `${_TEXT_R_RED}[ADMIN]${_TEXT_R_WHITE} ${targetUserData.adminName}`;
 				}
-			});
-		})
+
+				mp.game.graphics.drawText(DefaultTagContent, [x, y], {
+					font: 4,
+					color: [255, 255, 255, 255],
+					scale: [0.325, 0.325],
+					outline: false
+				});
+			}
+		});
 	}
 }
 

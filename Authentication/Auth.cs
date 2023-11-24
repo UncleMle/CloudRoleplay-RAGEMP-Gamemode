@@ -20,6 +20,8 @@ namespace CloudRP.Authentication
 {
     internal class Auth : Script
     {
+        public static uint _startDimension = 20;
+
         [ServerEvent(Event.ResourceStart)]
         public void onResourceStart()
         {
@@ -77,6 +79,7 @@ namespace CloudRP.Authentication
         [ServerEvent(Event.PlayerConnected)]
         public void onPlayerConnected(Player player)
         {
+            player.Dimension = _startDimension;
             player.TriggerEvent("client:loginStart");
             uiHandling.pushRouterToClient(player, Browsers.LoginPage);
         }
@@ -155,7 +158,7 @@ namespace CloudRP.Authentication
             if (user.adminLevel > (int)AdminRanks.Admin_None)
             {
                 string colouredRank = AdminUtils.getColouredAdminRank(user);
-                NAPI.Chat.SendChatMessageToPlayer(player, "!{red}[STAFF]!{white} " + $"Welcome {colouredRank}" + user.adminName);
+                NAPI.Chat.SendChatMessageToPlayer(player, AdminUtils.staffPrefix + $"Welcome {colouredRank}" + user.adminName);
             }
 
             player.Position = new Vector3(characterData.position_x, characterData.position_y, characterData.position_z);
@@ -163,6 +166,12 @@ namespace CloudRP.Authentication
 
             NAPI.Chat.SendChatMessageToPlayer(player, Chat.CloudRP + $"Welcome back to Cloud RP {user.username}");
             uiHandling.pushRouterToClient(player, Browsers.None);
+            player.Dimension = characterData.player_dimension;
+
+            if(characterData.player_dimension != 0)
+            {
+                AdminUtils.staffSay(player, $"You have been spawned into dimension {characterData.player_dimension}.");
+            }
 
             player.TriggerEvent("client:moveSkyCamera", "down");
         }
@@ -184,7 +193,7 @@ namespace CloudRP.Authentication
 
         public void setUpAutoLogin(Player player, Account userAccount)
         {
-            string randomString = AuthUtils.generateString(6);
+            string randomString = AuthUtils.generateString(6) + userAccount.account_id;
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
