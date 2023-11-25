@@ -271,7 +271,7 @@ namespace CloudRP.Vehicles
 
             if (vehicleData == null) return;
 
-            vehicleData.vehicle_dimension = VehicleDimensions.World;
+            vehicleData.vehicle_dimension = VehicleDimensions.Insurance;
             vehicleData.position_x = VehicleDimensions.morsPosition.X;
             vehicleData.position_y = VehicleDimensions.morsPosition.Y;
             vehicleData.position_z = VehicleDimensions.morsPosition.Z;
