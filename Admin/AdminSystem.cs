@@ -41,14 +41,14 @@ namespace CloudRP.Admin
 
                 if (userData.adminDuty)
                 {
-                    AdminUtils.sendMessageToAllStaff($"{AdminUtils.staffPrefix} {userData.adminName} is on duty");
+                    AdminUtils.sendMessageToAllStaff($"{userData.adminName} is on duty");
                     AdminUtils.setPed(player, userData.adminPed);
                 }
                 else
                 {
                     AdminUtils.setPed(player, "mp_m_freemode_01");
 
-                    AdminUtils.sendMessageToAllStaff($"{AdminUtils.staffPrefix} {userData.adminName} is off duty");
+                    AdminUtils.sendMessageToAllStaff($"{userData.adminName} is off duty");
                 }
 
                 PlayersData.setPlayerAccountData(player, userData);
@@ -127,17 +127,44 @@ namespace CloudRP.Admin
 
             if (userData.adminLevel > (int)AdminRanks.Admin_SeniorSupport && userData.adminDuty || userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
             {
-                Vehicle findVehicleById = VehicleSystem.findVehicleById(vehicleId);
-
-                if (findVehicleById == null)
+                using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
-                    AdminUtils.staffSay(player, $"No vehicle with ID {vehicleId} was found.");
-                    return;
+                    DbVehicle findVehicleById = dbContext.vehicles.Find(vehicleId);
+
+                    if (findVehicleById == null)
+                    {
+                        AdminUtils.staffSay(player, $"No vehicle with ID {vehicleId} was found.");
+                        return;
+                    }
+
+                    Vehicle spawnedVehicle = null;
+
+                    if(findVehicleById.vehicle_dimension != VehicleDimensions.World)
+                    {
+                        spawnedVehicle = VehicleSystem.spawnVehicle(findVehicleById);
+                    } else
+                    {
+                        List<Vehicle> onlineVehicles = NAPI.Pools.GetAllVehicles();
+                        
+                        foreach(Vehicle vehicle in onlineVehicles)
+                        {
+                            DbVehicle vehicleData = VehicleSystem.getVehicleData(vehicle);
+
+                            if(vehicleData != null && vehicleData.vehicle_id == vehicleId)
+                            {
+                                spawnedVehicle = vehicle;
+                            } 
+                        }
+                    }
+
+                    if(spawnedVehicle != null)
+                    {
+                        VehicleSystem.bringVehicleToPlayer(player, spawnedVehicle, true);
+
+                        AdminUtils.staffSay(player, $"Brought vehicle with ID {vehicleId}");
+
+                    }
                 }
-
-                VehicleSystem.bringVehicleToPlayer(player, findVehicleById, true);
-
-                AdminUtils.staffSay(player, $"Brought vehicle with ID {vehicleId}");
             }
         }
 

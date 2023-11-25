@@ -66,6 +66,14 @@ namespace CloudRP.Vehicles
 
             Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicle.vehicle_spawn_hash, spawnPosition, rotation, 255, 255, vehicle.numberplate, 255, false, true, 0);
 
+            vehicle.vehicle_dimension = VehicleDimensions.World;
+
+            using (DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                dbContext.vehicles.Update(vehicle);
+                dbContext.SaveChanges();
+            }
+
             veh.SetSharedData(_vehicleSharedDataIdentifier, vehicle);
             veh.SetData(_vehicleSharedDataIdentifier, vehicle);
 
