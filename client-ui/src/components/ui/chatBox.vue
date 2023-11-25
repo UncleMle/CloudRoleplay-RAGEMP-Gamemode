@@ -44,11 +44,8 @@ export default {
 
             if (this.$router.currentRoute.path != "/") return;
 
-            if (e.keyCode == KEY_T) {
-                this.active = true;
-                this.showChat = true;
+            if (e.keyCode == KEY_T && this.inputText.length == 0) {
                 this.enableChatInput(true);
-
                 return true;
             }
 
@@ -80,14 +77,16 @@ export default {
             this.chatMessages.unshift(text);
         },
         enableChatInput(enable) {
+            this.inputText = "";
+
             if (!this.active && enable) {
                 return;
             }
 
             if (enable !== this.showInput && window.mp) {
+                this.$nextTick().then(() => this.$refs.input.focus());
                 window.mp.invoke("focus", enable);
                 window.mp.invoke("setTypingInChatState", enable);
-
                 this.showInput = enable;
                 this.inputText = "";
             }
@@ -99,6 +98,10 @@ export default {
         show() {
             this.showChat = true;
             console.log(this.showChat);
+        },
+        setCaretPosition(ctrl, pos) {
+            ctrl.focus();
+            ctrl.setSelectionRange(pos, pos);
         }
     },
     created() {
