@@ -46,7 +46,8 @@ export default {
 
             if (e.keyCode == KEY_T && this.inputText.length == 0) {
                 this.enableChatInput(true);
-                return true;
+                e.preventDefault();
+                return;
             }
 
 
@@ -77,18 +78,19 @@ export default {
             this.chatMessages.unshift(text);
         },
         enableChatInput(enable) {
-            this.inputText = "";
 
-            if (!this.active && enable) {
+            if (!this.active &&enable) {
                 return;
             }
 
             if (enable !== this.showInput && window.mp) {
-                this.$nextTick().then(() => this.$refs.input.focus());
-                window.mp.invoke("focus", enable);
-                window.mp.invoke("setTypingInChatState", enable);
+                if (window.mp) {
+                    window.mp.invoke("focus", enable);
+                    window.mp.invoke("setTypingInChatState", enable);
+                }
                 this.showInput = enable;
                 this.inputText = "";
+                this.$nextTick().then(() => this.$refs.input.focus());
             }
         },
         hide() {

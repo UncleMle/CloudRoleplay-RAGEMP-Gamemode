@@ -294,5 +294,34 @@ namespace CloudRP.Vehicles
             vehicle.Delete();
             Console.WriteLine($"Vehicle #{vehicleData.vehicle_id} was saved to insurance. ");
         }
+
+        public static List<Vehicle> getVehicleInRange(Player player, float range)
+        {
+            List<Vehicle> vehicles = NAPI.Pools.GetAllVehicles();
+            List<Vehicle> rangeVehicles = new List<Vehicle>();
+
+            foreach(Vehicle vehicle in vehicles)
+            {
+                if(Vector3.Distance(player.Position, vehicle.Position) < range)
+                {
+                    rangeVehicles.Add(vehicle);
+                }
+            }
+
+            return rangeVehicles;
+
+        }
+
+        public static string getFixedVehicleDistance(Player player, Vehicle vehicle)
+        {
+            float dist = Vector3.Distance(player.Position, vehicle.Position);
+
+            return toFixed((int)dist, 0);
+        }
+
+        public static string toFixed(int number, uint decimals)
+        {
+            return number.ToString("N" + decimals);
+        }
     }
 }

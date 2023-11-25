@@ -75,6 +75,12 @@ namespace CloudRP.GeneralCommands
 
             Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
 
+            if(findPlayer.Equals(player))
+            {
+                CommandUtils.errorSay(player, "You cannot pm yourself.");
+                return;
+            }
+
             if (findPlayer == null)
             {
                 CommandUtils.errorSay(player, "Player couldn't be found");

@@ -427,5 +427,86 @@ namespace CloudRP.Admin
             else AdminUtils.sendNoAuth(player);
 
         }
+
+        [Command("flip", "~r~/flip [Current Vehicle Or VehicleId]")]
+        public void flipVehicle(Player player, int vehicleId = -1)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if (userData == null) return;
+
+            if(userData.adminLevel > 2 && userData.adminDuty || userData.adminLevel > (int)AdminRanks.Admin_SeniorAdmin)
+            {
+                if(vehicleId == -1 && !player.IsInVehicle)
+                {
+                    CommandUtils.errorSay(player, "You must be in a vehicle or specify a vehicle ID.");
+                }
+
+                if(player.IsInVehicle)
+                {
+                    player.Vehicle.Rotation = new Vector3(0, 0, 0);
+                    AdminUtils.staffSay(player, "Flipped vehicle.");
+                    return;
+                }
+
+                Vehicle findById = VehicleSystem.findVehicleById(vehicleId); 
+
+                if(findById == null)
+                {
+                    CommandUtils.errorSay(player, "Vehicle with that ID was not found");
+                    return;
+                }
+
+                findById.Rotation = new Vector3(0, 0, 0);
+                AdminUtils.staffSay(player, "Flipped vehicle");
+
+            } else AdminUtils.sendNoAuth(player);
+        }
+
+        [Command("stv", "~r~/stv [seatId]", Alias = "setintovehicle")]
+        public void setIntoVehicle(Player player, int seatId = 0)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if (AdminUtils.checkUserData(player, userData))
+            {
+                List<Vehicle> rangeVehicles = VehicleSystem.getVehicleInRange(player, 10);
+                
+                if(rangeVehicles == null || rangeVehicles.Count == 0)
+                {
+                    CommandUtils.errorSay(player, "There are no vehicles within range to enter");
+                    return;
+                }
+
+                player.SetIntoVehicle(rangeVehicles[0], seatId);
+            }
+        }
+
+        [Command("id", "~r~/id [playerIdOrName]")]
+        public void idPlayer(Player player, string playerName)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(AdminUtils.checkUserData(player, userData))
+            {
+                Player findPlayer = CommandUtils.getPlayerFromNameOrId(playerName);
+
+                if(findPlayer == null)
+                {
+                    CommandUtils.errorSay(player, "Player was not found.");
+                    return;
+                }
+
+                DbCharacter findPlayerCharData = PlayersData.getPlayerCharacterData(player);
+
+                uiHandling.pushRouterToClient(player, Browsers.StatsPage);
+
+                uiHandling.handleObjectUiMutation(player, MutationKeys.PlayerStats, findPlayerCharData);
+                uiHandling.handleObjectUiMutation(player, MutationKeys.PlayerData, player);
+
+                AdminUtils.staffSay(player, $"Viewing {findPlayerCharData.character_name}'s stats");
+            }
+
+        }
     }
 }
