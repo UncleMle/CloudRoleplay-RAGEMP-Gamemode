@@ -284,7 +284,7 @@ namespace CloudRP.Vehicles
             }
 
             vehicle.Delete();
-            Console.WriteLine($"Vehicle #{vehicleData.vehicle_id} was saved to insurance.");
+            Console.WriteLine($"Vehicle #{vehicleData.vehicle_id} was saved to insurance. ");
         }
     }
 }
