@@ -33,9 +33,19 @@ namespace CloudRP.PlayerData
             player.TriggerEvent("browser:handlePlayerObjectMutation", mutationKey, data);
         }
 
+        public static void handleObjectUiMutationPush(Player player, string mutationKey, object data)
+        {
+            player.TriggerEvent("browser:handlePlayerObjectMutationPush", mutationKey, data);
+        }
+
         public static void pushRouterToClient(Player player, string route)
         {
             player.TriggerEvent("browser:pushRouter", route);
+        }
+
+        public static void resetMutationPusher(Player player, string mutationKey)
+        {
+            player.TriggerEvent("browser:resetMutationPusher", mutationKey);
         }
     }
 
@@ -52,5 +62,6 @@ namespace CloudRP.PlayerData
         public static readonly string PlayerStats = "player_stats";
         public static readonly string BanData = "player_bandata";
         public static readonly string PlayerData = "player_data_server";
+        public static readonly string PlayerCharacters = "player_characters";
     }
 }

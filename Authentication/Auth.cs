@@ -14,6 +14,7 @@ using CloudRP.Admin;
 using CloudRP.Utils;
 using CloudRP.PlayerData;
 using CloudRP.Character;
+using System.Text.RegularExpressions;
 
 
 namespace CloudRP.Authentication
@@ -66,7 +67,6 @@ namespace CloudRP.Authentication
                             return;
                         }
 
-                        PlayersData.setPlayerAccountData(player, user);
                         setUserToCharacterSelection(player, user);
 
                         if(userCredentials.rememberMe)
@@ -139,8 +139,9 @@ namespace CloudRP.Authentication
                     dbContext.Update(findAccount);
                     dbContext.SaveChanges();
 
-                    PlayersData.setPlayerAccountData(player, user);
                     setUserToCharacterSelection(player, user);
+
+                    return;
                 }
             }
         }
@@ -189,9 +190,7 @@ namespace CloudRP.Authentication
 
         public static void setUserToCharacterSelection(Player player, User userData)
         {
-            if (userData == null || AdminUtils.checkPlayerIsBanned(player) != null) return;
-
-            userData.isOnCharacterCreation = true;
+            if (userData == null || AdminUtils.checkPlayerIsBanned(player) != null || PlayersData.getPlayerAccountData(player) != null) return;
 
             PlayersData.setPlayerAccountData(player, userData);
 
@@ -200,6 +199,19 @@ namespace CloudRP.Authentication
             string mutationName = "setCharacterSelection";
 
             uiHandling.sendMutationToClient(player, mutationName, "toggle", true);
+
+            
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                uiHandling.resetMutationPusher(player, MutationKeys.PlayerCharacters);
+                List<DbCharacter> allPlayerCharacters = dbContext.characters.Where(character => character.owner_id == userData.accountId).ToList();
+
+                allPlayerCharacters.ForEach(character =>
+                {
+                    Console.WriteLine($" ID: {character.owner_id}");
+                    uiHandling.handleObjectUiMutationPush(player, MutationKeys.PlayerCharacters, character);
+                });
+            }
         }
 
         public void setUpAutoLogin(Player player, Account userAccount)

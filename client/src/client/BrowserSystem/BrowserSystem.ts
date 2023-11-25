@@ -24,7 +24,9 @@ class BrowserSystem {
 		mp.events.add("browser:sendString", BrowserSystem.handleBrowserString);
 		mp.events.add("browser:pushRouter", BrowserSystem.pushRouter);
 		mp.events.add("browser:handlePlayerObjectMutation", BrowserSystem.handleObjectToBrowser);
+		mp.events.add("browser:handlePlayerObjectMutationPush", BrowserSystem.handleObjectToBrowserPush);
 		mp.events.add("browser:resetRouter", BrowserSystem.handleReset);
+		mp.events.add("browser:resetMutationPusher", BrowserSystem.resetMutationPusher)
 
 		mp.keys.bind(F2, false, function () {
 			isFunctionPressed = !isFunctionPressed;
@@ -71,12 +73,25 @@ class BrowserSystem {
 
 	public static handleObjectToBrowser(_mutationKey: string, data: object) {
 		if (!BrowserSystem._browserInstance) return;
-		mp.console.logInfo(JSON.stringify(data));
 		BrowserSystem._browserInstance.execute(`appSys.commit("playerMutationSetter", {
 			_mutationKey: "${_mutationKey}",
 			data: ${JSON.stringify(data)}
 		})`);
+	}
 
+	public static handleObjectToBrowserPush(_mutationKey: string, data: object) {
+		if (!BrowserSystem._browserInstance) return;
+		BrowserSystem._browserInstance.execute(`appSys.commit("playerMutationPusher", {
+			_mutationKey: "${_mutationKey}",
+			data: ${JSON.stringify(data)}
+		})`);
+	}
+
+	public static resetMutationPusher = (_mutationKey: string) => {
+	if (!BrowserSystem._browserInstance) return;
+		BrowserSystem._browserInstance.execute(`appSys.commit("resetPlayerMutationPusher", {
+			_mutationKey: "${_mutationKey}",
+	})`);
 	}
 
 	public static handleBrowserObject(eventName: string, _object: object) {

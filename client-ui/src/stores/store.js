@@ -11,7 +11,8 @@ const store = new Vuex.Store({
 			player_stats: {},
 			player_data_server: {},
 			player_data_gui: {},
-			player_bandata: {}
+			player_bandata: {},
+			player_characters: []
 		},
 		uiStates: {
 			characterSelection: false,
@@ -40,6 +41,9 @@ const store = new Vuex.Store({
 		},
 		getBanData: (state) => {
 			return state.playerInfo.player_bandata;
+		},
+		getPlayerCharacters: (state) => {
+			return state.playerInfo.player_characters;
 		}
 	},
 	mutations: {
@@ -54,6 +58,12 @@ const store = new Vuex.Store({
 		playerMutationSetter: (state, { _mutationKey, data }) => {
 			//console.log(_mutationKey, data);
 			state.playerInfo[_mutationKey] = data;
+		},
+		playerMutationPusher: (state, { _mutationKey, data }) => {
+			state.playerInfo[_mutationKey].push(data);
+		},
+		resetPlayerMutationPusher: (state, { _mutationKey }) => {
+			state.playerInfo[_mutationKey] = [];
 		},
 		setGuiState: (state, { toggle }) => {
 			state.uiStates.guiEnabled = toggle;

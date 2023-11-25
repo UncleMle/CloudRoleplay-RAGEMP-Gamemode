@@ -3,12 +3,12 @@
         <div class="fixed inset-0 bg-zinc-900/10 backdrop-blur-sm w-full text-white text-lg">
             <div class="container flex items-center max-w-3xl mx-auto mt-52">
                 <div class="flex justify-center w-full">
-                    <div class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border border-gray-400 ">
+                    <div class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-t-2 border-b-2 border-gray-500">
 
                         <div class="border-b border-gray-400">
                             <div class="p-4">
                                 <i class="fa-solid fa-right-to-bracket absolute mt-1.5 text-gray-400"></i>
-                                <h1 class="flex justify-start text-xl font-bold ml-5">{{ characterSelectionState ? "Select Character" : "Login to Cloud RP" }}</h1>
+                                <h1 class="flex justify-start text-xl font-bold ml-6">{{ characterSelectionState ? "Select Character" : "Login to Cloud RP" }}</h1>
                             </div>
                         </div>
 
@@ -18,20 +18,19 @@
                                     <span class="font-medium">Enter your username</span>
                                     <div class="border-gray-400 border mt-2 rounded-lg">
                                         <div>
-                                            <i class="fa-solid fa-user absolute pt-3 border-r p-2 h-10 border-gray-400 text-gray-400"></i>
+                                            <i class="fa-solid fa-user absolute pt-3 border-r p-3 h-11 border-gray-400 text-gray-400"></i>
                                         </div>
-                                        <input v-model="username" type="text" placeholder="Username..." class="ml-9 p-2 block w-full rounded-lg bg-transparent outline-none" />
+                                        <input v-model="username" type="text" placeholder="Username..." class="ml-12 p-2 block w-full rounded-lg bg-transparent outline-none" />
                                     </div>
                                 </label>
                                 <label class="block mt-3">
                                     <span class="font-medium">Enter your password</span>
                                     <div class="border-gray-400 border mt-2 rounded-lg">
                                         <div>
-                                            <i class="fa-solid fa-lock absolute pt-3 border-r p-2 h-10 border-gray-400 text-gray-400"></i>
+                                            <i class="fa-solid fa-lock absolute pt-3 border-r p-3 h-11 border-gray-400 text-gray-400"></i>
                                         </div>
-                                        <input v-model="password" type="password" placeholder="Password..." class="ml-9 p-2 block w-full rounded-lg bg-transparent outline-none" />
+                                        <input v-model="password" type="password" placeholder="Password..." class="ml-12 p-2 block w-full rounded-lg bg-transparent outline-none" />
                                     </div>
-
                                 </label>
 
                                 <label class="mt-4 relative inline-flex items-center cursor-pointer">
@@ -52,25 +51,51 @@
                                 </div>
                             </form>
                         </div>
-                        <div v-else class="p-8">
-                            <form>
-                                <label class="block">
-                                    Enter your character name
-                                    <div class="border-gray-400 border-b mt-2 p-2">
-                                        <input v-model="characterName" placeholder="Username..." class="block w-full bg-transparent rounded-lg outline-none" />
+                        <div v-else class="p-3 max-h-[55rem] overflow-x-hidden">
+
+                            <div v-for="item in characters" :key="item">
+
+                                <div class="p-6 font-medium border rounded-3xl border-gray-500 mt-6 shadow-2xl">
+
+                                    <div v-if="item.isBanned" class="flex justify-center bg-red-500/40 p-3 rounded-lg shadow-xl shadow-red-500/10">
+                                        Character is banned
                                     </div>
-                                </label>
-                                <div class="flex border justify-center mt-3 border-gray-400 rounded-lg">
 
-                                    <button @click="playCharacter()" class="p-3 w-full rounded-lg">Play</button>
+                                    <table class="w-full border-separate [border-spacing:0.75rem] border-b">
+                                        <tr class="text-center">
+                                            <td><i class="fa-solid fa-file-signature pr-2 "></i>Name</td>
+                                            <td><i class="fa-solid fa-notes-medical pr-2"></i>Health</td>
+                                            <td><i class="fa-solid fa-calendar-days pr-2"></i>Last Seen</td>
+                                            <td><i class="fa-solid fa-star pr-2"></i>Exp</td>
+                                        </tr>
+                                        <tr class="text-center">
+                                            <td class="max-w-[5vw] overflow-hidden text-ellipsis">{{ item.character_name.replace("_", " ") }}</td>
+                                            <td>{{ item.character_health }}</td>
+                                            <td>{{ formatDate(item.last_login) }}</td>
+                                            <td>6969969</td>
+                                        </tr>
+                                    </table>
+                                    <table class="w-full border-separate [border-spacing:0.75rem] border-b">
+                                        <tr class="text-center">
+                                            <td><i class="fa-solid fa-money-bill pr-2 "></i>Money</td>
+                                            <td><i class="fa-solid fa-notes-medical pr-2"></i>Time played</td>
+                                            <td><i class="fa-solid fa-calendar-days pr-2"></i>Faction</td>
+                                            <td><i class="fa-solid fa-calendar-days pr-2"></i>Created At </td>
+                                        </tr>
+                                        <tr class="text-center">
+                                            <td class="text-green-500">${{ item.money_amount.toLocaleString("en-US") }}</td>
+                                            <td>100 minutes</td>
+                                            <td class="max-w-[4vw] overflow-hidden text-ellipsis">none</td>
+                                            <td>{{ formatDate(item.CreatedDate) }}</td>
+                                        </tr>
+                                    </table>
+                                    <button @click="playCharacter(item.character_name)" class="border p-2 w-full mt-10 rounded-lg border-gray-500 hover:border-green-500 duration-300"><i class="fa-solid fa-play"></i></button>
                                 </div>
-                            </form>
+                            </div>
                         </div>
-
-
                     </div>
-
                 </div>
+
                 </div>
             </div>
     </main>
@@ -87,12 +112,13 @@
                 username: "",
                 password: "",
                 rememberMe: false,
-                characterName: ""
+                characterName: "",
+                characters: [] 
             };
         },
         computed: {
             ...mapGetters({
-                characterSelectionState: 'getCharacterSelectionStatus'
+                characterSelectionState: 'getCharacterSelectionStatus',
             })
         },
         methods: {
@@ -102,17 +128,28 @@
                     window.mp.trigger("browser:sendObject", "server:recieveAuthInfo",JSON.stringify(this.$data));
                 }
             },
-            playCharacter() {
-                if (this.characterName.length > 0 && window.mp) {
-                    window.mp.trigger("browser:sendString", "server:recieveCharacterName", this.characterName);
+            playCharacter(cname) {
+                if (this.characters.length > 0 && window.mp) {
+                    window.mp.trigger("browser:sendString", "server:recieveCharacterName", cname);
                 }
             },
             register() {
                 console.log("register");
+            },
+            getCharacterData() {
+                return this.$store.state.playerInfo.player_characters;
+            },
+            formatDate(dateString) {
+                const dateTime = new Date(dateString);
+                return dateTime.toLocaleDateString();
             }
         },
         watch: {
 
+        },
+        mounted() {
+            this.characters = this.$store.state.playerInfo.player_characters;
+            console.log(this.characters);
         }
     }
 </script>

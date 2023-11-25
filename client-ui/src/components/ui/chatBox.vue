@@ -221,12 +221,4 @@ export default {
         border-left: solid rgb(121, 121, 121) 3px;
     }
 
-    ::-webkit-scrollbar {
-        width: 0.4vw;
-    }
-
-    ::-webkit-scrollbar-thumb {
-        background: rgba(0, 0, 0, 0.425);
-        border-radius: 20px;
-    }
 </style>
