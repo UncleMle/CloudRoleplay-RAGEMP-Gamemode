@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Xml.Linq;
 using static CloudRP.Authentication.Account;
@@ -383,10 +384,20 @@ namespace CloudRP.Admin
             }
         }
 
-        [Command("router")]
-        public void pushRouter(Player player, string route)
+        [Command("spw", "~r~/spw [weaponName] [ammo]")]
+        public void spawnWeapon(Player player, WeaponHash weaponName, int ammo = 999)
         {
-            uiHandling.pushRouterToClient(player, route);
+            User userData = PlayersData.getPlayerAccountData(player);
+            if (userData == null) return;
+
+            if(userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            {
+                NAPI.Player.GivePlayerWeapon(player, weaponName, ammo);
+
+                AdminUtils.staffSay(player, $"You gave yourself a {Chat.yellow}{weaponName}{Chat.White} with {ammo} ammo");
+            }
+            else AdminUtils.sendNoAuth(player);
+
         }
     }
 }

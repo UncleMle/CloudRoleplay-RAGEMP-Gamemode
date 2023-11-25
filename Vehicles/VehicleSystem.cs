@@ -36,7 +36,10 @@ namespace CloudRP.Vehicles
 
                 foreach (var item in vehicles)
                 {
-                    spawnVehicle(item);
+                    if(item.vehicle_dimension == VehicleDimensions.World)
+                    {
+                        spawnVehicle(item);
+                    }
                 }
             };
 
@@ -259,7 +262,29 @@ namespace CloudRP.Vehicles
             }
 
             AdminUtils.staffSay(player, Chat.yellow + "-----------------------------------------------------------");
+        }
 
+        [ServerEvent(Event.VehicleDeath)]
+        public void onVehicleDeath(Vehicle vehicle)
+        {
+            DbVehicle vehicleData = getVehicleData(vehicle);
+
+            if (vehicleData == null) return;
+
+            vehicleData.vehicle_dimension = VehicleDimensions.World;
+            vehicleData.position_x = VehicleDimensions.morsPosition.X;
+            vehicleData.position_y = VehicleDimensions.morsPosition.Y;
+            vehicleData.position_z = VehicleDimensions.morsPosition.Z;
+            vehicleData.vehicle_insurance_id = VehicleDimensions._morsId;
+
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                dbContext.vehicles.Update(vehicleData);
+                dbContext.SaveChanges();
+            }
+
+            vehicle.Delete();
+            Console.WriteLine($"Vehicle #{vehicleData.vehicle_id} was saved to insurance.");
         }
     }
 }

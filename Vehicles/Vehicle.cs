@@ -37,5 +37,19 @@ namespace CloudRP.Vehicles
         [Required]
         public float rotation { get; set;}
 
+        public string vehicle_dimension { get; set; }
+
+        public int vehicle_insurance_id { get; set; }
+
+        public int vehicle_garage_id { get; set; }
+    }
+
+    class VehicleDimensions
+    {
+        public static readonly string World = "world";
+        public static readonly string Insurance = "insurance";
+        public static readonly string Garage = "Garage";
+        public static readonly Vector3 morsPosition = new Vector3(-862, -265, 40);
+        public static readonly int _morsId = 0;
     }
 }
