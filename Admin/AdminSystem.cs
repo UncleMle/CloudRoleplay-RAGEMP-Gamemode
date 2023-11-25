@@ -388,14 +388,15 @@ namespace CloudRP.Admin
             if(AdminUtils.checkUserData(player, userData))
             {
                 Player banPlayer = CommandUtils.getPlayerFromNameOrId(playerNameOrId);
-                User banPlayerUserData = PlayersData.getPlayerAccountData(banPlayer);
-                if(banPlayer == null || banPlayerUserData == null)
+                if(banPlayer == null)
                 {
                     CommandUtils.notFound(player);
                     return;
                 }
 
-                if(time < -1)
+                User banPlayerUserData = PlayersData.getPlayerAccountData(banPlayer);
+
+                if (time < -1)
                 {
                     AdminUtils.staffSay(player, "Enter a valid minute time.");
                     return;
