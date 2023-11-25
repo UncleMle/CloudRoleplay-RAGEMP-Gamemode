@@ -1,5 +1,8 @@
 ﻿using CloudRP.Authentication;
+using CloudRP.Character;
 using CloudRP.Database;
+using CloudRP.PlayerData;
+using CloudRP.Utils;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
@@ -220,6 +223,43 @@ namespace CloudRP.Vehicles
             }
             
             return returnRes;
+        }
+
+        public static DbCharacter getOwnerOfVehicleById(int vehicleOwnerId)
+        {
+            List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
+            DbCharacter foundPlayer = null;
+
+            foreach(Player player in onlinePlayers)
+            {
+                DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+
+                if(charData != null)
+                {
+                    if(charData.character_id == vehicleOwnerId)
+                    {
+                        foundPlayer = charData;
+                    }
+                }
+            }
+
+            return foundPlayer;
+        }
+
+        public static void sayInfoAboutVehicle(Player player, User userdata, DbVehicle vehicle)
+        {
+            AdminUtils.staffSay(player, Chat.yellow + "-----------------------------------------------------------");
+            AdminUtils.staffSay(player, "Vehicle id: " + Chat.red + vehicle.vehicle_id + Chat.White + " VehName: " + Chat.red + vehicle.vehicle_name);
+            AdminUtils.staffSay(player, "Owner id: " + Chat.red + vehicle.owner_id + Chat.White + " Numberplate: " + Chat.red + vehicle.numberplate);
+
+            DbCharacter vehicleOwnerData = getOwnerOfVehicleById(vehicle.owner_id);
+            if (userdata.adminDuty && vehicleOwnerData != null)
+            {
+                AdminUtils.staffSay(player, "Owner: " + Chat.red + vehicleOwnerData.character_name+ Chat.White + " Owner Last Login: " + Chat.red + vehicleOwnerData.last_login);
+            }
+
+            AdminUtils.staffSay(player, Chat.yellow + "-----------------------------------------------------------");
+
         }
     }
 }

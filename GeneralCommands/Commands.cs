@@ -64,5 +64,34 @@ namespace CloudRP.GeneralCommands
             uiHandling.handleObjectUiMutation(player, MutationKeys.PlayerData, player);
 
         }
+
+        [Command("pm", "~y~Use: /pm [playerNameOrId] [message]", GreedyArg = true, Alias = "privatemessage" )]
+        public void onPrivateMessage(Player player, string nameOrId, string message)
+        {
+            DbCharacter character = PlayersData.getPlayerCharacterData(player);
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if (character == null || userData == null) return;
+
+            Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+            if (findPlayer == null)
+            {
+                CommandUtils.errorSay(player, "Player couldn't be found");
+                return;
+            }
+
+            string pmToPlayer = Chat.yellow+$"[PM] from {character.character_name} [{player.Id}] " + Chat.grey + "(( " + Chat.White + message + Chat.grey + " ))";
+            string pmFromPlayer = Chat.grey + $"[PM] You " + "(( " + message + " ))";
+
+            if(userData.adminDuty)
+            {
+                pmToPlayer = Chat.red+$"[ADMIN PM] from {userData.adminName} [{player.Id}] " + Chat.grey + "(( " + Chat.White + message + Chat.grey + " ))";
+            }
+
+            NAPI.Chat.SendChatMessageToPlayer(findPlayer, pmToPlayer);
+            NAPI.Chat.SendChatMessageToPlayer(player, pmFromPlayer);
+
+        }
     }
 }

@@ -3,14 +3,16 @@ using System;
 using CloudRP.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CloudRP.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231125034300_Added ban tables")]
+    partial class Addedbantables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,14 +50,15 @@ namespace CloudRP.Migrations
                         .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<long>("issue_unix_date")
-                        .HasColumnType("bigint");
+                    b.Property<int>("issue_unix_data")
+                        .HasColumnType("int");
 
-                    b.Property<long>("lift_unix_time")
-                        .HasColumnType("bigint");
+                    b.Property<int>("lift_unix_time")
+                        .HasColumnType("int");
 
-                    b.Property<ulong>("social_club_id")
-                        .HasColumnType("bigint unsigned");
+                    b.Property<string>("social_club_id")
+                        .IsRequired()
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("social_club_name")
                         .IsRequired()

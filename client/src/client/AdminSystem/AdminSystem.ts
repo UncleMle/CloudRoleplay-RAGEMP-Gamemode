@@ -17,7 +17,7 @@ class AdminSystem {
 	}
 
 	public static handleFlyStart(entity: EntityMp, value: UserData): void {
-		if (entity.type != "player") return;
+		if (entity.type != "player" || value == null) return;
 
 		if (value.isFlying) {
 			entity.setAlpha(0);
@@ -54,7 +54,7 @@ class AdminSystem {
 
 		if (!streamedEntityData) return;
 
-		if (streamedEntityData.isFlying) {
+		if (streamedEntityData?.isFlying) {
 			entity.setAlpha(0);
 		}
 

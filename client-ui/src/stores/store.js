@@ -9,11 +9,14 @@ const store = new Vuex.Store({
 	state: {
 		playerInfo: {
 			player_stats: {},
-			player_data_server: {}
+			player_data_server: {},
+			player_data_gui: {},
+			player_bandata: {}
 		},
 		uiStates: {
 			characterSelection: false,
-			chatEnabled: false
+			chatEnabled: false,
+			guiEnabled: true
 		}
 	},
 	getters: {
@@ -28,6 +31,15 @@ const store = new Vuex.Store({
 		},
 		getPlayerDataServer: (state) => {
 			return state.playerInfo.player_data_server;
+		},
+		getGuiData: (state) => {
+			return state.playerInfo.player_data_gui;
+		},
+		getGuiStatus: (state) => {
+			return state.uiStates.guiEnabled;
+		},
+		getBanData: (state) => {
+			return state.playerInfo.player_bandata;
 		}
 	},
 	mutations: {
@@ -40,7 +52,11 @@ const store = new Vuex.Store({
 			return;
 		},
 		playerMutationSetter: (state, { _mutationKey, data }) => {
+			//console.log(_mutationKey, data);
 			state.playerInfo[_mutationKey] = data;
+		},
+		setGuiState: (state, { toggle }) => {
+			state.uiStates.guiEnabled = toggle;
 		}
 	}
 });

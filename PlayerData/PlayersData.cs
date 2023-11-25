@@ -58,5 +58,15 @@ namespace CloudRP.PlayerData
             DbCharacter character= player.GetData<DbCharacter>(_sharedCharacterDataIdentifier);
             return character;
         }
+
+        public static void flushUserAndCharacterData(Player player)
+        {
+            player.SetData<User>(_sharedAccountDataIdentifier, null);
+            player.SetData<DbCharacter>(_sharedCharacterDataIdentifier, null);
+            player.ResetData();
+
+            player.ResetOwnSharedData(_sharedAccountDataIdentifier);
+            player.ResetOwnSharedData(_sharedCharacterDataIdentifier);
+        }
     }
 }

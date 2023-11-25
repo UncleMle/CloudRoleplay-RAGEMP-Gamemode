@@ -1,9 +1,9 @@
 <template>
     <main>
-        <div class="fixed inset-0 bg-zinc-900/10 backdrop-blur-sm w-full text-white">
-            <div class="container flex items-center max-w-lg mx-auto mt-52">
-                <div class="flex justify-center">
-                    <div class="rounded-xl text-white w-[34rem] bg-black/70 shadow-2xl shadow-black border border-gray-400 ">
+        <div class="fixed inset-0 bg-zinc-900/10 backdrop-blur-sm w-full text-white text-lg">
+            <div class="container flex items-center max-w-3xl mx-auto mt-52">
+                <div class="flex justify-center w-full">
+                    <div class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border border-gray-400 ">
 
                         <div class="border-b border-gray-400">
                             <div class="p-4">

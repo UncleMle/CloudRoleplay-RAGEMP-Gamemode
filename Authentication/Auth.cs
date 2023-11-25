@@ -35,7 +35,7 @@ namespace CloudRP.Authentication
             UserCredentials userCredentials = JsonConvert.DeserializeObject<UserCredentials>(data);
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (userData != null) return;
+            if (userData != null || AdminUtils.checkPlayerIsBanned(player) != null) return;
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
@@ -54,6 +54,17 @@ namespace CloudRP.Authentication
 
                         dbContext.Update(findAccount);
                         dbContext.SaveChanges();
+
+                        if(findAccount.ban_status == 1)
+                        {
+                            User acUser = new User
+                            {
+                                adminName = "System"
+                            };
+
+                            AdminUtils.banAPlayer(-1, user, user, player, "Logging into banned accounts");
+                            return;
+                        }
 
                         PlayersData.setPlayerAccountData(player, user);
                         setUserToCharacterSelection(player, user);
@@ -90,7 +101,7 @@ namespace CloudRP.Authentication
             User userData = PlayersData.getPlayerAccountData(player);
             DbCharacter character = null;
 
-            if(userData != null)
+            if(userData != null && AdminUtils.checkPlayerIsBanned(player) == null)
             {
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
@@ -178,7 +189,7 @@ namespace CloudRP.Authentication
 
         public static void setUserToCharacterSelection(Player player, User userData)
         {
-            if (userData == null) return;
+            if (userData == null || AdminUtils.checkPlayerIsBanned(player) != null) return;
 
             userData.isOnCharacterCreation = true;
 

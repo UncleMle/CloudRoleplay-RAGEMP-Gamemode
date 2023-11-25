@@ -17,9 +17,24 @@ export interface UserData {
 	isFrozen: boolean
 }
 
+export interface StreetData {
+	getStreet: GetStreetNameAtCoordResult,
+	zoneName: string,
+	zoneTwo: string
+}
+
 export interface CharacterData {
 	characterId: number,
 	characterName: string
+}
+
+export interface Gui {
+	playerId: number,
+	direction: string,
+	isFrozen: boolean,
+	unix: number,
+	zoneName: string,
+	zoneNameTwo: string
 }
 
 export interface Flight {

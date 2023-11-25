@@ -1,9 +1,12 @@
 ﻿using CloudRP.Admin;
 using CloudRP.Authentication;
+using CloudRP.Character;
+using CloudRP.Database;
 using CloudRP.PlayerData;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace CloudRP.Utils
@@ -25,7 +28,7 @@ namespace CloudRP.Utils
             {
                 Player recievingStaff = entry.Key;
 
-                NAPI.Chat.SendChatMessageToPlayer(recievingStaff, message);
+                staffSay(recievingStaff, message);
             }
         }
 
@@ -76,6 +79,94 @@ namespace CloudRP.Utils
                 sendNoAuth(player);
                 return false;
             }
+        }
+
+        public static void setPed(Player player, string pedName)
+        {
+            uint hash = NAPI.Util.GetHashKey(pedName);
+            NAPI.Player.SetPlayerSkin(player, hash);
+        }
+
+        public static Ban checkPlayerIsBanned(Player player)
+        {
+            Ban returnBanData = null;
+         
+            try
+            {
+                using (DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    returnBanData = dbContext.bans.Where(ban => ban.client_serial == player.Serial || ban.social_club_name == player.SocialClubName || ban.social_club_id == player.SocialClubId || ban.ip_address == player.Address).FirstOrDefault();
+
+                    if (returnBanData != null && returnBanData.lift_unix_time < CommandUtils.generateUnix() && returnBanData.lift_unix_time != -1)
+                    {
+                        Account findUserAccount = dbContext.accounts.Find(returnBanData.account_id);
+                        
+                        if (findUserAccount != null)
+                        {
+                            findUserAccount.ban_status = 0;
+                            dbContext.accounts.Update(findUserAccount);
+                        }
+
+                        dbContext.bans.Remove(returnBanData);
+                        dbContext.SaveChanges();
+                        returnBanData = null;
+                    }
+                }
+            } catch
+            {
+
+            }
+            
+            return returnBanData;
+        }
+
+        public static void setPlayerToBanScreen(Player player, Ban banData)
+        {
+            player.Dimension = Auth._startDimension;
+            PlayersData.flushUserAndCharacterData(player);
+            player.TriggerEvent("client:loginCameraStart");
+            uiHandling.pushRouterToClient(player, Browsers.BanPage);
+
+            uiHandling.handleObjectUiMutation(player, MutationKeys.BanData, banData);
+        }
+
+        public static void banAPlayer(int time, User adminUserData, User banPlayerUserData, Player banPlayer, string reason)
+        {
+            long minuteSeconds = time * 60;
+            long issueDateUnix = CommandUtils.generateUnix();
+            long lift_unix_time = time == -1 ? -1 : CommandUtils.generateUnix() + minuteSeconds;
+
+            Ban ban = new Ban
+            {
+                account_id = banPlayerUserData.accountId,
+                admin = adminUserData.adminName,
+                ban_reason = reason,
+                ip_address = banPlayer.Address,
+                lift_unix_time = lift_unix_time,
+                social_club_id = banPlayer.SocialClubId,
+                social_club_name = banPlayer.SocialClubName,
+                client_serial = banPlayer.Serial,
+                CreatedDate = DateTime.Now,
+                UpdatedDate = DateTime.Now,
+                issue_unix_date = issueDateUnix,
+                username = banPlayerUserData.username
+            };
+
+            using (DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                Account findAccount = dbContext.accounts.Find(banPlayerUserData.accountId);
+
+                if (findAccount != null)
+                {
+                    findAccount.ban_status = 1;
+                    dbContext.Update(findAccount);
+                }
+
+                dbContext.Add(ban);
+                dbContext.SaveChanges();
+            }
+
+            setPlayerToBanScreen(banPlayer, ban);
         }
     }
 }

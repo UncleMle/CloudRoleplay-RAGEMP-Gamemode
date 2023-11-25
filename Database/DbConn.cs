@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using CloudRP.Admin;
 using CloudRP.Authentication;
 using CloudRP.Character;
 using CloudRP.Vehicles;
@@ -22,6 +23,7 @@ namespace CloudRP.Database
         public DbSet<Account> accounts { get; set; }
         public DbSet<DbVehicle> vehicles { get; set; }
         public DbSet<DbCharacter> characters { get; set; }
+        public DbSet<Ban> bans { get; set; }
 
     }
 

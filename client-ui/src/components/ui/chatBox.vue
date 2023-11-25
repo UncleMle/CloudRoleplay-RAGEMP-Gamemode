@@ -42,6 +42,8 @@ export default {
 
             if (!this.chatState) return;
 
+            if (this.$router.currentRoute.path != "/") return;
+
             if (e.keyCode == KEY_T) {
                 this.active = true;
                 this.showChat = true;

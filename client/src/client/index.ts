@@ -5,6 +5,7 @@ import NameTags from "./Nametags/Nametags";
 import AdminFly from "./AdminSystem/AdminFly";
 import AdminEvents from "./AdminSystem/AdminEvents";
 import SwitchCamera from "./Authentication/SwitchCamera";
+import GuiSystem from "./BrowserSystem/GuiSystem";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -14,3 +15,4 @@ new NameTags();
 new AdminFly();
 new AdminEvents();
 new SwitchCamera();
+new GuiSystem();

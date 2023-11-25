@@ -1,4 +1,5 @@
-﻿using CloudRP.PlayerData;
+﻿using CloudRP.Character;
+using CloudRP.PlayerData;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
@@ -10,33 +11,45 @@ namespace CloudRP.Utils
     {
         public static double _rp_commands_radius = 20.0;
 
-        public static Player getPlayerFromNameOrId(Player player, string nameOrId)
+        public static Player getPlayerFromNameOrId(string nameOrId)
         {
             List<Player> allPlayers = NAPI.Pools.GetAllPlayers();
             Player returnPlayer = null;
 
-            foreach (Player loopPlayer in allPlayers)
+            foreach(Player findPlayer in allPlayers)
             {
-                User userData = PlayersData.getPlayerAccountData(player);
-                if (userData == null) return null;
-                if(userData.username == nameOrId)
+                DbCharacter characterData = PlayersData.getPlayerCharacterData(findPlayer);
+
+                if (characterData == null) break;
+
+                string findPlayerCharacterName = characterData.character_name.ToLower();
+                int? findPlayerId = tryParse(nameOrId);
+
+                if(findPlayerId != null && findPlayerId == findPlayer.Id)
                 {
-                    returnPlayer = loopPlayer;
+                    returnPlayer = findPlayer;
                     break;
                 }
 
-                int? pid = tryParse(nameOrId);
+                string nameFind = nameOrId.ToLower();
 
-                if (pid != null && player.Id == pid)
+                if(nameFind == findPlayerCharacterName)
                 {
-                    returnPlayer = loopPlayer;
-                    break;
-                }                
-            }
+                    returnPlayer = findPlayer;
+                    break;  
+                }
+                
+                string lname = findPlayerCharacterName.Split("_")[1];
+                string fname = findPlayerCharacterName.Split("_")[0];
 
-            if(returnPlayer == null)
-            {
-                notFound(player);
+
+                if (nameFind == fname || nameFind == lname)
+                {
+                    returnPlayer = findPlayer;
+                    break;
+                }
+                
+
             }
 
             return returnPlayer;
@@ -82,6 +95,18 @@ namespace CloudRP.Utils
         public static string formatCharName(string name)
         {
             return name.Replace("_", " ");
+        }
+
+        public static long generateUnix()
+        {
+            return DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        }
+
+        public static DateTime unixTimeStampToDateTime(double unixTimeStamp)
+        {
+            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            dateTime = dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+            return dateTime;
         }
     }
 }

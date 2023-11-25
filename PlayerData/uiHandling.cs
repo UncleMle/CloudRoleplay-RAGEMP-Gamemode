@@ -44,11 +44,13 @@ namespace CloudRP.PlayerData
         public static readonly string None = "/";
         public static readonly string LoginPage = "/login";
         public static readonly string StatsPage = "/stats";
+        public static readonly string BanPage = "/ban";
     }
 
     public static class MutationKeys
     {
         public static readonly string PlayerStats = "player_stats";
+        public static readonly string BanData = "player_bandata";
         public static readonly string PlayerData = "player_data_server";
     }
 }

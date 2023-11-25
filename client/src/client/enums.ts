@@ -14,3 +14,9 @@ export enum AdminRanks {
 	Admin_HeadAdmin = 7,
 	Admin_Founder = 8
 }
+
+export class MutationKeys {
+	public static readonly PlayerStats: string = "player_stats";
+	public static readonly PlayerData: string = "player_data_server";
+	public static readonly PlayerGui: string = "player_data_gui";
+}

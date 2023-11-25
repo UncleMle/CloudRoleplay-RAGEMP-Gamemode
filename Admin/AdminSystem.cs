@@ -7,6 +7,7 @@ using CloudRP.Vehicles;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Xml.Linq;
@@ -16,6 +17,17 @@ namespace CloudRP.Admin
 {
     internal class AdminSystem : Script
     {
+        [ServerEvent(Event.PlayerConnected)]
+        public void playerConnected(Player player)
+        {
+            Ban checkIsBanned = AdminUtils.checkPlayerIsBanned(player);
+
+            if (checkIsBanned != null)
+            {
+                AdminUtils.setPlayerToBanScreen(player, checkIsBanned);
+            }
+
+        }
 
         [Command("aduty")]
         public void onAduty(Player player)
@@ -29,13 +41,12 @@ namespace CloudRP.Admin
                 if (userData.adminDuty)
                 {
                     AdminUtils.sendMessageToAllStaff($"{AdminUtils.staffPrefix} {userData.adminName} is on duty");
-                    uint hash = NAPI.Util.GetHashKey(userData.adminPed);
-                    NAPI.Player.SetPlayerSkin(player, hash);
+                    AdminUtils.setPed(player, userData.adminPed);
                 }
                 else
                 {
-                    uint hash = NAPI.Util.GetHashKey("mp_m_freemode_01");
-                    NAPI.Player.SetPlayerSkin(player, hash);
+                    AdminUtils.setPed(player, "mp_m_freemode_01");
+
                     AdminUtils.sendMessageToAllStaff($"{AdminUtils.staffPrefix} {userData.adminName} is off duty");
                 }
 
@@ -160,7 +171,7 @@ namespace CloudRP.Admin
 
             if (AdminUtils.checkUserData(player, userData))
             {
-                Player getPlayer = CommandUtils.getPlayerFromNameOrId(player, nameOrId);
+                Player getPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
 
                 if (getPlayer != null)
                 {
@@ -223,22 +234,46 @@ namespace CloudRP.Admin
             else AdminUtils.sendNoAuth(player);
         }
 
-        [Command("gcv")]
-        public void getVehicleInfo(Player player, int vehicleId)
+        [Command("gcv", "~r~/gcv [Vehicle ID or vehicle]")]
+        public void getVehicleInfo(Player player, int vehicleId = -1)
         {
             User userData = PlayersData.getPlayerAccountData(player);
+            
             if(userData.adminLevel > 0)
             {
-                DbVehicle foundVehicleData = VehicleSystem.getVehicleDataById(vehicleId);
 
-                if(foundVehicleData != null)
+                if(vehicleId == -1 && player.Vehicle == null)
                 {
-                    AdminUtils.staffSay(player, Chat.yellow+"-----------------------------------------------------------");
-                    AdminUtils.staffSay(player, "Vehicle id: " + Chat.red + foundVehicleData.vehicle_id + Chat.White + " VehName: " + Chat.red + foundVehicleData.vehicle_name);
-                    AdminUtils.staffSay(player, "Owner id: " + Chat.red + foundVehicleData.owner_id+ Chat.White + " Numberplate: " + Chat.red + foundVehicleData.numberplate);
-                    AdminUtils.staffSay(player, Chat.yellow + "-----------------------------------------------------------");
+                    AdminUtils.staffSay(player, $"Specifiy a vehicle ID or use this command inside of a vehicle.");
+                    return;
                 }
 
+                
+                if(vehicleId == -1 && player.IsInVehicle)
+                {
+                    DbVehicle currentVehicleData = VehicleSystem.getVehicleData(player.Vehicle);
+
+                    if (currentVehicleData != null)
+                    {
+                        VehicleSystem.sayInfoAboutVehicle(player, userData, currentVehicleData);
+                    }
+                    else
+                    {
+                        AdminUtils.staffSay(player, "Vehicle couldn't be found.");
+                    }
+                    return;
+                }
+
+                DbVehicle foundVehicleData = VehicleSystem.getVehicleDataById(vehicleId);
+                
+                if (foundVehicleData != null)
+                {
+                    VehicleSystem.sayInfoAboutVehicle(player, userData, foundVehicleData);
+                }
+                else
+                {
+                    AdminUtils.staffSay(player, "Vehicle couldn't be found.");
+                }
             }
         }
 
@@ -249,7 +284,7 @@ namespace CloudRP.Admin
 
             if(AdminUtils.checkUserData(player, userData))
             {
-                Player getPlayer = CommandUtils.getPlayerFromNameOrId(player, playerIdOrName);
+                Player getPlayer = CommandUtils.getPlayerFromNameOrId(playerIdOrName);
                 DbCharacter characterData = PlayersData.getPlayerCharacterData(getPlayer);
 
                 if (getPlayer == null || characterData == null)
@@ -288,7 +323,64 @@ namespace CloudRP.Admin
                     AdminUtils.staffSay(player, " You must be in a vehicle to repair it.");
                 }
             }
+        }
 
+        [Command("setaped", "~r~/setaped [pedName]")]
+        public void setAdminPed(Player player, string pedName)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(userData.adminLevel > (int)AdminRanks.Admin_SeniorSupport)
+            {
+                using (DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    Account findAccount = dbContext.accounts.Find(userData.accountId);
+
+                    if (findAccount != null)
+                    {
+                        findAccount.admin_ped = pedName;
+                        userData.adminPed = pedName;
+                    }
+
+                    dbContext.Update(findAccount);
+                    dbContext.SaveChanges();
+                    PlayersData.setPlayerAccountData(player, userData);
+                    AdminUtils.setPed(player, pedName);
+
+                    AdminUtils.staffSay(player, $"You set your admin ped to {pedName}");
+                }
+            } else AdminUtils.sendNoAuth(player);
+        }
+
+        [Command("ban", "~r~/ban [playerIdOrName] [reason] [length minutes(-1 for permanent ban)]")]
+        public static void banPlayer(Player player, string playerNameOrId, string reason, int time)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(AdminUtils.checkUserData(player, userData))
+            {
+                Player banPlayer = CommandUtils.getPlayerFromNameOrId(playerNameOrId);
+                User banPlayerUserData = PlayersData.getPlayerAccountData(banPlayer);
+                if(banPlayer == null || banPlayerUserData == null)
+                {
+                    CommandUtils.notFound(player);
+                    return;
+                }
+
+                if(time < -1)
+                {
+                    AdminUtils.staffSay(player, "Enter a valid minute time.");
+                    return;
+                }
+
+                long lift_unix_time = time == -1 ? -1 : CommandUtils.generateUnix() + time * 60;
+
+                AdminUtils.banAPlayer(time, userData, banPlayerUserData, banPlayer, reason);
+
+                string playerAdminRank = AdminUtils.getColouredAdminRank(userData);
+                string endOfBanString = lift_unix_time == 1 ? Chat.red + "is permanent" : "expires at" + Chat.orange + CommandUtils.unixTimeStampToDateTime(lift_unix_time);
+                AdminUtils.sendMessageToAllStaff($"{playerAdminRank} {userData.adminName} banned account {banPlayerUserData.username} with reason {reason} ban {endOfBanString}");
+            }
         }
 
         [Command("router")]

@@ -3,72 +3,21 @@ using System;
 using CloudRP.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CloudRP.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231125033330_Added ban table")]
+    partial class Addedbantable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
-
-            modelBuilder.Entity("CloudRP.Admin.Ban", b =>
-                {
-                    b.Property<int>("ban_id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("account_id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("admin")
-                        .IsRequired()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("ban_reason")
-                        .IsRequired()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("client_serial")
-                        .IsRequired()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("ip_address")
-                        .IsRequired()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<long>("issue_unix_date")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("lift_unix_time")
-                        .HasColumnType("bigint");
-
-                    b.Property<ulong>("social_club_id")
-                        .HasColumnType("bigint unsigned");
-
-                    b.Property<string>("social_club_name")
-                        .IsRequired()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("username")
-                        .IsRequired()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.HasKey("ban_id");
-
-                    b.ToTable("bans");
-                });
 
             modelBuilder.Entity("CloudRP.Authentication.Account", b =>
                 {
