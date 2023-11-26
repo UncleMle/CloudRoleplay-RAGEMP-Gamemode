@@ -60,7 +60,7 @@ namespace CloudRP.Utils
             NAPI.Chat.SendChatMessageToPlayer(player, $"{Chat.error}This player wasn't found");
         }
 
-        private static int? tryParse(string name)
+        public static int? tryParse(string name)
         {
             try
             {

@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Timers;
 
@@ -323,5 +324,68 @@ namespace CloudRP.Vehicles
         {
             return number.ToString("N" + decimals);
         }
+
+        public static Vehicle getVehicleByPlate(string vehiclePlate)
+        {
+            Vehicle returnVeh = null;
+
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                DbVehicle findVehicle = dbContext.vehicles.Where(veh => veh.numberplate == vehiclePlate).FirstOrDefault();
+
+                if (findVehicle != null && findVehicle.vehicle_dimension != VehicleDimensions.World)
+                {
+                    returnVeh = spawnVehicle(findVehicle);
+                }
+            }
+
+            if(returnVeh == null) { 
+                List<Vehicle> onlineVehicles = NAPI.Pools.GetAllVehicles();
+
+                foreach(Vehicle vehicle in onlineVehicles)
+                {
+                    if(vehicle.NumberPlate == vehiclePlate)
+                    {
+                        returnVeh = vehicle;
+                    }
+                }
+            }
+
+            return returnVeh;
+        }
+
+        public static Vehicle getVehicleById(int vehicleId)
+        {
+            Vehicle returnVeh = null;
+
+            using (DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                DbVehicle findVehicle = dbContext.vehicles.Where(veh => veh.vehicle_id == vehicleId).FirstOrDefault();
+
+                if (findVehicle != null && findVehicle.vehicle_dimension != VehicleDimensions.World)
+                {
+                    returnVeh = spawnVehicle(findVehicle);
+                }
+            }
+
+            if (returnVeh == null)
+            {
+                List<Vehicle> onlineVehicles = NAPI.Pools.GetAllVehicles();
+
+                foreach (Vehicle vehicle in onlineVehicles)
+                {
+                    DbVehicle vehicleData = VehicleSystem.getVehicleData(vehicle);
+
+                    if (vehicleData.vehicle_id == vehicleId)
+                    {
+                        returnVeh = vehicle;
+                    }
+                }
+            }
+
+            return returnVeh;
+        }
+
+
     }
 }

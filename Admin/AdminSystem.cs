@@ -120,51 +120,30 @@ namespace CloudRP.Admin
             else AdminUtils.sendNoAuth(player);
         }
 
-        [Command("bringv", "~r~/bringv [vehicleId]", Alias = "vbring")]
-        public void bringVehicle(Player player, int vehicleId)
+        [Command("bringv", "~r~/bringv [vehicleIdOrPlate]", Alias = "vbring")]
+        public void bringVehicle(Player player, string vehicleIdOrPlate)
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
             if (userData.adminLevel > (int)AdminRanks.Admin_SeniorSupport && userData.adminDuty || userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
             {
-                using (DefaultDbContext dbContext = new DefaultDbContext())
+                Vehicle findVehicle = VehicleSystem.getVehicleByPlate(vehicleIdOrPlate);
+
+                if (findVehicle == null)
                 {
-                    DbVehicle findVehicleById = dbContext.vehicles.Find(vehicleId);
-
-                    if (findVehicleById == null)
-                    {
-                        AdminUtils.staffSay(player, $"No vehicle with ID {vehicleId} was found.");
-                        return;
-                    }
-
-                    Vehicle spawnedVehicle = null;
-
-                    if(findVehicleById.vehicle_dimension != VehicleDimensions.World)
-                    {
-                        spawnedVehicle = VehicleSystem.spawnVehicle(findVehicleById);
-                    } else
-                    {
-                        List<Vehicle> onlineVehicles = NAPI.Pools.GetAllVehicles();
-                        
-                        foreach(Vehicle vehicle in onlineVehicles)
-                        {
-                            DbVehicle vehicleData = VehicleSystem.getVehicleData(vehicle);
-
-                            if(vehicleData != null && vehicleData.vehicle_id == vehicleId)
-                            {
-                                spawnedVehicle = vehicle;
-                            } 
-                        }
-                    }
-
-                    if(spawnedVehicle != null)
-                    {
-                        VehicleSystem.bringVehicleToPlayer(player, spawnedVehicle, true);
-
-                        AdminUtils.staffSay(player, $"Brought vehicle with ID {vehicleId}");
-
-                    }
+                    int? parseId = CommandUtils.tryParse(vehicleIdOrPlate);
+                    findVehicle = VehicleSystem.getVehicleById((int)parseId);
                 }
+
+                if(findVehicle == null)
+                {
+                    CommandUtils.errorSay(player, "Vehicle was not found.");
+                } else
+                {
+                    VehicleSystem.bringVehicleToPlayer(player, findVehicle, true);
+                    AdminUtils.staffSay(player, $"Vehicle was brought to you.");
+                }
+                
             }
         }
 
