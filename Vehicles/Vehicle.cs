@@ -19,6 +19,8 @@ namespace CloudRP.Vehicles
         [Required]
         public string vehicle_name { get; set; }
 
+        public bool vehicle_locked { get; set; }
+
         [Required]
         public uint vehicle_spawn_hash { get; set; }
 

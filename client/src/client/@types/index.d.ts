@@ -45,3 +45,15 @@ export interface Flight {
 	l: number,
 	point_distance: number
 }
+
+export interface VehicleData {
+	vehicle_id: number,
+	owner_id: number,
+	vehicle_name: string,
+	vehicle_locked: boolean,
+	vehicle_spawn_hash: number,
+	numberplate: string,
+	position_x: string,
+	position_y: string,
+	position_z: string
+}

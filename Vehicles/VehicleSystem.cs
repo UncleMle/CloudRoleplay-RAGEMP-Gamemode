@@ -75,6 +75,7 @@ namespace CloudRP.Vehicles
                 dbContext.SaveChanges();
             }
 
+            veh.Locked = vehicle.vehicle_locked;
             veh.SetSharedData(_vehicleSharedDataIdentifier, vehicle);
             veh.SetData(_vehicleSharedDataIdentifier, vehicle);
 
@@ -118,6 +119,11 @@ namespace CloudRP.Vehicles
                 dbContext.SaveChanges();
             }
 
+        }
+
+        public static void saveVehicleData(Vehicle vehicle, DbVehicle vehicleData)
+        {
+            vehicle.SetData(_vehicleSharedDataIdentifier, vehicleData);
         }
 
         public static void bringVehicleToPlayer(Player player, Vehicle vehicle, bool putInVehicle)
@@ -310,7 +316,6 @@ namespace CloudRP.Vehicles
             }
 
             return rangeVehicles;
-
         }
 
         public static string getFixedVehicleDistance(Player player, Vehicle vehicle)
@@ -350,7 +355,6 @@ namespace CloudRP.Vehicles
                     }
                 }
             }
-
             return returnVeh;
         }
 
@@ -374,7 +378,7 @@ namespace CloudRP.Vehicles
 
                 foreach (Vehicle vehicle in onlineVehicles)
                 {
-                    DbVehicle vehicleData = VehicleSystem.getVehicleData(vehicle);
+                    DbVehicle vehicleData = getVehicleData(vehicle);
 
                     if (vehicleData.vehicle_id == vehicleId)
                     {
@@ -384,6 +388,39 @@ namespace CloudRP.Vehicles
             }
 
             return returnVeh;
+        }
+
+        [RemoteEvent("vehicle:toggleLock")]
+        public static void toggleVehiclesLock(Player player, Vehicle vehicle)
+        {
+            DbVehicle vehicleData = getVehicleData(vehicle);
+
+            if (vehicleData == null) return;
+
+            vehicleData.vehicle_locked = !vehicleData.vehicle_locked;
+
+            vehicle.Locked = vehicleData.vehicle_locked;
+
+            saveVehicleData(vehicle, vehicleData);
+
+            string lockUnlockText = $" You {(vehicleData.vehicle_locked ? "locked" : "unlocked")} vehicle with id {vehicleData.vehicle_id}";
+
+            uiHandling.sendNotification(player, lockUnlockText);
+
+            NAPI.Chat.SendChatMessageToPlayer(player, lockUnlockText);
+
+        }
+
+        [ServerEvent(Event.PlayerEnterVehicle)]
+        public void onPlayerEnterVehicle(Player player, Vehicle vehicle, sbyte seatId)
+        {
+            DbVehicle vehicleData = getVehicleData(vehicle);
+
+            if(vehicleData == null || vehicleData.vehicle_locked)
+            {
+                player.WarpOutOfVehicle();
+                return;
+            }
         }
 
 

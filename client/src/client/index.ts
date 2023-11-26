@@ -6,6 +6,9 @@ import AdminFly from "./AdminSystem/AdminFly";
 import AdminEvents from "./AdminSystem/AdminEvents";
 import SwitchCamera from "./Authentication/SwitchCamera";
 import GuiSystem from "./BrowserSystem/GuiSystem";
+import EnterVehicle from "./VehicleSystems/EnterVehicle";
+import VehicleLocking from "./VehicleSystems/VehicleLocking";
+import NotificationSystem from "./NotificationSystem/NotificationSystem";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -16,3 +19,6 @@ new AdminFly();
 new AdminEvents();
 new SwitchCamera();
 new GuiSystem();
+new EnterVehicle();
+new VehicleLocking();
+new NotificationSystem();

@@ -68,7 +68,6 @@ namespace CloudRP.Admin
                 string adminRank = AdminUtils.getColouredAdminRank(user);
                 string duty = user.adminDuty ? "[!{green}On-Duty!{white}]" : "[!{red}Off-Duty!{white}]";
 
-                
                 AdminUtils.staffSay(player, index + $". {user.adminName} {adminRank} {duty}");
             }
         }
