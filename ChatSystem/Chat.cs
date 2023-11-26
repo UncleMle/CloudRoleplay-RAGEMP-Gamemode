@@ -1,5 +1,6 @@
 ﻿using CloudRP.Authentication;
 using CloudRP.Character;
+using CloudRP.GeneralCommands;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
 using GTANetworkAPI;
@@ -12,6 +13,8 @@ namespace CloudRP.ChatSystem
 {
     internal class Chat : Script
     {
+        public static double _chatradius = 30.0;
+
         [ServerEvent(Event.ResourceStart)]
         public void onResourceStart()
         {
@@ -39,7 +42,14 @@ namespace CloudRP.ChatSystem
                 prefix += $"{characterData.character_name.Replace("_", " ")}";
             }
 
-            NAPI.Chat.SendChatMessageToAll(prefix + suffix + message);
+            List<Player> playersInRange = CommandUtils.getPlayersInRadius(player, _chatradius);
+
+            string chatMessage = prefix + suffix + message;
+
+            playersInRange.ForEach(p =>
+            {
+                NAPI.Chat.SendChatMessageToPlayer(player, chatMessage);
+            });
 
         }
     }

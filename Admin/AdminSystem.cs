@@ -506,7 +506,7 @@ namespace CloudRP.Admin
 
                 AdminUtils.staffSay(player, $"Viewing {findPlayerCharData.character_name}'s stats");
             }
-
         }
+
     }
 }
