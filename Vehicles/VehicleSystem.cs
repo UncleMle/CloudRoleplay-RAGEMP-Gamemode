@@ -28,6 +28,13 @@ namespace CloudRP.Vehicles
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
                 vehicles = dbContext.vehicles.ToList();
+
+                string[] t = {"test", "test" };
+
+                DbVehicle veh = new DbVehicle
+                {
+                    Data = t
+                };
             }
 
             Console.WriteLine($"A total of {vehicles.Count} vehicles where loaded in.");
@@ -90,7 +97,7 @@ namespace CloudRP.Vehicles
             {
                 try
                 {
-                    saveVehiclePosition(vehicle);
+                    saveVehicleData(vehicle);
                 }
                 catch (Exception ex)
                 {
@@ -99,7 +106,7 @@ namespace CloudRP.Vehicles
             }
         }
 
-        public static void saveVehiclePosition(Vehicle vehicle)
+        public static void saveVehicleData(Vehicle vehicle)
         {
             DbVehicle vehicleData = vehicle.GetData<DbVehicle>(_vehicleSharedDataIdentifier);
             if (vehicleData == null) return;
@@ -113,6 +120,7 @@ namespace CloudRP.Vehicles
                 findVehicle.position_x = vehicle.Position.X;
                 findVehicle.position_y = vehicle.Position.Y;
                 findVehicle.position_z = vehicle.Position.Z;
+                findVehicle.vehicle_locked = vehicleData.vehicle_locked;
 
                 findVehicle.rotation = vehicle.Rotation.Z;
 
@@ -135,7 +143,7 @@ namespace CloudRP.Vehicles
                 player.SetIntoVehicle(vehicle, 0);
             }
 
-            saveVehiclePosition(vehicle);
+            saveVehicleData(vehicle);
         }
 
         public static Vehicle buildVehicle(string vehName, Vector3 position, float rotation, int ownerId)
@@ -406,9 +414,6 @@ namespace CloudRP.Vehicles
             string lockUnlockText = $" You {(vehicleData.vehicle_locked ? "locked" : "unlocked")} vehicle with id {vehicleData.vehicle_id}";
 
             uiHandling.sendNotification(player, lockUnlockText);
-
-            NAPI.Chat.SendChatMessageToPlayer(player, lockUnlockText);
-
         }
 
         [ServerEvent(Event.PlayerEnterVehicle)]

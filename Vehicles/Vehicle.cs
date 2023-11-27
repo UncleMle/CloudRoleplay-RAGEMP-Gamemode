@@ -44,6 +44,23 @@ namespace CloudRP.Vehicles
         public int vehicle_insurance_id { get; set; }
 
         public int vehicle_garage_id { get; set; }
+
+        public string vehicle_doors { get; set; }
+
+        [NotMapped]
+        public string[] Data
+        {
+            get
+            {
+                string[] tab = vehicle_doors.Split(',');
+                return new string[] { tab[0], tab[1] };
+            }
+            set
+            {
+                this.vehicle_doors = string.Format("{0},{1}", value[0], value[1]);
+            }
+        }
+
     }
 
     class VehicleDimensions

@@ -27,7 +27,7 @@ class NotificationSystem {
 				return;
 			}
 
-			NotificationSystem.opacity-= 0.7;
+			NotificationSystem.opacity -= 0.7;
 			NotificationSystem.y_pos += 0.0005;
 		}, 10);
 	}
@@ -45,7 +45,8 @@ class NotificationSystem {
 		if (NotificationSystem.visible && NotificationSystem.draw_text) {
 			mp.game.graphics.drawText(NotificationSystem.draw_text, [NotificationSystem.x_pos, NotificationSystem.y_pos], {
 				outline: true,
-				color: [255, 255, 255, NotificationSystem.opacity],
+				font: 4,
+				color: [220, 125, 225, NotificationSystem.opacity],
 				scale: [NotificationSystem.scale, NotificationSystem.scale]
 			})
 		}

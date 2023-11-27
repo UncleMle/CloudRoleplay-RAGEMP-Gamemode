@@ -53,7 +53,7 @@ class NameTags {
 
 				mp.game.graphics.drawText(DefaultTagContent, [x, y], {
 					font: 4,
-					color: [255, 255, 255, 255],
+					color: [255, 255, 255, 180],
 					scale: [0.325, 0.325],
 					outline: false
 				});

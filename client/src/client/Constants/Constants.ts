@@ -12,6 +12,7 @@ export const _control_ids = {
 	K: 75,
 	S: 33,
 	G: 71,
+	F: 70,
 	A: 34, 
 	E: 38,
 	Q: 44,

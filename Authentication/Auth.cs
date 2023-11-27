@@ -208,7 +208,6 @@ namespace CloudRP.Authentication
 
                 allPlayerCharacters.ForEach(character =>
                 {
-                    Console.WriteLine($" ID: {character.owner_id}");
                     uiHandling.handleObjectUiMutationPush(player, MutationKeys.PlayerCharacters, character);
                 });
             }

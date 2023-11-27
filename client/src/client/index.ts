@@ -9,6 +9,8 @@ import GuiSystem from "./BrowserSystem/GuiSystem";
 import EnterVehicle from "./VehicleSystems/EnterVehicle";
 import VehicleLocking from "./VehicleSystems/VehicleLocking";
 import NotificationSystem from "./NotificationSystem/NotificationSystem";
+import VehicleSystems from "./VehicleSystems/VehicleSystem";
+import VehicleInteraction from "./VehicleSystems/VehicleInteraction";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -22,3 +24,5 @@ new GuiSystem();
 new EnterVehicle();
 new VehicleLocking();
 new NotificationSystem();
+new VehicleSystems();
+new VehicleInteraction();

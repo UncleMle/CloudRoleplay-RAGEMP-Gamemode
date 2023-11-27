@@ -55,5 +55,19 @@ export interface VehicleData {
 	numberplate: string,
 	position_x: string,
 	position_y: string,
-	position_z: string
+	position_z: string,
+	vehicle_doors: string[]
 }
+
+export interface BoneData {
+	id: number,
+	boneIndex: number,
+	name: string,
+	locked: boolean,
+	bonePos: Vector3,
+	raycast: RaycastResult,
+	veh: VehicleDoors,
+	distance: number,
+	pushTime: number
+}
+
