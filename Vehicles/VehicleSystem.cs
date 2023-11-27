@@ -407,11 +407,31 @@ namespace CloudRP.Vehicles
 
             vehicle.Locked = vehicleData.vehicle_locked;
 
+            if(vehicle.Locked)
+            {
+                closeAllDoors(vehicle);
+            }
+
             saveVehicleData(vehicle, vehicleData);
 
             string lockUnlockText = $" You {(vehicleData.vehicle_locked ? "locked" : "unlocked")} vehicle with id {vehicleData.vehicle_id}";
 
             uiHandling.sendNotification(player, lockUnlockText);
+        }
+
+        public static void closeAllDoors(Vehicle vehicle)
+        {
+            DbVehicle vehicleData = getVehicleData(vehicle);
+            if(vehicleData != null)
+            {
+                for(int i = 0; i < vehicleData.vehicle_doors.Length; i++)
+                {
+                    vehicleData.vehicle_doors[i] = false;
+                }
+
+                saveVehicleData(vehicle, vehicleData);
+            }
+
         }
 
         [RemoteEvent("server:handleDoorInteraction")]
