@@ -3,14 +3,16 @@ using System;
 using CloudRP.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CloudRP.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231127030912_Vehicle Doors tabless")]
+    partial class VehicleDoorstabless
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -214,6 +216,9 @@ namespace CloudRP.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("vehicle_dimension")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("vehicle_doors")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<int>("vehicle_garage_id")

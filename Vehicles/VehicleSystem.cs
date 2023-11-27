@@ -20,7 +20,9 @@ namespace CloudRP.Vehicles
         public static string _vehicleSharedDataIdentifier = "VehicleData";
         private static int _timerInterval = 5000;
         private static Timer saveVehicleTimer;
-        
+        public static readonly string[] bones = {"door_dside_f", "door_pside_f", "door_dside_r", "door_pside_r", "bonnet", "boot"};
+        public static readonly string[] names = { "door", "door", "door", "door", "hood", "trunk", "trunk" };
+	
 
         [ServerEvent(Event.ResourceStart)]
         public void spawnAllVehicles()
@@ -28,13 +30,6 @@ namespace CloudRP.Vehicles
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
                 vehicles = dbContext.vehicles.ToList();
-
-                string[] t = {"test", "test" };
-
-                DbVehicle veh = new DbVehicle
-                {
-                    Data = t
-                };
             }
 
             Console.WriteLine($"A total of {vehicles.Count} vehicles where loaded in.");
@@ -81,6 +76,8 @@ namespace CloudRP.Vehicles
                 dbContext.vehicles.Update(vehicle);
                 dbContext.SaveChanges();
             }
+
+            vehicle.vehicle_doors = new bool[] { false, false, false, false, false, false };
 
             veh.Locked = vehicle.vehicle_locked;
             veh.SetSharedData(_vehicleSharedDataIdentifier, vehicle);
@@ -132,6 +129,7 @@ namespace CloudRP.Vehicles
         public static void saveVehicleData(Vehicle vehicle, DbVehicle vehicleData)
         {
             vehicle.SetData(_vehicleSharedDataIdentifier, vehicleData);
+            vehicle.SetSharedData(_vehicleSharedDataIdentifier, vehicleData);
         }
 
         public static void bringVehicleToPlayer(Player player, Vehicle vehicle, bool putInVehicle)
@@ -414,6 +412,18 @@ namespace CloudRP.Vehicles
             string lockUnlockText = $" You {(vehicleData.vehicle_locked ? "locked" : "unlocked")} vehicle with id {vehicleData.vehicle_id}";
 
             uiHandling.sendNotification(player, lockUnlockText);
+        }
+
+        [RemoteEvent("server:handleDoorInteraction")]
+        public void handleDoorInteraction(Player player, Vehicle vehicle, int boneTargetId)
+        {
+            DbVehicle vehicleData = getVehicleData(vehicle);
+
+            if(vehicleData == null || vehicle.Locked) return;
+
+            vehicleData.vehicle_doors[boneTargetId] = !vehicleData.vehicle_doors[boneTargetId];
+
+            saveVehicleData(vehicle, vehicleData);
         }
 
         [ServerEvent(Event.PlayerEnterVehicle)]

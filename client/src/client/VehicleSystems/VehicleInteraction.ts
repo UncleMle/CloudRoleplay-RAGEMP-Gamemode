@@ -3,6 +3,7 @@ import getVehicleData from "../PlayerMethods/getVehicleData";
 import distBetweenCoords from "../PlayerMethods/distanceBetweenCoords";
 import NotificationSystem from "../NotificationSystem/NotificationSystem";
 import getVehName from "../PlayerMethods/getVehName";
+import { _control_ids } from "../Constants/Constants";
 
 class VehicleInteraction {
 	public static LocalPlayer: PlayerMp;
@@ -14,6 +15,7 @@ class VehicleInteraction {
 		VehicleInteraction.LocalPlayer = mp.players.local;
 
 		mp.events.add("render", VehicleInteraction.handleInteractionRender);
+		mp.keys.bind(_control_ids.EBIND, false, VehicleInteraction.handleInteraction);
 	}
 
 	public static handleInteractionRender(): void {
@@ -21,17 +23,18 @@ class VehicleInteraction {
 
 		if (VehicleInteraction.checkInteractionRender()) {
 			const raycast: RaycastResult | null = VehicleInteraction.getLocalTargetVehicle();
-			if (raycast == null) return;
+			if (raycast == null || (raycast.entity as EntityMp).type != "vehicle") return;
 			VehicleInteraction.boneTarget = VehicleInteraction.getClosestBone(raycast);
 			const bonePos: Vector3 = (raycast.entity as EntityMp).getWorldPositionOfBone(VehicleInteraction.boneTarget.boneIndex);
 
 			const vehicleData: VehicleData | undefined = getVehicleData(raycast.entity as VehicleMp);
+			if (!vehicleData) return;
 
-			if (vehicleData?.vehicle_locked) {
+			if (vehicleData.vehicle_locked) {
 				return;
 			}
 
-			let renderText: string = `${VehicleInteraction.boneTarget.locked ? `Close ${VehicleInteraction.names[VehicleInteraction.bones.indexOf(VehicleInteraction.boneTarget.name)]}` : `Open ${VehicleInteraction.names[VehicleInteraction.bones.indexOf(VehicleInteraction.boneTarget.name)]}`}`;
+			let renderText: string = "~g~[E]~w~" + ` ${VehicleInteraction.boneTarget.locked ? `Close ${VehicleInteraction.names[VehicleInteraction.bones.indexOf(VehicleInteraction.boneTarget.name)]}` : `Open ${VehicleInteraction.names[VehicleInteraction.bones.indexOf(VehicleInteraction.boneTarget.name)]}`}`;
 
 			let dist: number = distBetweenCoords(VehicleInteraction.LocalPlayer.position, bonePos);
 
@@ -47,34 +50,37 @@ class VehicleInteraction {
 	public static syncVehicleDoors() {
 		mp.vehicles.forEachInStreamRange((vehicle: VehicleMp) => {
 			let vehicleData: VehicleData | undefined = getVehicleData(vehicle);
+			if (!vehicleData) return;
 
-			if (!vehicleData || VehicleInteraction.LocalPlayer.getVehicleIsTryingToEnter() !== 0) {
-
-				vehicleData?.vehicle_doors.forEach((state: string, index: number) => {
+			if (VehicleInteraction.LocalPlayer.getVehicleIsTryingToEnter() == 0) {
+				vehicleData.vehicle_doors.forEach((state: string, index: number) => {
 					if (state) vehicle.setDoorOpen(index, false, true);
 					else vehicle.setDoorShut(index, true);
 				})
-
 			}
-		})
+			
+		});
 	}
 
 	public static handleInteraction() {
 		if (!mp.gui.cursor.visible && VehicleInteraction.boneTarget && VehicleInteraction.boneTarget.pushTime + 1 >= Date.now() / 1000) {
 			VehicleInteraction.interactionHandler();
 		}
+		
 	}
 
 	public static interactionHandler() {
-		let notifMessage: string = `${VehicleInteraction.boneTarget.veh.doorData[VehicleInteraction.boneTarget.id] != undefined ? 'Opens' : 'Closes'} the ${getVehName(VehicleInteraction.boneTarget.veh.model)}'s ${VehicleInteraction.names[VehicleInteraction.bones.indexOf(VehicleInteraction.boneTarget.name)]}`;
-		NotificationSystem.createNotification(notifMessage);
-		mp.events.callRemote('server.vehicles.sync.doors', VehicleInteraction.boneTarget.veh, JSON.stringify(VehicleInteraction.boneTarget.veh.doorData));
+		let vehicleData: VehicleData | undefined = getVehicleData(VehicleInteraction.boneTarget.veh);
+		if (!vehicleData || vehicleData?.vehicle_locked) return;
+		mp.events.callRemote('server:handleDoorInteraction', VehicleInteraction.boneTarget.veh, VehicleInteraction.boneTarget.id);
 	}
 
 	public static getClosestBone (raycast: RaycastResult): BoneData {
 		let data: BoneData[] = [];
 		VehicleInteraction.bones.forEach((bone: string, index: number) => {
 			const rayEntity: EntityMp = raycast.entity as EntityMp;
+
+			if (!rayEntity || rayEntity.type != "vehicle") return;
 
 			const boneIndex: number = rayEntity.getBoneIndexByName(bone);
 			const bonePos: Vector3 = rayEntity.getWorldPositionOfBone(boneIndex);

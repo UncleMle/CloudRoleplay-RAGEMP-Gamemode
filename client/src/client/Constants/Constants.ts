@@ -15,6 +15,7 @@ export const _control_ids = {
 	F: 70,
 	A: 34, 
 	E: 38,
+	EBIND: 69,
 	Q: 44,
 	D: 35, 
 	Space: 321,
