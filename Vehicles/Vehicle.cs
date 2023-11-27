@@ -48,6 +48,9 @@ namespace CloudRP.Vehicles
         [NotMapped]
         public bool[] vehicle_doors { get; set; }
 
+        [NotMapped]
+        public bool[] vehicle_windows { get; set; }
+
     }
 
     class VehicleDimensions

@@ -56,7 +56,8 @@ export interface VehicleData {
 	position_x: string,
 	position_y: string,
 	position_z: string,
-	vehicle_doors: string[]
+	vehicle_doors: string[],
+	vehicle_windows: string[]
 }
 
 export interface BoneData {

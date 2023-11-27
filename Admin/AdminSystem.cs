@@ -493,5 +493,29 @@ namespace CloudRP.Admin
             }
         }
 
+        [Command("sethp", "~r~/sethp [nameOrId] [health]", Alias = "sethealth")]
+        public void setHealth(Player player, string nameOrId, int health)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(AdminUtils.checkUserData(player, userData))
+            {
+                Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+                DbCharacter characterData = PlayersData.getPlayerCharacterData(findPlayer);
+
+                if(findPlayer == null)
+                {
+                    CommandUtils.notFound(player);
+                    return;
+                }
+
+                findPlayer.Health = health;
+
+                AdminUtils.staffSay(player, $"Set {characterData.character_name}'s health to {health}");
+                AdminUtils.staffSay(findPlayer, $"Your health was set to {health} by Admin {userData.adminName}");
+
+            }
+        }
+
     }
 }

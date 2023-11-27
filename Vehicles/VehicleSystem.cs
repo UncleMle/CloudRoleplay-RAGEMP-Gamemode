@@ -79,6 +79,9 @@ namespace CloudRP.Vehicles
             }
 
             vehicle.vehicle_doors = new bool[] { false, false, false, false, false, false };
+            vehicle.vehicle_windows = new bool[] { false, false, false, false, false, false };
+
+            Console.WriteLine("" + vehicle.vehicle_windows.Length);
 
             veh.Locked = true;
             veh.SetSharedData(_vehicleSharedDataIdentifier, vehicle);
@@ -187,6 +190,7 @@ namespace CloudRP.Vehicles
             Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicleHash, position, rotation, 255, 255, vehiclePlate, 255, false, true, 0);
             
             vehicleData.vehicle_doors = new bool[] { false, false, false, false, false, false };
+            vehicleData.vehicle_windows = new bool[] { false, false, false, false, false, false };
 
             veh.SetData(_vehicleSharedDataIdentifier, vehicleData);
             veh.SetSharedData(_vehicleSharedDataIdentifier, vehicleData);
@@ -414,6 +418,7 @@ namespace CloudRP.Vehicles
             if(vehicle.Locked)
             {
                 closeAllDoors(vehicle);
+                closeAllWindows(vehicle);
             }
 
             saveVehicleData(vehicle, vehicleData);
@@ -435,7 +440,20 @@ namespace CloudRP.Vehicles
 
                 saveVehicleData(vehicle, vehicleData);
             }
+        }
 
+        public static void closeAllWindows(Vehicle vehicle)
+        {
+            DbVehicle vehicleData = getVehicleData(vehicle);
+            if (vehicleData != null)
+            {
+                for (int i = 0; i < vehicleData.vehicle_windows.Length; i++)
+                {
+                    vehicleData.vehicle_windows[i] = false;
+                }
+
+                saveVehicleData(vehicle, vehicleData);
+            }
         }
 
         [RemoteEvent("server:handleDoorInteraction")]
@@ -448,6 +466,36 @@ namespace CloudRP.Vehicles
             vehicleData.vehicle_doors[boneTargetId] = !vehicleData.vehicle_doors[boneTargetId];
 
             saveVehicleData(vehicle, vehicleData);
+        }
+
+        [Command("vw", "~y~Use: ~w~/vw [window]", Alias = "vehiclewindow")]
+        public void vehicleWindows(Player player, int vehicleIndex)
+        {
+            if(!player.IsInVehicle)
+            {
+                CommandUtils.errorSay(player, "You must be in a vehicle to use this command.");
+                return;
+            }
+
+            DbVehicle vehicleData = getVehicleData(player.Vehicle);
+
+            if(vehicleData == null) return;
+
+            Console.WriteLine(" " + vehicleData.vehicle_windows.Length);
+
+            if(vehicleIndex > vehicleData.vehicle_windows.Length || vehicleIndex < 0)
+            {
+                CommandUtils.errorSay(player, "Enter a valid window to roll up or down.");
+                return;
+            }
+
+            vehicleData.vehicle_windows[vehicleIndex] = !vehicleData.vehicle_windows[vehicleIndex];
+
+            string openCloseTextNotif = "You " + (vehicleData.vehicle_windows[vehicleIndex] ? "opened" : "closed") + " this vehicle's window.";
+
+            uiHandling.sendNotification(player, openCloseTextNotif);
+
+            saveVehicleData(player.Vehicle, vehicleData);
         }
 
         [ServerEvent(Event.PlayerEnterVehicle)]

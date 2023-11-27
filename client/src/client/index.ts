@@ -11,6 +11,7 @@ import VehicleLocking from "./VehicleSystems/VehicleLocking";
 import NotificationSystem from "./NotificationSystem/NotificationSystem";
 import VehicleSystems from "./VehicleSystems/VehicleSystem";
 import VehicleInteraction from "./VehicleSystems/VehicleInteraction";
+import VehicleWindows from "./VehicleSystems/VehicleWindows";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -26,3 +27,4 @@ new VehicleLocking();
 new NotificationSystem();
 new VehicleSystems();
 new VehicleInteraction();
+new VehicleWindows();
