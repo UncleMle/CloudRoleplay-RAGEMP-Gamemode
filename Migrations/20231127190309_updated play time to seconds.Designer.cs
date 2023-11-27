@@ -3,14 +3,16 @@ using System;
 using CloudRP.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CloudRP.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231127190309_updated play time to seconds")]
+    partial class updatedplaytimetoseconds
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -162,14 +164,11 @@ namespace CloudRP.Migrations
                     b.Property<int>("owner_id")
                         .HasColumnType("int");
 
-                    b.Property<ulong>("play_time_seconds")
-                        .HasColumnType("bigint unsigned");
+                    b.Property<int>("play_time_seconds")
+                        .HasColumnType("int");
 
                     b.Property<uint>("player_dimension")
                         .HasColumnType("int unsigned");
-
-                    b.Property<ulong>("player_exp")
-                        .HasColumnType("bigint unsigned");
 
                     b.Property<float>("position_x")
                         .HasColumnType("float");

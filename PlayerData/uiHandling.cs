@@ -38,9 +38,9 @@ namespace CloudRP.PlayerData
             player.TriggerEvent("browser:handlePlayerObjectMutationPush", mutationKey, data);
         }
 
-        public static void sendNotification(Player player, string text)
+        public static void sendNotification(Player player, string text, bool isRp = true)
         {
-            player.TriggerEvent("client:addNotif", text);
+            player.TriggerEvent("client:addNotif", text, isRp);
         }
 
         public static void pushRouterToClient(Player player, string route)

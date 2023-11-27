@@ -12,12 +12,12 @@ class NotificationSystem {
 		mp.events.add("client:addNotif", NotificationSystem.createNotification);
 	}
 
-	public static createNotification(text: string) {
+	public static createNotification(text: string, isRpText: boolean) {
 		clearInterval(NotificationSystem.interval);
 
 		NotificationSystem.resetData();
 		NotificationSystem.visible = true;
-		NotificationSystem.draw_text = "* " + text;
+		NotificationSystem.draw_text = isRpText ? "* " + text : text;
 
 		NotificationSystem.interval = setInterval(() => {
 

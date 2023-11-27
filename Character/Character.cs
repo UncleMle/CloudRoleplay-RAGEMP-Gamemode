@@ -39,9 +39,11 @@ namespace CloudRP.Character
         [Required]
         public int money_amount { get; set; }
 
-        public int play_time_minutes { get; set; }
+        public ulong play_time_seconds { get; set; }
 
         public uint player_dimension { get; set; }
+
+        public ulong player_exp {  get; set; }
     }
 
 }

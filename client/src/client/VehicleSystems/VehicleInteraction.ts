@@ -105,7 +105,7 @@ class VehicleInteraction {
 		return data.sort((a, b) => a.distance - b.distance)[0];
 	}
 
-	public static getLocalTargetVehicle (range: number = 5.0): null | RaycastResult {
+	public static getLocalTargetVehicle (range: number = 1.5): null | RaycastResult {
 		let startPosition = mp.players.local.getBoneCoords(12844, 0.5, 0, 0);
 		const res = mp.game.graphics.getScreenActiveResolution(1, 1);
 		const coord: Vector3 = new mp.Vector3(res.x / 2, res.y / 2, (2 | 4 | 8));

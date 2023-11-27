@@ -78,12 +78,10 @@ namespace CloudRP.Vehicles
                 dbContext.SaveChanges();
             }
 
-            vehicle.vehicle_doors = new bool[] { false, false, false, false, false, false };
-            vehicle.vehicle_windows = new bool[] { false, false, false, false, false, false };
-
             Console.WriteLine("" + vehicle.vehicle_windows.Length);
 
             veh.Locked = true;
+            vehicle.vehicle_locked = true;
             veh.SetSharedData(_vehicleSharedDataIdentifier, vehicle);
             veh.SetData(_vehicleSharedDataIdentifier, vehicle);
 
@@ -189,9 +187,6 @@ namespace CloudRP.Vehicles
 
             Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicleHash, position, rotation, 255, 255, vehiclePlate, 255, false, true, 0);
             
-            vehicleData.vehicle_doors = new bool[] { false, false, false, false, false, false };
-            vehicleData.vehicle_windows = new bool[] { false, false, false, false, false, false };
-
             veh.SetData(_vehicleSharedDataIdentifier, vehicleData);
             veh.SetSharedData(_vehicleSharedDataIdentifier, vehicleData);
 
@@ -468,6 +463,35 @@ namespace CloudRP.Vehicles
             saveVehicleData(vehicle, vehicleData);
         }
 
+        [RemoteEvent("server:toggleEngine")]
+        public void handleToggleEngine(Player player)
+        {
+            if (!player.IsInVehicle) return;
+
+            DbVehicle vehicleData = getVehicleData(player.Vehicle);
+
+            if(vehicleData == null) return;
+
+            vehicleData.engine_status = !vehicleData.engine_status;
+
+            uiHandling.sendNotification(player, "You " + (vehicleData.engine_status ? "started" : " turned off") + " this vehicle's engine.");
+
+            saveVehicleData(player.Vehicle, vehicleData);
+        }
+
+        [RemoteEvent("server:toggleIndication")]
+        public void toggleVehicleIndicator(Player player, int indicationId)
+        {
+            if (!player.IsInVehicle) return;
+
+            DbVehicle vehicleData = getVehicleData(player.Vehicle);
+
+            if (vehicleData == null || player.VehicleSeat != 0) return;
+
+            vehicleData.indicator_status = indicationId;
+            saveVehicleData(player.Vehicle, vehicleData);
+        }
+
         [Command("vw", "~y~Use: ~w~/vw [window]", Alias = "vehiclewindow")]
         public void vehicleWindows(Player player, int vehicleIndex)
         {
@@ -508,6 +532,9 @@ namespace CloudRP.Vehicles
             {
                 player.WarpOutOfVehicle();
                 return;
+            } else
+            {
+                uiHandling.sendNotification(player, "~w~Use ~y~Y~w~ to start the engine.", false);
             }
         }
 

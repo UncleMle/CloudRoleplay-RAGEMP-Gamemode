@@ -45,11 +45,18 @@ namespace CloudRP.Vehicles
 
         public int vehicle_garage_id { get; set; }
 
+        // In game
         [NotMapped]
-        public bool[] vehicle_doors { get; set; }
+        public bool[] vehicle_doors { get; set; } = new bool[] { false, false, false, false, false, false };
 
         [NotMapped]
-        public bool[] vehicle_windows { get; set; }
+        public bool[] vehicle_windows { get; set; } = new bool[] { false, false, false, false, false, false };
+
+        [NotMapped]
+        public bool engine_status {  get; set; }
+
+        [NotMapped]
+        public int indicator_status { get; set; } = -1;
 
     }
 
