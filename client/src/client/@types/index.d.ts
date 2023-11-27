@@ -59,7 +59,8 @@ export interface VehicleData {
 	position_z: string,
 	vehicle_doors: string[],
 	vehicle_windows: string[],
-	indicator_status: number
+	indicator_status: number,
+	vehicle_siren: boolean
 }
 
 export interface BoneData {

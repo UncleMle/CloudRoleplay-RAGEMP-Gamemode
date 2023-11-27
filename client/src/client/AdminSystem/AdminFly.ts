@@ -65,6 +65,9 @@ class AdminFly {
 			mp.game.invoke(SET_PARTICLE_FX_, 'ped_foot_water');
 			AdminFly.LocalPlayer.setCanRagdoll(false);
 			AdminFly.LocalPlayer.setInvincible(true);
+		} else {
+			AdminFly.LocalPlayer.setCanRagdoll(true);
+			AdminFly.LocalPlayer.setInvincible(false);
 		}
 
 		if (localUserData.isFlying) {

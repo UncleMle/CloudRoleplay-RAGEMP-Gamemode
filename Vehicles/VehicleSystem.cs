@@ -492,6 +492,24 @@ namespace CloudRP.Vehicles
             saveVehicleData(player.Vehicle, vehicleData);
         }
 
+        [RemoteEvent("server:toggleSiren")]
+        public void toggleVehicleSiren(Player player)
+        {
+            if (!player.IsInVehicle) return;
+
+            DbVehicle vehicleData = getVehicleData(player.Vehicle);
+
+            if (vehicleData == null || player.VehicleSeat != 0) return;
+
+            vehicleData.vehicle_siren = !vehicleData.vehicle_siren;
+
+            string sendText = "Toggled vehicle siren " + (vehicleData.vehicle_siren ? "off" : "on");
+
+            uiHandling.sendNotification(player, sendText);
+
+            saveVehicleData(player.Vehicle, vehicleData);
+        }
+
         [Command("vw", "~y~Use: ~w~/vw [window]", Alias = "vehiclewindow")]
         public void vehicleWindows(Player player, int vehicleIndex)
         {

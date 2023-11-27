@@ -24,6 +24,7 @@ export const _control_ids = {
 	LEFTARR: 37,
 	RIGHTARR: 39,
 	EBIND: 69,
+	QBIND: 81,
 	Q: 44,
 	D: 35,
 	Space: 321,

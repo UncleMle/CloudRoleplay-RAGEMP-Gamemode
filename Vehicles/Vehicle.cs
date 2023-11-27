@@ -58,6 +58,9 @@ namespace CloudRP.Vehicles
         [NotMapped]
         public int indicator_status { get; set; } = -1;
 
+        [NotMapped]
+        public bool vehicle_siren { get; set; }
+
     }
 
     class VehicleDimensions
