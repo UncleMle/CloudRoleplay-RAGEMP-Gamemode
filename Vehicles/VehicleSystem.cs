@@ -1,4 +1,5 @@
-﻿using CloudRP.Authentication;
+﻿using CloudRP.Admin;
+using CloudRP.Authentication;
 using CloudRP.Character;
 using CloudRP.Database;
 using CloudRP.PlayerData;
@@ -79,7 +80,7 @@ namespace CloudRP.Vehicles
 
             vehicle.vehicle_doors = new bool[] { false, false, false, false, false, false };
 
-            veh.Locked = vehicle.vehicle_locked;
+            veh.Locked = true;
             veh.SetSharedData(_vehicleSharedDataIdentifier, vehicle);
             veh.SetData(_vehicleSharedDataIdentifier, vehicle);
 
@@ -163,7 +164,8 @@ namespace CloudRP.Vehicles
                     rotation = rotation,
                     vehicle_spawn_hash = vehicleHash,
                     vehicle_name = vehName,
-                    numberplate = "null"
+                    numberplate = "null",
+                    vehicle_dimension = VehicleDimensions.World
                 };
 
                 dbContext.vehicles.Add(vehicleInsert);
@@ -183,6 +185,8 @@ namespace CloudRP.Vehicles
             if (vehicleData == null) return null;
 
             Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicleHash, position, rotation, 255, 255, vehiclePlate, 255, false, true, 0);
+            
+            vehicleData.vehicle_doors = new bool[] { false, false, false, false, false, false };
 
             veh.SetData(_vehicleSharedDataIdentifier, vehicleData);
             veh.SetSharedData(_vehicleSharedDataIdentifier, vehicleData);
@@ -450,8 +454,9 @@ namespace CloudRP.Vehicles
         public void onPlayerEnterVehicle(Player player, Vehicle vehicle, sbyte seatId)
         {
             DbVehicle vehicleData = getVehicleData(vehicle);
+            User userData = PlayersData.getPlayerAccountData(player);
 
-            if(vehicleData == null || vehicleData.vehicle_locked)
+            if(userData == null || vehicleData == null || vehicleData.vehicle_locked && !(userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin || userData.adminDuty))
             {
                 player.WarpOutOfVehicle();
                 return;

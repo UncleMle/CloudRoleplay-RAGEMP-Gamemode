@@ -131,6 +131,13 @@ namespace CloudRP.Admin
                 if (findVehicle == null)
                 {
                     int? parseId = CommandUtils.tryParse(vehicleIdOrPlate);
+                    
+                    if(parseId == null)
+                    {
+                        CommandUtils.errorSay(player, "Vehicle was not found.");
+                        return;
+                    }
+
                     findVehicle = VehicleSystem.getVehicleById((int)parseId);
                 }
 

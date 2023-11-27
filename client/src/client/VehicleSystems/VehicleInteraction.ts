@@ -1,8 +1,6 @@
 import { BoneData, VehicleData } from "../@types";
 import getVehicleData from "../PlayerMethods/getVehicleData";
 import distBetweenCoords from "../PlayerMethods/distanceBetweenCoords";
-import NotificationSystem from "../NotificationSystem/NotificationSystem";
-import getVehName from "../PlayerMethods/getVehName";
 import { _control_ids } from "../Constants/Constants";
 
 class VehicleInteraction {
@@ -88,7 +86,7 @@ class VehicleInteraction {
 			if (bonePos) {
 				let vehicleData: VehicleData | undefined = getVehicleData(raycast.entity as VehicleMp);
 
-				if (!vehicleData) return;
+				if (!vehicleData || !vehicleData.vehicle_doors) return;
 
 				data.push({
 					id: index,

@@ -66,7 +66,7 @@ export interface BoneData {
 	locked: boolean,
 	bonePos: Vector3,
 	raycast: RaycastResult,
-	veh: VehicleDoors,
+	veh: VehicleMp,
 	distance: number,
 	pushTime: number
 }

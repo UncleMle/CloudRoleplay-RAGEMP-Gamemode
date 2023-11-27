@@ -3,7 +3,7 @@ import getClosestVehicleInRange from '../PlayerMethods/getVehicleInRange';
 
 class VehicleLocking {
 	public static LocalPlayer: PlayerMp;
-	public static _lockVehicleRange: number = 2;
+	public static _lockVehicleRange: number = 5;
 	public static _lockVehicleEvent: string = "vehicle:toggleLock";
 
 	constructor() {
