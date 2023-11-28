@@ -115,9 +115,9 @@ namespace CloudRP.Authentication
                 return;
             }
 
-            if(!AuthUtils.validateString(registeringData.registerUsername) || registeringData.registerUsername.Length > 20)
+            if(!AuthUtils.validateString(registeringData.registerUsername) || registeringData.registerUsername.Length > 20 || registeringData.registerUsername.Length < 4)
             {
-                uiHandling.sendPushNotifError(player, "Username is invalid. Ensure it contains no special characters or numbers and has a length less than or equal to 20.", 6000);
+                uiHandling.sendPushNotifError(player, "Username is invalid. Ensure it contains no special characters or numbers.", 6000);
                 return;
             }
 
