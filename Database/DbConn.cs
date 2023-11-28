@@ -13,7 +13,11 @@ namespace CloudRP.Database
 {
     public class DefaultDbContext : DbContext
     {
-        private const string connectionString = "Server=localhost;Database=cloud_rp;Uid=root;Pwd=rootadmin13";
+        public static readonly string connectionStringKey = "DatabaseConnectionString";
+
+        // Server=Host;Database=DB_NAME;Uid=USERNAME;Pwd=PASSWORD
+
+        private string connectionString = Environment.GetEnvironmentVariable(connectionStringKey);
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

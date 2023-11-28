@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CloudRP.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    [Migration("20231127031523_Vehicle Door object")]
-    partial class VehicleDoorobject
+    [Migration("20231128044402_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -115,8 +115,8 @@ namespace CloudRP.Migrations
                         .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("social_club_id")
-                        .HasColumnType("int");
+                    b.Property<ulong>("social_club_id")
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<string>("user_ip")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -164,11 +164,14 @@ namespace CloudRP.Migrations
                     b.Property<int>("owner_id")
                         .HasColumnType("int");
 
-                    b.Property<int>("play_time_minutes")
-                        .HasColumnType("int");
+                    b.Property<ulong>("play_time_seconds")
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<uint>("player_dimension")
                         .HasColumnType("int unsigned");
+
+                    b.Property<ulong>("player_exp")
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<float>("position_x")
                         .HasColumnType("float");

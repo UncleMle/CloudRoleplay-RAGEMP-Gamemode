@@ -5,6 +5,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using VisualStudioConfiguration;
 
 namespace CloudRP.Utils
 {
@@ -97,6 +98,18 @@ namespace CloudRP.Utils
             string regex = @"^[^@\s]+@[^@\s]+\.(com|net|org|gov)$";
 
             return Regex.IsMatch(email, regex, RegexOptions.IgnoreCase);
+        }
+
+        public static bool validateString(string input)
+        {
+            string specialChar = @"\|!#$%&/()=?»«@£§€{}.-;'<>_,0123456789";
+
+            foreach (var item in specialChar)
+            {
+                if (input.Contains(item)) return false;
+            }
+
+            return true;
         }
     }
 

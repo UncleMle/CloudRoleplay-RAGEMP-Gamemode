@@ -115,6 +115,18 @@ namespace CloudRP.Authentication
                 return;
             }
 
+            if(!AuthUtils.validateString(registeringData.registerUsername) || registeringData.registerUsername.Length > 20)
+            {
+                uiHandling.sendPushNotifError(player, "Username is invalid. Ensure it contains no special characters or numbers and has a length less than or equal to 20.", 6000);
+                return;
+            }
+
+            if(registeringData.registerPassword.Length < 8)
+            {
+                uiHandling.sendPushNotifError(player, "Ensure your password's length is greater than 8.", 6000);
+                return;
+            }
+
             using(DefaultDbContext dbContext = new DefaultDbContext())
             {
                 Account findWithEmail = dbContext.accounts.Where(acc => acc.email_address == registeringData.registerEmail).FirstOrDefault();
