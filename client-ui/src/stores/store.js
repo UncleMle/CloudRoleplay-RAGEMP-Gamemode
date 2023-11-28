@@ -12,7 +12,8 @@ const store = new Vuex.Store({
 			player_data_server: {},
 			player_data_gui: {},
 			player_bandata: {},
-			player_characters: []
+			player_characters: [],
+			otp_ui: false
 		},
 		uiStates: {
 			characterSelection: false,
@@ -44,6 +45,9 @@ const store = new Vuex.Store({
 		},
 		getPlayerCharacters: (state) => {
 			return state.playerInfo.player_characters;
+		},
+		getOtpState: (state) => {
+			return state.playerInfo.otp_ui;
 		}
 	},
 	mutations: {
@@ -53,6 +57,10 @@ const store = new Vuex.Store({
 		},
 		setCharacterSelection: (state, { toggle }) => {
 			state.uiStates.characterSelection = toggle;
+			return;
+		},
+		setUserOtp: (state, { toggle }) => {
+			state.playerInfo.otp_ui = toggle;
 			return;
 		},
 		playerMutationSetter: (state, { _mutationKey, data }) => {

@@ -15,6 +15,8 @@ using CloudRP.Utils;
 using CloudRP.PlayerData;
 using CloudRP.Character;
 using System.Text.RegularExpressions;
+using System.Net.Mail;
+using System.Net;
 
 
 namespace CloudRP.Authentication
@@ -22,6 +24,11 @@ namespace CloudRP.Authentication
     internal class Auth : Script
     {
         public static uint _startDimension = 20;
+        public static string _startAdminPed = "ig_mp_agent14";
+        public static string _emailUserEnv = "emailUser";
+        public static string _emailPassEnv = "emailPass";
+        public static string _otpStoreKey = "registering_otp";
+
 
         [ServerEvent(Event.ResourceStart)]
         public void onResourceStart()
@@ -80,11 +87,148 @@ namespace CloudRP.Authentication
                     }
 
                 } else {
+                    uiHandling.sendPushNotifError(player, "No account was found matching given credentials", 4000);
                     Console.WriteLine("no acount was found");
                     return;
                 } 
 
             }
+        }
+
+        [RemoteEvent("server:recieveRegister")]
+        public void handleRegister(Player player, string data)
+        {
+            Register registeringData = JsonConvert.DeserializeObject<Register>(data);
+            
+            User userData = PlayersData.getPlayerAccountData(player);
+            if (userData != null) return;
+
+            if(registeringData.registerPassword != registeringData.registerPasswordConfirm)
+            {
+                uiHandling.sendPushNotifError(player, "Ensure password confirmation matches password.", 4000);
+                return;
+            }
+
+            if(!AuthUtils.isEmailValid(registeringData.registerEmail))
+            {
+                uiHandling.sendPushNotifError(player, "Entered email is invalid.", 6000);
+                return;
+            }
+
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                Account findWithEmail = dbContext.accounts.Where(acc => acc.email_address == registeringData.registerEmail).FirstOrDefault();
+                if(findWithEmail != null)
+                {
+                    uiHandling.sendPushNotifError(player, "Email is already taken.", 4000);
+                    return;
+                }
+
+
+                Account findWithUser = dbContext.accounts.Where(acc => acc.username == registeringData.registerUsername).FirstOrDefault();
+                if (findWithUser != null)
+                {
+                    uiHandling.sendPushNotifError(player, "Username is already taken.", 4000);
+                    return;
+                }
+
+                enterRegisterOtpStage(player, registeringData);
+            }
+        }
+
+        public void enterRegisterOtpStage(Player player, Register registeringData)
+        {
+            string mutationName = "setUserOtp";
+
+            uiHandling.sendMutationToClient(player, mutationName, "toggle", true);
+
+            string otp = AuthUtils.generateString(5);
+
+            OtpStore otpStore = new OtpStore
+            {
+                otp = otp,
+                otpTries = 0,
+                registeringData = registeringData,
+                unixMade = CommandUtils.generateUnix()
+            };
+
+            player.SetData(_otpStoreKey, otpStore);
+
+            string otpContextEmail = $"Enter the OTP {otp} (This code is valid for 3 minutes)";
+
+            AuthUtils.sendEmail(registeringData.registerEmail, "Cloud RP | OTP", AuthUtils.getEmailWithContext(otpContextEmail));
+        }
+
+        [RemoteEvent("server:authRecieveOtp")]
+        public void recieveAuthOtp(Player player, string otpCode)
+        {
+            OtpStore playerOtpStore = player.GetData<OtpStore>(_otpStoreKey);
+            if(playerOtpStore == null || playerOtpStore.registeringData == null)
+            {
+                uiHandling.sendMutationToClient(player, "setUserOtp", "toggle", false);
+
+                return;
+            }
+
+            playerOtpStore.otpTries++;
+
+            player.SetData(_otpStoreKey, playerOtpStore);
+
+            if(playerOtpStore.otpTries > 15)
+            {
+                uiHandling.sendMutationToClient(player, "setUserOtp", "toggle", false);
+
+                uiHandling.sendPushNotifError(player, "You entered the wrong OTP code too many times.", 7500);
+                return;
+            }
+
+            if(playerOtpStore.otp != otpCode || playerOtpStore.unixMade > CommandUtils.generateUnix() + 280)
+            {
+                uiHandling.sendPushNotifError(player, "Invalid OTP code.", 2000);
+                return;
+            }
+
+            string mutationName = "setUserOtp";
+
+            uiHandling.sendMutationToClient(player, mutationName, "toggle", false);
+
+            createAccount(player, playerOtpStore.registeringData);
+        }
+
+        public static void createAccount(Player player, Register registeringData)
+        {
+            string passwordHash = AuthUtils.hashPasword(registeringData.registerPassword);
+
+            Account creatingAccount = new Account
+            {
+                admin_name = "Placeholder",
+                admin_ped = _startAdminPed,
+                auto_login = 0,
+                ban_status = 0,
+                client_serial = player.Serial,
+                password = passwordHash,
+                email_address = registeringData.registerEmail,
+                social_club_id = player.SocialClubId,
+                CreatedDate = DateTime.Now,
+                UpdatedDate = DateTime.Now,
+                username = registeringData.registerUsername,
+                user_ip = player.Address,
+                vip_status = 0,
+                admin_status = (int)AdminRanks.Admin_None,
+                auto_login_key = ""
+            };
+
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                dbContext.Add(creatingAccount);
+                dbContext.SaveChanges();
+            }
+
+            uiHandling.sendPushNotif(player, $"You have successfully created an account.", 6000);
+
+            User userData = createUser(creatingAccount);
+
+            setUserToCharacterSelection(player, userData);
         }
 
         [ServerEvent(Event.PlayerConnected)]
@@ -135,10 +279,10 @@ namespace CloudRP.Authentication
                     findAccount.client_serial = player.Serial;
                     findAccount.user_ip = player.Address;
 
-
                     dbContext.Update(findAccount);
                     dbContext.SaveChanges();
 
+                    uiHandling.resetMutationPusher(player, MutationKeys.PlayerCharacters);
                     setUserToCharacterSelection(player, user);
 
                     return;
@@ -190,7 +334,7 @@ namespace CloudRP.Authentication
 
         public static void setUserToCharacterSelection(Player player, User userData)
         {
-            if (userData == null || AdminUtils.checkPlayerIsBanned(player) != null || PlayersData.getPlayerAccountData(player) != null) return;
+            if (AdminUtils.checkPlayerIsBanned(player) != null) return;
 
             PlayersData.setPlayerAccountData(player, userData);
 
@@ -200,14 +344,13 @@ namespace CloudRP.Authentication
 
             uiHandling.sendMutationToClient(player, mutationName, "toggle", true);
 
-            
-            using(DefaultDbContext dbContext = new DefaultDbContext())
+            using (DefaultDbContext dbContext = new DefaultDbContext())
             {
-                uiHandling.resetMutationPusher(player, MutationKeys.PlayerCharacters);
                 List<DbCharacter> allPlayerCharacters = dbContext.characters.Where(character => character.owner_id == userData.accountId).ToList();
 
                 allPlayerCharacters.ForEach(character =>
                 {
+                    Console.WriteLine("" + character.character_id);
                     uiHandling.handleObjectUiMutationPush(player, MutationKeys.PlayerCharacters, character);
                 });
             }

@@ -1,20 +1,23 @@
 <template>
     <main>
-        <div class="fixed inset-0 bg-zinc-900/10 backdrop-blur-sm w-full text-white text-lg">
-            <div class="container flex items-center max-w-3xl mx-auto mt-52">
-                <div class="flex justify-center w-full">
-                    <div class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-t-2 border-b-2 border-gray-500">
+                        <div class="border-b-2 border-gray-400">
+                            <div class="p-4 relative h-14">
 
-                        <div class="border-b border-gray-400">
-                            <div class="p-4">
-                                <i class="fa-solid fa-right-to-bracket absolute mt-1.5 text-gray-400"></i>
-                                <h1 class="flex justify-start text-xl font-bold ml-6">{{ characterSelectionState ? "Select Character" : "Login to Cloud RP" }}</h1>
+                                <div class="absolute left-10">
+                                    <i class="fa-solid fa-shield absolute mt-1.5 text-gray-400"></i>
+                                    <h1 class="flex justify-start text-xl font-bold ml-6">Authentication {{ authState }}</h1>
+                                </div>
+
+                                <div v-if="characterSelectionState" class="absolute right-10 font-medium hover:text-green-500 duration-300">
+                                        Add new character <i class="fa-solid fa-plus"></i>
+                                </div>
                             </div>
+
                         </div>
 
-                        <div v-if="!characterSelectionState" class="p-8">
-                            <form @submit.prevent="login()">
-                                <label class="block mt-2">
+                        <div v-if="!characterSelectionState && !showRegister && !showOtp" class="p-8">
+                            <form>
+                                <label class="block">
                                     <span class="font-medium">Enter your username</span>
                                     <div class="border-gray-400 border mt-2 rounded-lg">
                                         <div>
@@ -39,19 +42,16 @@
                                     <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Remember me</span>
                                 </label>
 
-                                <div class="flex border justify-center mt-2 border-gray-400 rounded-lg">
-
-                                    <button @click="login(true)" class="p-3 w-full ">Login</button>
-
+                                <div class="inline-flex w-full mt-4 space-x-10 font-medium">
+                                    <button @click="register" class="w-full border-gray-500 border-2 rounded-l-xl p-3 duration-300 hover:border-gray-400"><i class="fa-solid fa-book text-gray-400"></i> Register</button>
+                                    <button @click="login(true)" class="w-full border-2 border-gray-500 rounded-r-xl p-3 hover:border-gray-400 duration-300">
+                                        Login <i class="fa-solid fa-right-to-bracket text-gray-400"></i>
+                                    </button>
                                 </div>
 
-                                <div class="flex border justify-center mt-3 border-gray-400 rounded-lg">
-
-                                    <button @click="register()" class="p-3 w-full rounded-lg">Register</button>
-                                </div>
                             </form>
                         </div>
-                        <div v-else class="p-3 max-h-[55rem] overflow-x-hidden">
+                        <div v-if="characterSelectionState" class="p-3 max-h-[55rem] overflow-x-hidden">
 
                             <div v-for="item in characters" :key="item">
 
@@ -93,11 +93,84 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                </div>
-            </div>
+
+                        <div v-if="showRegister && !showOtp && !characterSelectionState" class="p-8">
+                            <div>
+
+                                <label class="block">
+                                    <span class="font-medium">Enter your username</span>
+                                    <div class="border-gray-400 border mt-2 rounded-lg">
+                                        <div>
+                                            <i class="fa-solid fa-user absolute pt-3 border-r p-3 h-11 border-gray-400 text-gray-400"></i>
+                                        </div>
+                                        <input v-model="registerUsername" type="text" placeholder="Username..." class="ml-12 p-2 block w-full rounded-lg bg-transparent outline-none" />
+                                    </div>
+                                </label>
+
+                                <label class="block mt-3">
+                                    <span class="font-medium">Enter your email</span>
+                                    <div class="border-gray-400 border mt-2 rounded-lg">
+                                        <div>
+                                            <i class="fa-solid fa-envelope absolute pt-3 border-r p-3 h-11 border-gray-400 text-gray-400"></i>
+                                        </div>
+                                        <input v-model="registerEmail" type="text" placeholder="Email..." class="ml-12 p-2 block w-full rounded-lg bg-transparent outline-none" />
+                                    </div>
+                                </label>
+                                <label class="block mt-3">
+                                    <span class="font-medium">Enter your password</span>
+                                    <div class="border-gray-400 border mt-2 rounded-lg">
+                                        <div>
+                                            <i class="fa-solid fa-lock absolute pt-3 border-r p-3 h-11 border-gray-400 text-gray-400"></i>
+                                        </div>
+                                        <input v-model="registerPassword" type="password" placeholder="Password..." class="ml-12 p-2 block w-full rounded-lg bg-transparent outline-none" />
+                                    </div>
+                                </label>
+
+                                <label class="block mt-3">
+                                    <span class="font-medium">Confirm your password</span>
+                                    <div class="border-gray-400 border mt-2 rounded-lg">
+                                        <div>
+                                            <i class="fa-solid fa-lock absolute pt-3 border-r p-3 h-11 border-gray-400 text-gray-400"></i>
+                                        </div>
+                                        <input v-model="registerPasswordConfirm" type="password" placeholder="Password confirmation..." class="ml-12 p-2 block w-full rounded-lg bg-transparent outline-none" />
+                                    </div>
+                                </label>
+
+                                <div class="font-medium text-sm mt-3 text-gray-300">
+                                    * By creating an account you agree to Cloud RP's terms of service and privacy policy.
+                                </div>
+
+                                <div class="inline-flex w-full mt-4 space-x-10 font-medium">
+                                    <button @click="showRegister = false" class="w-full border-2 border-gray-500 rounded-l-xl p-3 hover:border-gray-400 duration-300">
+                                        <i class="fa-solid fa-rotate-left text-gray-400"></i> Back
+                                    </button>
+                                    <button @click="sendRegisterDataToServer()" class="w-full border-gray-500 border-2 rounded-r-xl p-3 duration-300 hover:border-gray-400">Register <i class="fa-solid fa-book text-gray-400"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div v-if="showOtp" class="p-8">
+                            <div>
+                                <label class="block">
+                                    <span class="font-medium">Enter the OTP sent to your email address</span>
+                                    <div class="border-gray-400 border mt-2 rounded-lg">
+                                        <div>
+                                            <i class="fa-solid fa-lock absolute pt-3 border-r p-3 h-11 border-gray-400 text-gray-400"></i>
+                                        </div>
+                                        <input v-model="otpPassword" type="text" placeholder="One Time Password..." class="ml-12 p-2 block w-full rounded-lg bg-transparent outline-none" />
+                                    </div>
+                                </label>
+
+                                <div class="font-medium text-sm mt-3 text-gray-300">
+                                    * By creating an account you agree to Cloud RP's terms of service and privacy policy.
+                                </div>
+
+                                <div class="inline-flex w-full mt-4 space-x-10 font-medium">
+                                    <button @click="register()" class="w-full border-gray-500 border-2 rounded-xl p-3 duration-300 hover:border-green-400">Register <i class="fa-solid fa-book text-gray-400"></i></button>
+                                </div>
+                            </div>
+                        </div>
     </main>
 
 
@@ -111,14 +184,22 @@
             return {
                 username: "",
                 password: "",
+                registerUsername: "",
+                registerEmail: "",
+                registerPassword: "",
+                registerPasswordConfirm: "",
                 rememberMe: false,
                 characterName: "",
-                characters: [] 
+                characters: [],
+                showRegister: false,
+                authState: "",
+                otpPassword: ""
             };
         },
         computed: {
             ...mapGetters({
                 characterSelectionState: 'getCharacterSelectionStatus',
+                showOtp: 'getOtpState'
             })
         },
         methods: {
@@ -133,8 +214,21 @@
                     window.mp.trigger("browser:sendString", "server:recieveCharacterName", cname);
                 }
             },
+            sendRegisterDataToServer() {
+                let authData = {
+                    registerUsername: this.registerUsername,
+                    registerPassword: this.registerPassword,
+                    registerPasswordConfirm: this.registerPasswordConfirm,
+                    registerEmail: this.registerEmail
+                }
+                
+                window.mp.trigger("browser:sendObject", "server:recieveRegister", JSON.stringify(authData));
+            },
             register() {
-                console.log("register");
+                if(!this.showRegister) return this.showRegister = true;
+                window.mp.trigger("browser:sendString", "server:authRecieveOtp", this.otpPassword);
+
+
             },
             getCharacterData() {
                 return this.$store.state.playerInfo.player_characters;
@@ -144,12 +238,8 @@
                 return dateTime.toLocaleDateString();
             }
         },
-        watch: {
-
-        },
         mounted() {
             this.characters = this.$store.state.playerInfo.player_characters;
-            console.log(this.characters);
         }
     }
 </script>

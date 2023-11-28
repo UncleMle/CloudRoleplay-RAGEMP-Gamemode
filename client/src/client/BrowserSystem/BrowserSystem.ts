@@ -26,7 +26,9 @@ class BrowserSystem {
 		mp.events.add("browser:handlePlayerObjectMutation", BrowserSystem.handleObjectToBrowser);
 		mp.events.add("browser:handlePlayerObjectMutationPush", BrowserSystem.handleObjectToBrowserPush);
 		mp.events.add("browser:resetRouter", BrowserSystem.handleReset);
-		mp.events.add("browser:resetMutationPusher", BrowserSystem.resetMutationPusher)
+		mp.events.add("browser:resetMutationPusher", BrowserSystem.resetMutationPusher);
+		mp.events.add("browser:sendErrorPushNotif", BrowserSystem.sendErrorPushNotif);
+		mp.events.add("browser:sendNotif", BrowserSystem.sendNotif);
 
 		mp.keys.bind(F2, false, function () {
 			isFunctionPressed = !isFunctionPressed;
@@ -91,7 +93,15 @@ class BrowserSystem {
 	if (!BrowserSystem._browserInstance) return;
 		BrowserSystem._browserInstance.execute(`appSys.commit("resetPlayerMutationPusher", {
 			_mutationKey: "${_mutationKey}",
-	})`);
+		})`);
+	}
+
+	public static sendErrorPushNotif(message: string, time: number) {
+		BrowserSystem._browserInstance.execute(`gui.notify.sendError("${message}", ${time});`);
+	}
+
+	public static sendNotif(message: string, progbar: boolean, dragbl: boolean, time: number) {
+		BrowserSystem._browserInstance.execute(`gui.notify.showNotification("${message}", ${progbar}, ${dragbl}, ${time});`);
 	}
 
 	public static handleBrowserObject(eventName: string, _object: object) {

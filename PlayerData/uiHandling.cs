@@ -18,7 +18,7 @@ namespace CloudRP.PlayerData
             player.TriggerEvent("client:recieveUiMutation", mutationName, "toggle", toggle);
         }
 
-        public static void sendMutationToClient(Player player, string mutationName, string key, bool value)
+        public static void sendMutationToClient<T>(Player player, string mutationName, string key, T value)
         {
             player.TriggerEvent("client:recieveUiMutation", mutationName, key, value);
         }
@@ -41,6 +41,16 @@ namespace CloudRP.PlayerData
         public static void sendNotification(Player player, string text, bool isRp = true)
         {
             player.TriggerEvent("client:addNotif", text, isRp);
+        }
+
+        public static void sendPushNotifError(Player player, string text, int time)
+        {
+            player.TriggerEvent("browser:sendErrorPushNotif", text, time);
+        }
+
+        public static void sendPushNotif(Player player, string text, int time, bool progbar = true, bool dragbl = true)
+        {
+            player.TriggerEvent("browser:sendNotif", text, progbar, dragbl, time);
         }
 
         public static void pushRouterToClient(Player player, string route)
@@ -68,5 +78,6 @@ namespace CloudRP.PlayerData
         public static readonly string BanData = "player_bandata";
         public static readonly string PlayerData = "player_data_server";
         public static readonly string PlayerCharacters = "player_characters";
+        public static readonly string AuthUiState = "auth_ui";
     }
 }

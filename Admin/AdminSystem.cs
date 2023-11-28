@@ -517,5 +517,42 @@ namespace CloudRP.Admin
             }
         }
 
+        [Command("setaname", "~r~/setaname [nameOrId] [adminName]", GreedyArg = true)]
+        public void setAdminName(Player player, string nameOrId, string adminName)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(userData.adminLevel > (int)AdminRanks.Admin_Admin && userData.adminDuty || userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            {
+                Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+                if(findPlayer == null)
+                {
+                    CommandUtils.notFound(player);
+                    return;
+                }
+
+                User findPlayerData = PlayersData.getPlayerAccountData(findPlayer);
+
+                findPlayerData.adminName = adminName;
+
+                using(DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    Account findAccount = dbContext.accounts.Find(findPlayerData.accountId);
+
+                    findAccount.admin_name = adminName;
+
+                    dbContext.Update(findAccount);
+                    dbContext.SaveChanges();
+                }
+
+                AdminUtils.staffSay(player, $"Set Player [{findPlayer.Id}]'s admin name to {adminName}.");
+                AdminUtils.staffSay(findPlayer, $"Your admin name was set to {adminName} by {userData.adminName}.");
+
+
+            } else AdminUtils.sendNoAuth(player);
+
+        }
+
     }
 }

@@ -10,6 +10,8 @@ import { mapMutations, mapActions } from 'vuex';
 
 Vue.config.productionTip = false;
 
+global.gui = { notify: null, chat: null, loading: null, progressbar: null, fuelscreen: null, phone: null, altmenu: null };
+
 const app = new Vue({
   router,
   store,

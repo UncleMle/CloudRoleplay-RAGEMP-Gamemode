@@ -14,6 +14,10 @@ namespace CloudRP
         public void Start()
         {
             Console.WriteLine("Gamemode started");
+
+
+            Environment.SetEnvironmentVariable(Auth._emailUserEnv, Env._gmailSmtpUser);
+            Environment.SetEnvironmentVariable(Auth._emailPassEnv, Env._gmailSmtpPass);
         }
 
     }

@@ -6,11 +6,13 @@ Vue.use(Router);
 import LoginPage from './components/auth/LoginPage.vue';
 import StatsPage from './components/ui/StatsPage.vue';
 import BanPage from './components/auth/BanPage.vue';
+import CharacterCreation from './components/auth/CharacterCreation.vue';
 
 export default new Router({
     routes: [
         { path: '/login', component: LoginPage },
         { path: '/stats', component: StatsPage },
-        { path: '/ban', component: BanPage}
+        { path: '/ban', component: BanPage },
+        { path: '/charcreation', component: CharacterCreation }
     ]
 });

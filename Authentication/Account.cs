@@ -44,6 +44,6 @@ namespace CloudRP.Authentication
 
         public int ban_status { get; set; }
 
-        public int social_club_id { get; set; }
+        public ulong social_club_id { get; set; }
     }
 }

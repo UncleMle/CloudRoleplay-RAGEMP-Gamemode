@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Mail;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace CloudRP.Utils
 {
@@ -54,6 +57,47 @@ namespace CloudRP.Utils
 
             return result;
         }
+
+        public static void sendEmail(string targetEmail, string subject, string body)
+        {
+            try
+            {
+                string smtpClientUsername = Environment.GetEnvironmentVariable(Authentication.Auth._emailUserEnv);
+                string smtpClientPassword = Environment.GetEnvironmentVariable(Authentication.Auth._emailPassEnv);
+
+                if (smtpClientUsername == null || smtpClientPassword == null)
+                {
+                    Console.WriteLine("Email Client enviroment variables couldn't be found.");
+                    return;
+                }
+
+                SmtpClient smtpClient = new SmtpClient("smtp.gmail.com")
+                {
+                    Port = 587,
+                    Credentials = new NetworkCredential(smtpClientUsername, smtpClientPassword),
+                    EnableSsl = true,
+                };
+
+                smtpClient.Send(smtpClientUsername, targetEmail, subject, body);
+            } catch
+            {
+
+            }
+        }
+
+        public static string getEmailWithContext(string context)
+        {
+            string email = $"<h1>{context}<h1>";
+
+            return email;
+        }
+
+        public static bool isEmailValid(string email)
+        {
+            string regex = @"^[^@\s]+@[^@\s]+\.(com|net|org|gov)$";
+
+            return Regex.IsMatch(email, regex, RegexOptions.IgnoreCase);
+        }
     }
 
     class UserCredentials
@@ -96,6 +140,23 @@ namespace CloudRP.Utils
         public int characterId { get; set; }
         public string characterName { get; set; }
     }
+
+    class Register
+    {
+        public string registerUsername { get; set; }
+        public string registerPassword { get; set; }
+        public string registerPasswordConfirm { get; set; }
+        public string registerEmail { get; set; }
+    }
+
+    class OtpStore
+    {
+        public string otp { get; set; }
+        public int otpTries { get; set; }  
+        public Register registeringData { get; set; }   
+        public long unixMade { get; set; }
+    }
+
 
     public static class DefaultSpawn
     {
