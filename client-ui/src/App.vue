@@ -1,17 +1,10 @@
 <template>
-    <div id="app" class="overflow-y-scroll no-scrollbar">
-        <div class="absolute">
-            <div class="fixed inset-0 w-full text-white text-lg">
-                <div class="container flex items-center max-w-3xl mx-auto mt-52">
-                    <div class="flex justify-center w-full">
-                        <div class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
-                            <router-view ref="routers">
-                            </router-view>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div id="app">
+        
+        <router-view class="absolute" ref="routers">
+
+        </router-view>
+
 
 
         <ChatBox v-if="guiState" />

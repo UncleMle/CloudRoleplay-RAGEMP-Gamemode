@@ -6,10 +6,15 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using VisualStudioConfiguration;
+using CloudRP.Authentication;
+using CloudRP.Database;
+using CloudRP.PlayerData;
+using System.Linq;
+using GTANetworkAPI;
 
 namespace CloudRP.Utils
 {
-    internal class AuthUtils
+    internal class AuthUtils : Script
     {
         public static string hashPasword(string password)
         {
@@ -79,7 +84,12 @@ namespace CloudRP.Utils
                     EnableSsl = true,
                 };
 
-                smtpClient.Send(smtpClientUsername, targetEmail, subject, body);
+                MailMessage msg = new MailMessage(smtpClientUsername, targetEmail, subject, body)
+                {
+                    IsBodyHtml = true
+                };
+
+                smtpClient.Send(msg);
             } catch
             {
 
@@ -108,6 +118,54 @@ namespace CloudRP.Utils
             {
                 if (input.Contains(item)) return false;
             }
+
+            return true;
+        }
+
+        public static bool registerDetailsValid(Player player, Register registeringData)
+        {
+            if (registeringData.registerPassword != registeringData.registerPasswordConfirm)
+            {
+                uiHandling.sendPushNotifError(player, "Ensure password confirmation matches password.", 4000);
+                return false;
+            }
+
+            if (!isEmailValid(registeringData.registerEmail))
+            {
+                uiHandling.sendPushNotifError(player, "Entered email is invalid.", 6000);
+                return false;
+            }
+
+            if (!validateString(registeringData.registerUsername) || registeringData.registerUsername.Length > 20 || registeringData.registerUsername.Length < 4)
+            {
+                uiHandling.sendPushNotifError(player, "Username is invalid. Ensure it contains no special characters or numbers.", 6000);
+                return false;
+            }
+
+            if (registeringData.registerPassword.Length < 8)
+            {
+                uiHandling.sendPushNotifError(player, "Ensure your password's length is greater than 8.", 6000);
+                return false;
+            }
+
+            using (DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                Account findWithEmail = dbContext.accounts.Where(acc => acc.email_address == registeringData.registerEmail).FirstOrDefault();
+                if (findWithEmail != null)
+                {
+                    uiHandling.sendPushNotifError(player, "Email is already taken.", 4000);
+                    return false;
+                }
+
+
+                Account findWithUser = dbContext.accounts.Where(acc => acc.username == registeringData.registerUsername).FirstOrDefault();
+                if (findWithUser != null)
+                {
+                    uiHandling.sendPushNotifError(player, "Username is already taken.", 4000);
+                    return false;
+                }
+            }
+
 
             return true;
         }

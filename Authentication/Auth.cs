@@ -83,11 +83,11 @@ namespace CloudRP.Authentication
 
                         Console.WriteLine($"User {findAccount.username} (#{findAccount.account_id}) has logged in.");
                     } else {
-                        Console.WriteLine("Password was doesn't match account");
+                        uiHandling.sendPushNotifError(player, "Incorrect account credentials", 4000);
                     }
 
                 } else {
-                    uiHandling.sendPushNotifError(player, "No account was found matching given credentials", 4000);
+                    uiHandling.sendPushNotifError(player, "Incorrect account credentials", 4000);
                     Console.WriteLine("no acount was found");
                     return;
                 } 
@@ -103,47 +103,8 @@ namespace CloudRP.Authentication
             User userData = PlayersData.getPlayerAccountData(player);
             if (userData != null) return;
 
-            if(registeringData.registerPassword != registeringData.registerPasswordConfirm)
+            if(AuthUtils.registerDetailsValid(player, registeringData))
             {
-                uiHandling.sendPushNotifError(player, "Ensure password confirmation matches password.", 4000);
-                return;
-            }
-
-            if(!AuthUtils.isEmailValid(registeringData.registerEmail))
-            {
-                uiHandling.sendPushNotifError(player, "Entered email is invalid.", 6000);
-                return;
-            }
-
-            if(!AuthUtils.validateString(registeringData.registerUsername) || registeringData.registerUsername.Length > 20 || registeringData.registerUsername.Length < 4)
-            {
-                uiHandling.sendPushNotifError(player, "Username is invalid. Ensure it contains no special characters or numbers.", 6000);
-                return;
-            }
-
-            if(registeringData.registerPassword.Length < 8)
-            {
-                uiHandling.sendPushNotifError(player, "Ensure your password's length is greater than 8.", 6000);
-                return;
-            }
-
-            using(DefaultDbContext dbContext = new DefaultDbContext())
-            {
-                Account findWithEmail = dbContext.accounts.Where(acc => acc.email_address == registeringData.registerEmail).FirstOrDefault();
-                if(findWithEmail != null)
-                {
-                    uiHandling.sendPushNotifError(player, "Email is already taken.", 4000);
-                    return;
-                }
-
-
-                Account findWithUser = dbContext.accounts.Where(acc => acc.username == registeringData.registerUsername).FirstOrDefault();
-                if (findWithUser != null)
-                {
-                    uiHandling.sendPushNotifError(player, "Username is already taken.", 4000);
-                    return;
-                }
-
                 enterRegisterOtpStage(player, registeringData);
             }
         }

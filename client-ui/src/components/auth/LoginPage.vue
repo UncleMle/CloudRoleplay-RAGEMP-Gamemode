@@ -1,5 +1,10 @@
 <template>
     <main>
+        <div class="fixed inset-0 w-full text-white text-lg">
+            <div class="container flex items-center max-w-3xl mx-auto mt-52">
+                <div class="flex justify-center w-full">
+                    <div class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
+
                         <div class="border-b-2 border-gray-400">
                             <div class="p-4 relative h-14">
 
@@ -9,7 +14,7 @@
                                 </div>
 
                                 <div v-if="characterSelectionState" class="absolute right-10 font-medium hover:text-green-500 duration-300">
-                                        Add new character <i class="fa-solid fa-plus"></i>
+                                    Add new character <i class="fa-solid fa-plus"></i>
                                 </div>
                             </div>
 
@@ -171,6 +176,10 @@
                                 </div>
                             </div>
                         </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
     </main>
 
 
