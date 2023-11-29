@@ -28,13 +28,51 @@ export interface CharacterData {
 	characterName: string
 }
 
-export interface CharacterModel {
-	firstHeadShape: any,
-	secondHeadShape: any,
-	firstSkinTone: any,
-	secondSkinTone: any,
-	headMix: any,
-	skinMix: any
+export interface CharacterSettings {
+	rotation: string;
+	firstHeadShape: string;
+	secondHeadShape: string;
+	firstSkinTone: string;
+	secondSkinTone: string;
+	headMix: string;
+	skinMix: string;
+	sex: boolean;
+	noseWidth: string;
+	noseLength: string;
+	noseTip: string;
+	browHeight: string;
+	cheekBoneHeight: string;
+	cheeksWidth: string;
+	lips: string;
+	jawHeight: string;
+	chinPosition: string;
+	chinShape: string;
+	noseHeight: string;
+	noseBridge: string;
+	noseBridgeShift: string;
+	browWidth: string;
+	cheekBoneWidth: string;
+	eyes: string;
+	jawWidth: string;
+	chinLength: string;
+	chinWidth: string;
+	neckWidth: string;
+	eyeColour: string;
+	blemishes: string;
+	ageing: string;
+	facialHairStyle: string;
+	facialHairColour: string;
+	chestHairStyle: string;
+	hairStyle: string;
+	hairColour: string;
+	hairHighlights: string;
+	eyebrowsStyle: string;
+	eyebrowsColour: string;
+	complexion: string;
+	sunDamage: string;
+	molesFreckles: string;
+	blushStyle: string;
+	makeup: string;
 }
 
 export interface Gui {
