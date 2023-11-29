@@ -68,6 +68,7 @@ namespace CloudRP.PlayerData
     {
         public static readonly string None = "/";
         public static readonly string LoginPage = "/login";
+        public static readonly string CharacterCreation = "/charcreation";
         public static readonly string StatsPage = "/stats";
         public static readonly string BanPage = "/ban";
     }

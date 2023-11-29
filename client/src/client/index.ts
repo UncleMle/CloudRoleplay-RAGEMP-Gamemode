@@ -15,6 +15,7 @@ import VehicleWindows from "./VehicleSystems/VehicleWindows";
 import VehicleEngine from "./VehicleSystems/VehicleEngine";
 import VehicleIndicators from "./VehicleSystems/VehicleIndication";
 import VehicleSiren from "./VehicleSystems/VehicleSiren";
+import CharacterSystem from "./Character/CharacterSystem";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -34,3 +35,4 @@ new VehicleWindows();
 new VehicleEngine();
 new VehicleIndicators();
 new VehicleSiren();
+new CharacterSystem();

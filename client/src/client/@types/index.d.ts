@@ -28,6 +28,15 @@ export interface CharacterData {
 	characterName: string
 }
 
+export interface CharacterModel {
+	firstHeadShape: any,
+	secondHeadShape: any,
+	firstSkinTone: any,
+	secondSkinTone: any,
+	headMix: any,
+	skinMix: any
+}
+
 export interface Gui {
 	playerId: number,
 	direction: string,

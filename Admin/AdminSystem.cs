@@ -551,7 +551,19 @@ namespace CloudRP.Admin
 
 
             } else AdminUtils.sendNoAuth(player);
+        }
 
+        [Command("charcreate")]
+        public void charCreation(Player player)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(userData.adminLevel > 7)
+            {
+                uiHandling.togglePlayerChat(player, false);
+                uiHandling.pushRouterToClient(player, Browsers.CharacterCreation);
+
+            }
         }
 
     }
