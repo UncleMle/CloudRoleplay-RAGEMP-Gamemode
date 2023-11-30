@@ -523,7 +523,11 @@ namespace CloudRP.Vehicles
 
             if(vehicleData == null) return;
 
-            Console.WriteLine(" " + vehicleData.vehicle_windows.Length);
+            if( !(player.VehicleSeat == 0 || player.VehicleSeat == 1) )
+            {
+                CommandUtils.errorSay(player, "You must be the driver or front passenger to use this command.");
+                return;
+            }
 
             if(vehicleIndex > vehicleData.vehicle_windows.Length || vehicleIndex < 0)
             {
