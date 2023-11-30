@@ -204,12 +204,12 @@ namespace CloudRP.Character
 
         public static void resetToCharacterModel(Player player)
         {
-            SharedDataCharacter characterData = PlayersData.getSharedCharacterData(player);
-            if(characterData == null) return;
+            CharacterModel characterModelData = PlayersData.getCharacterModelData(player);
+            if(characterModelData == null) return;
             DbCharacter character = PlayersData.getPlayerCharacterData(player);
             if( character == null ) return; 
 
-            PlayersData.setPlayerCharacterData(player, character, characterData.characterModel);
+            PlayersData.setPlayerCharacterData(player, character, characterModelData);
         }
     }
 }

@@ -2,6 +2,7 @@
 using CloudRP.Character;
 using CloudRP.Utils;
 using GTANetworkAPI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,6 +14,7 @@ namespace CloudRP.PlayerData
         public static readonly Vector3 defaultSpawnPosition = new Vector3(-1036.6, -2736.0, 13.8);
         private static readonly string _sharedAccountDataIdentifier = "PlayerAccountData";
         private static readonly string _sharedCharacterDataIdentifier = "PlayerCharacterData";
+        private static readonly string _characterModelData = "PlayerCharacterModelData";
 
         public static void setPlayerAccountData(Player player, User userData)
         {
@@ -46,12 +48,15 @@ namespace CloudRP.PlayerData
                 characterModel = charModel
             };
 
+            player.SetData(_characterModelData, charModel);
             player.SetSharedData(_sharedCharacterDataIdentifier, data);
         }
 
-        public static SharedDataCharacter getSharedCharacterData(Player player)
+        public static CharacterModel getCharacterModelData(Player player)
         {
-            return player.GetSharedData<SharedDataCharacter>(_sharedCharacterDataIdentifier);
+            CharacterModel characterModel = player.GetData<CharacterModel>(_characterModelData);
+
+            return characterModel;
         }
 
         public static User getPlayerAccountData(Player player)
