@@ -454,6 +454,8 @@ namespace CloudRP.Vehicles
         [RemoteEvent("server:handleDoorInteraction")]
         public void handleDoorInteraction(Player player, Vehicle vehicle, int boneTargetId)
         {
+            if (Vector3.Distance(player.Position, vehicle.Position) > 4) return;
+
             DbVehicle vehicleData = getVehicleData(vehicle);
 
             if(vehicleData == null || vehicle.Locked) return;

@@ -1,7 +1,7 @@
 import { BoneData, VehicleData } from "../@types";
 import getVehicleData from "../PlayerMethods/getVehicleData";
 import distBetweenCoords from "../PlayerMethods/distanceBetweenCoords";
-import { _control_ids } from "../Constants/Constants";
+import { _config_flags, _control_ids } from "../Constants/Constants";
 
 class VehicleInteraction {
 	public static LocalPlayer: PlayerMp;
@@ -14,10 +14,18 @@ class VehicleInteraction {
 
 		mp.events.add("render", VehicleInteraction.handleInteractionRender);
 		mp.keys.bind(_control_ids.EBIND, false, VehicleInteraction.handleInteraction);
+
+		mp.events.add("playerLeaveVehicle", VehicleInteraction.syncOnExit);
 	}
 
-	public static handleInteractionRender(): void {
+	public static syncOnExit(vehicle: VehicleMp, seat: number) {
+		mp.events.callRemote('server:handleDoorInteraction', vehicle, seat + 1);
+	}
+
+	public static handleInteractionRender() {
 		VehicleInteraction.syncVehicleDoors();
+
+		VehicleInteraction.LocalPlayer.setConfigFlag(_config_flags.PED_FLAG_STOP_ENGINE_TURNING, true);
 
 		if (VehicleInteraction.checkInteractionRender()) {
 			const raycast: RaycastResult | null = VehicleInteraction.getLocalTargetVehicle();

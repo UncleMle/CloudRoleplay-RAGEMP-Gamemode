@@ -1,4 +1,7 @@
-﻿using CloudRP.Utils;
+﻿using CloudRP.Admin;
+using CloudRP.Character;
+using CloudRP.PlayerData;
+using CloudRP.Utils;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
@@ -23,5 +26,74 @@ namespace CloudRP.AntiCheat
             }
         }
 
+        [ServerEvent(Event.PlayerWeaponSwitch)]
+        public void OnPlayerWeaponSwitch(Player player, WeaponHash oldWeapon, WeaponHash newWeapon)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+
+            if (userData == null || characterData == null) return;
+
+            player.TriggerEvent("client:weaponSwap");
+        }
+
+
+        [RemoteEvent("server:CheatDetection")]
+        public void alertAdmins(Player player, int exception, string message)
+        {
+            Dictionary<Player, User> onlineStaff = AdminUtils.gatherStaff();
+
+            User userData = PlayersData.getPlayerAccountData(player);
+            if (userData == null)
+            {
+                foreach (KeyValuePair<Player, User> entry in onlineStaff)
+                {
+                    NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.antiCheat + "Player [" + player.Id + "] was kicked.");
+                }
+
+                ChatUtils.acSysPrint("Player [" + player.Id + "] was kicked.");
+                player.Kick("[Anti Cheat]");
+                return;
+            }
+
+            if (exception == (int)AcExceptions.disallowedWeapon)
+            {
+                User antiCheat = AdminUtils.getAcBanAdmin();
+
+                AdminUtils.banAPlayer(-1, antiCheat, userData, player, "Disallowed weapon");
+
+
+                foreach (KeyValuePair<Player, User> entry in onlineStaff)
+                {
+                    NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.antiCheat + "Player [" + player.Id + $"] ({userData.username}) was banned for disallowed weapon flag.");
+                }
+
+                ChatUtils.acSysPrint("Player [" + player.Id + "] was banned.");
+
+                return;
+            }
+
+
+            if (userData != null && userData.adminDuty) return;
+
+            ChatUtils.acSysPrint(message);
+
+            foreach (KeyValuePair<Player, User> entry in onlineStaff)
+            {
+                NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.antiCheat + message);
+            }
+
+
+        }
+
+    }
+
+    enum AcExceptions
+    {
+        tpHack = 0,
+        disallowedWeapon = 1,
+        vehicleSpeedOrFly = 2,
+        noReloadHack = 3,
+        ammoHack = 4
     }
 }

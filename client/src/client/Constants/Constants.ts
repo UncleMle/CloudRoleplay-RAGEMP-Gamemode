@@ -29,4 +29,9 @@ export const _control_ids = {
 	D: 35,
 	Space: 321,
 	LCtrl: 326,
+	RELOADBIND: 0x52
 };
+
+export const _config_flags = {
+	PED_FLAG_STOP_ENGINE_TURNING: 429
+}

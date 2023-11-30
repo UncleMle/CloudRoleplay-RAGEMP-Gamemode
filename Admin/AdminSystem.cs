@@ -362,8 +362,8 @@ namespace CloudRP.Admin
             } else AdminUtils.sendNoAuth(player);
         }
 
-        [Command("ban", "~r~/ban [playerIdOrName] [length minutes(-1 for permanent ban)] [silent] [reason]", GreedyArg = true)]
-        public static void banPlayer(Player player, string playerNameOrId, int time, bool silent = false, string reason)
+        [Command("ban", "~r~/ban [playerIdOrName] [length minutes(-1 for permanent ban)] [reason]", GreedyArg = true)]
+        public static void banPlayer(Player player, string playerNameOrId, int time, string reason)
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
@@ -395,8 +395,6 @@ namespace CloudRP.Admin
                 string endOfBanString = lift_unix_time == 1 ? ChatUtils.red + "is permanent" : "expires at" + ChatUtils.orange + CommandUtils.unixTimeStampToDateTime(lift_unix_time);
                 
                 AdminUtils.sendMessageToAllStaff($"{playerAdminRank} {userData.adminName} banned account {banPlayerUserData.username} with reason {reason} ban {endOfBanString}");
-                if (silent) return;
-                
                 CommandUtils.sendToAllPlayers($"{playerAdminRank} {userData.adminName} banned {characterData.character_name} with reason {reason} ban {endOfBanString}");
             }
         }

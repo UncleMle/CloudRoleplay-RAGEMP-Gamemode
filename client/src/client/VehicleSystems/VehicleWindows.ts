@@ -18,7 +18,13 @@ class VehicleWindows {
 
 			vehicleData.vehicle_windows.forEach((state: string, index: number) => {
 				if (state) veh.rollDownWindow(index);
-				else if (!state) veh.rollUpWindow(index);
+				else if (!state) {
+					if (veh.isWindowIntact(index)) {
+						veh.fixWindow(index);
+					}
+
+					veh.rollUpWindow(index);
+				}
 			});
 
 		})

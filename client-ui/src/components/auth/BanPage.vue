@@ -28,13 +28,13 @@
 
                     <div v-if="banData.lift_unix_time == -1" class="font-medium text-medium">
                         <div class="relative w-full mt-4">
-                            <span class="left-0 top-0 "><i class="fa-solid fa-calendar-days pr-2"></i>Expires in</span>
+                            <span class="left-0 top-0 "><i class="fa-solid fa-calendar-days pr-2"></i>Expires on</span>
                             <span class="absolute right-0 top-0 text-red-500">Ban is permanent</span>
                         </div>
                     </div>
                     <div v-else class="font-medium text-medium">
                         <div class="relative w-full mt-4">
-                            <span class="left-0 top-0 "><i class="fa-solid fa-calendar-days pr-2"></i>Expires in</span>
+                            <span class="left-0 top-0 "><i class="fa-solid fa-calendar-days pr-2"></i>Expires on</span>
                             <span class="absolute right-0 top-0">{{unixToDays(banData.lift_unix_time)}}</span>
                         </div>
                     </div>

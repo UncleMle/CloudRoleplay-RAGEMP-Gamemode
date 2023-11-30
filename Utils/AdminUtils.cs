@@ -32,6 +32,18 @@ namespace CloudRP.Utils
             }
         }
 
+        public static User getAcBanAdmin()
+        {
+            User user = new User
+            {
+                accountId = -1,
+                adminName = "[Anti-Cheat]",
+                username = "Anti-Cheat",
+            };
+
+            return user;
+        }
+
         public static Dictionary<Player, User> gatherStaff()
         {
             List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();

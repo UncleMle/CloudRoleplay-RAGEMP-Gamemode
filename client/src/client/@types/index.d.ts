@@ -17,6 +17,12 @@ export interface UserData {
 	isFrozen: boolean
 }
 
+export interface SubtractVector {
+	x: number,
+	y: number,
+	z: number
+}
+
 export interface StreetData {
 	getStreet: GetStreetNameAtCoordResult,
 	zoneName: string,
