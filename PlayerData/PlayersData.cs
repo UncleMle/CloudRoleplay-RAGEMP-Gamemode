@@ -34,7 +34,7 @@ namespace CloudRP.PlayerData
             player.SetSharedData(_sharedAccountDataIdentifier, data);
         }
 
-        public static void setPlayerCharacterData(Player player, DbCharacter character)
+        public static void setPlayerCharacterData(Player player, DbCharacter character, CharacterModel charModel)
         {
             player.SetData(_sharedCharacterDataIdentifier, character);
 
@@ -43,6 +43,7 @@ namespace CloudRP.PlayerData
             {
                 characterId = character.character_id,
                 characterName = character.character_name,
+                characterModel = charModel
             };
 
             player.SetSharedData(_sharedCharacterDataIdentifier, data);

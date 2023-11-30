@@ -25,7 +25,8 @@ export interface StreetData {
 
 export interface CharacterData {
 	characterId: number,
-	characterName: string
+	characterName: string,
+	characterModel: CharacterModel
 }
 
 export interface CharacterModel {

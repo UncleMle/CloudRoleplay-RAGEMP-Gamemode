@@ -232,6 +232,7 @@ namespace CloudRP.Utils
     {
         public int characterId { get; set; }
         public string characterName { get; set; }
+        public CharacterModel characterModel { get; set; }
     }
 
     class Register

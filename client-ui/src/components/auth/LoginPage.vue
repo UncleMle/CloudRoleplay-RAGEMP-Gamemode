@@ -58,6 +58,10 @@
                         </div>
                         <div v-if="characterSelectionState" class="p-3 max-h-[55rem] overflow-x-hidden">
 
+                            <div v-if="characters.length == 0" class="font-medium flex justify-center text-lg mt-4 pb-4 text-gray-300">
+                                You don't have any characters. Create a new one to get started.
+                            </div>
+
                             <div v-for="item in characters" :key="item">
 
                                 <div class="p-6 font-medium border rounded-3xl border-gray-500 mt-6 shadow-2xl">

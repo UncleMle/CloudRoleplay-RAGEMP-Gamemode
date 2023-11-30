@@ -216,18 +216,18 @@ namespace CloudRP.Authentication
         public void onEnterCharacterName(Player player, string name)
         {
             User userData = PlayersData.getPlayerAccountData(player);
-            DbCharacter character = null;
-
+            
             if(userData != null && AdminUtils.checkPlayerIsBanned(player) == null)
             {
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
-                    character = dbContext.characters.Where(b => b.character_name == name && b.owner_id == userData.accountId).FirstOrDefault();
-
+                    DbCharacter character = dbContext.characters.Where(b => b.character_name == name && b.owner_id == userData.accountId).FirstOrDefault();
                     if (character == null) return;
+                    CharacterModel charModel = dbContext.character_models.Where(charModel => charModel.owner_id == character.character_id).FirstOrDefault();
+                    if(charModel == null) return;
 
                     Chat.charSysPrint($"Character {character.character_name} has logged in (#{character.character_id})");
-                    PlayersData.setPlayerCharacterData(player, character);
+                    PlayersData.setPlayerCharacterData(player, character, charModel);
                     welcomeAndSpawnPlayer(player, userData, character);
                 }
             };

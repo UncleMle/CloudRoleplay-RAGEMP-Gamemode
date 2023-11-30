@@ -15,8 +15,13 @@ class CharacterSystem {
 		mp.events.addDataHandler(_sharedCharacterDataIdentifier, CharacterSystem.handleDataHandler);
 	}
 
-	public static setCharacterCustomization(characterModel: any) {
-		const charData: CharacterModel = JSON.parse(characterModel);
+	public static setCharacterCustomization(characterModel: any, parse: boolean = true) {
+		let charData: CharacterModel = characterModel;
+
+		if (parse) {
+			charData = JSON.parse(characterModel);
+		}
+
 
 		let female: number = mp.game.joaat("mp_m_freemode_01");
 		let male: number = mp.game.joaat("mp_f_freemode_01");
@@ -68,7 +73,7 @@ class CharacterSystem {
 		let characterData: CharacterData | undefined = getTargetCharacterData(entity as PlayerMp);
 		if (!characterData) return;
 
-		// call character customization set.
+		CharacterSystem.setCharacterCustomization(characterData.characterModel, false);
 	}
 
 	public static handleEntityStreamOut(entity: EntityMp) {
@@ -82,6 +87,7 @@ class CharacterSystem {
 	public static handleDataHandler(entity: EntityMp, data: CharacterData) {
 		if (entity.type != "player" || !data) return;
 
+		CharacterSystem.setCharacterCustomization(data.characterModel, false);
 	}
 
 }
