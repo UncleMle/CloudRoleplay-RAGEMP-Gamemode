@@ -1,5 +1,6 @@
 ﻿using CloudRP.Admin;
 using CloudRP.Character;
+using CloudRP.DiscordSystem;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
 using GTANetworkAPI;
@@ -78,11 +79,15 @@ namespace CloudRP.AntiCheat
 
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
-            ChatUtils.acSysPrint(message + " from " + characterData.character_name);
+            string suffix = characterData != null ? characterData.character_name : "";
+
+            ChatUtils.acSysPrint(message + " from " + suffix);
+            DiscordSystems.sendDiscordToStaff(message + " from " + suffix);
+
 
             foreach (KeyValuePair<Player, User> entry in onlineStaff)
             {
-                NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.antiCheat + message + " from " + characterData.character_name);
+                NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.antiCheat + message + " from " + suffix);
             }
 
 

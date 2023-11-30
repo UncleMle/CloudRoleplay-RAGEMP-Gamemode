@@ -74,11 +74,11 @@ class AntiCheat {
 				let Difference = AntiCheat.subtractVector(AntiCheat.position, AntiCheat.LocalPlayer.position)
 				if (Math.abs(Difference.x) > 30 || Math.abs(Difference.y) > 30) {
 					if (AntiCheat.isWalking()) {
-						AntiCheat.alertAdmins(AcExceptions.tpHack, "Possible teleport hack.");
+						AntiCheat.alertAdmins(AcExceptions.tpHack, "Possible teleport hack");
 					}
 				}
 				if (AntiCheat.LocalPlayer.vehicle && (AntiCheat.checkCarPos(25) || AntiCheat.VehicleFasterThan(250))) {
-					AntiCheat.alertAdmins(AcExceptions.vehicleSpeedOrFly, "Possible vehicle fly or speed hack.");
+					AntiCheat.alertAdmins(AcExceptions.vehicleSpeedOrFly, "Possible vehicle fly or speed hack");
 				}
 			}
 			AntiCheat.position = mp.players.local.position
