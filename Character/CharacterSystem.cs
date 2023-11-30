@@ -78,14 +78,14 @@ namespace CloudRP.Character
 
         public static int getUsersCharacter(User userData)
         {
-            List<DbCharacter> accounts;
+            List<DbCharacter> characters;
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
-                accounts = dbContext.characters.Where(acc => acc.character_id == userData.accountId).ToList();
+                characters = dbContext.characters.Where(acc => acc.owner_id == userData.accountId).ToList();
             }
 
-            return accounts.Count;
+            return characters.Count;
         }
 
         public static void addUserCharacterSlot(User userData)
@@ -111,6 +111,8 @@ namespace CloudRP.Character
             if (userData == null) return;
 
             int currentCharacters = getUsersCharacter(userData);
+
+            Console.WriteLine(userData.maxCharacters + " maxC " + currentCharacters);
 
             if (currentCharacters >= userData.maxCharacters)
             {

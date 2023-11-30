@@ -15,6 +15,7 @@ namespace CloudRP.Utils
         public static string _c_CharacterSystem = "[Characters] ";
         public static string yellow = "!{yellow}";
         public static string red = "!{red}";
+        public static string disconnected = "!{#f57b42}[Disconnected] " + White;
 
         public static void charSysPrint(string str)
         {
