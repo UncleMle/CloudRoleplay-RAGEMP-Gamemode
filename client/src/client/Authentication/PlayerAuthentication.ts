@@ -17,6 +17,8 @@ class PlayerAuthentication {
 	public static LocalStorage: StorageMp;
 	public static characterCreationPosition: Vector3 = new mp.Vector3(-38.6, -590.5, 78.8);
 	public static _cameraSwitchInterval: number = 500;
+	public static cameraPositions: Vector3[] = [new mp.Vector3(-79.9, -1079.5, 310.2), new mp.Vector3(407.3, 6009.5, 940.0)];
+	public static cameraPointAtPositions: Vector3[] = [new mp.Vector3(-74.8, -819.2, 326.2), new mp.Vector3(501.7, 5603.7, 767.9)];
 
 	constructor() {
 		PlayerAuthentication.LocalPlayer = mp.players.local;
@@ -74,7 +76,10 @@ class PlayerAuthentication {
 	}
 
 	public static handleCameraStart() {
-		PlayerAuthentication.LoginCamera = new Camera('loginCam', new mp.Vector3(-79.9, -1079.5, 310.2), new mp.Vector3(-74.8, -819.2, 326.2));
+		let randomSelect: number = Math.floor(Math.random() * PlayerAuthentication.cameraPositions.length);
+		mp.console.logInfo("selection " + randomSelect);
+		PlayerAuthentication.LoginCamera = new Camera('loginCam', PlayerAuthentication.cameraPositions[randomSelect], PlayerAuthentication.cameraPointAtPositions[randomSelect]);
+
 		PlayerAuthentication.LoginCamera.startMoving(7100.0);
 		PlayerAuthentication.LoginCamera.setActive();
 		PlayerAuthentication.freezeAndBlurClient();

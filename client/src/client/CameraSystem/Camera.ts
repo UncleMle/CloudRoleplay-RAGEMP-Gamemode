@@ -15,8 +15,8 @@ class Camera {
         this.position = position;
         this.pointAtCoord = pointAtCoord;
         this.isMoving = false;
-        this.range = 220;
-        this.speed = 1.4;
+        this.range = 10;
+        this.speed = 1.1;
         this.create();
 		Camera.Current_Cam = this;
 
