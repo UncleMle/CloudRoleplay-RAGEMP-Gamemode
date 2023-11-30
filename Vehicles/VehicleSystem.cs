@@ -550,7 +550,9 @@ namespace CloudRP.Vehicles
             {
                 player.WarpOutOfVehicle();
                 return;
-            } else
+            }
+            
+            if(!vehicleData.engine_status && player.VehicleSeat == 0)
             {
                 uiHandling.sendNotification(player, "~w~Use ~y~Y~w~ to start the engine.", false);
             }
