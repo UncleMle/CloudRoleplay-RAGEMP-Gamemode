@@ -92,6 +92,11 @@ namespace CloudRP.Utils
             }
         }
 
+        public static void sendToAllPlayers(string message)
+        {
+            NAPI.Chat.SendChatMessageToAll(message);
+        }
+
         public static string formatCharName(string name)
         {
             return name.Replace("_", " ");
