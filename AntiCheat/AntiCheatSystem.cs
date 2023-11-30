@@ -44,7 +44,7 @@ namespace CloudRP.AntiCheat
             Dictionary<Player, User> onlineStaff = AdminUtils.gatherStaff();
 
             User userData = PlayersData.getPlayerAccountData(player);
-            if (userData == null)
+            if (userData == null && exception != (int)AcExceptions.tpHack)
             {
                 foreach (KeyValuePair<Player, User> entry in onlineStaff)
                 {
@@ -56,7 +56,7 @@ namespace CloudRP.AntiCheat
                 return;
             }
 
-            if (exception == (int)AcExceptions.disallowedWeapon)
+            if (exception == (int)AcExceptions.disallowedWeapon && userData != null)
             {
                 User antiCheat = AdminUtils.getAcBanAdmin();
 
@@ -76,11 +76,13 @@ namespace CloudRP.AntiCheat
 
             if (userData != null && userData.adminDuty) return;
 
-            ChatUtils.acSysPrint(message);
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+
+            ChatUtils.acSysPrint(message + " from " + characterData.character_name);
 
             foreach (KeyValuePair<Player, User> entry in onlineStaff)
             {
-                NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.antiCheat + message);
+                NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.antiCheat + message + " from " + characterData.character_name);
             }
 
 
