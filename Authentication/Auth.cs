@@ -114,7 +114,7 @@ namespace CloudRP.Authentication
 
             uiHandling.sendMutationToClient(player, mutationName, "toggle", true);
 
-            string otp = AuthUtils.generateString(5);
+            string otp = AuthUtils.generateString(4, true);
 
             OtpStore otpStore = new OtpStore
             {

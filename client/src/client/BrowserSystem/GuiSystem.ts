@@ -24,7 +24,7 @@ class GuiSystem {
 		const streetData = GuiSystem.getStreetName();
 
 		const playerGuiObj: Gui = {
-			playerId: PlayerData.playerId,
+			playerId: GuiSystem.LocalPlayer.remoteId,
 			direction: GuiSystem.getCompassDirection(),
 			isFrozen: PlayerData.isFrozen,
 			unix: getTimeUnix(),

@@ -88,14 +88,8 @@ namespace CloudRP.Admin
 
                 foreach (KeyValuePair<Player, User> entry in onlineAdmins)
                 {
-                    User staff = entry.Value;
 
-                    NAPI.Chat.SendChatMessageToPlayer(entry.Key, "!{red}" + $"[AdminChat] " + "!{white}" + colouredAdminRank + staff.adminName + " !{grey}says:!{white} " + message);
-
-                    userData.isFlying = false;
-
-                    PlayersData.setPlayerAccountData(player, userData);
-                    player.TriggerEvent("admin:endFly");
+                    NAPI.Chat.SendChatMessageToPlayer(entry.Key, Chat.red + $"[Admin Chat] " + Chat.White + colouredAdminRank + userData.adminName + Chat.red +" says: " + Chat.White + message);
                 }
             }
 
@@ -368,8 +362,8 @@ namespace CloudRP.Admin
             } else AdminUtils.sendNoAuth(player);
         }
 
-        [Command("ban", "~r~/ban [playerIdOrName] [reason] [length minutes(-1 for permanent ban)]")]
-        public static void banPlayer(Player player, string playerNameOrId, string reason, int time)
+        [Command("ban", "~r~/ban [playerIdOrName] [length minutes(-1 for permanent ban)] [reason]", GreedyArg = true)]
+        public static void banPlayer(Player player, string playerNameOrId, int time, string reason)
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
@@ -398,6 +392,26 @@ namespace CloudRP.Admin
                 string endOfBanString = lift_unix_time == 1 ? Chat.red + "is permanent" : "expires at" + Chat.orange + CommandUtils.unixTimeStampToDateTime(lift_unix_time);
                 AdminUtils.sendMessageToAllStaff($"{playerAdminRank} {userData.adminName} banned account {banPlayerUserData.username} with reason {reason} ban {endOfBanString}");
             }
+        }
+
+        [Command("unban", "~r~/unban [username]", GreedyArg = true)]
+        public void unbanAplayer(Player player, string accountName)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(AdminUtils.checkUserData(player, userData))
+            {
+                bool unbanViaUsername = AdminUtils.unbanViaUsername(accountName);
+
+                if(unbanViaUsername)
+                {
+                    AdminUtils.staffSay(player, $"Unbanned user {accountName}");
+                } else
+                {
+                    AdminUtils.staffSay(player, $"No ban for user {accountName} was found.");
+                }
+            }
+            
         }
 
         [Command("spw", "~r~/spw [weaponName] [ammo]")]

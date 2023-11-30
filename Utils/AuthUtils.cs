@@ -49,9 +49,14 @@ namespace CloudRP.Utils
             return isTheSame;
         }
 
-        public static string generateString(int length)
+        public static string generateString(int length, bool onlyNumbers = false)
         {
             string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+            if (onlyNumbers)
+            {
+                characters = "0123456789";
+            }
 
             string result = "";
 
@@ -128,11 +133,11 @@ namespace CloudRP.Utils
 
         public static bool validateString(string input)
         {
-            string specialChar = @"\|!#$%&/()=?»«@£§€{}.-;'<>_,0123456789";
+            string specialChar = @"\|!#$%&/()=?»«@£§€{}.-;'<>_,0123456789 ";
 
             foreach (var item in specialChar)
             {
-                if (input.Contains(item)) return false;
+                if (input.Contains(item) || string.IsNullOrWhiteSpace(input)) return false;
             }
 
             return true;

@@ -159,6 +159,7 @@ namespace CloudRP.Utils
                 if (findAccount != null)
                 {
                     findAccount.ban_status = 1;
+                    findAccount.auto_login = 0;
                     dbContext.Update(findAccount);
                 }
 
@@ -167,6 +168,26 @@ namespace CloudRP.Utils
             }
 
             setPlayerToBanScreen(banPlayer, ban);
+        }
+
+        public static bool unbanViaUsername(string username)
+        {
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                Account account = dbContext.accounts.Where(acc => acc.username == username).FirstOrDefault();   
+                Ban ban = dbContext.bans.Where(findBan => findBan.username == username).FirstOrDefault();
+
+                if (account != null && ban != null)
+                {
+                    dbContext.bans.Remove(ban);
+                    account.ban_status = 0;
+
+                    dbContext.SaveChanges();
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

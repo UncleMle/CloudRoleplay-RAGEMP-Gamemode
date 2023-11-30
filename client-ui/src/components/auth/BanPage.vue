@@ -57,7 +57,7 @@
                     <div class="font-medium text-medium">
                         <div class="relative w-full mt-4">
                             <span class="left-0 top-0 "><i class="fa-solid fa-book pr-2"></i>Reason</span>
-                            <span class="absolute right-0 top-0 max-w-sm overflow-x-hidden text-ellipsis">{{ banData.ban_reason }}</span>
+                            <span class="absolute right-0 top-0 max-w-sm h-6 overflow-hidden text-ellipsis">{{ banData.ban_reason }}</span>
                         </div>
                     </div>
 
