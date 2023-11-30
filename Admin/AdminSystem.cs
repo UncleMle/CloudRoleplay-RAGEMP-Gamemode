@@ -44,7 +44,7 @@ namespace CloudRP.Admin
                     AdminUtils.sendMessageToAllStaff($"{userData.adminName} is on duty");
                     AdminUtils.setPed(player, userData.adminPed);
                 }
-                else
+                elseese
                 {
                     CharacterSystem.resetToCharacterModel(player);
                     AdminUtils.sendMessageToAllStaff($"{userData.adminName} is off duty");
