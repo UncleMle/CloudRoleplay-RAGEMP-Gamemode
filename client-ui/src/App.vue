@@ -2,9 +2,7 @@
     <div id="app">
         
         <router-view class="absolute" ref="routers">
-
         </router-view>
-
 
 
         <ChatBox v-if="guiState" />

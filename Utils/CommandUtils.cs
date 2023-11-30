@@ -57,7 +57,7 @@ namespace CloudRP.Utils
 
         public static void notFound(Player player)
         {
-            NAPI.Chat.SendChatMessageToPlayer(player, $"{Chat.error}This player wasn't found");
+            NAPI.Chat.SendChatMessageToPlayer(player, $"{ChatUtils.error}This player wasn't found");
         }
 
         public static int? tryParse(string name)
@@ -74,7 +74,7 @@ namespace CloudRP.Utils
 
         public static void errorSay(Player player, string message)
         {
-            NAPI.Chat.SendChatMessageToPlayer(player, Chat.error + message);
+            NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.error + message);
         }
 
         public static List<Player> getPlayersInRadius(Player player, double radius)

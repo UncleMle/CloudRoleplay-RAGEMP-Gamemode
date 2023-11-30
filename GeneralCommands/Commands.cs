@@ -87,12 +87,12 @@ namespace CloudRP.GeneralCommands
                 return;
             }
 
-            string pmToPlayer = Chat.yellow+$"[PM] from {character.character_name} [{player.Id}] " + Chat.grey + "(( " + Chat.White + message + Chat.grey + " ))";
-            string pmFromPlayer = Chat.grey + $"[PM] You " + "(( " + message + " ))";
+            string pmToPlayer = ChatUtils.yellow+$"[PM] from {character.character_name} [{player.Id}] " + ChatUtils.grey + "(( " + ChatUtils.White + message + ChatUtils.grey + " ))";
+            string pmFromPlayer = ChatUtils.grey + $"[PM] You " + "(( " + message + " ))";
 
             if(userData.adminDuty)
             {
-                pmToPlayer = Chat.red+$"[ADMIN PM] from {userData.adminName} [{player.Id}] " + Chat.grey + "(( " + Chat.White + message + Chat.grey + " ))";
+                pmToPlayer = ChatUtils.red+$"[ADMIN PM] from {userData.adminName} [{player.Id}] " + ChatUtils.grey + "(( " + ChatUtils.White + message + ChatUtils.grey + " ))";
             }
 
             NAPI.Chat.SendChatMessageToPlayer(findPlayer, pmToPlayer);

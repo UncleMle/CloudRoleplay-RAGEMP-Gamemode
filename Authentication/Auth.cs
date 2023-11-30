@@ -226,7 +226,7 @@ namespace CloudRP.Authentication
                     CharacterModel charModel = dbContext.character_models.Where(charModel => charModel.owner_id == character.character_id).FirstOrDefault();
                     if(charModel == null) return;
 
-                    Chat.charSysPrint($"Character {character.character_name} has logged in (#{character.character_id})");
+                    ChatUtils.charSysPrint($"Character {character.character_name} has logged in (#{character.character_id})");
                     PlayersData.setPlayerCharacterData(player, character, charModel);
                     welcomeAndSpawnPlayer(player, userData, character);
                 }
@@ -283,25 +283,12 @@ namespace CloudRP.Authentication
         {
             player.TriggerEvent("client:loginEnd");
             player.TriggerEvent("client:moveSkyCamera", "up", 1);
-            uiHandling.togglePlayerChat(player, true);
-
-            if (user.adminLevel > (int)AdminRanks.Admin_None)
-            {
-                string colouredRank = AdminUtils.getColouredAdminRank(user);
-                NAPI.Chat.SendChatMessageToPlayer(player, AdminUtils.staffPrefix + $"Welcome {colouredRank}" + user.adminName);
-            }
 
             player.Position = new Vector3(characterData.position_x, characterData.position_y, characterData.position_z);
             player.Health = characterData.character_health;
 
-            NAPI.Chat.SendChatMessageToPlayer(player, Chat.CloudRP + $"Welcome back to Cloud RP {user.username}");
             uiHandling.pushRouterToClient(player, Browsers.None);
             player.Dimension = characterData.player_dimension;
-
-            if(characterData.player_dimension != 0)
-            {
-                AdminUtils.staffSay(player, $"You have been spawned into dimension {characterData.player_dimension}.");
-            }
 
             player.TriggerEvent("client:moveSkyCamera", "down");
         }

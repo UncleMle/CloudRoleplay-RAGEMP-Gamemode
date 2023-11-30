@@ -27,7 +27,7 @@ namespace CloudRP.Character
 
         void beginSaveInterval()
         {
-            Chat.charSysPrint("Began saving characters in main thread.");
+            ChatUtils.charSysPrint("Began saving characters in main thread.");
             NAPI.Task.Run(() =>
             {
                 saveCharactersTimer = new Timer();

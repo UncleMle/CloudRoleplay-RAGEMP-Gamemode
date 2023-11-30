@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CloudRP.Utils
 {
-    internal class Chat
+    internal class ChatUtils
     {
         public static string CloudBlue = "!{#67b1e6}";
         public static string White = "!{white}";

@@ -1,6 +1,7 @@
 import { CreationCam } from "../@types";
 import BrowserSystem from "../BrowserSystem/BrowserSystem";
 import Camera from "../CameraSystem/Camera";
+import { _IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE } from "../Constants/Constants";
 import toggleChat from "../PlayerMethods/ToggleChat";
 import getCameraOffset from "../PlayerMethods/getCameraOffset";
 import getUserCharacterData from "../PlayerMethods/getUserCharacterData";
@@ -15,6 +16,7 @@ class PlayerAuthentication {
 	public static LocalPlayer: PlayerMp
 	public static LocalStorage: StorageMp;
 	public static characterCreationPosition: Vector3 = new mp.Vector3(-38.6, -590.5, 78.8);
+	public static _cameraSwitchInterval: number = 500;
 
 	constructor() {
 		PlayerAuthentication.LocalPlayer = mp.players.local;
@@ -90,7 +92,6 @@ class PlayerAuthentication {
 	}
 
 	public static endClientLogin() {
-		mp.game.ui.displayRadar(true);
 		PlayerAuthentication.LocalPlayer.setAlpha(255);
 		mp.game.graphics.transitionFromBlurred(100);
 		mp.gui.cursor.show(false, false);
@@ -100,9 +101,8 @@ class PlayerAuthentication {
 		if (PlayerAuthentication.LoginCamera) {
 			PlayerAuthentication.LoginCamera.delete();
 		}
-		toggleChat(true);
-
 	}
+
 }
 
 export default PlayerAuthentication;

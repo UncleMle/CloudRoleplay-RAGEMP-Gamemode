@@ -89,7 +89,7 @@ namespace CloudRP.Admin
                 foreach (KeyValuePair<Player, User> entry in onlineAdmins)
                 {
 
-                    NAPI.Chat.SendChatMessageToPlayer(entry.Key, Chat.red + $"[Admin Chat] " + Chat.White + colouredAdminRank + userData.adminName + Chat.red +" says: " + Chat.White + message);
+                    NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.red + $"[Admin Chat] " + ChatUtils.White + colouredAdminRank + userData.adminName + ChatUtils.red +" says: " + ChatUtils.White + message);
                 }
             }
 
@@ -389,7 +389,7 @@ namespace CloudRP.Admin
                 AdminUtils.banAPlayer(time, userData, banPlayerUserData, banPlayer, reason);
 
                 string playerAdminRank = AdminUtils.getColouredAdminRank(userData);
-                string endOfBanString = lift_unix_time == 1 ? Chat.red + "is permanent" : "expires at" + Chat.orange + CommandUtils.unixTimeStampToDateTime(lift_unix_time);
+                string endOfBanString = lift_unix_time == 1 ? ChatUtils.red + "is permanent" : "expires at" + ChatUtils.orange + CommandUtils.unixTimeStampToDateTime(lift_unix_time);
                 AdminUtils.sendMessageToAllStaff($"{playerAdminRank} {userData.adminName} banned account {banPlayerUserData.username} with reason {reason} ban {endOfBanString}");
             }
         }
@@ -424,7 +424,7 @@ namespace CloudRP.Admin
             {
                 NAPI.Player.GivePlayerWeapon(player, weaponName, ammo);
 
-                AdminUtils.staffSay(player, $"You gave yourself a {Chat.yellow}{weaponName}{Chat.White} with {ammo} ammo");
+                AdminUtils.staffSay(player, $"You gave yourself a {ChatUtils.yellow}{weaponName}{ChatUtils.White} with {ammo} ammo");
             }
             else AdminUtils.sendNoAuth(player);
 

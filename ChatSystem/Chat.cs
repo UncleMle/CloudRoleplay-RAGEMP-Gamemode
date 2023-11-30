@@ -1,4 +1,5 @@
-﻿using CloudRP.Authentication;
+﻿using CloudRP.Admin;
+using CloudRP.Authentication;
 using CloudRP.Character;
 using CloudRP.GeneralCommands;
 using CloudRP.PlayerData;
@@ -50,6 +51,29 @@ namespace CloudRP.ChatSystem
             {
                 NAPI.Chat.SendChatMessageToPlayer(player, chatMessage);
             });
+        }
+
+        [RemoteEvent("server:welcomePlayerOnSpawn")]
+        public void welcomePlayerOnSpawn(Player player)
+        {
+            User user = PlayersData.getPlayerAccountData(player);
+            if (user == null) return;
+
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            if (characterData == null) return;
+
+            if (user.adminLevel > (int)AdminRanks.Admin_None)
+            {
+                string colouredRank = AdminUtils.getColouredAdminRank(user);
+                NAPI.Chat.SendChatMessageToPlayer(player, AdminUtils.staffPrefix + $"Welcome {colouredRank}" + user.adminName);
+            }
+
+            NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.CloudRP + $"Welcome back to Cloud RP {user.username}");
+
+            if (characterData.player_dimension != 0)
+            {
+                AdminUtils.staffSay(player, $"You have been spawned into dimension {characterData.player_dimension}.");
+            }
 
         }
     }

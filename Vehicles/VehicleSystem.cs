@@ -275,17 +275,17 @@ namespace CloudRP.Vehicles
 
         public static void sayInfoAboutVehicle(Player player, User userdata, DbVehicle vehicle)
         {
-            AdminUtils.staffSay(player, Chat.yellow + "-----------------------------------------------------------");
-            AdminUtils.staffSay(player, "Vehicle id: " + Chat.red + vehicle.vehicle_id + Chat.White + " VehName: " + Chat.red + vehicle.vehicle_name);
-            AdminUtils.staffSay(player, "Owner id: " + Chat.red + vehicle.owner_id + Chat.White + " Numberplate: " + Chat.red + vehicle.numberplate);
+            AdminUtils.staffSay(player, ChatUtils.yellow + "-----------------------------------------------------------");
+            AdminUtils.staffSay(player, "Vehicle id: " + ChatUtils.red + vehicle.vehicle_id + ChatUtils.White + " VehName: " + ChatUtils.red + vehicle.vehicle_name);
+            AdminUtils.staffSay(player, "Owner id: " + ChatUtils.red + vehicle.owner_id + ChatUtils.White + " Numberplate: " + ChatUtils.red + vehicle.numberplate);
 
             DbCharacter vehicleOwnerData = getOwnerOfVehicleById(vehicle.owner_id);
             if (userdata.adminDuty && vehicleOwnerData != null)
             {
-                AdminUtils.staffSay(player, "Owner: " + Chat.red + vehicleOwnerData.character_name+ Chat.White + " Owner Last Login: " + Chat.red + vehicleOwnerData.last_login);
+                AdminUtils.staffSay(player, "Owner: " + ChatUtils.red + vehicleOwnerData.character_name+ ChatUtils.White + " Owner Last Login: " + ChatUtils.red + vehicleOwnerData.last_login);
             }
 
-            AdminUtils.staffSay(player, Chat.yellow + "-----------------------------------------------------------");
+            AdminUtils.staffSay(player, ChatUtils.yellow + "-----------------------------------------------------------");
         }
 
         [ServerEvent(Event.VehicleDeath)]
