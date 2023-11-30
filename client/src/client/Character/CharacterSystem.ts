@@ -61,26 +61,26 @@ class CharacterSystem {
 
 
 		CharacterSystem.LocalPlayer.setHeadBlendData(parseInt(charData.firstHeadShape), parseInt(charData.secondHeadShape), 0, parseInt(charData.firstHeadShape), parseInt(charData.secondHeadShape), 0, Number(charData.headMix) * 0.01, Number(charData.skinMix) * 0.01, 0, false); 
-
-
-
 	}
 
-	public static handleEntityStreamIn() {
+	public static handleEntityStreamIn(entity: EntityMp) {
+		if (entity.type != "player") return;
+		let characterData: CharacterData | undefined = getTargetCharacterData(entity as PlayerMp);
+		if (!characterData) return;
 
+		// call character customization set.
 	}
 
 	public static handleEntityStreamOut(entity: EntityMp) {
-		if (entity.type != "player" || !getTargetCharacterData(entity as PlayerMp)) return;	
+		if (entity.type != "player") return;	
 		let characterData: CharacterData | undefined = getTargetCharacterData(entity as PlayerMp);
-
 		if (!characterData) return;
 
-		
-
+		(entity as PlayerMp).clearDecorations();
 	}
 
-	public static handleDataHandler() {
+	public static handleDataHandler(entity: EntityMp, data: CharacterData) {
+		if (entity.type != "player" || !data) return;
 
 	}
 

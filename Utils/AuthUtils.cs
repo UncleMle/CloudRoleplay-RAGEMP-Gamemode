@@ -11,6 +11,7 @@ using CloudRP.Database;
 using CloudRP.PlayerData;
 using System.Linq;
 using GTANetworkAPI;
+using CloudRP.Character;
 
 namespace CloudRP.Utils
 {
@@ -96,6 +97,21 @@ namespace CloudRP.Utils
             }
         }
 
+        public static bool checkCharacterName(string name)
+        {
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                DbCharacter findChar = dbContext.characters.Where(charac => charac.character_name == name).FirstOrDefault();
+
+                if(findChar != null)
+                {
+                    return false;
+                }
+
+            }
+            return true;
+        }
+
         public static string getEmailWithContext(string context)
         {
             string email = $"<h1>{context}<h1>";
@@ -120,6 +136,11 @@ namespace CloudRP.Utils
             }
 
             return true;
+        }
+
+        public static string firstCharToUpper(string input)
+        {
+            return string.Concat(input[0].ToString().ToUpper(), input.AsSpan(1));
         }
 
         public static bool registerDetailsValid(Player player, Register registeringData)
@@ -191,6 +212,7 @@ namespace CloudRP.Utils
         public bool isFlying { get; set; }
         public bool isFrozen { get; set; } = false;
         public uint playerDimension { get; set; }
+        public int maxCharacters { get; set; }
     }
 
     class SharedDataAccount

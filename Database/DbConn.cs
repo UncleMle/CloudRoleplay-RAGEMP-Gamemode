@@ -17,7 +17,9 @@ namespace CloudRP.Database
 
         // Server=Host;Database=DB_NAME;Uid=USERNAME;Pwd=PASSWORD
 
-        private string connectionString = Environment.GetEnvironmentVariable(connectionStringKey);
+        private string connectionString = "Server=18.135.163.174;Database=cloud_rp;Uid=cloud;Pwd=rootadmin13";//Environment.GetEnvironmentVariable(connectionStringKey);
+
+        //Environment.GetEnvironmentVariable(connectionStringKey);
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -28,6 +30,7 @@ namespace CloudRP.Database
         public DbSet<DbVehicle> vehicles { get; set; }
         public DbSet<DbCharacter> characters { get; set; }
         public DbSet<Ban> bans { get; set; }
+        public DbSet<CharacterModel> character_models { get; set; }
 
     }
 

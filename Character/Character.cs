@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using CloudRP.PlayerData;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace CloudRP.Character
 {
@@ -19,13 +21,13 @@ namespace CloudRP.Character
         public string character_name { get; set; }
 
         [Required]
-        public float position_x { get; set; }
+        public float position_x { get; set; } = PlayersData.defaultSpawnPosition.X;
 
         [Required]
-        public float position_y { get; set; }
+        public float position_y { get; set; } = PlayersData.defaultSpawnPosition.Y;
 
         [Required]
-        public float position_z { get; set; }
+        public float position_z { get; set; } = PlayersData.defaultSpawnPosition.Z;
 
         [Required]
         public DateTime last_login { get; set; }
@@ -37,7 +39,7 @@ namespace CloudRP.Character
         public int character_isbanned {  get; set; }
 
         [Required]
-        public int money_amount { get; set; }
+        public int money_amount { get; set; } = 12000;
 
         public ulong play_time_seconds { get; set; }
 

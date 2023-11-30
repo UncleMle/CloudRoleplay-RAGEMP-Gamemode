@@ -28,7 +28,7 @@ export interface CharacterData {
 	characterName: string
 }
 
-export interface CharacterSettings {
+export interface CharacterModel {
 	rotation: string;
 	firstHeadShape: string;
 	secondHeadShape: string;
@@ -73,6 +73,8 @@ export interface CharacterSettings {
 	molesFreckles: string;
 	blushStyle: string;
 	makeup: string;
+	lipstick: string;
+	blushColour: string;
 }
 
 export interface Gui {
@@ -122,3 +124,8 @@ export interface BoneData {
 	pushTime: number
 }
 
+export interface CreationCam {
+	angle: number,
+	dist: number,
+	height: number
+}

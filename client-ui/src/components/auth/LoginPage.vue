@@ -13,9 +13,9 @@
                                     <h1 class="flex justify-start text-xl font-bold ml-6">Authentication {{ authState }}</h1>
                                 </div>
 
-                                <div v-if="characterSelectionState" class="absolute right-10 font-medium hover:text-green-500 duration-300">
+                                <button @click="createCharacter" v-if="characterSelectionState" class="absolute right-10 font-medium hover:text-green-500 duration-300">
                                     Add new character <i class="fa-solid fa-plus"></i>
-                                </div>
+                                </button>
                             </div>
 
                         </div>
@@ -221,6 +221,11 @@
             playCharacter(cname) {
                 if (this.characters.length > 0 && window.mp) {
                     window.mp.trigger("browser:sendString", "server:recieveCharacterName", cname);
+                }
+            },
+            createCharacter() {
+                if (window.mp) {
+                    window.mp.trigger("browser:sendString", "server:setUserToCharacterCreation");
                 }
             },
             sendRegisterDataToServer() {

@@ -3,14 +3,16 @@ using System;
 using CloudRP.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CloudRP.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231129230726_Added max characters column")]
+    partial class Addedmaxcharacterscolumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -132,155 +134,6 @@ namespace CloudRP.Migrations
                     b.HasKey("account_id");
 
                     b.ToTable("accounts");
-                });
-
-            modelBuilder.Entity("CloudRP.Character.CharacterModel", b =>
-                {
-                    b.Property<int>("character_model_id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("ChinShape")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ageing")
-                        .HasColumnType("int");
-
-                    b.Property<int>("blemishes")
-                        .HasColumnType("int");
-
-                    b.Property<int>("blushStyle")
-                        .HasColumnType("int");
-
-                    b.Property<int>("browHeight")
-                        .HasColumnType("int");
-
-                    b.Property<int>("browWidth")
-                        .HasColumnType("int");
-
-                    b.Property<int>("cheekBoneHeight")
-                        .HasColumnType("int");
-
-                    b.Property<int>("cheekBoneWidth")
-                        .HasColumnType("int");
-
-                    b.Property<int>("cheeksWidth")
-                        .HasColumnType("int");
-
-                    b.Property<int>("chestHairStyle")
-                        .HasColumnType("int");
-
-                    b.Property<int>("chinLength")
-                        .HasColumnType("int");
-
-                    b.Property<int>("chinPosition")
-                        .HasColumnType("int");
-
-                    b.Property<int>("chinWidth")
-                        .HasColumnType("int");
-
-                    b.Property<int>("complexion")
-                        .HasColumnType("int");
-
-                    b.Property<int>("eyeColour")
-                        .HasColumnType("int");
-
-                    b.Property<int>("eyebrowsColour")
-                        .HasColumnType("int");
-
-                    b.Property<int>("eyebrowsStyle")
-                        .HasColumnType("int");
-
-                    b.Property<int>("eyes")
-                        .HasColumnType("int");
-
-                    b.Property<int>("facialHairColour")
-                        .HasColumnType("int");
-
-                    b.Property<int>("facialHairStyle")
-                        .HasColumnType("int");
-
-                    b.Property<int>("firstHeadShape")
-                        .HasColumnType("int");
-
-                    b.Property<int>("firstSkinTone")
-                        .HasColumnType("int");
-
-                    b.Property<int>("hairColour")
-                        .HasColumnType("int");
-
-                    b.Property<int>("hairHighlights")
-                        .HasColumnType("int");
-
-                    b.Property<int>("hairStyle")
-                        .HasColumnType("int");
-
-                    b.Property<int>("headMix")
-                        .HasColumnType("int");
-
-                    b.Property<int>("jawHeight")
-                        .HasColumnType("int");
-
-                    b.Property<int>("jawWidth")
-                        .HasColumnType("int");
-
-                    b.Property<int>("lips")
-                        .HasColumnType("int");
-
-                    b.Property<int>("lipstick")
-                        .HasColumnType("int");
-
-                    b.Property<int>("makeup")
-                        .HasColumnType("int");
-
-                    b.Property<int>("molesFreckles")
-                        .HasColumnType("int");
-
-                    b.Property<int>("neckWidth")
-                        .HasColumnType("int");
-
-                    b.Property<int>("noseBridge")
-                        .HasColumnType("int");
-
-                    b.Property<int>("noseBridgeShift")
-                        .HasColumnType("int");
-
-                    b.Property<int>("noseHeight")
-                        .HasColumnType("int");
-
-                    b.Property<int>("noseLength")
-                        .HasColumnType("int");
-
-                    b.Property<int>("noseTip")
-                        .HasColumnType("int");
-
-                    b.Property<int>("noseWidth")
-                        .HasColumnType("int");
-
-                    b.Property<int>("owner_id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("rotation")
-                        .HasColumnType("int");
-
-                    b.Property<int>("secondHeadShape")
-                        .HasColumnType("int");
-
-                    b.Property<int>("secondSkinTone")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("sex")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<int>("skinMix")
-                        .HasColumnType("int");
-
-                    b.Property<int>("sunDamage")
-                        .HasColumnType("int");
-
-                    b.HasKey("character_model_id");
-
-                    b.ToTable("character_models");
                 });
 
             modelBuilder.Entity("CloudRP.Character.DbCharacter", b =>

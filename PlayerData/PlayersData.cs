@@ -10,6 +10,7 @@ namespace CloudRP.PlayerData
 {
     internal class PlayersData : Script
     {
+        public static readonly Vector3 defaultSpawnPosition = new Vector3(-1036.6, -2736.0, 13.8);
         private static readonly string _sharedAccountDataIdentifier = "PlayerAccountData";
         private static readonly string _sharedCharacterDataIdentifier = "PlayerCharacterData";
 

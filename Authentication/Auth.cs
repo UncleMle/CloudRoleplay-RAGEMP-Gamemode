@@ -88,7 +88,6 @@ namespace CloudRP.Authentication
 
                 } else {
                     uiHandling.sendPushNotifError(player, "Incorrect account credentials", 4000);
-                    Console.WriteLine("no acount was found");
                     return;
                 } 
 
@@ -188,7 +187,8 @@ namespace CloudRP.Authentication
                 user_ip = player.Address,
                 vip_status = 0,
                 admin_status = (int)AdminRanks.Admin_None,
-                auto_login_key = ""
+                auto_login_key = "",
+                max_characters = 2
             };
 
             using(DefaultDbContext dbContext = new DefaultDbContext())
@@ -272,7 +272,8 @@ namespace CloudRP.Authentication
                 adminLevel = accountData.admin_status,
                 adminName = accountData.admin_name,
                 emailAddress = accountData.email_address,
-                adminPed = accountData.admin_ped
+                adminPed = accountData.admin_ped,
+                maxCharacters = accountData.max_characters,
             };
 
             return user;    
@@ -313,20 +314,7 @@ namespace CloudRP.Authentication
 
             Console.WriteLine($"{userData.username} (#{userData.accountId}) has entered character selection process.");
 
-            string mutationName = "setCharacterSelection";
-
-            uiHandling.sendMutationToClient(player, mutationName, "toggle", true);
-
-            using (DefaultDbContext dbContext = new DefaultDbContext())
-            {
-                List<DbCharacter> allPlayerCharacters = dbContext.characters.Where(character => character.owner_id == userData.accountId).ToList();
-
-                allPlayerCharacters.ForEach(character =>
-                {
-                    Console.WriteLine("" + character.character_id);
-                    uiHandling.handleObjectUiMutationPush(player, MutationKeys.PlayerCharacters, character);
-                });
-            }
+            CharacterSystem.fillCharacterSelectionTable(player, userData);
         }
 
         public void setUpAutoLogin(Player player, Account userAccount)
