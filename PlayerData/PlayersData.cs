@@ -75,6 +75,7 @@ namespace CloudRP.PlayerData
         {
             player.SetData<User>(_sharedAccountDataIdentifier, null);
             player.SetData<DbCharacter>(_sharedCharacterDataIdentifier, null);
+            player.SetData<CharacterModel>(_characterModelData, null);
             player.ResetData();
 
             player.ResetOwnSharedData(_sharedAccountDataIdentifier);

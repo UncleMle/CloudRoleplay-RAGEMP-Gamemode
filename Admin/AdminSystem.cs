@@ -46,6 +46,10 @@ namespace CloudRP.Admin
                 }
                 else
                 {
+                    userData.isFlying = false;
+                    player.TriggerEvent("admin:endFly");
+                    PlayersData.setPlayerAccountData(player, userData);
+
                     CharacterSystem.resetToCharacterModel(player);
                     AdminUtils.sendMessageToAllStaff($"{userData.adminName} is off duty");
                 }
