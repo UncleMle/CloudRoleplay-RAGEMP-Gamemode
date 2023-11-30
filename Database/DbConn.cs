@@ -17,7 +17,7 @@ namespace CloudRP.Database
 
         // Server=Host;Database=DB_NAME;Uid=USERNAME;Pwd=PASSWORD
 
-        private string connectionString = "Server=18.135.163.174;Database=cloud_rp;Uid=cloud;Pwd=rootadmin13";//Environment.GetEnvironmentVariable(connectionStringKey);
+        private string connectionString = Environment.GetEnvironmentVariable(connectionStringKey);
 
         //Environment.GetEnvironmentVariable(connectionStringKey);
 

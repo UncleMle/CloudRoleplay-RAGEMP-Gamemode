@@ -30,7 +30,7 @@ namespace CloudRP.Admin
 
         }
 
-        [Command("aduty")]
+        [Command("aduty", "~r~/aduty")]
         public void onAduty(Player player)
         {
             User userData = PlayersData.getPlayerAccountData(player);
@@ -46,8 +46,7 @@ namespace CloudRP.Admin
                 }
                 else
                 {
-                    AdminUtils.setPed(player, "mp_m_freemode_01");
-
+                    CharacterSystem.resetToCharacterModel(player);
                     AdminUtils.sendMessageToAllStaff($"{userData.adminName} is off duty");
                 }
 

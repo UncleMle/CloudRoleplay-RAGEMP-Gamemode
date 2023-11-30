@@ -49,6 +49,11 @@ namespace CloudRP.PlayerData
             player.SetSharedData(_sharedCharacterDataIdentifier, data);
         }
 
+        public static SharedDataCharacter getSharedCharacterData(Player player)
+        {
+            return player.GetSharedData<SharedDataCharacter>(_sharedCharacterDataIdentifier);
+        }
+
         public static User getPlayerAccountData(Player player)
         {
             User playerData = player.GetData<User>(_sharedAccountDataIdentifier);
