@@ -76,7 +76,7 @@ namespace CloudRP.DiscordSystem
             if (args.Length < 2)
             {
                 string[] arguments = { "nameOrId", "reason" };
-                missingArgs(user.Id, "kickplayer", arguments);
+                missingArgs("kickplayer", arguments);
                 return;
             }
 
@@ -85,10 +85,10 @@ namespace CloudRP.DiscordSystem
             if(player != null)
             {
                 player.Kick(args[2] != null ? "By admin" : args[2]);
-                successEmbed(user.Id, "Kicked player [" + player.Id + "]");
+                successEmbed("Kicked player [" + player.Id + "]");
             } else
             {
-                errorEmbed(user.Id, "This player wasn't found online.");
+                errorEmbed("This player wasn't found online.");
                 return;
             }
 
@@ -99,7 +99,7 @@ namespace CloudRP.DiscordSystem
             if(args.Length < 2)
             {
                 string[] arguments = { "vehicleId" };
-                missingArgs(user.Id, "vinfo", arguments);
+                missingArgs("vinfo", arguments);
                 return;
             }
 
@@ -162,7 +162,7 @@ namespace CloudRP.DiscordSystem
 
                 } else
                 {
-                    errorEmbed(user.Id, "The specified vehicle couldn't be found.");
+                    errorEmbed("The specified vehicle couldn't be found.");
                 }
             }
         }
@@ -194,7 +194,7 @@ namespace CloudRP.DiscordSystem
             if(args.Length < 2)
             {
                 string[] arguments = { "message" };
-                missingArgs(user.Id, "say", arguments);
+                missingArgs("say", arguments);
                 return;
             }
 
@@ -205,37 +205,37 @@ namespace CloudRP.DiscordSystem
             NAPI.Chat.SendChatMessageToAll(message);
         }
 
-        public static async Task errorEmbed(ulong userId, string desc)
+        public static async Task errorEmbed(string desc)
         {
             EmbedBuilder builder = new EmbedBuilder()
             {
                 Color = Discord.Color.Red,
                 Description = desc,
-                Title = $"{MentionUtils.MentionUser(userId)} An error occured :("
+                Title = $"An error occured :("
             };
 
             await DiscordIntegration.SendEmbed(staffChannel, builder);
         }
 
-        public static async Task successEmbed(ulong userId, string success)
+        public static async Task successEmbed(string success)
         {
             EmbedBuilder builder = new EmbedBuilder()
             {
                 Color = Discord.Color.Green,
                 Description = success,
-                Title = $"{MentionUtils.MentionUser(userId)} Success"
+                Title = $"Success"
             };
 
-            DiscordIntegration.SendEmbed(userId, builder);
+            DiscordIntegration.SendEmbed(staffChannel, builder);
         }
 
-        public static async Task missingArgs(ulong userId, string commandName, string[] missingArgs)
+        public static async Task missingArgs(string commandName, string[] missingArgs)
         {
             EmbedBuilder builder = new EmbedBuilder()
             {
                 Color = Discord.Color.Red,
                 Description = "Missing arguments " + "[" + string.Join(", ", missingArgs) + "]",
-                Title = $"{MentionUtils.MentionUser(userId)} Missing potential arguments in command {commandName} :("
+                Title = $" Missing potential arguments in command {commandName} :("
             };
 
             await DiscordIntegration.SendEmbed(staffChannel, builder);
