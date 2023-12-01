@@ -1,6 +1,8 @@
-﻿using CloudRP.Authentication;
+﻿using CloudRP.AntiCheat;
+using CloudRP.Authentication;
 using CloudRP.Character;
 using CloudRP.Database;
+using CloudRP.Migrations;
 using CloudRP.Utils;
 using CloudRP.Vehicles;
 using Discord;
@@ -87,9 +89,17 @@ namespace CloudRP.DiscordSystem
 
         }
 
-        public static void addCommmand(Action takeFunction, string desc = "N/A", string name = "N/A")
+        private static void addCommmand(Action takeFunction, string desc = "N/A", string name = "N/A")
         {
-            commands.Add(new Command { action = takeFunction, description = "A command " + desc + ".", name = name });
+            Command command = new Command
+            {
+                action = takeFunction,
+                description = "A command " + desc + ".",
+                name = name
+            };
+
+            commands.Add(command);
+
         }
 
         public static string getSplicedArgument(string[] args)
@@ -119,6 +129,23 @@ namespace CloudRP.DiscordSystem
                 errorEmbed("This player wasn't found online.");
                 return;
             }
+
+        }
+
+        public static void getCharacterFromUnix(string[] args)
+        {
+            if(args.Length < 3)
+            {
+                missingArgs("getfromunix", "nameOrId, unixTime");
+                return;
+            }
+
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                //CharacterJoinLog log = new Joinlogs();
+
+            }
+
 
         }
 
@@ -278,10 +305,4 @@ namespace CloudRP.DiscordSystem
         }
     }
 
-    class Command
-    {
-        public Action action;
-        public string name;
-        public string description;
-    }
 }

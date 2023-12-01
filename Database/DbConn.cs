@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using CloudRP.Admin;
+using CloudRP.AntiCheat;
 using CloudRP.Authentication;
 using CloudRP.Character;
 using CloudRP.Vehicles;
@@ -31,6 +32,7 @@ namespace CloudRP.Database
         public DbSet<DbCharacter> characters { get; set; }
         public DbSet<Ban> bans { get; set; }
         public DbSet<CharacterModel> character_models { get; set; }
+        public DbSet<CharacterJoinLog> character_join_logs { get; set; }
 
     }
 
