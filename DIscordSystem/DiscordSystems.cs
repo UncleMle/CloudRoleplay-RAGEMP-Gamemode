@@ -13,12 +13,13 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Collections.Specialized.BitVector32;
 
 namespace CloudRP.DiscordSystem
 {
     class DiscordSystems : Script
     {
-        public static Dictionary<string, Action> actions = new Dictionary<string, Action>();
+        public static List<Command> commands = new List<Command>();
 
         public static string tokenIdentifier = "discordToken";
         public static string discordPrefix = "!";
@@ -35,7 +36,7 @@ namespace CloudRP.DiscordSystem
                 return;
             }
 
-            DiscordIntegration.SetUpBotInstance(token, "Cloud Roleplay", Discord.ActivityType.Playing, Discord.UserStatus.Online);
+            DiscordIntegration.SetUpBotInstance(token, "Cloud Roleplay", ActivityType.Playing, UserStatus.Online);
 
             NAPI.Task.Run(() =>
             {
@@ -45,16 +46,17 @@ namespace CloudRP.DiscordSystem
 
         public static void handleDiscordCommand(string[] args, SocketUser user)
         {
-            actions.Clear();
+            commands.Clear();
 
-            actions.Add("say", () => say(args, user));
-            actions.Add("vinfo", () => vinfo(args, user));
+            commands.Add(new Command { action = () => say(args, user), description = "A command to say messages.", name = "say" });
+            commands.Add(new Command { action = () => vinfo(args, user), description = "A command to view info about a vehicle.", name = "vinfo" });
+            commands.Add(new Command { action = () => helpCommand(args, user), description = "A command to view all available commands.", name = "help" });
 
-            foreach (KeyValuePair<string, Action> action in actions)
+            foreach (Command command in commands)
             {
-                if(action.Key == args[0])
+                if (command.name == args[0])
                 {
-                    action.Value.Invoke();
+                    command.action.Invoke();
                 }
             }
 
@@ -139,7 +141,28 @@ namespace CloudRP.DiscordSystem
                     errorEmbed("The specified vehicle couldn't be found.");
                 }
             }
+        }
 
+        public static void helpCommand(string[] args, SocketUser user)
+        {
+            EmbedBuilder builder = new EmbedBuilder
+            {
+                Title = "Help Command",
+                Color = Discord.Color.DarkerGrey,
+                Description = "All commands"
+            };
+
+            foreach(Command command in commands)
+            {
+                builder.AddField(field =>
+                {
+                    field.Name = discordPrefix+command.name;
+                    field.Value = command.description;
+                    field.IsInline = false;
+                });
+            }
+
+            DiscordIntegration.SendEmbed(staffChannel, builder);
         }
 
         public static void say(string[] args, SocketUser user)
@@ -181,5 +204,12 @@ namespace CloudRP.DiscordSystem
 
             await DiscordIntegration.SendEmbed(staffChannel, builder);
         }
+    }
+
+    class Command
+    {
+        public Action action;
+        public string name;
+        public string description;
     }
 }
