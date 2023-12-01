@@ -1,4 +1,8 @@
-﻿using CloudRP.Utils;
+﻿using CloudRP.Authentication;
+using CloudRP.Character;
+using CloudRP.Database;
+using CloudRP.Utils;
+using CloudRP.Vehicles;
 using Discord;
 using Discord.WebSocket;
 using GTANetworkAPI;
@@ -44,7 +48,7 @@ namespace CloudRP.DiscordSystem
             actions.Clear();
 
             actions.Add("say", () => say(args, user));
-            actions.Add("vinfo", () => say(args, user));
+            actions.Add("vinfo", () => vinfo(args, user));
 
             foreach (KeyValuePair<string, Action> action in actions)
             {
@@ -64,6 +68,79 @@ namespace CloudRP.DiscordSystem
             return message;
         }
 
+        public static void vinfo(string[] args, SocketUser user)
+        {
+            if(args.Length < 2)
+            {
+                string[] arguments = { "vehicleId" };
+                missingArgs("vinfo", arguments);
+                return;
+            }
+
+            int? vehicleId = CommandUtils.tryParse(args[1]);
+
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                DbVehicle vehicle = dbContext.vehicles.Find(vehicleId);
+
+                if(vehicle != null)
+                {
+                    EmbedBuilder builder = new EmbedBuilder
+                    {
+                        Title = "Vehicle Info",
+                        Color = Discord.Color.DarkerGrey,
+                        Description = "Vehicle info for vehicle #"+vehicle.vehicle_id
+                    };
+
+                    builder.AddField(x =>
+                    {
+                        x.Name = "Vehicle Dimension";
+                        x.Value = vehicle.vehicle_dimension;
+                        x.IsInline = false;
+                    });
+                    
+                    builder.AddField(x =>
+                    {
+                        x.Name = "Last updated";
+                        x.Value = vehicle.UpdatedDate;
+                        x.IsInline = false;
+                    });
+                    
+                    builder.AddField(x =>
+                    {
+                        x.Name = "Vehicle Name";
+                        x.Value = vehicle.vehicle_name;
+                        x.IsInline = false;
+                    });
+
+                    DbCharacter characterData = dbContext.characters.Find(vehicle.owner_id);
+
+                    if(characterData != null)
+                    {
+                        builder.AddField(x =>
+                        {
+                            x.Name = "Owner";
+                            x.Value = characterData.character_name;
+                            x.IsInline = false;
+                        });
+                        
+                        builder.AddField(x =>
+                        {
+                            x.Name = "Owner is banned";
+                            x.Value = characterData.character_isbanned == 1 ? "Yes" : "No";
+                            x.IsInline = false;
+                        });
+                    }
+
+                    DiscordIntegration.SendEmbed(staffChannel, builder);
+
+                } else
+                {
+                    errorEmbed("The specified vehicle couldn't be found.");
+                }
+            }
+
+        }
 
         public static void say(string[] args, SocketUser user)
         {
@@ -81,9 +158,21 @@ namespace CloudRP.DiscordSystem
             NAPI.Chat.SendChatMessageToAll(message);
         }
 
+        public static async Task errorEmbed(string desc)
+        {
+            EmbedBuilder builder = new EmbedBuilder()
+            {
+                Color = Discord.Color.Red,
+                Description = desc,
+                Title = $"An error occured :("
+            };
+
+            await DiscordIntegration.SendEmbed(staffChannel, builder);
+        }
+
         public static async Task missingArgs(string commandName, string[] missingArgs)
         {
-            var builder = new EmbedBuilder()
+            EmbedBuilder builder = new EmbedBuilder()
             {
                 Color = Discord.Color.Red,
                 Description = "Missing arguments " + "[" + string.Join(", ", missingArgs) + "]",
