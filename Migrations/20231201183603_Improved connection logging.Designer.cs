@@ -3,14 +3,16 @@ using System;
 using CloudRP.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CloudRP.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231201183603_Improved connection logging")]
+    partial class Improvedconnectionlogging
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,7 +72,7 @@ namespace CloudRP.Migrations
                     b.ToTable("bans");
                 });
 
-            modelBuilder.Entity("CloudRP.AntiCheat.CharacterConnection", b =>
+            modelBuilder.Entity("CloudRP.AntiCheat.characterConnection", b =>
                 {
                     b.Property<int>("join_log_id")
                         .ValueGeneratedOnAdd()
@@ -83,14 +85,15 @@ namespace CloudRP.Migrations
                         .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("connection_type")
-                        .HasColumnType("int");
+                    b.Property<string>("connection_type")
+                        .IsRequired()
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<int>("player_id")
                         .HasColumnType("int");
 
-                    b.Property<long>("unix")
-                        .HasColumnType("bigint");
+                    b.Property<ulong>("unix")
+                        .HasColumnType("bigint unsigned");
 
                     b.HasKey("join_log_id");
 

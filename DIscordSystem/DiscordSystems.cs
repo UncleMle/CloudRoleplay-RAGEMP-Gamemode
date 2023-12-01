@@ -1,8 +1,5 @@
-﻿using CloudRP.AntiCheat;
-using CloudRP.Authentication;
-using CloudRP.Character;
+﻿using CloudRP.Character;
 using CloudRP.Database;
-using CloudRP.Migrations;
 using CloudRP.Utils;
 using CloudRP.Vehicles;
 using Discord;
@@ -11,12 +8,8 @@ using GTANetworkAPI;
 using Integration;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
-using static System.Collections.Specialized.BitVector32;
 
 namespace CloudRP.DiscordSystem
 {
@@ -26,8 +19,9 @@ namespace CloudRP.DiscordSystem
 
         public static Timer updatePlayerCountTimer;
         public static string tokenIdentifier = "discordToken";
+        public static string staffChannelIdentifer = "staffChannel";
         public static string discordPrefix = "!";
-        public static ulong staffChannel = 1112793951406137415;
+        public static ulong staffChannel;
         public static int _updatePlayerCount = 5000;
         public static int _maxPlayers = 200;
 
@@ -36,9 +30,19 @@ namespace CloudRP.DiscordSystem
         {
             string token = Environment.GetEnvironmentVariable(tokenIdentifier);
 
-            if(token == null)
+            try
             {
-                Console.WriteLine("Discord Token was not found.");
+                staffChannel = ulong.Parse(Environment.GetEnvironmentVariable(staffChannelIdentifer));
+            }
+            catch
+            {
+                ChatUtils.discordSysPrint("Discord staff channel was not found or is incorrectly formatted.");
+            }
+
+
+            if (token == null)
+            {
+                ChatUtils.discordSysPrint("Discord Token was not found.");
                 return;
             }
 
@@ -78,6 +82,7 @@ namespace CloudRP.DiscordSystem
             addCommmand(() => vinfo(args, user), "to view info about a vehicle", "vinfo");
             addCommmand(() => kickPlayer(args, user), "to kick a player from the server", "kickplayer");
             addCommmand(() => helpCommand(args, user), "to view all available commands", "help");
+            addCommmand(() => getPlayerFromUnix(args, user), "to get a player's charactername from a unix and id.", "getpfromunix");
             
             foreach (Command command in commands)
             {
@@ -86,7 +91,6 @@ namespace CloudRP.DiscordSystem
                     command.action.Invoke();
                 }
             }
-
         }
 
         private static void addCommmand(Action takeFunction, string desc = "N/A", string name = "N/A")
@@ -102,60 +106,34 @@ namespace CloudRP.DiscordSystem
 
         }
 
-        public static string getSplicedArgument(string[] args)
+        public static void getPlayerFromUnix(string[] args, SocketUser user)
         {
-            string message = string.Join(" ", args);
-            message = message[(message.Split()[0].Length + 1)..];
 
-            return message;
         }
-
-        public static void kickPlayer(string[] args, SocketUser user)
+        
+        public static async Task kickPlayer(string[] args, SocketUser user)
         {
-            if (args.Length < 2)
-            {
-                missingArgs("kickplayer", "nameOrId");
-                return;
-            }
+            if (!DiscordUtils.checkArgs(args, "kickplayer", 2, "nameOrId")) return; 
 
             Player player = CommandUtils.getPlayerFromNameOrId(args[1]);
 
             if(player != null)
             {
                 player.Kick();
-                successEmbed("Kicked player [" + player.Id + "]");
+                await successEmbed(user.Id, "Kicked player [" + player.Id + "]");
             } else
             {
-                errorEmbed("This player wasn't found online.");
+                await errorEmbed(user.Id, "This player wasn't found online.");
                 return;
             }
 
         }
 
-        public static void getCharacterFromUnix(string[] args)
+
+        public static async Task vinfo(string[] args, SocketUser user)
         {
-            if(args.Length < 3)
-            {
-                missingArgs("getfromunix", "nameOrId, unixTime");
-                return;
-            }
+            if (!DiscordUtils.checkArgs(args, "vinfo", 2, "vehicleId")) return;
 
-            using(DefaultDbContext dbContext = new DefaultDbContext())
-            {
-                //CharacterJoinLog log = new Joinlogs();
-
-            }
-
-
-        }
-
-        public static void vinfo(string[] args, SocketUser user)
-        {
-            if(args.Length < 2)
-            {
-                missingArgs("vinfo", "vehicleId");
-                return;
-            }
 
             int? vehicleId = CommandUtils.tryParse(args[1]);
 
@@ -167,7 +145,7 @@ namespace CloudRP.DiscordSystem
                 {
                     EmbedBuilder builder = new EmbedBuilder
                     {
-                        Title = MentionUtils.MentionUser(user.Id) + "Vehicle Info",
+                        Title = "Vehicle Info",
                         Color = Discord.Color.DarkerGrey,
                         Description = "Vehicle info for vehicle #"+vehicle.vehicle_id
                     };
@@ -212,26 +190,18 @@ namespace CloudRP.DiscordSystem
                         });
                     }
 
-                    DiscordIntegration.SendEmbed(staffChannel, builder);
+                    await DiscordUtils.mentionUser(user.Id);
+                    await DiscordIntegration.SendEmbed(staffChannel, builder);
 
                 } else
                 {
-                    errorEmbed("The specified vehicle couldn't be found.");
+                    await errorEmbed(user.Id, "The specified vehicle couldn't be found.");
                 }
             }
         }
 
-        public static void banUser(string[] args, SocketUser user)
-        {
-            if(args.Length < 2)
-            {
-                missingArgs("banuser", "username");
-                return;
-            }
 
-        }
-
-        public static void helpCommand(string[] args, SocketUser user)
+        public static async Task helpCommand(string[] args, SocketUser user)
         {
             EmbedBuilder builder = new EmbedBuilder
             {
@@ -250,25 +220,22 @@ namespace CloudRP.DiscordSystem
                 });
             }
 
-            DiscordIntegration.SendEmbed(staffChannel, builder);
+            await DiscordUtils.mentionUser(user.Id);
+            await DiscordIntegration.SendEmbed(staffChannel, builder);
         }
 
-        public static void say(string[] args, SocketUser user)
+        public static async Task say(string[] args, SocketUser user)
         {
-            if(args.Length < 2)
-            {
-                missingArgs("say", "message");
-                return;
-            }
+            if (!DiscordUtils.checkArgs(args, "say", 2, "message")) return;
 
-            string message = ChatUtils.red + "[Discord] " + ChatUtils.White + user.Username + ChatUtils.red + " says: " + ChatUtils.White + getSplicedArgument(args);
+            string message = ChatUtils.red + "[Discord] " + ChatUtils.White + user.Username + ChatUtils.red + " says: " + ChatUtils.White + DiscordUtils.getSplicedArgument(args);
 
 
-            DiscordIntegration.SendMessage(staffChannel, MentionUtils.MentionUser(user.Id) + " sent message in game!", false);
+            await DiscordIntegration.SendMessage(staffChannel, MentionUtils.MentionUser(user.Id) + " sent message in game!", false);
             NAPI.Chat.SendChatMessageToAll(message);
         }
 
-        public static async Task errorEmbed(string desc)
+        public static async Task errorEmbed(ulong userId, string desc)
         {
             EmbedBuilder builder = new EmbedBuilder()
             {
@@ -277,10 +244,11 @@ namespace CloudRP.DiscordSystem
                 Title = $"An error occured :("
             };
 
+            await DiscordUtils.mentionUser(userId);
             await DiscordIntegration.SendEmbed(staffChannel, builder);
         }
 
-        public static async Task successEmbed(string success)
+        public static async Task successEmbed(ulong userId, string success)
         {
             EmbedBuilder builder = new EmbedBuilder()
             {
@@ -289,20 +257,12 @@ namespace CloudRP.DiscordSystem
                 Title = $"Success"
             };
 
-            DiscordIntegration.SendEmbed(staffChannel, builder);
-        }
 
-        public static async Task missingArgs(string commandName, string missingArgs)
-        {
-            EmbedBuilder builder = new EmbedBuilder()
-            {
-                Color = Discord.Color.Red,
-                Description = "Missing arguments " + "[" + missingArgs + "]",
-                Title = $" Missing potential arguments in command {commandName} :("
-            };
-
+            await DiscordUtils.mentionUser(userId);
             await DiscordIntegration.SendEmbed(staffChannel, builder);
         }
+
+
     }
 
 }

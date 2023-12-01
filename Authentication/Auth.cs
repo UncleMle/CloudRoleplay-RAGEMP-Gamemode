@@ -228,6 +228,8 @@ namespace CloudRP.Authentication
 
                     ChatUtils.charSysPrint($"Character {character.character_name} has logged in (#{character.character_id})");
                     PlayersData.setPlayerCharacterData(player, character, charModel);
+                    DiscordUtils.creationConnection(player, character, LogCreation.Join);
+
                     welcomeAndSpawnPlayer(player, userData, character);
                 }
             };

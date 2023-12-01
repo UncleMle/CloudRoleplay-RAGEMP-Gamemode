@@ -18,7 +18,7 @@ namespace CloudRP.Database
 
         // Server=Host;Database=DB_NAME;Uid=USERNAME;Pwd=PASSWORD
 
-        private string connectionString = Environment.GetEnvironmentVariable(connectionStringKey);
+        private string connectionString = "Server=localhost;Database=cloud_rp;Uid=root;Pwd=rootadmin13";
 
         //Environment.GetEnvironmentVariable(connectionStringKey);
 
@@ -32,7 +32,7 @@ namespace CloudRP.Database
         public DbSet<DbCharacter> characters { get; set; }
         public DbSet<Ban> bans { get; set; }
         public DbSet<CharacterModel> character_models { get; set; }
-        public DbSet<CharacterJoinLog> character_join_logs { get; set; }
+        public DbSet<CharacterConnection> server_connections { get; set; }
 
     }
 

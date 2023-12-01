@@ -116,6 +116,7 @@ namespace CloudRP.Vehicles
 
                 if (findVehicle == null) return;
 
+                findVehicle.UpdatedDate = DateTime.Now;
                 findVehicle.position_x = vehicle.Position.X;
                 findVehicle.position_y = vehicle.Position.Y;
                 findVehicle.position_z = vehicle.Position.Z;

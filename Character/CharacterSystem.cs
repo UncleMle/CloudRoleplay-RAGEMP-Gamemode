@@ -53,6 +53,14 @@ namespace CloudRP.Character
         public void onPlayerDisconect(Player player, DisconnectionType type, string reason)
         {
             saveCharacterData(player);
+
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+
+            if(characterData != null)
+            {
+                DiscordUtils.creationConnection(player, characterData, LogCreation.Leave);
+            }
+
         }
 
         public static void saveCharacterData(Player player)

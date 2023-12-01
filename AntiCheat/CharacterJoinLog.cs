@@ -5,18 +5,16 @@ using System.Text;
 
 namespace CloudRP.AntiCheat
 {
-    public class CharacterJoinLog
+    public class CharacterConnection
     {
         [Key]
         public int join_log_id { get; set; }
 
         [Required]
-        public ulong join_unix {  get; set; }
-
-        public string disconnection_type { get; set; }
+        public long unix {  get; set; }
 
         [Required]
-        public ulong leave_unix { get; set; }
+        public int connection_type { get; set; }
 
         [Required]
         public string character_name { get; set; }

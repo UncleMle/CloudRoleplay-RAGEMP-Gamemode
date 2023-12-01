@@ -14,6 +14,7 @@ namespace CloudRP.Utils
         public static string error = "!{red}[ERROR]!{white} ";
         public static string _c_CharacterSystem = "[Characters] ";
         public static string _c_AntiCheatSystem = "[AntiCheat] ";
+        public static string _c_DiscordSystem = "[Discord] ";
         public static string yellow = "!{yellow}";
         public static string red = "!{red}";
         public static string disconnected = "!{#f57b42}[Disconnected] " + White;
@@ -30,6 +31,13 @@ namespace CloudRP.Utils
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(_c_AntiCheatSystem + str);
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+
+        public static void discordSysPrint(string str)
+        {
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine(_c_DiscordSystem + str);
             Console.ForegroundColor = ConsoleColor.White;
         }
     }

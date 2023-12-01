@@ -20,6 +20,7 @@ namespace CloudRP
             Environment.SetEnvironmentVariable(Auth._emailPassEnv, Env._gmailSmtpPass);
             Environment.SetEnvironmentVariable(DiscordSystem.DiscordSystems.tokenIdentifier, Env._discordToken);
             Environment.SetEnvironmentVariable(DefaultDbContext.connectionStringKey, Env._databaseConnectionString);
+            Environment.SetEnvironmentVariable(DiscordSystem.DiscordSystems.staffChannelIdentifer, Env._discordStaffChannel);
         }
 
     }
