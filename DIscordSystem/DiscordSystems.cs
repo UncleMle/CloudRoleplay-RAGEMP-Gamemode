@@ -51,6 +51,7 @@ namespace CloudRP.DiscordSystem
             commands.Add(new Command { action = () => say(args, user), description = "A command to say messages.", name = "say" });
             commands.Add(new Command { action = () => vinfo(args, user), description = "A command to view info about a vehicle.", name = "vinfo" });
             commands.Add(new Command { action = () => helpCommand(args, user), description = "A command to view all available commands.", name = "help" });
+            commands.Add(new Command { action = () => kickPlayer(args, user), description = "A command to kick a player from the server.", name = "kickplayer" });
 
             foreach (Command command in commands)
             {
@@ -68,6 +69,28 @@ namespace CloudRP.DiscordSystem
             message = message[(message.Split()[0].Length + 1)..];
 
             return message;
+        }
+
+        public static void kickPlayer(string[] args, SocketUser user)
+        {
+            if (args.Length < 2)
+            {
+                string[] arguments = { "nameOrId", "reason" };
+                missingArgs("kickplayer", arguments);
+                return;
+            }
+
+            Player player = CommandUtils.getPlayerFromNameOrId(args[1]);
+
+            if(player != null)
+            {
+                player.Kick(args[2] != null ? "By admin" : args[2]);
+            } else
+            {
+                errorEmbed("This player wasn't found online.");
+                return;
+            }
+
         }
 
         public static void vinfo(string[] args, SocketUser user)
@@ -199,7 +222,7 @@ namespace CloudRP.DiscordSystem
             {
                 Color = Discord.Color.Red,
                 Description = "Missing arguments " + "[" + string.Join(", ", missingArgs) + "]",
-                Title = $"Missing arguments in command {commandName} :("
+                Title = $"Missing potential arguments in command {commandName} :("
             };
 
             await DiscordIntegration.SendEmbed(staffChannel, builder);
