@@ -119,6 +119,21 @@ namespace Integration
             }
         }
 
+        public static async Task SendEmbed(ulong discordChannelID, EmbedBuilder embed)
+        {
+            ISocketMessageChannel channel = (ISocketMessageChannel)discord.GetChannel(discordChannelID);
+
+            if(channel != null)
+            {
+                await channel.SendMessageAsync(null, false, embed.Build());
+            }
+            else
+            {
+                ThrowErrorMessage("Object reference not set to an instance of an object\nFailed to find a discord channel with the 'discordChannelID' you provided");
+                return;
+            }
+        }
+
         private static async Task OnReady()
         {
             await UpdateStatus(m_strBotGameName, m_eActivityType, m_eUsterStatus).ConfigureAwait(true);

@@ -44,6 +44,7 @@ namespace CloudRP.DiscordSystem
             actions.Clear();
 
             actions.Add("say", () => say(args, user));
+            actions.Add("vinfo", () => say(args, user));
 
             foreach (KeyValuePair<string, Action> action in actions)
             {
@@ -63,11 +64,13 @@ namespace CloudRP.DiscordSystem
             return message;
         }
 
+
         public static void say(string[] args, SocketUser user)
         {
             if(args.Length < 2)
             {
-                DiscordIntegration.SendMessage(staffChannel, "Use: " + discordPrefix + "say [message]");
+                string[] arguments = { "message" };
+                missingArgs("say", arguments);
                 return;
             }
 
@@ -76,6 +79,18 @@ namespace CloudRP.DiscordSystem
 
             DiscordIntegration.SendMessage(staffChannel, MentionUtils.MentionUser(user.Id) + " sent message in game!", false);
             NAPI.Chat.SendChatMessageToAll(message);
+        }
+
+        public static async Task missingArgs(string commandName, string[] missingArgs)
+        {
+            var builder = new EmbedBuilder()
+            {
+                Color = Discord.Color.Red,
+                Description = "Missing arguments " + "[" + string.Join(", ", missingArgs) + "]",
+                Title = $"Missing arguments in command {commandName} :("
+            };
+
+            await DiscordIntegration.SendEmbed(staffChannel, builder);
         }
     }
 }
