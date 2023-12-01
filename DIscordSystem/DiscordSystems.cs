@@ -1,4 +1,5 @@
-﻿using GTANetworkAPI;
+﻿using CloudRP.Utils;
+using GTANetworkAPI;
 using Integration;
 using System;
 using System.Collections.Generic;
@@ -35,15 +36,14 @@ namespace CloudRP.DiscordSystem
             }, 5000);
         }
 
-        public static void handleDiscordCommand(string[] args)
+        public static void handleDiscordCommand(string[] args, string username)
         {
             actions.Clear();
 
-            actions.Add("say", () => say(args));
+            actions.Add("say", () => say(args, username));
 
             foreach (KeyValuePair<string, Action> action in actions)
             {
-                Console.WriteLine(args[0]);
                 if(action.Key == args[0])
                 {
                     action.Value.Invoke();
@@ -52,17 +52,25 @@ namespace CloudRP.DiscordSystem
 
         }
 
-        public static void say(string[] args)
+        public static string getSplicedArgument(string[] args)
         {
-            Console.WriteLine("Example say message");
+            string message = string.Join(" ", args);
+            message = message[(message.Split()[0].Length + 1)..];
 
-            //if (args.Length < 1) return;
+            return message;
+        }
 
-            //string message = string.Join(" ", args.Skip(1));
+        public static void say(string[] args, string username)
+        {
+            if(args.Length < 2)
+            {
+                DiscordIntegration.SendMessage(staffChannel, "Use: " + discordPrefix + "say [message]");
+                return;
+            }
 
+            string message = ChatUtils.red + "[Discord] " + ChatUtils.White + username + ChatUtils.red + " says: " + ChatUtils.White + getSplicedArgument(args);
 
-
-            return;
+            NAPI.Chat.SendChatMessageToAll(message);
         }
 
     }
