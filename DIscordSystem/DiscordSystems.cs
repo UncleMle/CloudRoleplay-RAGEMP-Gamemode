@@ -13,6 +13,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using static System.Collections.Specialized.BitVector32;
 
 namespace CloudRP.DiscordSystem
@@ -21,9 +22,12 @@ namespace CloudRP.DiscordSystem
     {
         public static List<Command> commands = new List<Command>();
 
+        public static Timer updatePlayerCountTimer;
         public static string tokenIdentifier = "discordToken";
         public static string discordPrefix = "!";
         public static ulong staffChannel = 1112793951406137415;
+        public static int _updatePlayerCount = 5000;
+        public static int _maxPlayers = 200;
 
         [ServerEvent(Event.ResourceStart)]
         public async Task OnResourceStart()
@@ -36,12 +40,32 @@ namespace CloudRP.DiscordSystem
                 return;
             }
 
-            DiscordIntegration.SetUpBotInstance(token, "Cloud Roleplay", ActivityType.Playing, UserStatus.Online);
+            DiscordIntegration.SetUpBotInstance(token, "Starting...", ActivityType.Playing, UserStatus.Online);
 
             NAPI.Task.Run(() =>
             {
                 DiscordIntegration.RegisterChannelForListenting(staffChannel);
             }, 5000);
+
+
+            NAPI.Task.Run(() =>
+            {
+                updatePlayerCountTimer = new Timer();
+                updatePlayerCountTimer.Interval = _updatePlayerCount;
+                updatePlayerCountTimer.Elapsed += updatePlayerCount;
+
+                updatePlayerCountTimer.AutoReset = true;
+                updatePlayerCountTimer.Enabled = true;
+            });
+        }
+
+        public static void updatePlayerCount(object source, ElapsedEventArgs e)
+        {
+            List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
+
+            string status = "with " + onlinePlayers.Count + "/" + _maxPlayers;
+            DiscordIntegration.UpdateStatus(status, ActivityType.Playing, UserStatus.Online);
+
         }
 
         public static void handleDiscordCommand(string[] args, SocketUser user)
@@ -75,7 +99,7 @@ namespace CloudRP.DiscordSystem
         {
             if (args.Length < 2)
             {
-                string[] arguments = { "nameOrId", "reason" };
+                string[] arguments = { "nameOrId" };
                 missingArgs("kickplayer", arguments);
                 return;
             }
@@ -84,7 +108,7 @@ namespace CloudRP.DiscordSystem
 
             if(player != null)
             {
-                player.Kick(args[2] != null ? "By admin" : args[2]);
+                player.Kick();
                 successEmbed("Kicked player [" + player.Id + "]");
             } else
             {
