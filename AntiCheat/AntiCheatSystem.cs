@@ -4,6 +4,7 @@ using CloudRP.DiscordSystem;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
 using GTANetworkAPI;
+using Integration;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -75,22 +76,23 @@ namespace CloudRP.AntiCheat
             }
 
 
-            if (userData != null && userData.adminDuty) return;
+            if (userData != null && userData.adminDuty || userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin) return;
 
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
             string suffix = characterData != null ? characterData.character_name : "";
 
             ChatUtils.acSysPrint(message + " from " + suffix);
-            DiscordSystems.sendDiscordToStaff(message + " from " + suffix);
-
 
             foreach (KeyValuePair<Player, User> entry in onlineStaff)
             {
                 NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.antiCheat + message + " from " + suffix);
             }
 
-
+            if (exception != (int)AcExceptions.tpHack)
+            {
+                DiscordIntegration.SendMessage(DiscordSystems.staffChannel, message + " from " + suffix);
+            }
         }
 
     }

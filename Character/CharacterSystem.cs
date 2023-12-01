@@ -112,7 +112,6 @@ namespace CloudRP.Character
 
             int currentCharacters = getUsersCharacter(userData);
 
-            Console.WriteLine(userData.maxCharacters + " maxC " + currentCharacters);
 
             if (currentCharacters >= userData.maxCharacters)
             {

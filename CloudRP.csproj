@@ -47,9 +47,6 @@
     <Reference Include="Discord.Net.WebSocket">
       <HintPath>..\..\..\..\..\Users\Ben Swan\OneDrive\Desktop\Discord.Net.WebSocket.dll</HintPath>
     </Reference>
-    <Reference Include="RAGEMP-DiscordIntegration">
-      <HintPath>..\..\..\..\..\Users\Ben Swan\OneDrive\Desktop\RAGEMP-DiscordIntegration.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>
