@@ -1,4 +1,6 @@
-﻿using CloudRP.Character;
+﻿using CloudRP.AntiCheat;
+using CloudRP.Authentication;
+using CloudRP.Character;
 using CloudRP.Database;
 using CloudRP.Utils;
 using CloudRP.Vehicles;
@@ -48,8 +50,10 @@ namespace CloudRP.DiscordSystem
 
             DiscordIntegration.SetUpBotInstance(token, "Starting...", ActivityType.Playing, UserStatus.Online);
 
+
             NAPI.Task.Run(() =>
             {
+                ChatUtils.discordSysPrint("Started listening on staff channel.");
                 DiscordIntegration.RegisterChannelForListenting(staffChannel);
             }, 5000);
 
@@ -71,7 +75,6 @@ namespace CloudRP.DiscordSystem
 
             string status = "with " + onlinePlayers.Count + "/" + _maxPlayers + " players.";
             DiscordIntegration.UpdateStatus(status, ActivityType.Playing, UserStatus.Online);
-
         }
 
         public static void handleDiscordCommand(string[] args, SocketUser user)
@@ -106,8 +109,20 @@ namespace CloudRP.DiscordSystem
 
         }
 
-        public static void getPlayerFromUnix(string[] args, SocketUser user)
+        public static async Task getPlayerFromUnix(string[] args, SocketUser user)
         {
+            if (!DiscordUtils.checkArgs(args, "getpfromunix", 3, "nameOrId, unix")) return;
+
+            CharacterConnection connection = DiscordUtils.getJoinLog(args[1], long.Parse(args[2]));
+
+            if (connection != null)
+            {
+                await successEmbed(user.Id, "Character: " + connection.character_name + " CID: #" + connection.character_id + " PID: #" + connection.player_id);
+
+            } else
+            {
+                await errorEmbed(user.Id, "Couldn't find a character with given details.");
+            }
 
         }
         
@@ -126,7 +141,6 @@ namespace CloudRP.DiscordSystem
                 await errorEmbed(user.Id, "This player wasn't found online.");
                 return;
             }
-
         }
 
 

@@ -39,13 +39,13 @@
       <HintPath>..\..\runtime\Bootstrapper.dll</HintPath>
     </Reference>
     <Reference Include="Discord.Net.Core">
-      <HintPath>..\..\..\..\..\Users\Ben Swan\OneDrive\Desktop\Discord.Net.Core.dll</HintPath>
+      <HintPath>..\..\runtime\Discord.Net.Core.dll</HintPath>
     </Reference>
     <Reference Include="Discord.Net.Rest">
-      <HintPath>..\..\..\..\..\Users\Ben Swan\OneDrive\Desktop\Discord.Net.Rest.dll</HintPath>
+      <HintPath>..\..\runtime\Discord.Net.Rest.dll</HintPath>
     </Reference>
     <Reference Include="Discord.Net.WebSocket">
-      <HintPath>..\..\..\..\..\Users\Ben Swan\OneDrive\Desktop\Discord.Net.WebSocket.dll</HintPath>
+      <HintPath>..\..\runtime\Discord.Net.WebSocket.dll</HintPath>
     </Reference>
   </ItemGroup>
 

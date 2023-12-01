@@ -74,8 +74,8 @@ namespace CloudRP.Utils
         {
             try
             {
-                string smtpClientUsername = Environment.GetEnvironmentVariable(Authentication.Auth._emailUserEnv);
-                string smtpClientPassword = Environment.GetEnvironmentVariable(Authentication.Auth._emailPassEnv);
+                string smtpClientUsername = Env._gmailSmtpUser;
+                string smtpClientPassword = Env._gmailSmtpPass;
 
                 if (smtpClientUsername == null || smtpClientPassword == null)
                 {

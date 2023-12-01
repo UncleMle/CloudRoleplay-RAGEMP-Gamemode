@@ -28,14 +28,14 @@ namespace CloudRP.Utils
 
                     if (playerId == null) return null;
 
-                    getAllResults = dbContext.server_connections.Where(connection => connection.character_name == characterName).ToList();
+                    getAllResults = dbContext.server_connections.Where(connection => connection.player_id == playerId).ToList();
                 }
+
 
                 if (getAllResults.Count < 2) return null;
 
                 CharacterConnection firstEntry = getAllResults[0];
                 CharacterConnection lastEntry = getAllResults[getAllResults.Count - 1];
-
 
                 return unixTime >= firstEntry.unix && unixTime <= lastEntry.unix ? firstEntry : null;
             }

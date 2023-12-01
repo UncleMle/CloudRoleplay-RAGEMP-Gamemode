@@ -45,36 +45,45 @@ namespace CloudRP.AntiCheat
         {
             Dictionary<Player, User> onlineStaff = AdminUtils.gatherStaff();
 
-            User userData = PlayersData.getPlayerAccountData(player);
-            if (userData == null && exception != (int)AcExceptions.tpHack)
+
+            try
             {
-                foreach (KeyValuePair<Player, User> entry in onlineStaff)
+                User userData = PlayersData.getPlayerAccountData(player);
+                if (userData == null && exception != (int)AcExceptions.tpHack)
                 {
-                    NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.antiCheat + "Player [" + player.Id + "] was kicked.");
+                    foreach (KeyValuePair<Player, User> entry in onlineStaff)
+                    {
+                        NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.antiCheat + "Player [" + player.Id + "] was kicked.");
+                    }
+
+                    ChatUtils.acSysPrint("Player [" + player.Id + "] was kicked.");
+                    player.Kick("[Anti Cheat]");
+                    return;
                 }
 
-                ChatUtils.acSysPrint("Player [" + player.Id + "] was kicked.");
-                player.Kick("[Anti Cheat]");
-                return;
-            }
-
-            if (exception == (int)AcExceptions.disallowedWeapon && userData != null)
-            {
-                User antiCheat = AdminUtils.getAcBanAdmin();
-
-                AdminUtils.banAPlayer(-1, antiCheat, userData, player, "Disallowed weapon");
-
-
-                foreach (KeyValuePair<Player, User> entry in onlineStaff)
+                if (exception == (int)AcExceptions.disallowedWeapon && userData != null)
                 {
-                    NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.antiCheat + "Player [" + player.Id + $"] ({userData.username}) was banned for disallowed weapon flag.");
+                    User antiCheat = AdminUtils.getAcBanAdmin();
+
+                    AdminUtils.banAPlayer(-1, antiCheat, userData, player, "Disallowed weapon");
+
+
+                    foreach (KeyValuePair<Player, User> entry in onlineStaff)
+                    {
+                        NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.antiCheat + "Player [" + player.Id + $"] ({userData.username}) was banned for disallowed weapon flag.");
+                    }
+
+                    ChatUtils.acSysPrint("Player [" + player.Id + "] was banned.");
+
+                    return;
                 }
+            } catch
+            {
 
-                ChatUtils.acSysPrint("Player [" + player.Id + "] was banned.");
-
-                return;
             }
 
+
+            /*
 
             if (userData != null && userData.adminDuty || userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin) return;
 
@@ -91,8 +100,9 @@ namespace CloudRP.AntiCheat
 
             if (exception != (int)AcExceptions.tpHack)
             {
-                DiscordIntegration.SendMessage(DiscordSystems.staffChannel, message + " from " + suffix);
+                DiscordSystem.DiscordSystems.s(DiscordSystems.staffChannel, message + " from " + suffix);
             }
+            */
         }
 
     }

@@ -1,17 +1,12 @@
 ﻿using System;
-using System.IO;
 using Discord;
 using Discord.WebSocket;
 using GTANetworkAPI;
-using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Discord.Rest;
-using System.Runtime.ExceptionServices;
 using System.Collections.Generic;
-using CloudRP.ChatSystem;
 using CloudRP.Utils;
 using CloudRP.DiscordSystem;
-using System.Linq;
 
 namespace Integration
 {
@@ -24,7 +19,7 @@ namespace Integration
         private static UserStatus m_eUsterStatus = UserStatus.Online;
 
 
-        public static void SetUpBotInstance(string strToken, string strBotGameName = null, ActivityType eActivityType = ActivityType.CustomStatus, UserStatus eUserStatus = UserStatus.Online)
+        public static async Task SetUpBotInstance(string strToken, string strBotGameName = null, ActivityType eActivityType = ActivityType.CustomStatus, UserStatus eUserStatus = UserStatus.Online)
         {
             if (!IsSetupCompleted)
             {
@@ -33,8 +28,10 @@ namespace Integration
                 m_eActivityType = eActivityType;
                 m_eUsterStatus = eUserStatus;
 
-                InitAsync();
+                await InitAsync();
                 IsSetupCompleted = true;
+
+                ChatUtils.discordSysPrint("Bot started throw intergration");
             }
             else
             {
@@ -42,7 +39,7 @@ namespace Integration
             }
         }
 
-        private static async void InitAsync()
+        private static async Task InitAsync()
         {
             if (!string.IsNullOrEmpty(m_strToken))
             {

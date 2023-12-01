@@ -49,7 +49,7 @@ namespace CloudRP.ChatSystem
 
             playersInRange.ForEach(p =>
             {
-                NAPI.Chat.SendChatMessageToPlayer(player, chatMessage);
+                NAPI.Chat.SendChatMessageToPlayer(p, chatMessage);
             });
         }
 
