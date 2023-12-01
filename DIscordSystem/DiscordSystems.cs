@@ -1,8 +1,11 @@
 ﻿using CloudRP.Utils;
+using Discord;
+using Discord.WebSocket;
 using GTANetworkAPI;
 using Integration;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,11 +39,11 @@ namespace CloudRP.DiscordSystem
             }, 5000);
         }
 
-        public static void handleDiscordCommand(string[] args, string username)
+        public static void handleDiscordCommand(string[] args, SocketUser user)
         {
             actions.Clear();
 
-            actions.Add("say", () => say(args, username));
+            actions.Add("say", () => say(args, user));
 
             foreach (KeyValuePair<string, Action> action in actions)
             {
@@ -60,7 +63,7 @@ namespace CloudRP.DiscordSystem
             return message;
         }
 
-        public static void say(string[] args, string username)
+        public static void say(string[] args, SocketUser user)
         {
             if(args.Length < 2)
             {
@@ -68,10 +71,11 @@ namespace CloudRP.DiscordSystem
                 return;
             }
 
-            string message = ChatUtils.red + "[Discord] " + ChatUtils.White + username + ChatUtils.red + " says: " + ChatUtils.White + getSplicedArgument(args);
+            string message = ChatUtils.red + "[Discord] " + ChatUtils.White + user.Username + ChatUtils.red + " says: " + ChatUtils.White + getSplicedArgument(args);
 
+
+            DiscordIntegration.SendMessage(staffChannel, MentionUtils.MentionUser(user.Id) + " sent message in game!", false);
             NAPI.Chat.SendChatMessageToAll(message);
         }
-
     }
 }

@@ -78,7 +78,7 @@ namespace Integration
 
                                 string[] args = message.Content.Substring(1).Split(" ");
 
-                                DiscordSystems.handleDiscordCommand(args, message.Author.Username);
+                                DiscordSystems.handleDiscordCommand(args, message.Author);
                             }
                         }
                     }
