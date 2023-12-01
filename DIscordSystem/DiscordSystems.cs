@@ -89,7 +89,7 @@ namespace CloudRP.DiscordSystem
 
         public static void addCommmand(Action takeFunction, string desc = "N/A", string name = "N/A")
         {
-            commands.Add(new Command { action = takeFunction, description = desc, name = name });
+            commands.Add(new Command { action = takeFunction, description = "A command " + desc + ".", name = name });
         }
 
         public static string getSplicedArgument(string[] args)
@@ -104,8 +104,7 @@ namespace CloudRP.DiscordSystem
         {
             if (args.Length < 2)
             {
-                string[] arguments = { "nameOrId" };
-                missingArgs("kickplayer", arguments);
+                missingArgs("kickplayer", "nameOrId");
                 return;
             }
 
@@ -127,8 +126,7 @@ namespace CloudRP.DiscordSystem
         {
             if(args.Length < 2)
             {
-                string[] arguments = { "vehicleId" };
-                missingArgs("vinfo", arguments);
+                missingArgs("vinfo", "vehicleId");
                 return;
             }
 
@@ -196,6 +194,16 @@ namespace CloudRP.DiscordSystem
             }
         }
 
+        public static void banUser(string[] args, SocketUser user)
+        {
+            if(args.Length < 2)
+            {
+                missingArgs("banuser", "username");
+                return;
+            }
+
+        }
+
         public static void helpCommand(string[] args, SocketUser user)
         {
             EmbedBuilder builder = new EmbedBuilder
@@ -222,8 +230,7 @@ namespace CloudRP.DiscordSystem
         {
             if(args.Length < 2)
             {
-                string[] arguments = { "message" };
-                missingArgs("say", arguments);
+                missingArgs("say", "message");
                 return;
             }
 
@@ -258,12 +265,12 @@ namespace CloudRP.DiscordSystem
             DiscordIntegration.SendEmbed(staffChannel, builder);
         }
 
-        public static async Task missingArgs(string commandName, string[] missingArgs)
+        public static async Task missingArgs(string commandName, string missingArgs)
         {
             EmbedBuilder builder = new EmbedBuilder()
             {
                 Color = Discord.Color.Red,
-                Description = "Missing arguments " + "[" + string.Join(", ", missingArgs) + "]",
+                Description = "Missing arguments " + "[" + missingArgs + "]",
                 Title = $" Missing potential arguments in command {commandName} :("
             };
 
