@@ -72,11 +72,11 @@ namespace CloudRP.DiscordSystem
         {
             commands.Clear();
 
-            commands.Add(new Command { action = () => say(args, user), description = "A command to say messages.", name = "say" });
-            commands.Add(new Command { action = () => vinfo(args, user), description = "A command to view info about a vehicle.", name = "vinfo" });
-            commands.Add(new Command { action = () => helpCommand(args, user), description = "A command to view all available commands.", name = "help" });
-            commands.Add(new Command { action = () => kickPlayer(args, user), description = "A command to kick a player from the server.", name = "kickplayer" });
-
+            addCommmand(() => say(args, user), "to say message to all online players", "say");
+            addCommmand(() => vinfo(args, user), "to view info about a vehicle", "vinfo");
+            addCommmand(() => kickPlayer(args, user), "to kick a player from the server", "kickplayer");
+            addCommmand(() => helpCommand(args, user), "to view all available commands", "help");
+            
             foreach (Command command in commands)
             {
                 if (command.name == args[0])
@@ -85,6 +85,11 @@ namespace CloudRP.DiscordSystem
                 }
             }
 
+        }
+
+        public static void addCommmand(Action takeFunction, string desc = "N/A", string name = "N/A")
+        {
+            commands.Add(new Command { action = takeFunction, description = desc, name = name });
         }
 
         public static string getSplicedArgument(string[] args)
@@ -195,7 +200,7 @@ namespace CloudRP.DiscordSystem
         {
             EmbedBuilder builder = new EmbedBuilder
             {
-                Title = MentionUtils.MentionUser(user.Id) + "Help Command",
+                Title = "Help Command",
                 Color = Discord.Color.DarkerGrey,
                 Description = "All commands"
             };
