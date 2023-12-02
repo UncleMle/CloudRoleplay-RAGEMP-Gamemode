@@ -10,6 +10,7 @@ namespace CloudRP.PlayerData
     internal class uiHandling : Script
     {
         public static string _sharedMutationStoreSetter = "playerMutationSetter";
+        public static int _loadingStateTimeout_seconds = 3;
 
         public static void togglePlayerChat(Player player, bool toggle)
         {
@@ -48,7 +49,11 @@ namespace CloudRP.PlayerData
             player.TriggerEvent("browser:sendErrorPushNotif", text, time);
             
             if(resetLoading) {
-                setLoadingState(player, false);
+
+                NAPI.Task.Run(() =>
+                {
+                    setLoadingState(player, false);
+                }, _loadingStateTimeout_seconds * 1000);
             }
         }
 

@@ -50,7 +50,10 @@
                                 <div class="inline-flex w-full mt-4 space-x-10 font-medium">
                                     <button @click="register" class="w-full border-gray-500 border-2 rounded-l-xl p-3 duration-300 hover:border-gray-400"><i class="fa-solid fa-book text-gray-400"></i> Register</button>
                                     <button :disabled="loadingState" @click="login(true)" class="w-full border-2 border-gray-500 rounded-r-xl p-3 hover:border-gray-400 duration-300" :class="loadingState ? 'hover:border-red-400' : 'hover:border-gray-400'">
-                                        Login <i class="fa-solid fa-right-to-bracket text-gray-400"></i>
+                                        <LoadingSpinner v-if="loadingState" />
+                                        <span v-else>
+                                            Login <i class="fa-solid fa-right-to-bracket text-gray-400"></i>
+                                        </span>
                                     </button>
                                 </div>
 
@@ -230,7 +233,7 @@
             login(btn) {
                 if (!btn) return;
                 if (window.mp) {
-                    this.loadingState = true;
+                    this.$store.state.uiStates.serverLoading = true;
                     window.mp.trigger("browser:sendObject", "server:recieveAuthInfo", JSON.stringify(this.$data));
                 }
             },

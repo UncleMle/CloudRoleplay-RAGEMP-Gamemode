@@ -83,11 +83,11 @@ namespace CloudRP.Authentication
 
                         Console.WriteLine($"User {findAccount.username} (#{findAccount.account_id}) has logged in.");
                     } else {
-                        uiHandling.sendPushNotifError(player, "Incorrect account credentials", 4000);
+                        uiHandling.sendPushNotifError(player, "Incorrect account credentials", 4000, true);
                     }
 
                 } else {
-                    uiHandling.sendPushNotifError(player, "Incorrect account credentials", 4000);
+                    uiHandling.sendPushNotifError(player, "Incorrect account credentials", 4000, true);
                     return;
                 } 
 
