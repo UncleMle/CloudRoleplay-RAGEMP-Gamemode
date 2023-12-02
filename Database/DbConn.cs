@@ -16,11 +16,8 @@ namespace CloudRP.Database
     {
         public static readonly string connectionStringKey = "DatabaseConnectionString";
 
-        // Server=Host;Database=DB_NAME;Uid=USERNAME;Pwd=PASSWORD
+        private string connectionString = Environment.GetEnvironmentVariable(connectionStringKey);
 
-        private string connectionString = "Server=localhost;Database=cloud_rp;Uid=root;Pwd=rootadmin13";
-
-        //Environment.GetEnvironmentVariable(connectionStringKey);
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

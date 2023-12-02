@@ -1,6 +1,7 @@
 import { _sharedCharacterDataIdentifier } from "../Constants/Constants";
 import getTargetCharacterData from "../PlayerMethods/getTargetCharacterData";
-import { CharacterData, CharacterModel } from "@types";
+import { CharacterData, CharacterModel, UserData } from "@types";
+import getUserData from "../PlayerMethods/getUserData";
 
 class CharacterSystem {
 	public static LocalPlayer: PlayerMp;
@@ -71,8 +72,11 @@ class CharacterSystem {
 		if (entity.type != "player") return;
 		let characterData: CharacterData | undefined = getTargetCharacterData(entity as PlayerMp);
 		if (!characterData) return;
+		let userData: UserData = getUserData();
 
-		CharacterSystem.setCharacterCustomization(entity as PlayerMp, characterData.characterModel, false);
+		if (!userData.adminDuty) {
+			CharacterSystem.setCharacterCustomization(entity as PlayerMp, characterData.characterModel, false);
+		}
 	}
 
 	public static handleEntityStreamOut(entity: EntityMp) {
@@ -85,8 +89,11 @@ class CharacterSystem {
 
 	public static handleDataHandler(entity: EntityMp, data: CharacterData) {
 		if (entity.type != "player" || !data) return;
+		let userData: UserData = getUserData();
 
-		CharacterSystem.setCharacterCustomization(entity as PlayerMp, data.characterModel, false);
+		if (!userData.adminDuty) {
+			CharacterSystem.setCharacterCustomization(entity as PlayerMp, data.characterModel, false);
+		}
 	}
 
 }

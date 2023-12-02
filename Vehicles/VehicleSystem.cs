@@ -292,24 +292,34 @@ namespace CloudRP.Vehicles
         [ServerEvent(Event.VehicleDeath)]
         public void onVehicleDeath(Vehicle vehicle)
         {
-            DbVehicle vehicleData = getVehicleData(vehicle);
+            if (vehicle == null) return;
 
-            if (vehicleData == null) return;
-
-            vehicleData.vehicle_dimension = VehicleDimensions.Insurance;
-            vehicleData.position_x = VehicleDimensions.morsPosition.X;
-            vehicleData.position_y = VehicleDimensions.morsPosition.Y;
-            vehicleData.position_z = VehicleDimensions.morsPosition.Z;
-            vehicleData.vehicle_insurance_id = VehicleDimensions._morsId;
-
-            using(DefaultDbContext dbContext = new DefaultDbContext())
+            try
             {
-                dbContext.vehicles.Update(vehicleData);
-                dbContext.SaveChanges();
-            }
+                DbVehicle vehicleData = getVehicleData(vehicle);
 
-            vehicle.Delete();
-            Console.WriteLine($"Vehicle #{vehicleData.vehicle_id} was saved to insurance. ");
+                if (vehicleData == null) return;
+
+                vehicleData.vehicle_dimension = VehicleDimensions.Insurance;
+                vehicleData.position_x = VehicleDimensions.morsPosition.X;
+                vehicleData.position_y = VehicleDimensions.morsPosition.Y;
+                vehicleData.position_z = VehicleDimensions.morsPosition.Z;
+                vehicleData.vehicle_insurance_id = VehicleDimensions._morsId;
+
+                using (DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    dbContext.vehicles.Update(vehicleData);
+                    dbContext.SaveChanges();
+                }
+
+                vehicle.Delete();
+                Console.WriteLine($"Vehicle #{vehicleData.vehicle_id} was saved to insurance. ");
+            }
+            catch
+            {
+
+            }
+            
         }
 
         public static List<Vehicle> getVehicleInRange(Player player, float range)

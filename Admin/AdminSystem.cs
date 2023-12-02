@@ -92,7 +92,58 @@ namespace CloudRP.Admin
                     NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.red + $"[Admin Chat] " + ChatUtils.White + colouredAdminRank + userData.adminName + ChatUtils.red +" says: " + ChatUtils.White + message);
                 }
             }
+        }
 
+        [Command("tpto", "~r~/tpto [nameOrId]", Alias = "goto")]
+        public void teleportToPlayer(Player player, string nameOrId)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(AdminUtils.checkUserData(player, userData))
+            {
+                Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+                if(findPlayer != null)
+                {
+                    player.Position = findPlayer.Position;
+
+                    AdminUtils.staffSay(player, "Teleported to Player [" + findPlayer.Id + "]");
+                } else
+                {
+                    CommandUtils.notFound(player);
+                    return;
+                }
+
+
+                return;
+            }
+        }
+
+        [Command("bring", "~r~/bring [nameOrId]")]
+        public void bringPlayer(Player player, string nameOrId)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if (AdminUtils.checkUserData(player, userData))
+            {
+                Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+                if (findPlayer != null)
+                {
+                    findPlayer.Position = player.Position;
+
+                    AdminUtils.staffSay(player, "Teleported Player [" + findPlayer.Id + "] to you.");
+                    AdminUtils.staffSay(player, $"Admin {userData.adminName} teleported you.");
+                }
+                else
+                {
+                    CommandUtils.notFound(player);
+                    return;
+                }
+
+
+                return;
+            }
         }
 
         [Command("veh", "~r~/veh [vehName]")]
