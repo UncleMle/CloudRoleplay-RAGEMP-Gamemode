@@ -17,6 +17,7 @@ import VehicleIndicators from "./VehicleSystems/VehicleIndication";
 import VehicleSiren from "./VehicleSystems/VehicleSiren";
 import CharacterSystem from "./Character/CharacterSystem";
 import AntiCheat from "./AntiCheat/AntiCheatSystem";
+import AdminEsp from "./AdminSystem/AdminEsp";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -38,3 +39,4 @@ new VehicleIndicators();
 new VehicleSiren();
 new CharacterSystem();
 new AntiCheat();
+new AdminEsp();
