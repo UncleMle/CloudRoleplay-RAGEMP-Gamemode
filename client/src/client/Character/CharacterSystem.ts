@@ -23,7 +23,6 @@ class CharacterSystem {
 			charData = JSON.parse(characterModel);
 		}
 
-
 		let female: number = mp.game.joaat("mp_m_freemode_01");
 		let male: number = mp.game.joaat("mp_f_freemode_01");
 
@@ -77,17 +76,7 @@ class CharacterSystem {
 
 		if (!userData) return;
 
-		if (!userData.adminDuty) {
-			CharacterSystem.setCharacterCustomization(characterData.characterModel, false, entity as PlayerMp);
-		}
-	}
-
-	public static handleEntityStreamOut(entity: EntityMp) {
-		if (entity.type != "player") return;
-		let characterData: CharacterData | undefined = getTargetCharacterData(entity as PlayerMp);
-		if (!characterData) return;
-
-		(entity as PlayerMp).clearDecorations();
+		CharacterSystem.setCharacterCustomization(characterData.characterModel, false, entity as PlayerMp);
 	}
 
 	public static handleDataHandler(entity: EntityMp, data: CharacterData) {
@@ -96,9 +85,7 @@ class CharacterSystem {
 
 		if (!userData) return;
 
-		if (!userData.adminDuty) {
-			CharacterSystem.setCharacterCustomization(data.characterModel, false, entity as PlayerMp);
-		}
+		CharacterSystem.setCharacterCustomization(data.characterModel, false, entity as PlayerMp);
 	}
 
 }

@@ -94,9 +94,9 @@ class AdminEsp {
 		var rootBone: Vector3 = ent.getBoneCoords(0, 0, 0, 0);
 		var head: Vector3 = ent.getBoneCoords(12844, 0, 0, 0);
 		var rightF: Vector3 = ent.getBoneCoords(52301, 0, 0, 0);
-		var leftF: Vector3 = ent.getBoneCoords(14201, 0, 0, 0)
-		var leftH: Vector3 = ent.getBoneCoords(18905, 0, 0, 0)
-		var rightH: Vector3 = ent.getBoneCoords(57005, 0, 0, 0)
+		var leftF: Vector3 = ent.getBoneCoords(14201, 0, 0, 0);
+		var leftH: Vector3 = ent.getBoneCoords(18905, 0, 0, 0);
+		var rightH: Vector3 = ent.getBoneCoords(57005, 0, 0, 0);
 
 		mp.game.graphics.drawLine(rootBone.x, rootBone.y, rootBone.z, head.x, head.y, head.z, 155, 255, 245, 255);
 		mp.game.graphics.drawLine(rightF.x, rightF.y, rightF.z, rootBone.x, rootBone.y, rootBone.z, 155, 255, 245, 255);
@@ -111,7 +111,7 @@ class AdminEsp {
 		let dispText: string = `Player (RID #${ent.remoteId}) (Dist ${distBetweenCoords(AdminEsp.LocalPlayer.position, ent.position).toFixed(1)}M) `;
 
 		if (characterData != null) {
-			dispText += `(CID #${characterData.characterId}) (Name ${characterData.characterName})`;
+			dispText += `\n(CID #${characterData.characterId}) (Name ${characterData.characterName})`;
 		}
 
 		AdminEsp.renderText(dispText, drawTextCoords);

@@ -66,7 +66,6 @@ namespace CloudRP.AntiCheat
 
                 AdminUtils.banAPlayer(-1, antiCheat, userData, player, "Disallowed weapon");
 
-
                 foreach (KeyValuePair<Player, User> entry in onlineStaff)
                 {
                     NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.antiCheat + "Player [" + player.Id + $"] ({userData.username}) was banned for disallowed weapon flag.");
