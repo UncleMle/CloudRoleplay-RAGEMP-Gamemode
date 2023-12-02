@@ -62,11 +62,11 @@ class Camera {
         this.range = 0.0;
     }
 
-    delete() {
-        this.camera?.destroy();
-        mp.game.cam.renderScriptCams(false, false, 0, false, false);
-        mp.game.invoke(CLEAR_FOCUS);
-        Camera.Current_Cam = null;
+	delete() {
+		this.camera?.destroy();
+		mp.game.cam.renderScriptCams(false, false, 0, false, false);
+		mp.game.invoke(CLEAR_FOCUS);
+		Camera.Current_Cam = null;
     }
 }
 

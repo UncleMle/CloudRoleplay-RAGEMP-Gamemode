@@ -5,6 +5,7 @@ import { _IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE } from "../Constants/Constants";
 import toggleChat from "../PlayerMethods/ToggleChat";
 import getCameraOffset from "../PlayerMethods/getCameraOffset";
 import getUserCharacterData from "../PlayerMethods/getUserCharacterData";
+import getUserData from "../PlayerMethods/getUserData";
 import setGuiState from "../PlayerMethods/setGuiState";
 import setUiStateChange from "../PlayerMethods/setUiStateChange";
 
@@ -17,8 +18,10 @@ class PlayerAuthentication {
 	public static LocalStorage: StorageMp;
 	public static characterCreationPosition: Vector3 = new mp.Vector3(-38.6, -590.5, 78.8);
 	public static _cameraSwitchInterval: number = 500;
-	public static cameraPositions: Vector3[] = [new mp.Vector3(-79.9, -1079.5, 310.2), new mp.Vector3(407.3, 6009.5, 940.0)];
-	public static cameraPointAtPositions: Vector3[] = [new mp.Vector3(-74.8, -819.2, 326.2), new mp.Vector3(501.7, 5603.7, 767.9)];
+	public static cameraPositions: Vector3[] = [new mp.Vector3(-79.9, -1079.5, 310.2), new mp.Vector3(407.3, 6009.5, 940.0), new mp.Vector3(678.2, 928.0, 458.3)];
+	public static cameraPointAtPositions: Vector3[] = [new mp.Vector3(-74.8, -819.2, 326.2), new mp.Vector3(501.7, 5603.7, 767.9), new mp.Vector3(728.1, 1213.9, 328.8)];
+	public static _switchCamCmd: string = "swcm";
+	public static _currentCam: number = 0;
 
 	constructor() {
 		PlayerAuthentication.LocalPlayer = mp.players.local;
@@ -32,6 +35,7 @@ class PlayerAuthentication {
 		mp.events.add("client:setBackToSelection", PlayerAuthentication.setBackToCharacterSelection);
 		mp.events.add("client:loginCameraStart", PlayerAuthentication.handleCameraStart);
 		mp.events.add("client:setAuthKey", PlayerAuthentication.setAuthenticationKey);
+		mp.events.add("consoleCommand", PlayerAuthentication.consoleCommand);
 
 	}
 
@@ -42,6 +46,27 @@ class PlayerAuthentication {
 			setGuiState(false);
 			mp.game.ui.displayRadar(false);
 		}
+	}
+
+	public static consoleCommand(command: string) {
+		if (command == PlayerAuthentication._switchCamCmd && !getUserCharacterData()) {
+
+			if (PlayerAuthentication.LoginCamera.isMoving && Camera.Current_Cam) {
+				PlayerAuthentication.LoginCamera.delete();
+			}
+			
+			PlayerAuthentication._currentCam >= PlayerAuthentication.cameraPositions.length - 1 ? PlayerAuthentication._currentCam = 0 : PlayerAuthentication._currentCam++;
+
+			PlayerAuthentication.LoginCamera = new Camera('loginCam', PlayerAuthentication.cameraPositions[PlayerAuthentication._currentCam], PlayerAuthentication.cameraPointAtPositions[PlayerAuthentication._currentCam]);
+
+			PlayerAuthentication.LoginCamera.startMoving(7100.0);
+			PlayerAuthentication.LoginCamera.setActive();
+			PlayerAuthentication.freezeAndBlurClient();
+
+			mp.console.logInfo("Set cam to " + PlayerAuthentication._currentCam);
+
+		}
+
 	}
 
 	public static setAuthenticationKey(newAuthKey: string) {
@@ -103,9 +128,8 @@ class PlayerAuthentication {
 		PlayerAuthentication.LocalPlayer.freezePosition(false);
 		BrowserSystem._browserInstance.reload(true);
 		BrowserSystem.pushRouter("/");
-		if (PlayerAuthentication.LoginCamera) {
-			PlayerAuthentication.LoginCamera.delete();
-		}
+
+		PlayerAuthentication.LoginCamera.delete();
 	}
 
 }
