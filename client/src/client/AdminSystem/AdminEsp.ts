@@ -1,16 +1,17 @@
-import { UserData } from "../@types";
+import { UserData, VehicleData, CharacterData } from "../@types";
+import distBetweenCoords from "../PlayerMethods/distanceBetweenCoords";
+import getTargetCharacterData from "../PlayerMethods/getTargetCharacterData";
 import getUserData from "../PlayerMethods/getUserData";
+import getVehicleData from "../PlayerMethods/getVehicleData";
 
 class AdminEsp {
 	public static LocalPlayer: PlayerMp;
-	public static Graphics: GameGraphics;
 	public static _min: Vector3;
 	public static _max: Vector3;
 	public static _center: Vector3;
 
 	constructor() {
 		AdminEsp.LocalPlayer = mp.players.local;
-		AdminEsp.Graphics = AdminEsp.Graphics;
 
 		mp.events.add("render", AdminEsp.handleRender);
 	}
@@ -51,6 +52,7 @@ class AdminEsp {
 	}
 
 	public static drawBoxes(ent: EntityMp, corners: Vector3[]) {
+
 		const c1 = ent.getOffsetFromInWorldCoords(corners[0].x, corners[0].y, corners[0].z);
 		const c2 = ent.getOffsetFromInWorldCoords(corners[1].x, corners[1].y, corners[1].z);
 		const c3 = ent.getOffsetFromInWorldCoords(corners[2].x, corners[2].y, corners[2].z);
@@ -75,6 +77,17 @@ class AdminEsp {
 		mp.game.graphics.drawLine(c3.x, c3.y, c3.z, c7.x, c7.y, c7.z, 155, 255, 245, 255);
 		mp.game.graphics.drawLine(c4.x, c4.y, c4.z, c8.x, c8.y, c8.z, 155, 255, 245, 255);
 
+		let drawTextCoords: { x: number, y: number } = mp.game.graphics.world3dToScreen2d(new mp.Vector3(ent.position.x, ent.position.y, ent.position.z));
+
+		let vehicleData: VehicleData | undefined = getVehicleData(ent as VehicleMp);
+
+		let dispText: string = `Vehicle (RID #${ent.remoteId}) (Model ${AdminEsp.getVehicleName(ent as VehicleMp)}) (Dist ${distBetweenCoords(AdminEsp.LocalPlayer.position, ent.position).toFixed(1)}M) `;
+
+		if (vehicleData != null) {
+			dispText += `(VID #${vehicleData.vehicle_id}) (Locked ${vehicleData.vehicle_locked})`;
+		}
+
+		AdminEsp.renderText(dispText, drawTextCoords);
 	}
 
 	public static drawPlayerSkeletons(ent: PlayerMp) {
@@ -85,19 +98,29 @@ class AdminEsp {
 		var leftH: Vector3 = ent.getBoneCoords(18905, 0, 0, 0)
 		var rightH: Vector3 = ent.getBoneCoords(57005, 0, 0, 0)
 
-		AdminEsp.Graphics.drawLine(rootBone.x, rootBone.y, rootBone.z, head.x, head.y, head.z, 155, 255, 245, 255);
-		AdminEsp.Graphics.drawLine(rightF.x, rightF.y, rightF.z, rootBone.x, rootBone.y, rootBone.z, 155, 255, 245, 255);
-		AdminEsp.Graphics.drawLine(leftF.x, leftF.y, leftF.z, rootBone.x, rootBone.y, rootBone.z, 155, 255, 245, 255);
-		AdminEsp.Graphics.drawLine(head.x, head.y, head.z, leftH.x, leftH.y, leftH.z, 155, 255, 245, 255);
-		AdminEsp.Graphics.drawLine(head.x, head.y, head.z, rightH.x, rightH.y, rightH.z, 155, 255, 245, 255);
+		mp.game.graphics.drawLine(rootBone.x, rootBone.y, rootBone.z, head.x, head.y, head.z, 155, 255, 245, 255);
+		mp.game.graphics.drawLine(rightF.x, rightF.y, rightF.z, rootBone.x, rootBone.y, rootBone.z, 155, 255, 245, 255);
+		mp.game.graphics.drawLine(leftF.x, leftF.y, leftF.z, rootBone.x, rootBone.y, rootBone.z, 155, 255, 245, 255);
+		mp.game.graphics.drawLine(head.x, head.y, head.z, leftH.x, leftH.y, leftH.z, 155, 255, 245, 255);
+		mp.game.graphics.drawLine(head.x, head.y, head.z, rightH.x, rightH.y, rightH.z, 155, 255, 245, 255);
+
+		let drawTextCoords: { x: number, y: number } = mp.game.graphics.world3dToScreen2d(new mp.Vector3(ent.position.x, ent.position.y, ent.position.z));
+
+		let characterData: CharacterData | undefined = getTargetCharacterData(ent);
+
+		let dispText: string = `Player (RID #${ent.remoteId}) (Dist ${distBetweenCoords(AdminEsp.LocalPlayer.position, ent.position).toFixed(1)}M) `;
+
+		if (characterData != null) {
+			dispText += `(CID #${characterData.characterId}) (Name ${characterData.characterName})`;
+		}
+
+		AdminEsp.renderText(dispText, drawTextCoords);
 	}
 
 	public static renderPlayerEsp() {
 		mp.players.forEachInStreamRange((ent: PlayerMp) => {
 			if (ent && ent.handle != AdminEsp.LocalPlayer.handle) {
 				let corners: Vector3[] = AdminEsp.getCorners(ent);
-
-				ent.setAlpha(120);
 
 				AdminEsp.drawBoxes(ent, corners);
 				AdminEsp.drawPlayerSkeletons(ent);
@@ -107,13 +130,22 @@ class AdminEsp {
 
 	public static renderVehiclesEsp() {
 		mp.vehicles.forEachInStreamRange((ent: VehicleMp) => {
-			if (ent && ent.handle != AdminEsp.LocalPlayer.handle) {
-				let corners: Vector3[] = AdminEsp.getCorners(ent);
+			let corners: Vector3[] = AdminEsp.getCorners(ent);
+			AdminEsp.drawBoxes(ent, corners);
+		});
+	}
 
-				ent.setAlpha(120);
+	public static getVehicleName(vehicle: VehicleMp): string {
+		let vehicleName: string = mp.game.ui.getLabelText(mp.game.vehicle.getDisplayNameFromVehicleModel(vehicle.model));
+		return vehicleName;
+	}
 
-				AdminEsp.drawBoxes(ent, corners);
-			}
+	public static renderText(text: string, coords: {x: number, y: number}) {
+		mp.game.graphics.drawText(text, [coords.x, coords.y], {
+			font: 4,
+			color: [255, 255, 255, 185],
+			scale: [0.3, 0.3],
+			outline: true
 		});
 	}
 

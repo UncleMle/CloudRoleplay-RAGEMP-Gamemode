@@ -10,7 +10,7 @@ class AdminSystem {
 	constructor() {
 		AdminSystem.LocalPlayer = mp.players.local;
 
-		
+
 		mp.events.add("render", AdminSystem.renderTextOnScreen);
 		mp.events.add("entityStreamIn", AdminSystem.handleEntityStream);
 		mp.events.addDataHandler('PlayerAccountData', AdminSystem.handleFlyStart);
