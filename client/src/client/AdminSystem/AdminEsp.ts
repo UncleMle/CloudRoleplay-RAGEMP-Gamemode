@@ -76,18 +76,6 @@ class AdminEsp {
 		mp.game.graphics.drawLine(c2.x, c2.y, c2.z, c6.x, c6.y, c6.z, 155, 255, 245, 255);
 		mp.game.graphics.drawLine(c3.x, c3.y, c3.z, c7.x, c7.y, c7.z, 155, 255, 245, 255);
 		mp.game.graphics.drawLine(c4.x, c4.y, c4.z, c8.x, c8.y, c8.z, 155, 255, 245, 255);
-
-		let drawTextCoords: { x: number, y: number } = mp.game.graphics.world3dToScreen2d(new mp.Vector3(ent.position.x, ent.position.y, ent.position.z));
-
-		let vehicleData: VehicleData | undefined = getVehicleData(ent as VehicleMp);
-
-		let dispText: string = `Vehicle (RID #${ent.remoteId}) (Model ${AdminEsp.getVehicleName(ent as VehicleMp)}) (Dist ${distBetweenCoords(AdminEsp.LocalPlayer.position, ent.position).toFixed(1)}M) `;
-
-		if (vehicleData != null) {
-			dispText += `(VID #${vehicleData.vehicle_id}) (Locked ${vehicleData.vehicle_locked})`;
-		}
-
-		AdminEsp.renderText(dispText, drawTextCoords);
 	}
 
 	public static drawPlayerSkeletons(ent: PlayerMp) {
@@ -132,6 +120,18 @@ class AdminEsp {
 		mp.vehicles.forEachInStreamRange((ent: VehicleMp) => {
 			let corners: Vector3[] = AdminEsp.getCorners(ent);
 			AdminEsp.drawBoxes(ent, corners);
+
+			let drawTextCoords: { x: number, y: number } = mp.game.graphics.world3dToScreen2d(new mp.Vector3(ent.position.x, ent.position.y, ent.position.z));
+
+			let vehicleData: VehicleData | undefined = getVehicleData(ent as VehicleMp);
+
+			let dispText: string = `Vehicle (RID #${ent.remoteId}) (Model ${AdminEsp.getVehicleName(ent as VehicleMp)}) (Dist ${distBetweenCoords(AdminEsp.LocalPlayer.position, ent.position).toFixed(1)}M) `;
+
+			if (vehicleData != null) {
+				dispText += `(VID #${vehicleData.vehicle_id}) (Locked ${vehicleData.vehicle_locked})`;
+			}
+
+			AdminEsp.renderText(dispText, drawTextCoords);
 		});
 	}
 
