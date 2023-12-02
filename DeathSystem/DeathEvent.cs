@@ -11,6 +11,7 @@ namespace CloudRP.DeathSystem
     class DeathEvent : Script
     {
         public static List<Hospital> hospitalList = new List<Hospital>();
+        public static int _respawnTimeout_seconds = 8;
 
         [ServerEvent(Event.ResourceStart)]
         public void initEvents()
@@ -31,7 +32,12 @@ namespace CloudRP.DeathSystem
         [ServerEvent(Event.PlayerDeath)]
         public void OnPlayerDeath(Player player, Player killer, uint reason)
         {
-            respawnAtHospital(player);
+            NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.info + "You have been injured and will be respawned in 8 seconds.");
+
+            NAPI.Task.Run(() =>
+            {
+                respawnAtHospital(player);
+            }, _respawnTimeout_seconds * 1000);
         }
 
         public static void respawnAtHospital(Player player)
