@@ -92,17 +92,20 @@ class AdminEsp {
 		mp.game.graphics.drawLine(head.x, head.y, head.z, leftH.x, leftH.y, leftH.z, 155, 255, 245, 255);
 		mp.game.graphics.drawLine(head.x, head.y, head.z, rightH.x, rightH.y, rightH.z, 155, 255, 245, 255);
 
-		let drawTextCoords: { x: number, y: number } = mp.game.graphics.world3dToScreen2d(new mp.Vector3(ent.position.x, ent.position.y, ent.position.z));
+		let drawTextCoordsCenter: { x: number, y: number } = mp.game.graphics.world3dToScreen2d(new mp.Vector3(ent.position.x, ent.position.y, ent.position.z));
+		let drawTextCoordsHead: { x: number, y: number } = mp.game.graphics.world3dToScreen2d(new mp.Vector3(head.x, head.y, head.z));
 
 		let characterData: CharacterData | undefined = getTargetCharacterData(ent);
 
-		let dispText: string = `Player (RID #${ent.remoteId}) (Dist ${distBetweenCoords(AdminEsp.LocalPlayer.position, ent.position).toFixed(1)}M) `;
+		let dispTextCenter: string = `Player (RID #${ent.remoteId}) (Dist ${distBetweenCoords(AdminEsp.LocalPlayer.position, ent.position).toFixed(1)}M) `;
+		let dispTextHead: string = `Health ~g~${ent.health} ~w~Armour: ~b~${ent.armour}`;
 
 		if (characterData != null) {
-			dispText += `\n(CID #${characterData.characterId}) (Name ${characterData.characterName})`;
+			dispTextCenter += `\n(CID #${characterData.characterId}) (Name ${characterData.characterName})`;
 		}
 
-		AdminEsp.renderText(dispText, drawTextCoords);
+		AdminEsp.renderText(dispTextCenter, drawTextCoordsCenter);
+		AdminEsp.renderText(dispTextHead, drawTextCoordsHead);
 	}
 
 	public static renderPlayerEsp() {
