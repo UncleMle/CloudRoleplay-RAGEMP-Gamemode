@@ -2,6 +2,8 @@ import { _sharedCharacterDataIdentifier } from "../Constants/Constants";
 import getTargetCharacterData from "../PlayerMethods/getTargetCharacterData";
 import { CharacterData, CharacterModel, UserData } from "@types";
 import getUserData from "../PlayerMethods/getUserData";
+import getUserCharacterData from "../PlayerMethods/getUserCharacterData";
+import getTargetData from "../PlayerMethods/getTargetData";
 
 class CharacterSystem {
 	public static LocalPlayer: PlayerMp;
@@ -12,7 +14,6 @@ class CharacterSystem {
 
 		mp.events.add("character:setModel", CharacterSystem.setCharacterCustomization);
 		mp.events.add("entityStreamIn", CharacterSystem.handleEntityStreamIn);
-		mp.events.add("entityStreamOut", CharacterSystem.handleEntityStreamOut);
 		mp.events.addDataHandler(_sharedCharacterDataIdentifier, CharacterSystem.handleDataHandler);
 	}
 
@@ -72,18 +73,20 @@ class CharacterSystem {
 		if (entity.type != "player") return;
 		let characterData: CharacterData | undefined = getTargetCharacterData(entity as PlayerMp);
 		if (!characterData) return;
-		let userData: UserData | undefined = getUserData();
+		let userData: UserData | undefined = getTargetData(entity as PlayerMp);
 
-		if (!userData) return;
+		if (!userData || userData?.adminDuty) return;
 
 		CharacterSystem.setCharacterCustomization(characterData.characterModel, false, entity as PlayerMp);
 	}
 
 	public static handleDataHandler(entity: EntityMp, data: CharacterData) {
 		if (entity.type != "player" || !data) return;
-		let userData: UserData | undefined = getUserData();
+		let userData: UserData | undefined = getTargetData(entity as PlayerMp);
 
-		if (!userData) return;
+		mp.console.logInfo(" Model Hash " + entity.getModel());
+
+		if (!userData || userData?.adminDuty) return;
 
 		CharacterSystem.setCharacterCustomization(data.characterModel, false, entity as PlayerMp);
 	}

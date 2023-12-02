@@ -218,6 +218,7 @@ namespace CloudRP.Utils
         public bool isFrozen { get; set; } = false;
         public uint playerDimension { get; set; }
         public int maxCharacters { get; set; }
+        public bool triggerHandler { get; set; } = true;
     }
 
     class SharedDataAccount
