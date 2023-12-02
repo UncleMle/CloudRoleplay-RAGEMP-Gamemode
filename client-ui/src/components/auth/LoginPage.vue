@@ -49,7 +49,7 @@
 
                                 <div class="inline-flex w-full mt-4 space-x-10 font-medium">
                                     <button @click="register" class="w-full border-gray-500 border-2 rounded-l-xl p-3 duration-300 hover:border-gray-400"><i class="fa-solid fa-book text-gray-400"></i> Register</button>
-                                    <button @click="login(true)" class="w-full border-2 border-gray-500 rounded-r-xl p-3 hover:border-gray-400 duration-300">
+                                    <button :disabled="loadingState" @click="login(true)" class="w-full border-2 border-gray-500 rounded-r-xl p-3 hover:border-gray-400 duration-300" :class="loadingState ? 'hover:border-red-400' : 'hover:border-gray-400'">
                                         Login <i class="fa-solid fa-right-to-bracket text-gray-400"></i>
                                     </button>
                                 </div>
@@ -154,7 +154,13 @@
                                     <button @click="showRegister = false" class="w-full border-2 border-gray-500 rounded-l-xl p-3 hover:border-gray-400 duration-300">
                                         <i class="fa-solid fa-rotate-left text-gray-400"></i> Back
                                     </button>
-                                    <button @click="sendRegisterDataToServer()" class="w-full border-gray-500 border-2 rounded-r-xl p-3 duration-300 hover:border-gray-400">Register <i class="fa-solid fa-book text-gray-400"></i></button>
+                                    <button :disabled="loadingState" @click="sendRegisterDataToServer()" class="w-full border-gray-500 border-2 rounded-r-xl p-3 duration-300" :class="loadingState ? 'hover:border-red-400' : 'hover:border-gray-400'">
+
+                                        <LoadingSpinner v-if="loadingState"/>
+                                        <span v-else>
+                                            Register <i class="fa-solid fa-book text-gray-400"></i>
+                                        </span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -191,6 +197,7 @@
 
 <script>
     import { mapGetters } from 'vuex';
+    import LoadingSpinner from '../ui/LoadingSpinner.vue'
 
     export default {
         data: function() {
@@ -206,8 +213,12 @@
                 characters: [],
                 showRegister: false,
                 authState: "",
-                otpPassword: ""
+                otpPassword: "",
+                loadingState: false
             };
+        },
+        components: {
+            LoadingSpinner
         },
         computed: {
             ...mapGetters({
@@ -219,7 +230,8 @@
             login(btn) {
                 if (!btn) return;
                 if (window.mp) {
-                    window.mp.trigger("browser:sendObject", "server:recieveAuthInfo",JSON.stringify(this.$data));
+                    this.loadingState = true;
+                    window.mp.trigger("browser:sendObject", "server:recieveAuthInfo", JSON.stringify(this.$data));
                 }
             },
             playCharacter(cname) {
@@ -233,20 +245,20 @@
                 }
             },
             sendRegisterDataToServer() {
+                this.loadingState = true;
+
                 let authData = {
                     registerUsername: this.registerUsername,
                     registerPassword: this.registerPassword,
                     registerPasswordConfirm: this.registerPasswordConfirm,
                     registerEmail: this.registerEmail
                 }
-                
+
                 window.mp.trigger("browser:sendObject", "server:recieveRegister", JSON.stringify(authData));
             },
             register() {
                 if(!this.showRegister) return this.showRegister = true;
                 window.mp.trigger("browser:sendString", "server:authRecieveOtp", this.otpPassword);
-
-
             },
             getCharacterData() {
                 return this.$store.state.playerInfo.player_characters;
