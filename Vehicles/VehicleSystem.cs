@@ -63,12 +63,12 @@ namespace CloudRP.Vehicles
             });
         }
         
-        public static Vehicle spawnVehicle(DbVehicle vehicle)
+        public static Vehicle spawnVehicle(DbVehicle vehicle, Vector3 spawnCoords = null)
         {
             Vector3 spawnPosition = new Vector3(vehicle.position_x, vehicle.position_y, vehicle.position_z);
             float rotation = vehicle.rotation;
 
-            Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicle.vehicle_spawn_hash, spawnPosition, rotation, 255, 255, vehicle.numberplate, 255, false, true, 0);
+            Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicle.vehicle_spawn_hash, spawnCoords ?? spawnPosition, rotation, 255, 255, vehicle.numberplate, 255, false, true, 0);
 
             vehicle.vehicle_dimension = VehicleDimensions.World;
 
@@ -86,6 +86,42 @@ namespace CloudRP.Vehicles
             veh.SetData(_vehicleSharedDataIdentifier, vehicle);
 
             return veh;
+        }
+
+        public static void sendVehicleToInsurance(Vehicle vehicle)
+        {
+            DbVehicle vehicleData = getVehicleData(vehicle);
+
+            if(vehicleData != null)
+            {
+                vehicleData.vehicle_dimension = VehicleDimensions.Insurance;
+                vehicleData.UpdatedDate = DateTime.Now;
+
+                using(DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    dbContext.vehicles.Update(vehicleData);
+
+                    dbContext.SaveChanges();
+                }
+
+                vehicle.Delete();
+
+                return;
+            }
+
+        }
+
+        public static Vehicle vehicleIdOrPlate(string plateOrId)
+        {
+            Vehicle findVehicle = getVehicleByPlate(plateOrId);
+
+            if (findVehicle == null)
+            {
+                int? vehicleId = CommandUtils.tryParse(plateOrId);
+                findVehicle = getVehicleById((int)vehicleId);
+            }
+
+            return findVehicle;
         }
 
         public static void saveVehiclePositions(object source, ElapsedEventArgs e)
@@ -138,11 +174,6 @@ namespace CloudRP.Vehicles
         public static void bringVehicleToPlayer(Player player, Vehicle vehicle, bool putInVehicle)
         {
             vehicle.Position = player.Position;
-            
-            if(putInVehicle)
-            {
-                player.SetIntoVehicle(vehicle, 0);
-            }
 
             saveVehicleData(vehicle);
         }
@@ -279,6 +310,7 @@ namespace CloudRP.Vehicles
             AdminUtils.staffSay(player, ChatUtils.yellow + "-----------------------------------------------------------");
             AdminUtils.staffSay(player, "Vehicle id: " + ChatUtils.red + vehicle.vehicle_id + ChatUtils.White + " VehName: " + ChatUtils.red + vehicle.vehicle_name);
             AdminUtils.staffSay(player, "Owner id: " + ChatUtils.red + vehicle.owner_id + ChatUtils.White + " Numberplate: " + ChatUtils.red + vehicle.numberplate);
+            AdminUtils.staffSay(player, "Vehicle Dimension: " + ChatUtils.red + vehicle.vehicle_dimension + ChatUtils.White + " Lock Status: " + ChatUtils.red + vehicle.vehicle_locked);
 
             DbCharacter vehicleOwnerData = getOwnerOfVehicleById(vehicle.owner_id);
             if (userdata.adminDuty && vehicleOwnerData != null)
@@ -378,7 +410,7 @@ namespace CloudRP.Vehicles
             return returnVeh;
         }
 
-        public static Vehicle getVehicleById(int vehicleId)
+        public static Vehicle getVehicleById(int vehicleId, Vector3 possibleSpawn = null)
         {
             Vehicle returnVeh = null;
 
@@ -388,7 +420,7 @@ namespace CloudRP.Vehicles
 
                 if (findVehicle != null && findVehicle.vehicle_dimension != VehicleDimensions.World)
                 {
-                    returnVeh = spawnVehicle(findVehicle);
+                    returnVeh = spawnVehicle(findVehicle, possibleSpawn);
                 }
             }
 
@@ -465,11 +497,13 @@ namespace CloudRP.Vehicles
         [RemoteEvent("server:handleDoorInteraction")]
         public void handleDoorInteraction(Player player, Vehicle vehicle, int boneTargetId)
         {
-            if (Vector3.Distance(player.Position, vehicle.Position) > 4) return;
+            if (vehicle == null || Vector3.Distance(player.Position, vehicle.Position) > 4) return;
 
             DbVehicle vehicleData = getVehicleData(vehicle);
 
             if(vehicleData == null || vehicle.Locked) return;
+
+            Console.WriteLine(boneTargetId + "");
 
             vehicleData.vehicle_doors[boneTargetId] = !vehicleData.vehicle_doors[boneTargetId];
 

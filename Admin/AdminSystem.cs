@@ -103,7 +103,13 @@ namespace CloudRP.Admin
             {
                 Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
 
-                if(findPlayer != null)
+                if (findPlayer.Equals(player))
+                {
+                    AdminUtils.staffSay(player, "You cannot tp to yourself.");
+                    return;
+                }
+
+                if (findPlayer != null)
                 {
                     player.Position = findPlayer.Position;
 
@@ -127,6 +133,12 @@ namespace CloudRP.Admin
             if (AdminUtils.checkUserData(player, userData))
             {
                 Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+                if(findPlayer.Equals(player))
+                {
+                    AdminUtils.staffSay(player, "You cannot bring yourself");
+                    return;
+                }
 
                 if (findPlayer != null)
                 {
@@ -186,7 +198,7 @@ namespace CloudRP.Admin
                         return;
                     }
 
-                    findVehicle = VehicleSystem.getVehicleById((int)parseId);
+                    findVehicle = VehicleSystem.getVehicleById((int)parseId, player.Position);
                 }
 
                 if(findVehicle == null)
@@ -194,10 +206,10 @@ namespace CloudRP.Admin
                     CommandUtils.errorSay(player, "Vehicle was not found.");
                 } else
                 {
-                    VehicleSystem.bringVehicleToPlayer(player, findVehicle, true);
                     AdminUtils.staffSay(player, $"Vehicle was brought to you.");
+                    player.SetIntoVehicle(findVehicle, 0);
                 }
-                
+
             }
         }
 
@@ -637,6 +649,54 @@ namespace CloudRP.Admin
                 uiHandling.pushRouterToClient(player, Browsers.CharacterCreation);
 
             }
+        }
+
+        [Command("sendtoinsurance", "~r~/sendtoinsurance [plateOrId]", Alias = "sentov")]
+        public void sendToInsurance(Player player, string plateOrId)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(AdminUtils.checkUserData(player, userData))
+            {
+                Vehicle findVehicle = VehicleSystem.vehicleIdOrPlate(plateOrId);
+
+                if(findVehicle != null)
+                {
+                    VehicleSystem.sendVehicleToInsurance(findVehicle);
+
+                    AdminUtils.staffSay(player, "Sent vehicle " + plateOrId + " to insurance.");
+
+                } else
+                {
+                    AdminUtils.staffSay(player, "Vehicle couldn't be found.");
+                    return;
+                }
+
+            }
+
+        }
+
+        [Command("gotov", "~r~/gotov [idOrPlate]")]
+        public void goToVehicle(Player player, string idOrPlate)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if (AdminUtils.checkUserData(player, userData))
+            {
+                Vehicle findVehicle = VehicleSystem.vehicleIdOrPlate(idOrPlate);
+
+                if(findVehicle != null)
+                {
+                    player.Position = findVehicle.Position;
+                    AdminUtils.staffSay(player, "Teleported to vehicle " + idOrPlate);
+
+                } else
+                {
+                    CommandUtils.errorSay(player, "Vehicle couldn't be found.");
+                }
+
+            }
+
         }
 
     }

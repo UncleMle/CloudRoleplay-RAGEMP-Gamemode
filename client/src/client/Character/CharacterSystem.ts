@@ -72,7 +72,9 @@ class CharacterSystem {
 		if (entity.type != "player") return;
 		let characterData: CharacterData | undefined = getTargetCharacterData(entity as PlayerMp);
 		if (!characterData) return;
-		let userData: UserData = getUserData();
+		let userData: UserData | undefined = getUserData();
+
+		if (!userData) return;
 
 		if (!userData.adminDuty) {
 			CharacterSystem.setCharacterCustomization(entity as PlayerMp, characterData.characterModel, false);
@@ -89,7 +91,9 @@ class CharacterSystem {
 
 	public static handleDataHandler(entity: EntityMp, data: CharacterData) {
 		if (entity.type != "player" || !data) return;
-		let userData: UserData = getUserData();
+		let userData: UserData | undefined = getUserData();
+
+		if (!userData) return;
 
 		if (!userData.adminDuty) {
 			CharacterSystem.setCharacterCustomization(entity as PlayerMp, data.characterModel, false);
