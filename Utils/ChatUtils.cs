@@ -11,14 +11,16 @@ namespace CloudRP.Utils
         public static string grey = "!{grey}";
         public static string orange = "!{orange}";
         public static string CloudRP = CloudBlue + "[CloudRP] " + White;
-        public static string error = "!{red}[ERROR]!{white} ";
+        public static string error = "!{red}[Error]!{white} ";
         public static string _c_CharacterSystem = "[Characters] ";
         public static string _c_AntiCheatSystem = "[AntiCheat] ";
         public static string _c_DiscordSystem = "[Discord] ";
+        public static string _c_DeathSystem = "[Death] ";
         public static string yellow = "!{yellow}";
         public static string red = "!{red}";
         public static string disconnected = "!{#f57b42}[Disconnected] " + White;
         public static string antiCheat = "!{red}[AC] " + White;
+        public static string hospital = "!{green}[Hospital] " + White;
 
         public static void charSysPrint(string str)
         {
@@ -37,6 +39,13 @@ namespace CloudRP.Utils
         public static void discordSysPrint(string str)
         {
             Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine(_c_DiscordSystem + str);
+            Console.ForegroundColor = ConsoleColor.White;
+        }  
+        
+        public static void deathSystem(string str)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine(_c_DiscordSystem + str);
             Console.ForegroundColor = ConsoleColor.White;
         }
