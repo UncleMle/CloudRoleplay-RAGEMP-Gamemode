@@ -30,7 +30,7 @@ class NameTags {
 				.length();
 
 
-			if (Distance < 8 && NameTags.LocalPlayer.id != Target.id && NameTags.LocalPlayer.hasClearLosTo(Target.handle, 17)) {
+			if ( (Distance < 8 || targetUserData.adminDuty && Distance < 32) && NameTags.LocalPlayer.id != Target.id && NameTags.LocalPlayer.hasClearLosTo(Target.handle, 17)) {
 				const Index = Target.getBoneIndex(12844);
 				const NameTag = Target.getWorldPositionOfBone(Index);
 				const Position = mp.game.graphics.world3dToScreen2d(new mp.Vector3(NameTag.x, NameTag.y, NameTag.z + 0.4));
@@ -53,7 +53,7 @@ class NameTags {
 
 				mp.game.graphics.drawText(DefaultTagContent, [x, y], {
 					font: 4,
-					color: [255, 255, 255, 180],
+					color: [255, 255, 255, targetUserData.adminDuty ? 255 : 180],
 					scale: [0.325, 0.325],
 					outline: false
 				});
