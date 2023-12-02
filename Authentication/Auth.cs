@@ -134,6 +134,7 @@ namespace CloudRP.Authentication
         [RemoteEvent("server:authRecieveOtp")]
         public void recieveAuthOtp(Player player, string otpCode)
         {
+            uiHandling.setLoadingState(player, false);
             OtpStore playerOtpStore = player.GetData<OtpStore>(_otpStoreKey);
             if(playerOtpStore == null || playerOtpStore.registeringData == null)
             {

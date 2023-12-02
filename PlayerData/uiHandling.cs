@@ -43,9 +43,13 @@ namespace CloudRP.PlayerData
             player.TriggerEvent("client:addNotif", text, isRp);
         }
 
-        public static void sendPushNotifError(Player player, string text, int time)
+        public static void sendPushNotifError(Player player, string text, int time, bool resetLoading = false)
         {
             player.TriggerEvent("browser:sendErrorPushNotif", text, time);
+            
+            if(resetLoading) {
+                setLoadingState(player, false);
+            }
         }
 
         public static void sendPushNotif(Player player, string text, int time, bool progbar = true, bool dragbl = true)
@@ -61,6 +65,11 @@ namespace CloudRP.PlayerData
         public static void resetMutationPusher(Player player, string mutationKey)
         {
             player.TriggerEvent("browser:resetMutationPusher", mutationKey);
+        }
+
+        public static void setLoadingState(Player player, bool state)
+        {
+            player.TriggerEvent("client:recieveUiMutation", "setLoadingState", "serverLoading", state);
         }
     }
 

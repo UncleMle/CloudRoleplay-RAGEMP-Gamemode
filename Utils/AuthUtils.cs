@@ -152,25 +152,25 @@ namespace CloudRP.Utils
         {
             if (registeringData.registerPassword != registeringData.registerPasswordConfirm)
             {
-                uiHandling.sendPushNotifError(player, "Ensure password confirmation matches password.", 4000);
+                uiHandling.sendPushNotifError(player, "Ensure password confirmation matches password.", 4000, true);
                 return false;
             }
 
             if (!isEmailValid(registeringData.registerEmail))
             {
-                uiHandling.sendPushNotifError(player, "Entered email is invalid.", 6000);
+                uiHandling.sendPushNotifError(player, "Entered email is invalid.", 6000, true);
                 return false;
             }
 
             if (!validateString(registeringData.registerUsername) || registeringData.registerUsername.Length > 20 || registeringData.registerUsername.Length < 4)
             {
-                uiHandling.sendPushNotifError(player, "Username is invalid. Ensure it contains no special characters or numbers.", 6000);
+                uiHandling.sendPushNotifError(player, "Username is invalid. Ensure it contains no special characters or numbers.", 6000, true);
                 return false;
             }
 
             if (registeringData.registerPassword.Length < 8)
             {
-                uiHandling.sendPushNotifError(player, "Ensure your password's length is greater than 8.", 6000);
+                uiHandling.sendPushNotifError(player, "Ensure your password's length is greater than 8.", 6000, true);
                 return false;
             }
 
@@ -179,7 +179,7 @@ namespace CloudRP.Utils
                 Account findWithEmail = dbContext.accounts.Where(acc => acc.email_address == registeringData.registerEmail).FirstOrDefault();
                 if (findWithEmail != null)
                 {
-                    uiHandling.sendPushNotifError(player, "Email is already taken.", 4000);
+                    uiHandling.sendPushNotifError(player, "Email is already taken.", 4000, true);
                     return false;
                 }
 
@@ -187,7 +187,7 @@ namespace CloudRP.Utils
                 Account findWithUser = dbContext.accounts.Where(acc => acc.username == registeringData.registerUsername).FirstOrDefault();
                 if (findWithUser != null)
                 {
-                    uiHandling.sendPushNotifError(player, "Username is already taken.", 4000);
+                    uiHandling.sendPushNotifError(player, "Username is already taken.", 4000, true);
                     return false;
                 }
             }

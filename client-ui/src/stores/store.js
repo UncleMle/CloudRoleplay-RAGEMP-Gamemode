@@ -18,7 +18,8 @@ const store = new Vuex.Store({
 		uiStates: {
 			characterSelection: false,
 			chatEnabled: false,
-			guiEnabled: true
+			guiEnabled: true,
+			serverLoading: false
 		}
 	},
 	getters: {
@@ -48,6 +49,9 @@ const store = new Vuex.Store({
 		},
 		getOtpState: (state) => {
 			return state.playerInfo.otp_ui;
+		},
+		getLoadingState: (state) => {
+			return state.uiStates.serverLoading;
 		}
 	},
 	mutations: {
@@ -75,6 +79,9 @@ const store = new Vuex.Store({
 		},
 		setGuiState: (state, { toggle }) => {
 			state.uiStates.guiEnabled = toggle;
+		},
+		setLoadingState: (state, { toggle }) => {
+			state.uiStates.serverLoading = toggle;
 		}
 	}
 });

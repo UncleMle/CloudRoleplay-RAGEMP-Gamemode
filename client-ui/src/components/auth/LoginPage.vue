@@ -214,7 +214,6 @@
                 showRegister: false,
                 authState: "",
                 otpPassword: "",
-                loadingState: false
             };
         },
         components: {
@@ -223,7 +222,8 @@
         computed: {
             ...mapGetters({
                 characterSelectionState: 'getCharacterSelectionStatus',
-                showOtp: 'getOtpState'
+                showOtp: 'getOtpState',
+                loadingState: 'getLoadingState'
             })
         },
         methods: {
@@ -245,7 +245,7 @@
                 }
             },
             sendRegisterDataToServer() {
-                this.loadingState = true;
+                this.$store.state.uiStates.serverLoading = true;
 
                 let authData = {
                     registerUsername: this.registerUsername,
