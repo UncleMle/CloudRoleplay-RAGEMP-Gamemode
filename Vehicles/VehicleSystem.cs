@@ -253,6 +253,9 @@ namespace CloudRP.Vehicles
         public static DbVehicle getVehicleDataById(int vehicleId)
         {
             Vehicle vehicle = findVehicleById(vehicleId);
+            
+            if(vehicle == null ) return null;
+
             DbVehicle findData = getVehicleData(vehicle);
 
             return findData;
