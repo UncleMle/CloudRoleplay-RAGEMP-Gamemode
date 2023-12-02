@@ -18,10 +18,20 @@ class PlayerAuthentication {
 	public static LocalStorage: StorageMp;
 	public static characterCreationPosition: Vector3 = new mp.Vector3(-38.6, -590.5, 78.8);
 	public static _cameraSwitchInterval: number = 500;
-	public static cameraPositions: Vector3[] = [new mp.Vector3(-79.9, -1079.5, 310.2), new mp.Vector3(407.3, 6009.5, 940.0), new mp.Vector3(678.2, 928.0, 458.3)];
-	public static cameraPointAtPositions: Vector3[] = [new mp.Vector3(-74.8, -819.2, 326.2), new mp.Vector3(501.7, 5603.7, 767.9), new mp.Vector3(728.1, 1213.9, 328.8)];
 	public static _switchCamCmd: string = "swcm";
 	public static _currentCam: number = 0;
+	public static cameraPositions: Vector3[] = [
+		new mp.Vector3(-79.9, -1079.5, 310.2),
+		new mp.Vector3(407.3, 6009.5, 940.0),
+		new mp.Vector3(678.2, 928.0, 458.3)
+		new mp.Vector3(1893.8, 3309.4, 323.1)
+	];
+	public static cameraPointAtPositions: Vector3[] = [
+		new mp.Vector3(-74.8, -819.2, 326.2),
+		new mp.Vector3(501.7, 5603.7, 767.9),
+		new mp.Vector3(728.1, 1213.9, 328.8),
+		new mp.Vector3(1869.9, 3711.3, 120.5)
+	];
 
 	constructor() {
 		PlayerAuthentication.LocalPlayer = mp.players.local;
