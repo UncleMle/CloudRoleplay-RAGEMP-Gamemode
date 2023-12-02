@@ -16,12 +16,13 @@ class CharacterSystem {
 		mp.events.addDataHandler(_sharedCharacterDataIdentifier, CharacterSystem.handleDataHandler);
 	}
 
-	public static setCharacterCustomization(entity: PlayerMp = CharacterSystem.LocalPlayer, characterModel: any, parse: boolean = true) {
+	public static setCharacterCustomization(characterModel: any, parse: boolean = true, entity: PlayerMp = CharacterSystem.LocalPlayer) {
 		let charData: CharacterModel = characterModel;
 
 		if (parse) {
 			charData = JSON.parse(characterModel);
 		}
+
 
 		let female: number = mp.game.joaat("mp_m_freemode_01");
 		let male: number = mp.game.joaat("mp_f_freemode_01");
@@ -65,7 +66,7 @@ class CharacterSystem {
 		entity.setFaceFeature(19, parseInt(charData.neckWidth) / 10);
 
 
-		entity.setHeadBlendData(parseInt(charData.firstHeadShape), parseInt(charData.secondHeadShape), 0, parseInt(charData.firstHeadShape), parseInt(charData.secondHeadShape), 0, Number(charData.headMix) * 0.01, Number(charData.skinMix) * 0.01, 0, false); 
+		entity.setHeadBlendData(parseInt(charData.firstHeadShape), parseInt(charData.secondHeadShape), 0, parseInt(charData.firstHeadShape), parseInt(charData.secondHeadShape), 0, Number(charData.headMix) * 0.01, Number(charData.skinMix) * 0.01, 0, false);
 	}
 
 	public static handleEntityStreamIn(entity: EntityMp) {
@@ -77,12 +78,12 @@ class CharacterSystem {
 		if (!userData) return;
 
 		if (!userData.adminDuty) {
-			CharacterSystem.setCharacterCustomization(entity as PlayerMp, characterData.characterModel, false);
+			CharacterSystem.setCharacterCustomization(characterData.characterModel, false, entity as PlayerMp);
 		}
 	}
 
 	public static handleEntityStreamOut(entity: EntityMp) {
-		if (entity.type != "player") return;	
+		if (entity.type != "player") return;
 		let characterData: CharacterData | undefined = getTargetCharacterData(entity as PlayerMp);
 		if (!characterData) return;
 
@@ -96,7 +97,7 @@ class CharacterSystem {
 		if (!userData) return;
 
 		if (!userData.adminDuty) {
-			CharacterSystem.setCharacterCustomization(entity as PlayerMp, data.characterModel, false);
+			CharacterSystem.setCharacterCustomization(data.characterModel, false, entity as PlayerMp);
 		}
 	}
 
