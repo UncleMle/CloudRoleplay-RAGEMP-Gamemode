@@ -32,7 +32,7 @@ namespace CloudRP.DeathSystem
             NAPI.Server.SetAutoRespawnAfterDeath(false);
             NAPI.Server.SetAutoSpawnOnConnect(false);
 
-            ChatUtils.deathSystem("Disabled auto respawn and loaded hospitals.");
+            ChatUtils.formatConsolePrint(ChatUtils._c_Hospital + "Disabled auto respawn and loaded hospitals", ConsoleColor.DarkCyan);
         }
 
         [ServerEvent(Event.PlayerDeath)]

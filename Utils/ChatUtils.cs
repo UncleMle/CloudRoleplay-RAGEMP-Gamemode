@@ -16,6 +16,7 @@ namespace CloudRP.Utils
         public static string _c_AntiCheatSystem = "[AntiCheat] ";
         public static string _c_DiscordSystem = "[Discord] ";
         public static string _c_DeathSystem = "[Death] ";
+        public static string _c_Hospital = "[Hospital] ";
         public static string yellow = "!{yellow}";
         public static string red = "!{red}";
         public static string disconnected = "!{#f57b42}[Disconnected] " + White;
@@ -44,6 +45,13 @@ namespace CloudRP.Utils
             Console.ForegroundColor = ConsoleColor.White;
         }  
         
+        public static void formatConsolePrint(string message, ConsoleColor colour)
+        {
+            Console.ForegroundColor = colour;
+            Console.WriteLine(message);
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+
         public static void deathSystem(string str)
         {
             Console.ForegroundColor = ConsoleColor.DarkRed;

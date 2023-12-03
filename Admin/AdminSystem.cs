@@ -288,18 +288,40 @@ namespace CloudRP.Admin
             }
         }
 
-        [Command("delv", "~r~/delv [vehicleId]")]
-        public void delV(Player player, int vehicleId)
+        [Command("delv", "~r~/delv [yourVehicle Or vehicleId]")]
+        public void delV(Player player, int vehicleId = -1)
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
             if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
             {
+                if(vehicleId == -1 && player.IsInVehicle)
+                {
+                    DbVehicle vehicleData = VehicleSystem.getVehicleData(player.Vehicle);
+
+                    if (vehicleData == null)
+                    {
+                        player.Vehicle.Delete();
+                        return;
+                    }
+
+                    bool deletePlayerVeh = VehicleSystem.deleteVehicleById(vehicleData.vehicle_id);
+
+                    if(deletePlayerVeh)
+                    {
+                        AdminUtils.staffSay(player, $"Vehicle with id {vehicleData.vehicle_id} was deleted.");
+                        return;
+                    }
+
+                    AdminUtils.staffSay(player, $"Enter a vehicle ID to delete or enter a vehicle and use this command.");
+                    return;
+                }
+
                 bool delVehicle = VehicleSystem.deleteVehicleById(vehicleId);
 
                 if (delVehicle)
                 {
-                    AdminUtils.staffSay(player, $"Vehicle with id {vehicleId} deleted .");
+                    AdminUtils.staffSay(player, $"Vehicle with id {vehicleId} deleted.");
                 } else
                 {
                     AdminUtils.staffSay(player, $"Vehicle with id {vehicleId} was not found.");
