@@ -54,11 +54,9 @@ class NameTags {
 					DefaultTagContent = `${_TEXT_R_RED}[ADMIN]${_TEXT_R_WHITE} ${voiceState} ${targetUserData.adminName}`;
 				}
 
-				if(Target.isTypingInTextChat) {
-					DefaultTagContent += "~m~(( Typing... ))~w~\n";
-				}
+				Target.isTypingInTextChat ? DefaultTagContent += "\n ~m~(( Typing... ))~w~" : "";
 
-				mp.game.graphics.drawText(DefaultTagContent, [x, y], {
+				mp.game.graphics.drawText(DefaultTagContent, [x, Target.isTypingInTextChat ? y - 0.032 : y], {
 					font: 4,
 					color: [255, 255, 255, targetUserData.adminDuty ? 255 : 180],
 					scale: [0.325, 0.325],
