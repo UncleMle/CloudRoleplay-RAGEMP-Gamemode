@@ -2,6 +2,7 @@
 using CloudRP.Authentication;
 using CloudRP.Character;
 using CloudRP.Database;
+using CloudRP.DeathSystem;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
 using CloudRP.Vehicles;
@@ -126,6 +127,63 @@ namespace CloudRP.Admin
             }
         }
 
+        [Command("kick", "~r~/kick [nameOrId] [silent]")]
+        public void kickPlayer(Player player, string nameOrId, bool isSilent = false)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(AdminUtils.checkUserData(player, userData))
+            {
+                Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+                if(findPlayer != null)
+                {
+                    DbCharacter characterData = PlayersData.getPlayerCharacterData(findPlayer);
+
+                    if (findPlayer.Equals(player))
+                    {
+                        AdminUtils.staffSay(player, "You cannot kick yourself");
+                        return;
+                    }
+
+                    findPlayer.Kick();
+
+                    if(!isSilent)
+                    {
+                        AdminUtils.sendMessageToAllStaff(userData.adminName + " kicked " + characterData.character_name);
+                    }
+                } else
+                {
+                    CommandUtils.notFound(player);
+                }
+            }
+        }
+
+        [Command("revive", "~r~/revive [nameOrId]")]
+        public void reviveCommand(Player player, string nameOrId)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(AdminUtils.checkUserData(player, userData))
+            {
+                Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+                if(findPlayer == null)
+                {
+                    CommandUtils.notFound(player);
+                    return;
+                }
+
+                DbCharacter findCharacter = PlayersData.getPlayerCharacterData(findPlayer);
+
+                DeathEvent.resetTimer(player, findCharacter);
+
+                AdminUtils.staffSay(player, "You revived " + findCharacter.character_name);
+                AdminUtils.staffSay(findPlayer, "You were revived by Admin " + userData.adminName);
+            }
+
+        }
+
         [Command("bring", "~r~/bring [nameOrId]")]
         public void bringPlayer(Player player, string nameOrId)
         {
@@ -147,7 +205,7 @@ namespace CloudRP.Admin
                     findPlayer.Position = player.Position;
 
                     AdminUtils.staffSay(player, "Teleported Player [" + findPlayer.Id + "] to you.");
-                    AdminUtils.staffSay(player, $"Admin {userData.adminName} teleported you.");
+                    AdminUtils.staffSay(findPlayer, $"Admin {userData.adminName} teleported you.");
                 }
                 else
                 {
@@ -208,6 +266,7 @@ namespace CloudRP.Admin
                     CommandUtils.errorSay(player, "Vehicle was not found.");
                 } else
                 {
+                    findVehicle.Position = player.Position;
                     AdminUtils.staffSay(player, $"Vehicle was brought to you.");
                     player.SetIntoVehicle(findVehicle, 0);
                 }
@@ -655,10 +714,64 @@ namespace CloudRP.Admin
                     dbContext.SaveChanges();
                 }
 
+                PlayersData.setPlayerAccountData(findPlayer, findPlayerData);
                 AdminUtils.staffSay(player, $"Set Player [{findPlayer.Id}]'s admin name to {adminName}.");
                 AdminUtils.staffSay(findPlayer, $"Your admin name was set to {adminName} by {userData.adminName}.");
 
 
+            } else AdminUtils.sendNoAuth(player);
+        }
+
+        [Command("setadmin", "~r~/setadmin [nameOrId] [adminLevel(0-8)]")]
+        public void setAdmin(Player player, string nameOrId, int adminRankSet)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+            if(userData != null && (userData.adminLevel > (int)AdminRanks.Admin_Admin && userData.adminDuty || userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin))
+            {
+                if(adminRankSet > RankList.adminRanksList.Length || adminRankSet < 0)
+                {
+                    AdminUtils.staffSay(player, "Enter a valid admin rank between 0 and " +RankList.adminRanksList.Length);
+                    return;
+                }
+
+                if (adminRankSet > 3 && userData.adminLevel <= (int)AdminRanks.Admin_SeniorAdmin)
+                {
+                    AdminUtils.staffSay(player, "You cannot set admin ranks that high. You can set up to moderator and below.");
+                    return;
+                }
+                
+                if(adminRankSet > 6 && userData.adminLevel <= (int)AdminRanks.Admin_HeadAdmin)
+                {
+                    AdminUtils.staffSay(player, "You cannot set admin ranks that high. You can set up to Senior Admin and below.");
+                    return;
+                }
+
+                User findPlayerData = PlayersData.getPlayerAccountData(player);
+                DbCharacter findPlayerCharData = PlayersData.getPlayerCharacterData(player);
+
+                findPlayerData.adminLevel = adminRankSet;
+
+                using(DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    Account findAcc = dbContext.accounts.Find(findPlayerData.accountId);
+
+                    if (findAcc == null) return;
+
+                    findAcc.admin_status = adminRankSet;
+
+                    dbContext.accounts.Update(findAcc);
+                    dbContext.SaveChanges();
+                }
+
+                string setAdminRank = AdminUtils.getColouredAdminRank(findPlayerData); 
+;                AdminUtils.staffSay(player, $"You set {findPlayerCharData.character_name}'s admin level to {setAdminRank}");
+;                AdminUtils.staffSay(findPlayer, $"Your admin level was set to {setAdminRank} by Admin {userData.adminName}");
+
+                AdminUtils.sendMessageToAllStaff($"{userData.adminName} set {findPlayerCharData.character_name}'s admin level to {setAdminRank}");
+            
             } else AdminUtils.sendNoAuth(player);
         }
 

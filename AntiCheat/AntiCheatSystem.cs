@@ -54,7 +54,7 @@ namespace CloudRP.AntiCheat
 
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (userData != null && (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin || userData.adminDuty)) return;
+            //if (userData != null && (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin || userData.adminDuty)) return;
             
             if (userData == null && exception != (int)AcExceptions.tpHack)
             {

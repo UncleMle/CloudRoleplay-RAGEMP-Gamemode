@@ -45,12 +45,17 @@ class NameTags {
 
 				y -= scale * (0.005 * (NameTags.ScreenRes.y / 1080)) - parseInt('0.010');
 
+				let typingState = Target.isTypingInTextChat ? "~m~(( Typing... ))~w~\n" : "";
 				let voiceState = (targetCharacterData.voiceChatState ? "" : "~g~");
-				let injuredState = (targetCharacterData.data.injured_timer > 0 ? "~r~(( INJURED )) ~w~" : "");
+				let injuredState = (targetCharacterData.data.injured_timer > 0 ? "~r~(( INJURED )) ~w~\n" : "");
 				let DefaultTagContent = injuredState + voiceState + `[${Target.remoteId}] ${targetCharacterData.characterName.replace("_", " ")}`;
 
 				if (targetUserData.adminDuty) {
 					DefaultTagContent = `${_TEXT_R_RED}[ADMIN]${_TEXT_R_WHITE} ${voiceState} ${targetUserData.adminName}`;
+				}
+
+				if(Target.isTypingInTextChat) {
+					DefaultTagContent += "~m~(( Typing... ))~w~\n";
 				}
 
 				mp.game.graphics.drawText(DefaultTagContent, [x, y], {
