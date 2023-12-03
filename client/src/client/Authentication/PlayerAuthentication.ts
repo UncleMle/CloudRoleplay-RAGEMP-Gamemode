@@ -22,7 +22,7 @@ class PlayerAuthentication {
 	public static cameraPositions: Vector3[] = [
 		new mp.Vector3(-79.9, -1079.5, 310.2),
 		new mp.Vector3(407.3, 6009.5, 940.0),
-		new mp.Vector3(678.2, 928.0, 458.3)
+		new mp.Vector3(678.2, 928.0, 458.3),
 		new mp.Vector3(1893.8, 3309.4, 323.1)
 	];
 	public static cameraPointAtPositions: Vector3[] = [

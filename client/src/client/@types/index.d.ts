@@ -3,6 +3,7 @@ declare global {
 		browserRouter: string;
 		browserInstance: BrowserMp;
 		browserCurrentState: string;
+		isListening: boolean;
 	}
 }
 

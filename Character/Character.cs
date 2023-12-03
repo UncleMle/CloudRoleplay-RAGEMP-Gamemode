@@ -46,6 +46,12 @@ namespace CloudRP.Character
         public uint player_dimension { get; set; }
 
         public ulong player_exp {  get; set; }
+
+        [NotMapped]
+        public bool voiceChatState { get; set; }
+
+        [NotMapped]
+        public CharacterModel characterModel { get; set; }
     }
 
 }

@@ -1,6 +1,7 @@
 import { UserData, VehicleData, CharacterData } from "../@types";
 import distBetweenCoords from "../PlayerMethods/distanceBetweenCoords";
 import getTargetCharacterData from "../PlayerMethods/getTargetCharacterData";
+import getTargetData from "../PlayerMethods/getTargetData";
 import getUserData from "../PlayerMethods/getUserData";
 import getVehicleData from "../PlayerMethods/getVehicleData";
 
@@ -9,6 +10,9 @@ class AdminEsp {
 	public static _min: Vector3;
 	public static _max: Vector3;
 	public static _center: Vector3;
+	public static _rectWidth: 0.03;
+	public static _rectBorder = 0.001;
+	public static _rectHeight = 0.0065;
 
 	constructor() {
 		AdminEsp.LocalPlayer = mp.players.local;
@@ -79,26 +83,33 @@ class AdminEsp {
 	}
 
 	public static drawPlayerSkeletons(ent: PlayerMp) {
-		var rootBone: Vector3 = ent.getBoneCoords(0, 0, 0, 0);
-		var head: Vector3 = ent.getBoneCoords(12844, 0, 0, 0);
-		var rightF: Vector3 = ent.getBoneCoords(52301, 0, 0, 0);
-		var leftF: Vector3 = ent.getBoneCoords(14201, 0, 0, 0);
-		var leftH: Vector3 = ent.getBoneCoords(18905, 0, 0, 0);
-		var rightH: Vector3 = ent.getBoneCoords(57005, 0, 0, 0);
+		let userData: UserData | undefined = getTargetData(ent);
 
-		mp.game.graphics.drawLine(rootBone.x, rootBone.y, rootBone.z, head.x, head.y, head.z, 155, 255, 245, 255);
-		mp.game.graphics.drawLine(rightF.x, rightF.y, rightF.z, rootBone.x, rootBone.y, rootBone.z, 155, 255, 245, 255);
-		mp.game.graphics.drawLine(leftF.x, leftF.y, leftF.z, rootBone.x, rootBone.y, rootBone.z, 155, 255, 245, 255);
-		mp.game.graphics.drawLine(head.x, head.y, head.z, leftH.x, leftH.y, leftH.z, 155, 255, 245, 255);
-		mp.game.graphics.drawLine(head.x, head.y, head.z, rightH.x, rightH.y, rightH.z, 155, 255, 245, 255);
+		let rootBone: Vector3 = ent.getBoneCoords(0, 0, 0, 0);
+		let head: Vector3 = ent.getBoneCoords(12844, 0, 0, 0);
+		let rightF: Vector3 = ent.getBoneCoords(52301, 0, 0, 0);
+		let leftF: Vector3 = ent.getBoneCoords(14201, 0, 0, 0);
+		let leftH: Vector3 = ent.getBoneCoords(18905, 0, 0, 0);
+		let rightH: Vector3 = ent.getBoneCoords(57005, 0, 0, 0);
+
+		let alpha: number = 255;
+		let cl1 = userData?.adminDuty ? 255 : 155;
+		let cl2 = userData?.adminDuty ? 0 : 255;
+		let cl3 = userData?.adminDuty ? 0 : 245;
+
+		mp.game.graphics.drawLine(rootBone.x, rootBone.y, rootBone.z, head.x, head.y, head.z, cl1, cl2, cl3, alpha);
+		mp.game.graphics.drawLine(rightF.x, rightF.y, rightF.z, rootBone.x, rootBone.y, rootBone.z, cl1, cl2, cl3, alpha);
+		mp.game.graphics.drawLine(leftF.x, leftF.y, leftF.z, rootBone.x, rootBone.y, rootBone.z, cl1, cl2, cl3, alpha);
+		mp.game.graphics.drawLine(head.x, head.y, head.z, leftH.x, leftH.y, leftH.z, cl1, cl2, cl3, alpha);
+		mp.game.graphics.drawLine(head.x, head.y, head.z, rightH.x, rightH.y, rightH.z, cl1, cl2, cl3, alpha);
 
 		let drawTextCoordsCenter: { x: number, y: number } = mp.game.graphics.world3dToScreen2d(new mp.Vector3(ent.position.x, ent.position.y, ent.position.z));
 		let drawTextCoordsHead: { x: number, y: number } = mp.game.graphics.world3dToScreen2d(new mp.Vector3(head.x, head.y, head.z));
 
 		let characterData: CharacterData | undefined = getTargetCharacterData(ent);
-
-		let dispTextCenter: string = `Player (RID #${ent.remoteId}) (Dist ${distBetweenCoords(AdminEsp.LocalPlayer.position, ent.position).toFixed(1)}M) `;
-		let dispTextHead: string = `Health ~g~${ent.health} ~w~Armour: ~b~${ent.armour}`;
+		
+		let dispTextCenter: string =  userData?.adminDuty ? `~r~[ADMIN ON DUTY] ${userData.adminName}` : `Player (RID #${ent.remoteId}) (Dist ${distBetweenCoords(AdminEsp.LocalPlayer.position, ent.position).toFixed(1)}M) `;
+		let dispTextHead: string = userData?.adminDuty ? "" : `Health ~g~${ent.getHealth()} ~w~Armour: ~b~${ent.getArmour()}`;
 
 		if (characterData != null) {
 			dispTextCenter += `\n(CID #${characterData.characterId}) (Name ${characterData.characterName})`;
@@ -106,6 +117,31 @@ class AdminEsp {
 
 		AdminEsp.renderText(dispTextCenter, drawTextCoordsCenter);
 		AdminEsp.renderText(dispTextHead, drawTextCoordsHead);
+		AdminEsp.drawStatusBars(ent);
+	}
+
+	public static drawStatusBars(entity: PlayerMp) {
+		let head: Vector3 = entity.getBoneCoords(12844, 0, 0, 0);
+
+		let y2 = head.y + 0.042;
+		let x2 = head.x - AdminEsp._rectWidth / 2 - AdminEsp._rectBorder / 2;
+
+		if (entity.getArmour() > 0) {
+			mp.game.graphics.drawRect(x2, y2, AdminEsp._rectWidth + AdminEsp._rectBorder * 2, 0.0085, 0, 0, 0, 200, false);
+			mp.game.graphics.drawRect(x2, y2, AdminEsp._rectWidth, AdminEsp._rectHeight, 150, 150, 150, 255, false);
+			mp.game.graphics.drawRect(x2 - AdminEsp._rectWidth / 2 * (1 - entity.getHealth()), y2, AdminEsp._rectWidth * entity.getHealth(), AdminEsp._rectHeight, 255, 255, 255, 200, false);
+
+			x2 = head.x + AdminEsp._rectWidth / 2 + AdminEsp._rectBorder / 2;
+
+			mp.game.graphics.drawRect(x2, y2, AdminEsp._rectWidth + AdminEsp._rectBorder * 2, AdminEsp._rectHeight + AdminEsp._rectBorder * 2, 0, 0, 0, 200, false);
+			mp.game.graphics.drawRect(x2, y2, AdminEsp._rectWidth, AdminEsp._rectHeight, 41, 66, 78, 255, false);
+			mp.game.graphics.drawRect(x2 - AdminEsp._rectWidth / 2 * (1 - entity.getArmour()), y2, AdminEsp._rectWidth * entity.getArmour(), AdminEsp._rectHeight, 48, 108, 135, 200, false);
+		}
+		else {
+			mp.game.graphics.drawRect(head.x, y2, AdminEsp._rectWidth + AdminEsp._rectBorder * 2, AdminEsp._rectHeight + AdminEsp._rectBorder * 2, 0, 0, 0, 200, false);
+			mp.game.graphics.drawRect(head.x, y2, AdminEsp._rectWidth, AdminEsp._rectHeight, 150, 150, 150, 255, false);
+			mp.game.graphics.drawRect(head.x - AdminEsp._rectWidth / 2 * (1 - entity.getHealth()), y2, AdminEsp._rectWidth * entity.getHealth(), AdminEsp._rectHeight, 255, 255, 255, 200, false);
+		}
 	}
 
 	public static renderPlayerEsp() {

@@ -1,8 +1,6 @@
 import { _sharedCharacterDataIdentifier } from "../Constants/Constants";
 import getTargetCharacterData from "../PlayerMethods/getTargetCharacterData";
 import { CharacterData, CharacterModel, UserData } from "@types";
-import getUserData from "../PlayerMethods/getUserData";
-import getUserCharacterData from "../PlayerMethods/getUserCharacterData";
 import getTargetData from "../PlayerMethods/getTargetData";
 
 class CharacterSystem {

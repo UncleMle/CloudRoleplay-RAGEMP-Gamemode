@@ -18,6 +18,7 @@ import VehicleSiren from "./VehicleSystems/VehicleSiren";
 import CharacterSystem from "./Character/CharacterSystem";
 import AntiCheat from "./AntiCheat/AntiCheatSystem";
 import AdminEsp from "./AdminSystem/AdminEsp";
+import VoiceSystem from "./VoiceChat/VoiceSystem";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -40,3 +41,4 @@ new VehicleSiren();
 new CharacterSystem();
 new AntiCheat();
 new AdminEsp();
+new VoiceSystem();

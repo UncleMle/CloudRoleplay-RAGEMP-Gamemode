@@ -227,8 +227,10 @@ namespace CloudRP.Authentication
                     CharacterModel charModel = dbContext.character_models.Where(charModel => charModel.owner_id == character.character_id).FirstOrDefault();
                     if(charModel == null) return;
 
+                    character.characterModel = charModel;
+
                     ChatUtils.charSysPrint($"Character {character.character_name} has logged in (#{character.character_id})");
-                    PlayersData.setPlayerCharacterData(player, character, charModel);
+                    PlayersData.setPlayerCharacterData(player, character);
                     DiscordUtils.creationConnection(player, character, LogCreation.Join);
 
                     welcomeAndSpawnPlayer(player, userData, character);

@@ -10,7 +10,7 @@ class BrowserSystem {
 	public static IdleDate: Date = new Date();
 	public static LocalPlayer: PlayerMp;
 
-	constructor() { 
+	constructor() {
 		BrowserSystem._browserInstance = mp.browsers.new(this._browserBaseUrl);
 		BrowserSystem.LocalPlayer = mp.players.local;
 
@@ -116,7 +116,7 @@ class BrowserSystem {
 		const dif: number = new Date().getTime() - BrowserSystem.IdleDate.getTime();
 		const seconds: number = dif / 1000;
 		if (Math.abs(seconds) > 29.5) {
-			mp.game.invoke(_REMOVE_TIMER_NATIVE); 
+			mp.game.invoke(_REMOVE_TIMER_NATIVE);
 			BrowserSystem.IdleDate = new Date();
 		}
 	}

@@ -29,7 +29,8 @@ export const _control_ids = {
 	D: 35,
 	Space: 321,
 	LCtrl: 326,
-	RELOADBIND: 0x52
+	RELOADBIND: 0x52,
+	NBIND: 78
 };
 
 export const _config_flags = {
