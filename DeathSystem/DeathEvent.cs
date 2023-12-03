@@ -39,15 +39,20 @@ namespace CloudRP.DeathSystem
         {
             NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.info + "You have been injured.");
 
-            NAPI.Task.Run(() =>
-            {
-                DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
-                if (characterData != null)
+            if (characterData != null)
+            {
+                if (characterData.injured_timer > 0)
+                {
+                    resetTimer(player, characterData);
+                    respawnAtHospital(player);
+                }
+                else
                 {
                     updateAndSetInjuredState(player, characterData);
                 }
-            }, _respawnTimeout_seconds * 1000);
+            }
         }
 
         public static void respawnAtHospital(Player player)
@@ -87,7 +92,7 @@ namespace CloudRP.DeathSystem
 
             PlayersData.setPlayerCharacterData(player, characterData, false);
 
-            player.TriggerEvent("injured:startInterval");
+            player.TriggerEvent("injured:startInterval", time);
         }
 
         [RemoteEvent("server:saveInjuredTime")]
@@ -116,14 +121,7 @@ namespace CloudRP.DeathSystem
         {
             if (character == null) return;
 
-            character.injured_timer = 0;
-
-            using(DefaultDbContext dbContext = new DefaultDbContext())
-            {
-                dbContext.Update(character);
-                dbContext.SaveChanges();
-            }
-
+            resetTimer(player, character);
             player.TriggerEvent("injured:removeStatus");
 
             if(respawn)
@@ -131,6 +129,21 @@ namespace CloudRP.DeathSystem
                 respawnAtHospital(player);
             }
 
+        }
+
+        public static void resetTimer(Player player, DbCharacter character)
+        {
+            player.TriggerEvent("injured:removeStatus");
+
+            character.injured_timer = 0;
+
+            using (DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                dbContext.Update(character);
+                dbContext.SaveChanges();
+            }
+
+            PlayersData.setPlayerCharacterData(player, character);
         }
 
     }

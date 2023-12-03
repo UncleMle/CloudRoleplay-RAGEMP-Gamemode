@@ -107,7 +107,7 @@ class AdminEsp {
 		let drawTextCoordsHead: { x: number, y: number } = mp.game.graphics.world3dToScreen2d(new mp.Vector3(head.x, head.y, head.z));
 
 		let characterData: CharacterData | undefined = getTargetCharacterData(ent);
-		
+
 		let dispTextCenter: string =  userData?.adminDuty ? `~r~[ADMIN ON DUTY] ${userData.adminName}` : `Player (RID #${ent.remoteId}) (Dist ${distBetweenCoords(AdminEsp.LocalPlayer.position, ent.position).toFixed(1)}M) `;
 		let dispTextHead: string = userData?.adminDuty ? "" : `Health ~g~${ent.getHealth()} ~w~Armour: ~b~${ent.getArmour()}`;
 

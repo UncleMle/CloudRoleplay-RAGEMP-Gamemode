@@ -1,12 +1,13 @@
 import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
 import { CharacterData } from "@/@types";
 import { _sharedCharacterDataIdentifier } from "@/Constants/Constants";
+import getTargetCharacterData from "@/PlayerMethods/getTargetCharacterData";
 
 class DeathSystem {
     public static LocalPlayer: PlayerMp;
     public static _injuredIntervalUpdate_seconds: number = 10;
-    public static _injuredTimer_seconds: number = 300;
-    public static _injuredInterval: ReturnType<typeof setInterval>;
+    public static _animCheck_seconds: number = 5;
+    public static _injuredInterval: ReturnType<typeof setInterval> | undefined;
     public static _saveInterval: ReturnType<typeof setInterval>;
     public static injuredTimer: number;
     public static saveInjuredEvent: string = "server:saveInjuredTime";
@@ -20,19 +21,35 @@ class DeathSystem {
         mp.events.add("entityStreamIn", DeathSystem.handleStreamIn);
         mp.events.addDataHandler(_sharedCharacterDataIdentifier, DeathSystem.handleDataHandler);
         mp.events.add("injured:startInterval", DeathSystem.handleIntervalStart);
-        mp.events.add("injured:removeStatus", DeathSystem.handleIntervalStart);
+        mp.events.add("injured:removeStatus", DeathSystem.removeIntervalStatus);
+
+
+        setInterval(() => {
+            mp.players.forEach(player => {
+                let targetCharData: CharacterData | undefined = getTargetCharacterData(player);
+
+                if(targetCharData && targetCharData.data.injured_timer > 0) {
+                    DeathSystem.playDeathAnim(player);
+                }
+            })
+        }, DeathSystem._animCheck_seconds * 1000);
     }
 
-    public static handleIntervalStart() {
-        if(DeathSystem._injuredInterval || DeathSystem._saveInterval) {
-            clearInterval(DeathSystem._saveInterval);
+    public static removeIntervalStatus() {
+        if(DeathSystem._injuredInterval) {
             clearInterval(DeathSystem._injuredInterval);
+            DeathSystem._injuredInterval = undefined;
         }
+    }
 
-        DeathSystem.injuredTimer = DeathSystem._injuredTimer_seconds;
+    public static handleIntervalStart(time: number) {
+        DeathSystem.injuredTimer = time + 10;
 
         DeathSystem._saveInterval = setInterval(() => {
-            DeathSystem.injuredTimer <= 0 ? clearInterval(DeathSystem._saveInterval) : DeathSystem.injuredTimer--;
+            let characterData: CharacterData | undefined = getUserCharacterData();
+            if(!characterData) return;
+
+            characterData.data.injured_timer <= 0 && DeathSystem._saveInterval ? clearInterval(DeathSystem._saveInterval) : DeathSystem.injuredTimer--;
         }, 1000);
 
         DeathSystem._injuredInterval = setInterval(() => {
