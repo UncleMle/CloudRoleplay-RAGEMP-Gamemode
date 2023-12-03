@@ -17,7 +17,7 @@ namespace CloudRP.Utils
 
         public static void sendNoAuth(Player player)
         {
-            NAPI.Chat.SendChatMessageToPlayer(player, "!{red}[Not Authorized]!{white}] " + "you are not authorized to use this command.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "!{red}[Not Authorized]!{white} " + "you are not authorized to use this command.");
         }
 
         public static void sendMessageToAllStaff(string message)

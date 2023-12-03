@@ -522,6 +522,12 @@ namespace CloudRP.Admin
                     return;
                 }
 
+                if(player.Equals(banPlayer))
+                {
+                    AdminUtils.staffSay(player, "You cannot ban yourself.");
+                    return;
+                }
+
                 User banPlayerUserData = PlayersData.getPlayerAccountData(banPlayer);
                 DbCharacter characterData = PlayersData.getPlayerCharacterData(banPlayer);
 
@@ -752,9 +758,17 @@ namespace CloudRP.Admin
                 User findPlayerData = PlayersData.getPlayerAccountData(findPlayer);
                 DbCharacter findPlayerCharData = PlayersData.getPlayerCharacterData(findPlayer);
 
-                findPlayerData.adminLevel = adminRankSet;
+                if(findPlayerData.adminLevel >= (int)AdminRanks.Admin_SeniorAdmin && userData.adminLevel <= (int)AdminRanks.Admin_SeniorAdmin)
+                {
+                    AdminUtils.staffSay(player, "You cannot remove admin ranks from a rank that high.");
+                    return;
+                }
 
-                using(DefaultDbContext dbContext = new DefaultDbContext())
+
+                findPlayerData.adminLevel = adminRankSet;
+                findPlayerData.adminDuty = false;
+
+                using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
                     Account findAcc = dbContext.accounts.Find(findPlayerData.accountId);
 
@@ -765,6 +779,8 @@ namespace CloudRP.Admin
                     dbContext.accounts.Update(findAcc);
                     dbContext.SaveChanges();
                 }
+
+                PlayersData.setPlayerAccountData(findPlayer, findPlayerData);
 
                 string setAdminRank = AdminUtils.getColouredAdminRank(findPlayerData); 
 ;                AdminUtils.staffSay(player, $"You set {findPlayerCharData.character_name}'s admin level to {setAdminRank}");
