@@ -176,7 +176,7 @@ namespace CloudRP.Admin
 
                 DbCharacter findCharacter = PlayersData.getPlayerCharacterData(findPlayer);
 
-                DeathEvent.resetTimer(player, findCharacter);
+                DeathEvent.resetTimer(findPlayer, findCharacter);
 
                 AdminUtils.staffSay(player, "You revived " + findCharacter.character_name);
                 AdminUtils.staffSay(findPlayer, "You were revived by Admin " + userData.adminName);
@@ -749,8 +749,8 @@ namespace CloudRP.Admin
                     return;
                 }
 
-                User findPlayerData = PlayersData.getPlayerAccountData(player);
-                DbCharacter findPlayerCharData = PlayersData.getPlayerCharacterData(player);
+                User findPlayerData = PlayersData.getPlayerAccountData(findPlayer);
+                DbCharacter findPlayerCharData = PlayersData.getPlayerCharacterData(findPlayer);
 
                 findPlayerData.adminLevel = adminRankSet;
 

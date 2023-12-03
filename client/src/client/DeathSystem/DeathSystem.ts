@@ -23,7 +23,6 @@ class DeathSystem {
         mp.events.add("injured:startInterval", DeathSystem.handleIntervalStart);
         mp.events.add("injured:removeStatus", DeathSystem.removeIntervalStatus);
 
-
         setInterval(() => {
             mp.players.forEach(player => {
                 let targetCharData: CharacterData | undefined = getTargetCharacterData(player);
@@ -59,6 +58,14 @@ class DeathSystem {
 
     public static handleRender() {
         mp.game.gameplay.setFadeOutAfterDeath(false);
+
+        mp.players.forEach(player => {
+            let charData: CharacterData | undefined = getTargetCharacterData(player);
+
+            if(charData && charData.data.injured_timer > 0) {
+                player.freezePosition(true);
+            }
+        })
 
         let characterData: CharacterData | undefined = getUserCharacterData();
         if(!characterData) return;
