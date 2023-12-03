@@ -17,7 +17,7 @@ namespace CloudRP.DeathSystem
     {
         public static List<Hospital> hospitalList = new List<Hospital>();
         public static int _respawnTimeout_seconds = 3;
-        public const int _deathTimer_seconds = 10;
+        public const int _deathTimer_seconds = 600;
 
         [ServerEvent(Event.ResourceStart)]
         public void initEvents()

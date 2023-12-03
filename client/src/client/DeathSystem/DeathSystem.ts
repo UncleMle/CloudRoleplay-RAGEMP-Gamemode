@@ -61,14 +61,6 @@ class DeathSystem {
     public static handleRender() {
         mp.game.gameplay.setFadeOutAfterDeath(false);
 
-        mp.players.forEach(player => {
-            let charData: CharacterData | undefined = getTargetCharacterData(player);
-
-            if(charData && charData.data.injured_timer > 0) {
-                //player.freezePosition(true);
-            }
-        })
-
         let characterData: CharacterData | undefined = getUserCharacterData();
         if(!characterData) return;
 
