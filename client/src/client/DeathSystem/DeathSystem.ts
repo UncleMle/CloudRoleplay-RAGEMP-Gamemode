@@ -83,6 +83,7 @@ class DeathSystem {
         if(entity.type != "player" || !data) return;
 
         if(data.data.injured_timer > 0) {
+            DeathSystem.injuredTimer = data.data.injured_timer;
             DeathSystem.playDeathAnim(entity as PlayerMp);
         }
     }

@@ -118,6 +118,8 @@ namespace CloudRP.DeathSystem
                 dbContext.characters.Update(characterData);
                 dbContext.SaveChanges();
             }
+
+            PlayersData.setPlayerCharacterData(player, characterData, false);
         }
 
         public static void removeInjuredStatus(Player player, DbCharacter character, bool respawn = true)

@@ -78,8 +78,6 @@ namespace CloudRP.Vehicles
                 dbContext.SaveChanges();
             }
 
-            Console.WriteLine("" + vehicle.vehicle_windows.Length);
-
             veh.Locked = true;
             vehicle.vehicle_locked = true;
             veh.SetSharedData(_vehicleSharedDataIdentifier, vehicle);
@@ -505,8 +503,6 @@ namespace CloudRP.Vehicles
             DbVehicle vehicleData = getVehicleData(vehicle);
 
             if(vehicleData == null || vehicle.Locked) return;
-
-            Console.WriteLine(boneTargetId + "");
 
             vehicleData.vehicle_doors[boneTargetId] = !vehicleData.vehicle_doors[boneTargetId];
 

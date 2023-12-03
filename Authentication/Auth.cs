@@ -297,7 +297,6 @@ namespace CloudRP.Authentication
 
             if (characterData.injured_timer > 0)
             {
-                Console.WriteLine("" + characterData.injured_timer);
                 DeathEvent.updateAndSetInjuredState(player, characterData, characterData.injured_timer);
             }
 
