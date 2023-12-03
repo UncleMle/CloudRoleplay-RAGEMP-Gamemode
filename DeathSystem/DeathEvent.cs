@@ -17,7 +17,7 @@ namespace CloudRP.DeathSystem
     {
         public static List<Hospital> hospitalList = new List<Hospital>();
         public static int _respawnTimeout_seconds = 3;
-        public const int _deathTimer_seconds = 300;
+        public const int _deathTimer_seconds = 10;
 
         [ServerEvent(Event.ResourceStart)]
         public void initEvents()
@@ -105,7 +105,7 @@ namespace CloudRP.DeathSystem
 
             if (characterData == null) return;
 
-            if(characterData.injured_timer <= 0)
+            if(characterData.injured_timer - 10 <= 0)
             {
                 removeInjuredStatus(player, characterData);
                 return;
@@ -136,8 +136,6 @@ namespace CloudRP.DeathSystem
 
         public static void resetTimer(Player player, DbCharacter character)
         {
-            player.TriggerEvent("injured:removeStatus");
-
             character.injured_timer = 0;
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
@@ -147,6 +145,7 @@ namespace CloudRP.DeathSystem
             }
 
             PlayersData.setPlayerCharacterData(player, character);
+            player.TriggerEvent("injured:removeStatus");
         }
 
     }

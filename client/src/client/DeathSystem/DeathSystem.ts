@@ -39,10 +39,12 @@ class DeathSystem {
             clearInterval(DeathSystem._injuredInterval);
             DeathSystem._injuredInterval = undefined;
         }
+
+        DeathSystem.LocalPlayer.freezePosition(false);
     }
 
     public static handleIntervalStart(time: number) {
-        DeathSystem.injuredTimer = time + 10;
+        DeathSystem.injuredTimer = time;
 
         DeathSystem._saveInterval = setInterval(() => {
             let characterData: CharacterData | undefined = getUserCharacterData();
@@ -63,7 +65,7 @@ class DeathSystem {
             let charData: CharacterData | undefined = getTargetCharacterData(player);
 
             if(charData && charData.data.injured_timer > 0) {
-                player.freezePosition(true);
+                //player.freezePosition(true);
             }
         })
 
