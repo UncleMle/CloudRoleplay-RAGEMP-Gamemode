@@ -37,7 +37,6 @@ namespace CloudRP.DeathSystem
         [ServerEvent(Event.PlayerDeath)]
         public void OnPlayerDeath(Player player, Player killer, uint reason)
         {
-            NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.info + "You have been injured.");
 
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
@@ -50,6 +49,7 @@ namespace CloudRP.DeathSystem
                 }
                 else
                 {
+                    NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.info + "You have been injured.");
                     updateAndSetInjuredState(player, characterData);
                 }
             }

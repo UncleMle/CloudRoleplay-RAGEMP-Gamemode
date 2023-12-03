@@ -29,6 +29,12 @@ namespace CloudRP.AntiCheat
             }
         }
 
+        [ServerEvent(Event.PlayerConnected)]
+        public void OnPlayerConnected(Player player)
+        {
+            sleepClient(player);
+        }
+
         [ServerEvent(Event.PlayerWeaponSwitch)]
         public void OnPlayerWeaponSwitch(Player player, WeaponHash oldWeapon, WeaponHash newWeapon)
         {
@@ -96,6 +102,11 @@ namespace CloudRP.AntiCheat
             }
         }
 
+        public static void sleepClient(Player player, int duration = 2000)
+        {
+            player.TriggerEvent("client:acSleep", duration);
+        }
+
     }
 
     enum AcExceptions
@@ -104,6 +115,7 @@ namespace CloudRP.AntiCheat
         disallowedWeapon = 1,
         vehicleSpeedOrFly = 2,
         noReloadHack = 3,
-        ammoHack = 4
+        ammoHack = 4,
+        healthKey = 5
     }
 }

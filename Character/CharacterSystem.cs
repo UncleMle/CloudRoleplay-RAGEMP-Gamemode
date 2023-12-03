@@ -1,4 +1,5 @@
-﻿using CloudRP.Authentication;
+﻿using CloudRP.AntiCheat;
+using CloudRP.Authentication;
 using CloudRP.Database;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
@@ -189,7 +190,7 @@ namespace CloudRP.Character
                 uiHandling.sendPushNotifError(player, "You already have the maximum amount of characters", 5600);
                 return;
             }
-
+            AntiCheatSystem.sleepClient(player);
             player.TriggerEvent("client:setCharacterCreation");
 
         }

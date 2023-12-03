@@ -33,6 +33,7 @@ class AntiCheat {
 
 		mp.events.add("render", AntiCheat.handleRender);
 		mp.events.add("client:weaponSwap", AntiCheat.allowWeaponSwitch);
+		mp.events.add("client:acSleep", AntiCheat.sleep);
 		mp.events.add("playerWeaponShot", AntiCheat.handleWeaponShot);
 
 		mp.keys.bind(_control_ids.RELOADBIND, true, AntiCheat.handleReload);
@@ -40,8 +41,8 @@ class AntiCheat {
 		setInterval(() => {
 			let hp: number = AntiCheat.health;
 			setTimeout(() => {
-				if (hp < AntiCheat.health && AntiCheat.active) {
-					mp.events.callRemote("server:CheatDetection", "Healkey | Unexpected HP added")
+				if (AntiCheat.LocalPlayer.getArmour() + AntiCheat.LocalPlayer.getHealth() > hp && AntiCheat.active) {
+					AntiCheat.alertAdmins(AcExceptions.healthKey, "Healkey | Unexpected HP added");
 				}
 			}, 400);
 		}, 500);
@@ -67,7 +68,6 @@ class AntiCheat {
 
 	public static handleRender() {
 		AntiCheat.health = Number(mp.players.local.getHealth()) + Number(mp.players.local.getArmour());
-
 
 		if (AntiCheat.loop < AntiCheat.secs()) {
 			if (AntiCheat.active) {
@@ -201,7 +201,8 @@ enum AcExceptions {
 	disallowedWeapon = 1,
 	vehicleSpeedOrFly = 2,
 	noReloadHack = 3,
-	ammoHack = 4
+	ammoHack = 4,
+	healthKey = 5
 }
 
 

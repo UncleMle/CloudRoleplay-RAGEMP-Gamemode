@@ -18,6 +18,7 @@ using System.Text.RegularExpressions;
 using System.Net.Mail;
 using System.Net;
 using CloudRP.DeathSystem;
+using CloudRP.AntiCheat;
 
 
 namespace CloudRP.Authentication
@@ -287,6 +288,7 @@ namespace CloudRP.Authentication
 
         void welcomeAndSpawnPlayer(Player player, User user, DbCharacter characterData)
         {
+            AntiCheatSystem.sleepClient(player);
             player.TriggerEvent("client:loginEnd");
             player.TriggerEvent("client:moveSkyCamera", "up", 1);
 

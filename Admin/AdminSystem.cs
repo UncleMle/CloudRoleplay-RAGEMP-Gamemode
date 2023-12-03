@@ -134,14 +134,14 @@ namespace CloudRP.Admin
             {
                 Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
 
-                if(findPlayer.Equals(player))
-                {
-                    AdminUtils.staffSay(player, "You cannot bring yourself");
-                    return;
-                }
-
                 if (findPlayer != null)
                 {
+                    if (findPlayer.Equals(player))
+                    {
+                        AdminUtils.staffSay(player, "You cannot bring yourself");
+                        return;
+                    }
+
                     findPlayer.Position = player.Position;
 
                     AdminUtils.staffSay(player, "Teleported Player [" + findPlayer.Id + "] to you.");
