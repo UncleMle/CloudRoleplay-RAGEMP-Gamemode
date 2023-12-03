@@ -175,8 +175,15 @@ namespace CloudRP.Admin
 
                 DbCharacter findCharacter = PlayersData.getPlayerCharacterData(findPlayer);
 
-                DeathEvent.resetTimer(findPlayer, findCharacter);
+                if(findCharacter.injured_timer <= 0)
+                {
+                    AdminUtils.staffSay(player, "This player isn't injured!");
+                    return;
+                }
 
+                DeathEvent.resetTimer(findPlayer, findCharacter);
+                NAPI.Player.SpawnPlayer(findPlayer, findPlayer.Position);
+                
                 AdminUtils.staffSay(player, "You revived " + findCharacter.character_name);
                 AdminUtils.staffSay(findPlayer, "You were revived by Admin " + userData.adminName);
             }
