@@ -2,6 +2,7 @@ import { Flight, UserData } from '@types';
 import { _control_ids, SET_PARTICLE_FX_, _SET_FORCE_PED_FOOTSTEPS_TRACKS } from '../Constants/Constants';
 import getUserData from '../PlayerMethods/getUserData';
 import { AdminRanks } from '../enums';
+import getTargetData from '@/PlayerMethods/getTargetData';
 
 class AdminFly {
 	public static LocalPlayer: PlayerMp;
@@ -57,6 +58,14 @@ class AdminFly {
 		AdminFly.coords = AdminFly.gameplayCam.getCoord();
 		AdminFly.gameControls = mp.game.controls;
 		let localUserData: UserData | undefined = getUserData();
+
+		mp.players.forEach(player => {
+			let userData: UserData | undefined = getTargetData(player);
+
+			if(userData && userData.isFlying) {
+				player.setAlpha(0);
+			}
+		})
 
 		if (!localUserData) return;
 

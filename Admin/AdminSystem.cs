@@ -650,7 +650,7 @@ namespace CloudRP.Admin
                     return;
                 }
 
-                DbCharacter findPlayerCharData = PlayersData.getPlayerCharacterData(player);
+                DbCharacter findPlayerCharData = PlayersData.getPlayerCharacterData(findPlayer);
 
                 uiHandling.pushRouterToClient(player, Browsers.StatsPage);
 

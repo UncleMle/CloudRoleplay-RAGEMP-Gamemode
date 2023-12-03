@@ -84,7 +84,7 @@
                                             <td class="max-w-[5vw] overflow-hidden text-ellipsis">{{ item.character_name.replace("_", " ") }}</td>
                                             <td>{{ item.character_health }}</td>
                                             <td>{{ formatDate(item.last_login) }}</td>
-                                            <td>6969969</td>
+                                            <td>{{ item.player_exp.toLocaleString("en-US") }}</td>
                                         </tr>
                                     </table>
                                     <table class="w-full border-separate [border-spacing:0.75rem] border-b">
@@ -96,7 +96,7 @@
                                         </tr>
                                         <tr class="text-center">
                                             <td class="text-green-500">${{ item.money_amount.toLocaleString("en-US") }}</td>
-                                            <td>100 minutes</td>
+                                            <td>{{ (item.play_time_seconds / 60).toFixed(0) > 60 ? ((item.play_time_seconds / 60).toFixed(0) / 60).toFixed(2) + " hours" : (item.play_time_seconds / 60).toFixed(0) + " minutes" }}</td>
                                             <td class="max-w-[4vw] overflow-hidden text-ellipsis">none</td>
                                             <td>{{ formatDate(item.CreatedDate) }}</td>
                                         </tr>
