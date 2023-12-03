@@ -105,6 +105,12 @@ namespace CloudRP.Admin
             {
                 Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
 
+                if(findPlayer == null)
+                {
+                    CommandUtils.notFound(player);
+                    return;
+                }
+
                 if (findPlayer.Equals(player))
                 {
                     AdminUtils.staffSay(player, "You cannot tp to yourself.");
@@ -116,14 +122,7 @@ namespace CloudRP.Admin
                     player.Position = findPlayer.Position;
 
                     AdminUtils.staffSay(player, "Teleported to Player [" + findPlayer.Id + "]");
-                } else
-                {
-                    CommandUtils.notFound(player);
-                    return;
                 }
-
-
-                return;
             }
         }
 

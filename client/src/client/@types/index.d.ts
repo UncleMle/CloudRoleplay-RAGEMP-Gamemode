@@ -158,3 +158,14 @@ export interface CreationCam {
 	dist: number,
 	height: number
 }
+
+export interface Minimap {
+	width: number;
+	height: number;
+	scaleX: number;
+	scaleY: number;
+	leftX: number;
+	bottomY: number;
+	rightX: number | null;
+	topY: number | null;
+}

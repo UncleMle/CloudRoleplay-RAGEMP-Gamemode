@@ -10,6 +10,9 @@ export const _SET_FORCE_PED_FOOTSTEPS_TRACKS = "0xAEEDAD1420C65CC0";
 export const SET_PARTICLE_FX_ = "0xBA3D194057C79A7B";
 export const TASK_WARP_PED_INTO_VEHICLE = "0x9A7D091411C5F684";
 export const _SHARED_VEHICLE_DATA = "VehicleData";
+export const IS_RADAR_HIDDEN: string = "0x157F93B036700462";
+export const IS_RADAR_ENABLED: string = "0xAF754F20EB5CD51A";
+export const SET_TEXT_OUTLINE: string = "0x2513DFB0FB8400FE";
 
 export const _control_ids = {
 	F5: 327,

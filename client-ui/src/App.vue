@@ -1,19 +1,17 @@
 <template>
     <div id="app">
-        
+
         <router-view class="absolute" ref="routers">
         </router-view>
 
 
         <ChatBox v-if="guiState" />
-        <PlayerHud v-if="guiState" />
         <PushNotification class="bg-red-200" ref="notification" />
     </div>
 </template>
 
 <script>
     import ChatBox from "./components/ui/ChatBox.vue";
-    import PlayerHud from "./components/hud/PlayerHud.vue"
     import PushNotification from "./components/ui/PushNotification.vue";
     import { mapGetters } from "vuex";
 
@@ -21,7 +19,6 @@ export default {
         name: 'App',
         components: {
             ChatBox,
-            PlayerHud,
             PushNotification
         },
         computed: {

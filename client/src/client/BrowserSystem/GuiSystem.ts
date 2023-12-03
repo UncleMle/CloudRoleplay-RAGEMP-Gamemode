@@ -1,10 +1,8 @@
-import { UserData, CharacterData, Gui, StreetData } from '../@types';
+import { IS_RADAR_ENABLED, IS_RADAR_HIDDEN } from '@/Constants/Constants';
+import { UserData, CharacterData, StreetData, Minimap } from '../@types';
 import getTimeUnix from '../PlayerMethods/getTimeUnix';
 import getUserCharacterData from '../PlayerMethods/getUserCharacterData';
 import getUserData from '../PlayerMethods/getUserData';
-import BrowserSystem from './BrowserSystem';
-import { MutationKeys } from 'enums';
-
 
 class GuiSystem {
 	public static LocalPlayer: PlayerMp;
@@ -23,19 +21,17 @@ class GuiSystem {
 
 		const streetData = GuiSystem.getStreetName();
 
-		const playerGuiObj: Gui = {
-			playerId: mp.players.local.remoteId,
-			direction: GuiSystem.getCompassDirection(),
-			isFrozen: PlayerData.isFrozen,
-			unix: getTimeUnix(),
-			zoneName: streetData.zoneName,
-			zoneNameTwo: streetData.zoneTwo
-		}
+		let minimap: Minimap = GuiSystem.getMinimapAnchor();
 
-		BrowserSystem._browserInstance.execute(`appSys.commit("playerMutationSetter", {
-			_mutationKey: "${MutationKeys.PlayerGui}",
-			data: ${JSON.stringify(playerGuiObj)}
-		})`);
+		if(mp.game.invoke(IS_RADAR_ENABLED) && !mp.game.invoke(IS_RADAR_HIDDEN) && minimap.rightX) {
+			if(PlayerData.isFrozen) {
+				GuiSystem.drawText(`~r~[Frozen]~w~`, [minimap.rightX + 0.01, minimap.bottomY - 0.150], 4, [255, 255, 255, 255], 0.55);
+			}
+
+			GuiSystem.drawText(GuiSystem.getCompassDirection(), [minimap.rightX + 0.01, minimap.bottomY - 0.125], 4, [255, 255, 255, 255], 1);
+			GuiSystem.drawText(`${mp.players.local.remoteId} | ${getTimeUnix()}`, [minimap.rightX + 0.01, minimap.bottomY - 0.075], 4, [255, 255, 255, 255], 0.60);
+			GuiSystem.drawText(`${streetData.zoneName} ${streetData.zoneTwo ? "/ " + streetData.zoneTwo : "" }`, [minimap.rightX + 0.01, minimap.bottomY - 0.045], 4, [255, 255, 255, 255], 0.60);
+		}
 	}
 
 	public static getStreetName(): StreetData {
@@ -44,7 +40,6 @@ class GuiSystem {
 		let getStreet: GetStreetNameAtCoordResult = mp.game.pathfind.getStreetNameAtCoord(position.x, position.y, position.z);
 		let zoneName: string = mp.game.ui.getLabelText(mp.game.zone.getNameOfZone(position.x, position.y, position.z)).replace("'", "");
 		let zoneTwo: string = mp.game.ui.getStreetNameFromHashKey(getStreet.streetName) ? mp.game.ui.getStreetNameFromHashKey(getStreet.streetName) : "";
-
 
 		return { getStreet, zoneName, zoneTwo };
 	}
@@ -70,6 +65,48 @@ class GuiSystem {
 		}
 
 		return direction;
+	}
+
+	public static drawText(text: string, drawXY: number[], font: number, color: number[], scale: number, alignRight = false) {
+		mp.game.ui.setTextEntry("STRING");
+		mp.game.ui.addTextComponentSubstringPlayerName(text);
+		mp.game.ui.setTextFont(font);
+		mp.game.ui.setTextScale(scale, scale);
+		mp.game.ui.setTextColour(color[0], color[1], color[2], color[3]);
+
+		if (alignRight) {
+			mp.game.ui.setTextRightJustify(true);
+			mp.game.ui.setTextWrap(0, drawXY[0]);
+		}
+
+		mp.game.ui.drawText(drawXY[0], drawXY[1], 0);
+	}
+
+
+	public static getMinimapAnchor(): Minimap {
+		let sfX: number = 1.0 / 20.0;
+		let sfY: number = 1.0 / 20.0;
+		let safeZone: number = mp.game.graphics.getSafeZoneSize();
+		let aspectRatio: number = mp.game.graphics.getScreenAspectRatio(false);
+		let resolution: GetScreenResolutionResult = mp.game.graphics.getScreenActiveResolution(0, 0);
+		let scaleX: number = 1.0 / resolution.x;
+		let scaleY: number = 1.0 / resolution.y;
+
+		let minimap: Minimap = {
+			width: scaleX * (resolution.x / (4 * aspectRatio)),
+			height: scaleY * (resolution.y / 5.674),
+			scaleX: scaleX,
+			scaleY: scaleY,
+			leftX: scaleX * (resolution.x * (sfX * (Math.abs(safeZone - 1.0) * 10))),
+			bottomY: 1.0 - scaleY * (resolution.y * (sfY * (Math.abs(safeZone - 1.0) * 10))),
+			rightX: null,
+			topY: null
+		};
+
+		minimap.rightX = minimap.leftX + minimap.width;
+		minimap.topY = minimap.bottomY - minimap.height;
+
+		return minimap;
 	}
 }
 
