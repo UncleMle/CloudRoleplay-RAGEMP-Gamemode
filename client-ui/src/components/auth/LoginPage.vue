@@ -96,7 +96,7 @@
                                         </tr>
                                         <tr class="text-center">
                                             <td class="text-green-500">${{ item.money_amount.toLocaleString("en-US") }}</td>
-                                            <td>{{ (item.play_time_seconds / 60).toFixed(0) > 60 ? ((item.play_time_seconds / 60).toFixed(0) / 60).toFixed(2) + " hours" : (item.play_time_seconds / 60).toFixed(0) + " minutes" }}</td>
+                                            <td>{{ (item.play_time_seconds / 60).toFixed(0) > 60 ? ((item.play_time_seconds / 60).toFixed(0) / 60).toFixed(2) + " hour(s)" : (item.play_time_seconds / 60).toFixed(0) + " minute(s)" }}</td>
                                             <td class="max-w-[4vw] overflow-hidden text-ellipsis">none</td>
                                             <td>{{ formatDate(item.CreatedDate) }}</td>
                                         </tr>

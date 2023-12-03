@@ -464,7 +464,7 @@ namespace CloudRP.Vehicles
 
             saveVehicleData(vehicle, vehicleData);
 
-            string lockUnlockText = $" You {(vehicleData.vehicle_locked ? "locked" : "unlocked")} vehicle with id {vehicleData.vehicle_id}";
+            string lockUnlockText = $" You {(vehicleData.vehicle_locked ? "locked" : "unlocked")} vehicle.";
 
             uiHandling.sendNotification(player, lockUnlockText);
         }
