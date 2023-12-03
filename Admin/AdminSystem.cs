@@ -3,6 +3,7 @@ using CloudRP.Authentication;
 using CloudRP.Character;
 using CloudRP.Database;
 using CloudRP.DeathSystem;
+using CloudRP.DiscordSystem;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
 using CloudRP.Vehicles;
@@ -20,6 +21,9 @@ namespace CloudRP.Admin
 {
     internal class AdminSystem : Script
     {
+        public static List<Report> activeReports = new List<Report>();
+        public static int _maxReports = 2;
+
         [ServerEvent(Event.PlayerConnected)]
         public void playerConnected(Player player)
         {
@@ -30,6 +34,37 @@ namespace CloudRP.Admin
                 AdminUtils.setPlayerToBanScreen(player, checkIsBanned);
             }
 
+        }
+
+        [Command("report", "~r~/report [title] [description]", GreedyArg = true)]
+        public void onReport(Player player, string title, string desc)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+
+            if (userData == null || characterData == null) return;
+
+            if(activeReports.Where(rep => rep.playerReporting == player).ToList().Count > _maxReports)
+            {
+                CommandUtils.errorSay(player, "You already have two reports active. Use /closereport [id] to close.");
+                return;
+            }
+
+            Report report = new Report
+            {
+                characterData = characterData,
+                userData = userData,
+                description = desc,
+                title = title,
+            };
+
+            activeReports.Add(report);
+            
+            int id = activeReports.IndexOf(report);
+            
+            AdminUtils.sendMessageToAllStaff($"{characterData.character_name} [{player.Id}] has created a new report with ID {id}");
+            CommandUtils.successSay(player, $"Created report with id {id}. Staff have been alerted.");
+            DiscordSystems.addReportEmbed(report, id);
         }
 
         [Command("aduty", "~r~/aduty")]

@@ -22,8 +22,10 @@ namespace CloudRP.DiscordSystem
         public static Timer updatePlayerCountTimer;
         public static string tokenIdentifier = "discordToken";
         public static string staffChannelIdentifer = "staffChannel";
+        public static string reportAlertChannelIdentifier = "alertChannel";
         public static string discordPrefix = "!";
         public static ulong staffChannel;
+        public static ulong reportAlertChannel;
         public static int _updatePlayerCount = 5000;
         public static int _maxPlayers = 200;
 
@@ -35,6 +37,7 @@ namespace CloudRP.DiscordSystem
             try
             {
                 staffChannel = ulong.Parse(Environment.GetEnvironmentVariable(staffChannelIdentifer));
+                staffChannel = ulong.Parse(Environment.GetEnvironmentVariable(reportAlertChannelIdentifier));
             }
             catch
             {
@@ -251,7 +254,7 @@ namespace CloudRP.DiscordSystem
 
         public static async Task errorEmbed(ulong userId, string desc)
         {
-            EmbedBuilder builder = new EmbedBuilder()
+            EmbedBuilder builder = new EmbedBuilder
             {
                 Color = Discord.Color.Red,
                 Description = desc,
@@ -262,9 +265,42 @@ namespace CloudRP.DiscordSystem
             await DiscordIntegration.SendEmbed(staffChannel, builder);
         }
 
+        public static async Task addReportEmbed(Report report, int reportId)
+        {
+            EmbedBuilder builder = new EmbedBuilder
+            {
+                Color = Discord.Color.Red,
+                Title = report.title + "  (#" + reportId+")",
+                Description = report.description
+            };
+
+            builder.AddField(playerData =>
+            {
+                playerData.Name = "Character Name";
+                playerData.Value = report.characterData.character_name;
+                playerData.IsInline = false;
+            });            
+            
+            builder.AddField(playerData =>
+            {
+                playerData.Name = "Username";
+                playerData.Value = report.userData.username;
+                playerData.IsInline = false;
+            });
+            
+            builder.AddField(playerData =>
+            {
+                playerData.Name = "Player ID";
+                playerData.Value = report.playerReporting.Id;
+                playerData.IsInline = false;
+            });
+
+            DiscordIntegration.SendEmbed(staffChannel, builder);
+        }
+
         public static async Task successEmbed(ulong userId, string success)
         {
-            EmbedBuilder builder = new EmbedBuilder()
+            EmbedBuilder builder = new EmbedBuilder
             {
                 Color = Discord.Color.Green,
                 Description = success,

@@ -204,7 +204,7 @@ namespace CloudRP.Utils
         public bool rememberMe { get; set; }
     }
 
-    class User
+    public class User
     {
         public int accountId { get; set; }
         public int playerId { get; set; }

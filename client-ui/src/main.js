@@ -2,8 +2,6 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 
-import './assets/styles.css';
-
 // eslint-disable-next-line
 import store from './stores/store'
 import { mapMutations, mapActions } from 'vuex';

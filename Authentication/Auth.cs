@@ -91,7 +91,7 @@ namespace CloudRP.Authentication
                 } else {
                     uiHandling.sendPushNotifError(player, "Incorrect account credentials", 4000, true);
                     return;
-                } 
+                }
 
             }
         }
@@ -100,7 +100,7 @@ namespace CloudRP.Authentication
         public void handleRegister(Player player, string data)
         {
             Register registeringData = JsonConvert.DeserializeObject<Register>(data);
-            
+
             User userData = PlayersData.getPlayerAccountData(player);
             if (userData != null) return;
 
@@ -219,7 +219,7 @@ namespace CloudRP.Authentication
         public void onEnterCharacterName(Player player, string name)
         {
             User userData = PlayersData.getPlayerAccountData(player);
-            
+
             if(userData != null && AdminUtils.checkPlayerIsBanned(player) == null)
             {
                 using (DefaultDbContext dbContext = new DefaultDbContext())
@@ -283,7 +283,7 @@ namespace CloudRP.Authentication
                 maxCharacters = accountData.max_characters,
             };
 
-            return user;    
+            return user;
         }
 
         void welcomeAndSpawnPlayer(Player player, User user, DbCharacter characterData)

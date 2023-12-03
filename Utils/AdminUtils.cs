@@ -202,4 +202,16 @@ namespace CloudRP.Utils
             return false;
         }
     }
+
+    public class Report
+    {
+        public User userData { get; set; }
+        public DbCharacter characterData { get; set; }
+        public Player playerReporting { get; set; }
+        public string title { get; set; }
+        public string description { get; set; }
+        public User[] adminsHandling { get; set; }
+        public long timeCreated { get; set; } = CommandUtils.generateUnix();
+        public bool closed { get; set; }
+    }
 }

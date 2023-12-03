@@ -34,6 +34,10 @@ export default {
 </script>
 
 <style>
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
     .pmrp {
         background: rgba(0, 0, 0, 0.6)
     }

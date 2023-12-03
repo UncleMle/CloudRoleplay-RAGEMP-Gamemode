@@ -75,6 +75,11 @@ namespace CloudRP.Utils
         public static void errorSay(Player player, string message)
         {
             NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.error + message);
+        } 
+        
+        public static void successSay(Player player, string message)
+        {
+            NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.Success + message);
         }
 
         public static List<Player> getPlayersInRadius(Player player, double radius)
