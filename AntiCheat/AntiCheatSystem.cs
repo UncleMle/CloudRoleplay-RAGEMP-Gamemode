@@ -77,22 +77,22 @@ namespace CloudRP.AntiCheat
             }
 
             //  && userData.adminDuty || userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin
-            if (userData != null) return;
+            //if (userData != null) return;
 
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
-            string suffix = characterData != null ? characterData.character_name : "";
+            string suffix = (characterData != null ? "from " + characterData.character_name : $" Player") + $" [{player.Id}]" ;
 
-            ChatUtils.acSysPrint(message + " from " + suffix);
+            ChatUtils.acSysPrint(message + suffix);
 
             foreach (KeyValuePair<Player, User> entry in onlineStaff)
             {
-                NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.antiCheat + message + " from " + suffix);
+                NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.antiCheat + message + suffix);
             }
 
             if (exception != (int)AcExceptions.tpHack)
             {
-                await DiscordIntegration.SendMessage(DiscordSystems.staffChannel, message + " from " + suffix);
+                await DiscordIntegration.SendMessage(DiscordSystems.staffChannel, message + suffix);
             }
         }
 

@@ -1,0 +1,106 @@
+import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
+import { CharacterData } from "@/@types";
+import { _sharedCharacterDataIdentifier } from "@/Constants/Constants";
+
+class DeathSystem {
+    public static LocalPlayer: PlayerMp;
+    public static _injuredIntervalUpdate_seconds: number = 10;
+    public static _injuredTimer_seconds: number = 300;
+    public static _injuredInterval: ReturnType<typeof setInterval>;
+    public static _saveInterval: ReturnType<typeof setInterval>;
+    public static injuredTimer: number;
+    public static saveInjuredEvent: string = "server:saveInjuredTime";
+    public static injuredAnim: string = "combat@damage@writheidle_a";
+    public static _lib_injuredAnim: string = "writhe_idle_a";
+
+    constructor() {
+        DeathSystem.LocalPlayer = mp.players.local;
+
+        mp.events.add("render", DeathSystem.handleRender);
+        mp.events.add("entityStreamIn", DeathSystem.handleStreamIn);
+        mp.events.addDataHandler(_sharedCharacterDataIdentifier, DeathSystem.handleDataHandler);
+        mp.events.add("injured:startInterval", DeathSystem.handleIntervalStart);
+        mp.events.add("injured:removeStatus", DeathSystem.handleIntervalStart);
+    }
+
+    public static handleIntervalStart() {
+        if(DeathSystem._injuredInterval || DeathSystem._saveInterval) {
+            clearInterval(DeathSystem._saveInterval);
+            clearInterval(DeathSystem._injuredInterval);
+        }
+
+        DeathSystem.injuredTimer = DeathSystem._injuredTimer_seconds;
+
+        DeathSystem._saveInterval = setInterval(() => {
+            DeathSystem.injuredTimer <= 0 ? clearInterval(DeathSystem._saveInterval) : DeathSystem.injuredTimer--;
+        }, 1000);
+
+        DeathSystem._injuredInterval = setInterval(() => {
+            mp.events.callRemote(DeathSystem.saveInjuredEvent);
+        }, DeathSystem._injuredIntervalUpdate_seconds * 1000);
+    }
+
+    public static handleRender() {
+        mp.game.gameplay.setFadeOutAfterDeath(false);
+
+        let characterData: CharacterData | undefined = getUserCharacterData();
+        if(!characterData) return;
+
+        if(characterData.data.injured_timer > 0) {
+            DeathSystem.disableControls();
+            DeathSystem.renderInjuredText();
+        }
+    }
+
+    public static handleStreamIn(entity: EntityMp) {
+        let characterData: CharacterData | undefined = getUserCharacterData();
+        if(entity.type != "player" || !characterData) return;
+
+        if(characterData.data.injured_timer > 0) {
+            DeathSystem.playDeathAnim(entity as PlayerMp);
+        }
+    }
+
+    public static handleDataHandler(entity: EntityMp, data: CharacterData) {
+        if(entity.type != "player" || !data) return;
+
+        if(data.data.injured_timer > 0) {
+            DeathSystem.playDeathAnim(entity as PlayerMp);
+        }
+    }
+
+    public static playDeathAnim(player: PlayerMp) {
+        mp.game.streaming.requestAnimDict(DeathSystem.injuredAnim);
+        player.taskPlayAnim(DeathSystem.injuredAnim, DeathSystem._lib_injuredAnim, 8.0, 1.0, -1, 1, 1.0, false, false, false);
+    }
+
+    public static disableControls() {
+        mp.game.controls.disableControlAction(0, 22, true) //Space
+        mp.game.controls.disableControlAction(0, 23, true) //Veh Enter
+        mp.game.controls.disableControlAction(0, 25, true) //Right Mouse
+        mp.game.controls.disableControlAction(0, 44, true) //Q
+        mp.game.controls.disableControlAction(2, 75, true) //Exit Vehicle
+        mp.game.controls.disableControlAction(2, 140, true) //R
+        mp.game.controls.disableControlAction(2, 141, true) //Left Mouse
+        mp.game.controls.disableControlAction(0, 30, true) //Move LR
+        mp.game.controls.disableControlAction(0, 31, true) //Move UD
+    }
+
+    public static renderInjuredText() {
+        mp.game.graphics.drawText(`~r~INJURED`, [0.5, 0.81], {
+            font: 4,
+            color: [255, 255, 255, 255],
+            scale: [0.6, 0.6],
+            outline: true
+        });
+        mp.game.graphics.drawText(`You will bleed out in ~HUD_COLOUR_ORANGE~${DeathSystem.injuredTimer}~w~ seconds.`, [0.5, 0.85], {
+            font: 4,
+            color: [255, 255, 255, 255],
+            scale: [0.42, 0.42],
+            outline: true
+        });
+    }
+
+}
+
+export default DeathSystem;

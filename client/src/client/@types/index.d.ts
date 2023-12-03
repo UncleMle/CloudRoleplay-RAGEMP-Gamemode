@@ -34,7 +34,27 @@ export interface CharacterData {
 	characterId: number,
 	characterName: string,
 	characterModel: CharacterModel,
+	data: DbCharacter,
 	voiceChatState: boolean
+}
+
+export interface DbCharacter {
+    character_id: number;
+    owner_id: number;
+    character_name: string;
+    position_x: number;
+    position_y: number;
+    position_z: number;
+    last_login: Date;
+    character_health: number;
+    character_isbanned: number;
+    money_amount: number;
+    play_time_seconds: bigint;
+    player_dimension: number;
+    player_exp: bigint;
+    injured_timer: number;
+    voiceChatState?: boolean;
+    characterModel?: CharacterModel;
 }
 
 export interface CharacterModel {

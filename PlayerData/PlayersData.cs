@@ -36,7 +36,7 @@ namespace CloudRP.PlayerData
             player.SetSharedData(_sharedAccountDataIdentifier, data);
         }
 
-        public static void setPlayerCharacterData(Player player, DbCharacter character, bool syncModel = true)
+        public static void setPlayerCharacterData(Player player, DbCharacter character, bool resyncModel = true)
         {
             player.SetData(_sharedCharacterDataIdentifier, character);
 
@@ -45,8 +45,9 @@ namespace CloudRP.PlayerData
             {
                 characterId = character.character_id,
                 characterName = character.character_name,
-                characterModel = syncModel ? character.characterModel : null,
-                voiceChatState = character.voiceChatState
+                characterModel = resyncModel ? character.characterModel : null,
+                voiceChatState = character.voiceChatState,
+                data = character
             };
 
             player.SetData(_characterModelData, character.characterModel);

@@ -240,6 +240,7 @@ namespace CloudRP.Utils
         public string characterName { get; set; }
         public CharacterModel characterModel { get; set; }
         public bool voiceChatState { get; set; }
+        public DbCharacter data {  get; set; }
     }
 
     class Register

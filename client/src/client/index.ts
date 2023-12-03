@@ -19,6 +19,7 @@ import CharacterSystem from "./Character/CharacterSystem";
 import AntiCheat from "./AntiCheat/AntiCheatSystem";
 import AdminEsp from "./AdminSystem/AdminEsp";
 import VoiceSystem from "./VoiceChat/VoiceSystem";
+import DeathSystem from "./DeathSystem/DeathSystem";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -42,3 +43,4 @@ new CharacterSystem();
 new AntiCheat();
 new AdminEsp();
 new VoiceSystem();
+new DeathSystem();

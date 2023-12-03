@@ -1,5 +1,9 @@
-﻿using CloudRP.Utils;
+﻿using CloudRP.Character;
+using CloudRP.Database;
+using CloudRP.PlayerData;
+using CloudRP.Utils;
 using GTANetworkAPI;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
@@ -11,7 +15,8 @@ namespace CloudRP.DeathSystem
     class DeathEvent : Script
     {
         public static List<Hospital> hospitalList = new List<Hospital>();
-        public static int _respawnTimeout_seconds = 8;
+        public static int _respawnTimeout_seconds = 3;
+        public const int _deathTimer_seconds = 300;
 
         [ServerEvent(Event.ResourceStart)]
         public void initEvents()
@@ -32,11 +37,16 @@ namespace CloudRP.DeathSystem
         [ServerEvent(Event.PlayerDeath)]
         public void OnPlayerDeath(Player player, Player killer, uint reason)
         {
-            NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.info + "You have been injured and will be respawned in 8 seconds.");
+            NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.info + "You have been injured.");
 
             NAPI.Task.Run(() =>
             {
-                respawnAtHospital(player);
+                DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+
+                if (characterData != null)
+                {
+                    updateAndSetInjuredState(player, characterData);
+                }
             }, _respawnTimeout_seconds * 1000);
         }
 
@@ -60,6 +70,67 @@ namespace CloudRP.DeathSystem
             NAPI.Player.SpawnPlayer(player, closestHospital.position);
 
             NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.hospital + "You recieved medial treatment at " + closestHospital.name);
+        }
+
+        public static void updateAndSetInjuredState(Player player, DbCharacter characterData, int time = _deathTimer_seconds)
+        {
+            NAPI.Player.SpawnPlayer(player, player.Position);
+
+            characterData.injured_timer = time;
+            characterData.character_health = 100;
+
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                dbContext.characters.Update(characterData);
+                dbContext.SaveChanges();
+            }
+
+            PlayersData.setPlayerCharacterData(player, characterData, false);
+
+            player.TriggerEvent("injured:startInterval");
+        }
+
+        [RemoteEvent("server:saveInjuredTime")]
+        public static void saveInjuredTime(Player player)
+        {
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+
+            if (characterData == null) return;
+
+            if(characterData.injured_timer <= 0)
+            {
+                removeInjuredStatus(player, characterData);
+                return;
+            }
+
+            characterData.injured_timer -= 10;
+
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                dbContext.characters.Update(characterData);
+                dbContext.SaveChanges();
+            }
+        }
+
+        public static void removeInjuredStatus(Player player, DbCharacter character, bool respawn = true)
+        {
+            if (character == null) return;
+
+            character.injured_timer = 0;
+
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                dbContext.Update(character);
+                dbContext.SaveChanges();
+            }
+
+            player.TriggerEvent("injured:removeStatus");
+
+            if(respawn)
+            {
+                respawnAtHospital(player);
+            }
+
         }
 
     }

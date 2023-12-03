@@ -17,6 +17,7 @@ using CloudRP.Character;
 using System.Text.RegularExpressions;
 using System.Net.Mail;
 using System.Net;
+using CloudRP.DeathSystem;
 
 
 namespace CloudRP.Authentication
@@ -291,6 +292,12 @@ namespace CloudRP.Authentication
 
             player.Position = new Vector3(characterData.position_x, characterData.position_y, characterData.position_z);
             player.Health = characterData.character_health;
+
+            if (characterData.injured_timer > 0)
+            {
+                Console.WriteLine("" + characterData.injured_timer);
+                DeathEvent.updateAndSetInjuredState(player, characterData, characterData.injured_timer);
+            }
 
             uiHandling.pushRouterToClient(player, Browsers.None);
             player.Dimension = characterData.player_dimension;

@@ -16,7 +16,7 @@ namespace CloudRP.Authentication
         public int account_id { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string account_uuid { get; set; }
+        public string account_uuid { get; set; } = Guid.NewGuid().ToString();
 
         [Required]
         public string username { get; set; }

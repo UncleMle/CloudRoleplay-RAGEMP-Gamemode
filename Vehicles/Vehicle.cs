@@ -13,6 +13,8 @@ namespace CloudRP.Vehicles
         [Key]
         public int vehicle_id { get; set; }
 
+        public string vehicle_uuid { get; set; } = Guid.NewGuid().ToString();
+
         [Required]
         public int owner_id { get; set; }
 
