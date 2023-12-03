@@ -52,8 +52,10 @@ namespace CloudRP.AntiCheat
         {
             Dictionary<Player, User> onlineStaff = AdminUtils.gatherStaff();
 
-
             User userData = PlayersData.getPlayerAccountData(player);
+
+            if (userData != null && (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin || userData.adminDuty)) return;
+            
             if (userData == null && exception != (int)AcExceptions.tpHack)
             {
                 foreach (KeyValuePair<Player, User> entry in onlineStaff)
@@ -81,9 +83,6 @@ namespace CloudRP.AntiCheat
 
                 return;
             }
-
-            //  && userData.adminDuty || userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin
-            //if (userData != null) return;
 
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 

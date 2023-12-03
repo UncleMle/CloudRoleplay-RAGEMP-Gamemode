@@ -1,4 +1,5 @@
-﻿using CloudRP.Authentication;
+﻿using CloudRP.AntiCheat;
+using CloudRP.Authentication;
 using CloudRP.Character;
 using CloudRP.Database;
 using CloudRP.PlayerData;
@@ -142,6 +143,7 @@ namespace CloudRP.Admin
                         return;
                     }
 
+                    AntiCheatSystem.sleepClient(findPlayer);
                     findPlayer.Position = player.Position;
 
                     AdminUtils.staffSay(player, "Teleported Player [" + findPlayer.Id + "] to you.");
