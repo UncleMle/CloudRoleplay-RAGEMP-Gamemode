@@ -218,7 +218,9 @@ namespace CloudRP.Character
             DbCharacter character = PlayersData.getPlayerCharacterData(player);
             if( character == null ) return; 
 
-            PlayersData.setPlayerCharacterData(player, character, characterModelData);
+            character.characterModel = characterModelData;
+
+            PlayersData.setPlayerCharacterData(player, character);
         }
     }
 }

@@ -58,8 +58,8 @@ class VoiceSystem {
 
 	public static handleRender() {
 		if(!mp.voiceChat.muted) {
-			mp.game.graphics.drawText("~g~[TALKING]", [0.5, 0.5], {
-				font: 7,
+			mp.game.graphics.drawText("~g~[TALKING]", [0.5, 0.7], {
+				font: 4,
 				color: [255, 255, 255, 185],
 				scale: [1.2, 1.2],
 				outline: true

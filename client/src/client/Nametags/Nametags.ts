@@ -45,7 +45,7 @@ class NameTags {
 
 				y -= scale * (0.005 * (NameTags.ScreenRes.y / 1080)) - parseInt('0.010');
 
-				let DefaultTagContent = `[${targetUserData.playerId}] ${targetCharacterData.characterName.replace("_", " ")}`;
+				let DefaultTagContent = (targetCharacterData.voiceChatState ? "~g~" : "") + `[${targetUserData.playerId}] ${targetCharacterData.characterName.replace("_", " ")}`;
 
 				if (targetUserData.adminDuty) {
 					DefaultTagContent = `${_TEXT_R_RED}[ADMIN]${_TEXT_R_WHITE} ${targetUserData.adminName}`;

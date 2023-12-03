@@ -33,7 +33,8 @@ export interface StreetData {
 export interface CharacterData {
 	characterId: number,
 	characterName: string,
-	characterModel: CharacterModel
+	characterModel: CharacterModel,
+	voiceChatState: boolean
 }
 
 export interface CharacterModel {
