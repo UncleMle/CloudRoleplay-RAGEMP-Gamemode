@@ -1,4 +1,5 @@
-﻿using CloudRP.Character;
+﻿using CloudRP.AntiCheat;
+using CloudRP.Character;
 using CloudRP.Database;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
@@ -69,6 +70,8 @@ namespace CloudRP.DeathSystem
             List<float> distList = new List<float>(pDist.Keys);
 
             distList.Sort();
+
+            AntiCheatSystem.sleepClient(player);
 
             Hospital closestHospital = pDist.GetValueOrDefault(distList[0]);
 
