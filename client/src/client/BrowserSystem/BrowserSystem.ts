@@ -44,7 +44,6 @@ class BrowserSystem {
 	public static onGuiReady() {
 		mp.gui.chat.show(false);
 		BrowserSystem._browserInstance?.markAsChat();
-		mp.console.logInfo("GUI Ready and chat initiated");
 	}
 
 	public static handleRender() {
@@ -54,7 +53,6 @@ class BrowserSystem {
 
 	public static pushRouter(route: string) {
 		if (BrowserSystem._browserInstance) {
-			mp.console.logInfo("route pushed " + route);
 			mp.gui.cursor.show(true, true);
 			BrowserSystem._browserInstance.execute(`router.push("${route}")`);
 		}

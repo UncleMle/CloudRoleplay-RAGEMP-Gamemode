@@ -224,12 +224,12 @@ namespace CloudRP.Admin
 
                 if (userData.isFlying)
                 {
-                    AdminUtils.staffSay(player, $"Enabled fly");
+                    uiHandling.sendPushNotif(player, "Enabled fly", 6000);
                     player.TriggerEvent("admin:startFly");
                 }
                 else
                 {
-                    AdminUtils.staffSay(player, $"Disabled fly");
+                    uiHandling.sendPushNotif(player, "Disabled fly", 6000);
                     player.TriggerEvent("admin:endFly");
                 }
 
@@ -440,7 +440,7 @@ namespace CloudRP.Admin
                 }
 
                 User banPlayerUserData = PlayersData.getPlayerAccountData(banPlayer);
-                DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+                DbCharacter characterData = PlayersData.getPlayerCharacterData(banPlayer);
 
                 if(banPlayerUserData == null || characterData == null) return;
 

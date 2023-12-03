@@ -24,7 +24,7 @@ class GuiSystem {
 		const streetData = GuiSystem.getStreetName();
 
 		const playerGuiObj: Gui = {
-			playerId: GuiSystem.LocalPlayer.remoteId,
+			playerId: mp.players.local.remoteId,
 			direction: GuiSystem.getCompassDirection(),
 			isFrozen: PlayerData.isFrozen,
 			unix: getTimeUnix(),
@@ -45,7 +45,7 @@ class GuiSystem {
 		let zoneName: string = mp.game.ui.getLabelText(mp.game.zone.getNameOfZone(position.x, position.y, position.z)).replace("'", "");
 		let zoneTwo: string = mp.game.ui.getStreetNameFromHashKey(getStreet.streetName) ? mp.game.ui.getStreetNameFromHashKey(getStreet.streetName) : "";
 
-		
+
 		return { getStreet, zoneName, zoneTwo };
 	}
 

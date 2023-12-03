@@ -48,7 +48,7 @@ namespace CloudRP.Character
         public ulong player_exp {  get; set; }
 
         [NotMapped]
-        public bool voiceChatState { get; set; }
+        public bool voiceChatState { get; set; } = true;
 
         [NotMapped]
         public CharacterModel characterModel { get; set; }

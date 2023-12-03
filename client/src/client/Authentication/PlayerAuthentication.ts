@@ -63,7 +63,7 @@ class PlayerAuthentication {
 			if (PlayerAuthentication.LoginCamera.isMoving && Camera.Current_Cam) {
 				PlayerAuthentication.LoginCamera.delete();
 			}
-			
+
 			PlayerAuthentication._currentCam >= PlayerAuthentication.cameraPositions.length - 1 ? PlayerAuthentication._currentCam = 0 : PlayerAuthentication._currentCam++;
 
 			PlayerAuthentication.LoginCamera = new Camera('loginCam', PlayerAuthentication.cameraPositions[PlayerAuthentication._currentCam], PlayerAuthentication.cameraPointAtPositions[PlayerAuthentication._currentCam]);
@@ -71,9 +71,6 @@ class PlayerAuthentication {
 			PlayerAuthentication.LoginCamera.startMoving(7100.0);
 			PlayerAuthentication.LoginCamera.setActive();
 			PlayerAuthentication.freezeAndBlurClient();
-
-			mp.console.logInfo("Set cam to " + PlayerAuthentication._currentCam);
-
 		}
 
 	}
@@ -111,7 +108,6 @@ class PlayerAuthentication {
 
 	public static handleCameraStart() {
 		let randomSelect: number = Math.floor(Math.random() * PlayerAuthentication.cameraPositions.length);
-		mp.console.logInfo("selection " + randomSelect);
 		PlayerAuthentication.LoginCamera = new Camera('loginCam', PlayerAuthentication.cameraPositions[randomSelect], PlayerAuthentication.cameraPointAtPositions[randomSelect]);
 
 		PlayerAuthentication.LoginCamera.startMoving(7100.0);

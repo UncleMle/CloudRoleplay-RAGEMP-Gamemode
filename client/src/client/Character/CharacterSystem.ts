@@ -6,7 +6,6 @@ import getTargetData from "../PlayerMethods/getTargetData";
 class CharacterSystem {
 	public static LocalPlayer: PlayerMp;
 
-
 	constructor() {
 		CharacterSystem.LocalPlayer = mp.players.local;
 
@@ -16,6 +15,8 @@ class CharacterSystem {
 	}
 
 	public static setCharacterCustomization(characterModel: any, parse: boolean = true, entity: PlayerMp = CharacterSystem.LocalPlayer) {
+		if(!characterModel) return;
+
 		let charData: CharacterModel = characterModel;
 
 		if (parse) {
@@ -70,10 +71,9 @@ class CharacterSystem {
 	public static handleEntityStreamIn(entity: EntityMp) {
 		if (entity.type != "player") return;
 		let characterData: CharacterData | undefined = getTargetCharacterData(entity as PlayerMp);
-		if (!characterData) return;
 		let userData: UserData | undefined = getTargetData(entity as PlayerMp);
 
-		if (!userData || userData?.adminDuty) return;
+		if (!userData || !characterData || userData.adminDuty) return;
 
 		CharacterSystem.setCharacterCustomization(characterData.characterModel, false, entity as PlayerMp);
 	}
@@ -81,10 +81,9 @@ class CharacterSystem {
 	public static handleDataHandler(entity: EntityMp, data: CharacterData) {
 		if (entity.type != "player" || !data) return;
 		let userData: UserData | undefined = getTargetData(entity as PlayerMp);
+		let characterData: CharacterData | undefined = getTargetCharacterData(entity as PlayerMp);
 
-		mp.console.logInfo(" Model Hash " + entity.getModel());
-
-		if (!userData || userData?.adminDuty) return;
+		if (!userData || userData?.adminDuty || !characterData) return;
 
 		CharacterSystem.setCharacterCustomization(data.characterModel, false, entity as PlayerMp);
 	}

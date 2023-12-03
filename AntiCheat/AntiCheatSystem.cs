@@ -76,7 +76,8 @@ namespace CloudRP.AntiCheat
                 return;
             }
 
-            if (userData != null && userData.adminDuty || userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin) return;
+            //  && userData.adminDuty || userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin
+            if (userData != null) return;
 
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 

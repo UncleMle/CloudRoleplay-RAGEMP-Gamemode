@@ -36,7 +36,7 @@ namespace CloudRP.VoiceSystem
             if(charData != null)
             {
                 charData.voiceChatState = toggle;
-                PlayersData.setPlayerCharacterData(player, charData);
+                PlayersData.setPlayerCharacterData(player, charData, false);
             }
 
         }
