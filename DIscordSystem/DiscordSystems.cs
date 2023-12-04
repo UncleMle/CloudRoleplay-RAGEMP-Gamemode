@@ -289,7 +289,7 @@ namespace CloudRP.DiscordSystem
             EmbedBuilder builder = new EmbedBuilder
             {
                 Color = Discord.Color.Red,
-                Title = report.title + "  (#" + reportId+")",
+                Title = "Report " + reportId,
                 Description = report.description
             };
 
@@ -357,7 +357,7 @@ namespace CloudRP.DiscordSystem
                     NAPI.Chat.SendChatMessageToPlayer(reportingPlayer, ChatUtils.reports + "Your report was closed.");
                 }
 
-                await DiscordIntegration.SendMessageToUser(discordUser.Id, "You closed report **#" + rid + $" [{report.title}] **");
+                await DiscordIntegration.SendMessageToUser(discordUser.Id, "You closed report **#" + rid +"**");
                 await DiscordIntegration.SendMessage(report.discordChannelId, $"Report was closed by {discordUser.Username} closing report...");
                 await closeAReport(report);
             }

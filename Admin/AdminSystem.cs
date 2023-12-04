@@ -40,7 +40,7 @@ namespace CloudRP.Admin
         }
 
         [Command("report", "~y~Use: ~w~/report [title] [description]", GreedyArg = true)]
-        public async Task onReport(Player player, string title, string desc)
+        public async Task onReport(Player player, string desc)
         {
             User userData = PlayersData.getPlayerAccountData(player);
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
@@ -58,8 +58,7 @@ namespace CloudRP.Admin
                 playerReporting = player,
                 characterData = characterData,
                 userData = userData,
-                description = desc,
-                title = title,
+                description = desc
             };
 
             activeReports.Add(report);
@@ -71,7 +70,7 @@ namespace CloudRP.Admin
             await DiscordSystems.addAReport(report, id);
 
             string msgUri = DiscordUtils.getRedirectUri(report.discordRefId);
-            await DiscordIntegration.SendMessage(report.discordChannelId, $"A new report has been created by {characterData.character_name} | Title: **{title}** | Description: **{desc}** | To close this report react with {DiscordIntegration.closeReaction} here {msgUri}", false);
+            await DiscordIntegration.SendMessage(report.discordChannelId, $"A new report has been created by {characterData.character_name} | Description: **{desc}** | To close this report react with {DiscordIntegration.closeReaction} here {msgUri}", false);
         }
 
         [Command("closereport", "~y~Use: ~w~/closereport")]
@@ -109,7 +108,7 @@ namespace CloudRP.Admin
             if (report != null)
             {
                 await DiscordIntegration.SendMessage(report.discordChannelId, characterData.character_name + $"[{player.Id}]" + message);
-                NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.reports + "You says: " + message);
+                NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.reports + $"You {ChatUtils.grey}say:{ChatUtils.White} " + message);
                 return;
             }
             else

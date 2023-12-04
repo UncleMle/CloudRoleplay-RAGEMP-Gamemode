@@ -209,7 +209,6 @@ namespace CloudRP.Utils
         public DbCharacter characterData { get; set; }
         public Player playerReporting { get; set; }
         public ulong discordChannelId { get; set; }
-        public string title { get; set; }
         public string description { get; set; }
         public User[] adminsHandling { get; set; }
         public List<ulong> discordAdminsHandling { get; set; } = new List<ulong>();

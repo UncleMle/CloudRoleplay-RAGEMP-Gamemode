@@ -179,7 +179,7 @@ namespace Integration
                 {
                     SocketGuild guild = discord.GetGuild(DiscordSystems.guildId);
 
-                    RestTextChannel newChannel = await guild.CreateTextChannelAsync($"Report {report.title} #{AdminSystem.activeReports.IndexOf(report)}", tcp => tcp.CategoryId = DiscordSystems.reportCategory);
+                    RestTextChannel newChannel = await guild.CreateTextChannelAsync($"Report {AdminSystem.activeReports.IndexOf(report)}", tcp => tcp.CategoryId = DiscordSystems.reportCategory);
                     report.discordChannelId = newChannel.Id;
                     await newChannel.AddPermissionOverwriteAsync(guild.EveryoneRole, OverwritePermissions.DenyAll(newChannel));
                 }
