@@ -70,6 +70,11 @@ namespace CloudRP.PlayerData
         public static void resetMutationPusher(Player player, string mutationKey)
         {
             player.TriggerEvent("browser:resetMutationPusher", mutationKey);
+        }      
+        
+        public static void resetRouter(Player player)
+        {
+            player.TriggerEvent("browser:resetRouter");
         }
 
         public static void setLoadingState(Player player, bool state)
@@ -95,6 +100,6 @@ namespace CloudRP.PlayerData
         public static readonly string PlayerData = "player_data_server";
         public static readonly string PlayerCharacters = "player_characters";
         public static readonly string AuthUiState = "auth_ui";
-        public static readonly string PlayerReportData = "report_data";
+        public static readonly string PlayerReportData = "";
     }   
 }

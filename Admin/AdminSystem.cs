@@ -147,7 +147,7 @@ namespace CloudRP.Admin
         }
 
         [RemoteEvent("server:acceptReport")]
-        public static void acceptReport(Player player, int reportId)
+        public void acceptReport(Player player, int reportId)
         {
             User userData = PlayersData.getPlayerAccountData(player);
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
@@ -170,6 +170,12 @@ namespace CloudRP.Admin
 
             if(findReport != null)
             {
+                if(findReport.playerReporting.Equals(player))
+                {
+                    CommandUtils.errorSay(player, "You cannot accept your own reports");
+                    return;
+                }
+
                 findReport.adminsHandling.Add(player, userData);
 
                 if(findReport.adminsHandling.Count == 0 && findReport.discordAdminsHandling.Count == 0)
@@ -180,10 +186,39 @@ namespace CloudRP.Admin
                     NAPI.Chat.SendChatMessageToPlayer(findReport.playerReporting, ChatUtils.reports + $"Admin {userData.adminName} joined your report.");
                 }
 
+                uiHandling.resetRouter(player);
                 NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.reports + $"You accepted report {reportId}.");
 
                 DiscordIntegration.SendMessage(findReport.discordChannelId, $"Admin {userData.adminName} joined your report.");
             }
+        }
+
+        [RemoteEvent("server:closeReport")]
+        public async Task closeReport(Player player, int reportId)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+
+            if (userData == null || characterData == null || userData.adminLevel < 1) return;
+
+            Report findReport = activeReports[reportId];
+
+            if (reportId > activeReports.Count || reportId < 0) return;
+
+            if (!findReport.adminsHandling.ContainsKey(player))
+            {
+                CommandUtils.errorSay(player, "You must a be an admin handling this report to close it.");
+                return;
+            }
+
+            uiHandling.resetRouter(player);
+
+            await DiscordSystems.closeAReport(findReport, true); 
+
+            activeReports.Remove(findReport);
+            NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.Success + "You closed report with id " + reportId);
+            NAPI.Chat.SendChatMessageToPlayer(findReport.playerReporting, ChatUtils.reports + $"Your report was closed");
+
 
         }
 
@@ -200,10 +235,10 @@ namespace CloudRP.Admin
 
             if(handlingReport != null)
             {
-                Console.WriteLine(handlingReport.discordChannelId + "");
-                AdminUtils.sendToAdminsHandlingReport(handlingReport, ChatUtils.reports + ChatUtils.red + "[Admin]" + ChatUtils.White + userData.adminName + ChatUtils.grey + " says:" + ChatUtils.White + message, player);
+                AdminUtils.sendToAdminsHandlingReport(handlingReport, ChatUtils.reports + ChatUtils.red + "[Admin] " + ChatUtils.White + userData.adminName + ChatUtils.grey + " says:" + ChatUtils.White + message, player);
                 NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.reports + $"You {ChatUtils.grey}say:{ChatUtils.White} " + message);
-                DiscordIntegration.SendMessage(handlingReport.discordChannelId, message, false);
+                NAPI.Chat.SendChatMessageToPlayer(handlingReport.playerReporting, ChatUtils.reports + $"{ChatUtils.red}[Admin] {ChatUtils.White}{userData.adminName} {ChatUtils.grey}says:{ChatUtils.White} " + message);
+                DiscordIntegration.SendMessage(handlingReport.discordChannelId, "``[ADMIN]`` " + userData.adminName + " **says:** " + message, false);
                 return;
             }
 

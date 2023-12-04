@@ -19,7 +19,7 @@ namespace CloudRP.Utils
         public static string _c_Hospital = "[Hospital] ";
         public static string yellow = "!{yellow}";
         public static string red = "!{red}";
-        public static string Success = "!{#61d480}[Success] ";
+        public static string Success = "!{#61d480}[Success] " + White;
         public static string disconnected = "!{#f57b42}[Disconnected] " + White;
         public static string antiCheat = "!{red}[AC] " + White;
         public static string hospital = "!{green}[Hospital] " + White;
