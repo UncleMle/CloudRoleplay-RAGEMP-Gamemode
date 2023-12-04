@@ -212,7 +212,7 @@ namespace CloudRP.Utils
         public string title { get; set; }
         public string description { get; set; }
         public User[] adminsHandling { get; set; }
-        public ulong[] discordAdminsHandling { get; set; }
+        public List<ulong> discordAdminsHandling { get; set; } = new List<ulong>();
         public long timeCreated { get; set; } = CommandUtils.generateUnix();
         public bool closed { get; set; }
         public ulong discordRefId { get; set; }

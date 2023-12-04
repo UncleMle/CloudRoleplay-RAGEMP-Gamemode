@@ -15,8 +15,11 @@ using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Timers;
+using VisualStudioConfiguration;
+using static System.Collections.Specialized.BitVector32;
 
 namespace CloudRP.DiscordSystem
 {
@@ -128,7 +131,7 @@ namespace CloudRP.DiscordSystem
 
             if (connection != null)
             {
-                await successEmbed(user.Id, "Character: " + connection.character_name + " CID: #" + connection.character_id + " PID: #" + connection.player_id);
+                await successEmbed(user.Id, "Character: " + connection.character_name + " CID: #" + connection.character_id + " PID: #" + connection.player_id, staffChannel);
 
             } else
             {
@@ -146,7 +149,7 @@ namespace CloudRP.DiscordSystem
             if(player != null)
             {
                 player.Kick();
-                await successEmbed(user.Id, "Kicked player [" + player.Id + "]");
+                await successEmbed(user.Id, "Kicked player [" + player.Id + "]", staffChannel);
             } else
             {
                 await errorEmbed(user.Id, "This player wasn't found online.");
@@ -277,7 +280,6 @@ namespace CloudRP.DiscordSystem
         public static async Task<ulong> addAReport(Report report, int reportId)
         {
             await DiscordIntegration.createAReportChannel(report);
-            await DiscordIntegration.SendMessage(staffChannel, $"A new report was created by {report.characterData.character_name} with id {reportId}");
 
             EmbedBuilder builder = new EmbedBuilder
             {
@@ -308,11 +310,12 @@ namespace CloudRP.DiscordSystem
             });
 
             ulong? msgId = await DiscordIntegration.SendEmbed(staffChannel, builder, true);
+            Console.WriteLine(msgId + "<-- RID");
 
             return (ulong)(msgId ?? null);
         }
 
-        public static async Task successEmbed(ulong userId, string success)
+        public static async Task successEmbed(ulong userId, string success, ulong channelId)
         {
             EmbedBuilder builder = new EmbedBuilder
             {
@@ -322,34 +325,91 @@ namespace CloudRP.DiscordSystem
             };
 
 
-            await DiscordUtils.mentionUser(userId);
-            await DiscordIntegration.SendEmbed(staffChannel, builder);
+            await DiscordIntegration.SendMessage(channelId, Discord.MentionUtils.MentionUser(userId), false);
+            await DiscordIntegration.SendEmbed(channelId, builder);
+        }
+
+        [ServerEvent(Event.PlayerDisconnected)]
+        public void OnPlayerDisconnect(Player player, DisconnectionType type, string reason)
+        {
+            Report findRep = AdminSystem.activeReports.Where(rep => rep.playerReporting.Equals(player)).FirstOrDefault();
+
+            if (findRep != null)
+            {
+                closeAReport(findRep, false);
+            }
         }
 
         public static async Task handleReportReaction(Report report, IUserMessage message, SocketReaction reaction)
         {
-            ulong[] currentDcAdmins = report.discordAdminsHandling;
             IUser discordUser = reaction.User.Value;
-            Player reportingPlayer = report.playerReporting;
+            Player reportingPlayer = NAPI.Player.GetPlayerFromHandle(report.playerReporting.Handle);
             int rid = AdminSystem.activeReports.IndexOf(report);
 
-            if(reaction.Equals(DiscordIntegration.closeReaction))
+            if (discordUser.IsBot || !AdminSystem.activeReports.Contains(report)) return;
+
+            Console.WriteLine(reaction.Emote.GetHashCode() + " ____ " + DiscordIntegration.closeReaction.GetHashCode());
+
+            if(reaction.Emote.GetHashCode() == DiscordIntegration.closeReaction.GetHashCode())
             {
                 if(reportingPlayer != null)
                 {
                     NAPI.Chat.SendChatMessageToPlayer(reportingPlayer, ChatUtils.reports + "Your report was closed.");
                 }
 
-                await DiscordIntegration.SendMessageToUser(discordUser.Id, "You closed report #" + rid);
-
+                await DiscordIntegration.SendMessageToUser(discordUser.Id, "You closed report **#" + rid + $" [{report.title}] **");
                 await DiscordIntegration.SendMessage(report.discordChannelId, $"Report was closed by {discordUser.Username} closing report...");
-
-                NAPI.Task.Run(async () =>
-                {
-                    await DiscordIntegration.removeAChannel(report.discordChannelId);
-                }, 6000);
+                await closeAReport(report);
             }
 
+            if(reaction.Emote.GetHashCode() == DiscordIntegration.joinReaction.GetHashCode())
+            {
+                if (report.discordAdminsHandling.Count == 0)
+                {
+                    NAPI.Chat.SendChatMessageToPlayer(reportingPlayer, ChatUtils.reports + $"Your report has been accepted by {discordUser.Username}.");
+                    report.discordAdminsHandling.Add(discordUser.Id);
+                    return;
+                }
+
+                if (!report.discordAdminsHandling.Contains(discordUser.Id))
+                {
+                    NAPI.Chat.SendChatMessageToPlayer(reportingPlayer, ChatUtils.reports + $"Admin {discordUser.Username} was added to the report.");
+                    report.discordAdminsHandling.Add(discordUser.Id);
+                }
+            }
+        }
+
+        public static async Task closeAReport(Report report, bool shouldAlertAdmins = false)
+        {
+            await DiscordIntegration.removeAMessage(report.discordRefId);
+            AdminSystem.activeReports.Remove(report);
+            await DiscordIntegration.removeAChannel(report.discordChannelId);
+        }
+
+        public static async Task handleReportChannelMessage(Report report, SocketMessage message)
+        {
+            Player reportingPlayer = report.playerReporting;
+
+            SocketUser admin = message.Author;
+
+            if (reportingPlayer == null)
+            {
+                await DiscordIntegration.SendMessage(report.discordChannelId, "The player is not in the server closing report...");
+                await closeAReport(report);
+                return;
+            }
+
+            if(!report.discordAdminsHandling.Contains(admin.Id))
+            {
+                string msgUri = $"https://discord.com/channels/{guildId}/{staffChannel}/{report.discordRefId}";
+                await DiscordIntegration.SendMessage(report.discordChannelId, "You must react to the report message to gain access to this report. (" + msgUri + ")");
+                return;
+            }
+
+            string toPlayer = ChatUtils.reports + admin.Username + ChatUtils.red +" says: " + ChatUtils.White + message.Content;
+
+            await successEmbed(admin.Id, "Player recieved message.", report.discordChannelId);
+            NAPI.Chat.SendChatMessageToPlayer(reportingPlayer, toPlayer);
         }
 
     }

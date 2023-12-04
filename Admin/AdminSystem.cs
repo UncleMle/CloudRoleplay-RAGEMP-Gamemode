@@ -8,6 +8,7 @@ using CloudRP.PlayerData;
 using CloudRP.Utils;
 using CloudRP.Vehicles;
 using GTANetworkAPI;
+using Integration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +38,7 @@ namespace CloudRP.Admin
 
         }
 
-        [Command("report", "~r~/report [title] [description]", GreedyArg = true)]
+        [Command("report", "~y~Use: ~w~/report [title] [description]", GreedyArg = true)]
         public async Task onReport(Player player, string title, string desc)
         {
             User userData = PlayersData.getPlayerAccountData(player);
@@ -45,19 +46,9 @@ namespace CloudRP.Admin
 
             if (userData == null || characterData == null) return;
 
-            int reportsMadeByPlayer = 0;
-
-            foreach(Report findRep in activeReports)
+            if(activeReports.Where(rep => rep.playerReporting.Equals(player)).ToList().Count > 0)
             {
-                if(findRep.playerReporting.Equals(player))
-                {
-                    reportsMadeByPlayer++;
-                }
-            }
-
-            if(reportsMadeByPlayer >= _maxReports)
-            {
-                CommandUtils.errorSay(player, "You already have two reports active. Use /closereport [id] to close.");
+                CommandUtils.errorSay(player, "You already have a report active. Use /closereport to close.");
                 return;
             }
 
@@ -79,6 +70,50 @@ namespace CloudRP.Admin
             ulong discordRef = await DiscordSystems.addAReport(report, id);
 
             report.discordRefId = discordRef;
+        }
+
+        [Command("closereport", "~y~Use: ~w~/closereport")]
+        public void closeReport(Player player)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+
+            if (userData == null || characterData == null) return;
+
+            Report findReport = activeReports.Where(rep => rep.playerReporting == player).FirstOrDefault(); 
+
+            if(findReport != null)
+            {
+                CommandUtils.errorSay(player, "Your active report was closed.");
+                DiscordSystems.closeAReport(findReport);
+                return;
+            }
+            else
+            {
+                CommandUtils.errorSay(player, "You do not have a active report.");
+            }
+        }
+
+        [Command("rr", "~r~Use: ~w~/rr [message]", GreedyArg = true)]
+        public async Task reportResponse(Player player, string message)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+
+            if (userData == null || characterData == null) return;
+
+            Report report = activeReports.Where(rep => rep.playerReporting == player).FirstOrDefault();
+
+            if (report != null)
+            {
+                await DiscordIntegration.SendMessage(report.discordChannelId, characterData.character_name + $"[{player.Id}]" + message);
+                NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.reports + "You says: " + message);
+                return;
+            }
+            else
+            {
+                CommandUtils.errorSay(player, "You do not have any active report to respond to.");
+            }
         }
 
         [Command("aduty", "~r~/aduty")]

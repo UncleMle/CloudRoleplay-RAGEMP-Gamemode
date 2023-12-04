@@ -10,6 +10,8 @@ using CloudRP.DiscordSystem;
 using CloudRP.Admin;
 using System.Linq;
 using System.Threading.Channels;
+using CloudRP.Authentication;
+using Newtonsoft.Json;
 
 namespace Integration
 {
@@ -20,8 +22,8 @@ namespace Integration
         private static string m_strBotGameName = null;
         private static ActivityType m_eActivityType = ActivityType.Playing;
         private static UserStatus m_eUsterStatus = UserStatus.Online;
-        public static Emoji tickReaction = new Emoji("✅");
         public static Emoji closeReaction = new Emoji("❌");
+        public static Emoji joinReaction = new Emoji("✅");
 
 
         public static async Task SetUpBotInstance(string strToken, string strBotGameName = null, ActivityType eActivityType = ActivityType.CustomStatus, UserStatus eUserStatus = UserStatus.Online)
@@ -75,20 +77,20 @@ namespace Integration
                         {
                             IUserMessage mesg = await reactData.DownloadAsync();
 
-                            if (mesg == null) return;
-
-                            if (!reaction.Emote.Equals(tickReaction) || !reaction.Emote.Equals(closeReaction)) return;
+                            Console.WriteLine(mesg.Id + "");
 
                             Report validReport = AdminSystem.activeReports.Where(rep => rep.discordRefId == mesg.Id).FirstOrDefault();
 
+                            Console.WriteLine(validReport != null ? "Valid report" : "isnotvlaid");
+
                             if (validReport != null)
                             {
-                                DiscordSystems.handleReportReaction(validReport, mesg, reaction);
+                                await DiscordSystems.handleReportReaction(validReport, mesg, reaction);
+                                return;
+                            } else
+                            {
+                                await removeAMessage(mesg.Id);
                             }
-
-                            string voteType = "vote --> " + (reaction.Emote.Equals(tickReaction) ? "tick" : "downvote");
-
-                            Console.WriteLine("a user reacted user: " + mesg.Author.Username + " ---> " + reaction.User + voteType);
                         }
                     }
                     catch 
@@ -112,9 +114,19 @@ namespace Integration
                 {
                     try
                     {
+                        if (message.Author.IsBot) return;
+
+                        Report findValidRep = AdminSystem.activeReports.Where(rep => rep.discordChannelId == message.Channel.Id).FirstOrDefault();
+
+                        if (findValidRep != null)
+                        {
+                            DiscordSystems.handleReportChannelMessage(findValidRep, message);
+                            return;
+                        }
+
                         if (g_lstSubscribedChannels.Contains(message.Channel.Id))
                         {
-                            if (message.Content.Length > 0 && !message.Author.IsBot)
+                            if (message.Content.Length > 0)
                             {
                                 string start = message.Content[..1];
 
@@ -173,7 +185,7 @@ namespace Integration
                     {
                         SocketGuild guild = discord.GetGuild(DiscordSystems.guildId);
                         
-                        RestTextChannel newChannel = await guild.CreateTextChannelAsync($"Report {report.title}", tcp => tcp.CategoryId = 1046822067833683988);
+                        RestTextChannel newChannel = await guild.CreateTextChannelAsync($"Report {report.title} #{AdminSystem.activeReports.IndexOf(report)}", tcp => tcp.CategoryId = 1046822067833683988);
                         report.discordChannelId = newChannel.Id;
                         await newChannel.AddPermissionOverwriteAsync(guild.EveryoneRole, OverwritePermissions.DenyAll(newChannel));
                     });
@@ -199,6 +211,32 @@ namespace Integration
                         if (socketGuildChannel != null)
                         {
                             await socketGuildChannel.DeleteAsync();
+                        }
+                    });
+                }
+                catch
+                {
+
+                }
+
+            }
+        }
+
+        public static async Task removeAMessage(ulong messageId)
+        {
+            if (IsSetupCompleted)
+            {
+                try
+                {
+                    NAPI.Task.Run(async () =>
+                    {
+                        SocketTextChannel socketChannel = discord.GetChannel(DiscordSystems.staffChannel) as SocketTextChannel;
+
+                        IMessage message = await socketChannel.GetMessageAsync(messageId);
+
+                        if (message != null)
+                        {
+                            await message.DeleteAsync();
                         }
                     });
                 }
@@ -246,7 +284,8 @@ namespace Integration
                 
                 if(isReport)
                 {
-                    msg.AddReactionAsync(tickReaction);
+                    IEmote[] reactions = { joinReaction, closeReaction };
+                    msg.AddReactionsAsync(reactions);
                 }
                 msgId = msg.Id;
             }
