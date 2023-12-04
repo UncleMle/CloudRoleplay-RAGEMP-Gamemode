@@ -17,6 +17,9 @@ namespace Integration
         private static string m_strBotGameName = null;
         private static ActivityType m_eActivityType = ActivityType.Playing;
         private static UserStatus m_eUsterStatus = UserStatus.Online;
+        private static Emoji tickReaction = new Emoji("✅");
+        private static Emoji closeReaction = new Emoji("❌");
+        private static Emoji[] reportMessageReacts = { tickReaction, closeReaction };
 
 
         public static async Task SetUpBotInstance(string strToken, string strBotGameName = null, ActivityType eActivityType = ActivityType.CustomStatus, UserStatus eUserStatus = UserStatus.Online)
@@ -47,6 +50,7 @@ namespace Integration
 
                 discord.Connected += OnReady;
                 discord.MessageReceived += OnMessageReceived;
+                discord.ReactionAdded += OnReactionRecieved;
 
                 await discord.LoginAsync(TokenType.Bot, m_strToken).ConfigureAwait(true);
                 await discord.StartAsync().ConfigureAwait(true);
@@ -55,6 +59,28 @@ namespace Integration
             {
                 ThrowErrorMessage("Object reference not set to an instance of an object\nUse the 'SetUpBotInstance' to provide your token to be able to start the bot");
             }
+        }
+
+        private static Task OnReactionRecieved(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
+        {
+            if (IsSetupCompleted)
+            {
+                NAPI.Task.Run(() =>
+                {
+                    try
+                    {
+                        if (g_lstSubscribedChannels.Contains(channel.Id) && !message.Value.Author.IsBot)
+                        {
+                            Console.WriteLine("User " + message.Value.Author.Username + " reacted with " + (reaction.Emote.Equals(tickReaction) ? "tick" : "close"));
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+                });
+            }
+            return null;
         }
 
         private static Task OnMessageReceived(SocketMessage message)
@@ -86,9 +112,6 @@ namespace Integration
 
                     }
                 });
-
-                Task task = Task.Run(() => { });
-                return task;
             }
             return null;
         }
@@ -118,7 +141,7 @@ namespace Integration
             }
         }
 
-        public static async Task<ulong?> SendEmbed(ulong discordChannelID, EmbedBuilder embed)
+        public static async Task<ulong?> SendEmbed(ulong discordChannelID, EmbedBuilder embed, bool isReport = false)
         {
             ISocketMessageChannel channel = (ISocketMessageChannel)discord.GetChannel(discordChannelID);
             ulong msgId;
@@ -126,6 +149,11 @@ namespace Integration
             if(channel != null)
             {
                 IUserMessage msg =  await channel.SendMessageAsync(null, false, embed.Build());
+                
+                if(isReport)
+                {
+                    await msg.AddReactionsAsync(reportMessageReacts);
+                }
                 msgId = msg.Id;
             }
             else

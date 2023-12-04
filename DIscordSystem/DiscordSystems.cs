@@ -267,7 +267,8 @@ namespace CloudRP.DiscordSystem
 
         public static async Task<ulong> addReportEmbed(Report report, int reportId)
         {
-            DiscordIntegration.SendMessage(staffChannel, $"A new report was created by {report.characterData.character_name} with id {reportId}");
+            await DiscordIntegration.SendMessage(staffChannel, $"A new report was created by {report.characterData.character_name} with id {reportId}");
+
             EmbedBuilder builder = new EmbedBuilder
             {
                 Color = Discord.Color.Red,
@@ -296,7 +297,7 @@ namespace CloudRP.DiscordSystem
                 playerData.IsInline = false;
             });
 
-            ulong? msgId = await DiscordIntegration.SendEmbed(staffChannel, builder);
+            ulong? msgId = await DiscordIntegration.SendEmbed(staffChannel, builder, true);
 
             return (ulong)(msgId ?? null);
         }
@@ -315,6 +316,10 @@ namespace CloudRP.DiscordSystem
             await DiscordIntegration.SendEmbed(staffChannel, builder);
         }
 
+        public static void handleReportReaction()
+        {
+
+        }
 
     }
 
