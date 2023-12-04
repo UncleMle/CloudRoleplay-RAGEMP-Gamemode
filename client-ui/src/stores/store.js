@@ -13,6 +13,7 @@ const store = new Vuex.Store({
 			player_data_gui: {},
 			player_bandata: {},
 			player_characters: [],
+			report_data: [],
 			otp_ui: false
 		},
 		uiStates: {

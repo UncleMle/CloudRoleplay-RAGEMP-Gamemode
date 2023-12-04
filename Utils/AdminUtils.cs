@@ -215,5 +215,12 @@ namespace CloudRP.Utils
         public long timeCreated { get; set; } = CommandUtils.generateUnix();
         public bool closed { get; set; }
         public ulong discordRefId { get; set; }
+    }    
+    
+    public class SharedReport
+    {
+        public int playerId { get; set; }
+        public int reportId { get; set; }
+        public string description { get; set; }
     }
 }

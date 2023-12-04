@@ -1,12 +1,10 @@
 <template>
     <div id="app">
+        <ChatBox v-if="guiState" />
+        <PushNotification class="bg-red-200" ref="notification" />
 
         <router-view class="absolute" ref="routers">
         </router-view>
-
-
-        <ChatBox v-if="guiState" />
-        <PushNotification class="bg-red-200" ref="notification" />
     </div>
 </template>
 

@@ -85,6 +85,7 @@ namespace CloudRP.PlayerData
         public static readonly string CharacterCreation = "/charcreation";
         public static readonly string StatsPage = "/stats";
         public static readonly string BanPage = "/ban";
+        public static readonly string ReportsPage = "/reports";
     }
 
     public static class MutationKeys
@@ -94,5 +95,6 @@ namespace CloudRP.PlayerData
         public static readonly string PlayerData = "player_data_server";
         public static readonly string PlayerCharacters = "player_characters";
         public static readonly string AuthUiState = "auth_ui";
-    }
+        public static readonly string PlayerReportData = "report_data";
+    }   
 }

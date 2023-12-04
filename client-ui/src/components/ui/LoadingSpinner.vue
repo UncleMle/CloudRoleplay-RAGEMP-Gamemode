@@ -1,6 +1,6 @@
 <template>
     <b role="status" class="flex justify-center">
-        <svg class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-500 fill-black/30"
+        <svg class="w-8 h-8 animate-spin text-gray-500 fill-black/30"
              viewBox="0 0 100 101"
              fill="none"
              xmlns="http://www.w3.org/2000/svg">

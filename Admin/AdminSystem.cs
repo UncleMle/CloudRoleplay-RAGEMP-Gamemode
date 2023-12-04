@@ -11,6 +11,7 @@ using CloudRP.Vehicles;
 using Discord;
 using GTANetworkAPI;
 using Integration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +49,12 @@ namespace CloudRP.Admin
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
             if (userData == null || characterData == null) return;
+
+            if(desc.Length > 256)
+            {
+                CommandUtils.errorSay(player, "Report descriptions must be less than 256 characters.");
+                return;
+            }
 
             if(activeReports.Where(rep => rep.playerReporting.Equals(player)).ToList().Count > 0)
             {
@@ -103,6 +110,39 @@ namespace CloudRP.Admin
             {
                 CommandUtils.errorSay(player, "You do not have a active report.");
             }
+        }
+
+        [Command("reports", "~r~/reports")]
+        public void viewReports(Player player)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(userData.adminLevel > (int)AdminRanks.Admin_None)
+            {
+                if(activeReports.Count == 0)
+                {
+                    CommandUtils.errorSay(player, "There are currently no active reports.");
+                    return;
+                }
+
+                List<SharedReport> sharedReports = new List<SharedReport>();
+
+                foreach(Report report in activeReports)
+                {
+                    sharedReports.Add(new SharedReport
+                    {
+                        description = report.description,
+                        playerId = report.userData.playerId,
+                        reportId = activeReports.IndexOf(report)
+                    });
+                }
+
+                uiHandling.handleObjectUiMutation(player, MutationKeys.PlayerReportData, sharedReports);
+
+                uiHandling.pushRouterToClient(player, Browsers.ReportsPage);
+
+            } else AdminUtils.sendNoAuth(player);
+
         }
 
         [Command("rr", "~r~Use: ~w~/rr [message]", GreedyArg = true)]
