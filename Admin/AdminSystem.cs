@@ -76,7 +76,7 @@ namespace CloudRP.Admin
             
             AdminUtils.sendMessageToAllStaff($"{characterData.character_name} [{player.Id}] has created a new report with ID {id}");
             CommandUtils.successSay(player, $"Created report with id {id}. Staff have been alerted.");
-            ulong discordRef = await DiscordSystems.addReportEmbed(report, id);
+            ulong discordRef = await DiscordSystems.addAReport(report, id);
 
             report.discordRefId = discordRef;
         }

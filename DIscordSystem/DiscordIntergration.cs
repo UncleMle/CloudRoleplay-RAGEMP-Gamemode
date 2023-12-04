@@ -7,6 +7,9 @@ using Discord.Rest;
 using System.Collections.Generic;
 using CloudRP.Utils;
 using CloudRP.DiscordSystem;
+using CloudRP.Admin;
+using System.Linq;
+using System.Threading.Channels;
 
 namespace Integration
 {
@@ -17,9 +20,8 @@ namespace Integration
         private static string m_strBotGameName = null;
         private static ActivityType m_eActivityType = ActivityType.Playing;
         private static UserStatus m_eUsterStatus = UserStatus.Online;
-        private static Emoji tickReaction = new Emoji("✅");
-        private static Emoji closeReaction = new Emoji("❌");
-        private static Emoji[] reportMessageReacts = { tickReaction, closeReaction };
+        public static Emoji tickReaction = new Emoji("✅");
+        public static Emoji closeReaction = new Emoji("❌");
 
 
         public static async Task SetUpBotInstance(string strToken, string strBotGameName = null, ActivityType eActivityType = ActivityType.CustomStatus, UserStatus eUserStatus = UserStatus.Online)
@@ -74,6 +76,15 @@ namespace Integration
                             IUserMessage mesg = await reactData.DownloadAsync();
 
                             if (mesg == null) return;
+
+                            if (!reaction.Emote.Equals(tickReaction) || !reaction.Emote.Equals(closeReaction)) return;
+
+                            Report validReport = AdminSystem.activeReports.Where(rep => rep.discordRefId == mesg.Id).FirstOrDefault();
+
+                            if (validReport != null)
+                            {
+                                DiscordSystems.handleReportReaction(validReport, mesg, reaction);
+                            }
 
                             string voteType = "vote --> " + (reaction.Emote.Equals(tickReaction) ? "tick" : "downvote");
 
@@ -150,6 +161,78 @@ namespace Integration
 
                 }
             }
+        }        
+        
+        public static async Task createAReportChannel(Report report)
+        {
+            if(IsSetupCompleted)
+            {
+                try
+                {
+                    NAPI.Task.Run(async () =>
+                    {
+                        SocketGuild guild = discord.GetGuild(DiscordSystems.guildId);
+                        
+                        RestTextChannel newChannel = await guild.CreateTextChannelAsync($"Report {report.title}", tcp => tcp.CategoryId = 1046822067833683988);
+                        report.discordChannelId = newChannel.Id;
+                        await newChannel.AddPermissionOverwriteAsync(guild.EveryoneRole, OverwritePermissions.DenyAll(newChannel));
+                    });
+                }
+                catch
+                {
+
+                }
+
+            }
+        }       
+        
+        public static async Task removeAChannel(ulong channelId)
+        {
+            if(IsSetupCompleted)
+            {
+                try
+                {
+                    NAPI.Task.Run(async () =>
+                    {
+                        SocketGuildChannel socketGuildChannel = discord.GetChannel(channelId) as SocketGuildChannel;
+
+                        if (socketGuildChannel != null)
+                        {
+                            await socketGuildChannel.DeleteAsync();
+                        }
+                    });
+                }
+                catch
+                {
+
+                }
+
+            }
+        }
+
+        public static async Task SendMessageToUser(ulong discordId, string strMessage)
+        {
+            if (IsSetupCompleted)
+            {
+                try
+                {
+
+                    SocketUser user = discord.GetUser(discordId);
+
+                    if (user != null)
+                    {
+                        await user.SendMessageAsync(strMessage).ConfigureAwait(true);
+                    }
+                    else
+                    {
+                        ThrowErrorMessage("Object reference not set to an instance of an object\nFailed to find a discord channel with the 'discordChannelID' you provided");
+                    }
+                }
+                catch
+                {
+
+                }
+            }
         }
 
         public static async Task<ulong?> SendEmbed(ulong discordChannelID, EmbedBuilder embed, bool isReport = false)
@@ -163,7 +246,7 @@ namespace Integration
                 
                 if(isReport)
                 {
-                    msg.AddReactionsAsync(reportMessageReacts);
+                    msg.AddReactionAsync(tickReaction);
                 }
                 msgId = msg.Id;
             }

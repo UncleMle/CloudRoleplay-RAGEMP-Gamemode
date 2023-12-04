@@ -1,15 +1,20 @@
-﻿using CloudRP.AntiCheat;
+﻿using CloudRP.Admin;
+using CloudRP.AntiCheat;
 using CloudRP.Authentication;
 using CloudRP.Character;
+using CloudRP.ChatSystem;
 using CloudRP.Database;
+using CloudRP.PlayerData;
 using CloudRP.Utils;
 using CloudRP.Vehicles;
 using Discord;
 using Discord.WebSocket;
 using GTANetworkAPI;
 using Integration;
+using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 
@@ -23,9 +28,11 @@ namespace CloudRP.DiscordSystem
         public static string tokenIdentifier = "discordToken";
         public static string staffChannelIdentifer = "staffChannel";
         public static string reportAlertChannelIdentifier = "alertChannel";
+        public static string guildIdIdentifier = "discordGuildId";
         public static string discordPrefix = "!";
         public static ulong staffChannel;
         public static ulong reportAlertChannel;
+        public static ulong guildId;
         public static int _updatePlayerCount = 5000;
         public static int _maxPlayers = 200;
 
@@ -38,6 +45,7 @@ namespace CloudRP.DiscordSystem
             {
                 staffChannel = ulong.Parse(Environment.GetEnvironmentVariable(staffChannelIdentifer));
                 reportAlertChannel = ulong.Parse(Environment.GetEnvironmentVariable(reportAlertChannelIdentifier));
+                guildId = ulong.Parse(Environment.GetEnvironmentVariable(guildIdIdentifier));
             }
             catch
             {
@@ -266,8 +274,9 @@ namespace CloudRP.DiscordSystem
             await DiscordIntegration.SendEmbed(staffChannel, builder);
         }
 
-        public static async Task<ulong> addReportEmbed(Report report, int reportId)
+        public static async Task<ulong> addAReport(Report report, int reportId)
         {
+            await DiscordIntegration.createAReportChannel(report);
             await DiscordIntegration.SendMessage(staffChannel, $"A new report was created by {report.characterData.character_name} with id {reportId}");
 
             EmbedBuilder builder = new EmbedBuilder
@@ -317,8 +326,29 @@ namespace CloudRP.DiscordSystem
             await DiscordIntegration.SendEmbed(staffChannel, builder);
         }
 
-        public static void handleReportReaction()
+        public static async Task handleReportReaction(Report report, IUserMessage message, SocketReaction reaction)
         {
+            ulong[] currentDcAdmins = report.discordAdminsHandling;
+            IUser discordUser = reaction.User.Value;
+            Player reportingPlayer = report.playerReporting;
+            int rid = AdminSystem.activeReports.IndexOf(report);
+
+            if(reaction.Equals(DiscordIntegration.closeReaction))
+            {
+                if(reportingPlayer != null)
+                {
+                    NAPI.Chat.SendChatMessageToPlayer(reportingPlayer, ChatUtils.reports + "Your report was closed.");
+                }
+
+                await DiscordIntegration.SendMessageToUser(discordUser.Id, "You closed report #" + rid);
+
+                await DiscordIntegration.SendMessage(report.discordChannelId, $"Report was closed by {discordUser.Username} closing report...");
+
+                NAPI.Task.Run(async () =>
+                {
+                    await DiscordIntegration.removeAChannel(report.discordChannelId);
+                }, 6000);
+            }
 
         }
 
