@@ -98,7 +98,7 @@ namespace CloudRP.Utils
 
         public static string getRedirectUri(ulong channelId)
         {
-            string msgUri = $"https://discord.com/channels/{DiscordSystems.guildId}/{DiscordSystems.staffChannel}/{channelId}";
+            string msgUri = $"https://discord.com/channels/{DiscordSystems.guildId}/{DiscordSystems.reportAlertChannel}/{channelId}";
             return msgUri;
         }
     }

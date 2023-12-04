@@ -209,7 +209,7 @@ namespace Integration
             }
         }
 
-        public static async Task removeAMessage(ulong messageId)
+        public static async Task removeAMessage(ulong channelId, ulong messageId)
         {
             if (IsSetupCompleted)
             {
@@ -217,7 +217,7 @@ namespace Integration
                 {
                     NAPI.Task.Run(async () =>
                     {
-                        SocketTextChannel socketChannel = discord.GetChannel(DiscordSystems.staffChannel) as SocketTextChannel;
+                        SocketTextChannel socketChannel = discord.GetChannel(channelId) as SocketTextChannel;
 
                         IMessage message = await socketChannel.GetMessageAsync(messageId);
 

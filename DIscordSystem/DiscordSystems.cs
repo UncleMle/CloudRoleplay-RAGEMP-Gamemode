@@ -55,7 +55,7 @@ namespace CloudRP.DiscordSystem
             }
             catch
             {
-                ChatUtils.discordSysPrint("Discord staff channel was not found or is incorrectly formatted.");
+                ChatUtils.discordSysPrint("Discord staff channels where not found or are incorrectly formatted.");
             }
 
 
@@ -70,9 +70,10 @@ namespace CloudRP.DiscordSystem
 
             NAPI.Task.Run(() =>
             {
-                ChatUtils.discordSysPrint("Started listening on staff channel.");
                 DiscordIntegration.RegisterChannelForListenting(staffChannel);
+                DiscordIntegration.RegisterChannelForListenting(reportAlertChannel);
 
+                ChatUtils.discordSysPrint("Started listening on staff channel and report alert channel.");
                 DiscordIntegration.flushOldReports();
             }, 5000);
 
@@ -305,7 +306,7 @@ namespace CloudRP.DiscordSystem
                 playerData.Value = report.playerReporting.Id;
             });
             
-            await DiscordIntegration.SendEmbed(staffChannel, builder, report);
+            await DiscordIntegration.SendEmbed(reportAlertChannel, builder, report);
         }
 
         public static async Task successEmbed(ulong userId, string success, ulong channelId)
@@ -379,7 +380,7 @@ namespace CloudRP.DiscordSystem
 
         public static async Task closeAReport(Report report, bool shouldAlertAdmins = false)
         {
-            await DiscordIntegration.removeAMessage(report.discordRefId);
+            await DiscordIntegration.removeAMessage(reportAlertChannel, report.discordRefId);
             AdminSystem.activeReports.Remove(report);
             await DiscordIntegration.removeAChannel(report.discordChannelId);
         }
