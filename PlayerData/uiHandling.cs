@@ -100,6 +100,6 @@ namespace CloudRP.PlayerData
         public static readonly string PlayerData = "player_data_server";
         public static readonly string PlayerCharacters = "player_characters";
         public static readonly string AuthUiState = "auth_ui";
-        public static readonly string PlayerReportData = "";
+        public static readonly string PlayerReportData = "report_data";
     }   
 }
