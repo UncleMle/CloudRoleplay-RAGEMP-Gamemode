@@ -32,9 +32,11 @@ namespace CloudRP.DiscordSystem
         public static string staffChannelIdentifer = "staffChannel";
         public static string reportAlertChannelIdentifier = "alertChannel";
         public static string guildIdIdentifier = "discordGuildId";
+        public static string discordReportCategoryIdentifier = "discordReportCategory";
         public static string discordPrefix = "!";
         public static ulong staffChannel;
         public static ulong reportAlertChannel;
+        public static ulong reportCategory;
         public static ulong guildId;
         public static int _updatePlayerCount = 5000;
         public static int _maxPlayers = 200;
@@ -49,6 +51,7 @@ namespace CloudRP.DiscordSystem
                 staffChannel = ulong.Parse(Environment.GetEnvironmentVariable(staffChannelIdentifer));
                 reportAlertChannel = ulong.Parse(Environment.GetEnvironmentVariable(reportAlertChannelIdentifier));
                 guildId = ulong.Parse(Environment.GetEnvironmentVariable(guildIdIdentifier));
+                reportCategory = ulong.Parse(Environment.GetEnvironmentVariable(discordReportCategoryIdentifier));
             }
             catch
             {
@@ -69,6 +72,8 @@ namespace CloudRP.DiscordSystem
             {
                 ChatUtils.discordSysPrint("Started listening on staff channel.");
                 DiscordIntegration.RegisterChannelForListenting(staffChannel);
+
+                DiscordIntegration.flushOldReports();
             }, 5000);
 
 

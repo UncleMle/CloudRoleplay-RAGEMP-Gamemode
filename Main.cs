@@ -23,6 +23,7 @@ namespace CloudRP
             Environment.SetEnvironmentVariable(DiscordSystem.DiscordSystems.staffChannelIdentifer, Env._discordStaffChannel);
             Environment.SetEnvironmentVariable(DiscordSystem.DiscordSystems.reportAlertChannelIdentifier, Env._discordReportAlertChannel);
             Environment.SetEnvironmentVariable(DiscordSystem.DiscordSystems.guildIdIdentifier, Env._discordGuildId);
+            Environment.SetEnvironmentVariable(DiscordSystem.DiscordSystems.discordReportCategoryIdentifier, Env._discordReportCategory);
 
             NAPI.Server.SetCommandErrorMessage(ChatUtils.error + " specified command could not be found. Use /help to view available commands.");
         }

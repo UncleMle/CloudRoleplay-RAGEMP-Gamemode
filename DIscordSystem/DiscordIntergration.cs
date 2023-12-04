@@ -179,7 +179,7 @@ namespace Integration
                 {
                     SocketGuild guild = discord.GetGuild(DiscordSystems.guildId);
 
-                    RestTextChannel newChannel = await guild.CreateTextChannelAsync($"Report {report.title} #{AdminSystem.activeReports.IndexOf(report)}", tcp => tcp.CategoryId = 1046822067833683988);
+                    RestTextChannel newChannel = await guild.CreateTextChannelAsync($"Report {report.title} #{AdminSystem.activeReports.IndexOf(report)}", tcp => tcp.CategoryId = DiscordSystems.reportCategory);
                     report.discordChannelId = newChannel.Id;
                     await newChannel.AddPermissionOverwriteAsync(guild.EveryoneRole, OverwritePermissions.DenyAll(newChannel));
                 }
@@ -209,7 +209,6 @@ namespace Integration
                 {
 
                 }
-
             }
         }
 
@@ -235,7 +234,6 @@ namespace Integration
                 {
 
                 }
-
             }
         }
 
@@ -288,6 +286,31 @@ namespace Integration
                     }
                 });
             } catch
+            {
+            }
+        }
+
+        public static async Task flushOldReports()
+        {
+            if (!IsSetupCompleted) return;
+
+            try
+            {
+                NAPI.Task.Run(async () =>
+                {
+                    SocketGuild guild = discord.GetGuild(DiscordSystems.guildId);
+
+                    SocketCategoryChannel newChannel = guild.GetCategoryChannel(DiscordSystems.reportCategory);
+
+                    foreach(SocketTextChannel channel in newChannel.Channels)
+                    {
+                        await channel.DeleteAsync();
+                    }
+
+                    ChatUtils.discordSysPrint("Flushed old reports.");
+                });
+            }
+            catch
             {
 
             }
