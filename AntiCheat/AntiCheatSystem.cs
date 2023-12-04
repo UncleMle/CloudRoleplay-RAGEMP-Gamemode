@@ -54,8 +54,6 @@ namespace CloudRP.AntiCheat
 
             User userData = PlayersData.getPlayerAccountData(player);
 
-            //if (userData != null && (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin || userData.adminDuty)) return;
-            
             if (userData == null && exception != (int)AcExceptions.tpHack)
             {
                 foreach (KeyValuePair<Player, User> entry in onlineStaff)
@@ -68,7 +66,7 @@ namespace CloudRP.AntiCheat
                 return;
             }
 
-            if (exception == (int)AcExceptions.disallowedWeapon && userData != null)
+            if (exception == (int)AcExceptions.disallowedWeapon && userData != null && userData.adminLevel > (int)AdminRanks.Admin_Founder)
             {
                 User antiCheat = AdminUtils.getAcBanAdmin();
 

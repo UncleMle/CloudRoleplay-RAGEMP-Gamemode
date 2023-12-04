@@ -83,9 +83,6 @@ namespace Integration
                             {
                                 await DiscordSystems.handleReportReaction(validReport, mesg, reaction);
                                 return;
-                            } else
-                            {
-                                await removeAMessage(mesg.Id);
                             }
                         }
                     }

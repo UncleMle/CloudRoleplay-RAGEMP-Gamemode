@@ -107,7 +107,7 @@ class BrowserSystem {
 		mp.events.callRemote(eventName, _object);
 	}
 
-	public static handleBrowserString(eventName: string, _string: string) {
+	public static handleBrowserString(eventName: string, _string: any) {
 		mp.events.callRemote(eventName, _string);
 	}
 

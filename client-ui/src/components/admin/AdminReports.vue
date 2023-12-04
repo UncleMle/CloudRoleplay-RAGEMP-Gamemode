@@ -24,7 +24,11 @@
                                 <tr v-for="item in reportData" :key="item">
                                     <td class="border-b-2 border-gray-500">Player [{{ item.playerId }}]</td>
                                     <td class="border-b-2 border-gray-500">Report [{{item.reportId}}]</td>
-                                    <td class="border-b-2 border-gray-500 max-w-xs overflow-hidden text-ellipsis">{{ item.description }}</td>
+                                    <td class="border-b-2 border-gray-500 max-w-xs overflow-hidden text-ellipsis text-sm">{{ item.description }}</td>
+                                    <td class="border-b-2 border-gray-500 max-w-xs overflow-hidden text-ellipsis">
+                                        <button @click="accept" class="p-2 mr-2"><i class="fa-solid fa-check text-green-400"></i></button>
+                                        <button @click="close" class="p-2"><i class="fa-solid fa-xmark text-red-400"></i></button>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -47,6 +51,16 @@ export default {
     },
     components: {
         CloseButton
+    },
+    methods: {
+        accept(reportId) {
+            if(window.mp) {
+                window.mp.trigger("browser:sendString", "server:acceptReport", reportId);
+            }
+        },
+        close() {
+            console.log("closed")
+        }
     },
     mounted() {
         this.reportData = this.$store.state.playerInfo.report_data;

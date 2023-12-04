@@ -201,6 +201,20 @@ namespace CloudRP.Utils
 
             return false;
         }
+
+        public static void sendToAdminsHandlingReport(Report report, string message, Player excludePlayer)
+        {
+            Dictionary<Player, User> adminsHandling = report.adminsHandling;
+
+            foreach(KeyValuePair<Player, User> entry in adminsHandling)
+            {
+                if(entry.Key != null && !entry.Key.Equals(excludePlayer))
+                {
+                    NAPI.Chat.SendChatMessageToPlayer(entry.Key, message);
+                }
+            }
+
+        }
     }
 
     public class Report
@@ -210,7 +224,7 @@ namespace CloudRP.Utils
         public Player playerReporting { get; set; }
         public ulong discordChannelId { get; set; }
         public string description { get; set; }
-        public User[] adminsHandling { get; set; }
+        public Dictionary<Player, User> adminsHandling { get; set; } = new Dictionary<Player, User>();
         public List<ulong> discordAdminsHandling { get; set; } = new List<ulong>();
         public long timeCreated { get; set; } = CommandUtils.generateUnix();
         public bool closed { get; set; }

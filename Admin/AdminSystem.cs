@@ -14,6 +14,7 @@ using Integration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -145,6 +146,47 @@ namespace CloudRP.Admin
 
         }
 
+        [RemoteEvent("server:acceptReport")]
+        public static void acceptReport(Player player, int reportId)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+
+            if (userData == null || characterData == null || userData.adminLevel < 1) return;
+
+            if (reportId > activeReports.Count || reportId < 0)
+            {
+                CommandUtils.errorSay(player, "Invalid report id.");
+                return;
+            }
+
+            Report findReport = activeReports[reportId];
+
+            if(findReport.adminsHandling.ContainsKey(player))
+            {
+                CommandUtils.errorSay(player, "You have already accepted this report.");
+                return;
+            }
+
+            if(findReport != null)
+            {
+                findReport.adminsHandling.Add(player, userData);
+
+                if(findReport.adminsHandling.Count == 0 && findReport.discordAdminsHandling.Count == 0)
+                {
+                    NAPI.Chat.SendChatMessageToPlayer(findReport.playerReporting, ChatUtils.reports + $"Your report was accepted by {userData.adminName}");
+                } else
+                {
+                    NAPI.Chat.SendChatMessageToPlayer(findReport.playerReporting, ChatUtils.reports + $"Admin {userData.adminName} joined your report.");
+                }
+
+                NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.reports + $"You accepted report {reportId}.");
+
+                DiscordIntegration.SendMessage(findReport.discordChannelId, $"Admin {userData.adminName} joined your report.");
+            }
+
+        }
+
         [Command("rr", "~r~Use: ~w~/rr [message]", GreedyArg = true)]
         public async Task reportResponse(Player player, string message)
         {
@@ -154,10 +196,20 @@ namespace CloudRP.Admin
             if (userData == null || characterData == null) return;
 
             Report report = activeReports.Where(rep => rep.playerReporting == player).FirstOrDefault();
+            Report handlingReport = activeReports.Where(rep => rep.adminsHandling.ContainsKey(player)).FirstOrDefault();
+
+            if(handlingReport != null)
+            {
+                Console.WriteLine(handlingReport.discordChannelId + "");
+                AdminUtils.sendToAdminsHandlingReport(handlingReport, ChatUtils.reports + ChatUtils.red + "[Admin]" + ChatUtils.White + userData.adminName + ChatUtils.grey + " says:" + ChatUtils.White + message, player);
+                NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.reports + $"You {ChatUtils.grey}say:{ChatUtils.White} " + message);
+                DiscordIntegration.SendMessage(handlingReport.discordChannelId, message, false);
+                return;
+            }
 
             if (report != null)
             {
-                if(report.discordAdminsHandling.Count == 0)
+                if(report.discordAdminsHandling.Count == 0 && report.adminsHandling.Count == 0)
                 {
                     CommandUtils.errorSay(player, "You must wait until your report is accepted to use this command.");
                     return;

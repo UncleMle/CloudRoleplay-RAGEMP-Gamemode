@@ -318,7 +318,7 @@ namespace CloudRP.DiscordSystem
             };
 
 
-            await DiscordIntegration.SendMessage(channelId, Discord.MentionUtils.MentionUser(userId), false);
+            await DiscordIntegration.SendMessage(channelId, MentionUtils.MentionUser(userId), false);
             await DiscordIntegration.SendEmbed(channelId, builder);
         }
 
@@ -326,6 +326,13 @@ namespace CloudRP.DiscordSystem
         public void OnPlayerDisconnect(Player player, DisconnectionType type, string reason)
         {
             Report findRep = AdminSystem.activeReports.Where(rep => rep.playerReporting.Equals(player)).FirstOrDefault();
+            Report isHandling = AdminSystem.activeReports.Where(rep => rep.adminsHandling.ContainsKey(player)).FirstOrDefault();
+
+            if(isHandling != null)
+            {
+                isHandling.adminsHandling.Remove(player);
+                DiscordIntegration.SendMessage(isHandling.discordChannelId, $"Admin {isHandling.userData.adminName} has disconnected from the server.");
+            }
 
             if (findRep != null)
             {
@@ -355,7 +362,7 @@ namespace CloudRP.DiscordSystem
 
             if(reaction.Emote.GetHashCode() == DiscordIntegration.joinReaction.GetHashCode())
             {
-                if (report.discordAdminsHandling.Count == 0)
+                if (report.discordAdminsHandling.Count == 0 && report.adminsHandling.Count == 0)
                 {
                     NAPI.Chat.SendChatMessageToPlayer(reportingPlayer, ChatUtils.reports + $"Your report has been accepted by {discordUser.Username}.");
                     report.discordAdminsHandling.Add(discordUser.Id);
@@ -364,7 +371,7 @@ namespace CloudRP.DiscordSystem
 
                 if (!report.discordAdminsHandling.Contains(discordUser.Id))
                 {
-                    NAPI.Chat.SendChatMessageToPlayer(reportingPlayer, ChatUtils.reports + $"Admin {discordUser.Username} was added to the report.");
+                    NAPI.Chat.SendChatMessageToPlayer(reportingPlayer, ChatUtils.reports + $"Admin {discordUser.Username} joined the report.");
                     report.discordAdminsHandling.Add(discordUser.Id);
                 }
             }
