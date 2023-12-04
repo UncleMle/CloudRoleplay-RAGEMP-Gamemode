@@ -187,21 +187,18 @@ namespace CloudRP.DiscordSystem
                     {
                         x.Name = "Vehicle Dimension";
                         x.Value = vehicle.vehicle_dimension;
-                        x.IsInline = false;
                     });
                     
                     builder.AddField(x =>
                     {
                         x.Name = "Last updated";
                         x.Value = vehicle.UpdatedDate;
-                        x.IsInline = false;
                     });
                     
                     builder.AddField(x =>
                     {
                         x.Name = "Vehicle Name";
                         x.Value = vehicle.vehicle_name;
-                        x.IsInline = false;
                     });
 
                     DbCharacter characterData = dbContext.characters.Find(vehicle.owner_id);
@@ -212,14 +209,12 @@ namespace CloudRP.DiscordSystem
                         {
                             x.Name = "Owner";
                             x.Value = characterData.character_name;
-                            x.IsInline = false;
                         });
                         
                         builder.AddField(x =>
                         {
                             x.Name = "Owner is banned";
                             x.Value = characterData.character_isbanned == 1 ? "Yes" : "No";
-                            x.IsInline = false;
                         });
                     }
 
@@ -251,7 +246,6 @@ namespace CloudRP.DiscordSystem
                 {
                     field.Name = discordPrefix+command.name;
                     field.Value = command.description;
-                    field.IsInline = false;
                 });
             }
 
@@ -297,21 +291,18 @@ namespace CloudRP.DiscordSystem
             {
                 playerData.Name = "Character Name";
                 playerData.Value = report.characterData.character_name;
-                playerData.IsInline = false;
             });            
             
             builder.AddField(playerData =>
             {
                 playerData.Name = "Username";
                 playerData.Value = report.userData.username;
-                playerData.IsInline = false;
             });
             
             builder.AddField(playerData =>
             {
                 playerData.Name = "Player ID";
                 playerData.Value = report.playerReporting.Id;
-                playerData.IsInline = false;
             });
 
             await DiscordIntegration.SendEmbed(staffChannel, builder, report);

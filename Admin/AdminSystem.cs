@@ -4,9 +4,11 @@ using CloudRP.Character;
 using CloudRP.Database;
 using CloudRP.DeathSystem;
 using CloudRP.DiscordSystem;
+using CloudRP.GeneralCommands;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
 using CloudRP.Vehicles;
+using Discord;
 using GTANetworkAPI;
 using Integration;
 using System;
@@ -39,7 +41,7 @@ namespace CloudRP.Admin
 
         }
 
-        [Command("report", "~y~Use: ~w~/report [title] [description]", GreedyArg = true)]
+        [Command("report", "~y~Use: ~w~/report [description]", GreedyArg = true)]
         public async Task onReport(Player player, string desc)
         {
             User userData = PlayersData.getPlayerAccountData(player);
@@ -70,7 +72,15 @@ namespace CloudRP.Admin
             await DiscordSystems.addAReport(report, id);
 
             string msgUri = DiscordUtils.getRedirectUri(report.discordRefId);
-            await DiscordIntegration.SendMessage(report.discordChannelId, $"A new report has been created by {characterData.character_name} | Description: **{desc}** | To close this report react with {DiscordIntegration.closeReaction} here {msgUri}", false);
+
+            EmbedBuilder sendInChannel = new EmbedBuilder
+            {
+                Title = "Report #" + id + " | **" + desc + "**",
+                Color = Discord.Color.DarkerGrey,
+                Description = "Created by " + characterData.character_name + " [" + player.Id + "]"
+            };
+
+            await DiscordIntegration.SendEmbed(report.discordChannelId, sendInChannel);
         }
 
         [Command("closereport", "~y~Use: ~w~/closereport")]
