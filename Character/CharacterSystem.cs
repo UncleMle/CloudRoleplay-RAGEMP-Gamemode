@@ -121,7 +121,6 @@ namespace CloudRP.Character
 
             int currentCharacters = getUsersCharacter(userData);
 
-
             if (currentCharacters >= userData.maxCharacters)
             {
                 uiHandling.sendPushNotifError(player, "You already have the maximum amount of characters", 5600);

@@ -15,6 +15,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using static CloudRP.Authentication.Account;
@@ -67,9 +68,10 @@ namespace CloudRP.Admin
             
             AdminUtils.sendMessageToAllStaff($"{characterData.character_name} [{player.Id}] has created a new report with ID {id}");
             CommandUtils.successSay(player, $"Created report with id {id}. Staff have been alerted.");
-            ulong discordRef = await DiscordSystems.addAReport(report, id);
+            await DiscordSystems.addAReport(report, id);
 
-            report.discordRefId = discordRef;
+            string msgUri = DiscordUtils.getRedirectUri(report.discordRefId);
+            await DiscordIntegration.SendMessage(report.discordChannelId, $"A new report has been created by {characterData.character_name} | Title: **{title}** | Description: **{desc}** | To close this report react with {DiscordIntegration.closeReaction} here {msgUri}", false);
         }
 
         [Command("closereport", "~y~Use: ~w~/closereport")]

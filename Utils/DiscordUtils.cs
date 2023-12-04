@@ -1,6 +1,7 @@
 ﻿using CloudRP.AntiCheat;
 using CloudRP.Character;
 using CloudRP.Database;
+using CloudRP.DiscordSystem;
 using Discord;
 using GTANetworkAPI;
 using Integration;
@@ -94,12 +95,24 @@ namespace CloudRP.Utils
         {
             await DiscordIntegration.SendMessage(DiscordSystem.DiscordSystems.staffChannel, Discord.MentionUtils.MentionUser(userId), false);
         }
+
+        public static string getRedirectUri(ulong refId)
+        {
+            string msgUri = $"https://discord.com/channels/{DiscordSystems.guildId}/{DiscordSystems.staffChannel}/{refId}";
+            return msgUri;
+        }
     }
 
     public enum LogCreation
     {
         Join = 1,
         Leave = 0
+    }
+
+    public class CreateReport
+    {
+        public ulong? channelId { get; set; }
+        public ulong? msgId { get; set; }
     }
 
     public class Command

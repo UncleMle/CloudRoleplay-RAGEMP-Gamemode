@@ -77,11 +77,7 @@ namespace Integration
                         {
                             IUserMessage mesg = await reactData.DownloadAsync();
 
-                            Console.WriteLine(mesg.Id + "");
-
                             Report validReport = AdminSystem.activeReports.Where(rep => rep.discordRefId == mesg.Id).FirstOrDefault();
-
-                            Console.WriteLine(validReport != null ? "Valid report" : "isnotvlaid");
 
                             if (validReport != null)
                             {
@@ -181,20 +177,15 @@ namespace Integration
             {
                 try
                 {
-                    NAPI.Task.Run(async () =>
-                    {
-                        SocketGuild guild = discord.GetGuild(DiscordSystems.guildId);
-                        
-                        RestTextChannel newChannel = await guild.CreateTextChannelAsync($"Report {report.title} #{AdminSystem.activeReports.IndexOf(report)}", tcp => tcp.CategoryId = 1046822067833683988);
-                        report.discordChannelId = newChannel.Id;
-                        await newChannel.AddPermissionOverwriteAsync(guild.EveryoneRole, OverwritePermissions.DenyAll(newChannel));
-                    });
+                    SocketGuild guild = discord.GetGuild(DiscordSystems.guildId);
+
+                    RestTextChannel newChannel = await guild.CreateTextChannelAsync($"Report {report.title} #{AdminSystem.activeReports.IndexOf(report)}", tcp => tcp.CategoryId = 1046822067833683988);
+                    report.discordChannelId = newChannel.Id;
+                    await newChannel.AddPermissionOverwriteAsync(guild.EveryoneRole, OverwritePermissions.DenyAll(newChannel));
                 }
                 catch
                 {
-
                 }
-
             }
         }       
         
@@ -273,29 +264,33 @@ namespace Integration
             }
         }
 
-        public static async Task<ulong?> SendEmbed(ulong discordChannelID, EmbedBuilder embed, bool isReport = false)
+        public static async Task SendEmbed(ulong discordChannelID, EmbedBuilder embed, Report report = null)
         {
-            ISocketMessageChannel channel = (ISocketMessageChannel)discord.GetChannel(discordChannelID);
-            ulong msgId;
-
-            if(channel != null)
+            try
             {
-                IUserMessage msg =  await channel.SendMessageAsync(null, false, embed.Build());
-                
-                if(isReport)
+                NAPI.Task.Run(async () =>
                 {
-                    IEmote[] reactions = { joinReaction, closeReaction };
-                    msg.AddReactionsAsync(reactions);
-                }
-                msgId = msg.Id;
-            }
-            else
-            {
-                ThrowErrorMessage("Object reference not set to an instance of an object\nFailed to find a discord channel with the 'discordChannelID' you provided");
-                return null;
-            }
+                    ISocketMessageChannel channel = (ISocketMessageChannel)discord.GetChannel(discordChannelID);
+                    if (channel != null)
+                    {
+                        IUserMessage msg = await channel.SendMessageAsync(null, false, embed.Build());
 
-            return msgId;
+                        if (report != null)
+                        {
+                            IEmote[] reactions = { joinReaction, closeReaction };
+                            msg.AddReactionsAsync(reactions);
+                            report.discordRefId = msg.Id;
+                        }
+                    }
+                    else
+                    {
+                        ThrowErrorMessage("Object reference not set to an instance of an object\nFailed to find a discord channel with the 'discordChannelID' you provided");
+                    }
+                });
+            } catch
+            {
+
+            }
         }
 
         private static async Task OnReady()

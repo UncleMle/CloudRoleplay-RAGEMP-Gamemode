@@ -277,7 +277,7 @@ namespace CloudRP.DiscordSystem
             await DiscordIntegration.SendEmbed(staffChannel, builder);
         }
 
-        public static async Task<ulong> addAReport(Report report, int reportId)
+        public static async Task addAReport(Report report, int reportId)
         {
             await DiscordIntegration.createAReportChannel(report);
 
@@ -309,10 +309,7 @@ namespace CloudRP.DiscordSystem
                 playerData.IsInline = false;
             });
 
-            ulong? msgId = await DiscordIntegration.SendEmbed(staffChannel, builder, true);
-            Console.WriteLine(msgId + "<-- RID");
-
-            return (ulong)(msgId ?? null);
+            await DiscordIntegration.SendEmbed(staffChannel, builder, report);
         }
 
         public static async Task successEmbed(ulong userId, string success, ulong channelId)
@@ -347,8 +344,6 @@ namespace CloudRP.DiscordSystem
             int rid = AdminSystem.activeReports.IndexOf(report);
 
             if (discordUser.IsBot || !AdminSystem.activeReports.Contains(report)) return;
-
-            Console.WriteLine(reaction.Emote.GetHashCode() + " ____ " + DiscordIntegration.closeReaction.GetHashCode());
 
             if(reaction.Emote.GetHashCode() == DiscordIntegration.closeReaction.GetHashCode())
             {
@@ -401,7 +396,7 @@ namespace CloudRP.DiscordSystem
 
             if(!report.discordAdminsHandling.Contains(admin.Id))
             {
-                string msgUri = $"https://discord.com/channels/{guildId}/{staffChannel}/{report.discordRefId}";
+                string msgUri = DiscordUtils.getRedirectUri(report.discordRefId);
                 await DiscordIntegration.SendMessage(report.discordChannelId, "You must react to the report message to gain access to this report. (" + msgUri + ")");
                 return;
             }
