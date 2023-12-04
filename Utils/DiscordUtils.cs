@@ -92,7 +92,7 @@ namespace CloudRP.Utils
 
         public static async Task mentionUser(ulong userId)
         {
-            DiscordIntegration.SendMessage(DiscordSystem.DiscordSystems.staffChannel, Discord.MentionUtils.MentionUser(userId), false);
+            await DiscordIntegration.SendMessage(DiscordSystem.DiscordSystems.staffChannel, Discord.MentionUtils.MentionUser(userId), false);
         }
     }
 

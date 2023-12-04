@@ -61,24 +61,34 @@ namespace Integration
             }
         }
 
-        private static Task OnReactionRecieved(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
+        private static Task OnReactionRecieved(Cacheable<IUserMessage, ulong> reactData, ISocketMessageChannel channel, SocketReaction reaction)
         {
             if (IsSetupCompleted)
             {
-                NAPI.Task.Run(() =>
+                NAPI.Task.Run(async () =>
                 {
                     try
                     {
-                        if (g_lstSubscribedChannels.Contains(channel.Id) && !message.Value.Author.IsBot)
+                        if (g_lstSubscribedChannels.Contains(channel.Id))
                         {
-                            Console.WriteLine("User " + message.Value.Author.Username + " reacted with " + (reaction.Emote.Equals(tickReaction) ? "tick" : "close"));
+                            IUserMessage mesg = await reactData.DownloadAsync();
+
+                            if (mesg == null) return;
+
+                            string voteType = "vote --> " + (reaction.Emote.Equals(tickReaction) ? "tick" : "downvote");
+
+                            Console.WriteLine("a user reacted user: " + mesg.Author.Username + " ---> " + reaction.User + voteType);
                         }
                     }
-                    catch
+                    catch 
                     {
-
+                        
                     }
                 });
+
+                Task task = Task.Run(() => { });
+
+                return task;
             }
             return null;
         }
@@ -95,8 +105,6 @@ namespace Integration
                         {
                             if (message.Content.Length > 0 && !message.Author.IsBot)
                             {
-                                Console.WriteLine(message.Reference.MessageId + " <-- msg id");
-
                                 string start = message.Content[..1];
 
                                 if (DiscordSystems.discordPrefix != start) return;
@@ -109,9 +117,12 @@ namespace Integration
                     }
                     catch
                     {
-
                     }
                 });
+
+                Task task = Task.Run(() => { });
+
+                return task;
             }
             return null;
         }
@@ -152,7 +163,7 @@ namespace Integration
                 
                 if(isReport)
                 {
-                    await msg.AddReactionsAsync(reportMessageReacts);
+                    msg.AddReactionsAsync(reportMessageReacts);
                 }
                 msgId = msg.Id;
             }

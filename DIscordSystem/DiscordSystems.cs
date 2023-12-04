@@ -220,6 +220,8 @@ namespace CloudRP.DiscordSystem
 
         public static async Task helpCommand(string[] args, SocketUser user)
         {
+            await DiscordUtils.mentionUser(user.Id);
+
             EmbedBuilder builder = new EmbedBuilder
             {
                 Title = "Help Command",
@@ -237,7 +239,6 @@ namespace CloudRP.DiscordSystem
                 });
             }
 
-            await DiscordUtils.mentionUser(user.Id);
             await DiscordIntegration.SendEmbed(staffChannel, builder);
         }
 
