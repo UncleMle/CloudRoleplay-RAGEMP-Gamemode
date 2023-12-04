@@ -283,7 +283,7 @@ namespace CloudRP.DiscordSystem
             EmbedBuilder builder = new EmbedBuilder
             {
                 Color = Discord.Color.Red,
-                Title = "Report " + reportId,
+                Title = "Report " + reportId + " " + DiscordUtils.getRedirectUri(report.discordChannelId),
                 Description = report.description
             };
 
@@ -304,7 +304,7 @@ namespace CloudRP.DiscordSystem
                 playerData.Name = "Player ID";
                 playerData.Value = report.playerReporting.Id;
             });
-
+            
             await DiscordIntegration.SendEmbed(staffChannel, builder, report);
         }
 
@@ -399,7 +399,7 @@ namespace CloudRP.DiscordSystem
 
             string toPlayer = ChatUtils.reports + admin.Username + ChatUtils.red +" says: " + ChatUtils.White + message.Content;
 
-            await successEmbed(admin.Id, "Player recieved message.", report.discordChannelId);
+            await message.AddReactionAsync(DiscordIntegration.joinReaction);
             NAPI.Chat.SendChatMessageToPlayer(reportingPlayer, toPlayer);
         }
 

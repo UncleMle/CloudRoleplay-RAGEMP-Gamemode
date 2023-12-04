@@ -96,9 +96,9 @@ namespace CloudRP.Utils
             await DiscordIntegration.SendMessage(DiscordSystem.DiscordSystems.staffChannel, Discord.MentionUtils.MentionUser(userId), false);
         }
 
-        public static string getRedirectUri(ulong refId)
+        public static string getRedirectUri(ulong channelId)
         {
-            string msgUri = $"https://discord.com/channels/{DiscordSystems.guildId}/{DiscordSystems.staffChannel}/{refId}";
+            string msgUri = $"https://discord.com/channels/{DiscordSystems.guildId}/{DiscordSystems.staffChannel}/{channelId}";
             return msgUri;
         }
     }

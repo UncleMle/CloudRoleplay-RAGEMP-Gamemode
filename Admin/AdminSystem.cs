@@ -117,7 +117,13 @@ namespace CloudRP.Admin
 
             if (report != null)
             {
-                await DiscordIntegration.SendMessage(report.discordChannelId, characterData.character_name + $"[{player.Id}]" + message);
+                if(report.discordAdminsHandling.Count == 0)
+                {
+                    CommandUtils.errorSay(player, "You must wait until your report is accepted to use this command.");
+                    return;
+                }
+
+                await DiscordIntegration.SendMessage(report.discordChannelId, characterData.character_name + $" [{player.Id}] " + "**says:** " + message);
                 NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.reports + $"You {ChatUtils.grey}say:{ChatUtils.White} " + message);
                 return;
             }
