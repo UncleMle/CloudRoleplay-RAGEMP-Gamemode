@@ -213,5 +213,6 @@ namespace CloudRP.Utils
         public User[] adminsHandling { get; set; }
         public long timeCreated { get; set; } = CommandUtils.generateUnix();
         public bool closed { get; set; }
+        public ulong discordRefId { get; set; }
     }
 }

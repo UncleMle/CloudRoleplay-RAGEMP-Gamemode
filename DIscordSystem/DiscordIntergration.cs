@@ -69,6 +69,8 @@ namespace Integration
                         {
                             if (message.Content.Length > 0 && !message.Author.IsBot)
                             {
+                                Console.WriteLine(message.Reference.MessageId + " <-- msg id");
+
                                 string start = message.Content[..1];
 
                                 if (DiscordSystems.discordPrefix != start) return;
@@ -116,19 +118,23 @@ namespace Integration
             }
         }
 
-        public static async Task SendEmbed(ulong discordChannelID, EmbedBuilder embed)
+        public static async Task<ulong?> SendEmbed(ulong discordChannelID, EmbedBuilder embed)
         {
             ISocketMessageChannel channel = (ISocketMessageChannel)discord.GetChannel(discordChannelID);
+            ulong msgId;
 
             if(channel != null)
             {
-                await channel.SendMessageAsync(null, false, embed.Build());
+                IUserMessage msg =  await channel.SendMessageAsync(null, false, embed.Build());
+                msgId = msg.Id;
             }
             else
             {
                 ThrowErrorMessage("Object reference not set to an instance of an object\nFailed to find a discord channel with the 'discordChannelID' you provided");
-                return;
+                return null;
             }
+
+            return msgId;
         }
 
         private static async Task OnReady()

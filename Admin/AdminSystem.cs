@@ -14,6 +14,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using static CloudRP.Authentication.Account;
 
@@ -37,14 +38,24 @@ namespace CloudRP.Admin
         }
 
         [Command("report", "~r~/report [title] [description]", GreedyArg = true)]
-        public void onReport(Player player, string title, string desc)
+        public async Task onReport(Player player, string title, string desc)
         {
             User userData = PlayersData.getPlayerAccountData(player);
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
             if (userData == null || characterData == null) return;
 
-            if(activeReports.Where(rep => rep.playerReporting == player).ToList().Count > _maxReports)
+            int reportsMadeByPlayer = 0;
+
+            foreach(Report findRep in activeReports)
+            {
+                if(findRep.playerReporting.Equals(player))
+                {
+                    reportsMadeByPlayer++;
+                }
+            }
+
+            if(reportsMadeByPlayer >= _maxReports)
             {
                 CommandUtils.errorSay(player, "You already have two reports active. Use /closereport [id] to close.");
                 return;
@@ -52,6 +63,7 @@ namespace CloudRP.Admin
 
             Report report = new Report
             {
+                playerReporting = player,
                 characterData = characterData,
                 userData = userData,
                 description = desc,
@@ -64,7 +76,9 @@ namespace CloudRP.Admin
             
             AdminUtils.sendMessageToAllStaff($"{characterData.character_name} [{player.Id}] has created a new report with ID {id}");
             CommandUtils.successSay(player, $"Created report with id {id}. Staff have been alerted.");
-            DiscordSystems.addReportEmbed(report, id);
+            ulong discordRef = await DiscordSystems.addReportEmbed(report, id);
+
+            report.discordRefId = discordRef;
         }
 
         [Command("aduty", "~r~/aduty")]

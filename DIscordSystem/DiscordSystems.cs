@@ -37,7 +37,7 @@ namespace CloudRP.DiscordSystem
             try
             {
                 staffChannel = ulong.Parse(Environment.GetEnvironmentVariable(staffChannelIdentifer));
-                staffChannel = ulong.Parse(Environment.GetEnvironmentVariable(reportAlertChannelIdentifier));
+                reportAlertChannel = ulong.Parse(Environment.GetEnvironmentVariable(reportAlertChannelIdentifier));
             }
             catch
             {
@@ -265,8 +265,9 @@ namespace CloudRP.DiscordSystem
             await DiscordIntegration.SendEmbed(staffChannel, builder);
         }
 
-        public static async Task addReportEmbed(Report report, int reportId)
+        public static async Task<ulong> addReportEmbed(Report report, int reportId)
         {
+            DiscordIntegration.SendMessage(staffChannel, $"A new report was created by {report.characterData.character_name} with id {reportId}");
             EmbedBuilder builder = new EmbedBuilder
             {
                 Color = Discord.Color.Red,
@@ -295,7 +296,9 @@ namespace CloudRP.DiscordSystem
                 playerData.IsInline = false;
             });
 
-            DiscordIntegration.SendEmbed(staffChannel, builder);
+            ulong? msgId = await DiscordIntegration.SendEmbed(staffChannel, builder);
+
+            return (ulong)(msgId ?? null);
         }
 
         public static async Task successEmbed(ulong userId, string success)
