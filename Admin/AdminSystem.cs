@@ -1126,7 +1126,7 @@ namespace CloudRP.Admin
             else AdminUtils.sendNoAuth(player);
         }
 
-        [Command("banchar", "~r~/banchar [characterName]")]
+        [Command("banchar", "~r~/banchar [characterName]", Alias = "bancharacter", GreedyArg = true)]
         public void banCharacter(Player player, string characterName)
         {
             User userData = PlayersData.getPlayerAccountData(player);
@@ -1137,14 +1137,33 @@ namespace CloudRP.Admin
 
                 if(bannedCharacter)
                 {
-                    AdminUtils.staffSay(player, "You banned character " + characterName +" !");
+                    AdminUtils.staffSay(player, "You banned character " + characterName +"!");
                 } else
                 {
                     CommandUtils.errorSay(player, "Specified character was not found.");
                 }
 
             }
+        }        
+        
+        [Command("unbanchar", "~r~/unbanchar [characterName]", Alias = "unbancharacter", GreedyArg = true)]
+        public void unbanCharacter(Player player, string characterName)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
 
+            if(AdminUtils.checkUserData(player, userData))
+            {
+                bool hasUnBanCharacter = AdminUtils.unBanCharacter(characterName);
+
+                if(hasUnBanCharacter)
+                {
+                    AdminUtils.staffSay(player, "You unbanned character " + characterName +"!");
+                } else
+                {
+                    CommandUtils.errorSay(player, "Specified character ban was not found.");
+                }
+
+            }
         }
     }
 }

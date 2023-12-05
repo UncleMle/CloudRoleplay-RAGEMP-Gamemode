@@ -261,12 +261,39 @@ namespace CloudRP.Utils
                     }
 
                     findCharacter.character_isbanned = 1;
+                    
+                    dbContext.Update(findCharacter);
+                    dbContext.SaveChanges();
+
                     return true;
-                } 
+                } else
+                {
+                    return false;
+                }
             }
+        }       
+        
+        public static bool unBanCharacter(string characterName)
+        {
+            string charName = CommandUtils.getCharName(characterName);
 
-            return false;
+            using (DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                DbCharacter findCharacter = dbContext.characters.Where(character => characterName.ToLower() == charName).FirstOrDefault(); 
 
+                if(findCharacter != null)
+                {
+                    findCharacter.character_isbanned = 0;
+                    
+                    dbContext.Update(findCharacter);
+                    dbContext.SaveChanges();
+
+                    return true;
+                } else
+                {
+                    return false;
+                }
+            }
         }
     }
 
