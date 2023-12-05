@@ -683,6 +683,12 @@ namespace CloudRP.Admin
                     return;
                 }
 
+                if(dimension == Auth._startDimension)
+                {
+                    CommandUtils.errorSay(player, "This dimension is restricted.");
+                    return;
+                }
+
                 characterData.player_dimension = dimension;
                 getPlayer.Dimension = dimension;
 
@@ -1081,10 +1087,43 @@ namespace CloudRP.Admin
                 {
                     CommandUtils.errorSay(player, "Vehicle couldn't be found.");
                 }
-
             }
-
         }
 
+        [Command("ha", "~r~/headadmin [message]", Alias = "headadmin")]
+        public void headAdminChat(Player player, string message)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if (userData.adminLevel > (int)AdminRanks.Admin_SeniorAdmin)
+            {
+                Dictionary<Player, Dictionary<User, DbCharacter>> adminGroup = AdminUtils.gatherAdminGroupAbove(AdminRanks.Admin_SeniorAdmin);
+
+                string adminRank = AdminUtils.getColouredAdminRank(userData);
+                string prefix = ChatUtils.red + "[HA+] " + ChatUtils.White;
+
+                foreach (KeyValuePair<Player, Dictionary<User, DbCharacter>> admin in adminGroup)
+                {
+                    NAPI.Chat.SendChatMessageToPlayer(admin.Key, prefix + adminRank + userData.adminName + ChatUtils.red + " says: " + ChatUtils.White + message);
+                }
+            }
+            else AdminUtils.sendNoAuth(player);
+        }
+
+        [Command("setw", "~r~/setw [weather]")]
+        public void setweather(Player player, Weather weather)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if (userData.adminLevel > (int)AdminRanks.Admin_SeniorAdmin)
+            {
+                NAPI.World.SetWeather(weather);
+
+                AdminUtils.staffSay(player, "Set weather to " + weather);
+
+            }
+            else AdminUtils.sendNoAuth(player);
+
+        }
     }
 }

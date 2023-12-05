@@ -213,7 +213,28 @@ namespace CloudRP.Utils
                     NAPI.Chat.SendChatMessageToPlayer(entry.Key, message);
                 }
             }
+        }
 
+        public static Dictionary<Player, Dictionary<User, DbCharacter>> gatherAdminGroupAbove(AdminRanks adminRank)
+        {
+            List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
+            Dictionary<Player, Dictionary<User, DbCharacter>> adminGroup = new Dictionary<Player, Dictionary<User, DbCharacter>>;
+
+            foreach(Player player in onlinePlayers)
+            {
+                User playerData = PlayersData.getPlayerAccountData(player);
+                DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+
+                if(playerData != null && characterData != null && playerData.adminLevel > (int)adminRank)
+                {
+                    adminGroup.Add(player, new Dictionary<User, DbCharacter>
+                    {
+                        { playerData, characterData }
+                    });
+                }
+            }
+
+            return adminGroup;
         }
     }
 
