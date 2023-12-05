@@ -7,6 +7,7 @@ namespace CloudRP.Utils
     internal class ChatUtils
     {
         public static string CloudBlue = "!{#67b1e6}";
+        public static string CloudBlueLight = "!{#accafa}";
         public static string White = "!{white}";
         public static string grey = "!{grey}";
         public static string orange = "!{orange}";

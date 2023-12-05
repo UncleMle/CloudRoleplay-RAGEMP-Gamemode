@@ -62,13 +62,13 @@ namespace CloudRP.Utils
             return onlineStaff;
         }
 
-        public static string getColouredAdminRank(User user)
+        public static string getColouredAdminRank(User user, bool hasBrackets = true)
         {
             string adminRank = RankList.adminRanksList[user.adminLevel];
             string adminRankColour = "!{" + RankList.adminRanksColours[user.adminLevel] + "}";
 
 
-            return $"{adminRankColour}[{adminRank}] " + "!{white}";
+            return $"{adminRankColour} {(hasBrackets ? "[" : "")}{adminRank}{(hasBrackets ? "]" : "")} " + ChatUtils.White;
         }
 
         public static void staffSay(Player player, string message)
@@ -242,7 +242,7 @@ namespace CloudRP.Utils
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
-                DbCharacter findCharacter = dbContext.characters.Where(character => characterName.ToLower() == charName).FirstOrDefault(); 
+                DbCharacter findCharacter = dbContext.characters.Where(character => characterName.ToLower() == charName.ToLower()).FirstOrDefault(); 
 
                 if(findCharacter != null)
                 {
