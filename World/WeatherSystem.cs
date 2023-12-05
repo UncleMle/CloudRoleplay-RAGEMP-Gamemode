@@ -11,7 +11,7 @@ namespace CloudRP.World
     class WeatherSystem : Script
     {
         private static Timer syncWeatherTimer;
-        private static int timerInterval_seconds = 25;
+        private static int timerInterval_seconds = 600;
         private static int interval_delay_seconds = 5;
         public static string weatherKeyIdentifier = "weatherApiKey";
         public static string weatherSyncTo = "la";
@@ -32,10 +32,12 @@ namespace CloudRP.World
 
                 syncWeatherTimer.AutoReset = true;
                 syncWeatherTimer.Enabled = true;
+
+                resyncWeather();
             }, interval_delay_seconds * 1000);
         }
 
-        public static async void resyncWeather(object source, ElapsedEventArgs e)
+        public static async void resyncWeather(object source = null, ElapsedEventArgs e = null)
         {
             try
             {
@@ -87,7 +89,7 @@ namespace CloudRP.World
                     break;
             }
 
-            ChatUtils.formatConsolePrint("Set weather to " +  code, ConsoleColor.Cyan);
+            ChatUtils.formatConsolePrint( ChatUtils._c_Server + "Set weather to " +  code, ConsoleColor.Cyan);
         }
     }
 }
