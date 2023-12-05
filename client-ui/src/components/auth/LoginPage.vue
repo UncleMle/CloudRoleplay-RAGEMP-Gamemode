@@ -69,7 +69,7 @@
 
                                 <div class="p-6 font-medium border rounded-3xl border-gray-500 mt-6 shadow-2xl">
 
-                                    <div v-if="item.isBanned" class="flex justify-center bg-red-500/40 p-3 rounded-lg shadow-xl shadow-red-500/10">
+                                    <div v-if="item.character_isbanned" class="flex justify-center bg-red-500/40 p-3 rounded-lg shadow-xl shadow-red-500/10">
                                         Character is banned
                                     </div>
 
@@ -101,7 +101,10 @@
                                             <td>{{ formatDate(item.CreatedDate) }}</td>
                                         </tr>
                                     </table>
-                                    <button @click="playCharacter(item.character_name)" class="border p-2 w-full mt-10 rounded-lg border-gray-500 hover:border-green-500 duration-300"><i class="fa-solid fa-play"></i></button>
+                                    <button :disabled="item.character_isbanned == 1" @click="playCharacter(item.character_name)" class="border p-2 w-full mt-10 rounded-lg border-gray-500 duration-300" :class="item.character_isbanned == 1 ? 'hover:border-red-500' : 'hover:border-green-500'">
+                                        <i v-if="item.character_isbanned == 1" class="fa-solid fa-xmark text-red-500"></i>
+                                        <i v-else class="fa-solid fa-play"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
