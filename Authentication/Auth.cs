@@ -25,6 +25,7 @@ namespace CloudRP.Authentication
 {
     internal class Auth : Script
     {
+        public static Dictionary<Player, string> collectedAutoLoginKeys = new Dictionary<Player, string>();
         public static uint _startDimension = 20;
         public static string _startAdminPed = "ig_mp_agent14";
         public static string _emailUserEnv = "emailUser";
@@ -49,7 +50,7 @@ namespace CloudRP.Authentication
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
-                Account findAccount = dbContext.accounts.Where(b => b.username == userCredentials.username).FirstOrDefault();
+                Account findAccount = dbContext.accounts.Where(b => b.username == userCredentials.username.ToLower()).FirstOrDefault();
 
                 if(findAccount != null)
                 {
@@ -186,7 +187,7 @@ namespace CloudRP.Authentication
                 social_club_id = player.SocialClubId,
                 CreatedDate = DateTime.Now,
                 UpdatedDate = DateTime.Now,
-                username = registeringData.registerUsername,
+                username = registeringData.registerUsername.ToLower(),
                 user_ip = player.Address,
                 vip_status = 0,
                 admin_status = (int)AdminRanks.Admin_None,
@@ -249,6 +250,13 @@ namespace CloudRP.Authentication
 
                 using(DefaultDbContext dbContext = new DefaultDbContext())
                 {
+                    Account validateKey = dbContext.accounts.Where(acc => acc.auto_login_key == autoLoginKey).FirstOrDefault();
+
+                    if(validateKey != null && !collectedAutoLoginKeys.ContainsKey(player))
+                    {
+                        collectedAutoLoginKeys.Add(player, autoLoginKey);
+                    }
+
                     findAccount = dbContext.accounts.Where(acc => acc.user_ip == player.Address && acc.auto_login == 1 && acc.auto_login_key == autoLoginKey && acc.client_serial == player.Serial && acc.ban_status == 0).FirstOrDefault();
 
 

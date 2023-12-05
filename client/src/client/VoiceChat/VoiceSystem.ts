@@ -1,6 +1,7 @@
 import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
 import { CharacterData } from "../@types";
-import { _control_ids } from "../Constants/Constants";
+import { _control_ids, _sharedCharacterDataIdentifier } from "../Constants/Constants";
+import getTargetCharacterData from "@/PlayerMethods/getTargetCharacterData";
 
 class VoiceSystem {
 	public static Localplayer: PlayerMp;
@@ -21,6 +22,9 @@ class VoiceSystem {
 		mp.keys.bind(VoiceSystem.VoiceChatKey, false, () => VoiceSystem.toggleVoice(true));
 		mp.keys.bind(VoiceSystem.VoiceChatKey, true, () => VoiceSystem.toggleVoice(false));
 
+		mp.events.add("entityStreamOut", VoiceSystem.handleStreamOut);
+		mp.events.add("entityStreamIn", VoiceSystem.handleStreamIn);
+		mp.events.addDataHandler(_sharedCharacterDataIdentifier, VoiceSystem.handleDataHandler);
 		mp.events.add("playerQuit", VoiceSystem.handlePlayerLeave);
 		mp.events.add("render", VoiceSystem.handleRender);
 
@@ -64,6 +68,34 @@ class VoiceSystem {
 				scale: [1.2, 1.2],
 				outline: true
 			  });
+		}
+	}
+
+	public static handleDataHandler(entity: EntityMp, characterData: CharacterData) {
+		if(entity.type != "player" || !characterData) return;
+
+		if(!characterData.voiceChatState) {
+			(entity as PlayerMp).playFacialAnim("mic_chatter", "mp_facial");
+		}
+	}
+
+	public static handleStreamOut(entity: EntityMp) {
+		if(entity.type != "player") return;
+
+		let characterData: CharacterData | undefined = getTargetCharacterData(entity as PlayerMp);
+
+		if(!characterData?.voiceChatState) {
+			(entity as PlayerMp).playFacialAnim("mood_normal_1", "facials@gen_male@variations@normal");
+		}
+	}
+
+	public static handleStreamIn(entity: EntityMp) {
+		if(entity.type != "player") return;
+
+		let characterData: CharacterData | undefined = getTargetCharacterData(entity as PlayerMp);
+
+		if(!characterData?.voiceChatState) {
+			(entity as PlayerMp).playFacialAnim("mic_chatter", "mp_facial");
 		}
 	}
 

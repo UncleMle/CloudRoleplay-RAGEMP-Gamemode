@@ -1,16 +1,23 @@
 <template>
     <main>
-        <div class="fixed inset-0 w-full text-white text-lg">
+        <div class="fixed inset-0 w-full text-white text-lg duration-300">
             <div class="duration-300 container flex items-center max-w-3xl mx-auto" :class="characterSelectionState && characters.length > 1 ? 'mt-20' : 'mt-52'">
                 <div class="flex justify-center w-full">
-                    <div class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
+                    <div class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none duration-300">
 
                         <div class="border-b-2 border-gray-400">
                             <div class="p-4 relative h-14">
 
-                                <div class="absolute left-10">
-                                    <i class="fa-solid fa-shield absolute mt-1.5 text-gray-400"></i>
-                                    <h1 class="flex justify-start text-xl font-bold ml-6">Authentication {{ authState }}</h1>
+                                <div class="absolute left-10 duration-300">
+                                    <span v-if="!characterSelectionState">
+                                        <i class="fa-solid fa-shield absolute mt-1.5 text-gray-400"></i>
+                                        <h1 class="flex justify-start text-xl font-bold ml-6">Authentication</h1>
+                                    </span>
+                                    <span v-else>
+                                        <i class="fa-solid fa-person absolute mt-1.5 text-gray-400"></i>
+                                        <i class="fa-solid fa-person-dress absolute mt-1.5 ml-3 text-gray-400"></i>
+                                        <h1 class="flex justify-start text-xl font-bold ml-8">Character Selection</h1>
+                                    </span>
                                 </div>
 
                                 <button @click="createCharacter" v-if="characterSelectionState" class="absolute right-10 font-medium hover:text-green-500 duration-300">
@@ -110,7 +117,7 @@
                         </div>
 
 
-                        <div v-if="showRegister && !showOtp && !characterSelectionState" class="p-8">
+                        <div v-if="showRegister && !showOtp && !characterSelectionState" class="p-8 duration-300">
                             <div>
 
                                 <label class="block">

@@ -35,6 +35,7 @@ namespace CloudRP.Database
 
     public class BaseEntity
     {
+        public string key_uuid = Guid.NewGuid().ToString();
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
     }
