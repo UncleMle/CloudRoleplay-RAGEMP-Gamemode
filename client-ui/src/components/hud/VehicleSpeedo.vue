@@ -1,5 +1,5 @@
 <template>
-    <div v-if="uiStates.speedoUi" class="mt-[28vw] ml-[80vw] text-white font-medium ">
+    <div v-if="uiStates.speedoUi" class="absolute right-60 bottom-20 text-white font-medium ">
         <div class="w-full flex justify-center text-4xl">
             <h2 style="text-shadow: rgb(0, 0, 0) 3px 0 16px;">
                 <i>{{ uiStates.vehicleSpeedoData.vehicleSpeed }}</i> <span class="text-gray-400 text-xl">KM/H</span>

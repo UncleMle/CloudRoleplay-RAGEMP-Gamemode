@@ -14,7 +14,7 @@ class VehicleSpeedo {
     }
 
     public static handleEnter(vehicle: VehicleMp, seat: number) {
-        if(seat == 0 || seat == 1) {
+        if(seat == -1 || seat == 0) {
             BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
                 _stateKey: "speedoUi",
                 status: true
@@ -23,12 +23,10 @@ class VehicleSpeedo {
     }
 
     public static handleLeave(vehicle: VehicleMp, seat: number) {
-        if(seat == 0 || seat == 1) {
-            BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
-                _stateKey: "speedoUi",
-                status: false
-            })`);
-        }
+        BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
+            _stateKey: "speedoUi",
+            status: false
+        })`);
     }
 
     public static handleRender() {
