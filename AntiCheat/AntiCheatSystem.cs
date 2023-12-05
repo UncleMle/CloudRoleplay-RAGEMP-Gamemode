@@ -3,10 +3,13 @@ using CloudRP.Character;
 using CloudRP.DiscordSystem;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
+using CloudRP.World;
 using GTANetworkAPI;
 using Integration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,6 +18,7 @@ namespace CloudRP.AntiCheat
     class AntiCheatSystem : Script
     {
         public static double _alertRadius = 45.5;
+        public static string vpnApiKeyIdentifier = "vpnApiKey";
 
         [ServerEvent(Event.PlayerDisconnected)]
         public void OnPlayerDisconnect(Player player, DisconnectionType type, string reason)
@@ -30,8 +34,28 @@ namespace CloudRP.AntiCheat
         }
 
         [ServerEvent(Event.PlayerConnected)]
-        public void OnPlayerConnected(Player player)
+        public async void OnPlayerConnected(Player player)
         {
+            try
+            {
+                string uri = $"https://vpnapi.io/api/{player.Address}?key={Environment.GetEnvironmentVariable(vpnApiKeyIdentifier)}";
+
+                HttpClient client = new HttpClient();
+
+                string response = await client.GetStringAsync(uri);
+
+                IPAddressInfo data = JsonConvert.DeserializeObject<IPAddressInfo>(response);
+
+                if(data.security.vpn || data.security.proxy)
+                {
+                    player.Kick();
+                }
+            }
+            catch
+            {
+
+            }
+
             sleepClient(player);
         }
 

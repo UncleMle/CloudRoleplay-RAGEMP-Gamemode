@@ -39,9 +39,11 @@ namespace CloudRP.World
         {
             try
             {
+                string uri = "https://api.weatherapi.com/v1/current.json?key=";
+
                 HttpClient client = new HttpClient();
 
-                string response = await client.GetStringAsync(weatherApiKey + weatherSyncTo);
+                string response = await client.GetStringAsync(uri + weatherApiKey + "&q=" + weatherSyncTo);
 
                 WeatherData data = JsonConvert.DeserializeObject<WeatherData>(response);
 

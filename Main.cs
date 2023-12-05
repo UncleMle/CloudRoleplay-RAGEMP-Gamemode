@@ -1,4 +1,5 @@
-﻿using CloudRP.Authentication;
+﻿using CloudRP.AntiCheat;
+using CloudRP.Authentication;
 using CloudRP.Database;
 using CloudRP.Utils;
 using CloudRP.World;
@@ -25,6 +26,7 @@ namespace CloudRP
             Environment.SetEnvironmentVariable(DiscordSystem.DiscordSystems.discordReportCategoryIdentifier, Env._discordReportCategory);
             Environment.SetEnvironmentVariable(DiscordSystem.DiscordSystems.reportAlertChannelIdentifier, Env._discordReportAlertChannel);
             Environment.SetEnvironmentVariable(WeatherSystem.weatherKeyIdentifier, Env._weatherApiKey);
+            Environment.SetEnvironmentVariable(AntiCheatSystem.vpnApiKeyIdentifier, Env._vpnApiKey);
             
             NAPI.Server.SetCommandErrorMessage(defaultErrorMessage);
             NAPI.World.SetWeather(defaultWeather);

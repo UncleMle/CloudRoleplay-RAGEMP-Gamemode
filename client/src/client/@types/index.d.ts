@@ -4,6 +4,9 @@ declare global {
 		browserInstance: BrowserMp;
 		browserCurrentState: string;
 		isListening: boolean;
+		__attachments: Attachment;
+		__attachmentObjects: any;
+		__attMgrData: any;
 	}
 }
 
@@ -168,4 +171,12 @@ export interface Minimap {
 	bottomY: number;
 	rightX: number | null;
 	topY: number | null;
+}
+
+export interface Attachment {
+	id: number,
+	model: number,
+	offset: number,
+	rotation: number,
+	boneName: string
 }
