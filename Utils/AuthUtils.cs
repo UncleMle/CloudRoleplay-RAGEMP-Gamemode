@@ -13,6 +13,7 @@ using System.Linq;
 using GTANetworkAPI;
 using CloudRP.Character;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Runtime.InteropServices;
 
 namespace CloudRP.Utils
 {
@@ -184,7 +185,6 @@ namespace CloudRP.Utils
                     return false;
                 }
 
-
                 Account findWithUser = dbContext.accounts.Where(acc => acc.username == registeringData.registerUsername).FirstOrDefault();
                 if (findWithUser != null)
                 {
@@ -192,11 +192,9 @@ namespace CloudRP.Utils
                     return false;
                 }
 
-                string autoLoginKey = Auth.collectedAutoLoginKeys.Where(keys => keys.Key == player).First().Value;
+                Account hasAccount = dbContext.accounts.Where(acc => acc.user_ip == player.Address || acc.social_club_id == player.SocialClubId || acc.client_serial == player.Serial).FirstOrDefault();
 
-                Account hasAccount = dbContext.accounts.Where(acc => acc.user_ip == player.Address || acc.social_club_id == player.SocialClubId || acc.client_serial == player.Serial || autoLoginKey == acc.auto_login_key).FirstOrDefault();
-            
-                if(hasAccount != null)
+                if (hasAccount != null)
                 {
                     uiHandling.sendPushNotifError(player, "You already have an account.", 5500, true);
                     return false;
