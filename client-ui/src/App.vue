@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <div class="absolute text-red-500 font-medium">
-            {{ uiStates }} | Cloud RP V 1.2
+            {{ uiStates }} {{ serverData }} | Cloud RP V 1.2
         </div>
         <ChatBox v-if="guiState" />
         <PushNotification class="bg-red-200" ref="notification" />
@@ -26,7 +26,8 @@ export default {
         computed: {
             ...mapGetters({
                 guiState: 'getGuiStatus',
-                uiStates: 'getUiStates'
+                uiStates: 'getUiStates',
+                serverData: 'getPlayerCharacters'
             })
         },
         mounted() {

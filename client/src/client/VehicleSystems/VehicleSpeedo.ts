@@ -11,7 +11,7 @@ class VehicleSpeedo {
 
     public static handleRender() {
         if(VehicleSpeedo.LocalPlayer.vehicle && BrowserSystem._browserInstance) {
-            BrowserSystem._browserInstance.execute(`appSys.commit("playerMutationSetter", {
+            BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
                 _stateKey: "speedoUi",
                 status: true
             })`);
