@@ -1090,7 +1090,7 @@ namespace CloudRP.Admin
             }
         }
 
-        [Command("ha", "~r~/headadmin [message]", Alias = "headadmin")]
+        [Command("ha", "~r~/headadmin [message]", Alias = "headadmin", GreedyArg = true)]
         public void headAdminChat(Player player, string message)
         {
             User userData = PlayersData.getPlayerAccountData(player);

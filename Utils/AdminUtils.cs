@@ -218,7 +218,7 @@ namespace CloudRP.Utils
         public static Dictionary<Player, Dictionary<User, DbCharacter>> gatherAdminGroupAbove(AdminRanks adminRank)
         {
             List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
-            Dictionary<Player, Dictionary<User, DbCharacter>> adminGroup = new Dictionary<Player, Dictionary<User, DbCharacter>>;
+            Dictionary<Player, Dictionary<User, DbCharacter>> adminGroup = new Dictionary<Player, Dictionary<User, DbCharacter>>();
 
             foreach(Player player in onlinePlayers)
             {

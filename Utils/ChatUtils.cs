@@ -17,6 +17,7 @@ namespace CloudRP.Utils
         public static string _c_DiscordSystem = "[Discord] ";
         public static string _c_DeathSystem = "[Death] ";
         public static string _c_Hospital = "[Hospital] ";
+        public static string _c_Server = "[Server] ";
         public static string yellow = "!{yellow}";
         public static string red = "!{red}";
         public static string Success = "!{#61d480}[Success] " + White;

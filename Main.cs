@@ -1,21 +1,20 @@
 ﻿using CloudRP.Authentication;
 using CloudRP.Database;
 using CloudRP.Utils;
+using CloudRP.World;
 using GTANetworkAPI;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Linq;
-using static CloudRP.Authentication.Account;
 
 namespace CloudRP
 {
     public class Main : Script
     {
+        public static Weather defaultWeather = Weather.XMAS;
+        public static string defaultErrorMessage = ChatUtils.error + " specified command could not be found. Use /help to view available commands.";
+
         [ServerEvent(Event.ResourceStart)]
         public void Start()
         {
-            Console.WriteLine("Gamemode started");
-
             Environment.SetEnvironmentVariable(Auth._emailUserEnv, Env._gmailSmtpUser);
             Environment.SetEnvironmentVariable(Auth._emailPassEnv, Env._gmailSmtpPass);
             Environment.SetEnvironmentVariable(DiscordSystem.DiscordSystems.tokenIdentifier, Env._discordToken);
@@ -25,8 +24,11 @@ namespace CloudRP
             Environment.SetEnvironmentVariable(DiscordSystem.DiscordSystems.guildIdIdentifier, Env._discordGuildId);
             Environment.SetEnvironmentVariable(DiscordSystem.DiscordSystems.discordReportCategoryIdentifier, Env._discordReportCategory);
             Environment.SetEnvironmentVariable(DiscordSystem.DiscordSystems.reportAlertChannelIdentifier, Env._discordReportAlertChannel);
-
-            NAPI.Server.SetCommandErrorMessage(ChatUtils.error + " specified command could not be found. Use /help to view available commands.");
+            Environment.SetEnvironmentVariable(WeatherSystem.weatherKeyIdentifier, Env._weatherApiKey);
+            
+            NAPI.Server.SetCommandErrorMessage(defaultErrorMessage);
+            NAPI.World.SetWeather(defaultWeather);
+            ChatUtils.formatConsolePrint(ChatUtils._c_Server + " Gamemode has started", ConsoleColor.Cyan);
         }
     }
 }
