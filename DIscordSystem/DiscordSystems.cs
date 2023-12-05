@@ -11,15 +11,11 @@ using Discord;
 using Discord.WebSocket;
 using GTANetworkAPI;
 using Integration;
-using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Timers;
-using VisualStudioConfiguration;
-using static System.Collections.Specialized.BitVector32;
 
 namespace CloudRP.DiscordSystem
 {
@@ -381,7 +377,10 @@ namespace CloudRP.DiscordSystem
 
                 if (!report.discordAdminsHandling.Contains(discordUser.Id))
                 {
-                    NAPI.Chat.SendChatMessageToPlayer(reportingPlayer, ChatUtils.reports + $"Admin {discordUser.Username} joined the report.");
+                    string sendTo = ChatUtils.reports + $"Admin {discordUser.Username} joined the report.";
+
+                    NAPI.Chat.SendChatMessageToPlayer(reportingPlayer, sendTo);
+                    AdminUtils.sendToAdminsHandlingReport(report, sendTo, reportingPlayer);
                     report.discordAdminsHandling.Add(discordUser.Id);
                 }
             }
@@ -389,6 +388,8 @@ namespace CloudRP.DiscordSystem
 
         public static async Task closeAReport(Report report, bool shouldAlertAdmins = false)
         {
+            AdminUtils.sendToAdminsHandlingReport(report, ChatUtils.reports + "This report was closed.", report.playerReporting);
+
             await DiscordIntegration.removeAMessage(reportAlertChannel, report.discordRefId);
             AdminSystem.activeReports.Remove(report);
             await DiscordIntegration.removeAChannel(report.discordChannelId);
@@ -418,6 +419,7 @@ namespace CloudRP.DiscordSystem
 
             await message.AddReactionAsync(DiscordIntegration.joinReaction);
             NAPI.Chat.SendChatMessageToPlayer(reportingPlayer, toPlayer);
+            AdminUtils.sendToAdminsHandlingReport(report, toPlayer, reportingPlayer);
         }
 
     }

@@ -1,19 +1,33 @@
+import { AdminRanks } from "@/enums";
 import { UserData } from "../@types";
-import { _TEXT_R_WHITE, _sharedCharacterDataIdentifier } from '../Constants/Constants';
+import { _TEXT_R_WHITE, _control_ids, _sharedCharacterDataIdentifier } from '../Constants/Constants';
 import getTargetData from "../PlayerMethods/getTargetData";
 import getUserData from "../PlayerMethods/getUserData";
 
 class AdminSystem {
 	public static userData: UserData | undefined;
 	public static LocalPlayer: PlayerMp;
+	public static viewReportsEvent: string = "server:viewReports";
 
 	constructor() {
 		AdminSystem.LocalPlayer = mp.players.local;
 
 
+		mp.keys.bind(_control_ids.F9, false, AdminSystem.viewActiveReports);
+
 		mp.events.add("render", AdminSystem.renderTextOnScreen);
 		mp.events.add("entityStreamIn", AdminSystem.handleEntityStream);
 		mp.events.addDataHandler('PlayerAccountData', AdminSystem.handleFlyStart);
+	}
+
+	public static viewActiveReports() {
+		let userData: UserData | undefined = getUserData();
+
+		if(!userData) return;
+
+		if(userData.adminLevel > AdminRanks.admin_None) {
+			mp.events.callRemote(AdminSystem.viewReportsEvent);
+		}
 	}
 
 	public static handleFlyStart(entity: EntityMp, value: UserData): void {

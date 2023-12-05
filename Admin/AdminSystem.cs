@@ -113,6 +113,7 @@ namespace CloudRP.Admin
             }
         }
 
+        [RemoteEvent("server:viewReports")]
         [Command("reports", "~r~/reports")]
         public void viewReports(Player player)
         {
@@ -122,7 +123,7 @@ namespace CloudRP.Admin
             {
                 if(activeReports.Count == 0)
                 {
-                    CommandUtils.errorSay(player, "There are currently no active reports.");
+                    uiHandling.sendPushNotifError(player, "There are currently no active reports.", 4300);
                     return;
                 }
 
@@ -222,7 +223,7 @@ namespace CloudRP.Admin
 
         }
 
-        [Command("rr", "~r~Use: ~w~/rr [message]", GreedyArg = true)]
+        [Command("rr", "~r~Use: ~w~/rr [message]", GreedyArg = true, Alias = "reportrespond")]
         public async Task reportResponse(Player player, string message)
         {
             User userData = PlayersData.getPlayerAccountData(player);
@@ -238,7 +239,7 @@ namespace CloudRP.Admin
                 AdminUtils.sendToAdminsHandlingReport(handlingReport, ChatUtils.reports + ChatUtils.red + "[Admin] " + ChatUtils.White + userData.adminName + ChatUtils.grey + " says:" + ChatUtils.White + message, player);
                 NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.reports + $"You {ChatUtils.grey}say:{ChatUtils.White} " + message);
                 NAPI.Chat.SendChatMessageToPlayer(handlingReport.playerReporting, ChatUtils.reports + $"{ChatUtils.red}[Admin] {ChatUtils.White}{userData.adminName} {ChatUtils.grey}says:{ChatUtils.White} " + message);
-                DiscordIntegration.SendMessage(handlingReport.discordChannelId, "``[ADMIN]`` " + userData.adminName + " **says:** " + message, false);
+                await DiscordIntegration.SendMessage(handlingReport.discordChannelId, "``[ADMIN]`` " + userData.adminName + " **says:** " + message, false);
                 return;
             }
 
@@ -250,6 +251,7 @@ namespace CloudRP.Admin
                     return;
                 }
 
+                AdminUtils.sendToAdminsHandlingReport(report, ChatUtils.reports + $"{characterData.character_name} [{player.Id}]" + ChatUtils.grey + " says: " + ChatUtils.White + message, player);
                 await DiscordIntegration.SendMessage(report.discordChannelId, characterData.character_name + $" [{player.Id}] " + "**says:** " + message);
                 NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.reports + $"You {ChatUtils.grey}say:{ChatUtils.White} " + message);
                 return;
