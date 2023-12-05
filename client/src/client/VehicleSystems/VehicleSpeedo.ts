@@ -8,7 +8,27 @@ class VehicleSpeedo {
     constructor() {
         VehicleSpeedo.LocalPlayer = mp.players.local;
 
+        mp.events.add("playerEnterVehicle", VehicleSpeedo.handleEnter);
+        mp.events.add("playerLeaveVehicle", VehicleSpeedo.handleLeave);
         mp.events.add("render", VehicleSpeedo.handleRender);
+    }
+
+    public static handleEnter(vehicle: VehicleMp, seat: number) {
+        if(seat == 0 || seat == 1) {
+            BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
+                _stateKey: "speedoUi",
+                status: true
+            })`);
+        }
+    }
+
+    public static handleLeave(vehicle: VehicleMp, seat: number) {
+        if(seat == 0 || seat == 1) {
+            BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
+                _stateKey: "speedoUi",
+                status: false
+            })`);
+        }
     }
 
     public static handleRender() {
@@ -23,18 +43,8 @@ class VehicleSpeedo {
             }
 
             BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
-                _stateKey: "speedoUi",
-                status: true
-            })`);
-
-            BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
                 _stateKey: "vehicleSpeedoData",
                 status: ${JSON.stringify(speedoData)}
-            })`);
-        } else {
-            BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
-                _stateKey: "speedoUi",
-                status: false
             })`);
         }
     }
