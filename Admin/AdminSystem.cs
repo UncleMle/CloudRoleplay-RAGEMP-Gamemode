@@ -508,6 +508,7 @@ namespace CloudRP.Admin
             }
         }
 
+        [RemoteEvent("admin:fly")]
         [Command("fly", "~r~/fly")]
         public void fly(Player player)
         {
@@ -1123,6 +1124,26 @@ namespace CloudRP.Admin
 
             }
             else AdminUtils.sendNoAuth(player);
+        }
+
+        [Command("banchar", "~r~/banchar [characterName]")]
+        public void banCharacter(Player player, string characterName)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(AdminUtils.checkUserData(player, userData))
+            {
+                bool bannedCharacter = AdminUtils.banCharacter(characterName);
+
+                if(bannedCharacter)
+                {
+                    AdminUtils.staffSay(player, "You banned character " + characterName +" !");
+                } else
+                {
+                    CommandUtils.errorSay(player, "Specified character was not found.");
+                }
+
+            }
 
         }
     }

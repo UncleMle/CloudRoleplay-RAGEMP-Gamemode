@@ -88,7 +88,6 @@ namespace CloudRP.Utils
                 return true;
             } else
             {
-                sendNoAuth(player);
                 return false;
             }
         }
@@ -235,6 +234,39 @@ namespace CloudRP.Utils
             }
 
             return adminGroup;
+        }
+
+        public static bool banCharacter(string characterName)
+        {
+            string charName = CommandUtils.getCharName(characterName);
+
+            using (DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                DbCharacter findCharacter = dbContext.characters.Where(character => characterName.ToLower() == charName).FirstOrDefault(); 
+
+                if(findCharacter != null)
+                {
+                    List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
+
+                    foreach(Player p in onlinePlayers)
+                    {
+                        DbCharacter pCharData = PlayersData.getPlayerCharacterData(p);
+
+                        if (pCharData != null && pCharData.character_id == findCharacter.character_id)
+                        {
+                            staffSay(p, "Your character has been character banned.");
+
+                            p.Kick();
+                        }
+                    }
+
+                    findCharacter.character_isbanned = 1;
+                    return true;
+                } 
+            }
+
+            return false;
+
         }
     }
 

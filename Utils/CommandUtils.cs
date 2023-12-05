@@ -107,6 +107,20 @@ namespace CloudRP.Utils
             return name.Replace("_", " ");
         }
 
+        public static string getCharName(string givenName)
+        {
+            string[] subs = givenName.Split(" ");
+
+            for (int i = 0; i < subs.Length; i++)
+            {
+                subs[i] = Char.ToUpper(subs[i][0]) + subs[i].Substring(1);
+            }
+
+            string name = string.Join("_", subs);
+
+            return name.ToLower();
+        }
+
         public static long generateUnix()
         {
             return DateTimeOffset.UtcNow.ToUnixTimeSeconds();

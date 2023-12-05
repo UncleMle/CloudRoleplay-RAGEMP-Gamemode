@@ -226,7 +226,7 @@ namespace CloudRP.Authentication
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
                     DbCharacter character = dbContext.characters.Where(b => b.character_name == name && b.owner_id == userData.accountId).FirstOrDefault();
-                    if (character == null) return;
+                    if (character == null || character?.character_isbanned == 1) return;
                     CharacterModel charModel = dbContext.character_models.Where(charModel => charModel.owner_id == character.character_id).FirstOrDefault();
                     if(charModel == null) return;
 

@@ -33,7 +33,8 @@ export const _control_ids = {
 	Space: 321,
 	LCtrl: 326,
 	RELOADBIND: 0x52,
-	NBIND: 78
+	NBIND: 78,
+	F4: 115
 };
 
 export const _config_flags = {

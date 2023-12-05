@@ -12,6 +12,7 @@ class AdminFly {
 	public static flightData: Flight;
 	public static updated: boolean;
 	public static gameControls: GamePadMp;
+	public static flyEvent: string = "admin:fly";
 
 	constructor() {
 		AdminFly.LocalPlayer = mp.players.local;
@@ -31,6 +32,17 @@ class AdminFly {
 		mp.events.add("render", AdminFly.handleFlyOnRender);
 		mp.events.add("admin:startFly", AdminFly.handleFlyStartup);
 		mp.events.add("admin:endFly", AdminFly.handleFlyEnd);
+
+		mp.keys.bind(_control_ids.F4, false, AdminFly.handleFlyClick);
+	}
+
+	public static handleFlyClick() {
+		let userData: UserData | undefined = getUserData();
+		if(!userData) return;
+
+		if(userData?.adminDuty || userData.adminLevel > AdminRanks.Admin_HeadAdmin) {
+			mp.events.callRemote(AdminFly.flyEvent);
+		}
 	}
 
 	public static handleFlyStartup() {
