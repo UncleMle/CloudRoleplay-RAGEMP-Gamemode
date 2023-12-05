@@ -21,7 +21,8 @@ const store = new Vuex.Store({
 			chatEnabled: false,
 			guiEnabled: true,
 			serverLoading: false,
-			speedoUi: false
+			speedoUi: false,
+			vehicleSpeedoData: {}
 		}
 	},
 	getters: {

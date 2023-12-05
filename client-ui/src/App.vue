@@ -5,6 +5,7 @@
         </div>
         <ChatBox v-if="guiState" />
         <PushNotification class="bg-red-200" ref="notification" />
+        <VehicleSpeedo class="absolute" ref="notification" />
 
 
         <router-view class="absolute" ref="routers">
@@ -13,15 +14,17 @@
 </template>
 
 <script>
-    import ChatBox from "./components/ui/ChatBox.vue";
-    import PushNotification from "./components/ui/PushNotification.vue";
-    import { mapGetters } from "vuex";
+import ChatBox from "./components/ui/ChatBox.vue";
+import PushNotification from "./components/ui/PushNotification.vue";
+import VehicleSpeedo from "./components/hud/VehicleSpeedo.vue";
+import { mapGetters } from "vuex";
 
 export default {
         name: 'App',
         components: {
             ChatBox,
-            PushNotification
+            PushNotification,
+            VehicleSpeedo
         },
         computed: {
             ...mapGetters({

@@ -180,3 +180,8 @@ export interface Attachment {
 	rotation: number,
 	boneName: string
 }
+
+export interface SpeedoData {
+	vehicleSpeed: string,
+	vehicleRpm: number
+}
