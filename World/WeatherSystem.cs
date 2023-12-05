@@ -14,7 +14,7 @@ namespace CloudRP.World
         private static int timerInterval_seconds = 600;
         private static int interval_delay_seconds = 5;
         public static string weatherKeyIdentifier = "weatherApiKey";
-        public static string weatherSyncTo = "la";
+        public static string weatherSyncTo = "london";
         public static string weatherApiKey;
 
         [ServerEvent(Event.ResourceStart)]
@@ -23,8 +23,6 @@ namespace CloudRP.World
             NAPI.Task.Run(() =>
             {
                 weatherApiKey = Environment.GetEnvironmentVariable(weatherKeyIdentifier);
-
-                Console.WriteLine(weatherApiKey);  
 
                 syncWeatherTimer = new Timer();
                 syncWeatherTimer.Interval = timerInterval_seconds * 1000;
