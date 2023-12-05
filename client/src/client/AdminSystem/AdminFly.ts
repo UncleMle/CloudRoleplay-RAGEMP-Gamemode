@@ -37,6 +37,8 @@ class AdminFly {
 	}
 
 	public static handleFlyClick() {
+		if(AdminFly.LocalPlayer.isTypingInTextChat) return;
+
 		let userData: UserData | undefined = getUserData();
 		if(!userData) return;
 

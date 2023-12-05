@@ -64,15 +64,15 @@ class VehicleInteraction {
 					else vehicle.setDoorShut(index, true);
 				})
 			}
-			
+
 		});
 	}
 
 	public static handleInteraction() {
-		if (!mp.gui.cursor.visible && VehicleInteraction.boneTarget && VehicleInteraction.boneTarget.pushTime + 1 >= Date.now() / 1000) {
+		if (!mp.gui.cursor.visible && !VehicleInteraction.LocalPlayer.isTypingInTextChat && VehicleInteraction.boneTarget && VehicleInteraction.boneTarget.pushTime + 1 >= Date.now() / 1000) {
 			VehicleInteraction.interactionHandler();
 		}
-		
+
 	}
 
 	public static interactionHandler() {
@@ -130,7 +130,7 @@ class VehicleInteraction {
 	public static checkInteractionRender(): boolean {
 		if (!VehicleInteraction.LocalPlayer.vehicle && !mp.gui.cursor.visible && VehicleInteraction.LocalPlayer.getVehicleIsTryingToEnter() == 0) {
 			return true;
-		} 
+		}
 		return false;
 	}
 

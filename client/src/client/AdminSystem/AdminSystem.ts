@@ -21,6 +21,8 @@ class AdminSystem {
 	}
 
 	public static viewActiveReports() {
+		if(AdminSystem.LocalPlayer.isTypingInTextChat) return;
+
 		let userData: UserData | undefined = getUserData();
 
 		if(!userData) return;

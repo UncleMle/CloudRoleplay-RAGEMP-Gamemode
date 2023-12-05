@@ -13,7 +13,7 @@ class VehicleEngine {
 	}
 
 	public static toggleEngine() {
-		if (VehicleEngine.LocalPlayer.vehicle) {
+		if (VehicleEngine.LocalPlayer.vehicle && !VehicleEngine.LocalPlayer.isTypingInTextChat) {
 			let vehicleData: VehicleData | undefined = getVehicleData(VehicleEngine.LocalPlayer.vehicle);
 			if (!vehicleData) return;
 

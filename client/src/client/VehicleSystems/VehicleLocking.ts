@@ -14,6 +14,7 @@ class VehicleLocking {
 	}
 
 	public static toggleVehicleLock() {
+		if(VehicleLocking.LocalPlayer.isTypingInTextChat) return;
 		let lockVehicle = getClosestVehicleInRange(VehicleLocking._lockVehicleRange);
 		if (!lockVehicle) return;
 

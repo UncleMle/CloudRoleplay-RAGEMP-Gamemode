@@ -43,7 +43,7 @@ class VehicleSiren {
 	}
 
 	public static toggleVehicleSiren() {
-		if (VehicleSiren.LocalPlayer.vehicle && VehicleSiren.LocalPlayer.vehicle.getClass() == VehicleSiren._emergencyClass) {
+		if (!VehicleSiren.LocalPlayer.isTypingInTextChat && VehicleSiren.LocalPlayer.vehicle && VehicleSiren.LocalPlayer.vehicle.getClass() == VehicleSiren._emergencyClass) {
 			let localPlayerVehicleData: VehicleData | undefined = getVehicleData(VehicleSiren.LocalPlayer.vehicle);
 			if (!localPlayerVehicleData) return;
 

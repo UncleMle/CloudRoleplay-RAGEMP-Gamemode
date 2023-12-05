@@ -9,7 +9,7 @@ class VehicleIndicators {
 
 	constructor() {
 		VehicleIndicators.LocalPlayer = mp.players.local;
-		
+
 		mp.events.add("entityStreamIn", VehicleIndicators.handleVehicleStreamIn);
 		mp.events.addDataHandler(_SHARED_VEHICLE_DATA, VehicleIndicators.handleDataHandler);
 
@@ -42,7 +42,7 @@ class VehicleIndicators {
 	}
 
 	public static handleVehicleIndicator(indicateId: number) {
-		if (VehicleIndicators.LocalPlayer.vehicle) {
+		if (VehicleIndicators.LocalPlayer.vehicle && !VehicleIndicators.LocalPlayer.isTypingInTextChat) {
 			let vehicleData: VehicleData | undefined = getVehicleData(VehicleIndicators.LocalPlayer.vehicle);
 			if (!vehicleData) return;
 

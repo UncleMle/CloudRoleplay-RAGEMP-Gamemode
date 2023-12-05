@@ -321,9 +321,10 @@ namespace CloudRP.Admin
                 foreach (KeyValuePair<Player, User> entry in onlineAdmins)
                 {
 
-                    NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.red + $"[Admin Chat] " + ChatUtils.White + colouredAdminRank + userData.adminName + ChatUtils.red +" says: " + ChatUtils.White + message);
+                    NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.red + $"[Admin Chat] " + ChatUtils.White + colouredAdminRank + userData.adminName + ChatUtils.red + " says: " + ChatUtils.White + message);
                 }
             }
+            else AdminUtils.sendNoAuth(player);
         }
 
         [Command("tpto", "~r~/tpto [nameOrId]", Alias = "goto")]
