@@ -76,6 +76,8 @@ class VoiceSystem {
 
 		if(!characterData.voiceChatState) {
 			(entity as PlayerMp).playFacialAnim("mic_chatter", "mp_facial");
+		} else {
+			(entity as PlayerMp).playFacialAnim("mood_normal_1", "facials@gen_male@variations@normal");
 		}
 	}
 
