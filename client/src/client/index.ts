@@ -20,6 +20,7 @@ import AntiCheat from "./AntiCheat/AntiCheatSystem";
 import AdminEsp from "./AdminSystem/AdminEsp";
 import VoiceSystem from "./VoiceChat/VoiceSystem";
 import DeathSystem from "./DeathSystem/DeathSystem";
+import VehicleSpeedo from "./VehicleSystems/VehicleSpeedo";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -44,3 +45,4 @@ new AntiCheat();
 new AdminEsp();
 new VoiceSystem();
 new DeathSystem();
+new VehicleSpeedo();

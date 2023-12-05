@@ -20,7 +20,8 @@ const store = new Vuex.Store({
 			characterSelection: false,
 			chatEnabled: false,
 			guiEnabled: true,
-			serverLoading: false
+			serverLoading: false,
+			speedoUi: false
 		}
 	},
 	getters: {
@@ -53,6 +54,9 @@ const store = new Vuex.Store({
 		},
 		getLoadingState: (state) => {
 			return state.uiStates.serverLoading;
+		},
+		getUiStates: (state) => {
+			return state.uiStates;
 		}
 	},
 	mutations: {
@@ -83,6 +87,9 @@ const store = new Vuex.Store({
 		},
 		setLoadingState: (state, { toggle }) => {
 			state.uiStates.serverLoading = toggle;
+		},
+		setUiState: (state, {_stateKey, status}) => {
+			state.uiStates[_stateKey] = status;
 		}
 	}
 });
