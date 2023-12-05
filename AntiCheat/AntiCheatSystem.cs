@@ -84,7 +84,7 @@ namespace CloudRP.AntiCheat
 
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
-            string suffix = (characterData != null ? "from " + characterData.character_name : $" Player") + $" [{player.Id}]" ;
+            string suffix = (characterData != null ? " from " + characterData.character_name : $" Player") + $" [{player.Id}]" ;
 
             ChatUtils.acSysPrint(message + suffix);
 

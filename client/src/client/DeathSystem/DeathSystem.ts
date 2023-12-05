@@ -8,7 +8,7 @@ class DeathSystem {
     public static _injuredIntervalUpdate_seconds: number = 10;
     public static _animCheck_seconds: number = 5;
     public static _injuredInterval: ReturnType<typeof setInterval> | undefined;
-    public static _saveInterval: ReturnType<typeof setInterval>;
+    public static _saveInterval: ReturnType<typeof setInterval> | undefined;
     public static injuredTimer: number;
     public static saveInjuredEvent: string = "server:saveInjuredTime";
     public static injuredAnim: string = "combat@damage@writheidle_a";
@@ -50,7 +50,7 @@ class DeathSystem {
             let characterData: CharacterData | undefined = getUserCharacterData();
             if(!characterData) return;
 
-            characterData.data.injured_timer <= 0 && DeathSystem._saveInterval ? clearInterval(DeathSystem._saveInterval) : DeathSystem.injuredTimer--;
+            characterData.data.injured_timer <= 0 && DeathSystem._saveInterval ? (clearInterval(DeathSystem._saveInterval), DeathSystem._saveInterval = undefined) : DeathSystem.injuredTimer--;
         }, 1000);
 
         DeathSystem._injuredInterval = setInterval(() => {
