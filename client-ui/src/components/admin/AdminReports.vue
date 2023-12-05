@@ -10,8 +10,8 @@
 
                     <CloseButton />
 
-                    <div class="">
-                        <table class="border-separate border-spacing-4 w-full font-normal">
+                    <div class="max-h-[35rem] overflow-scroll overflow-x-hidden">
+                        <table class="border-separate border-spacing-4 w-full font-normal h-20">
                             <thead>
                                 <tr>
                                     <th class="border-b-2 border-gray-500">Player</th>
@@ -21,7 +21,7 @@
                                 </tr>
                             </thead>
                             <tbody class="text-center">
-                                <tr v-for="item in reportData" :key="item">
+                                <tr v-for="item in reportData" :key="item" class="max-h-10">
                                     <td class="border-b-2 border-gray-500">Player [{{ item.playerId }}]</td>
                                     <td class="border-b-2 border-gray-500">Report [{{item.reportId}}]</td>
                                     <td class="border-b-2 border-gray-500 max-w-xs overflow-hidden text-ellipsis text-sm">{{ item.description }}</td>

@@ -103,7 +103,7 @@ namespace CloudRP.Admin
 
             if(findReport != null)
             {
-                CommandUtils.errorSay(player, "Your active report was closed.");
+                CommandUtils.successSay(player, "Your active report was closed.");
                 DiscordSystems.closeAReport(findReport);
                 return;
             }
@@ -133,7 +133,7 @@ namespace CloudRP.Admin
                     sharedReports.Add(new SharedReport
                     {
                         description = report.description,
-                        playerId = report.userData.playerId,
+                        playerId = report.playerReporting.Id,
                         reportId = activeReports.IndexOf(report)
                     });
                 }
