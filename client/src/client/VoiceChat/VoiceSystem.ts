@@ -26,7 +26,6 @@ class VoiceSystem {
 		mp.events.add("entityStreamIn", VoiceSystem.handleStreamIn);
 		mp.events.addDataHandler(_sharedCharacterDataIdentifier, VoiceSystem.handleDataHandler);
 		mp.events.add("playerQuit", VoiceSystem.handlePlayerLeave);
-		mp.events.add("render", VoiceSystem.handleRender);
 
 		setInterval(() => {
 			mp.players.forEachInStreamRange(player => {
@@ -58,17 +57,6 @@ class VoiceSystem {
 				}
 			});
 		}, 500);
-	}
-
-	public static handleRender() {
-		if(!mp.voiceChat.muted) {
-			mp.game.graphics.drawText("~g~[TALKING]", [0.5, 0.7], {
-				font: 4,
-				color: [255, 255, 255, 185],
-				scale: [1.2, 1.2],
-				outline: true
-			  });
-		}
 	}
 
 	public static handleDataHandler(entity: EntityMp, characterData: CharacterData) {

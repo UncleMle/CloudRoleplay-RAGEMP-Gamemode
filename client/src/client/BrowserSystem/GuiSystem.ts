@@ -1,4 +1,4 @@
-import { IS_RADAR_ENABLED, IS_RADAR_HIDDEN } from '@/Constants/Constants';
+import { IS_RADAR_ENABLED, IS_RADAR_HIDDEN, SET_TEXT_OUTLINE } from '@/Constants/Constants';
 import { UserData, CharacterData, StreetData, Minimap } from '../@types';
 import getTimeUnix from '../PlayerMethods/getTimeUnix';
 import getUserCharacterData from '../PlayerMethods/getUserCharacterData';
@@ -28,9 +28,8 @@ class GuiSystem {
 				GuiSystem.drawText(`~r~[Frozen]~w~`, [minimap.rightX + 0.01, minimap.bottomY - 0.150], 4, [255, 255, 255, 255], 0.55);
 			}
 			if(!characterData.voiceChatState) {
-				mp.gui.chat.push("rendered");
 				mp.game.graphics.requestStreamedTextureDict("mplobby", true);
-				mp.game.graphics.drawSprite("mplobby", "mp_charcard_stats_icons9", minimap.rightX + 0.01, minimap.bottomY - 0.130, 0.012, 0.012, 0, 255, 0, 0, 255, false);
+				mp.game.graphics.drawSprite("mplobby", "mp_charcard_stats_icons9", minimap.rightX + 0.04, minimap.bottomY - 0.100, 0.018, 0.018, 0, 0, 255, 100, 180, false);
 			}
 
 			GuiSystem.drawText(GuiSystem.getCompassDirection(), [minimap.rightX + 0.01, minimap.bottomY - 0.125], 4, [255, 255, 255, 255], 1);
@@ -78,6 +77,7 @@ class GuiSystem {
 		mp.game.ui.setTextFont(font);
 		mp.game.ui.setTextScale(scale, scale);
 		mp.game.ui.setTextColour(color[0], color[1], color[2], color[3]);
+		mp.game.ui.setTextDropShadow();
 
 		if (alignRight) {
 			mp.game.ui.setTextRightJustify(true);

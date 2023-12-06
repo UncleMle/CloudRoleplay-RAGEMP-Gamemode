@@ -5,7 +5,7 @@
         </div>
         <ChatBox class="absolute" v-if="guiState" />
         <PushNotification class="bg-red-200" ref="notification" />
-        <VehicleSpeedo class="absolute" />
+        <VehicleSpeedo />
         <PlayerHud class="relative" />
 
         <router-view class="absolute" ref="routers">

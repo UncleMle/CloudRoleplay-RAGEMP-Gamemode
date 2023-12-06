@@ -1,11 +1,11 @@
 <template>
-    <div v-if="uiStates.speedoUi" class="relative">
-        <div class="absolute right-28 top-[50rem] text-white font-medium">
+    <div v-if="uiStates.speedoUi">
+        <div class="absolute right-28 bottom-20 text-white font-medium">
             <div class="bg-black/60 rounded-3xl shadow-2xl shadow-black/50 w-[20rem]">
                 <div class="p-4">
                     <div class="w-full flex justify-center text-4xl p-3">
                         <h2 style="text-shadow: rgb(0, 0, 0) 3px 0 16px;">
-                            <i id="digitext">{{ uiStates.vehicleSpeedoData.vehicleSpeed }}</i> <span
+                            <i>{{ uiStates.vehicleSpeedoData.vehicleSpeed }}</i> <span
                                 class="text-gray-400 text-xl">KM/H</span>
                         </h2>
                     </div>
@@ -27,7 +27,7 @@
                             <i class="fa-solid fa-lock text-2xl"></i>
                         </div>
 
-                        <div :class="uiStates.vehicleSpeedoData.lightsStates.lightsOn ? 'text-green-300' : ''"
+                        <div :class="uiStates.vehicleSpeedoData.lightsStates.lightsOn || uiStates.vehicleSpeedoData.lightsStates.highbeamsOn ? 'text-green-300' : ''"
                             class="absolute right-12 mt-1">
                             <i class="fa-solid fa-lightbulb text-2xl"></i>
                         </div>
@@ -49,7 +49,7 @@
 
         </div>
 
-        <div class="bg-black/60 absolute right-28 w-[20rem] top-[42rem] text-white font-medium h-24 rounded-xl">
+        <div class="bg-black/60 absolute right-28 w-[20rem] bottom-[22rem] text-white font-medium h-24 rounded-xl">
             <div class="w-full text-center items-center h-full relative p-3">
                 <div class="bg-red-500 rounded-lg h-2">
                     <i class="fa-solid fa-gas-pump mt-3"></i> 100%
