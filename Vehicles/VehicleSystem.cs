@@ -608,12 +608,10 @@ namespace CloudRP.Vehicles
             }
         }
 
-        [RemoteEvent("server:removeFuel")]
-        public void removeVehicleFuel(Player player, float vehicleSpeed)
+        [RemoteEvent("server:updateVehicleFuel")]
+        public void removeVehicleFuel(Player player, double vehicleSpeed)
         {
-            int c = player.Vehicle.Class;
-
-            
+            Console.WriteLine(vehicleSpeed + " <- veh speed");
         }
 
 

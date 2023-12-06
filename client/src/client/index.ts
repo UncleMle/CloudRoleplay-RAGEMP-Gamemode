@@ -21,6 +21,7 @@ import AdminEsp from "./AdminSystem/AdminEsp";
 import VoiceSystem from "./VoiceChat/VoiceSystem";
 import DeathSystem from "./DeathSystem/DeathSystem";
 import VehicleSpeedo from "./VehicleSystems/VehicleSpeedo";
+import VehicleFuel from "./VehicleSystems/VehicleFuel";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -46,3 +47,4 @@ new AdminEsp();
 new VoiceSystem();
 new DeathSystem();
 new VehicleSpeedo();
+new VehicleFuel();
