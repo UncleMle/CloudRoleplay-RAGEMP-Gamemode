@@ -228,6 +228,7 @@ namespace CloudRP.Utils
         public uint playerDimension { get; set; }
         public int maxCharacters { get; set; }
         public bool triggerHandler { get; set; } = true;
+        public bool adminEsp { get; set; } = true;
     }
 
     class SharedDataAccount
@@ -241,6 +242,7 @@ namespace CloudRP.Utils
         public bool isFlying { get; set; }
         public bool isFrozen {get; set;}
         public bool isOnCharacterCreation { get; set; }
+        public bool adminEsp { get; set; }
     }
 
     class SharedDataCharacter

@@ -18,7 +18,8 @@ export interface UserData {
 	playerId: number,
 	username: string,
 	isFlying: boolean,
-	isFrozen: boolean
+	isFrozen: boolean,
+	adminEsp: boolean
 }
 
 export interface SubtractVector {

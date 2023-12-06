@@ -287,6 +287,7 @@ namespace CloudRP.Authentication
                 emailAddress = accountData.email_address,
                 adminPed = accountData.admin_ped,
                 maxCharacters = accountData.max_characters,
+                adminEsp = accountData.admin_esp
             };
 
             return user;

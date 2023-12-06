@@ -23,7 +23,7 @@ class AdminEsp {
 	public static handleRender() {
 		let userData: UserData | undefined = getUserData();
 
-		if (userData != null && userData.adminDuty) {
+		if (userData != null && userData.adminDuty && !userData.adminEsp) {
 			AdminEsp.renderPlayerEsp();
 			AdminEsp.renderVehiclesEsp();
 		}

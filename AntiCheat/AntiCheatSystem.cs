@@ -119,7 +119,7 @@ namespace CloudRP.AntiCheat
 
             if (exception != (int)AcExceptions.tpHack)
             {
-                await DiscordIntegration.SendMessage(DiscordSystems.staffChannel, message + suffix);
+               // await DiscordIntegration.SendMessage(DiscordSystems.staffChannel, message + suffix);
             }
         }
 

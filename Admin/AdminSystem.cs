@@ -91,6 +91,32 @@ namespace CloudRP.Admin
             await DiscordIntegration.SendEmbed(report.discordChannelId, sendInChannel);
         }
 
+        [Command("aesp", "~r~/asep")]
+        public void adminEspToggle(Player player)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(AdminUtils.checkUserData(player, userData))
+            {
+                userData.adminEsp = !userData.adminEsp;
+
+                PlayersData.setPlayerAccountData(player, userData);
+
+                using (DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    Account account = dbContext.accounts.Find(userData.accountId);
+
+                    if (account == null) return;
+
+                    account.admin_esp = userData.adminEsp;
+                }
+
+                AdminUtils.staffSay(player, $"You have {(userData.adminEsp ? "enabled" : "disabled")} admin esp.");
+
+            }
+
+        }
+
         [Command("closereport", "~y~Use: ~w~/closereport")]
         public void closeReport(Player player)
         {
