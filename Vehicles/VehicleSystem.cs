@@ -5,6 +5,7 @@ using CloudRP.Database;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
 using GTANetworkAPI;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -77,6 +78,8 @@ namespace CloudRP.Vehicles
                 dbContext.vehicles.Update(vehicle);
                 dbContext.SaveChanges();
             }
+
+            Console.WriteLine(vehicle.vehicle_fuel + " fuel level");
 
             veh.Locked = true;
             vehicle.vehicle_locked = true;
@@ -514,6 +517,8 @@ namespace CloudRP.Vehicles
         {
             if (!player.IsInVehicle) return;
 
+            if (player.VehicleSeat != 0) return;
+
             DbVehicle vehicleData = getVehicleData(player.Vehicle);
 
             if(vehicleData == null) return;
@@ -611,7 +616,35 @@ namespace CloudRP.Vehicles
         [RemoteEvent("server:updateVehicleFuel")]
         public void removeVehicleFuel(Player player, double vehicleSpeed)
         {
-            Console.WriteLine(vehicleSpeed + " <- veh speed");
+            Vehicle vehicle = player.Vehicle;
+            if (vehicle == null) return;
+            DbVehicle vehicleData = getVehicleData(player.Vehicle);
+
+            Console.WriteLine(player.Vehicle.Class);
+
+            Dictionary<int, double> fuelMultipliers = FuelMultipliers.fuelMultipliers;
+
+            bool completedRemoval = false;
+
+            foreach(KeyValuePair<int, double> multiplier in  fuelMultipliers)
+            {
+                if(multiplier.Key == player.Vehicle.Class)
+                {
+                    vehicleData.vehicle_fuel -= (vehicleSpeed * multiplier.Value);
+                    completedRemoval = true;
+                }
+            }
+
+            if(completedRemoval)
+            {
+                saveVehicleData(vehicle, vehicleData);
+
+                using(DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    dbContext.vehicles.Update(vehicleData);
+                    dbContext.SaveChanges();
+                }
+            }
         }
 
 

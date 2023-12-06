@@ -141,7 +141,8 @@ export interface VehicleData {
 	vehicle_doors: string[],
 	vehicle_windows: string[],
 	indicator_status: number,
-	vehicle_siren: boolean
+	vehicle_siren: boolean,
+	vehicle_fuel: number
 }
 
 export interface BoneData {
@@ -186,5 +187,6 @@ export interface SpeedoData {
 	vehicleRpm: number,
 	indicatorStatus: number,
 	lockStatus: boolean,
-	lightsStates: { lightsOn: boolean; highbeamsOn: boolean; }
+	lightsStates: { lightsOn: boolean; highbeamsOn: boolean; },
+	fuelLevel: number
 }

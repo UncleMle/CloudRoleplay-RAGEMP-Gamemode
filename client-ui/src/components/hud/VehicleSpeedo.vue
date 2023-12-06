@@ -51,12 +51,13 @@
 
         <div class="bg-black/60 absolute right-28 w-[20rem] bottom-[22rem] text-white font-medium h-24 rounded-xl">
             <div class="w-full text-center items-center h-full relative p-3">
-                <div class="bg-red-500 rounded-lg h-2">
-                    <i class="fa-solid fa-gas-pump mt-3"></i> 100%
+                <div class="bg-red-500 rounded-lg h-2" :style="{'width': uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) + '%'}">
                 </div>
-                <div class="bg-red-500 rounded-lg h-2 mt-9">
-                    <i class="fa-solid fa-gears mt-3"></i> 100%
+                <i class="fa-solid fa-gas-pump mt-3 "></i> {{uiStates.vehicleSpeedoData.fuelLevel.toFixed(0)}}%
+
+                <div class="bg-red-500 rounded-lg h-2 w-20">
                 </div>
+                <i class="fa-solid fa-gas-pump mt-3 "></i> {{uiStates.vehicleSpeedoData.fuelLevel.toFixed(0)}}%
             </div>
         </div>
     </div>

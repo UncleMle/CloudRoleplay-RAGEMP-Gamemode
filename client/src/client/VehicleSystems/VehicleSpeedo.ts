@@ -42,7 +42,8 @@ class VehicleSpeedo {
 				vehicleRpm: vehicleData.engine_status ? VehicleSpeedo.LocalPlayer.vehicle.rpm : 0,
 				indicatorStatus: vehicleData.indicator_status,
 				lockStatus: vehicleData.vehicle_locked,
-				lightsStates: lightState
+				lightsStates: lightState,
+                fuelLevel: vehicleData.vehicle_fuel
             }
 
             BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {

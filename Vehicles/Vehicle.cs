@@ -47,7 +47,7 @@ namespace CloudRP.Vehicles
 
         public int vehicle_garage_id { get; set; }
 
-        public float vehicle_fuel { get; set; } = 100;
+        public double vehicle_fuel { get; set; } = 100;
 
         // In game
         [NotMapped]

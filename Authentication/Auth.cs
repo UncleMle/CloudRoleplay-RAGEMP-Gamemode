@@ -119,15 +119,13 @@ namespace CloudRP.Authentication
 
             string otp = AuthUtils.generateString(4, true);
 
-            OtpStore otpStore = new OtpStore
+            player.SetData(_otpStoreKey, new OtpStore
             {
                 otp = otp,
                 otpTries = 0,
                 registeringData = registeringData,
                 unixMade = CommandUtils.generateUnix()
-            };
-
-            player.SetData(_otpStoreKey, otpStore);
+            });
 
             string otpContextEmail = $"Enter the OTP {otp} (This code is valid for 3 minutes)";
 

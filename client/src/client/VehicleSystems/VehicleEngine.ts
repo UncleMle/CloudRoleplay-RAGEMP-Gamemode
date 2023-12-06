@@ -4,6 +4,7 @@ import getVehicleData from "../PlayerMethods/getVehicleData";
 
 class VehicleEngine {
 	public static LocalPlayer: PlayerMp;
+	public static engineToggleEvent: string = "server:toggleEngine";
 
 	constructor() {
 		VehicleEngine.LocalPlayer = mp.players.local;
@@ -13,12 +14,11 @@ class VehicleEngine {
 	}
 
 	public static toggleEngine() {
-		if (VehicleEngine.LocalPlayer.vehicle && !VehicleEngine.LocalPlayer.isTypingInTextChat) {
+		if (VehicleEngine.LocalPlayer.vehicle && !VehicleEngine.LocalPlayer.isTypingInTextChat && VehicleEngine.LocalPlayer.vehicle.getPedInSeat(-1) == VehicleEngine.LocalPlayer.handle) {
 			let vehicleData: VehicleData | undefined = getVehicleData(VehicleEngine.LocalPlayer.vehicle);
 			if (!vehicleData) return;
 
-			mp.events.callRemote("server:toggleEngine");
-
+			mp.events.callRemote(VehicleEngine.engineToggleEvent);
 		}
 	}
 
