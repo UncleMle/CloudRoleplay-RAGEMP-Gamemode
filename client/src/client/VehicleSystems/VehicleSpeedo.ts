@@ -35,9 +35,14 @@ class VehicleSpeedo {
 
             if(!vehicleData) return;
 
+			let lightState = VehicleSpeedo.LocalPlayer.vehicle.getLightsState(1, 1);
+
             let speedoData: SpeedoData = {
                 vehicleSpeed: (VehicleSpeedo.LocalPlayer.vehicle.getSpeed() * 3.6).toFixed(0),
-                vehicleRpm: vehicleData.engine_status ? VehicleSpeedo.LocalPlayer.vehicle.rpm : 0,
+				vehicleRpm: vehicleData.engine_status ? VehicleSpeedo.LocalPlayer.vehicle.rpm : 0,
+				indicatorStatus: vehicleData.indicator_status,
+				lockStatus: vehicleData.vehicle_locked,
+				lightsStates: lightState
             }
 
             BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {

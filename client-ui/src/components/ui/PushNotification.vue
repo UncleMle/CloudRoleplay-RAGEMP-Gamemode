@@ -15,7 +15,6 @@ Vue.use(Toast, {
 });
 
 export default {
-  name: 'ThisNotifications',
   methods: {
     showNotification: function(text, progbar, dragbl, timeout, iconpic) {
       this.$toast(text, {

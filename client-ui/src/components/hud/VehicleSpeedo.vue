@@ -1,26 +1,63 @@
 <template>
-    <div v-if="uiStates.speedoUi" class="absolute right-60 bottom-20 text-white font-medium ">
-        <div class="w-full flex justify-center text-4xl">
-            <h2 style="text-shadow: rgb(0, 0, 0) 3px 0 16px;">
-                <i>{{ uiStates.vehicleSpeedoData.vehicleSpeed }}</i> <span class="text-gray-400 text-xl">KM/H</span>
-            </h2>
-        </div>
+    <div v-if="uiStates.speedoUi" class="relative">
+        <div class="absolute right-28 top-[50rem] text-white font-medium">
+            <div class="bg-black/60 rounded-3xl shadow-2xl shadow-black/50 w-[20rem]">
+                <div class="p-4">
+                    <div class="w-full flex justify-center text-4xl p-3">
+                        <h2 style="text-shadow: rgb(0, 0, 0) 3px 0 16px;">
+                            <i id="digitext">{{ uiStates.vehicleSpeedoData.vehicleSpeed }}</i> <span
+                                class="text-gray-400 text-xl">KM/H</span>
+                        </h2>
+                    </div>
 
-        <div class="w-full flex justify-center bg-black/50 mt-2 rounded-xl h-2">
-            <div :class="rpmColour" class="flex justify-start duration-300" :style="{'width': uiStates.vehicleSpeedoData.vehicleRpm * 100 + '%'}">
+                    <div v-if="uiStates.vehicleSpeedoData.vehicleRpm != 0" class="w-full flex justify-center bg-black/50 mt-2 rounded-xl h-2">
+                        <div :class="rpmColour" class="flex justify-start duration-300"
+                            :style="{ 'width': uiStates.vehicleSpeedoData.vehicleRpm * 100 + '%' }">
+                        </div>
+                    </div>
 
+                    <div class="h-10">
+                        <div :class="uiStates.vehicleSpeedoData.indicatorStatus == 0 ? 'animate-ping text-orange-400' : ''"
+                            class="absolute right-4">
+                            <i class="fa-solid fa-caret-right text-4xl"></i>
+                        </div>
+
+                        <div :class="uiStates.vehicleSpeedoData.lockStatus ? 'text-red-400' : ''"
+                            class="absolute left-12 mt-1">
+                            <i class="fa-solid fa-lock text-2xl"></i>
+                        </div>
+
+                        <div :class="uiStates.vehicleSpeedoData.lightsStates.lightsOn ? 'text-green-300' : ''"
+                            class="absolute right-12 mt-1">
+                            <i class="fa-solid fa-lightbulb text-2xl"></i>
+                        </div>
+
+                        <div :class="uiStates.vehicleSpeedoData.indicatorStatus == 1 ? 'animate-ping text-orange-400' : ''"
+                            class="absolute left-5">
+                            <i class="fa-solid fa-caret-left text-4xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="flex justify-center h-[3vw] mt-2 items-center border-t-2 border-gray-400" id="digitext">
+                    <div id="digitext" v-for="num in mileage" :key="mileage.indexOf(num)">
+                        <font class="border p-2 bg-black/70 border-gray-500">{{ num }}</font>
+                    </div>
+                </div>
             </div>
+
         </div>
 
-        <div class="flex w-[12vw] h-[3vw] mt-2 rounded-xl bg-black/50 items-center shadow-black/30 shadow-xl">
-            <p class="text-center w-full font-semibold text-2xl">
-                <i class="fa-solid fa-gears text-gray-400"></i>
-                100<span>%</span></p>
-        </div>
-        <div class="flex w-[12vw] h-[3vw] mt-4 rounded-xl bg-black/50 items-center shadow-black/30 shadow-xl">
-            <p class="text-center w-full font-semibold text-2xl">
-                <i class="fa-solid fa-gas-pump text-red-400"></i>
-                100<span>%</span></p>
+        <div class="bg-black/60 absolute right-28 w-[20rem] top-[42rem] text-white font-medium h-24 rounded-xl">
+            <div class="w-full text-center items-center h-full relative p-3">
+                <div class="bg-red-500 rounded-lg h-2">
+                    <i class="fa-solid fa-gas-pump mt-3"></i> 100%
+                </div>
+                <div class="bg-red-500 rounded-lg h-2 mt-9">
+                    <i class="fa-solid fa-gears mt-3"></i> 100%
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -29,26 +66,43 @@
 import { mapGetters } from 'vuex';
 
 export default {
+    data() {
+        return {
+            styleOne: "text-pink-500",
+            mileage: [0, 0, 0, 0, 0, 4]
+        }
+    },
     computed: {
         ...mapGetters({
             uiStates: 'getUiStates'
         }),
         rpmColour() {
             let vehSpeed = this.uiStates.vehicleSpeedoData.vehicleSpeed;
-            if(vehSpeed > 85) {
+            if (vehSpeed > 85) {
                 return "bg-red-600";
             }
-            if(vehSpeed > 70) {
+            if (vehSpeed > 70) {
                 return "bg-red-500";
             }
-            if(vehSpeed > 60) {
+            if (vehSpeed > 60) {
                 return "bg-red-300";
             }
-            if(vehSpeed > 30) {
+            if (vehSpeed > 30) {
                 return "bg-orange-300";
             }
             return "bg-green-400"
-        }
+        },
     }
 }
 </script>
+
+<style>
+@font-face {
+    font-family: "DS-DIGI";
+    src: url('../../assets/fonts/DS-DIGI.TTF');
+}
+
+#digitext {
+    font-family: "DS-DIGI";
+}
+</style>

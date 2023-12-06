@@ -3,10 +3,10 @@
         <div class="absolute text-red-500 font-medium">
             {{ uiStates }} {{ serverData }} | Cloud RP V 1.2
         </div>
-        <ChatBox v-if="guiState" />
+        <ChatBox class="absolute" v-if="guiState" />
         <PushNotification class="bg-red-200" ref="notification" />
-        <VehicleSpeedo class="absolute" ref="notification" />
-
+        <VehicleSpeedo class="absolute" />
+        <PlayerHud class="relative" />
 
         <router-view class="absolute" ref="routers">
         </router-view>
@@ -24,7 +24,7 @@ export default {
         components: {
             ChatBox,
             PushNotification,
-            VehicleSpeedo
+            VehicleSpeedo,
         },
         computed: {
             ...mapGetters({

@@ -183,5 +183,8 @@ export interface Attachment {
 
 export interface SpeedoData {
 	vehicleSpeed: string,
-	vehicleRpm: number
+	vehicleRpm: number,
+	indicatorStatus: number,
+	lockStatus: boolean,
+	lightsStates: { lightsOn: boolean; highbeamsOn: boolean; }
 }

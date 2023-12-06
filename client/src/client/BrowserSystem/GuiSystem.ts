@@ -27,6 +27,11 @@ class GuiSystem {
 			if(PlayerData.isFrozen) {
 				GuiSystem.drawText(`~r~[Frozen]~w~`, [minimap.rightX + 0.01, minimap.bottomY - 0.150], 4, [255, 255, 255, 255], 0.55);
 			}
+			if(!characterData.voiceChatState) {
+				mp.gui.chat.push("rendered");
+				mp.game.graphics.requestStreamedTextureDict("mplobby", true);
+				mp.game.graphics.drawSprite("mplobby", "mp_charcard_stats_icons9", minimap.rightX + 0.01, minimap.bottomY - 0.130, 0.012, 0.012, 0, 255, 0, 0, 255, false);
+			}
 
 			GuiSystem.drawText(GuiSystem.getCompassDirection(), [minimap.rightX + 0.01, minimap.bottomY - 0.125], 4, [255, 255, 255, 255], 1);
 			GuiSystem.drawText(`${mp.players.local.remoteId} | ${getTimeUnix()}`, [minimap.rightX + 0.01, minimap.bottomY - 0.075], 4, [255, 255, 255, 255], 0.60);
