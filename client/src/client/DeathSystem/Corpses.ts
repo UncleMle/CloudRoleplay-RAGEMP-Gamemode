@@ -38,8 +38,6 @@ class Corpses {
 			let corpseData: Corpse | null = Corpses.getCorpseData(entity.corpseId);
 			if (!corpseData) return;
 
-			mp.events.callRemote(Corpses.corpseValEvent, JSON.stringify(corpseData));
-
 			Corpses.initPed(entity, corpseData);
 		}, 500);
 	}
