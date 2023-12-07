@@ -11,6 +11,7 @@ declare global {
 
 	interface PedMp {
 		corpseId: number
+		corpseCharacterId: number
 	}
 }
 
@@ -197,9 +198,10 @@ export interface SpeedoData {
 }
 
 export interface Corpse {
-	remoteId: number,
 	characterName: string,
+	characterId: number,
 	model: CharacterModel,
 	corpseId: number,
-	position: Vector3
+	position: Vector3,
+	unixCreated: number
 }

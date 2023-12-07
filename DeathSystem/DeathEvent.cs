@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -21,6 +22,7 @@ namespace CloudRP.DeathSystem
         public static int _respawnTimeout_seconds = 3;
         public const int _deathTimer_seconds = 600;
         public static string corpseSharedKey = "corpsePed";
+        public static int _pedTimeout_seconds= 1800;
 
         [ServerEvent(Event.ResourceStart)]
         public void initEvents()
@@ -161,6 +163,35 @@ namespace CloudRP.DeathSystem
             initCorpses(player);
         }
 
+        [ServerEvent(Event.PlayerDisconnected)]
+        public static void playerDisconnect(Player player, DisconnectionType type, string reason)
+        {
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+
+            if(characterData == null) return;
+
+            foreach(Corpse corpse in corpses.ToList())
+            {
+                if(corpse.characterId == characterData.character_id)
+                {
+                    removeCorpse(corpse);
+                }
+            }
+        }
+
+        public static void removeCorpse(Corpse corpse)
+        {
+            corpses.Remove(corpse);
+
+            List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
+
+            foreach(Player player in onlinePlayers)
+            {
+                player.TriggerEvent("corpse:removeCorpse", corpse);
+            }
+
+        }
+
         public static void addCorpseToClients(Corpse corpse)
         {
             List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
@@ -173,7 +204,16 @@ namespace CloudRP.DeathSystem
 
         public static void initCorpses(Player player)
         {
-            player.TriggerEvent("corpse:setCorpses", JsonConvert.SerializeObject(corpses));
+            player.TriggerEvent("corpse:setCorpses", corpses);
+        }
+
+        [RemoteEvent("sync:corpseValidation")]
+        public static void validatePed(Player player, Corpse corpse)
+        {
+            if((CommandUtils.generateUnix() - corpse.unixCreated) > _pedTimeout_seconds)
+            {
+                removeCorpse(corpse);
+            }
         }
 
         public static void handleCorpseSet(Player player)
@@ -181,13 +221,14 @@ namespace CloudRP.DeathSystem
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
             if (characterData == null) return;
-            
+
             Corpse playerCorpse = new Corpse
             {
                 characterName = characterData.character_name,
                 model = characterData.characterModel,
-                remoteId = characterData.character_id,
-                position = player.Position
+                characterId = characterData.character_id,
+                position = player.Position,
+                unixCreated = CommandUtils.generateUnix()
             };
 
             corpses.Add(playerCorpse);
