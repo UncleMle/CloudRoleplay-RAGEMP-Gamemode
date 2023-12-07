@@ -1,3 +1,4 @@
+import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
 import { UserData, CharacterData } from "../@types";
 import { _TEXT_R_RED, _TEXT_R_WHITE } from '../Constants/Constants';
 import getTargetCharacterData from "../PlayerMethods/getTargetCharacterData";
@@ -7,6 +8,7 @@ class NameTags {
 	public static userData: UserData | undefined;
 	public static LocalPlayer: PlayerMp;
 	public static ScreenRes: GetScreenResolutionResult;
+	public static requestNickEvent: string = "server:requestPlayerNickname";
 
 	constructor() {
 		NameTags.LocalPlayer = mp.players.local;
@@ -14,6 +16,19 @@ class NameTags {
 
 		mp.nametags.enabled = false;
 		mp.events.add('render', NameTags.renderNametags);
+		mp.events.add('entityStreamIn', NameTags.handleStreamIn);
+		mp.events.add('set:nickName', NameTags.handleNickNameSet);
+	}
+
+	public static handleStreamIn(entity: PlayerMp) {
+		if(entity.type != "player" || !getUserCharacterData()) return;
+
+		mp.events.callRemote(NameTags.requestNickEvent, entity);
+	}
+
+	public static handleNickNameSet(entity: PlayerMp, name: string) {
+		if(entity.type != "player" || !getTargetCharacterData(entity)) return;
+		entity._nickName = name;
 	}
 
 	public static renderNametags() {
@@ -47,7 +62,7 @@ class NameTags {
 
 				let voiceState = (targetCharacterData.voiceChatState ? "" : "~g~");
 				let injuredState = (targetCharacterData.data.injured_timer > 0 ? "~r~(( INJURED )) ~w~\n" : "");
-				let DefaultTagContent = injuredState + voiceState + `[${Target.remoteId}] ${targetCharacterData.characterName.replace("_", " ")}`;
+				let DefaultTagContent = injuredState + voiceState + `${Target._nickName ? Target._nickName : "Player"} [${Target.remoteId}]`;
 
 				if (targetUserData.adminDuty) {
 					DefaultTagContent = `${_TEXT_R_RED}[ADMIN]${_TEXT_R_WHITE} ${voiceState} ${targetUserData.adminName}`;

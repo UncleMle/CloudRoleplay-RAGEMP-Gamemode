@@ -6,6 +6,7 @@ using CloudRP.Admin;
 using CloudRP.AntiCheat;
 using CloudRP.Authentication;
 using CloudRP.Character;
+using CloudRP.GeneralCommands;
 using CloudRP.Vehicles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -30,6 +31,7 @@ namespace CloudRP.Database
         public DbSet<Ban> bans { get; set; }
         public DbSet<CharacterModel> character_models { get; set; }
         public DbSet<CharacterConnection> server_connections { get; set; }
+        public DbSet<Nickname> nicknames { get; set; }
 
     }
 

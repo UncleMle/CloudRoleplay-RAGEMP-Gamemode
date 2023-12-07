@@ -7,6 +7,7 @@ declare global {
 		__attachments: Attachment;
 		__attachmentObjects: any;
 		__attMgrData: any;
+		_nickName: string;
 	}
 
 	interface PedMp {
