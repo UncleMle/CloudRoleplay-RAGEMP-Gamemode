@@ -1,7 +1,7 @@
-import { BoneData, VehicleData } from "../@types";
-import getVehicleData from "../PlayerMethods/getVehicleData";
-import distBetweenCoords from "../PlayerMethods/distanceBetweenCoords";
-import { _config_flags, _control_ids } from "../Constants/Constants";
+import { BoneData, VehicleData } from '../@types';
+import getVehicleData from '../PlayerMethods/getVehicleData';
+import distBetweenCoords from '../PlayerMethods/distanceBetweenCoords';
+import { _config_flags, _control_ids } from '../Constants/Constants';
 
 class VehicleInteraction {
 	public static LocalPlayer: PlayerMp;
@@ -12,10 +12,10 @@ class VehicleInteraction {
 	constructor() {
 		VehicleInteraction.LocalPlayer = mp.players.local;
 
-		mp.events.add("render", VehicleInteraction.handleInteractionRender);
+		mp.events.add('render', VehicleInteraction.handleInteractionRender);
 		mp.keys.bind(_control_ids.EBIND, false, VehicleInteraction.handleInteraction);
 
-		mp.events.add("playerLeaveVehicle", VehicleInteraction.syncOnExit);
+		mp.events.add('playerLeaveVehicle', VehicleInteraction.syncOnExit);
 	}
 
 	public static syncOnExit(vehicle: VehicleMp, seat: number) {
@@ -29,7 +29,7 @@ class VehicleInteraction {
 
 		if (VehicleInteraction.checkInteractionRender()) {
 			const raycast: RaycastResult | null = VehicleInteraction.getLocalTargetVehicle();
-			if (raycast == null || (raycast.entity as EntityMp).type != "vehicle") return;
+			if (raycast == null || (raycast.entity as EntityMp).type != 'vehicle') return;
 			VehicleInteraction.boneTarget = VehicleInteraction.getClosestBone(raycast);
 			const bonePos: Vector3 = (raycast.entity as EntityMp).getWorldPositionOfBone(VehicleInteraction.boneTarget.boneIndex);
 
@@ -40,14 +40,20 @@ class VehicleInteraction {
 				return;
 			}
 
-			let renderText: string = "~g~[E]~w~" + ` ${VehicleInteraction.boneTarget.locked ? `Close ${VehicleInteraction.names[VehicleInteraction.bones.indexOf(VehicleInteraction.boneTarget.name)]}` : `Open ${VehicleInteraction.names[VehicleInteraction.bones.indexOf(VehicleInteraction.boneTarget.name)]}`}`;
+			let renderText: string =
+				'~g~[E]~w~' +
+				` ${
+					VehicleInteraction.boneTarget.locked
+						? `Close ${VehicleInteraction.names[VehicleInteraction.bones.indexOf(VehicleInteraction.boneTarget.name)]}`
+						: `Open ${VehicleInteraction.names[VehicleInteraction.bones.indexOf(VehicleInteraction.boneTarget.name)]}`
+				}`;
 
 			let dist: number = distBetweenCoords(VehicleInteraction.LocalPlayer.position, bonePos);
 
 			mp.game.graphics.drawText(renderText, [bonePos.x, bonePos.y, bonePos.z], {
 				scale: [0.3, 0.3],
 				outline: false,
-				color: [255, 255, 255, (255 - dist * 80)],
+				color: [255, 255, 255, 255 - dist * 80],
 				font: 4
 			});
 		}
@@ -58,21 +64,22 @@ class VehicleInteraction {
 			let vehicleData: VehicleData | undefined = getVehicleData(vehicle);
 			if (!vehicleData) return;
 
-			if (VehicleInteraction.LocalPlayer.getVehicleIsTryingToEnter() == 0) {
-				vehicleData.vehicle_doors.forEach((state: string, index: number) => {
-					if (state) vehicle.setDoorOpen(index, false, true);
-					else vehicle.setDoorShut(index, true);
-				})
-			}
-
+			vehicleData.vehicle_doors.forEach((state: string, index: number) => {
+				if (state) vehicle.setDoorOpen(index, false, true);
+				else vehicle.setDoorShut(index, true);
+			});
 		});
 	}
 
 	public static handleInteraction() {
-		if (!mp.gui.cursor.visible && !VehicleInteraction.LocalPlayer.isTypingInTextChat && VehicleInteraction.boneTarget && VehicleInteraction.boneTarget.pushTime + 1 >= Date.now() / 1000) {
+		if (
+			!mp.gui.cursor.visible &&
+			!VehicleInteraction.LocalPlayer.isTypingInTextChat &&
+			VehicleInteraction.boneTarget &&
+			VehicleInteraction.boneTarget.pushTime + 1 >= Date.now() / 1000
+		) {
 			VehicleInteraction.interactionHandler();
 		}
-
 	}
 
 	public static interactionHandler() {
@@ -81,12 +88,12 @@ class VehicleInteraction {
 		mp.events.callRemote('server:handleDoorInteraction', VehicleInteraction.boneTarget.veh, VehicleInteraction.boneTarget.id);
 	}
 
-	public static getClosestBone (raycast: RaycastResult): BoneData {
+	public static getClosestBone(raycast: RaycastResult): BoneData {
 		let data: BoneData[] = [];
 		VehicleInteraction.bones.forEach((bone: string, index: number) => {
 			const rayEntity: EntityMp = raycast.entity as EntityMp;
 
-			if (!rayEntity || rayEntity.type != "vehicle") return;
+			if (!rayEntity || rayEntity.type != 'vehicle') return;
 
 			const boneIndex: number = rayEntity.getBoneIndexByName(bone);
 			const bonePos: Vector3 = rayEntity.getWorldPositionOfBone(boneIndex);
@@ -100,30 +107,53 @@ class VehicleInteraction {
 					id: index,
 					boneIndex: boneIndex,
 					name: bone,
-					locked: !vehicleData.vehicle_doors[index] || !vehicleData.vehicle_doors[index] && !(raycast.entity as any).isDoorFullyOpen(index) ? false : true,
+					locked:
+						!vehicleData.vehicle_doors[index] || (!vehicleData.vehicle_doors[index] && !(raycast.entity as any).isDoorFullyOpen(index))
+							? false
+							: true,
 					bonePos: bonePos,
 					raycast: raycast,
 					veh: raycast.entity as VehicleMp,
-					distance: mp.game.gameplay.getDistanceBetweenCoords(bonePos.x, bonePos.y, bonePos.z, raycast.position.x, raycast.position.y, raycast.position.z, false),
+					distance: mp.game.gameplay.getDistanceBetweenCoords(
+						bonePos.x,
+						bonePos.y,
+						bonePos.z,
+						raycast.position.x,
+						raycast.position.y,
+						raycast.position.z,
+						false
+					),
 					pushTime: Date.now() / 1000
 				});
 			}
-		})
+		});
 
 		return data.sort((a, b) => a.distance - b.distance)[0];
 	}
 
-	public static getLocalTargetVehicle (range: number = 1.5): null | RaycastResult {
+	public static getLocalTargetVehicle(range: number = 1.5): null | RaycastResult {
 		let startPosition = mp.players.local.getBoneCoords(12844, 0.5, 0, 0);
 		const res = mp.game.graphics.getScreenActiveResolution(1, 1);
-		const coord: Vector3 = new mp.Vector3(res.x / 2, res.y / 2, (2 | 4 | 8));
+		const coord: Vector3 = new mp.Vector3(res.x / 2, res.y / 2, 2 | 4 | 8);
 		const secondPoint = mp.game.graphics.screen2dToWorld3d(coord);
 		if (!secondPoint) return null;
 
 		startPosition.z -= 0.3;
-		const target = mp.raycasting.testPointToPoint(startPosition, secondPoint, mp.players.local, (2 | 4 | 8 | 16));
+		const target = mp.raycasting.testPointToPoint(startPosition, secondPoint, mp.players.local, 2 | 4 | 8 | 16);
 
-		if (target && mp.game.gameplay.getDistanceBetweenCoords(target.position.x, target.position.y, target.position.z, VehicleInteraction.LocalPlayer.position.x, VehicleInteraction.LocalPlayer.position.y, VehicleInteraction.LocalPlayer.position.z, false) < range) return target;
+		if (
+			target &&
+			mp.game.gameplay.getDistanceBetweenCoords(
+				target.position.x,
+				target.position.y,
+				target.position.z,
+				VehicleInteraction.LocalPlayer.position.x,
+				VehicleInteraction.LocalPlayer.position.y,
+				VehicleInteraction.LocalPlayer.position.z,
+				false
+			) < range
+		)
+			return target;
 		return null;
 	}
 
@@ -134,7 +164,13 @@ class VehicleInteraction {
 		return false;
 	}
 
-	public static drawTarget3d (pos: Vector3, textureDict: string = "mpmissmarkers256", textureName: string = "corona_shade", scaleX: number = 0.005, scaleY: number = 0.01) {
+	public static drawTarget3d(
+		pos: Vector3,
+		textureDict: string = 'mpmissmarkers256',
+		textureName: string = 'corona_shade',
+		scaleX: number = 0.005,
+		scaleY: number = 0.01
+	) {
 		const position = mp.game.graphics.world3dToScreen2d(pos);
 		if (!position) return;
 		mp.game.graphics.drawSprite(textureDict, textureName, position.x, position.y, scaleX, scaleY, 0, 0, 0, 0, 200, false);
