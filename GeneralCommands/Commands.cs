@@ -16,6 +16,7 @@ namespace CloudRP.GeneralCommands
     {
         public static string _oocColour = "!{#78acff}";
         public static string _meColour = "!{#d2bae9}";
+        public static int nickNameMaxLength_M = 7;
 
         [Command("b", "~y~Use: /b [message]", Alias = "ooc", GreedyArg = true)]
         public void oocCommand(Player player, string oocChat)
@@ -133,12 +134,17 @@ namespace CloudRP.GeneralCommands
 
             if (findPlayer == null)
             {
-                CommandUtils.errorSay(player, "Player couldn't be found.");
+                CommandUtils.errorSay(player, "Player couldn't be found. (Are you within distance?)");
                 return;
             }
 
             DbCharacter findCharData = PlayersData.getPlayerCharacterData(findPlayer);
 
+            if(Vector3.Distance(player.Position, findPlayer.Position) > 5)
+            {
+                CommandUtils.errorSay(player, "Player couldn't be found. (Are you within distance?)");
+                return;
+            }
 
             if(!AuthUtils.validateNick(nickname))
             {
