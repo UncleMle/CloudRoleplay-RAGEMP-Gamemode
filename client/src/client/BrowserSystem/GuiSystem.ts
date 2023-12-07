@@ -33,7 +33,7 @@ class GuiSystem {
 			}
 
 			GuiSystem.drawText(GuiSystem.getCompassDirection(), [minimap.rightX + 0.01, minimap.bottomY - 0.125], 4, [255, 255, 255, 255], 1);
-			GuiSystem.drawText(`${mp.players.local.remoteId} | ${getTimeUnix()}`, [minimap.rightX + 0.01, minimap.bottomY - 0.075], 4, [255, 255, 255, 255], 0.60);
+			GuiSystem.drawText(`${mp.players.local.remoteId} | ${getTimeUnix()} | FPS ${GuiSystem.LocalPlayer.fps}`, [minimap.rightX + 0.01, minimap.bottomY - 0.075], 4, [255, 255, 255, 255], 0.60);
 			GuiSystem.drawText(`${streetData.zoneName} ${streetData.zoneTwo ? "/ " + streetData.zoneTwo : "" }`, [minimap.rightX + 0.01, minimap.bottomY - 0.045], 4, [255, 255, 255, 255], 0.60);
 		}
 	}

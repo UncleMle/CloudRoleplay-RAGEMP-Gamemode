@@ -106,7 +106,12 @@ namespace CloudRP.Utils
             {
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
-                    returnBanData = dbContext.bans.Where(ban => ban.client_serial == player.Serial || ban.social_club_name == player.SocialClubName || ban.social_club_id == player.SocialClubId || ban.ip_address == player.Address).FirstOrDefault();
+                    returnBanData = dbContext.bans.Where(ban => 
+                            ban.client_serial == player.Serial || 
+                            ban.social_club_name == player.SocialClubName || 
+                            ban.social_club_id == player.SocialClubId || 
+                            ban.ip_address == player.Address)
+                        .FirstOrDefault();
 
                     if (returnBanData != null && returnBanData.lift_unix_time < CommandUtils.generateUnix() && returnBanData.lift_unix_time != -1)
                     {

@@ -1,6 +1,7 @@
 declare global {
 	interface PlayerMp {
 		browserRouter: string;
+		fps: number;
 		browserInstance: BrowserMp;
 		browserCurrentState: string;
 		isListening: boolean;

@@ -17,6 +17,8 @@ class AntiCheat {
 	public static blockedHashes: number[] = [1119849093, -1312131151, -1355376991, 1198256469, 1834241177, -1238556825, -1568386805, -1312131151, 125959754, 1672152130];
 	public static loop: number;
 	public static detectionEvent: string = "server:CheatDetection";
+	public static clientFps: number;
+	public static lastFrameCount: number;
 
 	constructor() {
 		AntiCheat.LocalPlayer = mp.players.local;
@@ -46,6 +48,16 @@ class AntiCheat {
 				}
 			}, 400);
 		}, 500);
+
+		setInterval(() => {
+			AntiCheat.clientFps = AntiCheat.getFrameCount() - AntiCheat.lastFrameCount;
+			AntiCheat.LocalPlayer.fps = AntiCheat.clientFps;
+			AntiCheat.lastFrameCount = AntiCheat.getFrameCount();
+		}, 1000);
+	}
+
+	public static getFrameCount() {
+		return mp.game.invoke("0xFC8202EFC642E6F2");
 	}
 
 	public static allowWeaponSwitch() {
@@ -63,7 +75,8 @@ class AntiCheat {
 		if (AntiCheat.LocalPlayer.getAmmoInClip(AntiCheat.LocalPlayer.weapon) > 70) {
 			AntiCheat.alertAdmins(AcExceptions.ammoHack, "Possible ammo clip cheat ammo in clip is " + AntiCheat.LocalPlayer.getAmmoInClip(mp.players.local.weapon));
 		}
-		AntiCheat.updateMagSize()
+
+		AntiCheat.updateMagSize();
 	}
 
 	public static handleRender() {
@@ -89,7 +102,7 @@ class AntiCheat {
 	public static handleReload() {
 		AntiCheat.reloadingWeapon = true;
 		setTimeout(() => {
-			AntiCheat.magazine = mp.game.weapon.getWeaponClipSize(mp.game.invoke(`0x0A6DB4965674D243`, mp.players.local.handle));
+			AntiCheat.magazine = mp.game.weapon.getWeaponClipSize(mp.game.invoke("0x0A6DB4965674D243", mp.players.local.handle));
 			AntiCheat.reloadingWeapon = false;
 		}, 2000);
 	}
@@ -111,7 +124,6 @@ class AntiCheat {
 	}
 
 	public static isRagdollOnHeight(height: number): boolean {
-
 		AntiCheat.range_to_btm = mp.game.gameplay.getGroundZFor3dCoord(mp.players.local.position.x, mp.players.local.position.y, mp.players.local.position.z, true, false);
 
 		if (Math.abs(AntiCheat.LocalPlayer.position.z - AntiCheat.range_to_btm) > Math.abs(height - AntiCheat.range_to_btm)) {
@@ -145,24 +157,27 @@ class AntiCheat {
 	}
 
 	public static VehicleFasterThan(max: number) {
-		if (AntiCheat.LocalPlayer.vehicle && !(AntiCheat.blockedVehicleClasses.indexOf(AntiCheat.LocalPlayer.vehicle.getClass()) == -1)) {
+		if (AntiCheat.LocalPlayer.vehicle && AntiCheat.blockedVehicleClasses.indexOf(AntiCheat.LocalPlayer.vehicle.getClass()) != -1) {
 			return mp.players.local.vehicle.getSpeed() * 3.6 > max;
 		}
 		return false
 	}
 
 	public static checkCarPos(maxHeight = 50): boolean {
-		if (mp.players.local.vehicle) {
-			if (!(AntiCheat.blockedVehicleClasses.indexOf(AntiCheat.LocalPlayer.vehicle.getClass()) == -1)) {
-				AntiCheat.range_to_btm = mp.game.gameplay.getGroundZFor3dCoord(mp.players.local.position.x, mp.players.local.position.y, mp.players.local.position.z, true, false);
-				if (mp.players.local.position.z - AntiCheat.range_to_btm > maxHeight + AntiCheat.range_to_btm) {
+		if (AntiCheat.LocalPlayer) {
+			if (AntiCheat.LocalPlayer.vehicle.getClass() != 15 && AntiCheat.LocalPlayer.vehicle.getClass() != 16) {
+
+				let pos: Vector3 = AntiCheat.LocalPlayer.position;
+
+				AntiCheat.range_to_btm = mp.game.gameplay.getGroundZFor3dCoord(pos.x, pos.y, pos.z, false, false);
+
+				if (pos.z - AntiCheat.range_to_btm > maxHeight + AntiCheat.range_to_btm) {
 					return true
 				}
 				return false
 			}
 		}
-
-		return true;
+		return false;
 	}
 
 	public static checkWeaponhash() {
