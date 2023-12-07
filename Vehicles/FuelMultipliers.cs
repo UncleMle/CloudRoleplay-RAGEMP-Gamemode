@@ -14,7 +14,6 @@ namespace CloudRP.Vehicles
         public void onResourceStart()
         {
             fuelMultipliers.Add(1, 0.0004);
-            fuelMultipliers.Add(7, 0.003);
             fuelMultipliers.Add(6, 0.004);
             fuelMultipliers.Add(9, 0.008);
             fuelMultipliers.Add(4, 0.009);
