@@ -208,8 +208,10 @@ namespace CloudRP.DeathSystem
         }
 
         [RemoteEvent("sync:corpseValidation")]
-        public static void validatePed(Player player, Corpse corpse)
+        public static void validatePed(Player player, string corpseFromClient)
         {
+            Corpse corpse = JsonConvert.DeserializeObject<Corpse>(corpseFromClient);
+
             if((CommandUtils.generateUnix() - corpse.unixCreated) > _pedTimeout_seconds)
             {
                 removeCorpse(corpse);
