@@ -135,7 +135,19 @@ namespace CloudRP.Utils
 
         public static bool validateString(string input)
         {
-            string specialChar = @"\|!#$%&/()=?»«@£§€{}.-;'<>_,0123456789 ";
+            string specialChar = @"\|!#$%&/()=?»«@£§€{}~.-;'<>_,0123456789 ";
+
+            foreach (var item in specialChar)
+            {
+                if (input.Contains(item) || string.IsNullOrWhiteSpace(input)) return false;
+            }
+
+            return true;
+        }       
+        
+        public static bool validateNick(string input)
+        {
+            string specialChar = @"\|!#$%&/()=?»«@£§€{}~;<>_";
 
             foreach (var item in specialChar)
             {

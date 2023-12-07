@@ -62,7 +62,7 @@ class NameTags {
 
 				let voiceState = (targetCharacterData.voiceChatState ? "" : "~g~");
 				let injuredState = (targetCharacterData.data.injured_timer > 0 ? "~r~(( INJURED )) ~w~\n" : "");
-				let DefaultTagContent = injuredState + voiceState + `${Target._nickName ? Target._nickName : "Player"} [${Target.remoteId}]`;
+				let DefaultTagContent = injuredState + voiceState + `${Target._nickName ? Target._nickName + "[" + Target.remoteId + "]" : "Player " + Target.remoteId}`;
 
 				if (targetUserData.adminDuty) {
 					DefaultTagContent = `${_TEXT_R_RED}[ADMIN]${_TEXT_R_WHITE} ${voiceState} ${targetUserData.adminName}`;

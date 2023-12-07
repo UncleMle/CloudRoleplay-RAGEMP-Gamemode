@@ -105,12 +105,15 @@ namespace CloudRP.GeneralCommands
         [RemoteEvent("server:requestPlayerNickname")]
         public static void requestNickName(Player player, Player target)
         {
-            string nickName = findNickNameForPlayer(player, target);
+            if (target == null) return;
 
-            if(nickName != null)
+            string nickname = findNickNameForPlayer(player, target);
+
+            if (nickname != null)
             {
-                setPlayersNick(player, target, nickName);
+                setPlayersNick(player, target, nickname);
             }
+            
         }
 
         public static void setPlayersNick(Player player, Player targetEnt, string nick)
@@ -127,36 +130,46 @@ namespace CloudRP.GeneralCommands
             if (userData == null || characterData == null) return;
 
             Player findPlayer = CommandUtils.getPlayerFromNameOrId(playerOrId);
-            DbCharacter findCharData = PlayersData.getPlayerCharacterData(findPlayer);
 
-            if(findPlayer == null)
+            if (findPlayer == null)
             {
                 CommandUtils.errorSay(player, "Player couldn't be found.");
                 return;
             }
 
-            if(nickname.Length > 120)
+            DbCharacter findCharData = PlayersData.getPlayerCharacterData(findPlayer);
+
+
+            if(!AuthUtils.validateNick(nickname))
+            {
+                CommandUtils.errorSay(player, "You cannot use certain special characters within player nicknames.");
+                return;
+            }
+
+            if (nickname.Length > 120)
             {
                 CommandUtils.errorSay(player, "Nickname length cannot be greater than 120.");
                 return;
             }
 
-            using(DefaultDbContext dbContext = new DefaultDbContext())
+            using (DefaultDbContext dbContext = new DefaultDbContext())
             {
                 Nickname nicknameExisting = dbContext.nicknames.Where(nick => nick.owner_id == characterData.character_id && nick.target_character_id == findCharData.character_id).FirstOrDefault();
 
-                if(nicknameExisting != null)
+                if (nicknameExisting != null)
                 {
                     nicknameExisting.nickname = nickname;
+                    nicknameExisting.UpdatedDate = DateTime.Now;
                     dbContext.nicknames.Update(nicknameExisting);
-                    return;
-                } else
+                }
+                else
                 {
                     dbContext.nicknames.Add(new Nickname
                     {
                         nickname = nickname,
                         target_character_id = findCharData.character_id,
                         owner_id = characterData.character_id,
+                        CreatedDate = DateTime.Now,
                     });
                 }
 
@@ -174,14 +187,19 @@ namespace CloudRP.GeneralCommands
 
             if (targetCharData != null && characterData != null)
             {
-                using(DefaultDbContext dbContext = new DefaultDbContext())
+                using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
-                    Nickname findNick = dbContext.nicknames.Where(nick => nick.owner_id == characterData.character_id && nick.target_character_id ==  targetCharData.character_id).FirstOrDefault();
+                    Nickname findNick = dbContext.nicknames
+                        .Where(nick => nick.owner_id == characterData.character_id && nick.target_character_id == targetCharData.character_id)
+                        .FirstOrDefault();
 
-                    return findNick.nickname;
+                    if (findNick != null)
+                    {
+                        return findNick.nickname;
+                    }
                 }
             }
-            else return null;
+            return null;
         }
     }
-}
+    }
