@@ -185,7 +185,7 @@ namespace CloudRP.DeathSystem
 
             List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
 
-            foreach(Player player in onlinePlayers)
+            foreach(Player player in onlinePlayers.ToList())
             {
                 player.TriggerEvent("corpse:removeCorpse", corpse);
             }
@@ -210,6 +210,8 @@ namespace CloudRP.DeathSystem
         [RemoteEvent("sync:corpseValidation")]
         public static void validatePed(Player player, string corpseFromClient)
         {
+            if (corpseFromClient == null) return;
+
             Corpse corpse = JsonConvert.DeserializeObject<Corpse>(corpseFromClient);
 
             if((CommandUtils.generateUnix() - corpse.unixCreated) > _pedTimeout_seconds)
