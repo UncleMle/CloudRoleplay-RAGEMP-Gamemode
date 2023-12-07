@@ -48,8 +48,6 @@ namespace CloudRP.Utils
                     returnPlayer = findPlayer;
                     break;
                 }
-                
-
             }
 
             return returnPlayer;

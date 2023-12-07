@@ -109,12 +109,29 @@ namespace CloudRP.Admin
                     if (account == null) return;
 
                     account.admin_esp = userData.adminEsp;
+
+                    dbContext.accounts.Update(account);
+                    dbContext.SaveChanges();
                 }
 
-                AdminUtils.staffSay(player, $"You have {(userData.adminEsp ? "enabled" : "disabled")} admin esp.");
+                AdminUtils.staffSay(player, $"You have {(userData.adminEsp ? "disabled" : "enabled")} admin esp.");
 
             }
+        }
 
+        [Command("twerk", "~y~Use: ~w~/twerk")]
+        public void twerkCommand(Player player)
+        {
+            player.PlayAnimation("mini@strip_club@private_dance@part3", "priv_dance_p3", 1);
+            NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.Success + " You are now twerking!!");
+        }       
+        
+        
+        [Command("anim", "~y~Use: ~w~/anim")]
+        public void anim(Player player, string dict, string lib)
+        {
+            player.PlayAnimation(dict, lib, 1);
+            NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.Success + " You are now twerking!!");
         }
 
         [Command("closereport", "~y~Use: ~w~/closereport")]

@@ -75,8 +75,6 @@ class CharacterSystem {
 
 		if (!userData || !characterData || userData.adminDuty) return;
 
-		mp.console.logInfo("Streamed character model :: " + JSON.stringify(characterData));
-
 		CharacterSystem.setCharacterCustomization(characterData.data.characterModel, false, entity as PlayerMp);
 	}
 

@@ -79,8 +79,6 @@ namespace CloudRP.Vehicles
                 dbContext.SaveChanges();
             }
 
-            Console.WriteLine(vehicle.vehicle_fuel + " fuel level");
-
             veh.Locked = true;
             vehicle.vehicle_locked = true;
             veh.SetSharedData(_vehicleSharedDataIdentifier, vehicle);
@@ -619,8 +617,6 @@ namespace CloudRP.Vehicles
             Vehicle vehicle = player.Vehicle;
             if (vehicle == null) return;
             DbVehicle vehicleData = getVehicleData(player.Vehicle);
-
-            Console.WriteLine(player.Vehicle.Class);
 
             Dictionary<int, double> fuelMultipliers = FuelMultipliers.fuelMultipliers;
 

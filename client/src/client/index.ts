@@ -22,6 +22,7 @@ import VoiceSystem from "./VoiceChat/VoiceSystem";
 import DeathSystem from "./DeathSystem/DeathSystem";
 import VehicleSpeedo from "./VehicleSystems/VehicleSpeedo";
 import VehicleFuel from "./VehicleSystems/VehicleFuel";
+import WeaponSystem from "./weaponSystem/weaponSystem";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -48,3 +49,4 @@ new VoiceSystem();
 new DeathSystem();
 new VehicleSpeedo();
 new VehicleFuel();
+new WeaponSystem();
