@@ -163,22 +163,6 @@ namespace CloudRP.DeathSystem
             initCorpses(player);
         }
 
-        [ServerEvent(Event.PlayerDisconnected)]
-        public static void playerDisconnect(Player player, DisconnectionType type, string reason)
-        {
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
-
-            if(characterData == null) return;
-
-            foreach(Corpse corpse in corpses.ToList())
-            {
-                if(corpse.characterId == characterData.character_id)
-                {
-                    removeCorpse(corpse);
-                }
-            }
-        }
-
         public static void removeCorpse(Corpse corpse)
         {
             corpses.Remove(corpse);
@@ -213,6 +197,8 @@ namespace CloudRP.DeathSystem
             if (corpseFromClient == null) return;
 
             Corpse corpse = JsonConvert.DeserializeObject<Corpse>(corpseFromClient);
+
+            Console.WriteLine(CommandUtils.generateUnix() + " " + corpse.unixCreated + " " + _pedTimeout_seconds);
 
             if((CommandUtils.generateUnix() - corpse.unixCreated) > _pedTimeout_seconds)
             {

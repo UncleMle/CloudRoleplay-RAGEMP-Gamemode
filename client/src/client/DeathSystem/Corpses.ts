@@ -17,10 +17,12 @@ class Corpses {
 		mp.events.add('corpse:setCorpses', Corpses.setCorpses);
 		mp.events.add('corpse:removeCorpse', Corpses.spliceCorpsePed);
 
-		setInterval(() => {
+        setInterval(() => {
 			mp.peds.forEachInStreamRange((ped) => {
 				let corpseData: Corpse = Corpses.corpses[ped.corpseId];
 				if (!corpseData) return;
+
+                mp.gui.chat.push("" + corpseData.unixCreated + getTimeUnix())
 
 				if (getTimeUnix() - corpseData.unixCreated > Corpses._pedTimeout_seconds) {
 					mp.events.callRemote(Corpses.corpseValEvent, JSON.stringify(corpseData));
