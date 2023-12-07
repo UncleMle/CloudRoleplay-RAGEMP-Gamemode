@@ -8,6 +8,10 @@ declare global {
 		__attachmentObjects: any;
 		__attMgrData: any;
 	}
+
+	interface PedMp {
+		corpseId: number
+	}
 }
 
 export interface UserData {
@@ -194,5 +198,8 @@ export interface SpeedoData {
 
 export interface Corpse {
 	remoteId: number,
-	model: CharacterModel
+	characterName: string,
+	model: CharacterModel,
+	corpseId: number,
+	position: Vector3
 }

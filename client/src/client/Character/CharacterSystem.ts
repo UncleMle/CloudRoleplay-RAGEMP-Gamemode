@@ -14,7 +14,7 @@ class CharacterSystem {
 		mp.events.addDataHandler(_sharedCharacterDataIdentifier, CharacterSystem.handleDataHandler);
 	}
 
-	public static setCharacterCustomization(characterModel: any, parse: boolean = true, entity: PlayerMp = CharacterSystem.LocalPlayer) {
+	public static setCharacterCustomization(characterModel: any, parse: boolean = true, entity: PlayerMp | PedMp = CharacterSystem.LocalPlayer) {
 		if(!characterModel) return;
 
 		let charData: CharacterModel = characterModel;

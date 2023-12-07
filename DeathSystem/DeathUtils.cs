@@ -15,6 +15,9 @@ namespace CloudRP.DeathSystem
     class Corpse
     {
         public int remoteId;
+        public string characterName;
         public CharacterModel model;
+        public int? corpseId;
+        public Vector3 position;
     }
 }

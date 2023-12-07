@@ -17,7 +17,7 @@ namespace CloudRP.DeathSystem
     class DeathEvent : Script
     {
         public static List<Hospital> hospitalList = new List<Hospital>();
-        public static Dictionary<int, Corpse> corpses = new Dictionary<int, Corpse>();
+        public static List<Corpse> corpses = new List<Corpse>();
         public static int _respawnTimeout_seconds = 3;
         public const int _deathTimer_seconds = 600;
         public static string corpseSharedKey = "corpsePed";
@@ -155,16 +155,25 @@ namespace CloudRP.DeathSystem
             player.TriggerEvent("injured:removeStatus");
         }
 
-        [RemoteEvent("sync:corpsePed")]
-        public static void handleCorpseSync(Player player, int corpseId)
+        [ServerEvent(Event.PlayerConnected)]
+        public static void addCorpsesForPlayer(Player player)
         {
-            foreach(KeyValuePair<int, Corpse> corpse in corpses)
+            initCorpses(player);
+        }
+
+        public static void addCorpseToClients(Corpse corpse)
+        {
+            List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
+
+            foreach (Player onlinePlayer in onlinePlayers)
             {
-                if(corpse.Key == corpseId)
-                {
-                    player.TriggerEvent("corpse:add", corpse.Value);
-                }
+                onlinePlayer.TriggerEvent("corpse:add", corpse);
             }
+        }
+
+        public static void initCorpses(Player player)
+        {
+            player.TriggerEvent("corpse:setCorpses", JsonConvert.SerializeObject(corpses));
         }
 
         public static void handleCorpseSet(Player player)
@@ -173,13 +182,19 @@ namespace CloudRP.DeathSystem
 
             if (characterData == null) return;
             
-            Ped corpsePed = NAPI.Ped.CreatePed(NAPI.Util.GetHashKey("mp_m_freemode_01"), player.Position, 0, false, true, true, true, 0);
-
-            corpses.Add(corpsePed.Id, new Corpse
+            Corpse playerCorpse = new Corpse
             {
-                remoteId = corpsePed.Id,
-                model = characterData.characterModel
-            });
+                characterName = characterData.character_name,
+                model = characterData.characterModel,
+                remoteId = characterData.character_id,
+                position = player.Position
+            };
+
+            corpses.Add(playerCorpse);
+
+            playerCorpse.corpseId = corpses.IndexOf(playerCorpse);
+
+            addCorpseToClients(playerCorpse);
         }
 
     }
