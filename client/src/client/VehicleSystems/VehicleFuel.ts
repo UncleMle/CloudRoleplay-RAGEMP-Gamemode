@@ -47,9 +47,9 @@ class VehicleFuel {
                 }
 
                 let vehicleSpeed: number = VehicleFuel.LocalPlayer.vehicle.getSpeed() * 3.6;
+                let vehicleData: VehicleData | undefined = getVehicleData(VehicleFuel.LocalPlayer.vehicle);
 
-                if(vehicleSpeed > 0) {
-
+                if(vehicleSpeed > 0 && vehicleData?.engine_status) {
                     mp.events.callRemote(VehicleFuel.updateEvent, vehicleSpeed);
                 }
             }, VehicleFuel.interval_seconds * 1000);

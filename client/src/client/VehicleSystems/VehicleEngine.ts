@@ -1,3 +1,4 @@
+import NotificationSystem from "@/NotificationSystem/NotificationSystem";
 import { VehicleData } from "../@types";
 import { _control_ids } from "../Constants/Constants";
 import getVehicleData from "../PlayerMethods/getVehicleData";
@@ -17,6 +18,11 @@ class VehicleEngine {
 		if (VehicleEngine.LocalPlayer.vehicle && !VehicleEngine.LocalPlayer.isTypingInTextChat && VehicleEngine.LocalPlayer.vehicle.getPedInSeat(-1) == VehicleEngine.LocalPlayer.handle) {
 			let vehicleData: VehicleData | undefined = getVehicleData(VehicleEngine.LocalPlayer.vehicle);
 			if (!vehicleData) return;
+
+			if(vehicleData.vehicle_fuel <= 0) {
+				NotificationSystem.createNotification("~r~Engine fails to start.", false);
+				return;
+			}
 
 			mp.events.callRemote(VehicleEngine.engineToggleEvent);
 		}

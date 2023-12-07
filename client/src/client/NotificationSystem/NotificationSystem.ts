@@ -12,7 +12,7 @@ class NotificationSystem {
 		mp.events.add("client:addNotif", NotificationSystem.createNotification);
 	}
 
-	public static createNotification(text: string, isRpText: boolean) {
+	public static createNotification(text: string, isRpText: boolean = true) {
 		clearInterval(NotificationSystem.interval);
 
 		NotificationSystem.resetData();
@@ -50,7 +50,7 @@ class NotificationSystem {
 				scale: [NotificationSystem.scale, NotificationSystem.scale]
 			})
 		}
-		
+
 	}
 }
 

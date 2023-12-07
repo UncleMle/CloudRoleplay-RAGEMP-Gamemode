@@ -10,7 +10,7 @@
                         </h2>
                     </div>
 
-                    <div v-if="uiStates.vehicleSpeedoData.vehicleRpm != 0" class="w-full flex justify-center bg-black/50 mt-2 rounded-xl h-2">
+                    <div v-if="uiStates.vehicleSpeedoData.vehicleRpm != 0 && uiStates.vehicleSpeedoData.fuelLevel > 0" class="w-full flex justify-center bg-black/50 mt-2 rounded-xl h-2">
                         <div :class="rpmColour" class="flex justify-start duration-300"
                             :style="{ 'width': uiStates.vehicleSpeedoData.vehicleRpm * 100 + '%' }">
                         </div>

@@ -631,6 +631,8 @@ namespace CloudRP.Vehicles
             if (vehicle == null) return;
             DbVehicle vehicleData = getVehicleData(player.Vehicle);
 
+            if (!vehicleData.engine_status) return;
+
             Dictionary<int, double> fuelMultipliers = FuelMultipliers.fuelMultipliers;
 
             bool completedRemoval = false;

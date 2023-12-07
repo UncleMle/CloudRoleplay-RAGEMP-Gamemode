@@ -1,8 +1,5 @@
 <template>
     <div id="app">
-        <div class="absolute text-red-500 font-medium">
-            {{ uiStates }} {{ serverData }} | Cloud RP V 1.2
-        </div>
         <ChatBox class="absolute" v-if="guiState" />
         <PushNotification class="bg-red-200" ref="notification" />
         <VehicleSpeedo />
