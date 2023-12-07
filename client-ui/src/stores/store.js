@@ -58,6 +58,9 @@ const store = new Vuex.Store({
 		},
 		getUiStates: (state) => {
 			return state.uiStates;
+		},
+		getPlayerInfo: (state) => {
+			return state.playerInfo;
 		}
 	},
 	mutations: {

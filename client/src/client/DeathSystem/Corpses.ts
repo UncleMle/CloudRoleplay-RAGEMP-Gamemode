@@ -4,7 +4,7 @@ class Corpses {
     constructor() {
         Corpses.LocalPlayer = mp.players.local;
 
-        mp.events.add("playerDeath", Corpses.buildCorpse);
+        // mp.events.add("playerDeath", Corpses.buildCorpse);
     }
 
     public static buildCorpse() {

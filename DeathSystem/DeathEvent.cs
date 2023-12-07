@@ -69,6 +69,8 @@ namespace CloudRP.DeathSystem
 
             List<float> distList = new List<float>(pDist.Keys);
 
+            handleCorpseSet(player);
+
             distList.Sort();
 
             AntiCheatSystem.sleepClient(player);
@@ -148,6 +150,11 @@ namespace CloudRP.DeathSystem
 
             PlayersData.setPlayerCharacterData(player, character);
             player.TriggerEvent("injured:removeStatus");
+        }
+
+        public static void handleCorpseSet(Player player)
+        {
+            NAPI.Ped.CreatePed(PedHash.MPros01, player.Position, 0);
         }
 
     }

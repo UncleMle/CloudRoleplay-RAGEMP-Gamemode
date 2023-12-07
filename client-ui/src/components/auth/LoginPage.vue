@@ -72,7 +72,7 @@
                                 You don't have any characters. Create a new one to get started.
                             </div>
 
-                            <div v-for="item in characters" :key="item">
+                            <div v-for="item in characters.player_characters" :key="item">
 
                                 <div class="p-6 font-medium border rounded-3xl border-gray-500 mt-6 shadow-2xl">
 
@@ -223,7 +223,6 @@
                 registerPasswordConfirm: "",
                 rememberMe: false,
                 characterName: "",
-                characters: [],
                 showRegister: false,
                 authState: "",
                 otpPassword: "",
@@ -236,7 +235,8 @@
             ...mapGetters({
                 characterSelectionState: 'getCharacterSelectionStatus',
                 showOtp: 'getOtpState',
-                loadingState: 'getLoadingState'
+                loadingState: 'getLoadingState',
+                characters: 'getPlayerInfo'
             })
         },
         methods: {
@@ -281,8 +281,5 @@
                 return dateTime.toLocaleDateString();
             }
         },
-        mounted() {
-            this.characters = this.$store.state.playerInfo.player_characters;
-        }
     }
 </script>
