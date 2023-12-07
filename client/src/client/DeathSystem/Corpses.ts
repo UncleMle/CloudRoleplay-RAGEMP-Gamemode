@@ -22,8 +22,6 @@ class Corpses {
 				let corpseData: Corpse = Corpses.corpses[ped.corpseId];
 				if (!corpseData) return;
 
-				mp.gui.chat.push(getTimeUnix() - corpseData.unixCreated + ' time difference');
-
 				if ((getTimeUnix() - corpseData.unixCreated) > Corpses._pedTimeout_seconds) {
 					mp.events.callRemote(Corpses.corpseValEvent, JSON.stringify(corpseData));
 				}
@@ -43,8 +41,6 @@ class Corpses {
 	}
 
 	public static setCorpses(corpses: Corpse[]) {
-		mp.console.logInfo('Set corpses' + JSON.stringify(corpses));
-
 		corpses.forEach((corpse: Corpse, index: number) => {
 			let ped: PedMp = mp.peds.new(
 				mp.game.joaat(corpse.model.sex ? 'mp_m_freemode_01' : 'mp_f_freemode_01'),

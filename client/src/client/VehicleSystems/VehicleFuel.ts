@@ -12,14 +12,11 @@ class VehicleFuel {
     }
 
     public static handleEnter(vehicle: VehicleMp, seat: number) {
-        mp.console.logInfo(" enter " + seat);
         if(seat == -1) {
             VehicleFuel.closeSaveInterval();
 
             VehicleFuel._updateInterval = setInterval(() => {
                 let vehicleSpeed: number = VehicleFuel.LocalPlayer.vehicle.getSpeed() * 3.6;
-
-                mp.console.logError(vehicleSpeed + "speed");
 
                 if(vehicleSpeed > 0) {
 

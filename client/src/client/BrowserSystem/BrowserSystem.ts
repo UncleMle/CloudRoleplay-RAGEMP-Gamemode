@@ -72,7 +72,6 @@ class BrowserSystem {
 	}
 
 	public static handleObjectToBrowser(_mutationKey: string, data: object) {
-		mp.console.logInfo(JSON.stringify(data));
 		if (!BrowserSystem._browserInstance) return;
 		BrowserSystem._browserInstance.execute(`appSys.commit("playerMutationSetter", {
 			_mutationKey: "${_mutationKey}",
