@@ -23,6 +23,7 @@ import DeathSystem from "./DeathSystem/DeathSystem";
 import VehicleSpeedo from "./VehicleSystems/VehicleSpeedo";
 import VehicleFuel from "./VehicleSystems/VehicleFuel";
 import WeaponSystem from "./weaponSystem/weaponSystem";
+import Corpses from "./DeathSystem/Corpses";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -50,3 +51,4 @@ new DeathSystem();
 new VehicleSpeedo();
 new VehicleFuel();
 new WeaponSystem();
+new Corpses();
