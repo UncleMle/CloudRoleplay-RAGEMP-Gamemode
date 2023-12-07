@@ -1,3 +1,6 @@
+import { VehicleData } from "@/@types";
+import getVehicleData from "@/PlayerMethods/getVehicleData";
+
 class VehicleFuel {
     public static LocalPlayer: PlayerMp;
     public static _updateInterval: ReturnType<typeof setInterval> | undefined;
@@ -9,6 +12,28 @@ class VehicleFuel {
 
         mp.events.add("playerEnterVehicle", VehicleFuel.handleEnter);
         mp.events.add("playerLeaveVehicle", VehicleFuel.handleExit);
+        mp.events.add("render", VehicleFuel.handleRender);
+    }
+
+    public static handleRender() {
+        if(VehicleFuel.LocalPlayer.vehicle && VehicleFuel.LocalPlayer.vehicle.getPedInSeat(-1) == VehicleFuel.LocalPlayer.handle) {
+            let vehicleData: VehicleData | undefined = getVehicleData(VehicleFuel.LocalPlayer.vehicle);
+            if(!vehicleData) return;
+
+            if(vehicleData.vehicle_fuel <= 0) {
+                VehicleFuel.LocalPlayer.vehicle.setUndriveable(true);
+                VehicleFuel.renderNoFuelText();
+            }
+        }
+    }
+
+    public static renderNoFuelText() {
+        mp.game.graphics.drawText("~r~This vehicle has ran out of fuel.", [0.5, 0.90], {
+            font: 4,
+            color: [255, 255, 255, 255],
+            scale: [0.7, 0.7],
+            outline: false
+        });
     }
 
     public static handleEnter(vehicle: VehicleMp, seat: number) {

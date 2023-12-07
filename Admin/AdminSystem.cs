@@ -1111,9 +1111,7 @@ namespace CloudRP.Admin
                     AdminUtils.staffSay(player, "Vehicle couldn't be found.");
                     return;
                 }
-
             }
-
         }
 
         [Command("gotov", "~r~/gotov [idOrPlate]")]
@@ -1173,25 +1171,39 @@ namespace CloudRP.Admin
         }
 
         [Command("arefuel", "~r~/arefuel [currentVehicle|id|plate]")]
-        public void adminRefuelVehicle(Player player, string vehicleIdOrPlate)
+        public void adminRefuelVehicle(Player player, string vehicleIdOrPlate = null)
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
             if(AdminUtils.checkUserData(player, userData))
             {
-                Vehicle findVehicle = VehicleSystem.getVehicleByPlate(vehicleIdOrPlate);
+                Vehicle findVehicle = null;
+
+                if (vehicleIdOrPlate == null && player.IsInVehicle)
+                {
+                    findVehicle = player.Vehicle;
+                } else if(!player.IsInVehicle &&  vehicleIdOrPlate == null)
+                {
+                    CommandUtils.errorSay(player, "Select the correct parameters (/arefuel [currentVehicle|id|plate]) or enter a vehicle to use this command.");
+                    return; 
+                }
 
                 if (findVehicle == null)
                 {
-                    int? parseId = CommandUtils.tryParse(vehicleIdOrPlate);
+                    findVehicle = VehicleSystem.getVehicleByPlate(vehicleIdOrPlate);
 
-                    if (parseId == null)
+                    if (findVehicle == null)
                     {
-                        CommandUtils.errorSay(player, "Vehicle was not found.");
-                        return;
-                    }
+                        int? parseId = CommandUtils.tryParse(vehicleIdOrPlate);
 
-                    findVehicle = VehicleSystem.getVehicleById((int)parseId, null, false);
+                        if (parseId == null)
+                        {
+                            CommandUtils.errorSay(player, "Vehicle was not found.");
+                            return;
+                        }
+
+                        findVehicle = VehicleSystem.getVehicleById((int)parseId, null, false);
+                    }
                 }
 
                 if(findVehicle != null)
@@ -1226,7 +1238,6 @@ namespace CloudRP.Admin
                 {
                     CommandUtils.errorSay(player, "Specified character was not found.");
                 }
-
             }
         }        
         

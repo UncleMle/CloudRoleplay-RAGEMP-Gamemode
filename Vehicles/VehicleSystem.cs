@@ -640,6 +640,12 @@ namespace CloudRP.Vehicles
                 if(multiplier.Key == player.Vehicle.Class)
                 {
                     vehicleData.vehicle_fuel -= (vehicleSpeed * multiplier.Value);
+
+                    if (vehicleData.vehicle_fuel <= 0)
+                    {
+                        vehicleData.vehicle_fuel = 0;
+                    }
+
                     completedRemoval = true;
                 }
             }
