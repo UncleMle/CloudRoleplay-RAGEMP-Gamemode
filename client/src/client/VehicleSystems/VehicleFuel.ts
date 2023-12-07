@@ -16,6 +16,11 @@ class VehicleFuel {
             VehicleFuel.closeSaveInterval();
 
             VehicleFuel._updateInterval = setInterval(() => {
+                if(!vehicle) {
+                    VehicleFuel.closeSaveInterval();
+                    return;
+                }
+
                 let vehicleSpeed: number = VehicleFuel.LocalPlayer.vehicle.getSpeed() * 3.6;
 
                 if(vehicleSpeed > 0) {

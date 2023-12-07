@@ -22,7 +22,7 @@ class Corpses {
 				let corpseData: Corpse = Corpses.corpses[ped.corpseId];
 				if (!corpseData) return;
 
-				if ((getTimeUnix() - corpseData.unixCreated) > Corpses._pedTimeout_seconds) {
+				if (getTimeUnix() - corpseData.unixCreated > Corpses._pedTimeout_seconds) {
 					mp.events.callRemote(Corpses.corpseValEvent, JSON.stringify(corpseData));
 				}
 			});
@@ -30,14 +30,20 @@ class Corpses {
 	}
 
 	public static handleStreamIn(entity: PedMp) {
-		if (entity.type != 'ped') return;
-
+        if (entity.type != 'ped') return;
 		setTimeout(() => {
 			let corpseData: Corpse | null = Corpses.getCorpseData(entity.corpseId);
 			if (!corpseData) return;
 
 			Corpses.initPed(entity, corpseData);
+			Corpses.disableVehCollision(entity);
 		}, 500);
+	}
+
+	public static disableVehCollision(entity: PedMp) {
+		mp.vehicles.forEachInStreamRange((veh) => {
+			veh.setNoCollision(entity.handle, true);
+		});
 	}
 
 	public static setCorpses(corpses: Corpse[]) {
@@ -49,6 +55,7 @@ class Corpses {
 				0
 			);
 
+			ped.freezePosition(true);
 			ped.corpseCharacterId = corpse.characterId;
 			ped.corpseId = index;
 			corpse.corpseId = index;
@@ -75,6 +82,7 @@ class Corpses {
 		ped.taskPlayAnim('dead', 'dead_a', 8.0, 0, 600, 1, 1.0, false, false, false);
 
 		Corpses.corpses[corpse.corpseId] = corpseData;
+		Corpses.initPed(ped, corpseData);
 	}
 
 	public static spliceCorpsePed(corpse: Corpse) {
@@ -103,8 +111,8 @@ class Corpses {
 	public static initPed(ped: PedMp, corpseData: Corpse) {
 		if (!ped || !corpseData) return;
 
-		ped.freezePosition(false);
-		ped.setInvincible(false);
+		ped.freezePosition(true);
+		ped.setInvincible(true);
 		ped.setProofs(false, false, false, false, false, false, false, false);
 		ped.taskPlayAnim('dead', 'dead_a', 8.0, 0, 600, 1, 1.0, false, false, false);
 
