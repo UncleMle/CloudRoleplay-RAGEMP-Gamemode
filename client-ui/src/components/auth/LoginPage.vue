@@ -248,7 +248,7 @@
                 }
             },
             playCharacter(cname) {
-                if (this.characters.length > 0 && window.mp) {
+                if (this.characters.player_characters.length > 0 && window.mp) {
                     window.mp.trigger("browser:sendString", "server:recieveCharacterName", cname);
                 }
             },

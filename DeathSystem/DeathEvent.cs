@@ -6,6 +6,7 @@ using CloudRP.Utils;
 using GTANetworkAPI;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Internal;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -16,8 +17,10 @@ namespace CloudRP.DeathSystem
     class DeathEvent : Script
     {
         public static List<Hospital> hospitalList = new List<Hospital>();
+        public static Dictionary<int, Corpse> corpses = new Dictionary<int, Corpse>();
         public static int _respawnTimeout_seconds = 3;
         public const int _deathTimer_seconds = 600;
+        public static string corpseSharedKey = "corpsePed";
 
         [ServerEvent(Event.ResourceStart)]
         public void initEvents()
@@ -152,9 +155,31 @@ namespace CloudRP.DeathSystem
             player.TriggerEvent("injured:removeStatus");
         }
 
+        [RemoteEvent("sync:corpsePed")]
+        public static void handleCorpseSync(Player player, int corpseId)
+        {
+            foreach(KeyValuePair<int, Corpse> corpse in corpses)
+            {
+                if(corpse.Key == corpseId)
+                {
+                    player.TriggerEvent("corpse:add", corpse.Value);
+                }
+            }
+        }
+
         public static void handleCorpseSet(Player player)
         {
-            NAPI.Ped.CreatePed(PedHash.MPros01, player.Position, 0);
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+
+            if (characterData == null) return;
+            
+            Ped corpsePed = NAPI.Ped.CreatePed(NAPI.Util.GetHashKey("mp_m_freemode_01"), player.Position, 0, false, true, true, true, 0);
+
+            corpses.Add(corpsePed.Id, new Corpse
+            {
+                remoteId = corpsePed.Id,
+                model = characterData.characterModel
+            });
         }
 
     }

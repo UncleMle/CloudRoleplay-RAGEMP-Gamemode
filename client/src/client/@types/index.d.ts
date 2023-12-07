@@ -191,3 +191,8 @@ export interface SpeedoData {
 	lightsStates: { lightsOn: boolean; highbeamsOn: boolean; },
 	fuelLevel: number
 }
+
+export interface Corpse {
+	remoteId: number,
+	model: CharacterModel
+}
