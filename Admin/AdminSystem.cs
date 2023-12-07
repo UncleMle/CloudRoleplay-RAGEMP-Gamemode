@@ -664,7 +664,7 @@ namespace CloudRP.Admin
                     AdminUtils.staffSay(player, $"Vehicle with id {vehicleId} deleted.");
                 } else
                 {
-                    AdminUtils.staffSay(player, $"Vehicle with id {vehicleId} was not found.");
+                    AdminUtils.staffSay(player, $"Vehicle with was not found.");
                 }
 
             }
@@ -1170,6 +1170,44 @@ namespace CloudRP.Admin
 
             }
             else AdminUtils.sendNoAuth(player);
+        }
+
+        [Command("arefuel", "~r~/arefuel [currentVehicle|id|plate]")]
+        public void adminRefuelVehicle(Player player, string vehicleIdOrPlate)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(AdminUtils.checkUserData(player, userData))
+            {
+                Vehicle findVehicle = VehicleSystem.getVehicleByPlate(vehicleIdOrPlate);
+
+                if (findVehicle == null)
+                {
+                    int? parseId = CommandUtils.tryParse(vehicleIdOrPlate);
+
+                    if (parseId == null)
+                    {
+                        CommandUtils.errorSay(player, "Vehicle was not found.");
+                        return;
+                    }
+
+                    findVehicle = VehicleSystem.getVehicleById((int)parseId, null, false);
+                }
+
+                if(findVehicle != null)
+                {
+                    DbVehicle findVehicleData = VehicleSystem.getVehicleData(findVehicle);
+
+                    if (findVehicleData == null) return;
+
+                    findVehicleData.vehicle_fuel = 100;
+
+                    VehicleSystem.saveVehicleData(findVehicle, findVehicleData, true);
+
+                    AdminUtils.staffSay(player, $"You refilled vehicle with id {findVehicleData.vehicle_id}.");
+                }
+            }
+
         }
 
         [Command("banchar", "~r~/banchar [characterName]", Alias = "bancharacter", GreedyArg = true)]

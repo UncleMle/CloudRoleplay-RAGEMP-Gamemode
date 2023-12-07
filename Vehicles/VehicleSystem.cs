@@ -164,10 +164,20 @@ namespace CloudRP.Vehicles
 
         }
 
-        public static void saveVehicleData(Vehicle vehicle, DbVehicle vehicleData)
+        public static void saveVehicleData(Vehicle vehicle, DbVehicle vehicleData, bool updateDb = false)
         {
             vehicle.SetData(_vehicleSharedDataIdentifier, vehicleData);
             vehicle.SetSharedData(_vehicleSharedDataIdentifier, vehicleData);
+
+            if(updateDb)
+            {
+                using(DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    dbContext.vehicles.Update(vehicleData);
+                    dbContext.SaveChanges();
+                }
+            }
+
         }
 
         public static void bringVehicleToPlayer(Player player, Vehicle vehicle, bool putInVehicle)
@@ -412,17 +422,20 @@ namespace CloudRP.Vehicles
             return returnVeh;
         }
 
-        public static Vehicle getVehicleById(int vehicleId, Vector3 possibleSpawn = null)
+        public static Vehicle getVehicleById(int vehicleId, Vector3 possibleSpawn = null, bool shouldSpawn = true)
         {
             Vehicle returnVeh = null;
 
-            using (DefaultDbContext dbContext = new DefaultDbContext())
+            if(shouldSpawn)
             {
-                DbVehicle findVehicle = dbContext.vehicles.Where(veh => veh.vehicle_id == vehicleId).FirstOrDefault();
-
-                if (findVehicle != null && findVehicle.vehicle_dimension != VehicleDimensions.World)
+                using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
-                    returnVeh = spawnVehicle(findVehicle, possibleSpawn);
+                    DbVehicle findVehicle = dbContext.vehicles.Where(veh => veh.vehicle_id == vehicleId).FirstOrDefault();
+
+                    if (findVehicle != null && findVehicle.vehicle_dimension != VehicleDimensions.World)
+                    {
+                        returnVeh = spawnVehicle(findVehicle, possibleSpawn);
+                    }
                 }
             }
 

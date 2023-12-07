@@ -72,7 +72,7 @@ namespace CloudRP.AntiCheat
 
 
         [RemoteEvent("server:CheatDetection")]
-        public static async Task alertAdmins(Player player, int exception, string message)
+        public static void alertAdmins(Player player, int exception, string message)
         {
             Dictionary<Player, User> onlineStaff = AdminUtils.gatherStaff();
 
@@ -115,11 +115,6 @@ namespace CloudRP.AntiCheat
             foreach (KeyValuePair<Player, User> entry in onlineStaff)
             {
                 NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.antiCheat + message + suffix);
-            }
-
-            if (exception != (int)AcExceptions.tpHack)
-            {
-               // await DiscordIntegration.SendMessage(DiscordSystems.staffChannel, message + suffix);
             }
         }
 

@@ -82,21 +82,19 @@ class AntiCheat {
 	public static handleRender() {
 		AntiCheat.health = Number(mp.players.local.getHealth()) + Number(mp.players.local.getArmour());
 
-		if (AntiCheat.loop < AntiCheat.secs()) {
-			if (AntiCheat.active) {
-				let Difference = AntiCheat.subtractVector(AntiCheat.position, AntiCheat.LocalPlayer.position)
-				if (Math.abs(Difference.x) > 30 || Math.abs(Difference.y) > 30) {
-					if (AntiCheat.isWalking()) {
-						AntiCheat.alertAdmins(AcExceptions.tpHack, "Possible teleport hack");
-					}
-				}
-				if (AntiCheat.LocalPlayer.vehicle && (AntiCheat.checkCarPos(25) || AntiCheat.VehicleFasterThan(250))) {
-					AntiCheat.alertAdmins(AcExceptions.vehicleSpeedOrFly, "Possible vehicle fly or speed hack");
+		if (AntiCheat.active) {
+			let Difference = AntiCheat.subtractVector(AntiCheat.position, AntiCheat.LocalPlayer.position)
+			if (Math.abs(Difference.x) > 30 || Math.abs(Difference.y) > 30) {
+				if (AntiCheat.isWalking()) {
+					AntiCheat.alertAdmins(AcExceptions.tpHack, "Possible teleport hack");
 				}
 			}
-			AntiCheat.position = mp.players.local.position
-			AntiCheat.loop = AntiCheat.secs() + 3;
+			if (AntiCheat.LocalPlayer.vehicle && (AntiCheat.checkCarPos(25) || AntiCheat.VehicleFasterThan(200))) {
+				AntiCheat.alertAdmins(AcExceptions.vehicleSpeedOrFly, "Possible vehicle fly or speed hack");
+			}
 		}
+		AntiCheat.position = mp.players.local.position
+		AntiCheat.loop = AntiCheat.secs() + 3;
 	}
 
 	public static handleReload() {
@@ -157,7 +155,7 @@ class AntiCheat {
 	}
 
 	public static VehicleFasterThan(max: number) {
-		if (AntiCheat.LocalPlayer.vehicle && AntiCheat.blockedVehicleClasses.indexOf(AntiCheat.LocalPlayer.vehicle.getClass()) != -1) {
+		if (AntiCheat.LocalPlayer.vehicle && AntiCheat.blockedVehicleClasses.indexOf(AntiCheat.LocalPlayer.vehicle.getClass()) == -1) {
 			return mp.players.local.vehicle.getSpeed() * 3.6 > max;
 		}
 		return false
