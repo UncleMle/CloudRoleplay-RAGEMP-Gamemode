@@ -33,7 +33,7 @@ class VehicleEngine {
 			let vehicleData: VehicleData | undefined = getVehicleData(vehicle);
 			if (!vehicleData || vehicleData.engine_status == null) return;
 
-			if (vehicleData.engine_status) {
+			if (vehicleData.engine_status && vehicleData.vehicle_fuel > 0) {
 				vehicle.setEngineOn(true, true, false);
 			} else if (!vehicleData.engine_status) {
 				vehicle.setEngineOn(true, true, false);

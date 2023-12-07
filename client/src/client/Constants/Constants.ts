@@ -14,6 +14,8 @@ export const _SHARED_VEHICLE_DATA = "VehicleData";
 export const IS_RADAR_HIDDEN: string = "0x157F93B036700462";
 export const IS_RADAR_ENABLED: string = "0xAF754F20EB5CD51A";
 export const SET_TEXT_OUTLINE: string = "0x2513DFB0FB8400FE";
+export const CF_PED_FLAG_CAN_FLY_THRU_WINDSCREEN: number = 32;
+
 
 export const _control_ids = {
 	F5: 327,
@@ -25,6 +27,7 @@ export const _control_ids = {
 	A: 34,
 	Y: 89,
 	E: 38,
+	J: 74,
 	LEFTARR: 37,
 	RIGHTARR: 39,
 	EBIND: 69,
