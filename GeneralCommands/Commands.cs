@@ -41,6 +41,19 @@ namespace CloudRP.GeneralCommands
             string suffix = me;
 
             CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_commands_radius);
+        }       
+        
+        [Command("shout", "~y~Use:~w~ /shout [message]", Alias = "s", GreedyArg = true)]
+        public void onShoutCommand(Player player, string message)
+        {
+            DbCharacter character = PlayersData.getPlayerCharacterData(player);
+
+            if (character == null) return;
+
+            string prefix = "";
+            string suffix = $" {ChatUtils.CloudBlueLight}SHOUTS:{ChatUtils.White} " + message;
+
+            CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_shout_radius);
         }
 
         [Command("do", "~y~Use:~w~ /do [message]", GreedyArg = true)]
