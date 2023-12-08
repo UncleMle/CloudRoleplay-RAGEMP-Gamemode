@@ -44,10 +44,10 @@
                 <div class="flex justify-center h-[3vw] mt-2 items-center border-t-2 border-gray-400 overflow-hidden"
                     id="digitext">
                     <div class="rounded-lg" id="digitext" v-for="num in getMileageArr()"
-                        :key="getMileageArr().indexOf(num)">
-                        <font id="odometer" class="border-1 p-3 bg-black/70 border-gray-500" :class="getMileageArr().indexOf(num) == getMileageArr().length - 1 ?
+                        :key="num.key">
+                        <font id="odometer" class="border-1 p-3 bg-black/70 border-gray-500" :class="num.key == 1 ?
                             'bg-gray-600/70' : ''">
-                            {{ num }}</font>
+                            {{ num.mile ? num.mile : 0 }}</font>
                     </div>
                 </div>
             </div>
@@ -102,16 +102,24 @@ export default {
     methods: {
         getMileageArr() {
             let arr = (this.uiStates.vehicleSpeedoData.vehicleMileage / 1609).toFixed(0).split("");
+            let objArr = [];
 
-            let fillAmount = 6 - arr.length;
+            arr.forEach((val, idx) => {
+                objArr.push({
+                    mile: val,
+                    key: idx + 1
+                })
+            });
+
+            let fillAmount = 6 - objArr.length;
 
             let addToArr = Array(fillAmount).fill(0);
 
             addToArr.forEach(x => {
-                arr.unshift(x);
+                objArr.unshift(x);
             });
 
-            return arr;
+            return objArr;
         }
     }
 }
