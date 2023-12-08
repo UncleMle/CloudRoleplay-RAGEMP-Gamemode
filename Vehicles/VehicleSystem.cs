@@ -215,7 +215,7 @@ namespace CloudRP.Vehicles
 
                 DbVehicle findJustInserted = dbContext.vehicles.Find(vehicleInsert.vehicle_id);
 
-                vehiclePlate = $"U_{vehicleInsert.vehicle_id}";
+                vehiclePlate = genUniquePlate(vehicleInsert.vehicle_id);
                 findJustInserted.numberplate = vehiclePlate;
 
                 vehicleData = dbContext.vehicles.Find(vehicleInsert.vehicle_id);
@@ -323,6 +323,7 @@ namespace CloudRP.Vehicles
             AdminUtils.staffSay(player, "Vehicle id: " + ChatUtils.red + vehicle.vehicle_id + ChatUtils.White + " VehName: " + ChatUtils.red + vehicle.vehicle_name);
             AdminUtils.staffSay(player, "Owner id: " + ChatUtils.red + vehicle.owner_id + ChatUtils.White + " Numberplate: " + ChatUtils.red + vehicle.numberplate);
             AdminUtils.staffSay(player, "Vehicle Dimension: " + ChatUtils.red + vehicle.vehicle_dimension + ChatUtils.White + " Lock Status: " + ChatUtils.red + vehicle.vehicle_locked);
+            AdminUtils.staffSay(player, "Mileage: " + ChatUtils.red + (vehicle.vehicle_distance / 1609).ToString("N1") + " Miles" + ChatUtils.White + " Fuel Level: " + ChatUtils.red + vehicle.vehicle_fuel.ToString("N1")+"%");
 
             DbCharacter vehicleOwnerData = getOwnerOfVehicleById(vehicle.owner_id);
             if (userdata.adminDuty && vehicleOwnerData != null)
@@ -509,6 +510,32 @@ namespace CloudRP.Vehicles
             }
         }
 
+        public static string genUniquePlate(int vehicleId)
+        {
+            string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+            string result = "";
+
+            int fillAmount = 8 - vehicleId.ToString().Count();
+
+            for (int i = 0; i < fillAmount; i++)
+            {
+                Random r = new Random();
+                int rInt = r.Next(0, characters.Length);
+                result += characters[rInt];
+            }
+
+            string[] rArr = result.Split("");
+
+            Array.Resize(ref rArr, rArr.Length + 1);
+            Array.Copy(rArr, 0, rArr, 1, rArr.Length - 1);
+            rArr[0] = vehicleId.ToString();
+
+            Console.WriteLine(rArr.Length);
+
+            return string.Join("", rArr);
+        }
+
         [RemoteEvent("server:handleDoorInteraction")]
         public void handleDoorInteraction(Player player, Vehicle vehicle, int boneTargetId)
         {
@@ -648,6 +675,10 @@ namespace CloudRP.Vehicles
         {
             Vehicle vehicle = player.Vehicle;
             if (vehicle == null) return;
+
+            User userData = PlayersData.getPlayerAccountData(player);
+            if (userData != null && userData.adminDuty) return;
+
             DbVehicle vehicleData = getVehicleData(player.Vehicle);
 
             if (!vehicleData.engine_status) return;
