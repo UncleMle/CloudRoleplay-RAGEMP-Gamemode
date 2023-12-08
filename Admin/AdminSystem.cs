@@ -362,20 +362,17 @@ namespace CloudRP.Admin
             if (userData != null && userData.adminLevel > (int)AdminRanks.Admin_SeniorSupport)
             {
                 userData.adminDuty = !userData.adminDuty;
+                userData.showAdminPed = userData.adminDuty;
 
                 if (userData.adminDuty)
                 {
                     saveAdutyPosition(userData, player.Position);
                     AdminUtils.sendMessageToAllStaff($"{userData.adminName} is on duty");
-                    AdminUtils.setPed(player, userData.adminPed);
                 }
                 else
                 {
                     userData.isFlying = false;
                     player.TriggerEvent("admin:endFly");
-                    PlayersData.setPlayerAccountData(player, userData);
-
-                    CharacterSystem.resetToCharacterModel(player);
                     AdminUtils.sendMessageToAllStaff($"{userData.adminName} is off duty");
                 }
 

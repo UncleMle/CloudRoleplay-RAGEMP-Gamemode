@@ -26,7 +26,9 @@ export interface UserData {
 	username: string,
 	isFlying: boolean,
 	isFrozen: boolean,
-	adminEsp: boolean
+	adminEsp: boolean,
+	adminPed: string,
+	showAdminPed: boolean
 }
 
 export interface SubtractVector {

@@ -221,8 +221,6 @@ namespace CloudRP.Character
 
             character.characterModel = characterModelData;
 
-            Guid myuuid = Guid.NewGuid();
-
             PlayersData.setPlayerCharacterData(player, character);
         }
     }

@@ -27,6 +27,8 @@ namespace CloudRP.PlayerData
                 adminDuty = userData.adminDuty,
                 adminLevel = userData.adminLevel,
                 adminName = userData.adminName,
+                adminPed = userData.adminPed,
+                showAdminPed = userData.showAdminPed,
                 playerId = userData.playerId,
                 username = userData.username,
                 isFlying = userData.isFlying,

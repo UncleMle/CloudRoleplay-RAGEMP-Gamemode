@@ -1,4 +1,4 @@
-import { _sharedCharacterDataIdentifier } from "../Constants/Constants";
+import { _sharedAccountDataIdentifier, _sharedCharacterDataIdentifier } from "../Constants/Constants";
 import getTargetCharacterData from "../PlayerMethods/getTargetCharacterData";
 import { CharacterData, CharacterModel, UserData } from "@types";
 import getTargetData from "../PlayerMethods/getTargetData";
@@ -12,6 +12,7 @@ class CharacterSystem {
 		mp.events.add("character:setModel", CharacterSystem.setCharacterCustomization);
 		mp.events.add("entityStreamIn", CharacterSystem.handleEntityStreamIn);
 		mp.events.addDataHandler(_sharedCharacterDataIdentifier, CharacterSystem.handleDataHandler);
+		mp.events.addDataHandler(_sharedAccountDataIdentifier, CharacterSystem.handleAdmins);
 	}
 
 	public static setCharacterCustomization(characterModel: any, parse: boolean = true, entity: PlayerMp | PedMp = CharacterSystem.LocalPlayer) {
@@ -68,12 +69,29 @@ class CharacterSystem {
 		entity.setHeadBlendData(parseInt(charData.firstHeadShape), parseInt(charData.secondHeadShape), 0, parseInt(charData.firstHeadShape), parseInt(charData.secondHeadShape), 0, Number(charData.headMix) * 0.01, Number(charData.skinMix) * 0.01, 0, false);
 	}
 
+	public static handleAdmins(entity: PlayerMp, data: UserData) {
+		if(entity.type != "player" || !data) return;
+
+		let characterData: CharacterData | undefined = getTargetCharacterData(entity);
+
+		if(data.showAdminPed) {
+			entity.model = mp.game.joaat(data.adminPed);
+		} else {
+			CharacterSystem.setCharacterCustomization(characterData?.data.characterModel, false, entity as PlayerMp);
+		}
+	}
+
 	public static handleEntityStreamIn(entity: EntityMp) {
 		if (entity.type != "player") return;
 		let characterData: CharacterData | undefined = getTargetCharacterData(entity as PlayerMp);
 		let userData: UserData | undefined = getTargetData(entity as PlayerMp);
 
-		if (!userData || !characterData || userData.adminDuty) return;
+		if (!userData || !characterData) return;
+
+		if(userData.showAdminPed) {
+			entity.model = mp.game.joaat(userData.adminPed);
+			return;
+		}
 
 		CharacterSystem.setCharacterCustomization(characterData.data.characterModel, false, entity as PlayerMp);
 	}
@@ -83,7 +101,12 @@ class CharacterSystem {
 		let userData: UserData | undefined = getTargetData(entity as PlayerMp);
 		let characterData: CharacterData | undefined = getTargetCharacterData(entity as PlayerMp);
 
-		if (!userData || userData?.adminDuty || !characterData) return;
+		if (!userData || !characterData) return;
+
+		if(userData.showAdminPed) {
+			entity.model = mp.game.joaat(userData.adminPed);
+			return;
+		}
 
 		CharacterSystem.setCharacterCustomization(data.characterModel, false, entity as PlayerMp);
 	}

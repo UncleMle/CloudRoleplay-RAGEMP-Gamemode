@@ -241,6 +241,7 @@ namespace CloudRP.Utils
         public int maxCharacters { get; set; }
         public bool triggerHandler { get; set; } = true;
         public bool adminEsp { get; set; } = true;
+        public bool showAdminPed { get; set; } = false;
     }
 
     class SharedDataAccount
@@ -250,11 +251,13 @@ namespace CloudRP.Utils
         public string username { get; set; }
         public int adminLevel { get; set; }
         public bool adminDuty { get; set; } = false;
+        public string adminPed { get; set; }
         public string adminName { get; set; }
         public bool isFlying { get; set; }
         public bool isFrozen {get; set;}
         public bool isOnCharacterCreation { get; set; }
         public bool adminEsp { get; set; }
+        public bool showAdminPed { get; set; }
     }
 
     class SharedDataCharacter
