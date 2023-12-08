@@ -10,7 +10,8 @@
                         </h2>
                     </div>
 
-                    <div v-if="uiStates.vehicleSpeedoData.vehicleRpm != 0 && uiStates.vehicleSpeedoData.fuelLevel > 0" class="w-full flex justify-center bg-black/50 mt-2 rounded-xl h-2">
+                    <div v-if="uiStates.vehicleSpeedoData.vehicleRpm != 0 && uiStates.vehicleSpeedoData.fuelLevel > 0"
+                        class="w-full flex justify-center bg-black/50 mt-2 rounded-xl h-2">
                         <div :class="rpmColour" class="flex justify-start duration-300"
                             :style="{ 'width': uiStates.vehicleSpeedoData.vehicleRpm * 100 + '%' }">
                         </div>
@@ -40,9 +41,13 @@
                 </div>
 
 
-                <div class="flex justify-center h-[3vw] mt-2 items-center border-t-2 border-gray-400" id="digitext">
-                    <div id="digitext" v-for="num in mileage" :key="mileage.indexOf(num)">
-                        <font class="border p-2 bg-black/70 border-gray-500">{{ num }}</font>
+                <div class="flex justify-center h-[3vw] mt-2 items-center border-t-2 border-gray-400 overflow-hidden"
+                    id="digitext">
+                    <div class="rounded-lg" id="digitext" v-for="num in getMileageArr()"
+                        :key="getMileageArr().indexOf(num)">
+                        <font class="border-1 p-3 bg-black/70 border-gray-500" :class="getMileageArr().indexOf(num) == getMileageArr().length - 1 ?
+                            'bg-gray-600/70' : ''">
+                            {{ num }}</font>
                     </div>
                 </div>
             </div>
@@ -51,9 +56,10 @@
 
         <div class="bg-black/60 absolute right-28 w-[20rem] bottom-[22rem] text-white font-medium h-26 rounded-xl">
             <div class="w-full text-center items-center h-full relative p-3">
-                <div :class="uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) < 20 ? uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) < 10 ? 'bg-red-400' : 'bg-orange-400' : 'bg-green-500'" class="rounded-lg h-2" :style="{'width': uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) + '%'}">
+                <div :class="uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) < 20 ? uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) < 10 ? 'bg-red-400' : 'bg-orange-400' : 'bg-green-500'"
+                    class="rounded-lg h-2" :style="{ 'width': uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) + '%' }">
                 </div>
-                <i class="fa-solid fa-gas-pump mt-3 "></i> {{uiStates.vehicleSpeedoData.fuelLevel.toFixed(0)}}%
+                <i class="fa-solid fa-gas-pump mt-3 "></i> {{ uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) }}%
 
                 <div class="bg-gray-300 rounded-lg h-2 mt-2">
                 </div>
@@ -93,6 +99,21 @@ export default {
             }
             return "bg-green-400"
         },
+    },
+    methods: {
+        getMileageArr() {
+            let arr = (this.uiStates.vehicleSpeedoData.vehicleMileage / 1609).toFixed(0).split("");
+
+            let fillAmount = 6 - arr.length;
+
+            let addToArr = Array(fillAmount).fill(0);
+
+            addToArr.forEach(x => {
+                arr.unshift(x);
+            });
+
+            return arr;
+        }
     }
 }
 </script>

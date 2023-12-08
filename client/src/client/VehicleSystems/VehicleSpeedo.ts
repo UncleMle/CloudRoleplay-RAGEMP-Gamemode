@@ -43,7 +43,9 @@ class VehicleSpeedo {
 				indicatorStatus: vehicleData.indicator_status,
 				lockStatus: vehicleData.vehicle_locked,
 				lightsStates: lightState,
-                fuelLevel: vehicleData.vehicle_fuel
+                fuelLevel: vehicleData.vehicle_fuel,
+                vehicleMileage: vehicleData.vehicle_distance
+
             }
 
             BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
