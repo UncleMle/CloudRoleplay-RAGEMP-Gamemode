@@ -43,6 +43,13 @@ namespace CloudRP.DeathSystem
         [ServerEvent(Event.PlayerDeath)]
         public void OnPlayerDeath(Player player, Player killer, uint reason)
         {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if (userData != null && userData.adminDuty)
+            {
+                NAPI.Player.SpawnPlayer(player, player.Position);
+                return;
+            }
 
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
