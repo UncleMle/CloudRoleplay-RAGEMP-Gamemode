@@ -59,6 +59,15 @@ namespace CloudRP.Authentication
 
                     if (passwordHashCompare)
                     {
+                        Player findIsOnline = checkInGame(findAccount.account_id);
+
+                        if(findIsOnline != null)
+                        {
+                            player.KickSilent();
+                            NAPI.Chat.SendChatMessageToPlayer(findIsOnline, ChatUtils.red + "~h~[AUTHENTICATION WARNING] " + ChatUtils.White + "A third party attempted to login into your account. Please reset your account password immediately.");
+                            return;
+                        }
+
                         User user = createUser(findAccount);
 
                         findAccount.client_serial = player.Serial;
@@ -110,6 +119,25 @@ namespace CloudRP.Authentication
             {
                 enterRegisterOtpStage(player, registeringData);
             }
+        }
+
+        public Player checkInGame(int accountId)
+        {
+            List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
+
+            Player wasFound = null;
+
+            foreach(Player p in onlinePlayers)
+            {
+                User pData = PlayersData.getPlayerAccountData(p);
+
+                if(pData.accountId == accountId)
+                {
+                    wasFound = p;
+                }
+            }
+
+            return wasFound;
         }
 
         public void enterRegisterOtpStage(Player player, Register registeringData)

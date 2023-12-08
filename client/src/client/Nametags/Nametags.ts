@@ -24,7 +24,7 @@ class NameTags {
 	}
 
 	public static sendQuitMessage(playerQuitting: PlayerMp, exitType: string, reason: string) {
-		if(!playerQuitting) return;
+		if(!playerQuitting || !getTargetCharacterData(playerQuitting)) return;
 		if(distBetweenCoords(NameTags.LocalPlayer.position, playerQuitting.position) > 25) return;
 		mp.gui.chat.push("!{#f57b42}[Disconnected] !{white}" + NameTags.formatNick(playerQuitting) + " has " + NameTags.formatExit(exitType, reason) + " from the server!");
 	}
