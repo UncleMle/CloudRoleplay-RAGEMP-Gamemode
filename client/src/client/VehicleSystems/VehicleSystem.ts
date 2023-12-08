@@ -18,6 +18,7 @@ class VehicleSystems {
 		mp.events.add("render", VehicleSystems.handleRender);
 		mp.events.add("playerLeaveVehicle", (veh: VehicleMp) => VehicleSystems.beltToggle ? VehicleSystems.toggleSeatBelt(veh) : null);
 		mp.events.add("playerEnterVehicle", VehicleSystems.handlePlayerEnterVehicle);
+		mp.events.add("playerLeaveVehicle", VehicleSystems.handleExitDistCalc);
 		mp.keys.bind(_control_ids.F, false, VehicleSystems.stopWindowBreaking);
 		mp.keys.bind(_control_ids.J, false, VehicleSystems.toggleSeatBelt);
 
@@ -28,9 +29,14 @@ class VehicleSystems {
 		}, VehicleSystems.updateDistInteral_seconds * 1000);
 	}
 
-	public static handlePlayerEnterVehicle(player: PlayerMp, vehicle: VehicleMp, seat: number) {
+	public static handlePlayerEnterVehicle(vehicle: VehicleMp, seat: number) {
 		if(!vehicle) return;
 		VehicleSystems.vehicleOldPos = vehicle.position;
+	}
+
+	public static handleExitDistCalc(vehicle: VehicleMp) {
+		if(!vehicle) return;
+		mp.events.callRemote(VehicleSystems.updateVehicleDistEvent, JSON.stringify(VehicleSystems.vehicleOldPos))
 	}
 
 	public static toggleSeatBelt(vehicle: VehicleMp) {

@@ -404,7 +404,7 @@ namespace CloudRP.Vehicles
 
             using(DefaultDbContext dbContext = new DefaultDbContext())
             {
-                DbVehicle findVehicle = dbContext.vehicles.Where(veh => veh.numberplate == vehiclePlate).FirstOrDefault();
+                DbVehicle findVehicle = dbContext.vehicles.Where(veh => veh.numberplate == vehiclePlate.ToUpper()).FirstOrDefault();
 
                 if (findVehicle != null && findVehicle.vehicle_dimension != VehicleDimensions.World)
                 {
@@ -417,7 +417,7 @@ namespace CloudRP.Vehicles
 
                 foreach(Vehicle vehicle in onlineVehicles)
                 {
-                    if(vehicle.NumberPlate == vehiclePlate)
+                    if(vehicle.NumberPlate == vehiclePlate.ToUpper())
                     {
                         returnVeh = vehicle;
                     }
