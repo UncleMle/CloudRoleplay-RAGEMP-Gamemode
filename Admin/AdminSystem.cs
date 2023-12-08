@@ -33,7 +33,7 @@ namespace CloudRP.Admin
         public static int _maxReports = 2;
 
         [ServerEvent(Event.PlayerDisconnected)]
-        public void playerDisconnected(Player player)
+        public void OnPlayerDisconnect(Player player, DisconnectionType type, string reason)
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
