@@ -12,7 +12,7 @@
 
                     <div v-if="uiStates.vehicleSpeedoData.vehicleRpm != 0 && uiStates.vehicleSpeedoData.fuelLevel > 0"
                         class="w-full flex justify-center bg-black/50 mt-2 rounded-xl h-2">
-                        <div :class="rpmColour" class="flex justify-start duration-300"
+                        <div :class="rpmColour" class="flex justify-start duration-300 rounded-lg"
                             :style="{ 'width': uiStates.vehicleSpeedoData.vehicleRpm * 100 + '%' }">
                         </div>
                     </div>
@@ -43,11 +43,10 @@
 
                 <div class="flex justify-center h-[3vw] mt-2 items-center border-t-2 border-gray-400 overflow-hidden"
                     id="digitext">
-                    <div class="rounded-lg" id="digitext" v-for="num in getMileageArr()"
-                        :key="num.key">
-                        <font id="odometer" class="border-1 p-3 bg-black/70 border-gray-500" :class="num.key == 1 ?
-                            'bg-gray-600/70' : ''">
-                            {{ num.mile ? num.mile : 0 }}</font>
+                    <div class="rounded-lg" id="digitext" v-for="num in getMileageArr()" :key="num.key">
+                        <font id="odometer" class="border-1 p-3 bg-black/70 border-gray-500"
+                            :class="num.key == getMileageArr().length - 1 ? 'bg-gray-600 rounded-r-lg' : num.key == 0 ? 'rounded-l-lg' : ''">
+                            {{ num.num }}</font>
                     </div>
                 </div>
             </div>
@@ -102,24 +101,21 @@ export default {
     methods: {
         getMileageArr() {
             let arr = (this.uiStates.vehicleSpeedoData.vehicleMileage / 1609).toFixed(0).split("");
-            let objArr = [];
+            let fillAmount = 6 - arr.length;
+            let addToArr = Array(fillAmount).fill(0);
+            addToArr.forEach(x => {
+                arr.unshift(x);
+            });
 
+            let arrayWithIndex = [];
             arr.forEach((val, idx) => {
-                objArr.push({
-                    mile: val,
-                    key: idx + 1
+                arrayWithIndex.push({
+                    num: val,
+                    key: idx
                 })
             });
 
-            let fillAmount = 6 - objArr.length;
-
-            let addToArr = Array(fillAmount).fill(0);
-
-            addToArr.forEach(x => {
-                objArr.unshift(x);
-            });
-
-            return objArr;
+            return arrayWithIndex;
         }
     }
 }

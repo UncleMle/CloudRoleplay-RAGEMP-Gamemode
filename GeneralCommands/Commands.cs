@@ -51,7 +51,7 @@ namespace CloudRP.GeneralCommands
             if (character == null) return;
 
             string prefix = "";
-            string suffix = $" {ChatUtils.CloudBlueLight}SHOUTS:{ChatUtils.White} " + message;
+            string suffix = $" {ChatUtils.CloudBlueLight}shouts:{ChatUtils.White} " + message.ToUpper();
 
             CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_shout_radius);
         }
