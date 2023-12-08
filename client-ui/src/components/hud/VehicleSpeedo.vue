@@ -104,7 +104,8 @@ export default {
     methods: {
         getMileageArr() {
             let arr = (this.uiStates.vehicleSpeedoData.vehicleMileage / (this.uiStates.vehicleSpeedoData.metric == 0 ? 1000 : 1609)).toFixed(0).split("");
-            let fillAmount = 6 - arr.length;
+            let fillAmount = arr.length > 6 ? arr.length - 6 : 6 - arr.length;
+
             let addToArr = Array(fillAmount).fill(0);
             addToArr.forEach(x => {
                 arr.unshift(x);

@@ -112,12 +112,15 @@ namespace CloudRP.Vehicles
 
         public static Vehicle vehicleIdOrPlate(string plateOrId)
         {
-            Vehicle findVehicle = getVehicleByPlate(plateOrId);
+            Vehicle findVehicle = getVehicleByPlate(plateOrId.ToUpper());
 
             if (findVehicle == null)
             {
                 int? vehicleId = CommandUtils.tryParse(plateOrId);
-                findVehicle = getVehicleById((int)vehicleId);
+
+                if (vehicleId == null) return null;
+
+                findVehicle = getVehicleById((int)vehicleId, null, false);
             }
 
             return findVehicle;

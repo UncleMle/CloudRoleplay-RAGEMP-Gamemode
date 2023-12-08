@@ -1156,7 +1156,6 @@ namespace CloudRP.Admin
                     VehicleSystem.sendVehicleToInsurance(findVehicle);
 
                     AdminUtils.staffSay(player, "Sent vehicle " + plateOrId + " to insurance.");
-
                 } else
                 {
                     AdminUtils.staffSay(player, "Vehicle couldn't be found.");
