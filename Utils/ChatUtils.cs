@@ -1,10 +1,11 @@
-﻿using System;
+﻿using GTANetworkAPI;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CloudRP.Utils
 {
-    internal class ChatUtils
+    internal class ChatUtils : Script
     {
         public static string CloudBlue = "!{#67b1e6}";
         public static string CloudBlueLight = "!{#accafa}";
@@ -27,6 +28,11 @@ namespace CloudRP.Utils
         public static string hospital = "!{green}[Hospital] " + White;
         public static string info = "!{yellow}[Info] " + White;
         public static string reports = "!{yellow}[Reports] " + White;
+
+        public static void sendWithNickName(Player player, Player target, string prefix, string suffix)
+        {
+            player.TriggerEvent("sendWithNickName", target, prefix, suffix);
+        }
 
         public static void charSysPrint(string str)
         {

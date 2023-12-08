@@ -85,13 +85,13 @@ namespace CloudRP.Utils
             return NAPI.Player.GetPlayersInRadiusOfPlayer(radius, player);
         }
 
-        public static void sendMessageToPlayersInRadius(Player player, string message, double radius)
+        public static void sendMessageToPlayersInRadius(Player player, string prefix, string suffix, double radius)
         {
             List<Player> closePlayers = getPlayersInRadius(player, radius);
             
             foreach(Player closePlayer in closePlayers)
             {
-                NAPI.Chat.SendChatMessageToPlayer(closePlayer, message);
+                ChatUtils.sendWithNickName(closePlayer, player, prefix, suffix);
             }
         }
 

@@ -22,12 +22,12 @@ namespace CloudRP.GeneralCommands
         public void oocCommand(Player player, string oocChat)
         {
             DbCharacter character = PlayersData.getPlayerCharacterData(player);
-
             if (character == null) return;
 
-            string oocMessageFormatted = _oocColour + "((" + "!{white} " + CommandUtils.formatCharName(character.character_name) + $" [{player.Id}] " + " !{grey}says:!{white} " + oocChat + " !{white}" + _oocColour + "))";
+            string prefix = _oocColour + "((" + "!{white} ";
+            string suffix = " !{grey}says:!{white} " + oocChat + " !{white}" + _oocColour + "))";
 
-            CommandUtils.sendMessageToPlayersInRadius(player, oocMessageFormatted, CommandUtils._rp_commands_radius);
+            CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_commands_radius);
         }
 
         [Command("me", "~y~~ [message]", GreedyArg = true)]
@@ -37,10 +37,10 @@ namespace CloudRP.GeneralCommands
 
             if (character == null) return;
 
-            string meMessageFormatted = _meColour + "* " + CommandUtils.formatCharName(character.character_name) + " " + $"[{player.Id}] " + me;
+            string prefix = _meColour + "* ";
+            string suffix = me;
 
-
-            CommandUtils.sendMessageToPlayersInRadius(player, meMessageFormatted, CommandUtils._rp_commands_radius);
+            CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_commands_radius);
         }
 
         [Command("do", "~y~Use: /do [message]", GreedyArg = true)]
@@ -50,9 +50,10 @@ namespace CloudRP.GeneralCommands
 
             if (character == null) return;
 
-            string doFormatted = _meColour + "* " + docommand + " " + $"(( Player [{player.Id}] ))";
+            string prefix = _meColour + "* " + docommand + " " + $"(( ";
+            string suffix = " ))";
 
-            CommandUtils.sendMessageToPlayersInRadius(player, doFormatted, CommandUtils._rp_commands_radius);
+            CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_commands_radius);
         }
 
         [Command("stats", "~y~Use: /stats")]
@@ -91,15 +92,25 @@ namespace CloudRP.GeneralCommands
                 return;
             }
 
-            string pmToPlayer = ChatUtils.yellow + $"[PM] from {character.character_name} [{player.Id}] " + ChatUtils.grey + "(( " + ChatUtils.White + message + ChatUtils.grey + " ))";
+            string pmToPlayerPrefix = ChatUtils.yellow + $"[PM] from ";
+            string pmToPlayerSuffix = ChatUtils.grey + "(( " + ChatUtils.White + message + ChatUtils.grey + " ))";
+            string editedPmToPlayer = null;
+
             string pmFromPlayer = ChatUtils.grey + $"[PM] You " + "(( " + message + " ))";
 
             if (userData.adminDuty)
             {
-                pmToPlayer = ChatUtils.red + $"[ADMIN PM] from {userData.adminName} [{player.Id}] " + ChatUtils.grey + "(( " + ChatUtils.White + message + ChatUtils.grey + " ))";
+                editedPmToPlayer = ChatUtils.red + $"[ADMIN PM] from {userData.adminName} [{player.Id}] " + ChatUtils.grey + "(( " + ChatUtils.White + message + ChatUtils.grey + " ))";
             }
 
-            NAPI.Chat.SendChatMessageToPlayer(findPlayer, pmToPlayer);
+            if(editedPmToPlayer == null)
+            {
+                ChatUtils.sendWithNickName(findPlayer, player, pmToPlayerPrefix, pmToPlayerSuffix);
+            } else
+            {
+                NAPI.Chat.SendChatMessageToPlayer(findPlayer, editedPmToPlayer);
+            }
+
             NAPI.Chat.SendChatMessageToPlayer(player, pmFromPlayer);
         }
 

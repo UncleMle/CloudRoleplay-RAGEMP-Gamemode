@@ -11,6 +11,7 @@ class GuiSystem {
 		GuiSystem.LocalPlayer = mp.players.local;
 
 		mp.events.add("render", GuiSystem.fillGuiRenderValues);
+		mp.events.add("render", GuiSystem.fillGuiRenderValues);
 	}
 
 	public static fillGuiRenderValues() {

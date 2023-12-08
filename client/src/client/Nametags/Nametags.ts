@@ -18,6 +18,16 @@ class NameTags {
 		mp.events.add('render', NameTags.renderNametags);
 		mp.events.add('entityStreamIn', NameTags.handleStreamIn);
 		mp.events.add('set:nickName', NameTags.handleNickNameSet);
+		mp.events.add('sendWithNickName', NameTags.sendWithNick);
+	}
+
+	public static sendWithNick(targetEnt: PlayerMp, prefix: string, suffix: string) {
+		if(targetEnt == NameTags.LocalPlayer) {
+			let characterData: CharacterData | undefined = getUserCharacterData();
+			mp.gui.chat.push(prefix + characterData?.characterName.replace("_", " ") + " [" + targetEnt.remoteId + "] " + suffix);
+		} else {
+			mp.gui.chat.push(prefix + (targetEnt._nickName ? targetEnt._nickName : "Player") + " [" + targetEnt.remoteId + "] " + suffix);
+		}
 	}
 
 	public static handleStreamIn(entity: PlayerMp) {

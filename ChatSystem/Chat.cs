@@ -38,10 +38,7 @@ namespace CloudRP.ChatSystem
             {
                 string adminRank = AdminUtils.getColouredAdminRank(userData);
                 prefix += adminRank + "!{red}" + $"{userData.adminName}" + "!{white} ";
-            } else
-            {
-                prefix += $"{characterData.character_name.Replace("_", " ")}";
-            }
+            } 
 
             List<Player> playersInRange = CommandUtils.getPlayersInRadius(player, _chatradius);
 
@@ -49,7 +46,13 @@ namespace CloudRP.ChatSystem
 
             playersInRange.ForEach(p =>
             {
-                NAPI.Chat.SendChatMessageToPlayer(p, chatMessage);
+                if(userData.adminDuty)
+                {
+                    NAPI.Chat.SendChatMessageToPlayer(p, chatMessage);
+                } else
+                {
+                    ChatUtils.sendWithNickName(p, player, prefix, suffix + message);
+                }
             });
         }
 
