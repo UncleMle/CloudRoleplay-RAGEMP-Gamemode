@@ -1,5 +1,5 @@
 <template>
-    <div v-if="getUiStates.chatEnabled">
+    <div v-if="getUiStates.chatEnabled" class="duration-300" :class="!showing ? 'opacity-40' : ''">
         <div id="chat">
             <ul id="chat_messages">
                 <li v-for="item in chatMessages" :key="'KY' + item" v-html="item.toString()">
@@ -22,9 +22,13 @@ export default {
             KEYBIND_UPARR: 38,
             KEYBIND_DOWNARR: 40,
             inputFieldShowing: false,
+            showing: true,
             chatMessages: [],
             playerMessages: [],
-            chatIteration: 0
+            chatIteration: 0,
+            inactiveTimer: 15000,
+            closeInterval: null,
+            closeTimeout: null
         };
     },
     computed: {
@@ -35,6 +39,9 @@ export default {
     watch: {
         inputFieldShowing(oldVal) {
             this.typingState(oldVal);
+        },
+        chatMessages() {
+            this.setCloseInterval();
         }
     },
     methods: {
@@ -42,6 +49,8 @@ export default {
             if (this.$router.currentRoute.path != "/" || !this.getUiStates.chatEnabled) return;
 
             if (e.keyCode == this.KEYBIND_T && !this.inputFieldShowing) {
+                this.showing = true;
+
                 this.inputFieldShowing = true;
                 this.$nextTick().then(() => this.$refs.input.focus());
                 e.preventDefault();
@@ -51,21 +60,25 @@ export default {
                 this.inputFieldShowing = false;
                 let text = this.userText;
 
-                if(text.length > 0) {
+                if (text.length > 0) {
                     text.charAt(0) == "/" ? this.invokeCommand(text) : this.invokeChatMessage(text);
                     this.playerMessages.push(this.userText);
                     this.chatIteration = 0;
                     this.userText = "";
+
+                    this.setCloseInterval();
                 }
             }
 
-            if(e.keyCode == this.KEYBIND_UPARR && this.inputFieldShowing) {
+            if (e.keyCode == this.KEYBIND_UPARR && this.inputFieldShowing) {
                 this.chatIteration > this.playerMessages.length - 1 ? this.chatIteration = 0 : 0;
 
                 this.userText = this.playerMessages.slice().reverse()[this.chatIteration++];
+
+                this.setCaretPosition("chat_msg", 5)
             }
 
-            if(e.keyCode == this.KEYBIND_DOWNARR && this.inputFieldShowing) {
+            if (e.keyCode == this.KEYBIND_DOWNARR && this.inputFieldShowing) {
                 this.chatIteration < this.playerMessages.length - 1 ? this.chatIteration = 0 : 0;
 
                 this.userText = this.playerMessages.slice().reverse()[this.chatIteration--];
@@ -76,6 +89,19 @@ export default {
                 window.mp.invoke("focus", toggle);
                 window.mp.invoke("setTypingInChatState", toggle);
             }
+        },
+        setCloseInterval() {
+            this.showing = true;
+            clearInterval(this.closeInterval);
+            clearTimeout(this.closeTimeout);
+
+            this.closeTimeout = setTimeout(() => {
+                this.closeInterval = setInterval(() => {
+                    if (!this.inputFieldShowing) {
+                        this.showing = false;
+                    }
+                }, this.inactiveTimer)
+            }, 12000);
         },
         invokeChatMessage(message) {
             if (window.mp) {
@@ -91,6 +117,25 @@ export default {
         push(text) {
             this.chatMessages.unshift(text);
         },
+        setCaretPosition(elemId, caretPos) {
+            var elem = document.getElementById(elemId);
+
+            if (elem != null) {
+                if (elem.createTextRange) {
+                    var range = elem.createTextRange();
+                    range.move('character', caretPos);
+                    range.select();
+                }
+                else {
+                    if (elem.selectionStart) {
+                        elem.focus();
+                        elem.setSelectionRange(caretPos, caretPos);
+                    }
+                    else
+                        elem.focus();
+                }
+            }
+        }
     },
     created() {
         if (window.mp) {
@@ -106,6 +151,7 @@ export default {
             }
         }
 
+        this.setCloseInterval();
         document.addEventListener("keydown", this.keyDownListener);
     }
 };
