@@ -43,12 +43,17 @@ export interface StreetData {
 	zoneTwo: string
 }
 
+export interface Hunger {
+	hunger: number,
+	water: number
+}
+
 export interface CharacterData {
 	characterId: number,
 	characterName: string,
 	characterModel: CharacterModel,
 	data: DbCharacter,
-	voiceChatState: boolean
+	voiceChatState: boolean,
 }
 
 export interface DbCharacter {
@@ -125,7 +130,8 @@ export interface Gui {
 	isFrozen: boolean,
 	unix: number,
 	zoneName: string,
-	zoneNameTwo: string
+	zoneNameTwo: string,
+	fps: number
 }
 
 export interface Flight {

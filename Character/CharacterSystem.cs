@@ -19,6 +19,8 @@ namespace CloudRP.Character
     {
         private static Timer saveCharactersTimer;
         private static int _timerInterval = 5000;
+        private static double _characterHungerRemover = 0.004;
+        private static double _characterWaterRemover = 0.009;
 
         [ServerEvent(Event.ResourceStart)]
         public void onResourceStart()
@@ -34,14 +36,14 @@ namespace CloudRP.Character
             {
                 saveCharactersTimer = new Timer();
                 saveCharactersTimer.Interval = _timerInterval;
-                saveCharactersTimer.Elapsed += saveCharacterPositions;
+                saveCharactersTimer.Elapsed += saveCharData;
 
                 saveCharactersTimer.AutoReset = true;
                 saveCharactersTimer.Enabled = true;
             });
         }
 
-        public static void saveCharacterPositions(object source, ElapsedEventArgs e)
+        public static void saveCharData(object source, ElapsedEventArgs e)
         {
             List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
 
@@ -80,11 +82,15 @@ namespace CloudRP.Character
                 characterData.character_health = player.Health;
                 characterData.play_time_seconds += 5;
                 characterData.player_exp += 1;
+                characterData.character_hunger -= _characterHungerRemover;
+                characterData.character_water -= _characterWaterRemover;
 
+                PlayersData.setCharacterHungerAndThirst(player, characterData.character_hunger, characterData.character_water);
                 dbContext.characters.Update(characterData);
                 dbContext.SaveChanges();
             }
         }
+
 
         public static int getUsersCharacter(User userData)
         {

@@ -35,6 +35,10 @@ namespace CloudRP.Character
         [Required]
         public int character_health { get; set; }
 
+        public double character_water { get; set; } = 100;
+
+        public double character_hunger { get; set; } = 100;
+
         [Required]
         public int character_isbanned {  get; set; }
 

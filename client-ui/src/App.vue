@@ -3,7 +3,7 @@
         <ChatBox class="absolute" />
         <PushNotification class="bg-red-200" ref="notification" />
         <VehicleSpeedo />
-        <PlayerHud class="relative" />
+        <PlayerHud v-if="uiStates.guiEnabled" />
 
         <router-view class="absolute" ref="routers">
         </router-view>
@@ -13,6 +13,7 @@
 <script>
 import ChatBox from "./components/ui/ChatBox.vue";
 import PushNotification from "./components/ui/PushNotification.vue";
+import PlayerHud from "./components/hud/PlayerHud.vue";
 import VehicleSpeedo from "./components/hud/VehicleSpeedo.vue";
 import { mapGetters } from "vuex";
 
@@ -22,6 +23,7 @@ export default {
             ChatBox,
             PushNotification,
             VehicleSpeedo,
+            PlayerHud
         },
         computed: {
             ...mapGetters({

@@ -4,6 +4,7 @@ export const _SWITCH_IN_PLAYER_NATIVE: string = "0xD8295AF639FD9CB8";
 export const _IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE: string = "0xD9D2CFFF49FAB35F";
 export const _sharedAccountDataIdentifier: string = "PlayerAccountData";
 export const _sharedCharacterDataIdentifier: string = "PlayerCharacterData";
+export const _sharedHungerDataIdentifier: string = "characterWaterAndHunger";
 export const _TEXT_R_RED = "~r~";
 export const _TEXT_CLOUD_ADMINBLUE = "#75a8ff";
 export const _TEXT_R_WHITE = "~w~";

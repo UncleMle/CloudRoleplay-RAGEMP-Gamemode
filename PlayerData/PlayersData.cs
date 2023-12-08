@@ -15,6 +15,7 @@ namespace CloudRP.PlayerData
         private static readonly string _sharedAccountDataIdentifier = "PlayerAccountData";
         private static readonly string _sharedCharacterDataIdentifier = "PlayerCharacterData";
         private static readonly string _characterModelData = "PlayerCharacterModelData";
+        private static string _characterFoodAndWaterKey = "characterWaterAndHunger";
 
         public static void setPlayerAccountData(Player player, User userData)
         {
@@ -53,8 +54,19 @@ namespace CloudRP.PlayerData
                 data = character
             };
 
+            setCharacterHungerAndThirst(player, character.character_hunger, character.character_water);
+
             player.SetData(_characterModelData, character.characterModel);
             player.SetSharedData(_sharedCharacterDataIdentifier, data);
+        }
+
+        public static void setCharacterHungerAndThirst(Player player, double hunger, double water)
+        {
+            player.SetSharedData(_characterFoodAndWaterKey, new HungerThirst
+            {
+                hunger = hunger,
+                water = water
+            });
         }
 
         public static CharacterModel getCharacterModelData(Player player)

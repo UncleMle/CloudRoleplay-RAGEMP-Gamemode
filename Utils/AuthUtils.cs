@@ -263,6 +263,8 @@ namespace CloudRP.Utils
     class SharedDataCharacter
     {
         public int characterId { get; set; }
+        public double characterWater { get; set; }
+        public double characterHunger { get; set; }
         public string characterName { get; set; }
         public CharacterModel characterModel { get; set; }
         public bool voiceChatState { get; set; }

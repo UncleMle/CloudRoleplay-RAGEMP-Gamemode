@@ -14,12 +14,14 @@ const store = new Vuex.Store({
 			player_bandata: {},
 			player_characters: [],
 			report_data: [],
-			otp_ui: false
+			otp_ui: false,
+			player_water: 0,
+			player_hunger: 0
 		},
 		uiStates: {
 			characterSelection: false,
 			chatEnabled: true,
-			guiEnabled: true,
+			guiEnabled: false,
 			serverLoading: false,
 			speedoUi: false,
 			vehicleSpeedoData: {}

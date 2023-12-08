@@ -135,4 +135,10 @@ namespace CloudRP.Utils
         public Model model { get; set; }
     }
 
+    public class HungerThirst
+    {
+        public double hunger;
+        public double water;
+    }
+
 }

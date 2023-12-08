@@ -3,14 +3,16 @@ using System;
 using CloudRP.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CloudRP.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231208131817_Updated character stats data type")]
+    partial class Updatedcharacterstatsdatatype
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -327,8 +329,8 @@ namespace CloudRP.Migrations
                     b.Property<int>("character_health")
                         .HasColumnType("int");
 
-                    b.Property<double>("character_hunger")
-                        .HasColumnType("double");
+                    b.Property<ulong>("character_hunger")
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<int>("character_isbanned")
                         .HasColumnType("int");
@@ -337,8 +339,8 @@ namespace CloudRP.Migrations
                         .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<double>("character_water")
-                        .HasColumnType("double");
+                    b.Property<ulong>("character_water")
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<int>("injured_timer")
                         .HasColumnType("int");
