@@ -148,13 +148,13 @@ namespace CloudRP.Vehicles
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
                 DbVehicle findVehicle = dbContext.vehicles.Find(vehicleData.vehicle_id);
-
                 if (findVehicle == null) return;
 
                 findVehicle.UpdatedDate = DateTime.Now;
                 findVehicle.position_x = vehicle.Position.X;
                 findVehicle.position_y = vehicle.Position.Y;
                 findVehicle.position_z = vehicle.Position.Z;
+                findVehicle.vehicle_distance = vehicleData.vehicle_distance;
                 findVehicle.vehicle_locked = vehicleData.vehicle_locked;
 
                 findVehicle.rotation = vehicle.Rotation.Z;
@@ -622,6 +622,25 @@ namespace CloudRP.Vehicles
             {
                 uiHandling.sendNotification(player, "~w~Use ~y~Y~w~ to start the engine.", false);
             }
+        }
+
+        [RemoteEvent("server:updateVehicleDistance")]
+        public void updateVehicleDistance(Player player, string getOldDist)
+        {
+            if (!player.IsInVehicle || getOldDist == null) return;
+
+            Vehicle playerVehicle = player.Vehicle;
+            DbVehicle playerVehicleData = getVehicleData(playerVehicle);
+            if (playerVehicleData == null) return;
+
+            Vector3 oldDist = JsonConvert.DeserializeObject<Vector3>(getOldDist);
+            if (oldDist == null) return;
+
+            float dist = Vector3.Distance(oldDist, player.Vehicle.Position);
+
+            playerVehicleData.vehicle_distance += (ulong)dist;
+
+            saveVehicleData(playerVehicle, playerVehicleData);
         }
 
         [RemoteEvent("server:updateVehicleFuel")]

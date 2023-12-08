@@ -6,6 +6,9 @@ class VehicleSystems {
 	public static LocalPlayer: PlayerMp;
 	public static GameControls: GamePadMp;
 	public static beltToggle: boolean;
+	public static vehicleOldPos: Vector3;
+	public static updateVehicleDistEvent: string = "server:updateVehicleDistance";
+	public static updateDistInteral_seconds: number = 20;
 	public static blockVehicleSeatBelts: number[] = [13, 14, 15, 16, 21, 8];
 
 	constructor() {
@@ -14,8 +17,20 @@ class VehicleSystems {
 
 		mp.events.add("render", VehicleSystems.handleRender);
 		mp.events.add("playerLeaveVehicle", (veh: VehicleMp) => VehicleSystems.beltToggle ? VehicleSystems.toggleSeatBelt(veh) : null);
+		mp.events.add("playerEnterVehicle", VehicleSystems.handlePlayerEnterVehicle);
 		mp.keys.bind(_control_ids.F, false, VehicleSystems.stopWindowBreaking);
 		mp.keys.bind(_control_ids.J, false, VehicleSystems.toggleSeatBelt);
+
+		setInterval(() => {
+			if(!VehicleSystems.LocalPlayer.vehicle) return;
+			mp.events.callRemote(VehicleSystems.updateVehicleDistEvent, JSON.stringify(VehicleSystems.vehicleOldPos));
+			VehicleSystems.vehicleOldPos = VehicleSystems.LocalPlayer.vehicle.position;
+		}, VehicleSystems.updateDistInteral_seconds * 1000);
+	}
+
+	public static handlePlayerEnterVehicle(player: PlayerMp, vehicle: VehicleMp, seat: number) {
+		if(!vehicle) return;
+		VehicleSystems.vehicleOldPos = vehicle.position;
 	}
 
 	public static toggleSeatBelt(vehicle: VehicleMp) {

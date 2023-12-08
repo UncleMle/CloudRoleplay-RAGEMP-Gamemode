@@ -49,6 +49,8 @@ namespace CloudRP.Vehicles
 
         public double vehicle_fuel { get; set; } = 100;
 
+        public ulong vehicle_distance { get; set; }
+
         // In game
         [NotMapped]
         public bool[] vehicle_doors { get; set; } = new bool[] { false, false, false, false, false, false };
