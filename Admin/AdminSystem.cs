@@ -880,10 +880,9 @@ namespace CloudRP.Admin
                 AdminUtils.banAPlayer(time, userData, banPlayerUserData, banPlayer, reason);
 
                 string playerAdminRank = AdminUtils.getColouredAdminRank(userData);
-                string endOfBanString = lift_unix_time == 1 ? ChatUtils.red + "is permanent" : "expires at" + ChatUtils.orange + CommandUtils.unixTimeStampToDateTime(lift_unix_time);
+                string endOfBanString = lift_unix_time == 1 ? ChatUtils.red + "is permanent" : "expires at " + ChatUtils.orange + CommandUtils.unixTimeStampToDateTime(lift_unix_time);
                 
-                AdminUtils.sendMessageToAllStaff($"{playerAdminRank} {userData.adminName} banned account {banPlayerUserData.username} with reason {reason} ban {endOfBanString}");
-                CommandUtils.sendToAllPlayers($"{playerAdminRank} {userData.adminName} banned {characterData.character_name} with reason {reason} ban {endOfBanString}");
+                CommandUtils.sendToAllPlayers($"{AdminUtils.staffPrefix}{playerAdminRank} {userData.adminName} banned {characterData.character_name} with reason {reason} ban {endOfBanString}");
             }
         }
 

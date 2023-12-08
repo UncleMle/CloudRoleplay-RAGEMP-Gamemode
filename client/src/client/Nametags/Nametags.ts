@@ -3,6 +3,7 @@ import { UserData, CharacterData } from "../@types";
 import { _TEXT_CLOUD_ADMINBLUE, _TEXT_R_RED, _TEXT_R_WHITE } from '../Constants/Constants';
 import getTargetCharacterData from "../PlayerMethods/getTargetCharacterData";
 import getTargetData from "../PlayerMethods/getTargetData";
+import distBetweenCoords from "@/PlayerMethods/distanceBetweenCoords";
 
 class NameTags {
 	public static userData: UserData | undefined;
@@ -19,15 +20,43 @@ class NameTags {
 		mp.events.add('entityStreamIn', NameTags.handleStreamIn);
 		mp.events.add('set:nickName', NameTags.handleNickNameSet);
 		mp.events.add('sendWithNickName', NameTags.sendWithNick);
+		mp.events.add("playerQuit", NameTags.sendQuitMessage);
+	}
+
+	public static sendQuitMessage(playerQuitting: PlayerMp, exitType: string, reason: string) {
+		if(!playerQuitting) return;
+		if(distBetweenCoords(NameTags.LocalPlayer.position, playerQuitting.position) > 25) return;
+		mp.gui.chat.push("!{#f57b42}[Disconnected] !{white}" + NameTags.formatNick(playerQuitting) + " has " + NameTags.formatExit(exitType, reason) + " from the server!");
 	}
 
 	public static sendWithNick(targetEnt: PlayerMp, prefix: string, suffix: string) {
+		if(!targetEnt) return;
 		if(targetEnt == NameTags.LocalPlayer) {
 			let characterData: CharacterData | undefined = getUserCharacterData();
-			mp.gui.chat.push(prefix + characterData?.characterName.replace("_", " ") + " [" + targetEnt.remoteId + "] " + suffix);
+			mp.gui.chat.push(prefix + characterData?.characterName.replace("_", " ") + " " + suffix);
 		} else {
-			mp.gui.chat.push(prefix + (targetEnt._nickName ? targetEnt._nickName : "Player") + " [" + targetEnt.remoteId + "] " + suffix);
+			mp.gui.chat.push(prefix + NameTags.formatNick(targetEnt) + suffix);
 		}
+	}
+
+	public static formatExit(exitType: string, reason: string) {
+		let formattedReason = "disconnected";
+
+		switch(exitType) {
+			case "timeout": {
+				formattedReason = "timed out";
+				break;
+			}
+			case "kicked": {
+				formattedReason = "has been kicked " + reason ? " with reason " + reason : "";
+			}
+		}
+
+		return formattedReason;
+	}
+
+	public static formatNick(targetEnt: PlayerMp) {
+		return targetEnt._nickName ? targetEnt._nickName + " [" + targetEnt.remoteId + "] " : "Player " + targetEnt.remoteId + " ";
 	}
 
 	public static handleStreamIn(entity: PlayerMp) {

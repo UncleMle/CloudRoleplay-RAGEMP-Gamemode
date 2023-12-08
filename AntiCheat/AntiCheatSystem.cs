@@ -1,5 +1,6 @@
 ﻿using CloudRP.Admin;
 using CloudRP.Character;
+using CloudRP.ChatSystem;
 using CloudRP.DiscordSystem;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
@@ -19,19 +20,6 @@ namespace CloudRP.AntiCheat
     {
         public static double _alertRadius = 45.5;
         public static string vpnApiKeyIdentifier = "vpnApiKey";
-
-        [ServerEvent(Event.PlayerDisconnected)]
-        public void OnPlayerDisconnect(Player player, DisconnectionType type, string reason)
-        {
-            List<Player> playersInRange = NAPI.Player.GetPlayersInRadiusOfPlayer(_alertRadius, player);
-
-            foreach (Player p in playersInRange)
-            {
-                string disconnectedMessage = ChatUtils.disconnected + "Player  [" + player.Id + "]  has disconnected from the server.";
-
-                NAPI.Chat.SendChatMessageToPlayer(p, disconnectedMessage);
-            }
-        }
 
         [ServerEvent(Event.PlayerConnected)]
         public async void OnPlayerConnected(Player player)

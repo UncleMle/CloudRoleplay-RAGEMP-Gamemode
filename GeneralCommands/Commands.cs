@@ -18,7 +18,7 @@ namespace CloudRP.GeneralCommands
         public static string _meColour = "!{#d2bae9}";
         public static int nickNameMaxLength_M = 7;
 
-        [Command("b", "~y~Use: /b [message]", Alias = "ooc", GreedyArg = true)]
+        [Command("b", "~y~Use:~w~ /b [message]", Alias = "ooc", GreedyArg = true)]
         public void oocCommand(Player player, string oocChat)
         {
             DbCharacter character = PlayersData.getPlayerCharacterData(player);
@@ -30,7 +30,7 @@ namespace CloudRP.GeneralCommands
             CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_commands_radius);
         }
 
-        [Command("me", "~y~~ [message]", GreedyArg = true)]
+        [Command("me", "~y~Use:~w~ /me [message]", GreedyArg = true)]
         public void onMeCommand(Player player, string me)
         {
             DbCharacter character = PlayersData.getPlayerCharacterData(player);
@@ -43,7 +43,7 @@ namespace CloudRP.GeneralCommands
             CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_commands_radius);
         }
 
-        [Command("do", "~y~Use: /do [message]", GreedyArg = true)]
+        [Command("do", "~y~Use:~w~ /do [message]", GreedyArg = true)]
         public void onDoCommand(Player player, string docommand)
         {
             DbCharacter character = PlayersData.getPlayerCharacterData(player);
@@ -56,7 +56,7 @@ namespace CloudRP.GeneralCommands
             CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_commands_radius);
         }
 
-        [Command("stats", "~y~Use: /stats")]
+        [Command("stats", "~y~Use:~w~ /stats")]
         public void onStatsCommand(Player player)
         {
             DbCharacter character = PlayersData.getPlayerCharacterData(player);
@@ -70,7 +70,7 @@ namespace CloudRP.GeneralCommands
 
         }
 
-        [Command("pm", "~y~Use: /pm [playerNameOrId] [message]", GreedyArg = true, Alias = "privatemessage")]
+        [Command("pm", "~y~Use:~w~ /pm [playerNameOrId] [message]", GreedyArg = true, Alias = "privatemessage")]
         public void onPrivateMessage(Player player, string nameOrId, string message)
         {
             DbCharacter character = PlayersData.getPlayerCharacterData(player);
@@ -80,15 +80,15 @@ namespace CloudRP.GeneralCommands
 
             Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
 
-            if (findPlayer.Equals(player))
-            {
-                CommandUtils.errorSay(player, "You cannot pm yourself.");
-                return;
-            }
-
             if (findPlayer == null)
             {
                 CommandUtils.errorSay(player, "Player couldn't be found");
+                return;
+            }
+
+            if (findPlayer.Equals(player))
+            {
+                CommandUtils.errorSay(player, "You cannot pm yourself.");
                 return;
             }
 
