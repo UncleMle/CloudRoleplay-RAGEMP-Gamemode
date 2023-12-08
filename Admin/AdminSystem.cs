@@ -666,7 +666,7 @@ namespace CloudRP.Admin
             }
         }
 
-        [Command("tpm", "~r~/tpm")]
+        [Command("tpm", "~r~/tpm", Alias = "telm")]
         public void onTeleportToWay(Player player)
         {
             User userData = PlayersData.getPlayerAccountData(player);
@@ -674,7 +674,6 @@ namespace CloudRP.Admin
             if (AdminUtils.checkUserData(player, userData))
             {
                 player.TriggerEvent("admin:events:teleportWay");
-                AdminUtils.staffSay(player, "Teleported to waypoint");
             }
         }
 

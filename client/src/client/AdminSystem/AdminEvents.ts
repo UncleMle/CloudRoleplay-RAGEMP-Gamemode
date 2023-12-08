@@ -1,3 +1,4 @@
+import NotificationSystem from "@/NotificationSystem/NotificationSystem";
 import { UserData } from "../@types";
 import getUserData from "../PlayerMethods/getUserData";
 import sendNotification from "../PlayerMethods/SendNotification";
@@ -24,9 +25,9 @@ class AdminEvents {
 
 	public static teleportWaypoint() {
 		const waypoint = mp.game.ui.getFirstBlipInfoId(8);
-		if (!mp.game.ui.doesBlipExist(waypoint)) return sendNotification("Not found!");
+		if (!mp.game.ui.doesBlipExist(waypoint)) return NotificationSystem.createNotification("~r~You do not have a waypoint set.", false);
 		const waypointPos = mp.game.ui.getBlipInfoIdCoord(waypoint);
-		if (!waypointPos) return sendNotification("No pos!");
+		if (!waypointPos) return NotificationSystem.createNotification("~r~You cannot teleport to this area.", false);
 
 		let zCoord = mp.game.gameplay.getGroundZFor3dCoord(waypointPos.x, waypointPos.y, waypointPos.z, false, false);
 		if (!zCoord) {
@@ -35,11 +36,11 @@ class AdminEvents {
 				mp.game.wait(0);
 			}
 			zCoord = mp.game.gameplay.getGroundZFor3dCoord(waypointPos.x, waypointPos.y, 1000, false, false);
-			if (!zCoord) return sendNotification("You cannot teleport to this area!");
+			if (!zCoord) return NotificationSystem.createNotification("~r~You cannot teleport to this area.", false);
 		}
 
 		AdminEvents.LocalPlayer.position = new mp.Vector3(waypointPos.x, waypointPos.y, zCoord + 0.5);
-		return sendNotification("Teleported to waypoint");
+		return NotificationSystem.createNotification("~r~Teleported to waypoint.", false);
 	}
 
 	public static stopFly() {
