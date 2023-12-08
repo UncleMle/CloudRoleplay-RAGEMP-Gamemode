@@ -18,7 +18,7 @@ const store = new Vuex.Store({
 		},
 		uiStates: {
 			characterSelection: false,
-			chatEnabled: false,
+			chatEnabled: true,
 			guiEnabled: true,
 			serverLoading: false,
 			speedoUi: false,

@@ -63,6 +63,8 @@ namespace CloudRP.DeathSystem
 
         public static void respawnAtHospital(Player player)
         {
+            player.TriggerEvent("client:moveSkyCamera", "up", 1, false);
+
             Dictionary<float, Hospital> pDist = new Dictionary<float, Hospital>();
 
             foreach (Hospital hospital in hospitalList)
@@ -85,6 +87,7 @@ namespace CloudRP.DeathSystem
             NAPI.Player.SpawnPlayer(player, closestHospital.position);
 
             NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.hospital + "You recieved medial treatment at " + closestHospital.name);
+            player.TriggerEvent("client:moveSkyCamera", "down");
         }
 
         public static void updateAndSetInjuredState(Player player, DbCharacter characterData, int time = _deathTimer_seconds)

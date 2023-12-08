@@ -1,6 +1,8 @@
 <template>
     <div id="app">
-        <ChatBox class="absolute" v-if="guiState" />
+        <p class="text-red-500 font-bold">{{ uiStates }}</p>
+
+        <ChatBox class="absolute" />
         <PushNotification class="bg-red-200" ref="notification" />
         <VehicleSpeedo />
         <PlayerHud class="relative" />
@@ -25,7 +27,6 @@ export default {
         },
         computed: {
             ...mapGetters({
-                guiState: 'getGuiStatus',
                 uiStates: 'getUiStates',
                 serverData: 'getPlayerCharacters'
             })
