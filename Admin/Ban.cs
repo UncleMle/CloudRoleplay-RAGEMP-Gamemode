@@ -23,10 +23,8 @@ namespace CloudRP.Admin
         [Required]
         public string social_club_name { get; set; }
 
-        [Required]
         public string username { get; set; }
 
-        [Required]
         public int account_id { get; set; }
 
         [Required]

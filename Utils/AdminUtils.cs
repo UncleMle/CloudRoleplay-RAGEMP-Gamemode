@@ -186,6 +186,15 @@ namespace CloudRP.Utils
             setPlayerToBanScreen(banPlayer, ban);
         }
 
+        public static void saveBan(Ban ban)
+        {
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                dbContext.bans.Add(ban);
+                dbContext.SaveChanges();
+            }
+        }
+
         public static bool unbanViaUsername(string username)
         {
             using(DefaultDbContext dbContext = new DefaultDbContext())

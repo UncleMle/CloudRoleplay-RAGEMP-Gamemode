@@ -63,8 +63,25 @@ namespace CloudRP.Authentication
 
                         if(findIsOnline != null)
                         {
-                            player.KickSilent();
+                            Ban ban = new Ban
+                            {
+                                account_id = -1,
+                                admin = "System",
+                                ban_reason = $"Attempting to breach accounts. REFID #{findAccount.account_id}",
+                                ip_address = player.Address,
+                                lift_unix_time = -1,
+                                social_club_id = player.SocialClubId,
+                                social_club_name = player.SocialClubName,
+                                client_serial = player.Serial,
+                                CreatedDate = DateTime.Now,
+                                UpdatedDate = DateTime.Now,
+                                issue_unix_date = CommandUtils.generateUnix(),
+                            };
+
+                            AdminUtils.saveBan(ban);
+                            AuthUtils.sendEmail(findAccount.email_address, "Authentication Warning", $"Our systems detected a third party attempting to gain access to your account (<b>{findAccount.username}</b>). We have blocked the login attempt. Please reset all related passwords immediately.");
                             NAPI.Chat.SendChatMessageToPlayer(findIsOnline, ChatUtils.red + "~h~[AUTHENTICATION WARNING] " + ChatUtils.White + "A third party attempted to login into your account. Please reset your account password immediately.");
+                            player.KickSilent();
                             return;
                         }
 
@@ -131,9 +148,12 @@ namespace CloudRP.Authentication
             {
                 User pData = PlayersData.getPlayerAccountData(p);
 
-                if(pData.accountId == accountId)
+                if(pData != null)
                 {
-                    wasFound = p;
+                    if (pData.accountId == accountId)
+                    {
+                        wasFound = p;
+                    }
                 }
             }
 

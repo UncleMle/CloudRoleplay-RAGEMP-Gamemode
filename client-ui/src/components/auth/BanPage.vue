@@ -5,7 +5,7 @@
                 <div class="relative bg-[#0b0b0b]/70 w-full h-fit py-4 rounded-lg border border-gray-900 shadow-2xl shadow-black p-4 ">
                     <h1 class="font-bold text-2xl border-b-2 pb-2 border-gray-500"><i class="fa-solid fa-shield text-red-400"></i> You are banned.</h1>
 
-                    <div class="font-medium text-medium">
+                    <div v-if="banData.username" class="font-medium text-medium">
                         <div class="relative w-full mt-4">
                             <span class="left-0 top-0 "><i class="fa-solid fa-user pr-2"></i>Account</span>
                             <span class="absolute right-0 top-0">{{ banData.username }}</span>
