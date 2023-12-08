@@ -1,7 +1,7 @@
 <template>
     <div v-if="uiStates.speedoUi">
         <div class="absolute right-28 bottom-20 text-white font-medium">
-            <div class="bg-black/60 rounded-3xl shadow-2xl shadow-black/50 w-[20rem]">
+            <div class="bg-black/60 rounded-3xl shadow-2xl shadow-black/50 w-[20rem] ">
                 <div class="p-4">
                     <div class="w-full flex justify-center text-4xl p-3">
                         <h2 style="text-shadow: rgb(0, 0, 0) 3px 0 16px;">
@@ -44,7 +44,7 @@
                 <div class="flex justify-center h-[3vw] mt-2 items-center border-t-2 border-gray-400 overflow-hidden"
                     id="digitext">
                     <div class="rounded-lg" id="digitext" v-for="num in getMileageArr()" :key="num.key">
-                        <font id="odometer" class="border-1 p-3 bg-black/70 border-gray-500"
+                        <font id="odometer" class="border-1 p-3 bg-black/70 border-gray-500 shadow-[inset_0_-2px_4px_rgba(180,180,180,0.2)]"
                             :class="num.key == getMileageArr().length - 1 ? 'bg-gray-600 rounded-r-lg' : num.key == 0 ? 'rounded-l-lg' : ''">
                             {{ num.num }}</font>
                     </div>

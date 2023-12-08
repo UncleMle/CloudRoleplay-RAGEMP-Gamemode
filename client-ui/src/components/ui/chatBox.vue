@@ -2,7 +2,7 @@
     <div v-if="getUiStates.chatEnabled" class="duration-300" :class="!showing ? 'opacity-40' : ''">
         <div id="chat">
             <ul id="chat_messages">
-                <li v-for="item in chatMessages" :key="'KY' + item" v-html="item.toString()">
+                <li v-for="item in chatMessages" :key="chatMessages.indexOf(item)" v-html="item.toString()">
                 </li>
             </ul>
             <input v-if="inputFieldShowing" v-model="userText" ref="input" id="chat_msg" type="text" />
