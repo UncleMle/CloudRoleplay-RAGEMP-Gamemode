@@ -32,9 +32,9 @@ class GuiSystem {
 				mp.game.graphics.drawSprite("mplobby", "mp_charcard_stats_icons9", minimap.rightX + 0.04, minimap.bottomY - 0.100, 0.018, 0.018, 0, 0, 255, 100, 180, false);
 			}
 
-			GuiSystem.drawText(GuiSystem.getCompassDirection(), [minimap.rightX + 0.01, minimap.bottomY - 0.125], 4, [255, 255, 255, 255], 1);
-			GuiSystem.drawText(`${mp.players.local.remoteId} | ${getTimeUnix()} | FPS ${GuiSystem.LocalPlayer.fps}`, [minimap.rightX + 0.01, minimap.bottomY - 0.075], 4, [255, 255, 255, 255], 0.60);
-			GuiSystem.drawText(`${streetData.zoneName} ${streetData.zoneTwo ? "/ " + streetData.zoneTwo : "" }`, [minimap.rightX + 0.01, minimap.bottomY - 0.045], 4, [255, 255, 255, 255], 0.60);
+			GuiSystem.drawText(GuiSystem.getCompassDirection(), [minimap.rightX + 0.01, minimap.bottomY - 0.125], 4, [255, 255, 255, 255], 0.80);
+			GuiSystem.drawText(`${mp.players.local.remoteId} | ${getTimeUnix()} | FPS ${GuiSystem.LocalPlayer.fps}`, [minimap.rightX + 0.01, minimap.bottomY - 0.070], 4, [255, 255, 255, 255], 0.40);
+			GuiSystem.drawText(`${streetData.zoneName} ${streetData.zoneTwo ? "/ " + streetData.zoneTwo : "" }`, [minimap.rightX + 0.01, minimap.bottomY - 0.045], 4, [255, 255, 255, 255], 0.40);
 		}
 	}
 

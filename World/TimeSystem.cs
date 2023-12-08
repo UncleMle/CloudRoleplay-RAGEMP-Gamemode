@@ -10,6 +10,9 @@ namespace CloudRP.World
     {
         private static Timer syncTime;
         private static int timerInterval_seconds = 60;
+        public static int hour = 0;
+        public static int min = 0;
+        public static int sec = 0;
 
         [ServerEvent(Event.ResourceStart)]
         public void onResourceStart()
@@ -33,9 +36,9 @@ namespace CloudRP.World
             float secondsOne = date.Second;
             float miliSeconds = date.Millisecond;
 
-            int hour = (int)(Math.Floor(minuteOne / 2) + hourOne * 6) % 24;
-            int min = (int)(Math.Floor(secondsOne / 2) + minuteOne * 30) % 60;
-            int sec = (int)(Math.Floor(miliSeconds * 0.6) + secondsOne * 30) % 60;
+            hour = (int)((Math.Floor(minuteOne / 2) + hourOne * 6) % 24);
+            min = (int)(Math.Floor(secondsOne / 2) + minuteOne * 30) % 60;
+            sec = (int)(Math.Floor(miliSeconds * 0.03) + secondsOne * 30) % 60;
 
             NAPI.World.SetTime(hour, min, sec);
         }
