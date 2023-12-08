@@ -29,7 +29,9 @@ namespace CloudRP.ChatSystem
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (characterData == null || userData == null) return;
+            if (characterData == null || userData == null || message.Length == 0) return;
+
+            if (char.IsWhiteSpace(message[0])) return;
 
             string prefix = "";
             string suffix = " !{grey}says:!{white} ";
