@@ -19,8 +19,12 @@ export default {
             userText: "",
             KEYBIND_T: 84,
             KEYBIND_ENTER: 13,
+            KEYBIND_UPARR: 38,
+            KEYBIND_DOWNARR: 40,
             inputFieldShowing: false,
-            chatMessages: []
+            chatMessages: [],
+            playerMessages: [],
+            chatIteration: 0
         };
     },
     computed: {
@@ -47,9 +51,24 @@ export default {
                 this.inputFieldShowing = false;
                 let text = this.userText;
 
-                text.charAt(0) == "/" ? this.invokeCommand(text) : this.invokeChatMessage(text);
+                if(text.length > 0) {
+                    text.charAt(0) == "/" ? this.invokeCommand(text) : this.invokeChatMessage(text);
+                    this.playerMessages.push(this.userText);
+                    this.chatIteration = 0;
+                    this.userText = "";
+                }
+            }
 
-                this.userText = "";
+            if(e.keyCode == this.KEYBIND_UPARR && this.inputFieldShowing) {
+                this.chatIteration > this.playerMessages.length - 1 ? this.chatIteration = 0 : 0;
+
+                this.userText = this.playerMessages.slice().reverse()[this.chatIteration++];
+            }
+
+            if(e.keyCode == this.KEYBIND_DOWNARR && this.inputFieldShowing) {
+                this.chatIteration < this.playerMessages.length - 1 ? this.chatIteration = 0 : 0;
+
+                this.userText = this.playerMessages.slice().reverse()[this.chatIteration--];
             }
         },
         typingState(toggle) {
