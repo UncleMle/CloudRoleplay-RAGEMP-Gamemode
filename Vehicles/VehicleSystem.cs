@@ -323,7 +323,7 @@ namespace CloudRP.Vehicles
             AdminUtils.staffSay(player, "Vehicle id: " + ChatUtils.red + vehicle.vehicle_id + ChatUtils.White + " VehName: " + ChatUtils.red + vehicle.vehicle_name);
             AdminUtils.staffSay(player, "Owner id: " + ChatUtils.red + vehicle.owner_id + ChatUtils.White + " Numberplate: " + ChatUtils.red + vehicle.numberplate);
             AdminUtils.staffSay(player, "Vehicle Dimension: " + ChatUtils.red + vehicle.vehicle_dimension + ChatUtils.White + " Lock Status: " + ChatUtils.red + vehicle.vehicle_locked);
-            AdminUtils.staffSay(player, "Mileage: " + ChatUtils.red + (vehicle.vehicle_distance / 1609).ToString("N1") + " Miles" + ChatUtils.White + " Fuel Level: " + ChatUtils.red + vehicle.vehicle_fuel.ToString("N1")+"%");
+            AdminUtils.staffSay(player, "Mileage: " + ChatUtils.red + (vehicle.vehicle_distance / 1609).ToString("N0") + " Miles" + ChatUtils.White + " Fuel Level: " + ChatUtils.red + vehicle.vehicle_fuel.ToString("N1")+"%");
 
             DbCharacter vehicleOwnerData = getOwnerOfVehicleById(vehicle.owner_id);
             if (userdata.adminDuty && vehicleOwnerData != null)
@@ -531,9 +531,7 @@ namespace CloudRP.Vehicles
             Array.Copy(rArr, 0, rArr, 1, rArr.Length - 1);
             rArr[0] = vehicleId.ToString();
 
-            Console.WriteLine(rArr.Length);
-
-            return string.Join("", rArr);
+            return string.Join("", rArr).ToUpper();
         }
 
         [RemoteEvent("server:handleDoorInteraction")]
