@@ -13,6 +13,7 @@ class SwitchCamera {
 	}
 
 	public static moveCameraFromAir(moveTo: string, switchType: number, triggerWelcome = true) {
+		mp.console.logInfo("Switch trigger type " + triggerWelcome);
 		switch (moveTo) {
 			case 'up':
 				mp.game.invoke(_SWITCH_OUT_PLAYER_NATIVE, SwitchCamera.LocalPlayer.handle, 0, switchType);
@@ -41,10 +42,6 @@ class SwitchCamera {
 			mp.game.ui.displayRadar(true);
 			SwitchCamera.toggleGui(true);
 			toggleChat(true);
-
-			if(triggerWelcome) {
-				mp.events.callRemote(SwitchCamera.WelcomeEvent);
-			}
 		}
 	}
 

@@ -3,7 +3,8 @@ const toggleChat = (toggle: boolean) => {
 		let playerBrowser: BrowserMp = mp.players.local.browserInstance;
 
 		playerBrowser.execute(`appSys.commit("setUiState", {
-			chatEnabled: ${toggle}
+			_stateKey: "chatEnabled",
+			status: ${toggle}
 		})`);
 	}
 }

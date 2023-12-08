@@ -53,8 +53,7 @@ namespace CloudRP.ChatSystem
             });
         }
 
-        [RemoteEvent("server:welcomePlayerOnSpawn")]
-        public void welcomePlayerOnSpawn(Player player)
+        public static void welcomePlayerOnSpawn(Player player)
         {
             User user = PlayersData.getPlayerAccountData(player);
             if (user == null) return;
