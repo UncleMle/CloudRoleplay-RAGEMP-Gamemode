@@ -146,6 +146,52 @@ namespace CloudRP.GeneralCommands
             player.TriggerEvent("set:nickName", targetEnt, nick);
         }
 
+        [Command("removenick", "~y~Use: ~w~/removenick [nameOrId]")]
+        public void removeNickName(Player player, string nameOrId)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+
+            if (userData == null || characterData == null) return;
+
+            Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+            if(findPlayer == null)
+            {
+                CommandUtils.errorSay(player, "Player wasn't found. (Are you within distance?)");
+                return;
+            }
+
+            DbCharacter findPlayerData = PlayersData.getPlayerCharacterData(findPlayer);
+
+            if (Vector3.Distance(player.Position, findPlayer.Position) > 5 || findPlayerData == null)
+            {
+                CommandUtils.errorSay(player, "Player couldn't be found. (Are you within distance?)");
+                return;
+            }
+
+            setPlayersNick(player, findPlayer, null);
+
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                Nickname findNick = dbContext.nicknames
+                    .Where(nick => nick.owner_id == characterData.character_id && nick.target_character_id == findPlayerData.character_id)
+                    .FirstOrDefault();
+
+                if(findNick == null)
+                {
+                    CommandUtils.errorSay(player, "You do not have a nickname set for this player!");
+                    return;
+                } else
+                {
+                    dbContext.Remove(findNick);
+                    dbContext.SaveChanges();
+                    CommandUtils.successSay(player, $"Removed nickname of {findNick.nickname} for Player [{findPlayer.Id}]");
+                }
+
+            }
+        }
+
         [Command("nick", "~y~Use: ~w~/nick [nameOrId] [nickname]", GreedyArg = true)]
         public void nicknameCommand(Player player, string playerOrId, string nickname)
         {
