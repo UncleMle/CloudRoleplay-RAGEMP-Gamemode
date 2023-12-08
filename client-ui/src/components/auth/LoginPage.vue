@@ -50,7 +50,7 @@
 
                                 <label class="mt-4 relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" value="" class="sr-only peer" v-model="rememberMe">
-                                    <div class="w-11 h-6 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer bg-black/20 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-green-600"></div>
+                                    <div class="w-11 h-6 rounded-full peer bg-black/20 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-gray-400 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600 border border-gray-600"></div>
                                     <span class="ms-3 text-sm font-medium text-white">Remember me</span>
                                 </label>
 

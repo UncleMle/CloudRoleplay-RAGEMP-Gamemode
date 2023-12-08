@@ -35,7 +35,7 @@ export default {
     },
     methods: {
         keyDownListener(e) {
-            if (this.$router.currentRoute.path != "/") return;
+            if (this.$router.currentRoute.path != "/" || !this.getUiStates.chatEnabled) return;
 
             if (e.keyCode == this.KEYBIND_T && !this.inputFieldShowing) {
                 this.inputFieldShowing = true;

@@ -131,7 +131,7 @@ class PlayerAuthentication {
 		mp.game.graphics.transitionFromBlurred(100);
 		mp.gui.cursor.show(false, false);
 		PlayerAuthentication.LocalPlayer.freezePosition(false);
-		BrowserSystem._browserInstance.reload(true);
+		// BrowserSystem._browserInstance.reload(true);
 		BrowserSystem.pushRouter("/");
 
 		PlayerAuthentication.LoginCamera.delete();
