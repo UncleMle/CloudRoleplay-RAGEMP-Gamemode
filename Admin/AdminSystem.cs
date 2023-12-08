@@ -29,7 +29,35 @@ namespace CloudRP.Admin
     internal class AdminSystem : Script
     {
         public static List<Report> activeReports = new List<Report>();
+        public static Dictionary<int, Vector3> adminAdutyPositions = new Dictionary<int, Vector3>();
         public static int _maxReports = 2;
+
+        [ServerEvent(Event.PlayerDisconnected)]
+        public void playerDisconnected(Player player)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(userData != null)
+            {
+                foreach(KeyValuePair<int, Vector3> adminPos in adminAdutyPositions)
+                {
+                    if(adminPos.Key == userData.accountId)
+                    {
+                        adminAdutyPositions.Remove(adminPos.Key);
+                    }
+                }
+            }
+        }
+
+        public static void saveAdutyPosition(User userData, Vector3 pos)
+        {
+            if (adminAdutyPositions.ContainsKey(userData.accountId))
+            {
+                adminAdutyPositions.Remove(userData.accountId);
+            }
+
+            adminAdutyPositions.Add(userData.accountId, pos);   
+        }
 
         [ServerEvent(Event.PlayerConnected)]
         public void playerConnected(Player player)
@@ -305,6 +333,27 @@ namespace CloudRP.Admin
             }
         }
 
+        [Command("goback", "~r~/goback")]
+        public static void goAdminBack(Player player)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(AdminUtils.checkUserData(player, userData))
+            {
+                KeyValuePair<int, Vector3> savedAdminPosition = adminAdutyPositions.Where(savePos => savePos.Key == userData.accountId).FirstOrDefault(); 
+
+                if(savedAdminPosition.Value == null)
+                {
+                    CommandUtils.errorSay(player, "You have not been on admin duty yet.");
+                    return;
+                }
+
+                player.Position = savedAdminPosition.Value;
+
+                AdminUtils.staffSay(player, "Returned to admin duty position.");
+            }
+        }
+
         [Command("aduty", "~r~/aduty")]
         public void onAduty(Player player)
         {
@@ -316,6 +365,7 @@ namespace CloudRP.Admin
 
                 if (userData.adminDuty)
                 {
+                    saveAdutyPosition(userData, player.Position);
                     AdminUtils.sendMessageToAllStaff($"{userData.adminName} is on duty");
                     AdminUtils.setPed(player, userData.adminPed);
                 }
@@ -967,6 +1017,12 @@ namespace CloudRP.Admin
                 if(findPlayer == null)
                 {
                     CommandUtils.notFound(player);
+                    return;
+                }
+
+                if(PlayersData.getPlayerAccountData(findPlayer).adminDuty)
+                {
+                    CommandUtils.errorSay(player, "You cannot use this command with on duty admins.");
                     return;
                 }
 

@@ -78,6 +78,8 @@ namespace CloudRP.AntiCheat
 
             User userData = PlayersData.getPlayerAccountData(player);
 
+            if (userData != null && (userData.adminDuty || userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)) return;
+
             if (userData == null && exception != (int)AcExceptions.tpHack)
             {
                 foreach (KeyValuePair<Player, User> entry in onlineStaff)
