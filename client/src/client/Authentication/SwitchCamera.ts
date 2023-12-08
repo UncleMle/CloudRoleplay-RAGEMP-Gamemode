@@ -27,17 +27,15 @@ class SwitchCamera {
 		}
 	}
 
-	public static checkCamInAir(triggerWelcome: boolean) {
+	public static async checkCamInAir(triggerWelcome: boolean) {
 		if (mp.game.invoke(_IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE)) {
 
 			mp.game.ui.displayRadar(false);
 			SwitchCamera.toggleGui(false);
 			toggleChat(false);
 
-			setTimeout(() => {
-				SwitchCamera.checkCamInAir(triggerWelcome);
-			}, 40);
-
+			await mp.game.waitAsync(40);
+			SwitchCamera.checkCamInAir(triggerWelcome);
 		} else {
 			mp.game.ui.displayRadar(true);
 			SwitchCamera.toggleGui(true);

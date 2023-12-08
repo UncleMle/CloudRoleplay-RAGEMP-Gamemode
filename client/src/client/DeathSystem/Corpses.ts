@@ -29,15 +29,15 @@ class Corpses {
 		}, 5000);
 	}
 
-	public static handleStreamIn(entity: PedMp) {
+	public static async handleStreamIn(entity: PedMp) {
         if (entity.type != 'ped') return;
-		setTimeout(() => {
-			let corpseData: Corpse | null = Corpses.getCorpseData(entity.corpseId);
-			if (!corpseData) return;
+        await mp.game.waitAsync(500);
 
-			Corpses.initPed(entity, corpseData);
-			Corpses.disableVehCollision(entity);
-		}, 500);
+        let corpseData: Corpse | null = Corpses.getCorpseData(entity.corpseId);
+        if (!corpseData) return;
+
+        Corpses.initPed(entity, corpseData);
+        Corpses.disableVehCollision(entity);
 	}
 
 	public static disableVehCollision(entity: PedMp) {
