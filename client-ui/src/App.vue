@@ -18,22 +18,22 @@ import VehicleSpeedo from "./components/hud/VehicleSpeedo.vue";
 import { mapGetters } from "vuex";
 
 export default {
-        name: 'App',
-        components: {
-            ChatBox,
-            PushNotification,
-            VehicleSpeedo,
-            PlayerHud
-        },
-        computed: {
-            ...mapGetters({
-                uiStates: 'getUiStates',
-                serverData: 'getPlayerCharacters'
-            })
-        },
-        mounted() {
-            global.gui.notify = this.$refs.notification;
-        }
+    name: 'App',
+    components: {
+        ChatBox,
+        PushNotification,
+        VehicleSpeedo,
+        PlayerHud
+    },
+    computed: {
+        ...mapGetters({
+            uiStates: 'getUiStates',
+            serverData: 'getPlayerCharacters'
+        })
+    },
+    mounted() {
+        global.gui.notify = this.$refs.notification;
+    }
 }
 
 </script>
@@ -43,25 +43,25 @@ export default {
 @tailwind components;
 @tailwind utilities;
 
-    .pmrp {
-        background: rgba(0, 0, 0, 0.6)
-    }
+.pmrp {
+    background: rgba(0, 0, 0, 0.6)
+}
 
-    .pmrperror {
-        background: rgba(255, 0, 0, 0.6);
-    }
+.pmrperror {
+    background: rgba(255, 0, 0, 0.6);
+}
 
-    .slide-fade-enter-active {
-        transition: all 0.4s ease-out;
-    }
+.slide-fade-enter-active {
+    transition: all 0.4s ease-out;
+}
 
-    .slide-fade-leave-active {
-        transition: all 0.4s cubic-bezier(1, 0.5, 0.8, 1);
-    }
+.slide-fade-leave-active {
+    transition: all 0.4s cubic-bezier(1, 0.5, 0.8, 1);
+}
 
-    .slide-fade-enter-from,
-    .slide-fade-leave-to {
-        transform: translateY(10020px);
-        opacity: 0;
-    }
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+    transform: translateY(10020px);
+    opacity: 0;
+}
 </style>

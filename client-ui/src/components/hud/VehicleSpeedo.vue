@@ -1,12 +1,12 @@
 <template>
     <div v-if="uiStates.speedoUi">
-        <div class="absolute right-28 bottom-20 text-white font-medium">
-            <div class="bg-black/60 rounded-3xl shadow-2xl shadow-black/50 w-[20rem] ">
+        <div class="absolute right-[3%] bottom-[13.5%] text-white font-medium">
+            <div class="rounded-xl w-[20rem] bg-black/40">
                 <div class="p-4">
-                    <div class="w-full flex justify-center text-4xl p-3">
+                    <div class="w-full flex justify-center text-4xl p-3" style="text-shadow: rgba(255, 0, 0, 1) 5px 0 10px;">
                         <h2 style="text-shadow: rgb(0, 0, 0) 3px 0 16px;">
                             <i>{{ uiStates.vehicleSpeedoData.metric == 0 ? (uiStates.vehicleSpeedoData.vehicleSpeed * 3.6).toFixed(0) : (uiStates.vehicleSpeedoData.vehicleSpeed * 2.236936).toFixed(0) }}</i> <span
-                                class="text-gray-400 text-xl">{{uiStates.vehicleSpeedoData.metric == 0 ? "KM/H" : "MPH"}}</span>
+                                class="text-gray-400 text-xl" >{{uiStates.vehicleSpeedoData.metric == 0 ? "KM/H" : "MPH"}}</span>
                         </h2>
                     </div>
 
@@ -41,10 +41,10 @@
                 </div>
 
 
-                <div class="flex justify-center h-[3vw] mt-2 items-center border-t-2 border-gray-400 overflow-hidden">
+                <div class="bg-black/50 rounded-b-xl flex justify-center h-[3vw] mt-2 items-center border-t-2 shadow-2xl shadow-black/50 border-gray-600 overflow-hidden">
                     <div class="rounded-lg" v-for="num in getMileageArr()" :key="num.key">
                         <font id="odometer"
-                            class="border-1 p-3 bg-black/70 border-gray-500 shadow-[inset_0_-2px_4px_rgba(180,180,180,0.2)]"
+                            class="border-1 p-2.5 bg-black/70 border border-gray-900/50"
                             :class="num.key == getMileageArr().length - 1 ? 'rounded-r-lg' : num.key == 0 ? 'rounded-l-lg' : ''">
                             {{ num.num }}</font>
                     </div>
@@ -56,7 +56,7 @@
 
         </div>
 
-        <div class="bg-black/60 absolute right-28 w-[20rem] bottom-[22rem] text-white font-medium h-26 rounded-xl">
+        <div class="bg-black/50 absolute right-[3%] w-[20rem] bottom-[1%] text-white font-medium h-26 rounded-xl">
             <div class="w-full text-center items-center h-full relative p-3">
                 <div :class="uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) < 20 ? uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) < 10 ? 'bg-red-400' : 'bg-orange-400' : 'bg-green-500'"
                     class="rounded-lg h-2" :style="{ 'width': uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) + '%' }">
@@ -85,17 +85,17 @@ export default {
             uiStates: 'getUiStates'
         }),
         rpmColour() {
-            let vehSpeed = this.uiStates.vehicleSpeedoData.vehicleSpeed;
-            if (vehSpeed > 85) {
+            let vehRpm = (this.uiStates.vehicleSpeedoData.vehicleRpm * 100).toFixed(0)
+            if (vehRpm > 85) {
                 return "bg-red-600";
             }
-            if (vehSpeed > 70) {
+            if (vehRpm > 70) {
                 return "bg-red-500";
             }
-            if (vehSpeed > 60) {
+            if (vehRpm > 60) {
                 return "bg-red-300";
             }
-            if (vehSpeed > 30) {
+            if (vehRpm > 30) {
                 return "bg-orange-300";
             }
             return "bg-green-400"
