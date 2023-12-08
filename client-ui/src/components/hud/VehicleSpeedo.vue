@@ -5,8 +5,8 @@
                 <div class="p-4">
                     <div class="w-full flex justify-center text-4xl p-3">
                         <h2 style="text-shadow: rgb(0, 0, 0) 3px 0 16px;">
-                            <i>{{ uiStates.vehicleSpeedoData.vehicleSpeed }}</i> <span
-                                class="text-gray-400 text-xl">KM/H</span>
+                            <i>{{ uiStates.vehicleSpeedoData.metric == 0 ? (uiStates.vehicleSpeedoData.vehicleSpeed * 3.6).toFixed(0) : (uiStates.vehicleSpeedoData.vehicleSpeed * 2.236936).toFixed(0) }}</i> <span
+                                class="text-gray-400 text-xl">{{uiStates.vehicleSpeedoData.metric == 0 ? "KM/H" : "MPH"}}</span>
                         </h2>
                     </div>
 
@@ -41,12 +41,15 @@
                 </div>
 
 
-                <div class="flex justify-center h-[3vw] mt-2 items-center border-t-2 border-gray-400 overflow-hidden"
-                    id="digitext">
-                    <div class="rounded-lg" id="digitext" v-for="num in getMileageArr()" :key="num.key">
-                        <font id="odometer" class="border-1 p-3 bg-black/70 border-gray-500 shadow-[inset_0_-2px_4px_rgba(180,180,180,0.2)]"
-                            :class="num.key == getMileageArr().length - 1 ? 'bg-gray-600 rounded-r-lg' : num.key == 0 ? 'rounded-l-lg' : ''">
+                <div class="flex justify-center h-[3vw] mt-2 items-center border-t-2 border-gray-400 overflow-hidden">
+                    <div class="rounded-lg" v-for="num in getMileageArr()" :key="num.key">
+                        <font id="odometer"
+                            class="border-1 p-3 bg-black/70 border-gray-500 shadow-[inset_0_-2px_4px_rgba(180,180,180,0.2)]"
+                            :class="num.key == getMileageArr().length - 1 ? 'rounded-r-lg' : num.key == 0 ? 'rounded-l-lg' : ''">
                             {{ num.num }}</font>
+                    </div>
+                    <div class="ml-4 text-gray-300 font-normal">
+                        <p>{{uiStates.vehicleSpeedoData.metric == 0 ? "KM" : "Miles"}}</p>
                     </div>
                 </div>
             </div>
@@ -58,7 +61,7 @@
                 <div :class="uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) < 20 ? uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) < 10 ? 'bg-red-400' : 'bg-orange-400' : 'bg-green-500'"
                     class="rounded-lg h-2" :style="{ 'width': uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) + '%' }">
                 </div>
-                <i class="fa-solid fa-gas-pump mt-3 "></i> {{ uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) }}%
+                <i class="fa-solid fa-gas-pump mt-3 text-red-400"></i> {{ uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) }} {{ uiStates.vehicleSpeedoData.metric == 0 ? "Litres" : "Gallons" }}
 
                 <div class="bg-gray-300 rounded-lg h-2 mt-2">
                 </div>
@@ -100,7 +103,7 @@ export default {
     },
     methods: {
         getMileageArr() {
-            let arr = (this.uiStates.vehicleSpeedoData.vehicleMileage / 1609).toFixed(0).split("");
+            let arr = (this.uiStates.vehicleSpeedoData.vehicleMileage / (this.uiStates.vehicleSpeedoData.metric == 0 ? 1000 : 1609)).toFixed(0).split("");
             let fillAmount = 6 - arr.length;
             let addToArr = Array(fillAmount).fill(0);
             addToArr.forEach(x => {

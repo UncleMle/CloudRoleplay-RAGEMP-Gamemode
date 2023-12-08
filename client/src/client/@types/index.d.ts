@@ -194,13 +194,14 @@ export interface Attachment {
 }
 
 export interface SpeedoData {
-	vehicleSpeed: string,
+	vehicleSpeed: number,
 	vehicleRpm: number,
 	indicatorStatus: number,
 	lockStatus: boolean,
 	lightsStates: { lightsOn: boolean; highbeamsOn: boolean; },
 	fuelLevel: number,
-	vehicleMileage: number
+	vehicleMileage: number,
+	metric: number
 }
 
 export interface Corpse {

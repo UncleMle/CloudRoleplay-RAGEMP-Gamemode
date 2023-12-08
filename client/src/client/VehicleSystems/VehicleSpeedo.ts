@@ -38,14 +38,14 @@ class VehicleSpeedo {
 			let lightState = VehicleSpeedo.LocalPlayer.vehicle.getLightsState(1, 1);
 
             let speedoData: SpeedoData = {
-                vehicleSpeed: (VehicleSpeedo.LocalPlayer.vehicle.getSpeed() * 3.6).toFixed(0),
+                vehicleSpeed: VehicleSpeedo.LocalPlayer.vehicle.getSpeed(),
 				vehicleRpm: vehicleData.engine_status ? VehicleSpeedo.LocalPlayer.vehicle.rpm : 0,
 				indicatorStatus: vehicleData.indicator_status,
 				lockStatus: vehicleData.vehicle_locked,
 				lightsStates: lightState,
                 fuelLevel: vehicleData.vehicle_fuel,
-                vehicleMileage: vehicleData.vehicle_distance
-
+                vehicleMileage: vehicleData.vehicle_distance,
+                metric: mp.game.gameplay.getProfileSetting(227)
             }
 
             BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
