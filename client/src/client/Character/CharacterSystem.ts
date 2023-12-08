@@ -2,9 +2,12 @@ import { _sharedAccountDataIdentifier, _sharedCharacterDataIdentifier } from "..
 import getTargetCharacterData from "../PlayerMethods/getTargetCharacterData";
 import { CharacterData, CharacterModel, UserData } from "@types";
 import getTargetData from "../PlayerMethods/getTargetData";
+import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
 
 class CharacterSystem {
 	public static LocalPlayer: PlayerMp;
+	public static serverName: string = "Cloud Roleplay";
+	public static discordStatusUpdate_seconds: number = 15;
 
 	constructor() {
 		CharacterSystem.LocalPlayer = mp.players.local;
@@ -13,6 +16,16 @@ class CharacterSystem {
 		mp.events.add("entityStreamIn", CharacterSystem.handleEntityStreamIn);
 		mp.events.addDataHandler(_sharedCharacterDataIdentifier, CharacterSystem.handleDataHandler);
 		mp.events.addDataHandler(_sharedAccountDataIdentifier, CharacterSystem.handleAdmins);
+
+		setInterval(() => {
+			CharacterSystem.setDiscordStatus();
+		}, CharacterSystem.discordStatusUpdate_seconds * 1000)
+	}
+
+	public static setDiscordStatus() {
+		let characterData: CharacterData | undefined = getUserCharacterData();
+
+		mp.discord.update(`Playing on ${CharacterSystem.serverName}`, `${characterData ? `Playing as ${characterData.characterName.replace("_", " ")}` : `Currently logged in`}`)
 	}
 
 	public static setCharacterCustomization(characterModel: any, parse: boolean = true, entity: PlayerMp | PedMp = CharacterSystem.LocalPlayer) {
