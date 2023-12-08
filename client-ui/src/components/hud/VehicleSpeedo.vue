@@ -45,7 +45,7 @@
                     id="digitext">
                     <div class="rounded-lg" id="digitext" v-for="num in getMileageArr()"
                         :key="getMileageArr().indexOf(num)">
-                        <font class="border-1 p-3 bg-black/70 border-gray-500" :class="getMileageArr().indexOf(num) == getMileageArr().length - 1 ?
+                        <font id="odometer" class="border-1 p-3 bg-black/70 border-gray-500" :class="getMileageArr().indexOf(num) == getMileageArr().length - 1 ?
                             'bg-gray-600/70' : ''">
                             {{ num }}</font>
                     </div>
@@ -76,7 +76,6 @@ export default {
     data() {
         return {
             styleOne: "text-pink-500",
-            mileage: [0, 0, 0, 0, 0, 4]
         }
     },
     computed: {

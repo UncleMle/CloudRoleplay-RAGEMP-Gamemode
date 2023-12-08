@@ -28,10 +28,10 @@ class VehicleFuel {
     }
 
     public static renderNoFuelText() {
-        mp.game.graphics.drawText("~r~This vehicle has ran out of fuel.", [0.5, 0.90], {
+        mp.game.graphics.drawText("~r~This vehicle has ran out of fuel.", [0.5, 0.86], {
             font: 4,
-            color: [255, 255, 255, 255],
-            scale: [0.7, 0.7],
+            color: [255, 255, 255, 175],
+            scale: [0.55, 0.55],
             outline: false
         });
     }
