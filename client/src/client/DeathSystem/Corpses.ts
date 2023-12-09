@@ -22,6 +22,7 @@ class Corpses {
 				let corpseData: Corpse = Corpses.corpses[ped.corpseId];
 				if (!corpseData) return;
 
+                Corpses.initPed(ped, corpseData);
 				if (getTimeUnix() - corpseData.unixCreated > Corpses._pedTimeout_seconds) {
 					mp.events.callRemote(Corpses.corpseValEvent, JSON.stringify(corpseData));
 				}
@@ -31,7 +32,8 @@ class Corpses {
 
 	public static async handleStreamIn(entity: PedMp) {
         if (entity.type != 'ped') return;
-        await mp.game.waitAsync(500);
+        await mp.game.waitAsync(900);
+
 
         let corpseData: Corpse | null = Corpses.getCorpseData(entity.corpseId);
         if (!corpseData) return;

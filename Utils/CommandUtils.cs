@@ -103,11 +103,6 @@ namespace CloudRP.Utils
             NAPI.Chat.SendChatMessageToAll(message);
         }
 
-        public static string formatCharName(string name)
-        {
-            return name.Replace("_", " ");
-        }
-
         public static string getCharName(string givenName)
         {
             string[] subs = givenName.Split(" ");

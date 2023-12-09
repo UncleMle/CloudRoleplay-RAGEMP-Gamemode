@@ -42,7 +42,9 @@ namespace CloudRP.Authentication
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
-                Account findAccount = dbContext.accounts.Where(b => b.username == userCredentials.username.ToLower()).FirstOrDefault();
+                Account findAccount = dbContext.accounts
+                    .Where(b => b.username == userCredentials.username.ToLower() || b.email_address == userCredentials.username.ToLower())
+                    .FirstOrDefault();
 
                 if(findAccount != null)
                 {
@@ -206,7 +208,14 @@ namespace CloudRP.Authentication
 
             uiHandling.sendMutationToClient(player, mutationName, "toggle", false);
 
-            createAccount(player, playerOtpStore.registeringData);
+            if(playerOtpStore.registeringData != null)
+            {
+                createAccount(player, playerOtpStore.registeringData);
+                return;
+            }
+            
+
+
         }
 
         public static void createAccount(Player player, Register registeringData)
