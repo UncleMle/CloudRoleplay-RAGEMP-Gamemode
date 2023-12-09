@@ -24,6 +24,8 @@ namespace CloudRP.AntiCheat
         [ServerEvent(Event.PlayerConnected)]
         public async void OnPlayerConnected(Player player)
         {
+            if (player.Address == "127.0.0.1") return;
+
             try
             {
                 string uri = $"https://vpnapi.io/api/{player.Address}?key={Environment.GetEnvironmentVariable(vpnApiKeyIdentifier)}";
@@ -31,12 +33,15 @@ namespace CloudRP.AntiCheat
                 HttpClient client = new HttpClient();
 
                 string response = await client.GetStringAsync(uri);
-
-                IPAddressInfo data = JsonConvert.DeserializeObject<IPAddressInfo>(response);
-
-                if(data.security.vpn || data.security.proxy)
+                
+                if(response != null)
                 {
-                    player.Kick();
+                    IPAddressInfo data = JsonConvert.DeserializeObject<IPAddressInfo>(response);
+
+                    if (data.security.vpn || data.security.proxy)
+                    {
+                        player.Kick();
+                    }
                 }
             }
             catch

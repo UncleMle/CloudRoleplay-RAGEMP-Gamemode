@@ -6,7 +6,7 @@
                     v-html="item.toString()">
                 </li>
             </ul>
-            <input v-show="inputFieldShowing" v-model="userText" ref="input" id="chat_msg" type="text" />
+            <input class="border-l-2 border-gray-500" v-show="inputFieldShowing" v-model="userText" ref="input" id="chat_msg" type="text" />
         </div>
     </div>
 </template>
@@ -123,25 +123,6 @@ export default {
         },
         push(text) {
             this.chatMessages.unshift(`<span class='text-gray-400 opacity-80'>${this.getTimeFormatted()} |</span> `+text);
-        },
-        setCaretPosition(elemId, caretPos) {
-            var elem = document.getElementById(elemId);
-
-            if (elem != null) {
-                if (elem.createTextRange) {
-                    var range = elem.createTextRange();
-                    range.move('character', caretPos);
-                    range.select();
-                }
-                else {
-                    if (elem.selectionStart) {
-                        elem.focus();
-                        elem.setSelectionRange(caretPos, caretPos);
-                    }
-                    else
-                        elem.focus();
-                }
-            }
         },
         getTimeFormatted() {
             const timeNow = new Date();
