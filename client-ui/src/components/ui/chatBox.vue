@@ -42,6 +42,7 @@ export default {
             this.typingState(oldVal);
         },
         chatMessages() {
+            this.$store.state.uiStates.guiEnabled = true;
             this.setCloseInterval();
         }
     },

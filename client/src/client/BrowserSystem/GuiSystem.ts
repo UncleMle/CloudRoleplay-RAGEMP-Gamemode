@@ -1,18 +1,37 @@
-import { IS_RADAR_ENABLED, IS_RADAR_HIDDEN } from '@/Constants/Constants';
+import { IS_RADAR_ENABLED, IS_RADAR_HIDDEN, _control_ids } from '@/Constants/Constants';
 import { UserData, CharacterData, StreetData, Hunger, Gui } from '../@types';
 import getUserCharacterData from '../PlayerMethods/getUserCharacterData';
 import getUserData from '../PlayerMethods/getUserData';
 import BrowserSystem from './BrowserSystem';
 import { getWaterAndHungerData } from '@/PlayerMethods/getWaterAndHungerData';
 import getTimeUnix from '@/PlayerMethods/getTimeUnix';
+import NotificationSystem from '@/NotificationSystem/NotificationSystem';
 
 class GuiSystem {
 	public static LocalPlayer: PlayerMp;
+	public static hudToggle: boolean;
 
 	constructor() {
 		GuiSystem.LocalPlayer = mp.players.local;
 
 		mp.events.add("render", GuiSystem.fillGuiRenderValues);
+		mp.keys.bind(_control_ids.F10, false, GuiSystem.toggleHud);
+	}
+
+	public static toggleHud() {
+		if(GuiSystem.LocalPlayer.isTypingInTextChat) return;
+
+		GuiSystem.hudToggle = !GuiSystem.hudToggle;
+
+		let browser: BrowserMp = BrowserSystem._browserInstance;
+		if(browser) {
+			browser.execute(`appSys.commit('setUiState', {
+				_stateKey: "guiEnabled",
+				status: ${GuiSystem.hudToggle}
+			})`);
+
+			NotificationSystem.createNotification(`You turned your HUD ${GuiSystem.hudToggle ? "on" : "off"}`);
+		}
 	}
 
 	public static fillGuiRenderValues() {

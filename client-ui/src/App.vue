@@ -4,9 +4,9 @@
             {{ uiStates }}
         </p>
 
-        <ChatBox class="absolute" />
+        <ChatBox v-if="uiStates.guiEnabled" class="absolute" />
         <PushNotification class="bg-red-200" ref="notification" />
-        <VehicleSpeedo />
+        <VehicleSpeedo v-if="uiStates.guiEnabled" />
         <PlayerHud v-if="uiStates.guiEnabled" />
 
         <router-view class="absolute" ref="routers">

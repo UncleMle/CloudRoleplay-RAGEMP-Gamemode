@@ -40,7 +40,8 @@ export const _control_ids = {
 	RELOADBIND: 0x52,
 	NBIND: 78,
 	F4: 115,
-	F9: 120
+	F9: 120,
+	F10: 121
 };
 
 export const _config_flags = {
