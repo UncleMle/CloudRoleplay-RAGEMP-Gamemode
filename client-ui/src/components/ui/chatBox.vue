@@ -2,7 +2,7 @@
     <div v-if="getUiStates.chatEnabled" class="duration-300" :class="!showing ? 'opacity-40' : ''">
         <div id="chat">
             <ul id="chat_messages">
-                <li v-for="item in chatMessages" :key="Math.floor(Math.random() * 2000) + item"
+                <li v-for="item in chatMessages" :key="getKey(item)"
                     v-html="item.toString()">
                 </li>
             </ul>
@@ -91,6 +91,11 @@ export default {
                 window.mp.invoke("focus", toggle);
                 window.mp.invoke("setTypingInChatState", toggle);
             }
+        },
+        getKey(item) {
+            let unix = Math.floor(Date.now() / 1000);
+            let ran = Math.floor(Math.random() * 2000);
+            return unix + item + ran + this.chatMessages.indexOf(item);
         },
         setCloseInterval() {
             this.showing = true;
