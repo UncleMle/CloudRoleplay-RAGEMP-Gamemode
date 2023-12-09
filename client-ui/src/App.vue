@@ -1,10 +1,6 @@
 <template>
     <div id="app">
-        <p class="font-bold text-red-500">
-            {{ uiStates }}
-        </p>
-
-        <ChatBox v-if="uiStates.guiEnabled" class="absolute" />
+        <ChatBox class="absolute" />
         <PushNotification class="bg-red-200" ref="notification" />
         <VehicleSpeedo v-if="uiStates.guiEnabled" />
         <PlayerHud v-if="uiStates.guiEnabled" />

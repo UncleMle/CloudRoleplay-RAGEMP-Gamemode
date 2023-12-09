@@ -48,7 +48,6 @@ class BrowserSystem {
 
 	public static setAuthState(state: string) {
 		if (BrowserSystem._browserInstance) {
-			mp.console.logInfo(state +" rc");
 			BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
 				_stateKey: "authenticationState",
 				status: "${state}"

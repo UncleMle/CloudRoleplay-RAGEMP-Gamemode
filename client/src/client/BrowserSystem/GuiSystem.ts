@@ -1,4 +1,4 @@
-import { IS_RADAR_ENABLED, IS_RADAR_HIDDEN, _control_ids } from '@/Constants/Constants';
+import { IS_RADAR_ENABLED, IS_RADAR_HIDDEN, _IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE, _control_ids } from '@/Constants/Constants';
 import { UserData, CharacterData, StreetData, Hunger, Gui } from '../@types';
 import getUserCharacterData from '../PlayerMethods/getUserCharacterData';
 import getUserData from '../PlayerMethods/getUserData';
@@ -9,28 +9,39 @@ import NotificationSystem from '@/NotificationSystem/NotificationSystem';
 
 class GuiSystem {
 	public static LocalPlayer: PlayerMp;
-	public static hudToggle: boolean;
+	public static hudToggle: boolean = true;
 
 	constructor() {
 		GuiSystem.LocalPlayer = mp.players.local;
 
 		mp.events.add("render", GuiSystem.fillGuiRenderValues);
+		mp.events.add("gui:toggleHudComplete", GuiSystem.toggleHudComplete);
 		mp.keys.bind(_control_ids.F10, false, GuiSystem.toggleHud);
 	}
 
 	public static toggleHud() {
-		if(GuiSystem.LocalPlayer.isTypingInTextChat) return;
+		if(GuiSystem.LocalPlayer.isTypingInTextChat || mp.game.invoke(_IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE)) return;
 
 		GuiSystem.hudToggle = !GuiSystem.hudToggle;
 
+		GuiSystem.toggleHudComplete(GuiSystem.hudToggle);
+	}
+
+	public static toggleHudComplete(toggle: boolean, notif: boolean = false) {
 		let browser: BrowserMp = BrowserSystem._browserInstance;
+		GuiSystem.hudToggle = toggle;
+
 		if(browser) {
+			mp.game.ui.displayRadar(toggle);
+
 			browser.execute(`appSys.commit('setUiState', {
 				_stateKey: "guiEnabled",
-				status: ${GuiSystem.hudToggle}
+				status: ${toggle}
 			})`);
 
-			NotificationSystem.createNotification(`You turned your HUD ${GuiSystem.hudToggle ? "on" : "off"}`);
+			if(notif) {
+				NotificationSystem.createNotification(`You turned your HUD ${toggle ? "on" : "off"}`);
+			}
 		}
 	}
 

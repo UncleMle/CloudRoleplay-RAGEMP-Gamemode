@@ -28,6 +28,7 @@ namespace CloudRP.Utils
         public static string hospital = "!{green}[Hospital] " + White;
         public static string info = "!{yellow}[Info] " + White;
         public static string reports = "!{yellow}[Reports] " + White;
+        public static string afk = "!{orange}[Afk] " + White;
 
         public static void sendWithNickName(Player player, Player target, string prefix, string suffix)
         {

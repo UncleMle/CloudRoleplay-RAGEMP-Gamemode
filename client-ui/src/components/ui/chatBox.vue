@@ -1,12 +1,13 @@
 <template>
-    <div v-if="getUiStates.chatEnabled" class="duration-300" :class="!showing ? 'opacity-40' : ''">
+    <div v-if="getUiStates.chatEnabled && getUiStates.guiEnabled" class="duration-300"
+        :class="!showing ? 'opacity-40' : ''">
         <div id="chat">
             <ul id="chat_messages">
-                <li v-for="item in chatMessages" :key="getKey(item)"
-                    v-html="item.toString()">
+                <li v-for="item in chatMessages" :key="getKey(item)" v-html="item.toString()">
                 </li>
             </ul>
-            <input class="border-l-2 border-gray-500" v-show="inputFieldShowing" v-model="userText" ref="input" id="chat_msg" type="text" />
+            <input class="border-l-2 border-gray-500" v-show="inputFieldShowing" v-model="userText" ref="input"
+                id="chat_msg" type="text" />
         </div>
     </div>
 </template>
@@ -42,13 +43,15 @@ export default {
             this.typingState(oldVal);
         },
         chatMessages() {
-            this.$store.state.uiStates.guiEnabled = true;
+            if (window.mp) {
+                window.mp.trigger("gui:toggleHudComplete", true);
+            }
             this.setCloseInterval();
         }
     },
     methods: {
         keyDownListener(e) {
-            if (this.$router.currentRoute.path != "/" || !this.getUiStates.chatEnabled) return;
+            if (this.$router.currentRoute.path != "/" || !this.getUiStates.chatEnabled || !this.getUiStates.guiEnabled) return;
 
             if (e.keyCode == this.KEYBIND_T && !this.inputFieldShowing) {
                 this.showing = true;
@@ -123,7 +126,7 @@ export default {
             }
         },
         push(text) {
-            this.chatMessages.unshift(`<span class='text-gray-400 opacity-80'>${this.getTimeFormatted()} |</span> `+text);
+            this.chatMessages.unshift(`<span class='text-gray-400 opacity-80'>${this.getTimeFormatted()} |</span> ` + text);
         },
         getTimeFormatted() {
             const timeNow = new Date();

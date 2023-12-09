@@ -24,6 +24,7 @@ import VehicleSpeedo from "./VehicleSystems/VehicleSpeedo";
 import VehicleFuel from "./VehicleSystems/VehicleFuel";
 import WeaponSystem from "./weaponSystem/weaponSystem";
 import Corpses from "./DeathSystem/Corpses";
+import Afk from "./AntiCheat/Afk";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -52,3 +53,4 @@ new VehicleSpeedo();
 new VehicleFuel();
 new WeaponSystem();
 new Corpses();
+new Afk();

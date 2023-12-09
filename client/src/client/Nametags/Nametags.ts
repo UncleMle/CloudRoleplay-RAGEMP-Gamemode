@@ -56,7 +56,7 @@ class NameTags {
 	}
 
 	public static formatNick(targetEnt: PlayerMp) {
-		return targetEnt._nickName ? targetEnt._nickName + " [" + targetEnt.remoteId + "] " : "Player " + targetEnt.remoteId + " ";
+		return targetEnt._nickName ? targetEnt._nickName + " [" + targetEnt.remoteId + "] " : "Stranger " + targetEnt.remoteId + " ";
 	}
 
 	public static handleStreamIn(entity: PlayerMp) {

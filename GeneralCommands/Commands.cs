@@ -30,6 +30,27 @@ namespace CloudRP.GeneralCommands
             CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_commands_radius);
         }
 
+        [Command("afk", "~y~Use: ~w~/afk [answer]")]
+        public static void afkCommand(Player player, string afkAns)
+        {
+            if(PlayersData.getPlayerCharacterData(player) == null) return;
+            AfkData afkData = player.GetData<AfkData>(Events._afkKeyIdentifier);
+            if(afkData == null)
+            {
+                CommandUtils.errorSay(player, "You are not considered to be afk.");
+                return;
+            }
+
+            if (afkData.calcAnswer == CommandUtils.tryParse(afkAns))
+            {
+                player.ResetData(Events._afkKeyIdentifier);
+                CommandUtils.successSay(player, "Reset AFK timer.");
+                return;
+            }
+
+            CommandUtils.errorSay(player, "Invalid answer.");
+        }
+
         [Command("me", "~y~Use:~w~ /me [message]", GreedyArg = true)]
         public void onMeCommand(Player player, string me)
         {
