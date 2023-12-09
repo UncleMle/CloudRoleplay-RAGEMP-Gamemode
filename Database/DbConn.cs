@@ -17,7 +17,7 @@ namespace CloudRP.Database
     {
         public static readonly string connectionStringKey = "DatabaseConnectionString";
 
-        private string connectionString = Env._databaseConnectionString;
+        private string connectionString = Environment.GetEnvironmentVariable(connectionStringKey);
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

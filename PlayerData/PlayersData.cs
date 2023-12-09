@@ -41,7 +41,7 @@ namespace CloudRP.PlayerData
             player.SetSharedData(_sharedAccountDataIdentifier, data);
         }
 
-        public static void setPlayerCharacterData(Player player, DbCharacter character, CharacterClothing clothes = null, bool resyncModel = true)
+        public static void setPlayerCharacterData(Player player, DbCharacter character, bool resyncModel = true)
         {
             player.SetData(_sharedCharacterDataIdentifier, character);
 
@@ -56,11 +56,7 @@ namespace CloudRP.PlayerData
             };
 
             setCharacterHungerAndThirst(player, character.character_hunger, character.character_water);
-
-            if(clothes != null)
-            {
-                setCharacterClothes(player, clothes);
-            }
+            setCharacterClothes(player, character.characterClothing);
 
             player.SetData(_characterModelData, character.characterModel);
             player.SetSharedData(_sharedCharacterDataIdentifier, data);

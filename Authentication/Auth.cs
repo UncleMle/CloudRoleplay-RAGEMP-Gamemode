@@ -350,9 +350,12 @@ namespace CloudRP.Authentication
                         .FirstOrDefault();
 
                     character.characterModel = charModel;
+                    character.characterClothing = charClothing;
+
+                    Console.WriteLine("Char clothing " + JsonConvert.SerializeObject(charClothing));
 
                     ChatUtils.charSysPrint($"Character {character.character_name} has logged in (#{character.character_id})");
-                    PlayersData.setPlayerCharacterData(player, character, charClothing);
+                    PlayersData.setPlayerCharacterData(player, character);
                     DiscordUtils.creationConnection(player, character, LogCreation.Join);
 
                     welcomeAndSpawnPlayer(player, userData, character);

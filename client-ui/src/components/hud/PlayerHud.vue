@@ -14,7 +14,7 @@
             </div>
         </div>
 
-        <div class="absolute left-[16.5%] w-[20%] rounded-xl bottom-[11%] text-white font-medium text-xl h-[3.4%] p-1">
+        <div class="absolute left-[16.5%] w-[20%] rounded-xl bottom-[14%] text-white font-medium text-xl h-[3.4%] p-1">
             <div class="absolute" v-if="playerData.player_data_gui.isFrozen">
                 <font>
                     <span class="font-bold text-3xl text-red-500">You have been frozen.</span>
