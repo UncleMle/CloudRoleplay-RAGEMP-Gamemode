@@ -1,7 +1,9 @@
 ﻿using CloudRP.Admin;
+using CloudRP.AntiCheat;
 using CloudRP.Authentication;
 using CloudRP.Character;
 using CloudRP.Database;
+using CloudRP.DeathSystem;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
 using GTANetworkAPI;
@@ -107,8 +109,29 @@ namespace CloudRP.Vehicles
 
                 return;
             }
-
         }
+
+        public static Vehicle getClosestVehicleToPlayer(Player player, float maxDist = 10)
+        {
+            List<Vehicle> onlineVehicles = NAPI.Pools.GetAllVehicles();
+            Dictionary<float, Vehicle> pDist = new Dictionary<float, Vehicle>();
+
+            foreach (Vehicle veh in onlineVehicles)
+            {
+                float dist = Vector3.Distance(veh.Position, player.Position);
+
+                if(dist < maxDist)
+                {
+                    pDist.Add(dist, veh);
+                }
+            }
+
+            List<float> distList = new List<float>(pDist.Keys);
+
+            distList.Sort();
+
+            return pDist.Count == 0 ? null : pDist.GetValueOrDefault(distList[0]);
+        } 
 
         public static Vehicle vehicleIdOrPlate(string plateOrId)
         {

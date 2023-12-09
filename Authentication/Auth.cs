@@ -12,7 +12,6 @@ using CloudRP.DeathSystem;
 using CloudRP.AntiCheat;
 using CloudRP.ChatSystem;
 
-
 namespace CloudRP.Authentication
 {
     internal class Auth : Script

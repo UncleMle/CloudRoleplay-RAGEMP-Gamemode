@@ -718,21 +718,15 @@ namespace CloudRP.Admin
         }
 
         [Command("gcv", "~r~/gcv [Vehicle ID or vehicle]")]
-        public void getVehicleInfo(Player player, int vehicleId = -1)
+        public void getVehicleInfo(Player player)
         {
             User userData = PlayersData.getPlayerAccountData(player);
             
             if(userData.adminLevel > 0)
             {
+                Vehicle findVeh = VehicleSystem.getClosestVehicleToPlayer(player);
 
-                if(vehicleId == -1 && player.Vehicle == null)
-                {
-                    AdminUtils.staffSay(player, $"Specifiy a vehicle ID or use this command inside of a vehicle.");
-                    return;
-                }
-
-                
-                if(vehicleId == -1 && player.IsInVehicle)
+                if(findVeh != null)
                 {
                     DbVehicle currentVehicleData = VehicleSystem.getVehicleData(player.Vehicle);
 
@@ -740,18 +734,6 @@ namespace CloudRP.Admin
                     {
                         VehicleSystem.sayInfoAboutVehicle(player, userData, currentVehicleData);
                     }
-                    else
-                    {
-                        AdminUtils.staffSay(player, "Vehicle couldn't be found.");
-                    }
-                    return;
-                }
-
-                DbVehicle foundVehicleData = VehicleSystem.getVehicleDataById(vehicleId);
-                
-                if (foundVehicleData != null)
-                {
-                    VehicleSystem.sayInfoAboutVehicle(player, userData, foundVehicleData);
                 }
                 else
                 {
@@ -961,15 +943,15 @@ namespace CloudRP.Admin
 
             if (AdminUtils.checkUserData(player, userData))
             {
-                List<Vehicle> rangeVehicles = VehicleSystem.getVehicleInRange(player, 10);
-                
-                if(rangeVehicles == null || rangeVehicles.Count == 0)
+                Vehicle findVeh = VehicleSystem.getClosestVehicleToPlayer(player);
+
+                if(findVeh == null)
                 {
                     CommandUtils.errorSay(player, "There are no vehicles within range to enter");
                     return;
                 }
 
-                player.SetIntoVehicle(rangeVehicles[0], seatId);
+                player.SetIntoVehicle(findVeh, seatId);
             }
         }
 
