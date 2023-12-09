@@ -1,18 +1,12 @@
 ﻿using CloudRP.Admin;
 using CloudRP.Character;
-using CloudRP.ChatSystem;
-using CloudRP.DiscordSystem;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
-using CloudRP.World;
 using GTANetworkAPI;
-using Integration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CloudRP.AntiCheat
 {
@@ -40,6 +34,7 @@ namespace CloudRP.AntiCheat
 
                     if (data.security.vpn || data.security.proxy)
                     {
+                        Console.WriteLine($"Player [{player.Id}] was kicked for VPN or Proxy! Address: {player.Address}");
                         player.Kick();
                     }
                 }

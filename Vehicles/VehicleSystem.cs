@@ -1,19 +1,13 @@
 ﻿using CloudRP.Admin;
-using CloudRP.AntiCheat;
-using CloudRP.Authentication;
 using CloudRP.Character;
 using CloudRP.Database;
-using CloudRP.DeathSystem;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
 using GTANetworkAPI;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
 using System.Timers;
 
 namespace CloudRP.Vehicles

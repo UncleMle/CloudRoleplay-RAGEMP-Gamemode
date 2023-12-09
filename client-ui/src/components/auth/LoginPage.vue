@@ -310,7 +310,7 @@
                                             <i
                                                 class="fa-solid fa-lock absolute pt-3 border-r p-3 h-11 border-gray-400 text-gray-400"></i>
                                         </div>
-                                        <input v-model="passResetPassConfirm" type="password" placeholder="New Password..."
+                                        <input v-model="passResetPassConfirm" type="password" placeholder="Confirm new Password..."
                                             class="ml-12 p-2 block w-full rounded-lg bg-transparent outline-none" />
                                     </div>
                                 </label>
@@ -427,6 +427,9 @@ export default {
                 }
 
                 window.mp.trigger("browser:sendString", "server:resetPassword", JSON.stringify(resetData))
+
+                this.password = this.passResetPass;
+                this.username = this.resetEmail;
 
                 this.passResetPass = "";
                 this.passResetPassConfirm = "";
