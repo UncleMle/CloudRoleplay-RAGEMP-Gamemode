@@ -44,6 +44,11 @@ namespace CloudRP.PlayerData
             player.TriggerEvent("client:addNotif", text, isRp);
         }
 
+        public static void setAuthState(Player player, string state)
+        {
+            player.TriggerEvent("browser:setAuthState", state);
+        }
+
         public static void sendPushNotifError(Player player, string text, int time, bool resetLoading = false)
         {
             player.TriggerEvent("browser:sendErrorPushNotif", text, time);
@@ -91,6 +96,15 @@ namespace CloudRP.PlayerData
         public static readonly string StatsPage = "/stats";
         public static readonly string BanPage = "/ban";
         public static readonly string ReportsPage = "/reports";
+    }
+
+    public static class AuthStates
+    {
+        public static readonly string otp = "otp";
+        public static readonly string login = "login";
+        public static readonly string passReset = "passwordReset";
+        public static readonly string resettingPassword = "resettingPassword";
+        public static readonly string characterSelection = "charSelect";
     }
 
     public static class MutationKeys

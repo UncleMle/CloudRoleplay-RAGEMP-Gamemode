@@ -1,4 +1,4 @@
-import { BrowserEnv } from "../enums";
+import { BrowserEnv } from '../enums';
 import { F2 } from './ClientButtons';
 import { _REMOVE_TIMER_NATIVE } from '../Constants/Constants';
 
@@ -15,27 +15,27 @@ class BrowserSystem {
 		BrowserSystem.LocalPlayer = mp.players.local;
 
 		BrowserSystem.LocalPlayer.browserInstance = BrowserSystem._browserInstance;
-		BrowserSystem.LocalPlayer.browserRouter = "/";
+		BrowserSystem.LocalPlayer.browserRouter = '/';
 
-		mp.events.add("guiReady", BrowserSystem.onGuiReady);
-		mp.events.add("render", BrowserSystem.handleRender);
-		mp.events.add("client:recieveUiMutation", BrowserSystem.handleMutationChange);
-		mp.events.add("browser:sendObject", BrowserSystem.handleBrowserObject);
-		mp.events.add("browser:sendString", BrowserSystem.handleBrowserString);
-		mp.events.add("browser:pushRouter", BrowserSystem.pushRouter);
-		mp.events.add("browser:handlePlayerObjectMutation", BrowserSystem.handleObjectToBrowser);
-		mp.events.add("browser:handlePlayerObjectMutationPush", BrowserSystem.handleObjectToBrowserPush);
-		mp.events.add("browser:resetRouter", BrowserSystem.handleReset);
-		mp.events.add("browser:resetMutationPusher", BrowserSystem.resetMutationPusher);
-		mp.events.add("browser:sendErrorPushNotif", BrowserSystem.sendErrorPushNotif);
-		mp.events.add("browser:sendNotif", BrowserSystem.sendNotif);
+		mp.events.add('guiReady', BrowserSystem.onGuiReady);
+		mp.events.add('render', BrowserSystem.handleRender);
+		mp.events.add('client:recieveUiMutation', BrowserSystem.handleMutationChange);
+		mp.events.add('browser:sendObject', BrowserSystem.handleBrowserObject);
+		mp.events.add('browser:sendString', BrowserSystem.handleBrowserString);
+		mp.events.add('browser:pushRouter', BrowserSystem.pushRouter);
+		mp.events.add('browser:handlePlayerObjectMutation', BrowserSystem.handleObjectToBrowser);
+		mp.events.add('browser:handlePlayerObjectMutationPush', BrowserSystem.handleObjectToBrowserPush);
+		mp.events.add('browser:resetRouter', BrowserSystem.handleReset);
+		mp.events.add('browser:resetMutationPusher', BrowserSystem.resetMutationPusher);
+		mp.events.add('browser:sendErrorPushNotif', BrowserSystem.sendErrorPushNotif);
+		mp.events.add('browser:sendNotif', BrowserSystem.sendNotif);
+		mp.events.add('browser:setAuthState', BrowserSystem.setAuthState);
 
 		mp.keys.bind(F2, false, function () {
 			isFunctionPressed = !isFunctionPressed;
 			if (isFunctionPressed && !mp.game.ui.isPauseMenuActive()) {
 				mp.gui.cursor.show(true, true);
-			}
-			else {
+			} else {
 				mp.gui.cursor.show(false, false);
 			}
 		});
@@ -44,6 +44,16 @@ class BrowserSystem {
 	public static onGuiReady() {
 		mp.gui.chat.show(false);
 		BrowserSystem._browserInstance?.markAsChat();
+	}
+
+	public static setAuthState(state: string) {
+		if (BrowserSystem._browserInstance) {
+			mp.console.logInfo(state +" rc");
+			BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
+				_stateKey: "authenticationState",
+				status: "${state}"
+			})`);
+		}
 	}
 
 	public static handleRender() {
@@ -67,7 +77,7 @@ class BrowserSystem {
 	}
 
 	public static handleReset() {
-		BrowserSystem.pushRouter("/");
+		BrowserSystem.pushRouter('/');
 		mp.gui.cursor.show(false, false);
 	}
 
@@ -88,11 +98,11 @@ class BrowserSystem {
 	}
 
 	public static resetMutationPusher = (_mutationKey: string) => {
-	if (!BrowserSystem._browserInstance) return;
+		if (!BrowserSystem._browserInstance) return;
 		BrowserSystem._browserInstance.execute(`appSys.commit("resetPlayerMutationPusher", {
 			_mutationKey: "${_mutationKey}",
 		})`);
-	}
+	};
 
 	public static sendErrorPushNotif(message: string, time: number) {
 		BrowserSystem._browserInstance.execute(`gui.notify.sendError("${message}", ${time});`);

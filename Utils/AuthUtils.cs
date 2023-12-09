@@ -287,6 +287,13 @@ namespace CloudRP.Utils
         public long unixMade { get; set; }
     }
 
+    class ResetPass
+    {
+        public string password { get; set; }
+        public string otpCode { get; set; }
+        public string passwordConfirm { get; set; }
+    }
+
 
     public static class DefaultSpawn
     {

@@ -219,6 +219,8 @@ namespace CloudRP.Character
 
             uiHandling.sendMutationToClient(player, mutationName, "toggle", true);
 
+            uiHandling.setAuthState(player, AuthStates.characterSelection);
+
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
                 List<DbCharacter> allPlayerCharacters = dbContext.characters.Where(character => character.owner_id == userData.accountId).ToList();

@@ -2,7 +2,7 @@
     <main>
         <div class="fixed inset-0 w-full text-white text-lg duration-300">
             <div class="duration-300 container flex items-center max-w-3xl mx-auto"
-                :class="characterSelectionState && characters.player_characters.length > 1 ? 'mt-20' : 'mt-52'">
+                :class="uiStates.authenticationState == 'charSelect' && characters.player_characters.length > 1 ? 'mt-20' : 'mt-52'">
                 <div class="flex justify-center w-full">
                     <div
                         class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none duration-300">
@@ -22,7 +22,7 @@
                                     </span>
                                 </div>
 
-                                <button @click="createCharacter" v-if="characterSelectionState"
+                                <button @click="createCharacter" v-if="uiStates.authenticationState == 'charSelect'"
                                     class="absolute right-10 font-medium hover:text-green-500 duration-300">
                                     Add new character <i class="fa-solid fa-plus"></i>
                                 </button>
@@ -30,7 +30,7 @@
 
                         </div>
 
-                        <div v-if="!characterSelectionState && !showRegister && !showOtp" class="p-8">
+                        <div v-if="uiStates.authenticationState == ''" class="p-8">
                             <form>
                                 <label class="block">
                                     <span class="font-medium">Enter username or email</span>
@@ -56,7 +56,9 @@
                                 </label>
 
                                 <div>
-                                    <button class="font-medium text-sm mt-3 text-gray-300">Forgot your password?</button>
+                                    <button @click="uiStates.authenticationState = 'passwordReset'"
+                                        class="font-medium text-sm mt-3 text-gray-300">Forgot your password?
+                                        {{ uiStates.authenticationState }}</button>
                                 </div>
 
                                 <label class="mt-4 relative inline-flex items-center cursor-pointer">
@@ -68,7 +70,7 @@
                                 </label>
 
                                 <div class="inline-flex w-full mt-4 space-x-10 font-medium">
-                                    <button @click="register"
+                                    <button @click="uiStates.authenticationState = 'register'"
                                         class="w-full border-gray-500 border-2 rounded-l-xl p-3 duration-300 hover:border-gray-400"><i
                                             class="fa-solid fa-book text-gray-400"></i> Register</button>
                                     <button :disabled="loadingState" @click="login(true)"
@@ -83,7 +85,8 @@
 
                             </form>
                         </div>
-                        <div v-if="characterSelectionState" class="p-3 max-h-[55rem] overflow-x-hidden">
+                        <div v-if="uiStates.authenticationState == 'charSelect'"
+                            class="p-3 max-h-[55rem] overflow-x-hidden">
 
                             <div v-if="characters.player_characters.length == 0"
                                 class="font-medium flex justify-center text-lg mt-4 pb-4 text-gray-300">
@@ -142,7 +145,7 @@
                         </div>
 
 
-                        <div v-if="showRegister && !showOtp && !characterSelectionState" class="p-8 duration-300">
+                        <div v-if="uiStates.authenticationState == 'register'" class="p-8 duration-300">
                             <div>
 
                                 <label class="block">
@@ -198,7 +201,7 @@
                                 </div>
 
                                 <div class="inline-flex w-full mt-4 space-x-10 font-medium">
-                                    <button @click="showRegister = false"
+                                    <button @click="uiStates.authenticationState = ''"
                                         class="w-full border-2 border-gray-500 rounded-l-xl p-3 hover:border-gray-400 duration-300">
                                         <i class="fa-solid fa-rotate-left text-gray-400"></i> Back
                                     </button>
@@ -215,7 +218,7 @@
                             </div>
                         </div>
 
-                        <div v-if="showOtp" class="p-8">
+                        <div v-if="uiStates.authenticationState == 'otp'" class="p-8">
                             <div>
                                 <label class="block">
                                     <span class="font-medium">Enter the OTP sent to your email address</span>
@@ -240,6 +243,93 @@
                                 </div>
                             </div>
                         </div>
+
+
+                        <div v-if="uiStates.authenticationState == 'passwordReset'" class="p-8">
+                            <div>
+                                <label class="block">
+                                    <span class="font-medium">Enter your email</span>
+                                    <div class="border-gray-400 border mt-2 rounded-lg">
+                                        <div>
+                                            <i
+                                                class="fa-solid fa-envelope absolute pt-3 border-r p-3 h-11 border-gray-400 text-gray-400"></i>
+                                        </div>
+                                        <input v-model="resetEmail" type="text" placeholder="Email..."
+                                            class="ml-12 p-2 block w-full rounded-lg bg-transparent outline-none" />
+                                    </div>
+                                </label>
+
+                                <div class="inline-flex w-full mt-4 space-x-10 font-medium">
+                                    <button @click="uiStates.authenticationState = ''"
+                                        class="w-full border-2 border-gray-500 rounded-l-xl p-3 hover:border-gray-400 duration-300">
+                                        <i class="fa-solid fa-rotate-left text-gray-400"></i> Back
+                                    </button>
+                                    <button :disabled="loadingState" @click="resetPasswordAuth()"
+                                        class="w-full border-gray-500 border-2 rounded-r-xl p-3 duration-300"
+                                        :class="loadingState ? 'hover:border-red-400' : 'hover:border-gray-400'">
+
+                                        <LoadingSpinner v-if="loadingState" />
+                                        <span v-else>
+                                            Reset Password <i class="fa-solid fa-lock text-gray-400"></i>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div v-if="uiStates.authenticationState == 'resettingPassword'" class="p-8">
+                            <div>
+                                <label class="block">
+                                    <span class="font-medium">Enter your OTP Code</span>
+                                    <div class="border-gray-400 border mt-2 rounded-lg">
+                                        <div>
+                                            <i
+                                                class="fa-solid fa-lock absolute pt-3 border-r p-3 h-11 border-gray-400 text-gray-400"></i>
+                                        </div>
+                                        <input v-model="passResetOtp" type="text" placeholder="One Time Password..."
+                                            class="ml-12 p-2 block w-full rounded-lg bg-transparent outline-none" />
+                                    </div>
+                                </label>
+
+                                <label class="block mt-3">
+                                    <span class="font-medium">Enter your new Password</span>
+                                    <div class="border-gray-400 border mt-2 rounded-lg">
+                                        <div>
+                                            <i
+                                                class="fa-solid fa-lock absolute pt-3 border-r p-3 h-11 border-gray-400 text-gray-400"></i>
+                                        </div>
+                                        <input v-model="passResetPass" type="password" placeholder="New Password..."
+                                            class="ml-12 p-2 block w-full rounded-lg bg-transparent outline-none" />
+                                    </div>
+                                </label>
+
+                                <label class="block mt-3">
+                                    <span class="font-medium">Confirm your new Password</span>
+                                    <div class="border-gray-400 border mt-2 rounded-lg">
+                                        <div>
+                                            <i
+                                                class="fa-solid fa-lock absolute pt-3 border-r p-3 h-11 border-gray-400 text-gray-400"></i>
+                                        </div>
+                                        <input v-model="passResetPassConfirm" type="password" placeholder="New Password..."
+                                            class="ml-12 p-2 block w-full rounded-lg bg-transparent outline-none" />
+                                    </div>
+                                </label>
+
+                                <div class="inline-flex w-full mt-4 space-x-10 font-medium">
+                                    <button :disabled="loadingState" @click="resetPassword()"
+                                        class="w-full border-gray-500 border-2 rounded-xl p-3 duration-300"
+                                        :class="loadingState ? 'hover:border-red-400' : 'hover:border-gray-400'">
+
+                                        <LoadingSpinner v-if="loadingState" />
+                                        <span v-else>
+                                            Reset <i class="fa-solid fa-lock text-gray-400"></i>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+
                     </div>
                 </div>
             </div>
@@ -265,6 +355,12 @@ export default {
             showRegister: false,
             authState: "",
             otpPassword: "",
+            passResetOtp: "",
+            resetingPass: false,
+            resetEmail: "",
+            passResetEmail: "",
+            passResetPass: "",
+            passResetPassConfirm: ""
         };
     },
     components: {
@@ -275,7 +371,8 @@ export default {
             characterSelectionState: 'getCharacterSelectionStatus',
             showOtp: 'getOtpState',
             loadingState: 'getLoadingState',
-            characters: 'getPlayerInfo'
+            characters: 'getPlayerInfo',
+            uiStates: 'getUiStates'
         })
     },
     methods: {
@@ -311,6 +408,29 @@ export default {
         register() {
             if (!this.showRegister) return this.showRegister = true;
             window.mp.trigger("browser:sendString", "server:authRecieveOtp", this.otpPassword);
+        },
+        resetPasswordAuth() {
+            this.$store.state.uiStates.serverLoading = true;
+
+            if (window.mp) {
+                window.mp.trigger("browser:sendString", "server:resetPasswordAuth", this.resetEmail);
+            }
+        },
+        resetPassword() {
+            this.$store.state.uiStates.serverLoading = true;
+
+            if(window.mp) {
+                let resetData = {
+                    otpCode: this.passResetOtp,
+                    password: this.passResetPass,
+                    passwordConfirm: this.passResetPassConfirm,
+                }
+
+                window.mp.trigger("browser:sendString", "server:resetPassword", JSON.stringify(resetData))
+
+                this.passResetPass = "";
+                this.passResetPassConfirm = "";
+            }
         },
         getCharacterData() {
             return this.$store.state.playerInfo.player_characters;

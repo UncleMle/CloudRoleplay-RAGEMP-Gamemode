@@ -1,5 +1,9 @@
 <template>
     <div id="app">
+        <p class="font-bold text-red-500">
+            {{ uiStates }}
+        </p>
+
         <ChatBox class="absolute" />
         <PushNotification class="bg-red-200" ref="notification" />
         <VehicleSpeedo />

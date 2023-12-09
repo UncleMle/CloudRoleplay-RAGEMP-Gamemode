@@ -155,9 +155,7 @@ namespace CloudRP.Authentication
 
         public void enterRegisterOtpStage(Player player, Register registeringData)
         {
-            string mutationName = "setUserOtp";
-
-            uiHandling.sendMutationToClient(player, mutationName, "toggle", true);
+            uiHandling.setAuthState(player, AuthStates.login);
 
             string otp = AuthUtils.generateString(4, true);
 
@@ -174,6 +172,80 @@ namespace CloudRP.Authentication
             AuthUtils.sendEmail(registeringData.registerEmail, "Cloud RP | OTP", AuthUtils.getEmailWithContext(otpContextEmail));
         }
 
+        [RemoteEvent("server:resetPasswordAuth")]
+        public void resetPasswordAuth(Player player, string emailAddress)
+        {
+            Ban ban = AdminUtils.checkPlayerIsBanned(player);
+            if (ban != null) return;
+
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                Account findAcc = dbContext.accounts.Where(acc => acc.email_address == emailAddress).FirstOrDefault();
+
+                if(findAcc != null)
+                {
+                    enterRegisterOtpStage(player, new Register
+                    {
+                        registerEmail = emailAddress,
+                    });
+                }
+
+                uiHandling.sendPushNotif(player, "If an account was found an OTP will be sent to the provided email.", 14000, false, false);
+                uiHandling.setLoadingState(player, false);
+                uiHandling.setAuthState(player, AuthStates.resettingPassword);
+            }
+        }
+
+        [RemoteEvent("server:resetPassword")]
+        public void resetPassword(Player player, string data)
+        {
+            if (data == null) return;
+            OtpStore playerOtpData = player.GetData<OtpStore>(_otpStoreKey);
+            if (playerOtpData == null) return;
+
+            ResetPass passReset = JsonConvert.DeserializeObject<ResetPass>(data);
+
+            if(passReset.otpCode != playerOtpData.otp || (CommandUtils.generateUnix() - playerOtpData.unixMade) > 180)
+            {
+                uiHandling.setAuthState(player, "");
+                uiHandling.sendPushNotifError(player, "The entered OTP was invalid.", 6000, true);
+                return;
+            }
+
+            if(playerOtpData.registeringData.registerEmail != null && passReset.password != null && passReset.passwordConfirm != null)
+            {
+                if(passReset.password != passReset.passwordConfirm || passReset.password.Length <= 0)
+                {
+                    uiHandling.sendPushNotifError(player, "Ensure passwords match", 5000, true);
+                    return;
+                }
+
+                using(DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    Account find = dbContext.accounts.Where(acc => acc.email_address == playerOtpData.registeringData.registerEmail).FirstOrDefault();
+
+                    if (find == null)
+                    {
+                        uiHandling.sendPushNotifError(player, "An error occured during this process.", 5000, true);
+                        uiHandling.setAuthState(player, "");
+                        return;
+                    }
+
+                    string newHash = AuthUtils.hashPasword(passReset.password);
+
+                    find.password = newHash;
+
+
+                    uiHandling.sendPushNotif(player, "You have reset your password!", 6000, false, false);
+                    dbContext.Update(find);
+                    dbContext.SaveChanges();
+                }
+            }
+
+            uiHandling.setAuthState(player, "");
+            uiHandling.setLoadingState(player, false);
+        }
+
         [RemoteEvent("server:authRecieveOtp")]
         public void recieveAuthOtp(Player player, string otpCode)
         {
@@ -181,7 +253,7 @@ namespace CloudRP.Authentication
             OtpStore playerOtpStore = player.GetData<OtpStore>(_otpStoreKey);
             if(playerOtpStore == null || playerOtpStore.registeringData == null)
             {
-                uiHandling.sendMutationToClient(player, "setUserOtp", "toggle", false);
+                uiHandling.setAuthState(player, AuthStates.otp);
 
                 return;
             }
@@ -192,7 +264,7 @@ namespace CloudRP.Authentication
 
             if(playerOtpStore.otpTries > 15)
             {
-                uiHandling.sendMutationToClient(player, "setUserOtp", "toggle", false);
+                uiHandling.setAuthState(player, AuthStates.login);
 
                 uiHandling.sendPushNotifError(player, "You entered the wrong OTP code too many times.", 7500);
                 return;
@@ -204,18 +276,11 @@ namespace CloudRP.Authentication
                 return;
             }
 
-            string mutationName = "setUserOtp";
-
-            uiHandling.sendMutationToClient(player, mutationName, "toggle", false);
-
             if(playerOtpStore.registeringData != null)
             {
                 createAccount(player, playerOtpStore.registeringData);
                 return;
             }
-            
-
-
         }
 
         public static void createAccount(Player player, Register registeringData)

@@ -20,6 +20,7 @@ const store = new Vuex.Store({
 		},
 		uiStates: {
 			characterSelection: false,
+			authenticationState: "",
 			chatEnabled: true,
 			guiEnabled: false,
 			serverLoading: false,
