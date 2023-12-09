@@ -208,8 +208,6 @@ namespace CloudRP.DeathSystem
 
             Corpse corpse = JsonConvert.DeserializeObject<Corpse>(corpseFromClient);
 
-            Console.WriteLine(CommandUtils.generateUnix() + " " + corpse.unixCreated + " " + _pedTimeout_seconds);
-
             if((CommandUtils.generateUnix() - corpse.unixCreated) > _pedTimeout_seconds)
             {
                 removeCorpse(corpse);

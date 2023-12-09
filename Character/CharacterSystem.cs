@@ -83,7 +83,7 @@ namespace CloudRP.Character
                 characterData.play_time_seconds += 5;
                 characterData.player_exp += 1;
 
-                if(!userData.adminDuty && ((characterData.character_hunger - _characterHungerRemover) > 0 || (characterData.character_water - _characterWaterRemover) > 0))
+                if(characterData.injured_timer == 0 && !userData.adminDuty && ((characterData.character_hunger - _characterHungerRemover) > 0 || (characterData.character_water - _characterWaterRemover) > 0))
                 {
                     if (characterData.character_water > 0 && (characterData.character_water - _characterWaterRemover) > 0)
                     {

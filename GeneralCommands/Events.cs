@@ -20,7 +20,7 @@ namespace CloudRP.GeneralCommands
             User user = PlayersData.getPlayerAccountData(player);
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
-            if (user != null && characterData != null && !user.adminDuty)
+            if (user != null && characterData != null && !user.adminDuty && characterData.injured_timer == 0)
             {
                 Random ran = new Random();
                 int numOne = ran.Next(1, afkMaxCalcNum);
