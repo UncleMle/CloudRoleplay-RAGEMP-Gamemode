@@ -199,8 +199,13 @@ namespace CloudRP.Utils
         {
             using(DefaultDbContext dbContext = new DefaultDbContext())
             {
-                Account account = dbContext.accounts.Where(acc => acc.username == username).FirstOrDefault();   
-                Ban ban = dbContext.bans.Where(findBan => findBan.username == username).FirstOrDefault();
+                Account account = dbContext.accounts
+                    .Where(acc => acc.username == username)
+                    .FirstOrDefault();   
+
+                Ban ban = dbContext.bans
+                    .Where(findBan => findBan.username == username)
+                    .FirstOrDefault();
 
                 if (account != null && ban != null)
                 {

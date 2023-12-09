@@ -302,8 +302,14 @@ namespace CloudRP.Admin
 
             if (userData == null || characterData == null) return;
 
-            Report report = activeReports.Where(rep => rep.playerReporting == player).FirstOrDefault();
-            Report handlingReport = activeReports.Where(rep => rep.adminsHandling.ContainsKey(player)).FirstOrDefault();
+            Report report = activeReports
+                .Where(rep => rep.playerReporting == player)
+                .FirstOrDefault();
+            
+            Report handlingReport = activeReports
+                .Where(rep => rep.adminsHandling
+                .ContainsKey(player))
+                .FirstOrDefault();
 
             if(handlingReport != null)
             {
@@ -1109,19 +1115,6 @@ namespace CloudRP.Admin
                 AdminUtils.sendMessageToAllStaff($"{userData.adminName} set {findPlayerCharData.character_name}'s admin level to {setAdminRank}");
             
             } else AdminUtils.sendNoAuth(player);
-        }
-
-        [Command("charcreate")]
-        public void charCreation(Player player)
-        {
-            User userData = PlayersData.getPlayerAccountData(player);
-
-            if(userData.adminLevel > 7)
-            {
-                uiHandling.togglePlayerChat(player, false);
-                uiHandling.pushRouterToClient(player, Browsers.CharacterCreation);
-
-            }
         }
 
         [Command("sendtoinsurance", "~r~/sendtoinsurance [plateOrId]", Alias = "sentov")]

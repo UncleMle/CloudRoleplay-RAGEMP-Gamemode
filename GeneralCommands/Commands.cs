@@ -230,7 +230,9 @@ namespace CloudRP.GeneralCommands
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
-                Nickname nicknameExisting = dbContext.nicknames.Where(nick => nick.owner_id == characterData.character_id && nick.target_character_id == findCharData.character_id).FirstOrDefault();
+                Nickname nicknameExisting = dbContext.nicknames
+                    .Where(nick => nick.owner_id == characterData.character_id && nick.target_character_id == findCharData.character_id)
+                    .FirstOrDefault();
 
                 if (nicknameExisting != null)
                 {

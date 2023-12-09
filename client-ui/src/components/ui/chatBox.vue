@@ -2,7 +2,8 @@
     <div v-if="getUiStates.chatEnabled" class="duration-300" :class="!showing ? 'opacity-40' : ''">
         <div id="chat">
             <ul id="chat_messages">
-                <li v-for="item in chatMessages" :key="Math.floor(Math.random() * 2000) + item" v-html="item.toString()">
+                <li v-for="item in chatMessages" :key="Math.floor(Math.random() * 2000) + item"
+                    v-html="item.toString()">
                 </li>
             </ul>
             <input v-show="inputFieldShowing" v-model="userText" ref="input" id="chat_msg" type="text" />
@@ -116,7 +117,7 @@ export default {
             }
         },
         push(text) {
-            this.chatMessages.unshift(text);
+            this.chatMessages.unshift(`<span class='text-gray-400 opacity-80'>${this.getTimeFormatted()} |</span> `+text);
         },
         setCaretPosition(elemId, caretPos) {
             var elem = document.getElementById(elemId);
@@ -136,6 +137,18 @@ export default {
                         elem.focus();
                 }
             }
+        },
+        getTimeFormatted() {
+            const timeNow = new Date();
+            const h = timeNow.getHours();
+            const m = timeNow.getMinutes();
+
+            let addZero = (num) => {
+                return num <= 9 ? "0" + num : num;
+            }
+
+            let formatted = `${addZero(h)}:${addZero(m)}`;
+            return formatted;
         }
     },
     created() {
@@ -236,10 +249,6 @@ html {
     background-color: rgba(0, 0, 0, 0.425);
     color: white;
     outline: none;
-    border-left: none;
-    border-right: none;
-    border-top: none;
-    border-bottom: none;
     width: 800px;
     height: 3.12em;
     padding: 0 0.5em 0 0.5em;

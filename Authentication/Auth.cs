@@ -336,9 +336,13 @@ namespace CloudRP.Authentication
             {
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
-                    DbCharacter character = dbContext.characters.Where(b => b.character_name == name && b.owner_id == userData.accountId).FirstOrDefault();
+                    DbCharacter character = dbContext.characters
+                        .Where(b => b.character_name == name && b.owner_id == userData.accountId)
+                        .FirstOrDefault();
                     if (character == null || character?.character_isbanned == 1) return;
-                    CharacterModel charModel = dbContext.character_models.Where(charModel => charModel.owner_id == character.character_id).FirstOrDefault();
+                    CharacterModel charModel = dbContext.character_models
+                        .Where(charModel => charModel.owner_id == character.character_id)
+                        .FirstOrDefault();
                     if(charModel == null) return;
 
                     character.characterModel = charModel;
@@ -368,7 +372,9 @@ namespace CloudRP.Authentication
                         collectedAutoLoginKeys.Add(player, autoLoginKey);
                     }
 
-                    findAccount = dbContext.accounts.Where(acc => acc.user_ip == player.Address && acc.auto_login == 1 && acc.auto_login_key == autoLoginKey && acc.client_serial == player.Serial && acc.ban_status == 0).FirstOrDefault();
+                    findAccount = dbContext.accounts
+                        .Where(acc => acc.user_ip == player.Address && acc.auto_login == 1 && acc.auto_login_key == autoLoginKey && acc.client_serial == player.Serial && acc.ban_status == 0)
+                        .FirstOrDefault();
 
 
                     if (findAccount == null) return;
