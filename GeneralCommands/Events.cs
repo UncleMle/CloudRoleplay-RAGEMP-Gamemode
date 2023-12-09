@@ -38,7 +38,7 @@ namespace CloudRP.GeneralCommands
                 {
                     if (player != null && player.GetData<AfkData>(_afkKeyIdentifier) != null)
                     {
-                        player.Kick("Kicked by AFK script.");
+                        player.Kick("Kicked for afk by system.");
                     }
                 }, kickTime_seconds * 1000);
             }

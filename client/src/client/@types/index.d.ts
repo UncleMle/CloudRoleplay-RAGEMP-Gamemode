@@ -219,3 +219,28 @@ export interface Corpse {
 	position: Vector3,
 	unixCreated: number
 }
+
+export interface ClothingData {
+	clothing_id: number;
+	character_id: number;
+	mask: number;
+	mask_texture: number;
+	torso: number;
+	torso_texture: number;
+	leg: number;
+	leg_texture: number;
+	bags: number;
+	bag_texture: number;
+	shoes: number;
+	shoes_texture: number;
+	access: number;
+	access_texture: number;
+	undershirt: number;
+	undershirt_texture: number;
+	armor: number;
+	armor_texture: number;
+	decals: number;
+	decals_texture: number;
+	top: number;
+	top_texture: number;
+  }

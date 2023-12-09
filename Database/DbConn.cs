@@ -19,7 +19,6 @@ namespace CloudRP.Database
 
         private string connectionString = Env._databaseConnectionString;
 
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseMySql(connectionString);
@@ -32,6 +31,7 @@ namespace CloudRP.Database
         public DbSet<CharacterModel> character_models { get; set; }
         public DbSet<CharacterConnection> server_connections { get; set; }
         public DbSet<Nickname> nicknames { get; set; }
+        public DbSet<CharacterClothing> character_clothes { get; set; }
 
     }
 

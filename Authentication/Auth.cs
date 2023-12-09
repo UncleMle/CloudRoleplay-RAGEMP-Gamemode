@@ -345,10 +345,14 @@ namespace CloudRP.Authentication
                         .FirstOrDefault();
                     if(charModel == null) return;
 
+                    CharacterClothing charClothing = dbContext.character_clothes
+                        .Where(clothes => clothes.character_id ==  character.character_id)
+                        .FirstOrDefault();
+
                     character.characterModel = charModel;
 
                     ChatUtils.charSysPrint($"Character {character.character_name} has logged in (#{character.character_id})");
-                    PlayersData.setPlayerCharacterData(player, character);
+                    PlayersData.setPlayerCharacterData(player, character, charClothing);
                     DiscordUtils.creationConnection(player, character, LogCreation.Join);
 
                     welcomeAndSpawnPlayer(player, userData, character);

@@ -1,0 +1,41 @@
+import { ClothingData } from "@/@types";
+import { _sharedClothingDataIdentifier } from "@/Constants/Constants";
+import getClothingData from "@/PlayerMethods/getClothingData";
+
+class Clothing {
+
+    constructor() {
+        mp.events.add("entityStreamIn", Clothing.handleStreamIn);
+        mp.events.addDataHandler(_sharedClothingDataIdentifier, Clothing.handleStreamIn);
+    }
+
+    public static handleDataHandler(entity: PlayerMp, clothingData: ClothingData) {
+        if(entity.type == "player" && clothingData) {
+            Clothing.setClothingData(entity, clothingData);
+        }
+    }
+
+    public static handleStreamIn(entity: PlayerMp) {
+        if(entity.type == "player" || entity.type != "ped") {
+            let clothingData: ClothingData | undefined = getClothingData(entity);
+            if(!clothingData) return;
+
+            Clothing.setClothingData(entity, clothingData);
+        }
+    }
+
+    public static setClothingData(entity: PlayerMp | PedMp, clothingData: ClothingData) {
+        entity.setComponentVariation(1, clothingData.mask, clothingData.mask_texture, 0);
+        entity.setComponentVariation(3, clothingData.torso, clothingData.torso_texture, 0);
+        entity.setComponentVariation(4, clothingData.leg, clothingData.leg_texture, 0);
+        entity.setComponentVariation(5, clothingData.leg, clothingData.leg_texture, 0);
+        entity.setComponentVariation(6, clothingData.shoes, clothingData.shoes_texture, 0);
+        entity.setComponentVariation(7, clothingData.access, clothingData.access_texture, 0);
+        entity.setComponentVariation(8, clothingData.undershirt, clothingData.undershirt_texture, 0);
+        entity.setComponentVariation(9, clothingData.armor, clothingData.armor_texture, 0);
+        entity.setComponentVariation(10, clothingData.decals, clothingData.decals_texture, 0);
+        entity.setComponentVariation(11, clothingData.top, clothingData.top_texture, 0);
+    }
+}
+
+export default Clothing;

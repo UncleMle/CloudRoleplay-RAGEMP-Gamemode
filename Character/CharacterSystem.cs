@@ -184,7 +184,13 @@ namespace CloudRP.Character
 
                 createdCharacterModel.owner_id = newCharacter.character_id;
 
+                CharacterClothing newClothing = new CharacterClothing
+                {
+                    character_id = newCharacter.character_id
+                };
+
                 dbContext.character_models.Add(createdCharacterModel);
+                dbContext.character_clothes.Add(newClothing);
                 dbContext.SaveChanges();
             }
 

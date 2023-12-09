@@ -16,6 +16,7 @@ namespace CloudRP.PlayerData
         private static readonly string _sharedCharacterDataIdentifier = "PlayerCharacterData";
         private static readonly string _characterModelData = "PlayerCharacterModelData";
         private static string _characterFoodAndWaterKey = "characterWaterAndHunger";
+        private static string _characterClothesKey = "characterClothing";
 
         public static void setPlayerAccountData(Player player, User userData)
         {
@@ -40,7 +41,7 @@ namespace CloudRP.PlayerData
             player.SetSharedData(_sharedAccountDataIdentifier, data);
         }
 
-        public static void setPlayerCharacterData(Player player, DbCharacter character, bool resyncModel = true)
+        public static void setPlayerCharacterData(Player player, DbCharacter character, CharacterClothing clothes = null, bool resyncModel = true)
         {
             player.SetData(_sharedCharacterDataIdentifier, character);
 
@@ -56,6 +57,11 @@ namespace CloudRP.PlayerData
 
             setCharacterHungerAndThirst(player, character.character_hunger, character.character_water);
 
+            if(clothes != null)
+            {
+                setCharacterClothes(player, clothes);
+            }
+
             player.SetData(_characterModelData, character.characterModel);
             player.SetSharedData(_sharedCharacterDataIdentifier, data);
         }
@@ -67,6 +73,11 @@ namespace CloudRP.PlayerData
                 hunger = hunger,
                 water = water
             });
+        }
+        
+        public static void setCharacterClothes(Player player, CharacterClothing clothes)
+        {
+            player.SetSharedData(_characterClothesKey, clothes);
         }
 
         public static CharacterModel getCharacterModelData(Player player)

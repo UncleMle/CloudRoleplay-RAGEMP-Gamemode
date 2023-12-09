@@ -44,7 +44,6 @@ class PlayerAuthentication {
 		mp.events.add("client:loginCameraStart", PlayerAuthentication.handleCameraStart);
 		mp.events.add("client:setAuthKey", PlayerAuthentication.setAuthenticationKey);
 		mp.events.add("consoleCommand", PlayerAuthentication.consoleCommand);
-
 	}
 
 	public static handleUnauthed() {
