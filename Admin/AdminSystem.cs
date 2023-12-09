@@ -717,7 +717,7 @@ namespace CloudRP.Admin
             else AdminUtils.sendNoAuth(player);
         }
 
-        [Command("gcv", "~r~/gcv [Vehicle ID or vehicle]")]
+        [Command("gcv", "~r~/gcv")]
         public void getVehicleInfo(Player player)
         {
             User userData = PlayersData.getPlayerAccountData(player);
@@ -728,7 +728,7 @@ namespace CloudRP.Admin
 
                 if(findVeh != null)
                 {
-                    DbVehicle currentVehicleData = VehicleSystem.getVehicleData(player.Vehicle);
+                    DbVehicle currentVehicleData = VehicleSystem.getVehicleData(findVeh);
 
                     if (currentVehicleData != null)
                     {

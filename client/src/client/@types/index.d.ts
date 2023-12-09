@@ -131,7 +131,8 @@ export interface Gui {
 	unix: number,
 	zoneName: string,
 	zoneNameTwo: string,
-	fps: number
+	fps: number,
+	voiceMuted: boolean
 }
 
 export interface Flight {

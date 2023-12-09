@@ -39,6 +39,15 @@
                         playerData.player_data_gui.zoneNameTwo : "" }}</span>
                 </font>
             </div>
+            <div>
+                <font>
+                    <span>
+                        <i v-if="playerData.player_data_gui.voiceMuted" class="fa-solid fa-microphone-slash text-red-400"></i>
+                        <i v-if="!playerData.player_data_gui.voiceMuted" class="fa-solid fa-microphone text-green-400"></i>
+                        <i class="fa-solid fa-walkie-talkie text-red-400 ml-2"></i>
+                    </span>
+                </font>
+            </div>
         </div>
     </div>
 </template>

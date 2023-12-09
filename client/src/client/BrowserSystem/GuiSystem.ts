@@ -4,9 +4,7 @@ import getUserCharacterData from '../PlayerMethods/getUserCharacterData';
 import getUserData from '../PlayerMethods/getUserData';
 import BrowserSystem from './BrowserSystem';
 import { getWaterAndHungerData } from '@/PlayerMethods/getWaterAndHungerData';
-import setGuiState from '@/PlayerMethods/setGuiState';
 import getTimeUnix from '@/PlayerMethods/getTimeUnix';
-import AntiCheat from '@/AntiCheat/AntiCheatSystem';
 
 class GuiSystem {
 	public static LocalPlayer: PlayerMp;
@@ -32,7 +30,8 @@ class GuiSystem {
 			unix: getTimeUnix(),
 			zoneName: streetData.zoneName,
 			zoneNameTwo: streetData.zoneTwo,
-			fps: GuiSystem.LocalPlayer.fps
+			fps: GuiSystem.LocalPlayer.fps,
+			voiceMuted: mp.voiceChat.muted
 		}
 
 		if(mp.game.invoke(IS_RADAR_ENABLED) && !mp.game.invoke(IS_RADAR_HIDDEN)) {
