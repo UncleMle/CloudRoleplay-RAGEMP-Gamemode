@@ -83,18 +83,18 @@ namespace CloudRP.Character
                 characterData.play_time_seconds += 5;
                 characterData.player_exp += 1;
 
-                if(characterData.character_water > 0 && (characterData.character_water - _characterWaterRemover) > 0)
+                if(!userData.adminDuty && ((characterData.character_hunger - _characterHungerRemover) > 0 || (characterData.character_water - _characterWaterRemover) > 0))
                 {
-                    characterData.character_water -= _characterWaterRemover;
-                }
-                
-                if(characterData.character_hunger > 0 && (characterData.character_hunger - _characterHungerRemover) > 0)
-                {
-                    characterData.character_hunger -= _characterHungerRemover;
-                }
+                    if (characterData.character_water > 0 && (characterData.character_water - _characterWaterRemover) > 0)
+                    {
+                        characterData.character_water -= _characterWaterRemover;
+                    }
 
-                if(characterData.character_hunger > 0 && (characterData.character_hunger - _characterHungerRemover) > 0 || characterData.character_water > 0 && (characterData.character_water - _characterWaterRemover) > 0)
-                {
+                    if (characterData.character_hunger > 0 && (characterData.character_hunger - _characterHungerRemover) > 0)
+                    {
+                        characterData.character_hunger -= _characterHungerRemover;
+                    }
+
                     PlayersData.setCharacterHungerAndThirst(player, characterData.character_hunger, characterData.character_water);
                 }
 

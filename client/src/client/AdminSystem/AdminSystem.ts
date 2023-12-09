@@ -1,6 +1,6 @@
 import { AdminRanks } from "@/enums";
 import { UserData } from "../@types";
-import { _TEXT_R_WHITE, _control_ids, _sharedCharacterDataIdentifier } from '../Constants/Constants';
+import { _TEXT_R_WHITE, _control_ids, _sharedAccountDataIdentifier, _sharedCharacterDataIdentifier } from '../Constants/Constants';
 import getTargetData from "../PlayerMethods/getTargetData";
 import getUserData from "../PlayerMethods/getUserData";
 
@@ -11,13 +11,11 @@ class AdminSystem {
 
 	constructor() {
 		AdminSystem.LocalPlayer = mp.players.local;
-
-
 		mp.keys.bind(_control_ids.F9, false, AdminSystem.viewActiveReports);
 
 		mp.events.add("render", AdminSystem.renderTextOnScreen);
 		mp.events.add("entityStreamIn", AdminSystem.handleEntityStream);
-		mp.events.addDataHandler('PlayerAccountData', AdminSystem.handleFlyStart);
+		mp.events.addDataHandler(_sharedAccountDataIdentifier, AdminSystem.handleFlyStart);
 	}
 
 	public static viewActiveReports() {
@@ -69,11 +67,6 @@ class AdminSystem {
 		let streamedEntityData: UserData | undefined = getTargetData(entity as PlayerMp);
 
 		if (!streamedEntityData) return;
-
-		if (streamedEntityData?.isFlying) {
-			entity.setAlpha(0);
-		}
-
 	}
 
 }

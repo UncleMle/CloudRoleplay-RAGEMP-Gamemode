@@ -3,6 +3,7 @@ using CloudRP.PlayerData;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace CloudRP.Utils
@@ -21,33 +22,34 @@ namespace CloudRP.Utils
             {
                 DbCharacter characterData = PlayersData.getPlayerCharacterData(findPlayer);
 
-                if (characterData == null) break;
-
-                string findPlayerCharacterName = characterData.character_name.ToLower();
-                int? findPlayerId = tryParse(nameOrId);
-
-                if(findPlayerId != null && findPlayerId == findPlayer.Id)
+                if (characterData != null)
                 {
-                    returnPlayer = findPlayer;
-                    break;
-                }
+                    string findPlayerCharacterName = characterData.character_name.ToLower();
+                    int? findPlayerId = tryParse(nameOrId);
 
-                string nameFind = nameOrId.ToLower();
+                    if (findPlayerId != null && findPlayerId == findPlayer.Id)
+                    {
+                        returnPlayer = findPlayer;
+                    }
 
-                if(nameFind == findPlayerCharacterName)
-                {
-                    returnPlayer = findPlayer;
-                    break;  
-                }
-                
-                string lname = findPlayerCharacterName.Split("_")[1];
-                string fname = findPlayerCharacterName.Split("_")[0];
+                    if(returnPlayer == null)
+                    {
+                        string nameFind = nameOrId.ToLower();
+
+                        if (nameFind == findPlayerCharacterName)
+                        {
+                            returnPlayer = findPlayer;
+                        }
+
+                        string lname = findPlayerCharacterName.Split("_")[1];
+                        string fname = findPlayerCharacterName.Split("_")[0];
 
 
-                if (nameFind == fname || nameFind == lname)
-                {
-                    returnPlayer = findPlayer;
-                    break;
+                        if (nameFind == fname || nameFind == lname)
+                        {
+                            returnPlayer = findPlayer;
+                        }
+                    }
                 }
             }
 
