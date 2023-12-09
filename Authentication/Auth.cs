@@ -359,7 +359,7 @@ namespace CloudRP.Authentication
         [RemoteEvent("server:handlePlayerJoining")]
         public void onPlayerJoin(Player player, string autoLoginKey)
         {
-            if(autoLoginKey != null)
+            if(autoLoginKey != null && PlayersData.getPlayerAccountData(player) == null)
             {
                 Account findAccount = null;
 
@@ -439,7 +439,7 @@ namespace CloudRP.Authentication
 
             PlayersData.setPlayerAccountData(player, userData);
 
-            Console.WriteLine($"{userData.username} (#{userData.accountId}) has entered character selection process.");
+            ChatUtils.charSysPrint($"{userData.username} (#{userData.accountId}) has entered character selection process.");
 
             CharacterSystem.fillCharacterSelectionTable(player, userData);
         }

@@ -23,8 +23,8 @@ namespace CloudRP.GeneralCommands
             if (user != null && characterData != null && !user.adminDuty)
             {
                 Random ran = new Random();
-                int numOne = ran.Next(0, afkMaxCalcNum);
-                int numTwo = ran.Next(0, afkMaxCalcNum);
+                int numOne = ran.Next(1, afkMaxCalcNum);
+                int numTwo = ran.Next(1, afkMaxCalcNum);
 
                 player.SetData(_afkKeyIdentifier, new AfkData
                 {

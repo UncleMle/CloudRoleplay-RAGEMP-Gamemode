@@ -38,7 +38,6 @@ class PlayerAuthentication {
 
 		mp.events.add("render", PlayerAuthentication.handleUnauthed);
 		mp.events.add("playerReady", PlayerAuthentication.handleLoginStart);
-		mp.events.add("client:loginStart", PlayerAuthentication.handleLoginStart);
 		mp.events.add("client:loginEnd", PlayerAuthentication.endClientLogin);
 		mp.events.add("client:setCharacterCreation", PlayerAuthentication.setCharacterCreation);
 		mp.events.add("client:setBackToSelection", PlayerAuthentication.setBackToCharacterSelection);
