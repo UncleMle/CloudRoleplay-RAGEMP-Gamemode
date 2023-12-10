@@ -1,10 +1,10 @@
 <template>
     <div id="app">
         <ChatBox class="absolute" />
+        <InventoryHud />
         <PushNotification class="bg-red-200" ref="notification" />
         <VehicleSpeedo v-if="uiStates.guiEnabled" />
         <PlayerHud v-if="uiStates.guiEnabled" />
-
         <router-view class="absolute" ref="routers">
         </router-view>
     </div>
@@ -12,6 +12,7 @@
 
 <script>
 import ChatBox from "./components/ui/ChatBox.vue";
+import InventoryHud from "./components/hud/InventoryHud.vue";
 import PushNotification from "./components/ui/PushNotification.vue";
 import PlayerHud from "./components/hud/PlayerHud.vue";
 import VehicleSpeedo from "./components/hud/VehicleSpeedo.vue";
@@ -23,7 +24,8 @@ export default {
         ChatBox,
         PushNotification,
         VehicleSpeedo,
-        PlayerHud
+        PlayerHud,
+        InventoryHud
     },
     computed: {
         ...mapGetters({
