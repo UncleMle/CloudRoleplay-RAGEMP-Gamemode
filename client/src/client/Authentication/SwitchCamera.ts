@@ -12,8 +12,8 @@ class SwitchCamera {
 		mp.events.add("client:moveSkyCamera", SwitchCamera.moveCameraFromAir);
 	}
 
-	public static moveCameraFromAir(moveTo: string, switchType: number, triggerWelcome = true) {
-		mp.console.logInfo("Switch trigger type " + triggerWelcome);
+	public static async moveCameraFromAir(moveTo: string, switchType: number, triggerWelcome = true) {
+		mp.game.cam.doScreenFadeOut(0);
 		switch (moveTo) {
 			case 'up':
 				mp.game.invoke(_SWITCH_OUT_PLAYER_NATIVE, SwitchCamera.LocalPlayer.handle, 0, switchType);
@@ -25,6 +25,10 @@ class SwitchCamera {
 			default:
 				break;
 		}
+
+		await mp.game.waitAsync(2500);
+
+		mp.game.cam.doScreenFadeIn(500);
 	}
 
 	public static async checkCamInAir(triggerWelcome: boolean) {
