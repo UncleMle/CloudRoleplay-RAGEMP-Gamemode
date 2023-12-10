@@ -113,7 +113,7 @@ namespace CloudRP.ClothingStores
                     return;
                 }
 
-                if((characterData.money_amount -= 300) <= 0)
+                if((characterData.money_amount - 300) <= 0)
                 {
                     uiHandling.sendPushNotifError(player, "You do not have enough money to cover this purchase.", 5500, true);
                     return;

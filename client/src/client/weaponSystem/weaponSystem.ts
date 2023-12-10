@@ -1,13 +1,31 @@
 class WeaponSystem {
-    constructor() {
+    public static _switchAnimIdentifer: string = "weaponSwitchAnim";
 
-        mp.events.add("playerWeaponShot", WeaponSystem.applyWeaponRecoil);
+    constructor() {
+        mp.events.addDataHandler(WeaponSystem._switchAnimIdentifer, WeaponSystem.handleDataHandler);
+        mp.events.add("entityStreamIn", WeaponSystem.handleStreamIn);
     }
 
-    public static applyWeaponRecoil() {
-        // mp.game.cam.shakeGameplayCam('SMALL_EXPLOSION_SHAKE', 0.021);
-        // const campos = mp.game.cam.getGameplayCamRot(0);
-        // mp.game.cam.setGameplayCamRelativePitch(campos.x + 0.29, campos.y + 0.25);
+    public static handleStreamIn(entity: PlayerMp) {
+        if(entity.type != "player") return;
+
+        if(entity.getVariable(WeaponSystem._switchAnimIdentifer)) {
+            WeaponSystem.playSwitchAnim(entity);
+        }
+    }
+
+    public static handleDataHandler(entity: PlayerMp, data: boolean) {
+        if(entity.type == "player" && data) {
+            WeaponSystem.playSwitchAnim(entity);
+        }
+    }
+
+    public static async playSwitchAnim(player: PlayerMp) {
+        mp.game.streaming.requestAnimDict('reaction@intimidation@1h')
+        player.taskPlayAnim('reaction@intimidation@1h', 'intro', 8.0, 1.0, 1110.0, 0 + 32 + 16, 0.0, false, false, false)
+
+        await mp.game.waitAsync(2500);
+        player.clearTasks();
     }
 }
 

@@ -24,12 +24,12 @@ class AdminEvents {
 	}
 
 	public static teleportWaypoint() {
-		const waypoint = mp.game.ui.getFirstBlipInfoId(8);
+		const waypoint: number = mp.game.ui.getFirstBlipInfoId(8);
 		if (!mp.game.ui.doesBlipExist(waypoint)) return NotificationSystem.createNotification("~r~You do not have a waypoint set.", false);
-		const waypointPos = mp.game.ui.getBlipInfoIdCoord(waypoint);
+		const waypointPos: Vector3 = mp.game.ui.getBlipInfoIdCoord(waypoint);
 		if (!waypointPos) return NotificationSystem.createNotification("~r~You cannot teleport to this area.", false);
 
-		let zCoord = mp.game.gameplay.getGroundZFor3dCoord(waypointPos.x, waypointPos.y, waypointPos.z, false, false);
+		let zCoord: number = mp.game.gameplay.getGroundZFor3dCoord(waypointPos.x, waypointPos.y, waypointPos.z, false, false);
 		if (!zCoord) {
 			for (let i = 1000; i >= 0; i -= 25) {
 				mp.game.streaming.requestCollisionAtCoord(waypointPos.x, waypointPos.y, i);
