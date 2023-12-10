@@ -22,10 +22,10 @@ export class MutationKeys {
 }
 
 export class Browsers {
-	public static readonly Login: string = "login";
-	public static readonly Stats: string = "stats";
-	public static readonly Ban: string = "Ban";
-	public static readonly CharCreation: string = "charcreation";
-	public static readonly Reports: string = "reports";
-	public static readonly Clothing: string = "clothing";
+	public static readonly Login: string = "/login";
+	public static readonly Stats: string = "/stats";
+	public static readonly Ban: string = "/ban";
+	public static readonly CharCreation: string = "/charcreation";
+	public static readonly Reports: string = "/reports";
+	public static readonly Clothing: string = "/clothing";
 }

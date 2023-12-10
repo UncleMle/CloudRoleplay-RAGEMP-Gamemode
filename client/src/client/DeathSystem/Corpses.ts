@@ -119,7 +119,7 @@ class Corpses {
 		ped.setProofs(false, false, false, false, false, false, false, false);
 		ped.taskPlayAnim('dead', 'dead_a', 8.0, 0, 600, 1, 1.0, false, false, false);
 
-		Clothing.setClothingData(ped, corpseData.clothes);
+		Clothing.setClothingData(corpseData.clothes, false, ped);
 		CharacterSystem.setCharacterCustomization(corpseData.model, false, ped);
 	}
 }

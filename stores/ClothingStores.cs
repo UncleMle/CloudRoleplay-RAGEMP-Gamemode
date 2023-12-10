@@ -36,8 +36,7 @@ namespace CloudRP.ClothingStores
                 clothingStores[i].id = i;
                 ColShape clothingColShape = NAPI.ColShape.CreateCylinderColShape(clothingStores[i].position, 1.0f, 1.0f);
                 NAPI.TextLabel.CreateTextLabel($"{clothingStores[i].displayName} ~y~Y~w~ to interact", clothingStores[i].position, 20f, 1.0f, 4, new Color(255, 255, 255, 255), true);
-                clothingColShape.SetData(_clothingStoreIdentifier, clothingStores[i]);
-                Console.WriteLine("ID " + clothingStores[i].id);
+                setColShapeData(clothingColShape, clothingStores[i]);
             }
         }
 
@@ -59,6 +58,12 @@ namespace CloudRP.ClothingStores
             if(colShape.GetData<ClothingStore>(_clothingStoreIdentifier) != null)
             {
                 flushClothingStoreData(player);
+
+                DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+                if(charData != null)
+                {
+                    PlayersData.setCharacterClothes(player, charData.characterClothing);
+                }
             }
         }
 
@@ -70,6 +75,12 @@ namespace CloudRP.ClothingStores
 
             if (characterData != null && clothingData != null)
             {
+                if(clothingData.Equals(characterData.characterClothing))
+                {
+                    uiHandling.sendPushNotifError(player, "You haven't purchased anything.", 6600);
+                    return;
+                }
+
                 using(DefaultDbContext dbContext = new DefaultDbContext())
                 {
                     CharacterClothing findCharClothes = dbContext.character_clothes
@@ -79,9 +90,12 @@ namespace CloudRP.ClothingStores
                     if(findCharClothes != null)
                     {
                         characterData.characterClothing = clothingData;
-                        findCharClothes = clothingData;
+                        
+                        dbContext.character_clothes.Remove(findCharClothes);
+                        dbContext.SaveChanges();
 
-                        dbContext.character_clothes.Update(findCharClothes);
+                        clothingData.character_id = characterData.character_id;
+                        dbContext.character_clothes.Add(clothingData);
                         dbContext.SaveChanges();
 
                         PlayersData.setPlayerCharacterData(player, characterData);
@@ -105,6 +119,11 @@ namespace CloudRP.ClothingStores
             player.SetSharedData(_clothingStoreIdentifier, store);
         }
 
+        public static void setColShapeData(ColShape colShape, ClothingStore store)
+        {
+            colShape.SetData(_clothingStoreIdentifier, store);
+            colShape.SetSharedData(_clothingStoreIdentifier, store);
+        }
 
     }
 }

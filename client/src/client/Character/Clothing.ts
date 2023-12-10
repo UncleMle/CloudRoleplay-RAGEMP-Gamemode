@@ -22,16 +22,26 @@ class Clothing {
     }
 
     public static exitColHandle(colshape: ColshapeMp) {
+        mp.gui.chat.push(BrowserSystem.LocalPlayer.browserRouter);
         if(colshape.getVariable(Clothing._clothingStoreIdentifier) && BrowserSystem.LocalPlayer.browserRouter == Browsers.Clothing) {
-            BrowserSystem.pushRouter("/");
+            BrowserSystem.pushRouter("/", false);
         }
     }
 
     public static handleYPressed() {
         if(!Clothing.LocalPlayer.isTypingInTextChat) {
             let currentClothingStoreData: ClothingStore | undefined = Clothing.LocalPlayer.getVariable(Clothing._clothingStoreIdentifier);
+            let playerClothingData: ClothingData | undefined = getClothingData(Clothing.LocalPlayer);
 
-            if(currentClothingStoreData) {
+            if(currentClothingStoreData && playerClothingData) {
+                if(BrowserSystem._browserInstance) {
+                    BrowserSystem._browserInstance.execute(`appSys.commit('playerMutationSetter', {
+                        _mutationKey: "clothing_data",
+                        data: ${JSON.stringify(playerClothingData)}
+                    })`);
+
+                    mp.gui.chat.push(JSON.stringify(playerClothingData));
+                }
                 BrowserSystem.pushRouter(Browsers.Clothing);
             }
         }
@@ -39,14 +49,14 @@ class Clothing {
 
     public static handleDataHandlerAccount(entity: PlayerMp) {
         if(entity.type == "player" && getClothingData(entity)) {
-            Clothing.setClothingData(entity, getClothingData(entity) as ClothingData);
+            Clothing.setClothingData(getClothingData(entity) as ClothingData, false, entity);
         }
     }
 
     public static handleDataHandler(entity: PlayerMp, clothingData: ClothingData) {
         mp.console.logInfo("Triggered " + JSON.stringify(clothingData));
         if(entity.type == "player" && clothingData) {
-            Clothing.setClothingData(entity, clothingData);
+            Clothing.setClothingData(clothingData, false, entity);
         }
     }
 
@@ -59,23 +69,26 @@ class Clothing {
 
             if(!clothingData) return;
 
-            Clothing.setClothingData(entity, clothingData);
+            Clothing.setClothingData(clothingData, false, entity);
         }
     }
 
-    public static setClothingData(entity: PlayerMp | PedMp, clothingData: ClothingData) {
+    public static setClothingData(clothingData: any, parse: boolean, entity: PlayerMp | PedMp = Clothing.LocalPlayer) {
         if(!clothingData) return;
-        mp.console.logInfo("triggered setting clothing " + JSON.stringify(clothingData));
-        entity.setComponentVariation(1, clothingData.mask, clothingData.mask_texture, 0);
-        entity.setComponentVariation(3, clothingData.torso, clothingData.torso_texture, 0);
-        entity.setComponentVariation(4, clothingData.leg, clothingData.leg_texture, 0);
-        entity.setComponentVariation(5, clothingData.bags, clothingData.bag_texture, 0);
-        entity.setComponentVariation(6, clothingData.shoes, clothingData.shoes_texture, 0);
-        entity.setComponentVariation(7, clothingData.access, clothingData.access_texture, 0);
-        entity.setComponentVariation(8, clothingData.undershirt, clothingData.undershirt_texture, 0);
-        entity.setComponentVariation(9, clothingData.armor, clothingData.armor_texture, 0);
-        entity.setComponentVariation(10, clothingData.decals, clothingData.decals_texture, 0);
-        entity.setComponentVariation(11, clothingData.top, clothingData.top_texture, 0);
+        if(parse) {
+            clothingData = JSON.parse(clothingData as string);
+        }
+
+        entity.setComponentVariation(1, Number(clothingData.mask), Number(clothingData.mask_texture), 0);
+        entity.setComponentVariation(3, Number(clothingData.torso), Number(clothingData.torso_texture), 0);
+        entity.setComponentVariation(4, Number(clothingData.leg), Number(clothingData.leg_texture), 0);
+        entity.setComponentVariation(5, Number(clothingData.bags), Number(clothingData.bag_texture), 0);
+        entity.setComponentVariation(6, Number(clothingData.shoes), Number(clothingData.shoes_texture), 0);
+        entity.setComponentVariation(7, Number(clothingData.access), Number(clothingData.access_texture), 0);
+        entity.setComponentVariation(8, Number(clothingData.undershirt), Number(clothingData.undershirt_texture), 0);
+        entity.setComponentVariation(9, Number(clothingData.armor), Number(clothingData.armor_texture), 0);
+        entity.setComponentVariation(10, Number(clothingData.decals), Number(clothingData.decals_texture), 0);
+        entity.setComponentVariation(11, Number(clothingData.top), Number(clothingData.top_texture), 0);
     }
 }
 
