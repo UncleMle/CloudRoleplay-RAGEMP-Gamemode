@@ -1,5 +1,6 @@
 ﻿using CloudRP.Authentication;
 using CloudRP.Character;
+using CloudRP.Database;
 using CloudRP.Utils;
 using GTANetworkAPI;
 using Newtonsoft.Json;
@@ -41,7 +42,7 @@ namespace CloudRP.PlayerData
             player.SetSharedData(_sharedAccountDataIdentifier, data);
         }
 
-        public static void setPlayerCharacterData(Player player, DbCharacter character, bool resyncModel = true)
+        public static void setPlayerCharacterData(Player player, DbCharacter character, bool resyncModel = true, bool updateDb = false)
         {
             player.SetData(_sharedCharacterDataIdentifier, character);
 
@@ -61,6 +62,15 @@ namespace CloudRP.PlayerData
 
             player.SetData(_characterModelData, character.characterModel);
             player.SetSharedData(_sharedCharacterDataIdentifier, data);
+
+            if (updateDb)
+            {
+                using (DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    dbContext.Update(character);
+                    dbContext.SaveChanges();
+                }
+            }
         }
 
         public static void setCharacterHungerAndThirst(Player player, double hunger, double water)

@@ -385,7 +385,8 @@ namespace CloudRP.Authentication
 
                 using(DefaultDbContext dbContext = new DefaultDbContext())
                 {
-                    Account validateKey = dbContext.accounts.Where(acc => acc.auto_login_key == autoLoginKey).FirstOrDefault();
+                    Account validateKey = dbContext.accounts
+                        .Where(acc => acc.auto_login_key == autoLoginKey).FirstOrDefault();
 
                     if(validateKey != null && !collectedAutoLoginKeys.ContainsKey(player))
                     {

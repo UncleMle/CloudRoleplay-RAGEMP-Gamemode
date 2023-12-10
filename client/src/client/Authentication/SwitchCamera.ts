@@ -13,6 +13,7 @@ class SwitchCamera {
 	}
 
 	public static async moveCameraFromAir(moveTo: string, switchType: number, triggerWelcome = true) {
+		mp.gui.cursor.show(false, false);
 		mp.game.cam.doScreenFadeOut(0);
 		switch (moveTo) {
 			case 'up':

@@ -9,6 +9,7 @@ declare global {
 		__attachmentObjects: any;
 		__attMgrData: any;
 		_nickName: string;
+		guiState: boolean;
 	}
 
 	interface PedMp {

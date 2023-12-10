@@ -33,6 +33,7 @@ class GuiSystem {
 
 		if(browser) {
 			mp.game.ui.displayRadar(toggle);
+			GuiSystem.LocalPlayer.guiState = toggle;
 
 			browser.execute(`appSys.commit('setUiState', {
 				_stateKey: "guiEnabled",

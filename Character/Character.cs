@@ -16,28 +16,21 @@ namespace CloudRP.Character
 
         [Required]
         public int owner_id { get; set; }
-        [Required]
         public string character_name { get; set; }
-        [Required]
         public float position_x { get; set; } = PlayersData.defaultSpawnPosition.X;
-        [Required]
         public float position_y { get; set; } = PlayersData.defaultSpawnPosition.Y;
-        [Required]
         public float position_z { get; set; } = PlayersData.defaultSpawnPosition.Z;
-        [Required]
         public DateTime last_login { get; set; }
-        [Required]
         public int character_health { get; set; }
         public double character_water { get; set; } = 100;
         public double character_hunger { get; set; } = 100;
-        [Required]
         public int character_isbanned {  get; set; }
-        [Required]
         public int money_amount { get; set; } = 12000;
         public ulong play_time_seconds { get; set; }
         public uint player_dimension { get; set; }
         public ulong player_exp {  get; set; }
         public int injured_timer { get; set; }
+        
         [NotMapped]
         public bool voiceChatState { get; set; } = true;
         [NotMapped]

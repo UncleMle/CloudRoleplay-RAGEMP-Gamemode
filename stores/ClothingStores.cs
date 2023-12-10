@@ -1,4 +1,5 @@
 ﻿using CloudRP.Character;
+using CloudRP.ChatSystem;
 using CloudRP.Database;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
@@ -29,6 +30,24 @@ namespace CloudRP.ClothingStores
                 displayName = "Discount Clothing", 
                 name = "Discount Strawberry", 
                 position = new Vector3(75.5, -1392.8, 29.4)
+            });
+                        
+            clothingStores.Add(new ClothingStore { 
+                displayName = "Discount Clothing", 
+                name = "Discount Paleto", 
+                position = new Vector3(4.6, 6512.3, 31.9)
+            });
+            
+            clothingStores.Add(new ClothingStore { 
+                displayName = "Ponsonbys Clothing", 
+                name = "Ponsonbys Rockford Plaza", 
+                position = new Vector3(-163.4, -302.8, 39.7)
+            });
+            
+            clothingStores.Add(new ClothingStore { 
+                displayName = "Surburban Clothing", 
+                name = "Surburban Hawick Ave", 
+                position = new Vector3(125.4, -224.7, 54.6)
             });
 
             for (int i = 0; i < clothingStores.Count; i++)
@@ -94,6 +113,12 @@ namespace CloudRP.ClothingStores
                     return;
                 }
 
+                if((characterData.money_amount -= 300) <= 0)
+                {
+                    uiHandling.sendPushNotifError(player, "You do not have enough money to cover this purchase.", 5500, true);
+                    return;
+                }
+
                 using(DefaultDbContext dbContext = new DefaultDbContext())
                 {
                     CharacterClothing findCharClothes = dbContext.character_clothes
@@ -110,10 +135,11 @@ namespace CloudRP.ClothingStores
                         clothingData.character_id = characterData.character_id;
                         dbContext.character_clothes.Add(clothingData);
                         dbContext.SaveChanges();
-
-                        PlayersData.setPlayerCharacterData(player, characterData);
-
                         uiHandling.sendPushNotif(player, "You successfully purchase a new item of clothing.", 6600, false, false);
+
+                        characterData.money_amount -= 300;
+                        PlayersData.setPlayerCharacterData(player, characterData, false, true);
+                        CommandUtils.successSay(player, $"You purchased a new clothing item for {ChatUtils.moneyGreen}$300");
                     }
                 }
             }

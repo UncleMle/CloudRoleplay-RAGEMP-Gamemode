@@ -17,53 +17,28 @@ namespace CloudRP.Vehicles
 
         [Required]
         public int owner_id { get; set; }
-
-        [Required]
         public string vehicle_name { get; set; }
-
         public bool vehicle_locked { get; set; }
-
-        [Required]
         public uint vehicle_spawn_hash { get; set; }
-
-        [Required]
         public string numberplate { get; set; }
-
-        [Required]
         public float position_x { get; set; }
-
-        [Required]
         public float position_y { get; set; }
-
-        [Required]
         public float position_z { get; set; }
-
-        [Required]
         public float rotation { get; set;}
-
         public string vehicle_dimension { get; set; }
-
         public int vehicle_insurance_id { get; set; }
-
         public int vehicle_garage_id { get; set; }
-
         public double vehicle_fuel { get; set; } = 100;
-
         public ulong vehicle_distance { get; set; }
 
-        // In game
         [NotMapped]
         public bool[] vehicle_doors { get; set; } = new bool[] { false, false, false, false, false, false };
-
         [NotMapped]
         public bool[] vehicle_windows { get; set; } = new bool[] { false, false, false, false, false, false };
-
         [NotMapped]
         public bool engine_status {  get; set; }
-
         [NotMapped]
         public int indicator_status { get; set; } = -1;
-
         [NotMapped]
         public bool vehicle_siren { get; set; }
 

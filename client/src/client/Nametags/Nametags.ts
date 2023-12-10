@@ -109,12 +109,15 @@ class NameTags {
 
 				Target.isTypingInTextChat ? defaultTagContent += "\n ~m~(( Typing... ))~w~" : "";
 
-				mp.game.graphics.drawText(defaultTagContent, [x, Target.isTypingInTextChat ? y - 0.032 : y], {
-					font: 4,
-					color: [255, 255, 255, targetUserData.adminDuty ? 255 : 180],
-					scale: [0.325, 0.325],
-					outline: false
-				});
+
+				if(NameTags.LocalPlayer.guiState || targetUserData.adminDuty) {
+					mp.game.graphics.drawText(defaultTagContent, [x, Target.isTypingInTextChat ? y - 0.032 : y], {
+						font: 4,
+						color: [255, 255, 255, targetUserData.adminDuty ? 255 : 180],
+						scale: [0.325, 0.325],
+						outline: false
+					});
+				}
 			}
 		});
 	}
