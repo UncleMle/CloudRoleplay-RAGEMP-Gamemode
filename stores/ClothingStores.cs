@@ -34,8 +34,16 @@ namespace CloudRP.ClothingStores
             for (int i = 0; i < clothingStores.Count; i++)
             {
                 clothingStores[i].id = i;
-                ColShape clothingColShape = NAPI.ColShape.CreateCylinderColShape(clothingStores[i].position, 1.0f, 1.0f);
-                NAPI.TextLabel.CreateTextLabel($"{clothingStores[i].displayName} ~y~Y~w~ to interact", clothingStores[i].position, 20f, 1.0f, 4, new Color(255, 255, 255, 255), true);
+                Vector3 pos = clothingStores[i].position;
+                string name = clothingStores[i].name;
+                string dispName = clothingStores[i].displayName;
+
+                ColShape clothingColShape = NAPI.ColShape.CreateCylinderColShape(pos, 1.0f, 1.0f);
+                NAPI.TextLabel.CreateTextLabel($"{dispName} ~y~Y~w~ to interact", pos, 10f, 1.0f, 4, new Color(255, 255, 255, 255), true);
+
+                NAPI.Blip.CreateBlip(73, pos, 1.0f, 63, name, 255, 1.0f, true, 0, 0);
+                NAPI.Marker.CreateMarker(27, new Vector3(pos.X, pos.Y, pos.Z - 1), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
+
                 setColShapeData(clothingColShape, clothingStores[i]);
             }
         }

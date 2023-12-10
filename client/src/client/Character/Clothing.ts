@@ -13,6 +13,7 @@ class Clothing {
 
         mp.events.add("entityStreamIn", Clothing.handleStreamIn);
         mp.events.add("clothes:setClothingData", Clothing.setClothingData);
+        mp.events.add("clothes:setRot", Clothing.handleRotation);
         mp.events.add("playerExitColshape", Clothing.exitColHandle);
 
         mp.keys.bind(_control_ids.Y, false, Clothing.handleYPressed);
@@ -25,6 +26,10 @@ class Clothing {
         if(colshape.getVariable(Clothing._clothingStoreIdentifier) && BrowserSystem.LocalPlayer.browserRouter == Browsers.Clothing) {
             BrowserSystem.pushRouter("/", false);
         }
+    }
+
+    public static handleRotation(rot: string) {
+        Clothing.LocalPlayer.setHeading(parseInt(rot));
     }
 
     public static handleYPressed() {

@@ -36,46 +36,49 @@
                             <div class="p-6" v-if="clothingData">
                                 <div v-if="browsingType == 'top'">
 
-                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Top</label>
+                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Top ({{ clothingData.top }})</label>
                                     <input id="steps-range" v-model="clothingData.top" type="range" min="0" max="392" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
-                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Top Variant</label>
+                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Top Variant ({{ clothingData.top_texture }})</label>
                                     <input id="steps-range" v-model="clothingData.top_texture" type="range" min="0" max="10" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
-                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Undershirt</label>
+                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Undershirt ({{ clothingData.undershirt == -1 ? 0 : clothingData.undershirt  }})</label>
                                     <input id="steps-range" v-model="clothingData.undershirt" type="range" min="-1" max="188" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
-                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Undershirt Variant</label>
+                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Undershirt Variant ({{ clothingData.undershirt_texture }})</label>
                                     <input id="steps-range" v-model="clothingData.undershirt_texture" type="range" min="0" max="10" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+
+                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Torso ({{ clothingData.torso }})</label>
+                                    <input id="steps-range" v-model="clothingData.torso" type="range" min="0" max="10" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                                 </div>
 
                                 <div v-if="browsingType == 'pants'">
 
-                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Pants</label>
+                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Pants ({{ clothingData.leg }})</label>
                                     <input id="steps-range" v-model="clothingData.leg" type="range" min="0" max="143" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
-                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Pants Variant</label>
+                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Pants Variant ({{ clothingData.leg_texture }})</label>
                                     <input id="steps-range" v-model="clothingData.leg_texture" type="range" min="0" max="10" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                                 </div>
 
                                 <div v-if="browsingType == 'shoes'">
 
-                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Shoes</label>
+                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Shoes ({{ clothingData.shoes }})</label>
                                     <input id="steps-range" v-model="clothingData.shoes" type="range" min="0" max="101" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
-                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Shoes Variant</label>
+                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Shoes Variant ({{ clothingData.shoes_texture }})</label>
                                     <input id="steps-range" v-model="clothingData.shoes_texture" type="range" min="0" max="10" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                                 </div>
 
                                 <div v-if="browsingType == 'masks'">
 
-                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Masks</label>
-                                    <input id="steps-range" v-model="clothingData.mask" type="range" min="0" max="197" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Masks ({{ clothingData.mask }})</label>
+                                    <input id="steps-range" v-model="clothingData.mask" type="range" min="0" max="196" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
-                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Masks Variant</label>
+                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Masks Variant ({{ clothingData.mask_texture }})</label>
                                     <input id="steps-range" v-model="clothingData.mask_texture" type="range" min="0" max="10" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                                 </div>
@@ -88,6 +91,11 @@
                     </div>
                 </div>
             </div>
+            <div class="text-center mt-5 text-white font-medium bg-black/50 p-3 rounded-lg">
+                <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Rotation ({{ rotation }})</label>
+                <input id="steps-range" v-model="rotation" type="range" min="0" max="360" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+            </div>
+
             <div class="text-center mt-5 text-white font-medium">
                 <button v-if="!loadingState" :disabled="loadingState"  @click="buyClothes" class="bg-black/60 w-full p-3 rounded-xl duration-300 hover:text-green-400"><i class="fa-solid fa-cart-shopping"></i> Purchase clothing</button>
                 <LoadingSpinner class="bg-black/60 w-full p-3 rounded-xl" v-if="loadingState" />
@@ -109,7 +117,8 @@ export default {
     data() {
         return {
             clothingData: null,
-            browsingType: "top"
+            browsingType: "top",
+            rotation: 180
         }
     },
     computed: {
@@ -127,6 +136,11 @@ export default {
             },
             deep: true,
         },
+        rotation() {
+            if(window.mp) {
+                window.mp.trigger("clothes:setRot", this.rotation);
+            }
+        }
     },
     methods: {
         buyClothes() {
