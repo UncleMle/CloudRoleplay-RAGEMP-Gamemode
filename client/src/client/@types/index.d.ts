@@ -222,6 +222,13 @@ export interface Corpse {
 	unixCreated: number
 }
 
+export interface ClothingStore {
+	position: Vector3;
+	name: string;
+	id: number;
+	displayName: string;
+}
+
 export interface ClothingData {
 	clothing_id: number;
 	character_id: number;

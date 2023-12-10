@@ -9,6 +9,7 @@ namespace CloudRP.ClothingStores
     {
         public Vector3 position;
         public string name;
+        public int id;
         public string displayName;
     }
 }

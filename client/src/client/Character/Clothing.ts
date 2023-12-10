@@ -1,12 +1,40 @@
-import { ClothingData } from "@/@types";
-import { _sharedAccountDataIdentifier, _sharedClothingDataIdentifier } from "@/Constants/Constants";
+import { ClothingData, ClothingStore } from "@/@types";
+import BrowserSystem from "@/BrowserSystem/BrowserSystem";
+import { _control_ids, _sharedAccountDataIdentifier, _sharedClothingDataIdentifier } from "@/Constants/Constants";
 import getClothingData from "@/PlayerMethods/getClothingData";
+import { Browsers } from "@/enums";
 
 class Clothing {
+    public static LocalPlayer: PlayerMp;
+    public static _clothingStoreIdentifier: string = "clothingStoreData";
+
     constructor() {
+        Clothing.LocalPlayer = mp.players.local;
+
         mp.events.add("entityStreamIn", Clothing.handleStreamIn);
+        mp.events.add("clothes:setClothingData", Clothing.setClothingData);
+        mp.events.add("playerExitColshape", Clothing.exitColHandle);
+
+        mp.keys.bind(_control_ids.Y, false, Clothing.handleYPressed);
+
         mp.events.addDataHandler(_sharedClothingDataIdentifier, Clothing.handleStreamIn);
         mp.events.addDataHandler(_sharedAccountDataIdentifier, Clothing.handleDataHandlerAccount);
+    }
+
+    public static exitColHandle(colshape: ColshapeMp) {
+        if(colshape.getVariable(Clothing._clothingStoreIdentifier) && BrowserSystem.LocalPlayer.browserRouter == Browsers.Clothing) {
+            BrowserSystem.pushRouter("/");
+        }
+    }
+
+    public static handleYPressed() {
+        if(!Clothing.LocalPlayer.isTypingInTextChat) {
+            let currentClothingStoreData: ClothingStore | undefined = Clothing.LocalPlayer.getVariable(Clothing._clothingStoreIdentifier);
+
+            if(currentClothingStoreData) {
+                BrowserSystem.pushRouter(Browsers.Clothing);
+            }
+        }
     }
 
     public static handleDataHandlerAccount(entity: PlayerMp) {

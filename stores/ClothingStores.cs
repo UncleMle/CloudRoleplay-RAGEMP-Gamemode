@@ -1,7 +1,12 @@
-﻿using CloudRP.PlayerData;
+﻿using CloudRP.Character;
+using CloudRP.Database;
+using CloudRP.PlayerData;
+using CloudRP.Utils;
 using GTANetworkAPI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace CloudRP.ClothingStores
@@ -28,9 +33,11 @@ namespace CloudRP.ClothingStores
 
             for (int i = 0; i < clothingStores.Count; i++)
             {
+                clothingStores[i].id = i;
                 ColShape clothingColShape = NAPI.ColShape.CreateCylinderColShape(clothingStores[i].position, 1.0f, 1.0f);
-                NAPI.TextLabel.CreateTextLabel($"{clothingStores[i].displayName} ~y~Y~w~ to interact #{i}", clothingStores[i].position, 20f, 1.0f, 4, new Color(255, 255, 255, 255), true);
+                NAPI.TextLabel.CreateTextLabel($"{clothingStores[i].displayName} ~y~Y~w~ to interact", clothingStores[i].position, 20f, 1.0f, 4, new Color(255, 255, 255, 255), true);
                 clothingColShape.SetData(_clothingStoreIdentifier, clothingStores[i]);
+                Console.WriteLine("ID " + clothingStores[i].id);
             }
         }
 
@@ -52,6 +59,37 @@ namespace CloudRP.ClothingStores
             if(colShape.GetData<ClothingStore>(_clothingStoreIdentifier) != null)
             {
                 flushClothingStoreData(player);
+            }
+        }
+
+        [RemoteEvent("server:handleClothesPurchase")]
+        public void clothesPurchase(Player player, string clothes)
+        {
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            CharacterClothing clothingData = JsonConvert.DeserializeObject<CharacterClothing>(clothes);
+
+            if (characterData != null && clothingData != null)
+            {
+                using(DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    CharacterClothing findCharClothes = dbContext.character_clothes
+                        .Where(charFindClothes => charFindClothes.character_id == characterData.character_id)
+                        .FirstOrDefault();
+
+                    if(findCharClothes != null)
+                    {
+                        characterData.characterClothing = clothingData;
+                        findCharClothes = clothingData;
+
+                        dbContext.character_clothes.Update(findCharClothes);
+                        dbContext.SaveChanges();
+
+                        PlayersData.setPlayerCharacterData(player, characterData);
+
+                        uiHandling.sendPushNotif(player, "You successfully purchase a new item of clothing.", 6600, false, false);
+                    }
+
+                }
             }
         }
 

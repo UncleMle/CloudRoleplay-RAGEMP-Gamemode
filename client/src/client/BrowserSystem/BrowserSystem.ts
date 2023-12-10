@@ -63,6 +63,7 @@ class BrowserSystem {
 	public static pushRouter(route: string) {
 		if (BrowserSystem._browserInstance) {
 			mp.gui.cursor.show(true, true);
+			BrowserSystem.LocalPlayer.browserRouter = route;
 			BrowserSystem._browserInstance.execute(`router.push("${route}")`);
 		}
 	}

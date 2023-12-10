@@ -20,3 +20,12 @@ export class MutationKeys {
 	public static readonly PlayerData: string = "player_data_server";
 	public static readonly PlayerGui: string = "player_data_gui";
 }
+
+export class Browsers {
+	public static readonly Login: string = "login";
+	public static readonly Stats: string = "stats";
+	public static readonly Ban: string = "Ban";
+	public static readonly CharCreation: string = "charcreation";
+	public static readonly Reports: string = "reports";
+	public static readonly Clothing: string = "clothing";
+}
