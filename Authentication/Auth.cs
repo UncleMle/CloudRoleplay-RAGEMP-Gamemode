@@ -177,6 +177,12 @@ namespace CloudRP.Authentication
             Ban ban = AdminUtils.checkPlayerIsBanned(player);
             if (ban != null) return;
 
+            if(!AuthUtils.isEmailValid(emailAddress))
+            {
+                uiHandling.sendPushNotifError(player, "Enter a valid email address.", 6600, true);
+                return;
+            }
+
             using(DefaultDbContext dbContext = new DefaultDbContext())
             {
                 Account findAcc = dbContext.accounts.Where(acc => acc.email_address == emailAddress).FirstOrDefault();
@@ -200,9 +206,26 @@ namespace CloudRP.Authentication
         {
             if (data == null) return;
             OtpStore playerOtpData = player.GetData<OtpStore>(_otpStoreKey);
-            if (playerOtpData == null) return;
-
             ResetPass passReset = JsonConvert.DeserializeObject<ResetPass>(data);
+            
+            if(passReset.otpCode.Length == 0 || passReset.password.Length == 0 || passReset.passwordConfirm.Length == 0)
+            {
+                uiHandling.sendPushNotifError(player, "Ensure all fields are filled.", 6000, true);
+                return;
+            }
+
+            if(passReset.password != passReset.passwordConfirm)
+            {
+                uiHandling.sendPushNotifError(player, "Ensure password confirmation matches password", 6000, true);
+                return;
+            }
+
+            if (playerOtpData == null)
+            {
+                uiHandling.setLoadingState(player, false);
+                uiHandling.setAuthState(player, "");
+                return;
+            }
 
             if(passReset.otpCode != playerOtpData.otp || (CommandUtils.generateUnix() - playerOtpData.unixMade) > 180)
             {
@@ -211,13 +234,8 @@ namespace CloudRP.Authentication
                 return;
             }
 
-            if(playerOtpData.registeringData.registerEmail != null && passReset.password != null && passReset.passwordConfirm != null)
+            if (playerOtpData.registeringData.registerEmail != null && passReset.password != null && passReset.passwordConfirm != null)
             {
-                if(passReset.password != passReset.passwordConfirm || passReset.password.Length <= 0)
-                {
-                    uiHandling.sendPushNotifError(player, "Ensure passwords match", 5000, true);
-                    return;
-                }
 
                 using(DefaultDbContext dbContext = new DefaultDbContext())
                 {
@@ -240,9 +258,6 @@ namespace CloudRP.Authentication
                     dbContext.SaveChanges();
                 }
             }
-
-            uiHandling.setAuthState(player, "");
-            uiHandling.setLoadingState(player, false);
         }
 
         [RemoteEvent("server:authRecieveOtp")]

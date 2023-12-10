@@ -2,7 +2,7 @@
 
 namespace CloudRP.Migrations
 {
-    public partial class Update : Migration
+    public partial class Fixedduplcatekeysissue : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

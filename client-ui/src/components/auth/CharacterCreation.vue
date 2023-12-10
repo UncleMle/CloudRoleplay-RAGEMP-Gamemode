@@ -3,15 +3,15 @@
     <main>
         <div class="fixed inset-0 w-full text-white text-lg">
             <div class="max-w-xl ml-10 mt-10">
-                <div class="rounded-xl font-medium text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none border-b-2">
-                    <div class="flex border-b-2 border-gray-400">
+                <div class="rounded-xl font-medium text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
+                    <div class="flex border-b-2 border-gray-500">
                         <div class="p-3 text-xl">
 
                             <i class="fa-solid fa-person-half-dress text-gray-400 pr-2"></i>Character Creation
                         </div>
                     </div>
 
-                    <ui class="flex justify-center mt-2 space-x-10 border-b-2 pb-2 border-gray-400">
+                    <ui class="flex justify-center mt-2 space-x-10 border-b-2 pb-2 border-gray-500">
                         <button @click="browsingType = 'General'" class="hover:text-green-500 duration-300"><i class="fa-solid fa-gear"></i><br /><span class="text-gray-300">General</span></button>
                         <button @click="browsingType = 'Face'" class="hover:text-green-500 duration-300"><i class="fa-solid fa-face-smile"></i><br /><span class="text-gray-300">Face</span></button>
                         <button @click="browsingType = 'Hair'" class="hover:text-green-500 duration-300"><i class="fa-solid fa-user"></i><br /><span class="text-gray-300">Hair</span></button>
@@ -27,20 +27,20 @@
                                 <div class="w-full">
                                     <label class="block">
                                         <span class="font-medium">Enter your first name</span>
-                                        <div class="border-gray-400 border mt-2 rounded-lg">
+                                        <div class="border-gray-500 border mt-2 rounded-lg">
                                             <div>
-                                                <i class="fa-solid fa-signature absolute pt-3 border-r p-3 h-11 border-gray-400 text-gray-400"></i>
+                                                <i class="fa-solid fa-signature absolute pt-3 border-r p-3 h-11 border-gray-500 text-gray-500"></i>
                                             </div>
-                                            <input v-model="characterData.fname" type="text" placeholder="Firstname..." class="ml-12 p-2 block rounded-lg bg-transparent outline-none" />
+                                            <input v-model="characterData.fname" type="text" placeholder="Firstname..." class="ml-14 p-2 block rounded-lg bg-transparent outline-none" />
                                         </div>
                                     </label>
                                     <label class="block mt-4">
                                         <span class="font-medium">Enter your surname</span>
-                                        <div class="border-gray-400 border mt-2 rounded-lg">
+                                        <div class="border-gray-500 border mt-2 rounded-lg">
                                             <div>
-                                                <i class="fa-solid fa-signature absolute pt-3 border-r p-3 h-11 border-gray-400 text-gray-400"></i>
+                                                <i class="fa-solid fa-signature absolute pt-3 border-r p-3 h-11 border-gray-500 text-gray-500"></i>
                                             </div>
-                                            <input v-model="characterData.lname" type="text" placeholder="Surname..." class="ml-12 p-2 block rounded-lg bg-transparent outline-none" />
+                                            <input v-model="characterData.lname" type="text" placeholder="Surname..." class="ml-14 p-2 block rounded-lg bg-transparent outline-none" />
                                         </div>
                                     </label>
                                 </div>
@@ -51,7 +51,7 @@
 
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" value="" class="sr-only peer" v-model="characterData.model.sex">
-                                    <div class="w-11 h-6 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 peer-focus:ring-black/20 rounded-full peer bg-pink-300 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-blue-300"></div>
+                                    <div class="w-11 h-6 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-black/20 rounded-full peer bg-pink-300 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-blue-300"></div>
                                     <span class="ms-3 text-sm font-medium text-white">Select Sex [{{ characterData.model.sex ? "male" : "female" }}]</span>
                                 </label>
                             </div>
@@ -62,7 +62,7 @@
                                 <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Father</label>
                                 <input id="steps-range" v-model="characterData.model.secondHeadShape" type="range" min="0" max="40" value="0" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
-                                <label for="steps-range" class="block mb-2 text-sm font-medium  text-white mt-4 border-t-2 pt-4 border-gray-400">Mother / Father Mix</label>
+                                <label for="steps-range" class="block mb-2 text-sm font-medium  text-white mt-4 border-t-2 pt-4 border-gray-500">Mother / Father Mix</label>
                                 <input id="steps-range" v-model="characterData.model.headMix" type="range" min="0" max="100" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
                                 <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Skin Mix</label>
                                 <input id="steps-range" v-model="characterData.model.skinMix" type="range" min="0" max="100" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
@@ -209,14 +209,14 @@
                     </div>
 
                 </div>
-                <div class="flex justify-center mt-4 bg-black/70 border-t-2 border-gray-500 rounded-lg shadow-2xl shadow-black font-medium">
-                    <div class="w-full mr-10 ml-10 p-3">
-                        <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Rotation {{ characterData.model.rotation }}</label>
+                <div class="flex justify-center mt-4 bg-black/70 rounded-lg shadow-2xl shadow-black font-medium">
+                    <div class="w-full mr-10 ml-10 p-3 text-center">
+                        <label for="steps-range" class="block mb-2 text-sm font-medium text-white">Rotation {{ characterData.model.rotation }}</label>
                         <input id="steps-range" v-model="characterData.model.rotation" type="range" min="0" max="360" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
                     </div>
                 </div>
                 <div class="flex justify-center mt-4">
-                        <button @click="createCharacter" class="p-2 w-full hover:bg-green-500/80 bg-black/70 font-medium rounded-lg shadow-2xl shadow-black duration-300" >Create Character</button>
+                        <button @click="createCharacter" class="p-2 w-full hover:text-green-400 bg-black/70 font-medium rounded-lg shadow-2xl shadow-black duration-300" >Create Character</button>
                 </div>
             </div>
                 </div>
@@ -324,7 +324,6 @@
             createCharacter() {
                 if(window.mp) {
                     window.mp.trigger("browser:sendObject", "server:recieveCharacterModel", JSON.stringify(this.$data.characterData));
-                    console.log(JSON.stringify(this.$data.characterData));
                 }
             }
         }

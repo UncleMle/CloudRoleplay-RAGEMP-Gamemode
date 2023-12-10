@@ -430,6 +430,7 @@ export default {
 
                 this.password = this.passResetPass;
                 this.username = this.resetEmail;
+                this.resetEmail = "";
 
                 this.passResetPass = "";
                 this.passResetPassConfirm = "";

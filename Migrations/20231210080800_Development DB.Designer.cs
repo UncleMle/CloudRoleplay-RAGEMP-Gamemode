@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CloudRP.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    [Migration("20231201180602_Join logs")]
-    partial class Joinlogs
+    [Migration("20231210080800_Development DB")]
+    partial class DevelopmentDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -64,12 +64,38 @@ namespace CloudRP.Migrations
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("username")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("ban_id");
 
                     b.ToTable("bans");
+                });
+
+            modelBuilder.Entity("CloudRP.AntiCheat.CharacterConnection", b =>
+                {
+                    b.Property<int>("join_log_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("character_id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("character_name")
+                        .IsRequired()
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<int>("connection_type")
+                        .HasColumnType("int");
+
+                    b.Property<int>("player_id")
+                        .HasColumnType("int");
+
+                    b.Property<long>("unix")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("join_log_id");
+
+                    b.ToTable("server_connections");
                 });
 
             modelBuilder.Entity("CloudRP.Authentication.Account", b =>
@@ -86,6 +112,9 @@ namespace CloudRP.Migrations
 
                     b.Property<string>("account_uuid")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<bool>("admin_esp")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("admin_name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -134,6 +163,86 @@ namespace CloudRP.Migrations
                     b.HasKey("account_id");
 
                     b.ToTable("accounts");
+                });
+
+            modelBuilder.Entity("CloudRP.Character.CharacterClothing", b =>
+                {
+                    b.Property<int>("clothing_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("access")
+                        .HasColumnType("int");
+
+                    b.Property<int>("access_texture")
+                        .HasColumnType("int");
+
+                    b.Property<int>("armor")
+                        .HasColumnType("int");
+
+                    b.Property<int>("armor_texture")
+                        .HasColumnType("int");
+
+                    b.Property<int>("bag_texture")
+                        .HasColumnType("int");
+
+                    b.Property<int>("bags")
+                        .HasColumnType("int");
+
+                    b.Property<int>("character_id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("decals")
+                        .HasColumnType("int");
+
+                    b.Property<int>("decals_texture")
+                        .HasColumnType("int");
+
+                    b.Property<int>("leg")
+                        .HasColumnType("int");
+
+                    b.Property<int>("leg_texture")
+                        .HasColumnType("int");
+
+                    b.Property<int>("mask")
+                        .HasColumnType("int");
+
+                    b.Property<int>("mask_texture")
+                        .HasColumnType("int");
+
+                    b.Property<int>("shoes")
+                        .HasColumnType("int");
+
+                    b.Property<int>("shoes_texture")
+                        .HasColumnType("int");
+
+                    b.Property<int>("top")
+                        .HasColumnType("int");
+
+                    b.Property<int>("top_texture")
+                        .HasColumnType("int");
+
+                    b.Property<int>("torso")
+                        .HasColumnType("int");
+
+                    b.Property<int>("torso_texture")
+                        .HasColumnType("int");
+
+                    b.Property<int>("undershirt")
+                        .HasColumnType("int");
+
+                    b.Property<int>("undershirt_texture")
+                        .HasColumnType("int");
+
+                    b.HasKey("clothing_id");
+
+                    b.ToTable("character_clothes");
                 });
 
             modelBuilder.Entity("CloudRP.Character.CharacterModel", b =>
@@ -300,12 +409,21 @@ namespace CloudRP.Migrations
                     b.Property<int>("character_health")
                         .HasColumnType("int");
 
+                    b.Property<double>("character_hunger")
+                        .HasColumnType("double");
+
                     b.Property<int>("character_isbanned")
                         .HasColumnType("int");
 
                     b.Property<string>("character_name")
                         .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<double>("character_water")
+                        .HasColumnType("double");
+
+                    b.Property<int>("injured_timer")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("last_login")
                         .HasColumnType("datetime(6)");
@@ -337,6 +455,33 @@ namespace CloudRP.Migrations
                     b.HasKey("character_id");
 
                     b.ToTable("characters");
+                });
+
+            modelBuilder.Entity("CloudRP.GeneralCommands.Nickname", b =>
+                {
+                    b.Property<int>("nickname_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("nickname")
+                        .IsRequired()
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<int>("owner_id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("target_character_id")
+                        .HasColumnType("int");
+
+                    b.HasKey("nickname_id");
+
+                    b.ToTable("nicknames");
                 });
 
             modelBuilder.Entity("CloudRP.Vehicles.DbVehicle", b =>
@@ -373,6 +518,12 @@ namespace CloudRP.Migrations
                     b.Property<string>("vehicle_dimension")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<ulong>("vehicle_distance")
+                        .HasColumnType("bigint unsigned");
+
+                    b.Property<double>("vehicle_fuel")
+                        .HasColumnType("double");
+
                     b.Property<int>("vehicle_garage_id")
                         .HasColumnType("int");
 
@@ -388,6 +539,9 @@ namespace CloudRP.Migrations
 
                     b.Property<uint>("vehicle_spawn_hash")
                         .HasColumnType("int unsigned");
+
+                    b.Property<string>("vehicle_uuid")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("vehicle_id");
 

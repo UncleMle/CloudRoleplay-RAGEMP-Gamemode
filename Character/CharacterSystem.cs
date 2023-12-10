@@ -22,6 +22,7 @@ namespace CloudRP.Character
         private static double _characterHungerRemover = 0.004;
         private static double _characterWaterRemover = 0.009;
 
+
         [ServerEvent(Event.ResourceStart)]
         public void onResourceStart()
         {
@@ -164,40 +165,87 @@ namespace CloudRP.Character
 
             CharacterModel createdCharacterModel = JsonConvert.DeserializeObject<CharacterModel>(JsonConvert.SerializeObject(characterModel.model));
 
-            DbCharacter newCharacter = new DbCharacter
-            {
-                character_health = 100,
-                character_isbanned = 0,
-                character_name = characterName,
-                CreatedDate = DateTime.Now,
-                last_login = DateTime.Now,
-                player_dimension = 0,
-                player_exp = 0,
-                UpdatedDate = DateTime.Now,
-                owner_id = userData.accountId
-            };
-
             using(DefaultDbContext dbContext = new DefaultDbContext())
             {
-                dbContext.characters.Add(newCharacter);
-                dbContext.SaveChanges();
-
-                createdCharacterModel.owner_id = newCharacter.character_id;
-
-                CharacterClothing newClothing = new CharacterClothing
+                DbCharacter newCharacter = new DbCharacter
                 {
-                    character_id = newCharacter.character_id
+                    character_health = 100,
+                    character_isbanned = 0,
+                    character_name = characterName,
+                    CreatedDate = DateTime.Now,
+                    last_login = DateTime.Now,
+                    player_dimension = 0,
+                    player_exp = 0,
+                    UpdatedDate = DateTime.Now,
+                    owner_id = userData.accountId
                 };
 
-                dbContext.character_models.Add(createdCharacterModel);
-                dbContext.character_clothes.Add(newClothing);
-                dbContext.SaveChanges();
+                dbContext.characters.Add(newCharacter);
+                await dbContext.SaveChangesAsync();
+
+                /* 
+                ** For some reason this is the only way I could get the outfit to work without the keys duplicating.
+                *  Data referenced outside of the scope will have a random chance of keys getting duplicating.
+                * Seems to be some bug within the version of EF Core used.
+                */
+
+                dbContext.character_clothes.Add(
+                createdCharacterModel.sex ? new CharacterClothing
+                {
+                    character_id = newCharacter.character_id,
+                    mask = 0,
+                    mask_texture = 0,
+                    torso = 6,
+                    leg = 1,
+                    leg_texture = 0,
+                    bags = 0,
+                    bag_texture = 0,
+                    shoes = 6,
+                    shoes_texture = 0,
+                    access = 0,
+                    access_texture = 0,
+                    undershirt = 8,
+                    undershirt_texture = 0,
+                    armor = 0,
+                    decals = 0,
+                    decals_texture = 0,
+                    top = 7,
+                    top_texture = 1,
+                    armor_texture = 0,
+                    torso_texture = 0
+                } : new CharacterClothing
+                {
+                    character_id = newCharacter.character_id,
+                    mask = 0,
+                    mask_texture = 0,
+                    torso = 2,
+                    leg = 6,
+                    leg_texture = 0,
+                    bags = 0,
+                    bag_texture = 0,
+                    shoes = 1,
+                    shoes_texture = 0,
+                    access = 0,
+                    access_texture = 0,
+                    undershirt = -1,
+                    undershirt_texture = 0,
+                    armor = 0,
+                    decals = 0,
+                    decals_texture = 0,
+                    top = 38,
+                    top_texture = 2,
+                    armor_texture = 0,
+                    torso_texture = 0
+                });
+
+                await dbContext.SaveChangesAsync();
+                
+                CharacterUtils.createCharModel(newCharacter.character_id, createdCharacterModel);
             }
 
+            
             player.TriggerEvent("client:setBackToSelection");
-
             uiHandling.pushRouterToClient(player, Browsers.LoginPage);
-
             fillCharacterSelectionTable(player, userData);
         }
 
@@ -221,6 +269,8 @@ namespace CloudRP.Character
 
         public static void fillCharacterSelectionTable(Player player, User userData)
         {
+            uiHandling.resetMutationPusher(player, "player_characters");
+
             string mutationName = "setCharacterSelection";
 
             uiHandling.sendMutationToClient(player, mutationName, "toggle", true);
