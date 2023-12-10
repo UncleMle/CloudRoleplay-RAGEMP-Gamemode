@@ -73,6 +73,11 @@ namespace CloudRP.ClothingStores
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
             CharacterClothing clothingData = JsonConvert.DeserializeObject<CharacterClothing>(clothes);
 
+            NAPI.Task.Run(() =>
+            {
+                uiHandling.setLoadingState(player, false);
+            }, 5500);
+
             if (characterData != null && clothingData != null)
             {
                 if(clothingData.Equals(characterData.characterClothing))
@@ -102,7 +107,6 @@ namespace CloudRP.ClothingStores
 
                         uiHandling.sendPushNotif(player, "You successfully purchase a new item of clothing.", 6600, false, false);
                     }
-
                 }
             }
         }

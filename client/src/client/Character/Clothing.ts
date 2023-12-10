@@ -22,7 +22,6 @@ class Clothing {
     }
 
     public static exitColHandle(colshape: ColshapeMp) {
-        mp.gui.chat.push(BrowserSystem.LocalPlayer.browserRouter);
         if(colshape.getVariable(Clothing._clothingStoreIdentifier) && BrowserSystem.LocalPlayer.browserRouter == Browsers.Clothing) {
             BrowserSystem.pushRouter("/", false);
         }
@@ -40,7 +39,6 @@ class Clothing {
                         data: ${JSON.stringify(playerClothingData)}
                     })`);
 
-                    mp.gui.chat.push(JSON.stringify(playerClothingData));
                 }
                 BrowserSystem.pushRouter(Browsers.Clothing);
             }
@@ -54,18 +52,14 @@ class Clothing {
     }
 
     public static handleDataHandler(entity: PlayerMp, clothingData: ClothingData) {
-        mp.console.logInfo("Triggered " + JSON.stringify(clothingData));
         if(entity.type == "player" && clothingData) {
             Clothing.setClothingData(clothingData, false, entity);
         }
     }
 
     public static handleStreamIn(entity: PlayerMp) {
-        mp.console.logInfo("Triggered stream" + JSON.stringify(entity.getVariable(_sharedClothingDataIdentifier)));
         if(entity.type == "player" || entity.type == "ped") {
             let clothingData: ClothingData | undefined = getClothingData(entity);
-
-            mp.console.logInfo("Clothing data from method " + JSON.stringify(clothingData));
 
             if(!clothingData) return;
 

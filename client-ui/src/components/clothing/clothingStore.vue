@@ -1,7 +1,7 @@
 <template>
     <main class="relative">
         <div class="absolute right-[3%] ">
-            <div class="container flex items-center max-w-xl mx-auto mt-52">
+            <div class="container flex items-center w-[18vw] mx-auto mt-52">
                 <div class="flex justify-center w-full">
                     <div
                         class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
@@ -10,40 +10,75 @@
                             <h1 class="font-bold text-2xl border-b-2 pb-2 border-gray-500 pl-4"><i
                                     class="fa-solid fa-shirt text-gray-400"></i> Clothing Store</h1>
                             <CloseButton />
-                            Clothing stores
-                            {{ clothingData }}
+
+                            <ui class="flex justify-center mt-2 space-x-10 border-b-2 pb-2 border-gray-500">
+                                <button @click="browsingType = 'top'" class="hover:text-white">
+                                    <img src="../../assets/img/shirt.png" class="w-9">
+                                    <span class="text-gray-300 hover:text-white duration-300">Tops</span>
+                                </button>
+
+                                <button @click="browsingType = 'pants'" class="hover:text-green-500 duration-300">
+                                    <img src="../../assets/img/pants.png" class="w-9">
+                                    <span class="text-gray-300 hover:text-white duration-300">Pants</span>
+                                </button>
+
+                                <button @click="browsingType = 'shoes'" class="hover:text-green-500 duration-300">
+                                    <img src="../../assets/img/shoes.png" class="w-9">
+                                    <span class="text-gray-300 hover:text-white duration-300">Shoes</span>
+                                </button>
+
+                                <button @click="browsingType = 'masks'" class="hover:text-green-500 duration-300">
+                                    <img src="../../assets/img/theater.png" class="w-9">
+                                    <span class="text-gray-300 hover:text-white duration-300">Masks</span>
+                                </button>
+                            </ui>
+
                             <div class="p-6" v-if="clothingData">
-                                <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Top</label>
-                                <input id="steps-range" v-model="clothingData.top" type="range" min="-1" max="12"
-                                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
-                                <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Ageing</label>
-                                <input id="steps-range" type="range" min="-1" max="14"
-                                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                <div v-if="browsingType == 'top'">
 
-                                <label for="steps-range"
-                                    class="block mb-2 text-sm font-medium  text-white">Complexion</label>
-                                <input id="steps-range" type="range" min="-1" max="11"
-                                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Top</label>
+                                    <input id="steps-range" v-model="clothingData.top" type="range" min="0" max="392" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
-                                <label for="steps-range"
-                                    class="block mb-2 text-sm font-medium  text-white">Sundamage</label>
-                                <input id="steps-range" type="range" min="-1" max="16"
-                                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Top Variant</label>
+                                    <input id="steps-range" v-model="clothingData.top_texture" type="range" min="0" max="10" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
-                                <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Moles /
-                                    Freckles</label>
-                                <input id="steps-range" type="range" min="-1" max="18"
-                                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Undershirt</label>
+                                    <input id="steps-range" v-model="clothingData.undershirt" type="range" min="-1" max="188" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
-                                <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Makeup</label>
-                                <input id="steps-range" type="range" min="-1" max="100"
-                                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Undershirt Variant</label>
+                                    <input id="steps-range" v-model="clothingData.undershirt_texture" type="range" min="0" max="10" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
+                                </div>
 
-                                <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Blush
-                                    Style</label>
-                                <input id="steps-range" type="range" min="-1" max="100"
-                                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                <div v-if="browsingType == 'pants'">
+
+                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Pants</label>
+                                    <input id="steps-range" v-model="clothingData.leg" type="range" min="0" max="143" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+
+                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Pants Variant</label>
+                                    <input id="steps-range" v-model="clothingData.leg_texture" type="range" min="0" max="10" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+
+                                </div>
+
+                                <div v-if="browsingType == 'shoes'">
+
+                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Shoes</label>
+                                    <input id="steps-range" v-model="clothingData.shoes" type="range" min="0" max="101" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+
+                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Shoes Variant</label>
+                                    <input id="steps-range" v-model="clothingData.shoes_texture" type="range" min="0" max="10" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+
+                                </div>
+
+                                <div v-if="browsingType == 'masks'">
+
+                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Masks</label>
+                                    <input id="steps-range" v-model="clothingData.mask" type="range" min="0" max="197" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+
+                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Masks Variant</label>
+                                    <input id="steps-range" v-model="clothingData.mask_texture" type="range" min="0" max="10" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+
+                                </div>
                             </div>
                             <div v-else>
                                 <LoadingSpinner />
@@ -53,9 +88,9 @@
                     </div>
                 </div>
             </div>
-
             <div class="text-center mt-5 text-white font-medium">
-                <button @click="buyClothes" class="bg-black/60 w-full p-3 rounded-xl duration-300 hover:text-green-400"><i class="fa-solid fa-cart-shopping"></i> Purchase clothing</button>
+                <button v-if="!loadingState" :disabled="loadingState"  @click="buyClothes" class="bg-black/60 w-full p-3 rounded-xl duration-300 hover:text-green-400"><i class="fa-solid fa-cart-shopping"></i> Purchase clothing</button>
+                <LoadingSpinner class="bg-black/60 w-full p-3 rounded-xl" v-if="loadingState" />
             </div>
         </div>
     </main>
@@ -73,12 +108,14 @@ export default {
     },
     data() {
         return {
-            clothingData: null
+            clothingData: null,
+            browsingType: "top"
         }
     },
     computed: {
         ...mapGetters({
-            playerData: 'getPlayerInfo'
+            playerData: 'getPlayerInfo',
+            loadingState: 'getLoadingState',
         })
     },
     watch: {
@@ -93,6 +130,7 @@ export default {
     },
     methods: {
         buyClothes() {
+            this.$store.state.uiStates.serverLoading = true;
             if(window.mp) {
                 window.mp.trigger("browser:sendObject", "server:handleClothesPurchase", JSON.stringify(this.clothingData));
             }
