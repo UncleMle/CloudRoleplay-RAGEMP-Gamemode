@@ -1,5 +1,6 @@
 import { Corpse } from '@/@types';
 import CharacterSystem from '@/Character/CharacterSystem';
+import Clothing from '@/Character/Clothing';
 import getTimeUnix from '@/PlayerMethods/getTimeUnix';
 
 class Corpses {
@@ -118,6 +119,7 @@ class Corpses {
 		ped.setProofs(false, false, false, false, false, false, false, false);
 		ped.taskPlayAnim('dead', 'dead_a', 8.0, 0, 600, 1, 1.0, false, false, false);
 
+		Clothing.setClothingData(ped, corpseData.clothes);
 		CharacterSystem.setCharacterCustomization(corpseData.model, false, ped);
 	}
 }

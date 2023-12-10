@@ -52,7 +52,8 @@ namespace CloudRP.PlayerData
                 characterName = character.character_name,
                 characterModel = resyncModel ? character.characterModel : null,
                 voiceChatState = character.voiceChatState,
-                data = character
+                data = character,
+                characterClothing = character.characterClothing
             };
 
             setCharacterHungerAndThirst(player, character.character_hunger, character.character_water);

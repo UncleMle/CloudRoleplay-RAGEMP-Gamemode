@@ -17,6 +17,7 @@ namespace CloudRP.DeathSystem
         public int characterId;
         public string characterName;
         public CharacterModel model;
+        public CharacterClothing clothes;
         public int? corpseId;
         public Vector3 position;
         public long unixCreated;

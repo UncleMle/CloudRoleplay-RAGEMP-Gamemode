@@ -224,6 +224,7 @@ namespace CloudRP.DeathSystem
             {
                 characterName = characterData.character_name,
                 model = characterData.characterModel,
+                clothes = characterData.characterClothing,
                 characterId = characterData.character_id,
                 position = player.Position,
                 unixCreated = CommandUtils.generateUnix()

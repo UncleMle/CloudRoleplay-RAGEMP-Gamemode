@@ -54,6 +54,7 @@ export interface CharacterData {
 	characterModel: CharacterModel,
 	data: DbCharacter,
 	voiceChatState: boolean,
+	characterClothing: ClothingData
 }
 
 export interface DbCharacter {
@@ -215,6 +216,7 @@ export interface Corpse {
 	characterName: string,
 	characterId: number,
 	model: CharacterModel,
+	clothes: ClothingData,
 	corpseId: number,
 	position: Vector3,
 	unixCreated: number
