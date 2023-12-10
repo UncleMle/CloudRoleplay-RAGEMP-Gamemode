@@ -1,11 +1,18 @@
 import { ClothingData } from "@/@types";
-import { _sharedClothingDataIdentifier } from "@/Constants/Constants";
+import { _sharedAccountDataIdentifier, _sharedClothingDataIdentifier } from "@/Constants/Constants";
 import getClothingData from "@/PlayerMethods/getClothingData";
 
 class Clothing {
     constructor() {
         mp.events.add("entityStreamIn", Clothing.handleStreamIn);
         mp.events.addDataHandler(_sharedClothingDataIdentifier, Clothing.handleStreamIn);
+        mp.events.addDataHandler(_sharedAccountDataIdentifier, Clothing.handleDataHandlerAccount);
+    }
+
+    public static handleDataHandlerAccount(entity: PlayerMp) {
+        if(entity.type == "player" && getClothingData(entity)) {
+            Clothing.setClothingData(entity, getClothingData(entity) as ClothingData);
+        }
     }
 
     public static handleDataHandler(entity: PlayerMp, clothingData: ClothingData) {
@@ -29,6 +36,7 @@ class Clothing {
     }
 
     public static setClothingData(entity: PlayerMp | PedMp, clothingData: ClothingData) {
+        if(!clothingData) return;
         mp.console.logInfo("triggered setting clothing " + JSON.stringify(clothingData));
         entity.setComponentVariation(1, clothingData.mask, clothingData.mask_texture, 0);
         entity.setComponentVariation(3, clothingData.torso, clothingData.torso_texture, 0);

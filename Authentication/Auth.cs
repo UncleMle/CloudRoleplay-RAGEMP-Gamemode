@@ -154,7 +154,7 @@ namespace CloudRP.Authentication
 
         public void enterRegisterOtpStage(Player player, Register registeringData)
         {
-            uiHandling.setAuthState(player, AuthStates.login);
+            uiHandling.setAuthState(player, AuthStates.otp);
 
             string otp = AuthUtils.generateString(4, true);
 
@@ -351,8 +351,6 @@ namespace CloudRP.Authentication
 
                     character.characterModel = charModel;
                     character.characterClothing = charClothing;
-
-                    Console.WriteLine("Char clothing " + JsonConvert.SerializeObject(charClothing));
 
                     ChatUtils.charSysPrint($"Character {character.character_name} has logged in (#{character.character_id})");
                     PlayersData.setPlayerCharacterData(player, character);
