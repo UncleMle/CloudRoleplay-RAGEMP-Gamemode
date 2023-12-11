@@ -292,6 +292,14 @@ export default {
                     dbName: "colour_2",
                 },
                 {
+                    name: "Pearlesceant",
+                    dbName: "pearleascent",
+                },
+                {
+                    name: "Wheel Colour",
+                    dbName: "wheel_colour",
+                },
+                {
                     name: "Livery",
                     dbName: "livery",
                 },
@@ -415,6 +423,10 @@ export default {
 
             if(modName == "Wheel Type") {
                 foundIdx = 13;
+            }
+
+            if(modName == "Pearlesceant") {
+                foundIdx = 166;
             }
 
             if(modName == "Wheels" && this.vehicleData.wheel_type == 12) {
