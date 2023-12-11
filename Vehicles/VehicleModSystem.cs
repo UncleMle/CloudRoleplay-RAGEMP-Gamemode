@@ -16,8 +16,8 @@ namespace CloudRP.Vehicles
             new CustomArea
             {
                 custom_id = 0,
-                startVec = new Vector3(-416.6, -77.0, 48.1),
-                endVec = new Vector3(-350.8, -189.6, 43.1),
+                position = new Vector3(-375.8, -124.8, 38.6),
+                range = 60f,
                 name = "Los Santos Customs"
             }
         };
@@ -27,18 +27,16 @@ namespace CloudRP.Vehicles
         {
             foreach(CustomArea col in customsAreas)
             {
-                Vector3 blipPoint = (col.startVec + col.endVec) * 0;
-
-                ColShape colshape = NAPI.ColShape.Create3DColShape(col.startVec, col.endVec, 0);
-                NAPI.Blip.CreateBlip(544, blipPoint, 1.0f, 63, col.name, 255, 1.0f, true, 0, 0);
-
+                ColShape colshape = NAPI.ColShape.CreateSphereColShape(col.position, col.range, 0);
+                NAPI.Blip.CreateBlip(544, col.position, 1.0f, 63, col.name, 255, 1.0f, true, 0, 0);
                 setColData(colshape, col);
             }
         }
 
         [ServerEvent(Event.PlayerEnterColshape)]
-        public void enterColShape(Player player, ColShape colShape)
+        public void enterColShape(ColShape colShape, Player player)
         {
+            Console.WriteLine("triggered");
             CustomArea colShapeData = colShape.GetData<CustomArea>(_colShapeIdentifer);
 
             if(colShapeData != null)
@@ -50,7 +48,7 @@ namespace CloudRP.Vehicles
         }
 
         [ServerEvent(Event.PlayerExitColshape)]
-        public void onExitColShape(Player player, ColShape colShape)
+        public void onExitColShape(ColShape colShape, Player player)
         {
             CustomArea colShapeData = colShape.GetData<CustomArea>(_colShapeIdentifer);
 

@@ -9,7 +9,7 @@ namespace CloudRP.Vehicles
     {
         public string name { get; set; }
         public int custom_id { get; set; }
-        public Vector3 startVec { get; set; }
-        public Vector3 endVec { get; set; }
+        public Vector3 position { get; set; }
+        public float range { get; set; }
     }
 }
