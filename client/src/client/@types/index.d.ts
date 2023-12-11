@@ -147,11 +147,43 @@ export interface Flight {
 }
 
 export interface VehicleMods {
-	vehicle_mod_id: number,
-	vehicle_owner_id: number,
-	mod_type: number,
-	mod_index: number,
-	mod_name: string
+    vehicle_mod_id: number;
+    vehicle_owner_id: number;
+    spoilers: number;
+    front_bumper: number;
+    rear_bumper: number;
+    side_skirt: number;
+    exhaust: number;
+    frame: number;
+    grille: number;
+    hood: number;
+    fender: number;
+    right_fender: number;
+    roof: number;
+    engine: number;
+    brakes: number;
+    transmission: number;
+    horns: number;
+    suspension: number;
+    armor: number;
+    turbo: number;
+    xenon: number;
+    front_wheels: number;
+    back_wheels: number;
+    plate_holders: number;
+    trim_design: number;
+    ornaments: number;
+    dial_design: number;
+    steering_wheel: number;
+    shift_lever: number;
+    plaques: number;
+    hydraulics: number;
+    boost: number;
+    window_tint: number;
+    livery: number;
+    plate: number;
+    colour_1: number;
+    colour_2: number;
 }
 
 export interface VehicleData {

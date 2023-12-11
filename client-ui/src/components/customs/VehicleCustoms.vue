@@ -42,7 +42,11 @@
                             <div class="relative w-full h-fit py-4 rounded-lg border border-gray-900 text-center max-h-[37vw] overflow-scroll overflow-x-hidden">
 
                                 <div>
-                                    {{ playerData }}
+                                    {{ vehicleData }}
+
+                                    <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Front bumper ({{formatMod(vehicleData.front_bumper)}})</label>
+                                    <input id="steps-range" v-model="vehicleData.front_bumper" type="range" min="0" max="10" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+
 
                                 </div>
                             </div>
@@ -90,7 +94,8 @@ export default {
     data() {
         return {
             browsingType: "general",
-            basketItems: []
+            basketItems: [],
+            vehicleData: null
         }
     },
     computed: {
@@ -98,13 +103,30 @@ export default {
             playerData: 'getPlayerInfo'
         })
     },
+    watch: {
+        vehicleData: {
+            handler() {
+                if(window.mp) {
+                    window.mp.trigger("vehicle:setAttachments", JSON.stringify(this.vehicleData), true);
+                }
+            },
+            deep: true,
+        },
+    },
     components: {
         CloseButton
+    },
+    methods: {
+        formatMod(modIdx) {
+            return modIdx == -1 || modIdx <= 0 ? 0 : modIdx;
+        }
     },
     mounted() {
         if(window.mp) {
             window.mp.trigger("gui:toggleHudComplete", false);
         }
+
+        this.vehicleData = this.playerData.vehicle_mod_data;
     }
 }
 </script>
