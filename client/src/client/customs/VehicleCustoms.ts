@@ -1,6 +1,8 @@
-import { VehicleMods } from "@/@types";
+import { VehicleData, VehicleMods } from "@/@types";
 import BrowserSystem from "@/BrowserSystem/BrowserSystem";
+import { _SHARED_VEHICLE_DATA } from "@/Constants/Constants";
 import DeathSystem from "@/DeathSystem/DeathSystem";
+import getVehicleData from "@/PlayerMethods/getVehicleData";
 import { Browsers } from "@/enums";
 
 class VehicleCustoms {
@@ -12,7 +14,22 @@ class VehicleCustoms {
 
         mp.events.add("playerExitColshape", VehicleCustoms.handleColEnter);
         mp.events.add("vehicle:setAttachments", VehicleCustoms.setVehicleAttachments);
+        mp.events.add("entityStreamIn", VehicleCustoms.handleStreamIn);
+        mp.events.addDataHandler(_SHARED_VEHICLE_DATA, VehicleCustoms.handleDataHandler);
         mp.events.add("render", VehicleCustoms.handleRender);
+    }
+
+    public static handleDataHandler(entity: VehicleMp, data: VehicleData) {
+        if(entity.type != "vehicle" || !data) return;
+
+        VehicleCustoms.setVehicleAttachments(data.vehicle_mods, false, entity);
+    }
+
+    public static handleStreamIn(entity: VehicleMp) {
+        let vehicleData: VehicleData | undefined = getVehicleData(entity);
+        if(entity.type != "vehicle" || !vehicleData) return;
+
+        VehicleCustoms.setVehicleAttachments(vehicleData.vehicle_mods, false, entity);
     }
 
     public static handleRender() {
@@ -35,8 +52,6 @@ class VehicleCustoms {
         if(parse) {
             modData = JSON.parse(data);
         }
-
-        mp.console.logInfo(JSON.stringify(modData));
 
         vehicle.setMod(0, Number(modData.spoilers));
         vehicle.setMod(1, Number(modData.front_bumper));
@@ -74,6 +89,7 @@ class VehicleCustoms {
         vehicle.setMod(66, Number(modData.colour_1));
         vehicle.setMod(67, Number(modData.colour_2));
 
+        vehicle.setColours(Number(modData.colour_1), Number(modData.colour_2));
 
     }
 }

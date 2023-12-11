@@ -46,7 +46,9 @@ class VehicleSpeedo {
                 fuelLevel: vehicleData.vehicle_fuel,
                 vehicleMileage: vehicleData.vehicle_distance,
                 metric: mp.game.gameplay.getProfileSetting(227),
-                numberplate: vehicle.getNumberPlateText()
+                numberPlate: vehicle.getNumberPlateText(),
+                displayName: VehicleSpeedo.getVehDispName(vehicle.model)
+
             }
 
             BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
@@ -54,6 +56,11 @@ class VehicleSpeedo {
                 status: ${JSON.stringify(speedoData)}
             })`);
         }
+    }
+
+    public static getVehDispName(model: number): string {
+        let dispName: string = mp.game.ui.getLabelText(mp.game.vehicle.getDisplayNameFromVehicleModel(model));
+        return dispName;
     }
 }
 

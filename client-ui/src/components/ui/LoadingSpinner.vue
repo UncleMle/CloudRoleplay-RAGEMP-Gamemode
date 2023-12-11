@@ -1,6 +1,8 @@
 <template>
     <b role="status" class="flex justify-center">
-        <svg class="w-8 h-8 animate-spin text-gray-500 fill-black/30"
+        <svg
+            :class="'h-'+h ? h : '8' + ' w-'+ w ? w : '8'"
+             class="h-8 w-8 animate-spin text-gray-500 fill-black/30"
              viewBox="0 0 100 101"
              fill="none"
              xmlns="http://www.w3.org/2000/svg">
@@ -12,3 +14,9 @@
         <span class="sr-only">Loading...</span>
     </b>
 </template>
+
+<script>
+export default {
+    props: ['h', 'w']
+}
+</script>

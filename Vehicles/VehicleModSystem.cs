@@ -1,9 +1,12 @@
 ﻿using CloudRP.Character;
+using CloudRP.Database;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
 using GTANetworkAPI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace CloudRP.Vehicles
@@ -64,9 +67,8 @@ namespace CloudRP.Vehicles
         public void modsCommand(Player player)
         {
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
-            User userData = PlayersData.getPlayerAccountData(player);
 
-            if (characterData == null || userData == null) return;
+            if (characterData == null) return;
 
             if(!player.IsInVehicle)
             {
@@ -84,6 +86,48 @@ namespace CloudRP.Vehicles
 
                 uiHandling.pushRouterToClient(player, Browsers.ModsView);
             }
+        }
+
+        [RemoteEvent("server:vehicleModsSave")]
+        public void saveVehiclesMods(Player player, string modData)
+        {
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+
+            if (!player.IsInVehicle || characterData == null) return;
+
+            Vehicle pVeh = player.Vehicle;
+            DbVehicle pVehData = VehicleSystem.getVehicleData(pVeh);
+            if(pVehData != null)
+            {
+                VehicleMods newModData = JsonConvert.DeserializeObject<VehicleMods>(modData);
+                if(newModData == null)
+                {
+                    uiHandling.sendPushNotifError(player, "There was an error handling this request.", 6600, true);
+                    return;
+                }
+
+                using(DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    VehicleMods currentData = dbContext.vehicle_mods
+                        .Where(mod => mod.vehicle_owner_id == pVehData.vehicle_id)
+                        .FirstOrDefault();
+
+                    if(currentData != null)
+                    {
+                        newModData.vehicle_owner_id = pVehData.vehicle_id;
+
+                        dbContext.vehicle_mods.Remove(currentData);
+                        dbContext.vehicle_mods.Add(newModData);
+
+                        pVehData.vehicle_mods = newModData;
+                        dbContext.SaveChanges();
+                        VehicleSystem.setVehicleData(pVeh, pVehData);
+                    }
+                }
+
+            }
+
+            uiHandling.setLoadingState(player, false);
         }
 
         public static void setColData(ColShape colshape, CustomArea customsData)
