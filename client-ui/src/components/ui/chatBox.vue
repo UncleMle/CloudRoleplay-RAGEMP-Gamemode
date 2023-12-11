@@ -81,7 +81,6 @@ export default {
 
                 this.userText = this.playerMessages.slice().reverse()[this.chatIteration++];
 
-                this.setCaretPosition("chat_msg", 5)
             }
 
             if (e.keyCode == this.KEYBIND_DOWNARR && this.inputFieldShowing) {

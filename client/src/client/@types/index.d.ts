@@ -181,6 +181,8 @@ export interface VehicleMods {
     hydraulics: number;
     boost: number;
     window_tint: number;
+	pearleascent: number,
+	wheel_colour:number;
     livery: number;
     plate: number;
     colour_1: number;

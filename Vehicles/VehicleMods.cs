@@ -48,6 +48,8 @@ namespace CloudRP.Vehicles
         public int window_tint { get; set; } = -1;
         public int livery { get; set; } = -1;
         public int plate { get; set; } = -1;
+        public int pearleascent { get; set; } = -1;
+        public int wheel_colour { get; set; } = -1;
         public int colour_1 { get; set; } = 1;
         public int colour_2 { get; set; } = 1;
     }

@@ -120,6 +120,7 @@ class VehicleCustoms {
         vehicle.setWheelType(Number(modData.wheel_type));
         vehicle.setWindowTint(Number(modData.window_tint));
         vehicle.setColours(Number(modData.colour_1), Number(modData.colour_2));
+        vehicle.setExtraColours(Number(modData.pearleascent), Number(modData.wheel_colour))
 
         vehicle.setMod(0, Number(modData.spoilers));
         vehicle.setMod(1, Number(modData.front_bumper));
