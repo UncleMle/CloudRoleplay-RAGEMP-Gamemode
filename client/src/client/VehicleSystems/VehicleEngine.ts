@@ -12,7 +12,15 @@ class VehicleEngine {
 		VehicleEngine.LocalPlayer = mp.players.local;
 
 		mp.events.add("render", VehicleEngine.engineSync);
+		mp.events.add("entityStreamIn", VehicleEngine.handleStreamIn);
 		mp.keys.bind(_control_ids.Y, false, VehicleEngine.toggleEngine);
+	}
+
+	public static handleStreamIn(entity: VehicleMp) {
+		let vehicleData: VehicleData | undefined = getVehicleData(entity);
+		if(entity.type == "vehicle" && vehicleData && vehicleData.engine_status && vehicleData.vehicle_fuel > 0) {
+			entity.setEngineOn(true, true, false);
+		}
 	}
 
 	public static toggleEngine() {

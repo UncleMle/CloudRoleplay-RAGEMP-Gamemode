@@ -169,6 +169,7 @@ export interface VehicleMods {
     turbo: number;
     xenon: number;
     front_wheels: number;
+	wheel_type: number;
     back_wheels: number;
     plate_holders: number;
     trim_design: number;

@@ -3,7 +3,7 @@
         <div v-if="!loadingState" class="flex justify-center mt-6">
             <div class="text-center p-2 bg-black/70 w-[70%] rounded-xl shadow-2xl shadow-black relative">
                 <CloseButton resetGui="true" :vehData="vehicleDataOld" class="text-xl" />
-                Viewing mods for {{ uiStates.vehicleSpeedoData.displayName ? uiStates.vehicleSpeedoData.displayName :
+                Viewing mods for {{ uiStates.vehicleSpeedoData.displayName != "NULL" ? uiStates.vehicleSpeedoData.displayName :
                     "Vehicle" }} - {{ uiStates.vehicleSpeedoData.numberPlate }}
             </div>
         </div>
@@ -52,7 +52,7 @@
                                             <div class="pb-5 duration-300">
                                                 <label for="steps-range"
                                                     class="block mb-2 text-sm font-medium  text-white">{{ item.name }} ({{
-                                                        formatMod(vehicleData[item.dbName]) }})</label>
+                                                        formatMod(vehicleData[item.dbName]) }}) {{getMaxIdx(item.name)}}</label>
                                                 <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
                                                     min="-1" :max="getMaxIdx(item.name)"
                                                     class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
@@ -210,7 +210,7 @@ import { mapGetters } from 'vuex';
 export default {
     data() {
         return {
-            browsingType: "other",
+            browsingType: "general",
             basketItems: [],
             vehicleData: null,
             vehicleDataOld: null,
@@ -230,6 +230,14 @@ export default {
                 {
                     name: "Exhaust",
                     dbName: "exhaust",
+                },
+                {
+                    name: "Wheel Type",
+                    dbName: "wheel_type",
+                },
+                {
+                    name: "Wheels",
+                    dbName: "front_wheels",
                 },
                 {
                     name: "Frame",
@@ -403,6 +411,16 @@ export default {
 
             if(modName == "Colour One" || modName == "Colour Two") {
                 foundIdx = 166;
+            }
+
+            if(modName == "Wheel Type") {
+                foundIdx = 13;
+            }
+
+            if(modName == "Wheels" && this.vehicleData.wheel_type == 12) {
+                foundIdx = 209;
+            } else if(modName == "Wheels") {
+                foundIdx = 50;
             }
 
             return foundIdx != null ? foundIdx == 0 ? foundIdx : foundIdx - 1 : 100;

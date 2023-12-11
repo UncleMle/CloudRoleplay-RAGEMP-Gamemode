@@ -117,6 +117,10 @@ class VehicleCustoms {
             modData = JSON.parse(data);
         }
 
+        vehicle.setWheelType(Number(modData.wheel_type));
+        vehicle.setWindowTint(Number(modData.window_tint));
+        vehicle.setColours(Number(modData.colour_1), Number(modData.colour_2));
+
         vehicle.setMod(0, Number(modData.spoilers));
         vehicle.setMod(1, Number(modData.front_bumper));
         vehicle.setMod(2, Number(modData.rear_bumper));
@@ -152,10 +156,6 @@ class VehicleCustoms {
         vehicle.setMod(53, Number(modData.plate));
         vehicle.setMod(66, Number(modData.colour_1));
         vehicle.setMod(67, Number(modData.colour_2));
-
-        vehicle.setWindowTint(Number(modData.window_tint));
-        vehicle.setColours(Number(modData.colour_1), Number(modData.colour_2));
-
     }
 }
 

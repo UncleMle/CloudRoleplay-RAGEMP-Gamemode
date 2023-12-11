@@ -34,6 +34,7 @@ namespace CloudRP.Vehicles
         public int turbo { get; set; } = -1;
         public int xenon { get; set; } = -1;
         public int front_wheels { get; set; } = -1;
+        public int wheel_type { get; set; } = -1;
         public int back_wheels { get; set; } = -1;
         public int plate_holders { get; set; } = -1;
         public int trim_design { get; set; } = -1;
