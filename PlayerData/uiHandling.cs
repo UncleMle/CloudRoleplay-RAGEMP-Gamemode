@@ -114,6 +114,7 @@ namespace CloudRP.PlayerData
         public static readonly string BanData = "player_bandata";
         public static readonly string PlayerData = "player_data_server";
         public static readonly string PlayerCharacters = "player_characters";
+        public static readonly string VehicleMods = "vehicle_mod_data";
         public static readonly string AuthUiState = "auth_ui";
         public static readonly string PlayerReportData = "report_data";
     }   

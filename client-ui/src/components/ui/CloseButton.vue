@@ -6,10 +6,15 @@
 
 <script>
     export default {
+        props: ['resetGui'],
         methods: {
             resetRouter() {
                 if (window.mp) {
                     window.mp.trigger("browser:resetRouter");
+
+                    if(this.resetGui) {
+                        window.mp.trigger("gui:toggleHudComplete", true);
+                    }
                 }
             }
         }

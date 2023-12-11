@@ -28,4 +28,5 @@ export class Browsers {
 	public static readonly CharCreation: string = "/charcreation";
 	public static readonly Reports: string = "/reports";
 	public static readonly Clothing: string = "/clothing";
+	public static readonly ModsView: string = "/vehiclemods";
 }

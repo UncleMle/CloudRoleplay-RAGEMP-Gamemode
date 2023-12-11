@@ -247,15 +247,19 @@ namespace CloudRP.Vehicles
 
                 dbContext.vehicles.Update(vehicleInsert);
                 dbContext.SaveChanges();
+
+                dbContext.vehicle_mods.Add(new VehicleMods
+                {
+                    vehicle_owner_id = vehicleInsert.vehicle_id,
+                });
+
+                dbContext.SaveChanges();
             }
 
             if (vehicleData == null) return null;
 
             Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicleHash, position, rotation, 255, 255, vehiclePlate, 255, false, true, 0);
-            
-            veh.SetData(_vehicleSharedDataIdentifier, vehicleData);
-            veh.SetSharedData(_vehicleSharedDataIdentifier, vehicleData);
-
+            setVehicleData(veh, vehicleData);
             return veh;
         }
 
@@ -277,15 +281,15 @@ namespace CloudRP.Vehicles
             return foundVehicle;
         }
 
-        public static List<VehicleMods> getVehiclesMods(int vehicleId)
+        public static VehicleMods getVehiclesMods(int vehicleId)
         {
-            List<VehicleMods> mods = null;
+            VehicleMods mods = null;
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
                 mods = dbContext.vehicle_mods
                     .Where(mod => mod.vehicle_owner_id == vehicleId)
-                    .ToList();
+                    .FirstOrDefault();
             }
 
             return mods;

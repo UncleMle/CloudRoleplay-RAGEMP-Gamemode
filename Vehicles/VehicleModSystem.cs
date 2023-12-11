@@ -66,13 +66,21 @@ namespace CloudRP.Vehicles
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (characterData == null || userData == null || !player.IsInVehicle) return;
+            if (characterData == null || userData == null) return;
+
+            if(!player.IsInVehicle)
+            {
+                CommandUtils.errorSay(player, "This command must be used inside of a vehicle!");
+                return;
+            }
 
             Vehicle viewModsVehicle = player.Vehicle;
             DbVehicle vehicleData = VehicleSystem.getVehicleData(viewModsVehicle);
 
             if(vehicleData != null)
             {
+                uiHandling.handleObjectUiMutation(player, MutationKeys.VehicleMods, vehicleData.vehicle_mods);
+
                 uiHandling.pushRouterToClient(player, Browsers.ModsView);
             }
         }

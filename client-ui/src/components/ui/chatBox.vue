@@ -43,7 +43,7 @@ export default {
             this.typingState(oldVal);
         },
         chatMessages() {
-            if (window.mp) {
+            if (window.mp && this.$router.currentRoute.path == "/") {
                 window.mp.trigger("gui:toggleHudComplete", true);
             }
             this.setCloseInterval();

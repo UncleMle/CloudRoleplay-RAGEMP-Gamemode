@@ -9,6 +9,7 @@ import BanPage from './components/auth/BanPage.vue';
 import CharacterCreation from './components/auth/CharacterCreation.vue';
 import AdminReports from './components/admin/AdminReports.vue';
 import ClothingStore from './components/clothing/clothingStore.vue';
+import VehicleCustoms from './components/customs/VehicleCustoms.vue';
 
 export default new Router({
     routes: [
@@ -17,6 +18,7 @@ export default new Router({
         { path: '/ban', component: BanPage },
         { path: '/charcreation', component: CharacterCreation },
         { path: '/reports', component: AdminReports },
-        { path: '/clothing', component: ClothingStore }
+        { path: '/clothing', component: ClothingStore },
+        { path: '/vehiclemods', component: VehicleCustoms }
     ]
 });
