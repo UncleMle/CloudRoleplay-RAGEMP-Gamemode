@@ -20,7 +20,7 @@ namespace CloudRP.Vehicles
             {
                 custom_id = 0,
                 position = new Vector3(-375.8, -124.8, 38.6),
-                range = 60f,
+                size = 60f,
                 name = "Los Santos Customs"
             }
         };
@@ -30,7 +30,7 @@ namespace CloudRP.Vehicles
         {
             foreach(CustomArea col in customsAreas)
             {
-                ColShape colshape = NAPI.ColShape.CreateSphereColShape(col.position, col.range, 0);
+                ColShape colshape = NAPI.ColShape.CreateSphereColShape(col.position, col.size, 0);
                 NAPI.Blip.CreateBlip(544, col.position, 1.0f, 63, col.name, 255, 1.0f, true, 0, 0);
                 setColData(colshape, col);
             }
@@ -44,8 +44,6 @@ namespace CloudRP.Vehicles
 
             if(colShapeData != null)
             {
-                Console.WriteLine("Player entered customs colshape");
-
                 setPlayerColData(player, colShapeData);
             }
         }
@@ -57,8 +55,6 @@ namespace CloudRP.Vehicles
 
             if(colShapeData != null)
             {
-                Console.WriteLine("Player exited customs colshape");
-
                 flushPlayerColData(player);
             }
         }
@@ -66,13 +62,19 @@ namespace CloudRP.Vehicles
         [Command("mods", "~y~Use: ~w~/mods")]
         public void modsCommand(Player player)
         {
+            if(player.GetData<CustomArea>(_colShapeIdentifer) == null)
+            {
+                CommandUtils.errorSay(player, "You must be within one of the customs areas to use this command.");
+                return;
+            }
+
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
             if (characterData == null) return;
 
             if(!player.IsInVehicle)
             {
-                CommandUtils.errorSay(player, "This command must be used inside of a vehicle!");
+                CommandUtils.errorSay(player, "This command must be used inside of a vehicle.");
                 return;
             }
 
@@ -81,6 +83,8 @@ namespace CloudRP.Vehicles
 
             if(vehicleData != null)
             {
+                player.TriggerEvent("customs:loadIndexes");
+
                 uiHandling.handleObjectUiMutation(player, MutationKeys.VehicleMods, vehicleData.vehicle_mods);
                 uiHandling.handleObjectUiMutation(player, MutationKeys.VehicleModsOld, vehicleData.vehicle_mods);
 
@@ -124,10 +128,9 @@ namespace CloudRP.Vehicles
                         VehicleSystem.setVehicleData(pVeh, pVehData);
                     }
                 }
-
             }
 
-            uiHandling.setLoadingState(player, false);
+            uiHandling.sendPushNotif(player, "You successfully modified your vehicle!", 6600, true, true, true);
         }
 
         public static void setColData(ColShape colshape, CustomArea customsData)

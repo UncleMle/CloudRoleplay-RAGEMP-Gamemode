@@ -1,9 +1,10 @@
-import { VehicleData, VehicleMods } from "@/@types";
+import { ModInfo, VehicleData, VehicleMods } from "@/@types";
 import BrowserSystem from "@/BrowserSystem/BrowserSystem";
+import GuiSystem from "@/BrowserSystem/GuiSystem";
 import { _SHARED_VEHICLE_DATA } from "@/Constants/Constants";
 import DeathSystem from "@/DeathSystem/DeathSystem";
 import getVehicleData from "@/PlayerMethods/getVehicleData";
-import { Browsers } from "@/enums";
+import { Browsers, MutationKeys } from "@/enums";
 
 class VehicleCustoms {
     public static LocalPlayer: PlayerMp;
@@ -13,14 +14,66 @@ class VehicleCustoms {
         VehicleCustoms.LocalPlayer = mp.players.local;
 
         mp.events.add("playerExitColshape", VehicleCustoms.handleColEnter);
+        mp.events.add("customs:loadIndexes", VehicleCustoms.loadIndexesIntoBrowser);
         mp.events.add("vehicle:setAttachments", VehicleCustoms.setVehicleAttachments);
         mp.events.add("entityStreamIn", VehicleCustoms.handleStreamIn);
         mp.events.addDataHandler(_SHARED_VEHICLE_DATA, VehicleCustoms.handleDataHandler);
         mp.events.add("render", VehicleCustoms.handleRender);
     }
 
+    public static loadIndexesIntoBrowser() {
+        if(!VehicleCustoms.LocalPlayer.vehicle) return;
+        let veh: VehicleMp = VehicleCustoms.LocalPlayer.vehicle;
+
+        const indexData: ModInfo[] = [
+            { name: "Front Bumper", modNumber: veh.getNumMods(1) },
+            { name: "Rear Bumper", modNumber: veh.getNumMods(2) },
+            { name: "Side Skirt", modNumber: veh.getNumMods(3) },
+            { name: "Exhaust", modNumber: veh.getNumMods(4) },
+            { name: "Frame", modNumber: veh.getNumMods(5) },
+            { name: "Grille", modNumber: veh.getNumMods(6) },
+            { name: "Hood", modNumber: veh.getNumMods(7) },
+            { name: "Fender", modNumber: veh.getNumMods(8) },
+            { name: "Right Fender", modNumber: veh.getNumMods(9) },
+            { name: "Roof", modNumber: veh.getNumMods(10) },
+            { name: "Engine", modNumber: veh.getNumMods(11) },
+            { name: "Brakes", modNumber: veh.getNumMods(11) },
+            { name: "Transmission", modNumber: veh.getNumMods(13) },
+            { name: "Horns", modNumber: veh.getNumMods(14) },
+            { name: "Suspension", modNumber: veh.getNumMods(15) },
+            { name: "Turbo", modNumber: veh.getNumMods(18) },
+            { name: "Xenon", modNumber: veh.getNumMods(22) },
+            { name: "Front Wheels", modNumber: veh.getNumMods(23) },
+            { name: "Back Wheels", modNumber: veh.getNumMods(24) },
+            { name: "Plate", modNumber: veh.getNumMods(25) },
+            { name: "Trim Design", modNumber: veh.getNumMods(27) },
+            { name: "Ornaments", modNumber: veh.getNumMods(28) },
+            { name: "Dial Design", modNumber: veh.getNumMods(30) },
+            { name: "Steering Wheel", modNumber: veh.getNumMods(33) },
+            { name: "Shift Lever", modNumber: veh.getNumMods(34) },
+            { name: "Plaques", modNumber: veh.getNumMods(35) },
+            { name: "Hydraulics", modNumber: veh.getNumMods(38) },
+            { name: "Boost", modNumber: veh.getNumMods(40) },
+            { name: "Window Tint", modNumber: veh.getNumMods(55) },
+            { name: "Livery", modNumber: veh.getNumMods(48) },
+            { name: "Plate Holders", modNumber: veh.getNumMods(53) },
+            { name: "Colour One", modNumber: veh.getNumMods(66) },
+            { name: "Colour Two", modNumber: veh.getNumMods(67) }
+        ];
+
+        if(BrowserSystem._browserInstance) {
+            mp.console.logInfo(JSON.stringify(indexData));
+            BrowserSystem._browserInstance.execute(`appSys.commit("playerMutationSetter", {
+                _mutationKey: "vehicle_mod_indexes",
+                data: ${JSON.stringify(indexData)}
+            })`);
+        }
+    }
+
     public static handleDataHandler(entity: VehicleMp, data: VehicleData) {
         if(entity.type != "vehicle" || !data) return;
+
+        if(VehicleCustoms.LocalPlayer.vehicle == entity && VehicleCustoms.LocalPlayer.browserRouter == Browsers.ModsView) return;
 
         VehicleCustoms.setVehicleAttachments(data.vehicle_mods, false, entity);
     }
@@ -33,14 +86,17 @@ class VehicleCustoms {
     }
 
     public static handleRender() {
-        if(VehicleCustoms.LocalPlayer.browserRouter == Browsers.ModsView) {
+        if(VehicleCustoms.LocalPlayer.browserRouter == Browsers.ModsView && VehicleCustoms.LocalPlayer.vehicle) {
             DeathSystem.disableControls();
+            VehicleCustoms.LocalPlayer.vehicle.setUndriveable(true);
         }
     }
 
     public static handleColEnter(colshape: ColshapeMp) {
         if(colshape.getVariable(VehicleCustoms._colshapeDataIdentifier) && VehicleCustoms.LocalPlayer.browserRouter == Browsers.ModsView) {
+            mp.gui.cursor.show(false, false);
             BrowserSystem.pushRouter("/");
+            GuiSystem.toggleHudComplete(true);
         }
     }
 
@@ -89,6 +145,7 @@ class VehicleCustoms {
         vehicle.setMod(66, Number(modData.colour_1));
         vehicle.setMod(67, Number(modData.colour_2));
 
+        vehicle.setWindowTint(Number(modData.window_tint));
         vehicle.setColours(Number(modData.colour_1), Number(modData.colour_2));
 
     }

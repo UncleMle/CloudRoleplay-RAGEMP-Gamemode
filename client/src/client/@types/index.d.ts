@@ -206,6 +206,11 @@ export interface VehicleData {
 	vehicle_mods: VehicleMods
 }
 
+interface ModInfo {
+	name: string;
+	modNumber: number;
+}
+
 export interface BoneData {
 	id: number,
 	boneIndex: number,

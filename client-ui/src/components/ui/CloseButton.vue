@@ -6,7 +6,7 @@
 
 <script>
     export default {
-        props: ['resetGui'],
+        props: ['resetGui', 'vehData'],
         methods: {
             resetRouter() {
                 if (window.mp) {
@@ -14,6 +14,8 @@
 
                     if(this.resetGui) {
                         window.mp.trigger("gui:toggleHudComplete", true);
+                        console.log(JSON.stringify(this.vehData));
+                        window.mp.trigger("vehicle:setAttachments", JSON.stringify(this.vehData), true);
                     }
                 }
             }

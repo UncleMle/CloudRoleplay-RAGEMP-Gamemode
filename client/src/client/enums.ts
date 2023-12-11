@@ -19,6 +19,7 @@ export class MutationKeys {
 	public static readonly PlayerStats: string = "player_stats";
 	public static readonly PlayerData: string = "player_data_server";
 	public static readonly PlayerGui: string = "player_data_gui";
+	public static readonly ModIndexes: string = "vehicle_mod_indexes";
 }
 
 export class Browsers {

@@ -2,8 +2,8 @@
     <body class="w-full text-white font-medium">
         <div v-if="!loadingState" class="flex justify-center mt-6">
             <div class="text-center p-2 bg-black/70 w-[70%] rounded-xl shadow-2xl shadow-black relative">
-                <CloseButton resetGui="true" class="text-xl" />
-                Viewing mods for {{ uiStates.vehicleSpeedoData.displayName ? uiStates.vehicleSpeedoData.displayName :
+                <CloseButton resetGui="true" :vehData="vehicleDataOld" class="text-xl" />
+                {{ test() }} Viewing mods for {{ uiStates.vehicleSpeedoData.displayName ? uiStates.vehicleSpeedoData.displayName :
                     "Vehicle" }} - {{ uiStates.vehicleSpeedoData.numberPlate }}
             </div>
         </div>
@@ -54,7 +54,7 @@
                                                     class="block mb-2 text-sm font-medium  text-white">{{ item.name }} ({{
                                                         formatMod(vehicleData[item.dbName]) }})</label>
                                                 <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
-                                                    min="-1" :max=item.maxIdx
+                                                    min="-1" :max="getMaxIdx(item.name)"
                                                     class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
                                                 <button @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
                                                     v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
@@ -75,9 +75,9 @@
                                             <div class="pb-5 duration-300">
                                                 <label for="steps-range"
                                                     class="block mb-2 text-sm font-medium  text-white">{{ item.name }} ({{
-                                                        formatMod(vehicleData[item.dbName]) }})</label>
+                                                        formatMod(vehicleData[item.dbName]) }}) {{getMaxIdx(item.name)}}</label>
                                                 <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
-                                                    min="-1" :max=item.maxIdx
+                                                    min="-1" :max="getMaxIdx(item.name)"
                                                     class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
                                                 <button @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
                                                     v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
@@ -101,7 +101,7 @@
                                                         formatMod(vehicleData[item.dbName]) }})</label>
                                                 <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
                                                     :min="item.dbName == 'colour_1' || item.dbName == 'colour_2' ? 1 : -1"
-                                                    :max=item.maxIdx
+                                                    :max="item.maxIdx ? item.maxIdx : getMaxIdx(item.name)"
                                                     class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
                                                 <button @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
                                                     v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
@@ -218,101 +218,91 @@ export default {
                 {
                     name: "Front Bumper",
                     dbName: "front_bumper",
-                    maxIdx: 20
                 },
                 {
                     name: "Rear Bumper",
                     dbName: "rear_bumper",
-                    maxIdx: 20
                 },
                 {
                     name: "Side Skirt",
                     dbName: "side_skirt",
-                    maxIdx: 5
                 },
                 {
                     name: "Exhaust",
                     dbName: "exhaust",
-                    maxIdx: 5
                 },
                 {
                     name: "Frame",
                     dbName: "frame",
-                    maxIdx: 20
                 },
                 {
                     name: "Grille",
                     dbName: "grille",
-                    maxIdx: 20
                 },
                 {
                     name: "Hood",
                     dbName: "hood",
-                    maxIdx: 20
                 },
                 {
                     name: "Right Fender",
                     dbName: "right_fender",
-                    maxIdx: 20
                 },
                 {
                     name: "Fender",
                     dbName: "fender",
-                    maxIdx: 20
                 }
             ],
             performanceItems: [
                 {
                     name: "Engine",
                     dbName: "engine",
-                    maxIdx: 4
                 },
                 {
                     name: "Brakes",
                     dbName: "brakes",
-                    maxIdx: 3
                 },
                 {
                     name: "Transmission",
                     dbName: "transmission",
-                    maxIdx: 3
                 },
                 {
                     name: "Suspension",
                     dbName: "suspension",
-                    maxIdx: 3
                 },
                 {
                     name: "Turbo",
                     dbName: "turbo",
-                    maxIdx: 0
                 },
             ],
             otherItems: [
                 {
                     name: "Colour One",
                     dbName: "colour_1",
-                    maxIdx: 160
                 },
                 {
                     name: "Colour Two",
                     dbName: "colour_2",
-                    maxIdx: 160
                 },
                 {
                     name: "Livery",
                     dbName: "livery",
-                    maxIdx: 20
+                },
+                {
+                    name: "Xenon",
+                    dbName: "xenon",
+                    maxIdx: 0
+                },
+                {
+                    name: "Horns",
+                    dbName: "horns",
                 },
                 {
                     name: "Plate",
                     dbName: "plate",
-                    maxIdx: 4
                 },
                 {
                     name: "Window Tint",
                     dbName: "window_tint",
-                    maxIdx: 4
                 },
             ]
         }
@@ -353,6 +343,10 @@ export default {
                 val: modVal,
                 price: 300
             });
+        },
+        test() {
+            let t = window.mp.invoke("testReturnEvent");
+            return t;
         },
         checkBasket(modName, val) {
             let found = false;
@@ -400,6 +394,22 @@ export default {
             setTimeout(() => {
                 this.$store.state.uiStates.serverLoading = false;
             }, 4000);
+        },
+        getMaxIdx(modName) {
+            let getMaxIdx = this.playerData.vehicle_mod_indexes;
+            let foundIdx;
+
+            getMaxIdx.forEach(data => {
+                if(data.name == modName) {
+                    foundIdx = data.modNumber;
+                }
+            });
+
+            if(modName == "Colour One" || modName == "Colour Two") {
+                foundIdx = 166;
+            }
+
+            return foundIdx != null ? foundIdx : 100;
         }
     },
     mounted() {

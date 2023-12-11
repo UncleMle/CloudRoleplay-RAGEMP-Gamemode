@@ -2,6 +2,7 @@ import NotificationSystem from "@/NotificationSystem/NotificationSystem";
 import { VehicleData } from "../@types";
 import { _control_ids } from "../Constants/Constants";
 import getVehicleData from "../PlayerMethods/getVehicleData";
+import { Browsers } from "@/enums";
 
 class VehicleEngine {
 	public static LocalPlayer: PlayerMp;
@@ -15,7 +16,7 @@ class VehicleEngine {
 	}
 
 	public static toggleEngine() {
-		if (VehicleEngine.LocalPlayer.vehicle && !VehicleEngine.LocalPlayer.isTypingInTextChat && VehicleEngine.LocalPlayer.vehicle.getPedInSeat(-1) == VehicleEngine.LocalPlayer.handle) {
+		if (VehicleEngine.LocalPlayer.vehicle && !VehicleEngine.LocalPlayer.isTypingInTextChat && VehicleEngine.LocalPlayer.vehicle.getPedInSeat(-1) == VehicleEngine.LocalPlayer.handle && VehicleEngine.LocalPlayer.browserRouter != Browsers.ModsView) {
 			let vehicleData: VehicleData | undefined = getVehicleData(VehicleEngine.LocalPlayer.vehicle);
 			if (!vehicleData) return;
 

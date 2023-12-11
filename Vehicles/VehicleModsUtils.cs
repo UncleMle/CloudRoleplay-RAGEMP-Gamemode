@@ -10,6 +10,6 @@ namespace CloudRP.Vehicles
         public string name { get; set; }
         public int custom_id { get; set; }
         public Vector3 position { get; set; }
-        public float range { get; set; }
+        public float size { get; set; }
     }
 }
