@@ -661,6 +661,11 @@ namespace CloudRP.Admin
                         getPlayer.TriggerEvent("admin:events:stopFly");
                     }
 
+                    if(getPlayer.IsInVehicle)
+                    {
+                        getPlayer.WarpOutOfVehicle();
+                    }
+
                     AdminUtils.staffSay(player, $"You {isFrozen} {targetPlayerData.username}");
                     AdminUtils.staffSay(getPlayer, $"You were {isFrozen + "n"} by Admin {userData.adminName}");
                 }

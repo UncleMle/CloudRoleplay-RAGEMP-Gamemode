@@ -23,9 +23,6 @@ class WeaponSystem {
     public static async playSwitchAnim(player: PlayerMp) {
         mp.game.streaming.requestAnimDict('reaction@intimidation@1h')
         player.taskPlayAnim('reaction@intimidation@1h', 'intro', 8.0, 1.0, 1110.0, 0 + 32 + 16, 0.0, false, false, false)
-
-        await mp.game.waitAsync(2500);
-        player.clearTasks();
     }
 }
 

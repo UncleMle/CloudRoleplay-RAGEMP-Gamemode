@@ -146,6 +146,14 @@ export interface Flight {
 	point_distance: number
 }
 
+export interface VehicleMods {
+	vehicle_mod_id: number,
+	vehicle_owner_id: number,
+	mod_type: number,
+	mod_index: number,
+	mod_name: string
+}
+
 export interface VehicleData {
 	vehicle_id: number,
 	owner_id: number,
@@ -162,7 +170,8 @@ export interface VehicleData {
 	indicator_status: number,
 	vehicle_siren: boolean,
 	vehicle_fuel: number,
-	vehicle_distance: number
+	vehicle_distance: number,
+	vehicle_mods: VehicleMods
 }
 
 export interface BoneData {

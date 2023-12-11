@@ -3,14 +3,16 @@ using System;
 using CloudRP.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CloudRP.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231211051449_Vehicle mods base system.")]
+    partial class Vehiclemodsbasesystem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -541,35 +543,6 @@ namespace CloudRP.Migrations
                     b.HasKey("vehicle_id");
 
                     b.ToTable("vehicles");
-                });
-
-            modelBuilder.Entity("CloudRP.Vehicles.VehicleMods", b =>
-                {
-                    b.Property<int>("vehicle_mod_id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("mod_index")
-                        .HasColumnType("int");
-
-                    b.Property<string>("mod_name")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<int>("mod_type")
-                        .HasColumnType("int");
-
-                    b.Property<int>("vehicle_owner_id")
-                        .HasColumnType("int");
-
-                    b.HasKey("vehicle_mod_id");
-
-                    b.ToTable("vehicle_mods");
                 });
 #pragma warning restore 612, 618
         }

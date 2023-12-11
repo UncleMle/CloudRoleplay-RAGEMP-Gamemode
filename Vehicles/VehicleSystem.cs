@@ -77,9 +77,8 @@ namespace CloudRP.Vehicles
 
             veh.Locked = true;
             vehicle.vehicle_locked = true;
-            veh.SetSharedData(_vehicleSharedDataIdentifier, vehicle);
-            veh.SetData(_vehicleSharedDataIdentifier, vehicle);
 
+            setVehicleData(veh, vehicle);
             return veh;
         }
 
@@ -103,6 +102,13 @@ namespace CloudRP.Vehicles
 
                 return;
             }
+        }
+
+        public static void setVehicleData(Vehicle vehicle, DbVehicle vehicleData)
+        {
+            vehicleData.vehicle_mods = getVehiclesMods(vehicleData.vehicle_id);
+            vehicle.SetSharedData(_vehicleSharedDataIdentifier, vehicleData);
+            vehicle.SetData(_vehicleSharedDataIdentifier, vehicleData);
         }
 
         public static Vehicle getClosestVehicleToPlayer(Player player, float maxDist = 10)
@@ -270,6 +276,20 @@ namespace CloudRP.Vehicles
             }
 
             return foundVehicle;
+        }
+
+        public static List<VehicleMods> getVehiclesMods(int vehicleId)
+        {
+            List<VehicleMods> mods = null;
+
+            using (DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                mods = dbContext.vehicle_mods
+                    .Where(mod => mod.vehicle_owner_id == vehicleId)
+                    .ToList();
+            }
+
+            return mods;
         }
 
         public static DbVehicle getVehicleData(Vehicle vehicle)

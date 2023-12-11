@@ -25,14 +25,14 @@ namespace CloudRP.Database
         }
 
         public DbSet<Account> accounts { get; set; }
-        public DbSet<DbVehicle> vehicles { get; set; }
         public DbSet<DbCharacter> characters { get; set; }
         public DbSet<Ban> bans { get; set; }
         public DbSet<CharacterModel> character_models { get; set; }
         public DbSet<CharacterConnection> server_connections { get; set; }
         public DbSet<Nickname> nicknames { get; set; }
         public DbSet<CharacterClothing> character_clothes { get; set; }
-
+        public DbSet<VehicleMods> vehicle_mods { get; set; }
+        public DbSet<DbVehicle> vehicles { get; set; }
     }
 
     public class BaseEntity
