@@ -251,7 +251,8 @@ export interface SpeedoData {
 	lightsStates: { lightsOn: boolean; highbeamsOn: boolean; },
 	fuelLevel: number,
 	vehicleMileage: number,
-	metric: number
+	metric: number,
+	numberplate: string
 }
 
 export interface Corpse {

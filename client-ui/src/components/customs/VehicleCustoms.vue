@@ -38,15 +38,22 @@
                                     </button>
                                 </ui>
                             </div>
+                            {{ uiStates.vehicleSpeedoData }}
 
-                            <div class="relative w-full h-fit py-4 rounded-lg border border-gray-900 text-center max-h-[37vw] overflow-scroll overflow-x-hidden">
+                            <div class="relative w-full h-fit rounded-lg border border-gray-900 text-center max-h-[37vw] overflow-scroll overflow-x-hidden">
 
-                                <div>
-                                    {{ vehicleData }}
+                                <div class="p-4">
+
+                                    <div class="pb-5 duration-300">
+                                        <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Front bumper ({{formatMod(vehicleData.front_bumper)}})</label>
+                                        <input id="steps-range" v-model="vehicleData.front_bumper" type="range" min="-1" max="20" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                        <button @click="addToBasket('Front Bumper', vehicleData.front_bumper)" v-if="vehicleDataOld.front_bumper != vehicleData.front_bumper" class="border duration-300 w-[50%] p-0.5 mt-2 rounded-lg border-gray-500 hover:text-green-500">
+                                            Add to Basket <i class="fa-solid fa-plus"></i>
+                                        </button>
+                                    </div>
 
                                     <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Front bumper ({{formatMod(vehicleData.front_bumper)}})</label>
                                     <input id="steps-range" v-model="vehicleData.front_bumper" type="range" min="0" max="10" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
-
 
                                 </div>
                             </div>
@@ -64,9 +71,9 @@
                                 <h1 class="font-bold text-2xl pl-4"><i class="fa-solid fa-cart-shopping text-gray-400"></i> Your basket</h1>
                             </div>
 
-                            <div class="relative w-full h-fit py-4 rounded-lg border border-gray-900 text-center">
+                            <div class="relative w-full h-fit rounded-lg border border-gray-900 text-center">
 
-                                <div class="mt-3 text-gray-300">
+                                <div class="text-gray-300 p-4">
                                     <div v-if="basketItems.length == 0">
                                         You don't have anything in your basket. Choose something nice for your vehicle!
                                     </div>
@@ -95,12 +102,14 @@ export default {
         return {
             browsingType: "general",
             basketItems: [],
-            vehicleData: null
+            vehicleData: null,
+            vehicleDataOld: null
         }
     },
     computed: {
         ...mapGetters({
-            playerData: 'getPlayerInfo'
+            playerData: 'getPlayerInfo',
+            uiStates: 'getUiStates'
         })
     },
     watch: {
@@ -119,6 +128,12 @@ export default {
     methods: {
         formatMod(modIdx) {
             return modIdx == -1 || modIdx <= 0 ? 0 : modIdx;
+        },
+        addToBasket(modName, modVal) {
+            this.basketItems.push({
+                name: modName,
+                val: modVal
+            });
         }
     },
     mounted() {
@@ -127,6 +142,7 @@ export default {
         }
 
         this.vehicleData = this.playerData.vehicle_mod_data;
+        this.vehicleDataOld = this.playerData.vehicle_mod_data_old;
     }
 }
 </script>

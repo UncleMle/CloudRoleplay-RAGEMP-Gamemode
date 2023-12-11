@@ -34,18 +34,19 @@ class VehicleSpeedo {
             let vehicleData: VehicleData | undefined = getVehicleData(VehicleSpeedo.LocalPlayer.vehicle);
 
             if(!vehicleData) return;
-
-			let lightState = VehicleSpeedo.LocalPlayer.vehicle.getLightsState(1, 1);
+            let vehicle = VehicleSpeedo.LocalPlayer.vehicle;
+			let lightState = vehicle.getLightsState(1, 1);
 
             let speedoData: SpeedoData = {
-                vehicleSpeed: VehicleSpeedo.LocalPlayer.vehicle.getSpeed(),
+                vehicleSpeed: vehicle.getSpeed(),
 				vehicleRpm: vehicleData.engine_status ? VehicleSpeedo.LocalPlayer.vehicle.rpm : 0,
 				indicatorStatus: vehicleData.indicator_status,
 				lockStatus: vehicleData.vehicle_locked,
 				lightsStates: lightState,
                 fuelLevel: vehicleData.vehicle_fuel,
                 vehicleMileage: vehicleData.vehicle_distance,
-                metric: mp.game.gameplay.getProfileSetting(227)
+                metric: mp.game.gameplay.getProfileSetting(227),
+                numberplate: vehicle.getNumberPlateText()
             }
 
             BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {

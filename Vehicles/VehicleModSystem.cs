@@ -80,6 +80,7 @@ namespace CloudRP.Vehicles
             if(vehicleData != null)
             {
                 uiHandling.handleObjectUiMutation(player, MutationKeys.VehicleMods, vehicleData.vehicle_mods);
+                uiHandling.handleObjectUiMutation(player, MutationKeys.VehicleModsOld, vehicleData.vehicle_mods);
 
                 uiHandling.pushRouterToClient(player, Browsers.ModsView);
             }
