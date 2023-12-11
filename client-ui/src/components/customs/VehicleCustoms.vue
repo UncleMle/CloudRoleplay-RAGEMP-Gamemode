@@ -30,10 +30,10 @@
                                         <span class="text-gray-300 hover:text-white duration-300">Performance</span>
                                     </button>
 
-                                    <button @click="browsingType = 'interior'" class="hover:text-green-500 duration-300">
+                                    <!-- <button @click="browsingType = 'interior'" class="hover:text-green-500 duration-300">
                                         <i class="fa-solid fa-person-shelter text-2xl text-gray-300"></i><br />
                                         <span class="text-gray-300 hover:text-white duration-300">Interior</span>
-                                    </button>
+                                    </button> -->
 
                                     <button @click="browsingType = 'other'" class="hover:text-green-500 duration-300">
                                         <i class="fa-solid fa-wrench text-2xl text-gray-300"></i><br />
@@ -52,7 +52,7 @@
                                             <div class="pb-5 duration-300">
                                                 <label for="steps-range"
                                                     class="block mb-2 text-sm font-medium  text-white">{{ item.name }} ({{
-                                                        formatMod(vehicleData[item.dbName]) }}) {{getMaxIdx(item.name)}}</label>
+                                                        formatMod(vehicleData[item.dbName]) }})</label>
                                                 <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
                                                     min="-1" :max="getMaxIdx(item.name)"
                                                     class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
@@ -75,7 +75,7 @@
                                             <div class="pb-5 duration-300">
                                                 <label for="steps-range"
                                                     class="block mb-2 text-sm font-medium  text-white">{{ item.name }} ({{
-                                                        formatMod(vehicleData[item.dbName]) }}) {{getMaxIdx(item.name)}}</label>
+                                                        formatMod(vehicleData[item.dbName]) }})</label>
                                                 <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
                                                     min="-1" :max="getMaxIdx(item.name)"
                                                     class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">

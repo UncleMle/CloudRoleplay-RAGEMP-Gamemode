@@ -1290,5 +1290,54 @@ namespace CloudRP.Admin
 
             }
         }
+
+        [Command("setvplate", "~r~/setvplate [plate]")]
+        public void setVPlate(Player player, string numberplate)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if (userData.adminLevel > (int)AdminRanks.Admin_SeniorAdmin)
+            {
+                if(!player.IsInVehicle)
+                {
+                    CommandUtils.errorSay(player, "You must be in a vehicle to use this command.");
+                    return;
+                }
+
+                Vehicle pVeh = player.Vehicle;
+                DbVehicle vehData = VehicleSystem.getVehicleData(pVeh);
+                string formattedPlate = numberplate.ToUpper();    
+
+                if (vehData != null)
+                {
+                    using(DefaultDbContext dbContext = new DefaultDbContext())
+                    {
+                        DbVehicle findVeh = dbContext.vehicles
+                            .Where(veh => veh.numberplate == formattedPlate)
+                            .FirstOrDefault();
+
+                        if (findVeh != null)
+                        {
+                            CommandUtils.errorSay(player, "There is already a vehicle with this plate.");
+                            return;
+                        }
+
+                        vehData.numberplate = formattedPlate;
+                        pVeh.NumberPlate = formattedPlate;
+
+                        dbContext.Update(vehData);
+                        dbContext.SaveChanges();
+
+                        VehicleSystem.setVehicleData(pVeh, vehData);
+                        AdminUtils.staffSay(player, $"You have set vehicle #{vehData.vehicle_id}'s license plate to {formattedPlate}");
+                    }
+
+
+                }
+
+            }
+            else AdminUtils.sendNoAuth(player);
+
+        }
     }
 }

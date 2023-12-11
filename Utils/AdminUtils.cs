@@ -88,6 +88,7 @@ namespace CloudRP.Utils
                 return true;
             } else
             {
+                sendNoAuth(player);
                 return false;
             }
         }
