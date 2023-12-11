@@ -3,7 +3,7 @@
         <div v-if="!loadingState" class="flex justify-center mt-6">
             <div class="text-center p-2 bg-black/70 w-[70%] rounded-xl shadow-2xl shadow-black relative">
                 <CloseButton resetGui="true" :vehData="vehicleDataOld" class="text-xl" />
-                {{ test() }} Viewing mods for {{ uiStates.vehicleSpeedoData.displayName ? uiStates.vehicleSpeedoData.displayName :
+                Viewing mods for {{ uiStates.vehicleSpeedoData.displayName ? uiStates.vehicleSpeedoData.displayName :
                     "Vehicle" }} - {{ uiStates.vehicleSpeedoData.numberPlate }}
             </div>
         </div>
@@ -344,10 +344,6 @@ export default {
                 price: 300
             });
         },
-        test() {
-            let t = window.mp.invoke("testReturnEvent");
-            return t;
-        },
         checkBasket(modName, val) {
             let found = false;
             this.basketItems.forEach(data => {
@@ -409,7 +405,7 @@ export default {
                 foundIdx = 166;
             }
 
-            return foundIdx != null ? foundIdx : 100;
+            return foundIdx != null ? foundIdx == 0 ? foundIdx : foundIdx - 1 : 100;
         }
     },
     mounted() {

@@ -39,7 +39,6 @@ namespace CloudRP.Vehicles
         [ServerEvent(Event.PlayerEnterColshape)]
         public void enterColShape(ColShape colShape, Player player)
         {
-            Console.WriteLine("triggered");
             CustomArea colShapeData = colShape.GetData<CustomArea>(_colShapeIdentifer);
 
             if(colShapeData != null)
@@ -131,6 +130,8 @@ namespace CloudRP.Vehicles
             }
 
             uiHandling.sendPushNotif(player, "You successfully modified your vehicle!", 6600, true, true, true);
+            uiHandling.pushRouterToClient(player, Browsers.None);
+            uiHandling.toggleGui(player, true);
         }
 
         public static void setColData(ColShape colshape, CustomArea customsData)

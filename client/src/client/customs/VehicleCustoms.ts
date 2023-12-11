@@ -14,11 +14,19 @@ class VehicleCustoms {
         VehicleCustoms.LocalPlayer = mp.players.local;
 
         mp.events.add("playerExitColshape", VehicleCustoms.handleColEnter);
+        mp.events.add("playerLeaveVehicle", VehicleCustoms.handleLeaveVehicle);
         mp.events.add("customs:loadIndexes", VehicleCustoms.loadIndexesIntoBrowser);
         mp.events.add("vehicle:setAttachments", VehicleCustoms.setVehicleAttachments);
         mp.events.add("entityStreamIn", VehicleCustoms.handleStreamIn);
         mp.events.addDataHandler(_SHARED_VEHICLE_DATA, VehicleCustoms.handleDataHandler);
         mp.events.add("render", VehicleCustoms.handleRender);
+    }
+
+    public static handleLeaveVehicle() {
+        if(VehicleCustoms.LocalPlayer.browserRouter == Browsers.ModsView) {
+            BrowserSystem.pushRouter("/");
+            GuiSystem.toggleHudComplete(true);
+        }
     }
 
     public static loadIndexesIntoBrowser() {

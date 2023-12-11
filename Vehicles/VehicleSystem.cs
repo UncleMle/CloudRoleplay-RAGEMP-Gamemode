@@ -555,7 +555,7 @@ namespace CloudRP.Vehicles
 
         public static string genUniquePlate(int vehicleId)
         {
-            string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
             string result = "";
 

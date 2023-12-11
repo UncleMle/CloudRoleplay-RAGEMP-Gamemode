@@ -49,6 +49,11 @@ namespace CloudRP.PlayerData
             player.TriggerEvent("browser:setAuthState", state);
         }
 
+        public static void toggleGui(Player player, bool toggle)
+        {
+            player.TriggerEvent("gui:toggleHudComplete", toggle);
+        }
+
         public static void sendPushNotifError(Player player, string text, int time, bool resetLoading = false)
         {
             player.TriggerEvent("browser:sendErrorPushNotif", text, time);
