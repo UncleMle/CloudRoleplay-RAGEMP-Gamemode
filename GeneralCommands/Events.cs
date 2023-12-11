@@ -1,4 +1,5 @@
-﻿using CloudRP.Character;
+﻿using CloudRP.Admin;
+using CloudRP.Character;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
 using GTANetworkAPI;
@@ -20,7 +21,7 @@ namespace CloudRP.GeneralCommands
             User user = PlayersData.getPlayerAccountData(player);
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
-            if (user != null && characterData != null && !user.adminDuty && characterData.injured_timer == 0)
+            if (user != null && characterData != null && !user.adminDuty && user.adminLevel > (int)AdminRanks.Admin_Founder && characterData.injured_timer == 0)
             {
                 Random ran = new Random();
                 int numOne = ran.Next(1, afkMaxCalcNum);

@@ -96,6 +96,7 @@ namespace CloudRP.PlayerData
         public static readonly string StatsPage = "/stats";
         public static readonly string BanPage = "/ban";
         public static readonly string ReportsPage = "/reports";
+        public static readonly string ModsView = "/vehiclemods";
     }
 
     public static class AuthStates

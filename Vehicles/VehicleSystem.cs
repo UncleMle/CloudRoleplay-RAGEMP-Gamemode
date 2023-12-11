@@ -192,8 +192,7 @@ namespace CloudRP.Vehicles
 
         public static void saveVehicleData(Vehicle vehicle, DbVehicle vehicleData, bool updateDb = false)
         {
-            vehicle.SetData(_vehicleSharedDataIdentifier, vehicleData);
-            vehicle.SetSharedData(_vehicleSharedDataIdentifier, vehicleData);
+            setVehicleData(vehicle, vehicleData);
 
             if(updateDb)
             {
