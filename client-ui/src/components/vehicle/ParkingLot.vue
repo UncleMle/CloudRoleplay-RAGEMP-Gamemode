@@ -18,7 +18,7 @@
                                             <img :src="getCarImagePath(item.vehicle_name)" alt="Car Image" class="w-30 h-20 rounded-xl" />
                                         </div>
                                         <font class="font-bold text-xl">
-                                            {{ item.vehicle_name }}
+                                            {{ item.vehicle_name[0].toUpperCase() + item.vehicle_name.substring(1) }}
                                         </font>
                                         <br />
                                         <div class="relative mt-2">
