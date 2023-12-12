@@ -7,16 +7,13 @@
                         <i class="fa-solid fa-car text-gray-400"></i>
                         Vehicle Customs
                     </font>
-                    <br />
-                    {{ uiStates.vehicleSpeedoData.displayName != "NULL" ?
-                        uiStates.vehicleSpeedoData.displayName :
-                        "Vehicle" }} - {{ uiStates.vehicleSpeedoData.numberPlate }}
                 </div>
             </div>
         </div>
 
         <main v-if="!loadingState" class="relative">
             <div class="absolute left-[3%] top-20">
+
                 <div class="bg-black/70 shadow-2xl shadow-black rounded-xl">
                     <ui class="flex justify-center space-x-5 border-gray-500 p-4">
                         <button @click="browsingType = 'general'" class="hover:text-white">
@@ -130,7 +127,28 @@
 
             <div class="absolute right-[3%] top-20">
 
-                <div class="container flex items-center w-[24vw] mx-auto">
+                <div class="bg-black/70 shadow-2xl shadow-black p-3 rounded-xl relative h-[6vw]">
+                    <div v-if="getCarImagePath" class="absolute left-3">
+                        <img :src="getCarImagePath" alt="Car Image" class="w-70  h-20 rounded-xl" />
+                    </div>
+                    <div class="absolute" :class="getCarImagePath ? 'left-40' : 'left-3'">
+                        <font class="font-bold text-xl">
+                            {{ uiStates.vehicleSpeedoData.displayName != "NULL" ?
+                            uiStates.vehicleSpeedoData.displayName :
+                            "Vehicle" }}
+                        </font>
+                        <br />
+                        <div class="relative mt-2">
+                            <div id="numberplate" style="text-shadow: rgba(0, 0, 0, 0.563) 1px 0 10px;"
+                                class='bg-gray-300 w-40 text-center text-3xl outline-none rounded-lg'>
+                                {{ uiStates.vehicleSpeedoData.numberPlate }}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="container flex items-center w-[24vw] mx-auto mt-14">
                     <div class="flex justify-center w-full">
                         <div
                             class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none max-h-[34vw]">
@@ -145,7 +163,7 @@
                             </div>
 
                             <div
-                                class="relative w-full h-fit rounded-lg border border-gray-900 text-center max-h-[30vw] overflow-scroll overflow-x-hidden">
+                                class="relative w-full h-fit rounded-lg text-center max-h-[30vw] overflow-scroll overflow-x-hidden">
 
                                 <div class="p-4">
                                     <div class="text-gray-300" v-if="basketItems.length == 0">
@@ -220,6 +238,7 @@ export default {
             basketItems: [],
             vehicleData: null,
             vehicleDataOld: null,
+            vehImage: null,
             generalItems: [
                 {
                     name: "Front Bumper",
@@ -334,7 +353,15 @@ export default {
             playerData: 'getPlayerInfo',
             uiStates: 'getUiStates',
             loadingState: 'getLoadingState'
-        })
+        }),
+        getCarImagePath() {
+            try {
+                const imageModule = require(`../../assets/img/cars/${this.uiStates.vehicleSpeedoData.dbName}.png`);
+                return imageModule;
+            } catch (error) {
+                return "";
+            }
+        },
     },
     watch: {
         vehicleData: {
@@ -461,6 +488,18 @@ export default {
 
         this.vehicleData = this.playerData.vehicle_mod_data;
         this.vehicleDataOld = this.playerData.vehicle_mod_data_old;
+
     }
 }
 </script>
+
+<style>
+@font-face {
+    font-family: "UKNumberPlate";
+    src: url('../../assets/fonts/UKNumberPlate.ttf');
+}
+
+#numberplate {
+    font-family: "UKNumberPlate";
+}
+</style>

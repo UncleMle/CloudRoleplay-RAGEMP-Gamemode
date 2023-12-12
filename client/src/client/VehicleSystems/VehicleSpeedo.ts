@@ -47,8 +47,8 @@ class VehicleSpeedo {
                 vehicleMileage: vehicleData.vehicle_distance,
                 metric: mp.game.gameplay.getProfileSetting(227),
                 numberPlate: vehicle.getNumberPlateText(),
-                displayName: VehicleSpeedo.getVehDispName(vehicle.model)
-
+                displayName: VehicleSpeedo.getVehDispName(vehicle.model),
+                dbName: vehicleData.vehicle_name
             }
 
             BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {

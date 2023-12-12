@@ -260,8 +260,9 @@ export interface SpeedoData {
 	fuelLevel: number,
 	vehicleMileage: number,
 	metric: number,
-	numberPlate: string
-	displayName: string
+	numberPlate: string,
+	displayName: string,
+	dbName: string
 }
 
 export interface Corpse {
