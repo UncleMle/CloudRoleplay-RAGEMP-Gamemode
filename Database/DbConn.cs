@@ -7,6 +7,7 @@ using CloudRP.AntiCheat;
 using CloudRP.Authentication;
 using CloudRP.Character;
 using CloudRP.GeneralCommands;
+using CloudRP.VehicleModification;
 using CloudRP.Vehicles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;

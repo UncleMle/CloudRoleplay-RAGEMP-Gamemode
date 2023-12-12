@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Numerics;
+using CloudRP.VehicleModification;
 
 namespace CloudRP.Vehicles
 {

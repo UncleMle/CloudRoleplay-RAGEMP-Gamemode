@@ -3,6 +3,7 @@ using CloudRP.Character;
 using CloudRP.Database;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
+using CloudRP.VehicleModification;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;

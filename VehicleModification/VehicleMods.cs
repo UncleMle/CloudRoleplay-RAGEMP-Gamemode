@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace CloudRP.Vehicles
+namespace CloudRP.VehicleModification
 {
     public class VehicleMods : BaseEntity
     {
@@ -22,7 +22,7 @@ namespace CloudRP.Vehicles
         public int frame { get; set; } = -1;
         public int grille { get; set; } = -1;
         public int hood { get; set; } = -1;
-        public int fender { get; set; } = -1; 
+        public int fender { get; set; } = -1;
         public int right_fender { get; set; } = -1;
         public int roof { get; set; } = -1;
         public int engine { get; set; } = -1;
