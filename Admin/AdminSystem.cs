@@ -1188,21 +1188,6 @@ namespace CloudRP.Admin
             else AdminUtils.sendNoAuth(player);
         }
 
-        [Command("setw", "~r~/setw [weather]")]
-        public void setweather(Player player, Weather weather)
-        {
-            User userData = PlayersData.getPlayerAccountData(player);
-
-            if (userData.adminLevel > (int)AdminRanks.Admin_SeniorAdmin)
-            {
-                NAPI.World.SetWeather(weather);
-
-                AdminUtils.staffSay(player, "Set weather to " + weather);
-
-            }
-            else AdminUtils.sendNoAuth(player);
-        }
-
         [Command("arefuel", "~r~/arefuel [currentVehicle|id|plate]")]
         public void adminRefuelVehicle(Player player, string vehicleIdOrPlate = null)
         {

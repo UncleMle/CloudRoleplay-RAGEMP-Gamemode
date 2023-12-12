@@ -1,4 +1,7 @@
-﻿using CloudRP.Utils;
+﻿using CloudRP.Admin;
+using CloudRP.ChatSystem;
+using CloudRP.PlayerData;
+using CloudRP.Utils;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
@@ -16,6 +19,7 @@ namespace CloudRP.World
         public static string weatherKeyIdentifier = "weatherApiKey";
         public static string weatherSyncTo = "london";
         public static string weatherApiKey;
+        public static bool weatherSyncOn = true;
 
         [ServerEvent(Event.ResourceStart)]
         public void onResourceStart()
@@ -37,6 +41,7 @@ namespace CloudRP.World
 
         public static async void resyncWeather(object source = null, ElapsedEventArgs e = null)
         {
+            if (!weatherSyncOn) return;
             try
             {
                 string uri = "https://api.weatherapi.com/v1/current.json?key=";
@@ -90,6 +95,34 @@ namespace CloudRP.World
             }
 
             ChatUtils.formatConsolePrint( ChatUtils._c_Server + "Set weather to " +  code, ConsoleColor.Cyan);
+        }
+
+        [Command("wsync", "~r~/wsync")]
+        public void toggleWeatherSync(Player player)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            {
+                weatherSyncOn = !weatherSyncOn;
+                AdminUtils.staffSay(player, $"You turned weather sync {(weatherSyncOn ? "on" : "off")}.");
+            } else AdminUtils.sendNoAuth(player);
+
+        }
+
+        [Command("setw", "~r~/setw [weather]")]
+        public void setweather(Player player, Weather weather)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            {
+                NAPI.World.SetWeather(weather);
+
+                AdminUtils.staffSay(player, "Set weather to " + weather);
+
+            }
+            else AdminUtils.sendNoAuth(player);
         }
     }
 }

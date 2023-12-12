@@ -1,6 +1,9 @@
-﻿using GTANetworkAPI;
-using GTANetworkMethods;
+﻿using CloudRP.Admin;
+using CloudRP.PlayerData;
+using CloudRP.Utils;
+using GTANetworkAPI;
 using System;
+using System.Security.Cryptography;
 using System.Timers;
 using VisualStudioConfiguration;
 
@@ -13,6 +16,7 @@ namespace CloudRP.World
         public static int hour = 0;
         public static int min = 0;
         public static int sec = 0;
+        public static bool timeSyncOn = true;
 
         [ServerEvent(Event.ResourceStart)]
         public void onResourceStart()
@@ -30,6 +34,8 @@ namespace CloudRP.World
 
         public void syncWorldTime(object source = null, ElapsedEventArgs e = null)
         {
+            if (!timeSyncOn) return;
+
             DateTime date = DateTime.Now;
             float hourOne = date.Hour;
             float minuteOne = date.Minute;
@@ -43,5 +49,35 @@ namespace CloudRP.World
             NAPI.World.SetTime(hour, min, sec);
         }
 
+        [Command("tsync", "~r~/tsync")]
+        public void toggleTimeSync(Player player)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            {
+                timeSyncOn = !timeSyncOn;
+                AdminUtils.staffSay(player, $"You turned time sync {(timeSyncOn ? "on" : "off")}");
+            }
+            else AdminUtils.sendNoAuth(player);
+        }
+
+        [Command("settime", "~r~/settime [h] [m] [s]")]
+        public void setTimeCommand(Player player, string[] args)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin && args.Length > 2)
+            {
+                int h = (int)CommandUtils.tryParse(args[0]);
+                int m = (int)CommandUtils.tryParse(args[1]);
+                int s = (int)CommandUtils.tryParse(args[2]);
+
+                AdminUtils.staffSay(player, $"You set time to {h}:{m}:{s}");
+                NAPI.World.SetTime(h, m, s);
+            }
+            else AdminUtils.sendNoAuth(player);
+
+        }
     }
 }

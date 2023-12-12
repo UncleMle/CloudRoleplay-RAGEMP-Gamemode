@@ -311,7 +311,7 @@ namespace CloudRP.Vehicles
 
             if(vehicle != null)
             {
-                DbVehicle getData = vehicle.GetData<DbVehicle>(_vehicleSharedDataIdentifier);
+                getData = vehicle.GetData<DbVehicle>(_vehicleSharedDataIdentifier);
             }
 
             return getData;
