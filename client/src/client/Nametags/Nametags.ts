@@ -26,7 +26,7 @@ class NameTags {
 	public static sendQuitMessage(playerQuitting: PlayerMp, exitType: string, reason: string) {
 		if(!playerQuitting || !getTargetCharacterData(playerQuitting)) return;
 		if(distBetweenCoords(NameTags.LocalPlayer.position, playerQuitting.position) > 25) return;
-		mp.gui.chat.push("!{#f57b42}[Disconnected] !{white}" + NameTags.formatNick(playerQuitting) + " has " + NameTags.formatExit(exitType, reason) + " from the server!");
+		mp.gui.chat.push("!{#f57b42}[Disconnected] !{white}" + NameTags.getPlayerNick(playerQuitting) + " has " + NameTags.formatExit(exitType, reason) + " from the server!");
 	}
 
 	public static sendWithNick(targetEnt: PlayerMp, prefix: string, suffix: string) {
@@ -35,7 +35,7 @@ class NameTags {
 			let characterData: CharacterData | undefined = getUserCharacterData();
 			mp.gui.chat.push(prefix + characterData?.characterName.replace("_", " ") + " " + suffix);
 		} else {
-			mp.gui.chat.push(prefix + NameTags.formatNick(targetEnt) + suffix);
+			mp.gui.chat.push(prefix + NameTags.getPlayerNick(targetEnt) + suffix);
 		}
 	}
 
@@ -53,10 +53,6 @@ class NameTags {
 		}
 
 		return formattedReason;
-	}
-
-	public static formatNick(targetEnt: PlayerMp) {
-		return targetEnt._nickName ? targetEnt._nickName + " [" + targetEnt.remoteId + "] " : "Stranger " + targetEnt.remoteId + " ";
 	}
 
 	public static handleStreamIn(entity: PlayerMp) {
@@ -101,7 +97,7 @@ class NameTags {
 
 				let voiceState: string = (targetCharacterData.voiceChatState ? "" : "~g~");
 				let injuredState: string = (targetCharacterData.data.injured_timer > 0 ? "~r~(( INJURED )) ~w~\n" : "");
-				let defaultTagContent: string = injuredState + voiceState + `${Target._nickName && targetCharacterData.characterClothing.mask == 0 ? Target._nickName + " [" + Target.remoteId + "]" : "Stranger " + Target.remoteId}`;
+				let defaultTagContent: string = injuredState + voiceState + NameTags.getPlayerNick(Target);
 
 				if (targetUserData.adminDuty) {
 					defaultTagContent = `~w~<font color="${_TEXT_CLOUD_ADMINBLUE}">[Staff]</font> ${voiceState} ${targetUserData.adminName}`;
@@ -120,6 +116,15 @@ class NameTags {
 				}
 			}
 		});
+	}
+
+	public static getPlayerNick(player: PlayerMp): string {
+		let pCharData: CharacterData | undefined = getTargetCharacterData(player);
+		if(!pCharData) return "";
+
+		let nick: string = player._nickName && pCharData.characterClothing.mask == 0 ? player._nickName + " [" + player.remoteId + "]" : "Stranger " + player.remoteId;
+
+		return nick;
 	}
 }
 
