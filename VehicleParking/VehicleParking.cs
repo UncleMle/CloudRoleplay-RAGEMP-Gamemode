@@ -53,7 +53,7 @@ namespace CloudRP.VehicleParking
                 retrieve = new RetrieveCol
                 {
                     name = "Davis",
-                    owner_id = 1,
+                    owner_id = 2,
                     position = new Vector3(-73.4, -2004.6, 18.3)
                 },
                 parkPosRange = 2.5f,
