@@ -38,7 +38,27 @@ namespace CloudRP.VehicleParking
                 },
                 parkPosRange = 2.5f,
                 retrievePosRange = 1f
-            }
+            },
+            new ParkingLot
+            {
+                name = "Davis Parking",
+                parkingId = 2,
+                spawnVehiclesAt = new Vector3(-78.5, -2010.7, 18.0),
+                park = new ParkCol
+                {
+                    name = "Davis",
+                    owner_id = 2,
+                    position = new Vector3(-81.1, -1998.6, 18.0)
+                },
+                retrieve = new RetrieveCol
+                {
+                    name = "Davis",
+                    owner_id = 1,
+                    position = new Vector3(-73.4, -2004.6, 18.3)
+                },
+                parkPosRange = 2.5f,
+                retrievePosRange = 1f
+            },
         };
 
         [ServerEvent(Event.ResourceStart)]
@@ -57,6 +77,7 @@ namespace CloudRP.VehicleParking
                 NAPI.TextLabel.CreateTextLabel($"{pLot.name} ~y~Y~w~ to interact", pLot.retrieve.position, 10f, 1.0f, 4, new Color(255, 255, 255, 255), true);
                 NAPI.Blip.CreateBlip(831, pLot.park.position, 1.0f, 63, pLot.name, 255, 1.0f, true, 0, 0);
                 NAPI.Marker.CreateMarker(27, new Vector3(pLot.retrieve.position.X, pLot.retrieve.position.Y, pLot.retrieve.position.Z - 0.9), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
+                NAPI.Marker.CreateMarker(36, new Vector3(pLot.park.position.X, pLot.park.position.Y, pLot.park.position.Z), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
             }
         }
 
