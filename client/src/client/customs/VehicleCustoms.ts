@@ -4,7 +4,7 @@ import GuiSystem from "@/BrowserSystem/GuiSystem";
 import { _SHARED_VEHICLE_DATA } from "@/Constants/Constants";
 import DeathSystem from "@/DeathSystem/DeathSystem";
 import getVehicleData from "@/PlayerMethods/getVehicleData";
-import { Browsers, MutationKeys } from "@/enums";
+import { Browsers } from "@/enums";
 
 class VehicleCustoms {
     public static LocalPlayer: PlayerMp;
@@ -121,8 +121,6 @@ class VehicleCustoms {
         vehicle.setWindowTint(Number(modData.window_tint));
         vehicle.setColours(Number(modData.colour_1), Number(modData.colour_2));
         vehicle.setExtraColours(Number(modData.pearleascent), Number(modData.wheel_colour));
-
-        mp.gui.chat.push(modData.horns + ` <-- horns`);
 
         vehicle.setMod(0, Number(modData.spoilers));
         vehicle.setMod(1, Number(modData.front_bumper));

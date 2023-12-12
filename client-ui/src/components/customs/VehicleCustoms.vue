@@ -1,47 +1,50 @@
 <template>
     <body class="w-full text-white font-medium">
         <div v-if="!loadingState" class="flex justify-center mt-6">
-            <div class="text-center p-2 bg-black/70 w-[70%] rounded-xl shadow-2xl shadow-black relative">
-                <CloseButton resetGui="true" :vehData="vehicleDataOld" class="text-xl" />
-                Viewing mods for {{ uiStates.vehicleSpeedoData.displayName != "NULL" ?
-                    uiStates.vehicleSpeedoData.displayName :
-                    "Vehicle" }} - {{ uiStates.vehicleSpeedoData.numberPlate }}
+            <div class="p-2 text-center w-[40%] relative">
+                <div class="absolute w-full rounded-xl shadow-2xl shadow-black bg-black/70 p-2">
+                    <font class="text-3xl font-bold">
+                        <i class="fa-solid fa-car text-gray-400"></i>
+                        Vehicle Customs
+                    </font>
+                    <br />
+                    {{ uiStates.vehicleSpeedoData.displayName != "NULL" ?
+                        uiStates.vehicleSpeedoData.displayName :
+                        "Vehicle" }} - {{ uiStates.vehicleSpeedoData.numberPlate }}
+                </div>
             </div>
         </div>
 
         <main v-if="!loadingState" class="relative">
             <div class="absolute left-[3%] top-20">
-                <div class="container flex items-center w-[24vw] mx-auto">
+                <div class="bg-black/70 shadow-2xl shadow-black rounded-xl">
+                    <ui class="flex justify-center space-x-5 border-gray-500 p-4">
+                        <button @click="browsingType = 'general'" class="hover:text-white">
+                            <i class="fa-solid fa-car text-2xl text-gray-300"></i><br />
+                            <span class="text-gray-300 hover:text-white duration-300">General</span>
+                        </button>
+
+                        <button @click="browsingType = 'performance'" class="hover:text-green-500 duration-300">
+                            <i class="fa-solid fa-gear text-2xl text-gray-300"></i><br />
+                            <span class="text-gray-300 hover:text-white duration-300">Performance</span>
+                        </button>
+
+                        <!-- <button @click="browsingType = 'interior'" class="hover:text-green-500 duration-300">
+                            <i class="fa-solid fa-person-shelter text-2xl text-gray-300"></i><br />
+                            <span class="text-gray-300 hover:text-white duration-300">Interior</span>
+                        </button> -->
+
+                        <button @click="browsingType = 'other'" class="hover:text-green-500 duration-300">
+                            <i class="fa-solid fa-wrench text-2xl text-gray-300"></i><br />
+                            <span class="text-gray-300 hover:text-white duration-300">Other</span>
+                        </button>
+                    </ui>
+                </div>
+
+                <div class="container flex items-center w-[24vw] mx-auto mt-14">
                     <div class="flex justify-center w-full">
                         <div
                             class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
-
-                            <div class="border-b-2 border-gray-500">
-                                <h1 class="font-bold text-2xl pl-4 border-b-2 border-gray-500 pb-2 p-4"><i
-                                        class="fa-solid fa-car text-gray-400"></i> Vehicle Customs</h1>
-
-                                <ui class="flex justify-center space-x-5 border-gray-500 p-4">
-                                    <button @click="browsingType = 'general'" class="hover:text-white">
-                                        <i class="fa-solid fa-car text-2xl text-gray-300"></i><br />
-                                        <span class="text-gray-300 hover:text-white duration-300">General</span>
-                                    </button>
-
-                                    <button @click="browsingType = 'performance'" class="hover:text-green-500 duration-300">
-                                        <i class="fa-solid fa-gear text-2xl text-gray-300"></i><br />
-                                        <span class="text-gray-300 hover:text-white duration-300">Performance</span>
-                                    </button>
-
-                                    <!-- <button @click="browsingType = 'interior'" class="hover:text-green-500 duration-300">
-                                        <i class="fa-solid fa-person-shelter text-2xl text-gray-300"></i><br />
-                                        <span class="text-gray-300 hover:text-white duration-300">Interior</span>
-                                    </button> -->
-
-                                    <button @click="browsingType = 'other'" class="hover:text-green-500 duration-300">
-                                        <i class="fa-solid fa-wrench text-2xl text-gray-300"></i><br />
-                                        <span class="text-gray-300 hover:text-white duration-300">Other</span>
-                                    </button>
-                                </ui>
-                            </div>
 
                             <div
                                 class="relative w-full h-fit rounded-lg border border-gray-900 text-center max-h-[37vw] overflow-scroll overflow-x-hidden">
@@ -126,6 +129,7 @@
             </div>
 
             <div class="absolute right-[3%] top-20">
+
                 <div class="container flex items-center w-[24vw] mx-auto">
                     <div class="flex justify-center w-full">
                         <div
@@ -172,21 +176,21 @@
                         </div>
                     </div>
                 </div>
-
-                <button @click="saveBasket" v-if="basketItems.length > 0"
-                    class="text-center mt-3 bg-black/70 p-4 rounded-lg hover:text-purple-300 duration-300 w-full">
-                    <span v-if="!loadingState">
-                        Save Basket <i class="fa-solid fa-cart-shopping"></i>
-                    </span>
-                </button>
-                <button @click="purchase" v-if="basketItems.length > 0"
-                    class="text-center mt-3 bg-black/70 p-4 rounded-lg hover:text-green-400 duration-300 w-full">
-                    <span v-if="!loadingState">
-                        Purchase <i class="fa-solid fa-dollar-sign"></i>
-                    </span>
-                </button>
             </div>
 
+            <div class="fixed bottom-4 space-x-16 text-2xl w-full">
+                <div class="flex justify-center space-x-16">
+                    <button @click="close"
+                        class="w-[250px] duration-300 hover:text-red-400 shadow-black shadow-2xl p-2 rounded-lg bg-black/70 border-gray-500">
+                        Close <i class="fa-solid fa-rotate-left text-red-400"></i>
+                    </button>
+                    <button @click="purchase"
+                        class="w-[250px] duration-300 p-2 rounded-lg hover:text-green-400 shadow-black shadow-2xl bg-black/70 border-gray-500">
+                        Purchase
+                        <i class="fa-solid fa-dollar-sign text-green-400"></i>
+                    </button>
+                </div>
+            </div>
         </main>
 
         <div v-if="loadingState" class="flex bg-black/70 h-screen items-center justify-center">
@@ -202,11 +206,11 @@
                 </svg>
             </b>
         </div>
+
     </body>
 </template>
 
 <script>
-import CloseButton from '../ui/CloseButton.vue';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -342,9 +346,6 @@ export default {
             deep: true,
         },
     },
-    components: {
-        CloseButton
-    },
     methods: {
         formatMod(modIdx) {
             return modIdx == -1 || modIdx <= 0 ? 0 : modIdx;
@@ -409,6 +410,12 @@ export default {
                 this.$store.state.uiStates.serverLoading = false;
             }, 4000);
         },
+        close() {
+            if (!window.mp) return;
+            window.mp.trigger("browser:resetRouter");
+            window.mp.trigger("gui:toggleHudComplete", true);
+            window.mp.trigger("vehicle:setAttachments", JSON.stringify(this.vehicleDataOld), true);
+        },
         getMaxIdx(modName) {
             let getMaxIdx = this.playerData.vehicle_mod_indexes;
             let foundIdx;
@@ -427,7 +434,7 @@ export default {
                 foundIdx = 13;
             }
 
-            if (modName == "Pearlesceant") {
+            if (modName == "Pearlesceant" || modName == "Wheel Colour") {
                 foundIdx = 166;
             }
 
@@ -437,10 +444,11 @@ export default {
                 foundIdx = 50;
             }
 
+
             return foundIdx != null ? foundIdx == 0 ? foundIdx : foundIdx - 1 : 100;
         },
         getMinIdx(modName) {
-            if(modName == "Wheel Colour" || modName == "Pearlesceant") {
+            if (modName == "Wheel Colour" || modName == "Pearlesceant") {
                 return 1;
             }
             return -1;
