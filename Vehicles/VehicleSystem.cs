@@ -220,7 +220,7 @@ namespace CloudRP.Vehicles
             saveVehicleData(vehicle);
         }
 
-        public static Vehicle buildVehicle(string vehName, Vector3 position, float rotation, int ownerId)
+        public static Vehicle buildVehicle(string vehName, Vector3 position, float rotation, int ownerId, int colourOne, int colourTwo)
         {
             string vehiclePlate = "notset";
             uint vehicleHash = NAPI.Util.GetHashKey(vehName);
@@ -259,6 +259,8 @@ namespace CloudRP.Vehicles
                 dbContext.vehicle_mods.Add(new VehicleMods
                 {
                     vehicle_owner_id = vehicleInsert.vehicle_id,
+                    colour_1 = colourOne,
+                    colour_2 = colourTwo
                 });
 
                 dbContext.SaveChanges();

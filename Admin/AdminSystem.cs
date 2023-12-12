@@ -551,8 +551,8 @@ namespace CloudRP.Admin
             }
         }
 
-        [Command("veh", "~r~/veh [vehName]")]
-        public void spawnVehicle(Player player, string vehName)
+        [Command("veh", "~r~/veh [vehName] [colourOne] [colourTwo]")]
+        public void spawnVehicle(Player player, string vehName, int colourOne = 111, int colourTwo = 111)
         {
             User userData = PlayersData.getPlayerAccountData(player);
             DbCharacter charData = PlayersData.getPlayerCharacterData(player);
@@ -564,7 +564,7 @@ namespace CloudRP.Admin
                 Vector3 playerPosition = player.Position;
                 float playerRotation = player.Rotation.Z;
 
-                Vehicle vehicleBuild = VehicleSystem.buildVehicle(vehName, playerPosition, playerRotation, charData.character_id);
+                Vehicle vehicleBuild = VehicleSystem.buildVehicle(vehName, playerPosition, playerRotation, charData.character_id, colourOne, colourTwo);
 
                 if (vehicleBuild == null) return;
 
