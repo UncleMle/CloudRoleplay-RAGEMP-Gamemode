@@ -28,8 +28,8 @@ namespace CloudRP.VehicleParking
                     owner_id = 1,
                     position = new Vector3(213.9, -808.5, 31.0)
                 },
-                parkPosRange = 5f,
-                retrievePosRange = 5f
+                parkPosRange = 2.5f,
+                retrievePosRange = 1f
             }
         };
 
@@ -58,7 +58,6 @@ namespace CloudRP.VehicleParking
             ParkCol parkCol = colshape.GetData<ParkCol>(_parkingLotIdentifier);
             RetrieveCol retrievalCol = colshape.GetData<RetrieveCol>(_retrievalIdentifier);
 
-            Console.WriteLine("Entered.");
 
             if (retrievalCol != null)
             {
@@ -81,7 +80,6 @@ namespace CloudRP.VehicleParking
             ParkCol parkCol = colshape.GetData<ParkCol>(_parkingLotIdentifier);
             RetrieveCol retrievalCol = colshape.GetData<RetrieveCol>(_retrievalIdentifier);
 
-            Console.WriteLine("exited.");
 
             if (retrievalCol != null || parkCol != null)
             {

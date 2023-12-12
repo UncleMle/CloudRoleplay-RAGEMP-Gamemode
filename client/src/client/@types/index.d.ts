@@ -305,4 +305,16 @@ export interface ClothingData {
 	decals_texture: number;
 	top: number;
 	top_texture: number;
-  }
+}
+
+export interface ParkCol {
+	name: string,
+	owner_id: number,
+	position: Vector3
+}
+
+export interface RetrieveCol {
+	name: string,
+	owner_id: number,
+	position: Vector3
+}
