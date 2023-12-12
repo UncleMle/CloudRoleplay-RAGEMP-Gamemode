@@ -17,7 +17,7 @@ namespace CloudRP.VehicleParking
     {
         public static string _parkingLotIdentifier = "parkingLotData";
         public static string _retrievalIdentifier = "retreivalParkingData";
-        public List<ParkingLot> parkingLots = new List<ParkingLot>
+        public static List<ParkingLot> parkingLots = new List<ParkingLot>
         {
             new ParkingLot
             {
@@ -186,6 +186,13 @@ namespace CloudRP.VehicleParking
 
             if (characterData != null && parkingLot != null && Vector3.Distance(player.Position, retrievalCol.position) < 10)
             {
+
+                if(checkParkingLot(parkingLot.parkingId))
+                {
+                    uiHandling.sendPushNotifError(player, "There is a vehicle blocking the spawn point!", 5500);
+                    return;
+                }
+
                 using(DefaultDbContext dbContext = new DefaultDbContext())
                 {
                     DbVehicle findVeh = dbContext.vehicles
@@ -203,7 +210,27 @@ namespace CloudRP.VehicleParking
                     uiHandling.pushRouterToClient(player, Browsers.None);
                 }
             }
+        }
 
+        public static bool checkParkingLot(int parkingId)
+        {
+            ParkingLot pLot = parkingLots.Where(pl => pl.parkingId == parkingId).FirstOrDefault();
+            bool isInParking = false;
+
+            if(pLot != null)
+            {
+                List<Vehicle> onlineVehs = NAPI.Pools.GetAllVehicles();
+
+                foreach(Vehicle vehicle in onlineVehs)
+                {
+                    if ((vehicle.Position.X >= pLot.spawnVehiclesAt.X - 2 && vehicle.Position.X <= pLot.spawnVehiclesAt.X + 2) && (vehicle.Position.Y >= pLot.spawnVehiclesAt.Y - 4 && vehicle.Position.Y <= vehicle.Position.Y + 4))
+                    {
+                        isInParking = true;
+                    }
+                }
+            }
+
+            return isInParking;
         }
 
     }

@@ -22,9 +22,8 @@ class ParkingSystem {
     }
 
     public static handleKeyPressed() {
+        if(ParkingSystem.LocalPlayer.isTypingInTextChat) return;
         let retrieveCol = ParkingSystem.LocalPlayer.getVariable(ParkingSystem._retrievalIdentifier)
-
-        mp.gui.chat.push("Pressed " + JSON.stringify(retrieveCol));
 
         if(retrieveCol) {
             mp.events.callRemote(ParkingSystem.viewParkedVehiclesEvent);
