@@ -63,16 +63,12 @@ namespace CloudRP.World
         }
 
         [Command("settime", "~r~/settime [h] [m] [s]")]
-        public void setTimeCommand(Player player, string[] args)
+        public void setTimeCommand(Player player, int h, int m, int s)
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin && args.Length > 2)
+            if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
             {
-                int h = (int)CommandUtils.tryParse(args[0]);
-                int m = (int)CommandUtils.tryParse(args[1]);
-                int s = (int)CommandUtils.tryParse(args[2]);
-
                 AdminUtils.staffSay(player, $"You set time to {h}:{m}:{s}");
                 NAPI.World.SetTime(h, m, s);
             }
