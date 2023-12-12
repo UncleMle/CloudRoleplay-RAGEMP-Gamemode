@@ -56,7 +56,7 @@ namespace CloudRP.VehicleParking
 
                 NAPI.TextLabel.CreateTextLabel($"{pLot.name} ~y~Y~w~ to interact", pLot.retrieve.position, 10f, 1.0f, 4, new Color(255, 255, 255, 255), true);
                 NAPI.Blip.CreateBlip(831, pLot.park.position, 1.0f, 63, pLot.name, 255, 1.0f, true, 0, 0);
-                NAPI.Marker.CreateMarker(27, new Vector3(pLot.retrieve.position.X, pLot.retrieve.position.X, pLot.retrieve.position.Z), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
+                NAPI.Marker.CreateMarker(27, new Vector3(pLot.retrieve.position.X, pLot.retrieve.position.Y, pLot.retrieve.position.Z - 0.9), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
             }
         }
 
