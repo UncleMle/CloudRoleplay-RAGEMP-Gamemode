@@ -307,7 +307,12 @@ namespace CloudRP.Vehicles
 
         public static DbVehicle getVehicleData(Vehicle vehicle)
         {
-            DbVehicle getData = vehicle.GetData<DbVehicle>(_vehicleSharedDataIdentifier);
+            DbVehicle getData = null;
+
+            if(vehicle != null)
+            {
+                DbVehicle getData = vehicle.GetData<DbVehicle>(_vehicleSharedDataIdentifier);
+            }
 
             return getData;
         }
