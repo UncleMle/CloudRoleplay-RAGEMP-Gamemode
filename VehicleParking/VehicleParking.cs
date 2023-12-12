@@ -1,7 +1,14 @@
-﻿using CloudRP.ClothingStores;
+﻿using CloudRP.Character;
+using CloudRP.ClothingStores;
+using CloudRP.Database;
+using CloudRP.PlayerData;
+using CloudRP.Utils;
+using CloudRP.Vehicles;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text;
 
 namespace CloudRP.VehicleParking
@@ -16,6 +23,7 @@ namespace CloudRP.VehicleParking
             {
                 name = "Mirror Park Parking",
                 parkingId = 1,
+                spawnVehiclesAt = new Vector3(222.3, -801.8, 30.7),
                 park = new ParkCol
                 {
                     name = "Mirror Park",
@@ -61,13 +69,14 @@ namespace CloudRP.VehicleParking
 
             if (retrievalCol != null)
             {
+                uiHandling.sendPushNotif(player, "Use Y to interact with the parking lot.", 6600);
                 player.SetData(_retrievalIdentifier, retrievalCol);
                 player.SetSharedData(_retrievalIdentifier, retrievalCol);
                 return;
             }
             
             if (parkCol != null)
-            {
+            { 
                 player.SetData(_parkingLotIdentifier, parkCol);
                 player.SetSharedData(_parkingLotIdentifier, parkCol);
                 return;
@@ -90,6 +99,112 @@ namespace CloudRP.VehicleParking
             }
         }
 
+        [Command("park", "~y~Use: ~w~/park")]
+        public void parkVehicle(Player player)
+        {
+            DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+            ParkCol parkCol = player.GetData<ParkCol>(_parkingLotIdentifier);
+
+            if(parkCol != null && charData != null)
+            {
+                if(!player.IsInVehicle)
+                {
+                    CommandUtils.errorSay(player, "You must be in a vehicle to use this command.");
+                    return;
+                }
+                Vehicle pVeh = player.Vehicle;
+                DbVehicle pVehData = VehicleSystem.getVehicleData(pVeh);
+
+                if(pVehData.owner_id != charData.character_id)
+                {
+                    CommandUtils.errorSay(player, "You must be the owner of the vehicle to park it.");
+                    return;
+                }
+
+                if(pVehData != null)
+                {
+                    using(DefaultDbContext dbContext = new DefaultDbContext())
+                    {
+                        pVehData.vehicle_dimension = VehicleDimensions.Garage;
+                        pVehData.vehicle_garage_id = parkCol.owner_id;
+
+                        dbContext.Update(pVehData);
+                        dbContext.SaveChanges();
+
+                        CommandUtils.successSay(player, $"You parked your vehicle [{pVehData.numberplate}]");
+                        pVeh.Delete();
+                    }   
+                        
+                }
+            } else
+            {
+                CommandUtils.errorSay(player, "You must be within a parking lot to use this command.");
+            }
+        }
+
+        [RemoteEvent("server:viewParkedVehicles")]
+        public void viewParkedVehicles(Player player)
+        {
+            DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+            RetrieveCol retrievalCol = player.GetData<RetrieveCol>(_retrievalIdentifier);
+
+            if(retrievalCol != null && Vector3.Distance(player.Position, retrievalCol.position) < 10)
+            {
+                using(DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    List<DbVehicle> vehicles = dbContext.vehicles
+                        .Where(veh => veh.owner_id == charData.character_id && veh.vehicle_dimension == VehicleDimensions.Garage && veh.vehicle_garage_id == retrievalCol.owner_id)
+                        .ToList();
+
+                    if(vehicles.Count > 0)
+                    {
+                        uiHandling.resetMutationPusher(player, MutationKeys.ParkedVehicles);
+
+                        foreach (DbVehicle findVeh in vehicles)
+                        {
+                            uiHandling.handleObjectUiMutationPush(player, MutationKeys.ParkedVehicles, findVeh);
+                            uiHandling.pushRouterToClient(player, Browsers.Parking);
+                        }
+
+                    } else
+                    {
+                        uiHandling.sendPushNotifError(player, "You don't have any vehicle's in this parking!", 5500);
+                        return;
+                    }
+                }
+            }
+        }
+
+        [RemoteEvent("server:unparkVehicle")]
+        public void unparkVehicle(Player player, int vehicleId)
+        {
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            RetrieveCol retrievalCol = player.GetData<RetrieveCol>(_retrievalIdentifier);
+            if (retrievalCol == null) return;
+            
+            ParkingLot parkingLot = parkingLots.Where(pl => pl.parkingId == retrievalCol.owner_id).FirstOrDefault();
+
+            if (characterData != null && parkingLot != null && Vector3.Distance(player.Position, retrievalCol.position) < 10)
+            {
+                using(DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    DbVehicle findVeh = dbContext.vehicles
+                        .Where(veh => veh.vehicle_id == vehicleId && veh.vehicle_dimension == VehicleDimensions.Garage && veh.vehicle_garage_id == parkingLot.parkingId && veh.owner_id == characterData.character_id)
+                        .FirstOrDefault();
+
+                    if(findVeh == null)
+                    {
+                        uiHandling.sendPushNotifError(player, "This vehicle couldn't be found.", 7600);
+                        return;
+                    }
+
+                    VehicleSystem.spawnVehicle(findVeh, parkingLot.spawnVehiclesAt);
+                    CommandUtils.successSay(player, $"You unparked your vehicle [{findVeh.numberplate}]");
+                    uiHandling.pushRouterToClient(player, Browsers.None);
+                }
+            }
+
+        }
 
     }
 }

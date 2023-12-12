@@ -1,25 +1,34 @@
+import { _control_ids } from "@/Constants/Constants";
+import DeathSystem from "@/DeathSystem/DeathSystem";
+import { Browsers } from "@/enums";
+
 class ParkingSystem {
     public static LocalPlayer: PlayerMp;
     public static _parkingLotIdentifier: string = "parkingLotData";
     public static _retrievalIdentifier: string = "retreivalParkingData";
+    public static viewParkedVehiclesEvent: string = "server:viewParkedVehicles";
 
     constructor() {
         ParkingSystem.LocalPlayer = mp.players.local;
+
         mp.events.add("render", ParkingSystem.handleRender);
+        mp.keys.bind(_control_ids.Y, false, ParkingSystem.handleKeyPressed);
     }
 
     public static handleRender() {
-        let parkingCol = ParkingSystem.LocalPlayer.getVariable(ParkingSystem._parkingLotIdentifier);
+        if(ParkingSystem.LocalPlayer.browserRouter == Browsers.Parking && ParkingSystem.LocalPlayer.getVariable(ParkingSystem._retrievalIdentifier)) {
+            DeathSystem.disableControls();
+        }
+    }
+
+    public static handleKeyPressed() {
         let retrieveCol = ParkingSystem.LocalPlayer.getVariable(ParkingSystem._retrievalIdentifier)
 
-        if(parkingCol) {
-            mp.gui.chat.push("Parking Col " + JSON.stringify(parkingCol));
-        }
+        mp.gui.chat.push("Pressed " + JSON.stringify(retrieveCol));
 
         if(retrieveCol) {
-            mp.gui.chat.push("Retrieve Col " + JSON.stringify(retrieveCol));
+            mp.events.callRemote(ParkingSystem.viewParkedVehiclesEvent);
         }
-
     }
 }
 

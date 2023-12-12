@@ -20,7 +20,8 @@ const store = new Vuex.Store({
 			clothing_data: [],
 			otp_ui: false,
 			player_water: 0,
-			player_hunger: 0
+			player_hunger: 0,
+			parked_vehicles: []
 		},
 		uiStates: {
 			characterSelection: false,

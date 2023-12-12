@@ -158,7 +158,14 @@ namespace CloudRP.Vehicles
             {
                 try
                 {
-                    saveVehicleData(vehicle);
+                    if(getVehicleData(vehicle) == null)
+                    {
+                        vehicle.Delete();
+                        Console.WriteLine("Possible vehicle spawn cheat. Vehicle with no data found!");
+                    } else
+                    {
+                        saveVehicleData(vehicle);
+                    }
                 }
                 catch (Exception ex)
                 {

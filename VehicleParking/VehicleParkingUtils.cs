@@ -10,6 +10,7 @@ namespace CloudRP.VehicleParking
         public string name { get; set; }
         public RetrieveCol retrieve { get; set; }
         public ParkCol park { get; set; }
+        public Vector3 spawnVehiclesAt { get; set; }
         public int parkingId { get; set; }
         public float parkPosRange { get; set; }
         public float retrievePosRange { get; set; }

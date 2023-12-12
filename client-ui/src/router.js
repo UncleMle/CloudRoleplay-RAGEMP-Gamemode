@@ -10,6 +10,7 @@ import CharacterCreation from './components/auth/CharacterCreation.vue';
 import AdminReports from './components/admin/AdminReports.vue';
 import ClothingStore from './components/clothing/clothingStore.vue';
 import VehicleCustoms from './components/customs/VehicleCustoms.vue';
+import VehicleParking from './components/vehicle/ParkingLot.vue';
 
 export default new Router({
     routes: [
@@ -19,6 +20,7 @@ export default new Router({
         { path: '/charcreation', component: CharacterCreation },
         { path: '/reports', component: AdminReports },
         { path: '/clothing', component: ClothingStore },
-        { path: '/vehiclemods', component: VehicleCustoms }
+        { path: '/vehiclemods', component: VehicleCustoms },
+        { path: '/parking', component: VehicleParking }
     ]
 });

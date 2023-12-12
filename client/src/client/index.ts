@@ -27,6 +27,7 @@ import Corpses from "./DeathSystem/Corpses";
 import Afk from "./AntiCheat/Afk";
 import Clothing from "./Character/Clothing";
 import VehicleCustoms from "./customs/VehicleCustoms";
+import ParkingSystem from "./Parking/ParkingSystem";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -58,3 +59,4 @@ new Corpses();
 new Afk();
 new Clothing();
 new VehicleCustoms();
+new ParkingSystem();

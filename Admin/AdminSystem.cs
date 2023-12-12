@@ -555,13 +555,16 @@ namespace CloudRP.Admin
         public void spawnVehicle(Player player, string vehName)
         {
             User userData = PlayersData.getPlayerAccountData(player);
+            DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+
+            if (charData == null) return;
 
             if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin || userData.adminLevel > (int)AdminRanks.Admin_SeniorAdmin && userData.adminDuty)
             {
                 Vector3 playerPosition = player.Position;
                 float playerRotation = player.Rotation.Z;
 
-                Vehicle vehicleBuild = VehicleSystem.buildVehicle(vehName, playerPosition, playerRotation, userData.accountId);
+                Vehicle vehicleBuild = VehicleSystem.buildVehicle(vehName, playerPosition, playerRotation, charData.character_id);
 
                 if (vehicleBuild == null) return;
 
