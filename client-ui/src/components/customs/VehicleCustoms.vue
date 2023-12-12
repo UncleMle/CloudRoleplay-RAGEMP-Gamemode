@@ -3,7 +3,8 @@
         <div v-if="!loadingState" class="flex justify-center mt-6">
             <div class="text-center p-2 bg-black/70 w-[70%] rounded-xl shadow-2xl shadow-black relative">
                 <CloseButton resetGui="true" :vehData="vehicleDataOld" class="text-xl" />
-                Viewing mods for {{ uiStates.vehicleSpeedoData.displayName != "NULL" ? uiStates.vehicleSpeedoData.displayName :
+                Viewing mods for {{ uiStates.vehicleSpeedoData.displayName != "NULL" ?
+                    uiStates.vehicleSpeedoData.displayName :
                     "Vehicle" }} - {{ uiStates.vehicleSpeedoData.numberPlate }}
             </div>
         </div>
@@ -54,7 +55,7 @@
                                                     class="block mb-2 text-sm font-medium  text-white">{{ item.name }} ({{
                                                         formatMod(vehicleData[item.dbName]) }})</label>
                                                 <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
-                                                    min="-1" :max="getMaxIdx(item.name)"
+                                                    :min="getMinIdx(item.name)" :max="getMaxIdx(item.name)"
                                                     class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
                                                 <button @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
                                                     v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
@@ -77,7 +78,7 @@
                                                     class="block mb-2 text-sm font-medium  text-white">{{ item.name }} ({{
                                                         formatMod(vehicleData[item.dbName]) }})</label>
                                                 <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
-                                                    min="-1" :max="getMaxIdx(item.name)"
+                                                    :min="getMinIdx(item.name)" :max="getMaxIdx(item.name)"
                                                     class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
                                                 <button @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
                                                     v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
@@ -100,7 +101,7 @@
                                                     class="block mb-2 text-sm font-medium  text-white">{{ item.name }} ({{
                                                         formatMod(vehicleData[item.dbName]) }})</label>
                                                 <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
-                                                    :min="item.dbName == 'colour_1' || item.dbName == 'colour_2' ? 1 : -1"
+                                                    :min="getMinIdx(item.name)"
                                                     :max="item.maxIdx ? item.maxIdx : getMaxIdx(item.name)"
                                                     class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
                                                 <button @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
@@ -139,7 +140,8 @@
                                 </h1>
                             </div>
 
-                            <div class="relative w-full h-fit rounded-lg border border-gray-900 text-center max-h-[30vw] overflow-scroll overflow-x-hidden">
+                            <div
+                                class="relative w-full h-fit rounded-lg border border-gray-900 text-center max-h-[30vw] overflow-scroll overflow-x-hidden">
 
                                 <div class="p-4">
                                     <div class="text-gray-300" v-if="basketItems.length == 0">
@@ -379,7 +381,7 @@ export default {
                 }
             })
 
-            if(delIdx != null) {
+            if (delIdx != null) {
                 this.basketItems.splice(delIdx, 1);
             }
 
@@ -396,7 +398,7 @@ export default {
         },
         purchase() {
             this.$store.state.uiStates.serverLoading = true;
-            if(window.mp) {
+            if (window.mp) {
                 window.mp.trigger("browser:sendObject", "server:vehicleModsSave", JSON.stringify(this.vehicleData));
             }
         },
@@ -412,30 +414,36 @@ export default {
             let foundIdx;
 
             getMaxIdx.forEach(data => {
-                if(data.name == modName) {
+                if (data.name == modName) {
                     foundIdx = data.modNumber;
                 }
             });
 
-            if(modName == "Colour One" || modName == "Colour Two") {
+            if (modName == "Colour One" || modName == "Colour Two") {
                 foundIdx = 166;
             }
 
-            if(modName == "Wheel Type") {
+            if (modName == "Wheel Type") {
                 foundIdx = 13;
             }
 
-            if(modName == "Pearlesceant") {
+            if (modName == "Pearlesceant") {
                 foundIdx = 166;
             }
 
-            if(modName == "Wheels" && this.vehicleData.wheel_type == 12) {
+            if (modName == "Wheels" && this.vehicleData.wheel_type == 12) {
                 foundIdx = 209;
-            } else if(modName == "Wheels") {
+            } else if (modName == "Wheels") {
                 foundIdx = 50;
             }
 
             return foundIdx != null ? foundIdx == 0 ? foundIdx : foundIdx - 1 : 100;
+        },
+        getMinIdx(modName) {
+            if(modName == "Wheel Colour" || modName == "Pearlesceant") {
+                return 1;
+            }
+            return -1;
         }
     },
     mounted() {

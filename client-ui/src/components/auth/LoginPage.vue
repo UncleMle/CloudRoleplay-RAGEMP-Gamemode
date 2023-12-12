@@ -120,7 +120,7 @@
                                     <table class="w-full border-separate [border-spacing:0.75rem] border-b">
                                         <tr class="text-center">
                                             <td><i class="fa-solid fa-money-bill pr-2 "></i>Money</td>
-                                            <td><i class="fa-solid fa-notes-medical pr-2"></i>Time played</td>
+                                            <td><i class="fa-solid fa-clock pr-2"></i>Time played</td>
                                             <td><i class="fa-solid fa-calendar-days pr-2"></i>Faction</td>
                                             <td><i class="fa-solid fa-calendar-days pr-2"></i>Created At </td>
                                         </tr>
