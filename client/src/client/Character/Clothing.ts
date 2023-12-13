@@ -67,13 +67,13 @@ class Clothing {
 
     public static handleDataHandlerAccount(entity: PlayerMp) {
         if(entity.type == "player" && getClothingData(entity)) {
-            Clothing.setClothingData(getClothingData(entity) as ClothingData, false, entity);
+            Clothing.setClothingData(getClothingData(entity) as ClothingData, false, true, entity);
         }
     }
 
     public static handleDataHandler(entity: PlayerMp, clothingData: ClothingData) {
         if(entity.type == "player" && clothingData) {
-            Clothing.setClothingData(clothingData, false, entity);
+            Clothing.setClothingData(clothingData, false, true, entity);
         }
     }
 
@@ -83,17 +83,17 @@ class Clothing {
 
             if(!clothingData) return;
 
-            Clothing.setClothingData(clothingData, false, entity);
+            Clothing.setClothingData(clothingData, false, true, entity);
         }
     }
 
-    public static async setClothingData(clothingData: any, parse: boolean, entity: PlayerMp | PedMp = Clothing.LocalPlayer) {
+    public static async setClothingData(clothingData: any, parse: boolean, timeout: boolean = true, entity: PlayerMp | PedMp = Clothing.LocalPlayer) {
         if(!clothingData) return;
         if(parse) {
             clothingData = JSON.parse(clothingData as string);
         }
 
-        await mp.game.waitAsync(300);
+        timeout ? await mp.game.waitAsync(300) : null;
 
         if(!entity || !clothingData) return;
 

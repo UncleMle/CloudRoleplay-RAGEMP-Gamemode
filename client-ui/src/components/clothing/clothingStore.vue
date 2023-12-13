@@ -132,7 +132,7 @@ export default {
         clothingData: {
             handler() {
                 if(window.mp) {
-                    window.mp.trigger("clothes:setClothingData", JSON.stringify(this.clothingData), true);
+                    window.mp.trigger("clothes:setClothingData", JSON.stringify(this.clothingData), true, false);
                 }
             },
             deep: true,
