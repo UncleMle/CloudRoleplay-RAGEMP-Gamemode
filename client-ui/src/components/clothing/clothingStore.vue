@@ -152,7 +152,7 @@ export default {
         },
         close() {
             if(window.mp) {
-                window.mp.trigger("clothes:setClothingData", this.clothingDataOld, true);
+                window.mp.trigger("clothes:setClothingData", JSON.stringify(this.clothingDataOld), true);
             }
         },
         checkForDifference() {

@@ -1,6 +1,7 @@
 import { ClothingData, ClothingStore } from "@/@types";
 import BrowserSystem from "@/BrowserSystem/BrowserSystem";
 import { _control_ids, _sharedAccountDataIdentifier, _sharedClothingDataIdentifier } from "@/Constants/Constants";
+import DeathSystem from "@/DeathSystem/DeathSystem";
 import getClothingData from "@/PlayerMethods/getClothingData";
 import { Browsers } from "@/enums";
 
@@ -12,6 +13,7 @@ class Clothing {
         Clothing.LocalPlayer = mp.players.local;
 
         mp.events.add("entityStreamIn", Clothing.handleStreamIn);
+        mp.events.add("render", Clothing.handleRender);
         mp.events.add("clothes:setClothingData", Clothing.setClothingData);
         mp.events.add("clothes:setRot", Clothing.handleRotation);
         mp.events.add("playerExitColshape", Clothing.exitColHandle);
@@ -20,6 +22,13 @@ class Clothing {
 
         mp.events.addDataHandler(_sharedClothingDataIdentifier, Clothing.handleStreamIn);
         mp.events.addDataHandler(_sharedAccountDataIdentifier, Clothing.handleDataHandlerAccount);
+    }
+
+    public static handleRender() {
+        if(BrowserSystem.LocalPlayer.browserRouter == Browsers.Clothing) {
+            DeathSystem.disableControls();
+            mp.gui.cursor.show(true, true);
+        }
     }
 
     public static exitColHandle(colshape: ColshapeMp) {
