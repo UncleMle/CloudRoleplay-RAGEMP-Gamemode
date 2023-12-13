@@ -41,8 +41,10 @@
                                                 <font class="absolute font-bold text-2xl">{{
                                                     playerData.vehicle_dealer_data.vehDispNames[playerData.vehicle_dealer_data.vehicles.indexOf(item)]
                                                 }}</font>
+
                                             </div>
 
+                                            <font class="absolute bottom-14 text-green-400">${{ item.price.toLocaleString('en-US') }}</font>
 
                                             <button @click="viewVehicle(item.spawnName)"
                                                 class="absolute bottom-4 w-[40%] rounded-lg border border-gray-500 duration-300 hover:text-green-400">

@@ -180,6 +180,8 @@ namespace CloudRP.VehicleDealerships
                     return;
                 }
 
+                charData.money_amount -= (ulong)findDealerVeh.price;
+
                 Vehicle buildVeh = VehicleSystem.buildVehicle(vehName, playerDealerData.spawnPosition, 0, charData.character_id, spawnColour, spawnColour);
                 PlayersData.setPlayerCharacterData(player, charData, false, true);
 
