@@ -24,8 +24,8 @@ namespace CloudRP.Character
         public int character_health { get; set; }
         public double character_water { get; set; } = 100;
         public double character_hunger { get; set; } = 100;
-        public int character_isbanned {  get; set; }
-        public int money_amount { get; set; } = 12000;
+        public ulong character_isbanned {  get; set; }
+        public ulong money_amount { get; set; } = 12000;
         public ulong play_time_seconds { get; set; }
         public uint player_dimension { get; set; }
         public ulong player_exp {  get; set; }

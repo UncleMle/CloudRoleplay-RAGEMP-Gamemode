@@ -12,9 +12,11 @@ class VehicleDealerShips {
 	public static _dealershipIdentifer: string = 'vehicleDealership';
 	public static _viewDealerEvent: string = 'server:viewDealerVehicles';
 	public static _closeDealerEvent: string = 'server:closeDealership';
+	public static _dealerPurchaseEvent: string = 'server:purchaseVehicle';
 	public static dealerCam: CameraMp;
 	public static dealerCamPos: Vector3 = new mp.Vector3(234.7, -997.9, -98.2);
 	public static dealerSelectedVehicle: VehicleMp;
+	public static defaultSpawnColour: number = 111;
 
 	constructor() {
 		VehicleDealerShips.LocalPlayer = mp.players.local;
@@ -23,12 +25,16 @@ class VehicleDealerShips {
 		mp.events.add('dealers:initDealership', VehicleDealerShips.initDealership);
 		mp.events.add('dealers:closeDealership', VehicleDealerShips.closeDealerShip);
 		mp.events.add('dealers:changeSelectVeh', VehicleDealerShips.addDealerShipVehicle);
+		mp.events.add('dealers:setSelectedVehRot', VehicleDealerShips.setDealerVehRot);
+		mp.events.add('dealers:changeSelectVehColour', VehicleDealerShips.setDealerVehColour);
+		mp.events.add('dealers:purchaseVehicle', VehicleDealerShips.purchaseDealerVehicle);
 		mp.events.add('render', VehicleDealerShips.handleRender);
 	}
 
 	public static handleRender() {
 		if (VehicleDealerShips.LocalPlayer.browserRouter == Browsers.Dealership) {
 			DeathSystem.disableControls();
+            mp.gui.cursor.show(true, true);
 		}
 	}
 
@@ -53,6 +59,8 @@ class VehicleDealerShips {
 				mp.game.cam.renderScriptCams(false, false, 0, false, false);
 				mp.game.invoke(CLEAR_FOCUS);
 			}
+
+            mp.gui.cursor.show(false, false);
 			GuiSystem.toggleHudComplete(true);
 		}
 	}
@@ -72,13 +80,13 @@ class VehicleDealerShips {
 			mp.game.cam.renderScriptCams(true, false, 0, true, false);
 
             if(dealerData.vehicles.length > 0) {
-                VehicleDealerShips.addDealerShipVehicle(dealerData.vehicles[0]);
+                VehicleDealerShips.addDealerShipVehicle(dealerData.vehicles[0].spawnName, 180, VehicleDealerShips.defaultSpawnColour);
             }
 
             dealerData.vehDispNames = [];
 
 			dealerData.vehicles.forEach((data) => {
-				let dispName = VehicleSpeedo.getVehDispName(mp.game.joaat(data));
+				let dispName = VehicleSpeedo.getVehDispName(mp.game.joaat(data.spawnName));
 				dealerData?.vehDispNames.push(dispName);
 			});
 
@@ -93,12 +101,26 @@ class VehicleDealerShips {
 		}
 	}
 
-	public static addDealerShipVehicle(vehName: string) {
+    public static setDealerVehRot(rotation: number) {
+        if(VehicleDealerShips.dealerSelectedVehicle) {
+            VehicleDealerShips.dealerSelectedVehicle.setHeading(Number(rotation));
+        }
+    }
+
+    public static setDealerVehColour(colour: string | number) {
+        if(VehicleDealerShips.dealerSelectedVehicle) {
+            VehicleDealerShips.dealerSelectedVehicle.setColours(Number(colour), Number(colour));
+        }
+    }
+
+	public static async addDealerShipVehicle(vehName: string, rotation: string | number, colour: string | number) {
         if(!vehName) return;
 
 		let spawnHash: number = mp.game.joaat(vehName);
 
-		if (VehicleDealerShips.dealerSelectedVehicle && mp.vehicles.at(VehicleDealerShips.dealerSelectedVehicle.remoteId)) {
+        if(VehicleDealerShips.dealerSelectedVehicle && VehicleDealerShips.dealerSelectedVehicle.model == spawnHash) return;
+
+		if (VehicleDealerShips.dealerSelectedVehicle) {
 			VehicleDealerShips.dealerSelectedVehicle.destroy();
 		}
 
@@ -109,7 +131,21 @@ class VehicleDealerShips {
 			engine: false,
 			dimension: VehicleDealerShips.LocalPlayer.remoteId + 1
 		});
+
+        await mp.game.waitAsync(50);
+
+        VehicleDealerShips.dealerSelectedVehicle.setDirtLevel(0);
+        VehicleDealerShips.dealerSelectedVehicle.setHeading(Number(rotation));
+        VehicleDealerShips.dealerSelectedVehicle.setColours(Number(colour), Number(colour));
 	}
+
+    public static purchaseDealerVehicle(vehName: string, spawnColour: string | number) {
+        if(!vehName) return;
+
+        let dispName: string = VehicleSpeedo.getVehDispName(mp.game.joaat(vehName));
+
+        mp.events.callRemote(VehicleDealerShips._dealerPurchaseEvent, vehName, Number(spawnColour), dispName == "NULL" ? "Vehicle" : dispName);
+    }
 }
 
 export default VehicleDealerShips;

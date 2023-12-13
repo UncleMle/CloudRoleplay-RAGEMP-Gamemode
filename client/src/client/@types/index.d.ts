@@ -325,7 +325,12 @@ export interface DealerShip {
 	spawnPosition: Vector3,
 	viewPosition: Vector3,
 	dealershipName: string,
-	vehicles: string[],
+	vehicles: DealerVehicle[],
 	viewRange: number,
 	vehDispNames: string[]
+}
+
+export interface DealerVehicle {
+	spawnName: string,
+	price: number
 }

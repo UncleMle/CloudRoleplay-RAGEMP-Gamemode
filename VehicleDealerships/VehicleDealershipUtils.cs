@@ -12,8 +12,14 @@ namespace CloudRP.VehicleDealerships
         public Vector3 spawnPosition { get; set; }
         public Vector3 viewPosition { get; set; }
         public string dealershipName { get; set; }
-        public List<string> vehicles { get; set; }
+        public List<DealerVehicle> vehicles { get; set; }
         public float viewRange { get; set; }    
         public bool activeForPlayer { get; set; }    
+    }
+
+    public class DealerVehicle
+    {
+        public string spawnName { get; set; }
+        public int price { get; set; }
     }
 }

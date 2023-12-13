@@ -35,14 +35,17 @@
                                         <div class="bg-black/70 shadow-md shadow-black/70 h-32 p-4 rounded-xl relative"
                                             :class="playerData.vehicle_dealer_data.vehicles.indexOf(item) == 0 ? '' : 'mt-6'">
                                             <div class="relative w-full">
-                                                <img :src="getCarImagePath(item)" alt="Car Image"
-                                                    class="absolute rounded-xl w-40" />
+                                                <img :src="getCarImagePath(item.spawnName)" alt="Car Image"
+                                                    class="absolute rounded-xl w-40 h-24" />
 
-                                                <font class="absolute font-bold text-2xl">{{ playerData.vehicle_dealer_data.vehDispNames[playerData.vehicle_dealer_data.vehicles.indexOf(item)] }}</font>
+                                                <font class="absolute font-bold text-2xl">{{
+                                                    playerData.vehicle_dealer_data.vehDispNames[playerData.vehicle_dealer_data.vehicles.indexOf(item)]
+                                                }}</font>
                                             </div>
 
 
-                                            <button @click="viewVehicle(item)" class="absolute bottom-4 w-[40%] rounded-lg border border-gray-500 duration-300 hover:text-green-400">
+                                            <button @click="viewVehicle(item.spawnName)"
+                                                class="absolute bottom-4 w-[40%] rounded-lg border border-gray-500 duration-300 hover:text-green-400">
                                                 View
                                             </button>
                                         </div>
@@ -56,61 +59,44 @@
             </div>
 
             <div class="absolute right-[3%] top-20">
-
-                <div class="bg-black/70 shadow-2xl shadow-black p-4 rounded-xl relative h-full">
-                    <div v-if="getCarImagePath" class="absolute left-3">
-                        <img :src="getCarImagePath" alt="Car Image" class="w-70  h-20 rounded-xl" />
-                    </div>
-                    <div class="ml-[24%]" :class="getCarImagePath ? 'left-40' : 'left-3'">
-                        <font class="font-bold text-xl">
-                            {{ uiStates.vehicleSpeedoData.displayName != "NULL" ?
-                                uiStates.vehicleSpeedoData.displayName :
-                                "Vehicle" }}
-                        </font>
-                        <br />
-                        <div class="relative mt-2">
-                            <div id="numberplate" style="text-shadow: rgba(0, 0, 0, 0.563) 1px 0 10px;"
-                                class='bg-gray-300/40 w-40 text-center text-3xl outline-none rounded-lg'>
-                                {{ uiStates.vehicleSpeedoData.numberPlate }}
-                            </div>
-                        </div>
-                    </div>
-
+                <div class="bg-black/70 shadow-2xl shadow-black rounded-xl">
+                    <ui class="flex justify-center space-x-5 border-gray-500 p-4">
+                        Choose your vehicle's colour
+                    </ui>
                 </div>
 
-                <div class="container flex items-center w-[24vw] mx-auto mt-14">
-                    <div class="flex justify-center w-full">
-                        <div
-                            class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none max-h-[34vw]">
-
-                            <div class="relative border-b-2 p-4 border-gray-500">
-                                <h1 class="font-bold text-2xl pl-4"><i class="fa-solid fa-cart-shopping text-gray-400"></i>
-
-                                </h1>
-                            </div>
-
-                            <div
-                                class="relative w-full h-fit rounded-lg text-center max-h-[30vw] overflow-scroll overflow-x-hidden">
-
-                                <div class="p-4">
-
-
-
-                                </div>
-
-                            </div>
+                <div class="bg-black/70 shadow-2xl shadow-black p-4 rounded-xl relative h-full w-[24vw] mt-14">
+                    <div class="grid grid-cols-4 gap-4">
+                        <div class="text-center" v-for="item in possibleVehicleColours"
+                            :key="possibleVehicleColours.indexOf(item)">
+                            <button @click="selectedColour = item.rage" class="w-20 h-20 rounded-full"
+                                :style="{ 'background-color': item.html }">
+                            </button>
                         </div>
                     </div>
                 </div>
+
             </div>
 
-            <div class="fixed bottom-4 space-x-16 text-2xl w-full">
-                <div class="flex justify-center space-x-16">
+            <div class="fixed bottom-4 text-2xl w-full">
+
+                <div class="flex justify-center ">
+                    <div class="w-[450px] bg-black/70 shadow-2xl shadow-black/60 pr-4 pl-4 pt-1 pb-2 rounded-lg">
+                        <label for="steps-range" class="block mb-2 text-sm font-medium  text-white text-center">Rotation ({{
+                            rotation }})</label>
+                        <input id="steps-range" v-model="rotation" type="range" min="0" max="360"
+                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                    </div>
+                </div>
+
+                <div class="flex justify-center mt-6 space-x-16">
+
                     <button @click="close"
                         class="w-[250px] duration-300 hover:text-red-400 shadow-black shadow-2xl p-2 rounded-lg bg-black/70 border-gray-500">
                         Close <i class="fa-solid fa-rotate-left text-red-400"></i>
                     </button>
                     <button
+                     @click="purchaseVehicle"
                         class="w-[250px] duration-300 p-2 rounded-lg hover:text-green-400 shadow-black shadow-2xl bg-black/70 border-gray-500">
                         Purchase
                         <i class="fa-solid fa-dollar-sign text-green-400"></i>
@@ -143,7 +129,19 @@ export default {
     data() {
         return {
             closeDealerEvent: "dealers:closeDealership",
-            selectedVehicle: {}
+            selectedVehicle: {},
+            rotation: 180,
+            possibleVehicleColours: [
+                { html: "#fffff6", rage: 111 },
+                { html: "#f78616", rage: 38 },
+                { html: "#66b81f", rage: 55 },
+                { html: "#2446a8", rage: 79 },
+                { html: "#ffcf20", rage: 88 },
+                { html: "#df5891", rage: 137 },
+                { html: "#f21f99", rage: 135 },
+                { html: "#c00e1a", rage: 27 },
+            ],
+            selectedColour: 111
         }
     },
     computed: {
@@ -156,6 +154,14 @@ export default {
     mounted() {
         if (window.mp) {
             window.mp.trigger("gui:toggleHudComplete", false);
+        }
+    },
+    watch: {
+        rotation() {
+            window.mp.trigger("dealers:setSelectedVehRot", this.rotation)
+        },
+        selectedColour() {
+            window.mp.trigger("dealers:changeSelectVehColour", this.selectedColour);
         }
     },
     methods: {
@@ -173,9 +179,14 @@ export default {
             }
         },
         viewVehicle(name) {
-            if(!window.mp) return;
+            if (!window.mp) return;
             this.selectedVehicle = name;
-            window.mp.trigger("dealers:changeSelectVeh", name);
+            window.mp.trigger("dealers:changeSelectVeh", name, this.rotation, this.selectedColour);
+        },
+        purchaseVehicle() {
+            if(!this.selectedVehicle) return;
+            this.$store.state.uiStates.serverLoading = true;
+            window.mp.trigger("dealers:purchaseVehicle", this.selectedVehicle, this.selectedColour)
         }
     }
 }

@@ -1,9 +1,14 @@
-﻿using CloudRP.PlayerData;
+﻿using CloudRP.Character;
+using CloudRP.PlayerData;
+using CloudRP.Utils;
+using CloudRP.VehicleParking;
+using CloudRP.Vehicles;
 using CloudRP.World;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
 namespace CloudRP.VehicleDealerships
@@ -21,7 +26,53 @@ namespace CloudRP.VehicleDealerships
                 dealershipName = "PDM",
                 position = new Vector3(-40.5, -1095.5, 35.2),
                 spawnPosition = new Vector3(-44.3, -1097.0, 26.4),
-                vehicles = new List<string>{ "kamacho", "sultan3" },
+                vehicles = new List<DealerVehicle>{
+                    new DealerVehicle
+                    {
+                        spawnName = "kamacho",
+                        price = 40000
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "sultan3",
+                        price = 1235
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "blista",
+                        price = 8546345
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "panto",
+                        price = 6000
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "hakuchou2",
+                        price = 600000
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "issi2",
+                        price = 4300
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "baller8",
+                        price = 89000
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "baller3",
+                        price = 45000
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "dominator3",
+                        price = 56000
+                    }
+                },
                 viewPosition = new Vector3(-30.0, -1104.8, 26.4),
                 viewRange = 1f
             }
@@ -94,6 +145,48 @@ namespace CloudRP.VehicleDealerships
                 player.SetData(_dealerActiveIdentifier, false);
                 player.Position = playerDealerData.viewPosition;
                 player.Dimension = 0;
+            }
+        }
+
+        [RemoteEvent("server:purchaseVehicle")]
+        public void handlePlayerVehiclePurchase(Player player, string vehName, int spawnColour, string dispName)
+        {
+            DealerShip playerDealerData = player.GetData<DealerShip>(_dealershipIdentifer);
+            bool dealerActive = player.GetData<bool>(_dealerActiveIdentifier);
+            DbCharacter charData = PlayersData.getPlayerCharacterData(player); 
+            
+            if (playerDealerData != null && dealerActive && charData != null)
+            {
+                ulong currentMoney = charData.money_amount;
+                DealerVehicle findDealerVeh = playerDealerData.vehicles.Where(veh => veh.spawnName == vehName).FirstOrDefault();
+                if(findDealerVeh == null)
+                {
+                    uiHandling.sendPushNotifError(player, "Vehicle wasn't found.", 6600, true);
+                    return;
+                }
+
+                ulong moneyDifference = currentMoney - (ulong)findDealerVeh.price;
+                ulong priceDifference = (ulong)findDealerVeh.price - moneyDifference;
+
+                if (moneyDifference < 0)
+                {
+                    uiHandling.sendPushNotifError(player, $"You don't have enough money to purchase this vehicle! You need ${priceDifference} more", 6600, true);
+                    return;
+                }
+
+                if(VehicleParkingUtils.checkIfVehicleInVector(playerDealerData.spawnPosition))
+                {
+                    uiHandling.sendPushNotifError(player, "There is a vehicle blocking the spawn point!", 6600, true);
+                    return;
+                }
+
+                Vehicle buildVeh = VehicleSystem.buildVehicle(vehName, playerDealerData.spawnPosition, 0, charData.character_id, spawnColour, spawnColour);
+                PlayersData.setPlayerCharacterData(player, charData, false, true);
+
+                player.TriggerEvent("dealers:closeDealership");
+                CommandUtils.successSay(player, $"You purchased a new {dispName} for ${findDealerVeh.price}");
+                uiHandling.setLoadingState(player, false);
+                uiHandling.pushRouterToClient(player, Browsers.None);
             }
         }
 
