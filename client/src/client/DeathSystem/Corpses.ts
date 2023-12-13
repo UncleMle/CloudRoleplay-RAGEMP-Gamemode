@@ -50,6 +50,7 @@ class Corpses {
 	}
 
 	public static setCorpses(corpses: Corpse[]) {
+		if(!corpses) return;
 		corpses.forEach((corpse: Corpse, index: number) => {
 			let ped: PedMp = mp.peds.new(
 				mp.game.joaat(corpse.model.sex ? 'mp_m_freemode_01' : 'mp_f_freemode_01'),

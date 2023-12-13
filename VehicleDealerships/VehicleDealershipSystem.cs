@@ -127,8 +127,6 @@ namespace CloudRP.VehicleDealerships
                 player.SetData(_dealerActiveIdentifier, true);
                 player.TriggerEvent("dealers:initDealership");
                 player.Dimension = (uint)player.Id + 1;
-
-                Console.WriteLine("Player can access dealer view with ID " + dealerData.dealerShipId);
             }
         }
 
@@ -188,6 +186,8 @@ namespace CloudRP.VehicleDealerships
                 uiHandling.setLoadingState(player, false);
                 uiHandling.pushRouterToClient(player, Browsers.None);
             }
+
+            uiHandling.setLoadingState(player, false);
         }
 
     }

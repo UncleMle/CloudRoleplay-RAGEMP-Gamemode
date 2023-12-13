@@ -61,13 +61,7 @@
             </div>
 
             <div class="absolute right-[1%] top-20">
-                <div class="bg-black/70 shadow-2xl shadow-black rounded-xl">
-                    <ui class="flex justify-center space-x-5 border-gray-500 p-4">
-                        Choose your vehicle's colour
-                    </ui>
-                </div>
-
-                <div class="bg-black/70 shadow-2xl shadow-black p-4 rounded-xl relative h-full w-[24vw] mt-14">
+                <div class="bg-black/70 shadow-2xl shadow-black p-4 rounded-xl relative h-full w-[24vw]">
                     <div class="w-full">
                         <div class=" w-full" v-for="item in performanceStats"
                             :key="performanceStats.indexOf(item)">

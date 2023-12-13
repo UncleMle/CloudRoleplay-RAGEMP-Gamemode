@@ -360,7 +360,7 @@ namespace CloudRP.Admin
             }
         }
 
-        [Command("aduty", "~r~/aduty")]
+        [Command("aduty", "~r~/aduty", Alias = "ad")]
         public void onAduty(Player player)
         {
             User userData = PlayersData.getPlayerAccountData(player);
