@@ -17,6 +17,7 @@ export const IS_RADAR_HIDDEN: string = "0x157F93B036700462";
 export const IS_RADAR_ENABLED: string = "0xAF754F20EB5CD51A";
 export const SET_TEXT_OUTLINE: string = "0x2513DFB0FB8400FE";
 export const CF_PED_FLAG_CAN_FLY_THRU_WINDSCREEN: number = 32;
+export const CLEAR_FOCUS = "0x31B73D1EA9F01DA2";
 
 
 export const _control_ids = {

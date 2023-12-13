@@ -14,5 +14,6 @@ namespace CloudRP.VehicleDealerships
         public string dealershipName { get; set; }
         public List<string> vehicles { get; set; }
         public float viewRange { get; set; }    
+        public bool activeForPlayer { get; set; }    
     }
 }

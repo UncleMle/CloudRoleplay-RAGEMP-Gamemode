@@ -1,6 +1,7 @@
 ﻿using CloudRP.PlayerData;
 using CloudRP.World;
 using GTANetworkAPI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
@@ -10,6 +11,7 @@ namespace CloudRP.VehicleDealerships
     public class VehicleDealershipSystem : Script
     {
         public static string _dealershipIdentifer = "vehicleDealership";
+        public static string _dealerActiveIdentifier = "vehicleDealershipIsActive";
 
         public static List<DealerShip> dealerships = new List<DealerShip>
         {
@@ -56,8 +58,9 @@ namespace CloudRP.VehicleDealerships
         public void removeDealerData(ColShape colshape, Player player)
         {
             DealerShip dealerData = colshape.GetData<DealerShip>(_dealershipIdentifer);
+            bool dealerActive = player.GetData<bool>(_dealerActiveIdentifier);
 
-            if(dealerData != null)
+            if (dealerData != null && !dealerActive)
             {
                 player.ResetData(_dealershipIdentifer);
                 player.ResetSharedData(_dealershipIdentifer);
@@ -68,11 +71,29 @@ namespace CloudRP.VehicleDealerships
         public void serverViewDealerVehicles(Player player)
         {
             DealerShip dealerData = player.GetData<DealerShip>(_dealershipIdentifer);
+            bool dealerActive = player.GetData<bool>(_dealerActiveIdentifier);
 
-            if (dealerData != null)
+            if (dealerData != null && !dealerActive)
             {
-                uiHandling.pushRouterToClient(player, Browsers.Dealership);
+                player.SetData(_dealerActiveIdentifier, true);
+                player.TriggerEvent("dealers:initDealership");
+                player.Dimension = (uint)player.Id + 1;
+
                 Console.WriteLine("Player can access dealer view with ID " + dealerData.dealerShipId);
+            }
+        }
+
+        [RemoteEvent("server:closeDealership")]
+        public void serverCloseDealership(Player player)
+        {
+            DealerShip playerDealerData = player.GetData<DealerShip>(_dealershipIdentifer);
+            bool dealerActive = player.GetData<bool>(_dealerActiveIdentifier);
+
+            if(playerDealerData != null && dealerActive)
+            {
+                player.SetData(_dealerActiveIdentifier, false);
+                player.Position = playerDealerData.viewPosition;
+                player.Dimension = 0;
             }
         }
 

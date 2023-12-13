@@ -1,5 +1,6 @@
 import BrowserSystem from '@/BrowserSystem/BrowserSystem';
 import toggleChat from '@/PlayerMethods/ToggleChat';
+import { Browsers } from '@/enums';
 import { _SWITCH_OUT_PLAYER_NATIVE, _SWITCH_IN_PLAYER_NATIVE, _IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE } from 'Constants/Constants';
 
 class SwitchCamera {
@@ -43,8 +44,8 @@ class SwitchCamera {
 			SwitchCamera.checkCamInAir(triggerWelcome);
 		} else {
 			mp.game.ui.displayRadar(true);
-			SwitchCamera.toggleGui(true);
 			toggleChat(true);
+			SwitchCamera.toggleGui(true);
 		}
 	}
 

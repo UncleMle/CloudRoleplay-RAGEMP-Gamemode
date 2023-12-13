@@ -9,9 +9,6 @@ using CloudRP.Utils;
 using CloudRP.DiscordSystem;
 using CloudRP.Admin;
 using System.Linq;
-using System.Threading.Channels;
-using CloudRP.Authentication;
-using Newtonsoft.Json;
 
 namespace Integration
 {

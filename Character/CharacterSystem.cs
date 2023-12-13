@@ -3,6 +3,7 @@ using CloudRP.Authentication;
 using CloudRP.Database;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
+using CloudRP.VehicleDealerships;
 using GTANetworkAPI;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Newtonsoft.Json;
@@ -72,35 +73,44 @@ namespace CloudRP.Character
         {
             User userData = PlayersData.getPlayerAccountData(player);
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            bool vehicleDealerActive = player.GetData<bool>(VehicleDealershipSystem._dealerActiveIdentifier);
+
+            // Not checking for null here can crash the server (GetData even casted to bool can return null).
+            if (vehicleDealerActive != null && vehicleDealerActive) return;
 
             if (userData == null || characterData == null) return;
 
-            using (DefaultDbContext dbContext = new DefaultDbContext())
+            try
             {
-                characterData.position_x = player.Position.X;
-                characterData.position_y = player.Position.Y;
-                characterData.position_z = player.Position.Z;
-                characterData.character_health = player.Health;
-                characterData.play_time_seconds += 5;
-                characterData.player_exp += 1;
-
-                if(characterData.injured_timer == 0 && !userData.adminDuty && ((characterData.character_hunger - _characterHungerRemover) > 0 || (characterData.character_water - _characterWaterRemover) > 0))
+                using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
-                    if (characterData.character_water > 0 && (characterData.character_water - _characterWaterRemover) > 0)
+                    characterData.position_x = player.Position.X;
+                    characterData.position_y = player.Position.Y;
+                    characterData.position_z = player.Position.Z;
+                    characterData.character_health = player.Health;
+                    characterData.play_time_seconds += 5;
+                    characterData.player_exp += 1;
+
+                    if (characterData.injured_timer == 0 && !userData.adminDuty && ((characterData.character_hunger - _characterHungerRemover) > 0 || (characterData.character_water - _characterWaterRemover) > 0))
                     {
-                        characterData.character_water -= _characterWaterRemover;
+                        if (characterData.character_water > 0 && (characterData.character_water - _characterWaterRemover) > 0)
+                        {
+                            characterData.character_water -= _characterWaterRemover;
+                        }
+
+                        if (characterData.character_hunger > 0 && (characterData.character_hunger - _characterHungerRemover) > 0)
+                        {
+                            characterData.character_hunger -= _characterHungerRemover;
+                        }
+
+                        PlayersData.setCharacterHungerAndThirst(player, characterData.character_hunger, characterData.character_water);
                     }
 
-                    if (characterData.character_hunger > 0 && (characterData.character_hunger - _characterHungerRemover) > 0)
-                    {
-                        characterData.character_hunger -= _characterHungerRemover;
-                    }
-
-                    PlayersData.setCharacterHungerAndThirst(player, characterData.character_hunger, characterData.character_water);
+                    dbContext.characters.Update(characterData);
+                    dbContext.SaveChanges();
                 }
-
-                dbContext.characters.Update(characterData);
-                dbContext.SaveChanges();
+            } catch
+            {
             }
         }
 

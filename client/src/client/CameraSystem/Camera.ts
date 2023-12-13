@@ -1,4 +1,4 @@
-const CLEAR_FOCUS = "0x31B73D1EA9F01DA2";
+import { CLEAR_FOCUS } from "@/Constants/Constants";
 
 class Camera {
 	static Current_Cam: any;

@@ -33,7 +33,10 @@ namespace CloudRP.Utils
 
         public static void sendWithNickName(Player player, Player target, string prefix, string suffix)
         {
-            player.TriggerEvent("sendWithNickName", target, prefix, suffix);
+            if(player.Dimension == target.Dimension)
+            {
+                player.TriggerEvent("sendWithNickName", target, prefix, suffix);
+            }
         }
 
         public static void charSysPrint(string str)

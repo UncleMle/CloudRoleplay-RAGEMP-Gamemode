@@ -318,3 +318,14 @@ export interface RetrieveCol {
 	owner_id: number,
 	position: Vector3
 }
+
+export interface DealerShip {
+	dealerShipId: number,
+	position: Vector3,
+	spawnPosition: Vector3,
+	viewPosition: Vector3,
+	dealershipName: string,
+	vehicles: string[],
+	viewRange: number,
+	vehDispNames: string[]
+}
