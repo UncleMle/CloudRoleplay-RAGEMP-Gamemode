@@ -28,6 +28,7 @@ import Afk from "./AntiCheat/Afk";
 import Clothing from "./Character/Clothing";
 import VehicleCustoms from "./customs/VehicleCustoms";
 import ParkingSystem from "./Parking/ParkingSystem";
+import VehicleDealerShips from "./vehicleDealerships/VehicleDealerships";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -60,3 +61,4 @@ new Afk();
 new Clothing();
 new VehicleCustoms();
 new ParkingSystem();
+new VehicleDealerShips();

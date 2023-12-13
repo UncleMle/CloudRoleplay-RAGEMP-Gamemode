@@ -1,5 +1,6 @@
 ﻿using CloudRP.World;
 using GTANetworkAPI;
+using System;
 using System.Collections.Generic;
 
 namespace CloudRP.VehicleDealerships
@@ -35,6 +36,41 @@ namespace CloudRP.VehicleDealerships
                 MarkersAndLabels.setTextLabel(dealerShip.viewPosition, $"{dealerShip.dealershipName} ~y~Y~w~ to interact", dealerShip.viewRange);
                 MarkersAndLabels.setPlaceMarker(dealerShip.viewPosition);
                 NAPI.Blip.CreateBlip(595, dealerShip.position, 1.0f, 63, dealerShip.dealershipName, 255, 1.0f, true, 0, 0);
+            }
+        }
+
+        [ServerEvent(Event.PlayerEnterColshape)]
+        public void setDealerData(ColShape colshape, Player player)
+        {
+            DealerShip dealerData = colshape.GetData<DealerShip>(_dealershipIdentifer);
+
+            if (dealerData != null)
+            {
+                player.SetSharedData(_dealershipIdentifer, dealerData);
+                player.SetData(_dealershipIdentifer, dealerData);
+            }
+        }
+
+        [ServerEvent(Event.PlayerExitColshape)]
+        public void removeDealerData(ColShape colshape, Player player)
+        {
+            DealerShip dealerData = colshape.GetData<DealerShip>(_dealershipIdentifer);
+
+            if(dealerData != null)
+            {
+                player.ResetData(_dealershipIdentifer);
+                player.ResetSharedData(_dealershipIdentifer);
+            }
+        }
+
+        [RemoteEvent("server:viewDealerVehicles")]
+        public void serverViewDealerVehicles(Player player)
+        {
+            DealerShip dealerData = player.GetData<DealerShip>(_dealershipIdentifer);
+
+            if (dealerData != null)
+            {
+                Console.WriteLine("Player can access dealer view with ID " + dealerData.dealerShipId);
             }
         }
 
