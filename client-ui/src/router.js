@@ -12,6 +12,7 @@ import ClothingStore from './components/clothing/clothingStore.vue';
 import VehicleCustoms from './components/customs/VehicleCustoms.vue';
 import VehicleParking from './components/vehicle/ParkingLot.vue';
 import VehicleDealerships from './components/dealership/VehicleDealerships.vue';
+import TattooStore from './components/tattoos/TattooStore.vue';
 
 export default new Router({
     routes: [
@@ -23,6 +24,7 @@ export default new Router({
         { path: '/clothing', component: ClothingStore },
         { path: '/vehiclemods', component: VehicleCustoms },
         { path: '/parking', component: VehicleParking },
-        { path: '/dealerships', component: VehicleDealerships }
+        { path: '/dealerships', component: VehicleDealerships },
+        { path: '/tattoos', component: TattooStore }
     ]
 });

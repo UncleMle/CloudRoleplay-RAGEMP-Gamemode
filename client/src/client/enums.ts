@@ -32,4 +32,5 @@ export class Browsers {
 	public static readonly Parking: string = "/parking";
 	public static readonly ModsView: string = "/vehiclemods";
 	public static readonly Dealership: string = "/dealerships";
+	public static readonly Tattoos: string = "/tattoos";
 }

@@ -9,7 +9,7 @@
                         <div class="relative w-full h-fit py-4 rounded-lg border border-gray-900 ">
                             <h1 class="font-bold text-2xl border-b-2 pb-2 border-gray-500 pl-4"><i
                                     class="fa-solid fa-shirt text-gray-400"></i> Clothing Store</h1>
-                            <CloseButton :callback="close" />
+                            <CloseButton/>
 
                             <ui class="flex justify-center mt-2 space-x-10 border-b-2 pb-2 border-gray-500">
                                 <button @click="browsingType = 'top'" class="hover:text-white">
@@ -148,11 +148,6 @@ export default {
             this.$store.state.uiStates.serverLoading = true;
             if(window.mp) {
                 window.mp.trigger("browser:sendObject", "server:handleClothesPurchase", JSON.stringify(this.clothingData));
-            }
-        },
-        close() {
-            if(window.mp) {
-                window.mp.trigger("clothes:setClothingData", JSON.stringify(this.clothingDataOld), true);
             }
         },
         checkForDifference() {

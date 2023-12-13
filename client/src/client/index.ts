@@ -29,6 +29,7 @@ import Clothing from "./Character/Clothing";
 import VehicleCustoms from "./customs/VehicleCustoms";
 import ParkingSystem from "./Parking/ParkingSystem";
 import VehicleDealerShips from "./vehicleDealerships/VehicleDealerships";
+import Tattoos from "./Character/Tattoos";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -62,3 +63,4 @@ new Clothing();
 new VehicleCustoms();
 new ParkingSystem();
 new VehicleDealerShips();
+new Tattoos();

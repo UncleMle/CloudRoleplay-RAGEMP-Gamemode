@@ -334,3 +334,8 @@ export interface DealerVehicle {
 	spawnName: string,
 	price: number
 }
+
+export interface TattoShop {
+	name: string,
+	position: Vector3
+}

@@ -1,0 +1,193 @@
+<template>
+    <main class="relative">
+        <div class="absolute right-[3%] ">
+            <div class="container flex items-center w-[18vw] mx-auto mt-52">
+                <div class="flex justify-center w-full">
+                    <div
+                        class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
+
+                        <div class="relative w-full h-fit py-4 rounded-lg border border-gray-900 ">
+                            <h1 class="font-bold text-2xl border-b-2 pb-2 border-gray-500 pl-4"><i
+                                    class="fa-solid fa-shirt text-gray-400"></i> Tattoo Store</h1>
+                            <CloseButton />
+
+                            <ui class="flex justify-center mt-2 space-x-10 border-b-2 pb-2 border-gray-500">
+                                <button @click="browsingType = 'armRight'" class="hover:text-white">
+                                    <span class="text-gray-300 hover:text-white duration-300">Right Arm</span>
+                                </button>
+
+                                <button @click="browsingType = 'armLeft'" class="hover:text-green-500 duration-300">
+                                    <span class="text-gray-300 hover:text-white duration-300">Left Arm</span>
+                                </button>
+
+                                <button @click="browsingType = 'torso'" class="hover:text-green-500 duration-300">
+                                    <span class="text-gray-300 hover:text-white duration-300">Torso</span>
+                                </button>
+                            </ui>
+
+                            <div class="p-6 max-h-[20vw] overflow-x-hidden overflow-scroll">
+                                <div v-if="browsingType == 'armRight'">
+                                    <div v-for="item in armRight" :key="armRight.indexOf(item)">
+                                        <div
+                                            :class="armRight.indexOf(item) == 0 ? 'border-b border-t border-gray-600' : 'border-b border-gray-600'">
+                                            <label for="steps-range"
+                                                class="block mt-2 mb-2 text-lg font-medium text-center text-white ">{{
+                                                    item.LocalizedName }}</label>
+                                            <div class="flex justify-center space-x-16 mt-4 pb-2">
+                                                <button v-if="!checkIfSelectedContains(item.Name)"
+                                                    @click="addTat(item.Name)"
+                                                    class="border p-1 w-32 border-green-400/40 rounded-xl font-medium">
+                                                    <i class="fa-solid fa-check-to-slot text-green-400"></i> Apply</button>
+                                                <button @click="removeTat(item.Name)" v-else
+                                                    class="border p-1 w-32 border-red-400/20 rounded-xl">
+                                                    <i class="fa-solid fa-rotate-left text-red-400"></i> Reset</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div v-if="browsingType == 'armLeft'">
+                                    <div v-for="item in armLeft" :key="armLeft.indexOf(item)">
+                                        <div
+                                            :class="armLeft.indexOf(item) == 0 ? 'border-b border-t border-gray-600' : 'border-b border-gray-600'">
+                                            <label for="steps-range"
+                                                class="block mt-2 mb-2 text-lg font-medium text-center text-white ">{{
+                                                    item.LocalizedName }}</label>
+                                            <div class="flex justify-center space-x-16 mt-4 pb-2">
+                                                <button v-if="!checkIfSelectedContains(item.Name)"
+                                                    @click="addTat(item.Name)"
+                                                    class="border p-1 w-32 border-green-400/40 rounded-xl font-medium">
+                                                    <i class="fa-solid fa-check-to-slot text-green-400"></i> Apply</button>
+                                                <button @click="removeTat(item.Name)" v-else
+                                                    class="border p-1 w-32 border-red-400/20 rounded-xl">
+                                                    <i class="fa-solid fa-rotate-left text-red-400"></i> Reset</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div v-if="browsingType == 'torso'">
+                                    <div v-for="item in torso" :key="torso.indexOf(item)">
+                                        <div
+                                            :class="torso.indexOf(item) == 0 ? 'border-b border-t border-gray-600' : 'border-b border-gray-600'">
+                                            <label for="steps-range"
+                                                class="block mt-2 mb-2 text-lg font-medium text-center text-white ">{{
+                                                    item.LocalizedName }}</label>
+                                            <div class="flex justify-center space-x-16 mt-4 pb-2">
+                                                <button v-if="!checkIfSelectedContains(item.Name)"
+                                                    @click="addTat(item.Name)"
+                                                    class="border p-1 w-32 border-green-400/40 rounded-xl font-medium">
+                                                    <i class="fa-solid fa-check-to-slot text-green-400"></i> Apply</button>
+                                                <button @click="removeTat(item.Name)" v-else
+                                                    class="border p-1 w-32 border-red-400/20 rounded-xl">
+                                                    <i class="fa-solid fa-rotate-left text-red-400"></i> Reset</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-5 text-white font-medium bg-black/50 p-3 rounded-lg">
+                <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Rotation ({{ rotation
+                }})</label>
+                <input id="steps-range" v-model="rotation" type="range" min="0" max="360"
+                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+            </div>
+
+            <div class="text-center mt-5 text-white font-medium">
+                <button v-if="!loadingState" :disabled="loadingState"
+                    class="bg-black/60 w-full p-3 rounded-xl duration-300 hover:text-green-400"><i
+                        class="fa-solid fa-cart-shopping"></i> Purchase clothing</button>
+                <LoadingSpinner class="bg-black/60 w-full p-3 rounded-xl" v-if="loadingState" />
+            </div>
+        </div>
+    </main>
+</template>
+
+<script>
+import { mapGetters } from 'vuex';
+import LoadingSpinner from '../ui/LoadingSpinner.vue';
+import CloseButton from '../ui/CloseButton.vue';
+
+export default {
+    components: {
+        LoadingSpinner,
+        CloseButton
+    },
+    data() {
+        return {
+            torso: [],
+            armRight: [],
+            armLeft: [],
+            selectedTats: [],
+            browsingType: "armRight",
+            rotation: 180
+        }
+    },
+    watch: {
+        selectedTats() {
+            console.log(this.selectedTats);
+            window.mp.trigger("tat:setTatto", this.selectedTats);
+        },
+        rotation() {
+            window.mp.trigger("clothes:setRot", this.rotation);
+        }
+    },
+    computed: {
+        ...mapGetters({
+            playerData: 'getPlayerInfo',
+            loadingState: 'getLoadingState',
+        })
+    },
+    methods: {
+        checkIfSelectedContains(tattooName) {
+            let found = false;
+
+            this.selectedTats.forEach(data => {
+                console.log()
+                if (data == tattooName) {
+                    found = true;
+                }
+            })
+            console.log(found);
+            return found;
+        },
+        addTat(name) {
+            this.selectedTats.push(name);
+        },
+        removeTat(name) {
+            let idx = this.selectedTats.indexOf(name);
+
+            if (idx != -1) {
+                this.selectedTats.splice(idx, 1);
+            }
+        }
+    },
+    mounted() {
+        let tattoData = this.playerData.tattoo_store_data;
+        if (!tattoData) return;
+
+        tattoData.forEach(data => {
+            if (data.Zone == "ZONE_TORSO") {
+                this.torso.push(data);
+            }
+
+            if (data.Zone == "ZONE_LEFT_ARM") {
+                this.armLeft.push(data);
+            }
+
+            if (data.Zone == "ZONE_RIGHT_ARM") {
+                console.log(data);
+                this.armRight.push(data);
+            }
+        });
+
+    }
+}
+</script>

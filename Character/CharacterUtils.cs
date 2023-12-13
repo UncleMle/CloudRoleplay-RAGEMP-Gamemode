@@ -88,4 +88,9 @@ namespace CloudRP.Character
         public double water;
     }
 
+    public class TattooShop
+    {
+        public string name { get; set; }
+        public Vector3 position { get; set; }
+    }
 }
