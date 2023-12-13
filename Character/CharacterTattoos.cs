@@ -35,7 +35,7 @@ namespace CloudRP.Character
                 tattoCol.SetData(_tattoStoreIdentifier, store);
 
                 NAPI.Blip.CreateBlip(75, store.position, 1, 1, store.name, 255, 50, true, 0, 0);
-                MarkersAndLabels.setTextLabel(store.position, $"{store.name}", 7f);
+                MarkersAndLabels.setTextLabel(store.position, $"{store.name} use ~y~Y~w~ to interact", 7f);
                 MarkersAndLabels.setPlaceMarker(store.position);
             }
         }
@@ -74,8 +74,6 @@ namespace CloudRP.Character
             {
                 List<string> addedTats = JsonConvert.DeserializeObject<List<string>>(tatData);
 
-                Console.WriteLine(tatLib + "__" + JsonConvert.SerializeObject(addedTats));
-
                 foreach (string item in addedTats)
                 {
                     using(DefaultDbContext dbContext = new DefaultDbContext())
@@ -105,12 +103,6 @@ namespace CloudRP.Character
             {
                 uiHandling.setLoadingState(player, false);
             }
-        }
-
-        [Command("tat", "~r~/tat col lib")]
-        public void tatCommnad(Player player, string col, string lib)
-        {
-            player.TriggerEvent("tat:setTatto", col, lib);
         }
 
         public static List<Tattoo> getAllPlayerTats(int charId)
