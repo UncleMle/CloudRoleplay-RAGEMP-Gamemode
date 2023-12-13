@@ -83,7 +83,7 @@ export default {
                 const imageModule = require(`../../assets/img/cars/${dbName}.png`);
                 return imageModule;
             } catch (error) {
-                return "";
+                return require("../../assets/img/cars/sentinel.png");
             }
         },
         unparkVeh(vehId) {

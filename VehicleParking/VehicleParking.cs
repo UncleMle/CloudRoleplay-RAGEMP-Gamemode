@@ -174,7 +174,7 @@ namespace CloudRP.VehicleParking
             DbCharacter charData = PlayersData.getPlayerCharacterData(player);
             RetrieveCol retrievalCol = player.GetData<RetrieveCol>(_retrievalIdentifier);
 
-            if(retrievalCol != null && Vector3.Distance(player.Position, retrievalCol.position) < 10)
+            if(retrievalCol != null && Vector3.Distance(player.Position, retrievalCol.position) < 2)
             {
                 using(DefaultDbContext dbContext = new DefaultDbContext())
                 {
@@ -210,7 +210,7 @@ namespace CloudRP.VehicleParking
             
             ParkingLot parkingLot = parkingLots.Where(pl => pl.parkingId == retrievalCol.owner_id).FirstOrDefault();
 
-            if (characterData != null && parkingLot != null && Vector3.Distance(player.Position, retrievalCol.position) < 10)
+            if (characterData != null && parkingLot != null && Vector3.Distance(player.Position, retrievalCol.position) < 2)
             {
 
                 if(checkParkingLot(parkingLot.parkingId))

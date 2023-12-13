@@ -134,8 +134,8 @@
                     <div class="absolute" :class="getCarImagePath ? 'left-40' : 'left-3'">
                         <font class="font-bold text-xl">
                             {{ uiStates.vehicleSpeedoData.displayName != "NULL" ?
-                            uiStates.vehicleSpeedoData.displayName :
-                            "Vehicle" }}
+                                uiStates.vehicleSpeedoData.displayName :
+                                "Vehicle" }}
                         </font>
                         <br />
                         <div class="relative mt-2">
@@ -359,7 +359,7 @@ export default {
                 const imageModule = require(`../../assets/img/cars/${this.uiStates.vehicleSpeedoData.dbName}.png`);
                 return imageModule;
             } catch (error) {
-                return "";
+                return require("../../assets/img/cars/sentinel.png");
             }
         },
     },
