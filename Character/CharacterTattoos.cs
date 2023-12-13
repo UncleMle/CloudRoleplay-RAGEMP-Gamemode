@@ -23,6 +23,18 @@ namespace CloudRP.Character
                 name = "Vinewood Tattoos",
                 overlayDlc = "mpvinewood_overlays",
                 position = new Vector3(322.0, 180.5, 103.6)
+            },
+            new TattooShop
+            {
+                name = "Innocence Tattoos",
+                overlayDlc = "mpsmuggler_overlays",
+                position = new Vector3(1323.0, -1651.8, 52.3)
+            },
+            new TattooShop
+            {
+                name = "Vespucci Tattoos",
+                overlayDlc = "mpbusiness_overlays",
+                position = new Vector3(-1154.0, -1425.3, 5.0)
             }
         };
 

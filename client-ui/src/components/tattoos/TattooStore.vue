@@ -12,15 +12,15 @@
                             <CloseButton :callback="close" />
 
                             <ui class="flex justify-center mt-2 space-x-10 border-b-2 pb-2 border-gray-500">
-                                <button @click="browsingType = 'armRight'" class="hover:text-white">
+                                <button v-if="armRight.length > 0" @click="browsingType = 'armRight'" class="hover:text-white">
                                     <span class="text-gray-300 hover:text-white duration-300">Right Arm</span>
                                 </button>
 
-                                <button @click="browsingType = 'armLeft'" class="hover:text-green-500 duration-300">
+                                <button v-if="armLeft.length > 0" @click="browsingType = 'armLeft'" class="hover:text-green-500 duration-300">
                                     <span class="text-gray-300 hover:text-white duration-300">Left Arm</span>
                                 </button>
 
-                                <button @click="browsingType = 'torso'" class="hover:text-green-500 duration-300">
+                                <button v-if="torso.length > 0" @click="browsingType = 'torso'" class="hover:text-green-500 duration-300">
                                     <span class="text-gray-300 hover:text-white duration-300">Torso</span>
                                 </button>
                             </ui>
@@ -140,6 +140,7 @@ export default {
             torso: [],
             armRight: [],
             armLeft: [],
+            head: [],
             selectedTats: [],
             browsingType: "armRight",
             rotation: 180
@@ -217,8 +218,11 @@ export default {
             }
 
             if (data.Zone == "ZONE_RIGHT_ARM") {
-                console.log(data);
                 this.armRight.push(data);
+            }
+
+            if (data.Zone == "ZONE_HEAD") {
+                this.head.push(data);
             }
         });
 

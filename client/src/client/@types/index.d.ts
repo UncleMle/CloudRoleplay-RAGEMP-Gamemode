@@ -134,6 +134,11 @@ export interface Tatto {
 	tattoo_collection: string
 }
 
+export interface TatFromUi {
+	mName: string,
+	fName: string
+}
+
 export interface Gui {
 	playerId: number,
 	direction: string,

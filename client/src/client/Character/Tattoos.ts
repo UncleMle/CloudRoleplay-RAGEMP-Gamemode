@@ -1,4 +1,4 @@
-import { CharacterModel, Tatto, TattoData, TattoShop } from '@/@types';
+import { CharacterModel, TattoData, TattoShop } from '@/@types';
 import BrowserSystem from '@/BrowserSystem/BrowserSystem';
 import { _control_ids } from '@/Constants/Constants';
 import validateKeyPress from '@/PlayerMethods/validateKeyPress';
@@ -8,6 +8,7 @@ import { CharacterData } from '@/@types';
 
 import mpsmuggler_overlays from './mpsmuggler_overlays';
 import mpvinewood_overlays from './mpvinewood_overlays';
+import mpbusiness_overlays from './mpbusiness_overlays';
 import DeathSystem from '@/DeathSystem/DeathSystem';
 
 class Tattoos {
@@ -17,7 +18,8 @@ class Tattoos {
 	public static currentTattooLibView: string;
 	public static tattoData: TattoData[] = [
 		{ name: "mpsmuggler_overlays", data: mpsmuggler_overlays },
-		{ name: "mpvinewood_overlays", data: mpvinewood_overlays }
+		{ name: "mpvinewood_overlays", data: mpvinewood_overlays },
+		{ name: "mpbusiness_overlays", data: mpbusiness_overlays }
 	]
 
 	constructor() {
@@ -48,6 +50,8 @@ class Tattoos {
 				if(data.name == tattooShopData?.overlayDlc) {
 					Tattoos.currentTattooLibView = tattooShopData?.overlayDlc;
 
+					mp.console.logInfo(Tattoos.currentTattooLibView);
+
 					BrowserSystem._browserInstance.execute(`appSys.commit('playerMutationSetter', {
 						_mutationKey: "tattoo_store_data",
 						data: ${JSON.stringify(data.data)}
@@ -64,7 +68,7 @@ class Tattoos {
 		}
 	}
 
-	public static async setTattooData(overlay: any, parse: boolean = true, collection: string = 'mpvinewood_overlays') {
+	public static async setTattooData(overlay: any, parse: boolean = true, collection: string = Tattoos.currentTattooLibView) {
 		Tattoos.LocalPlayer.clearDecorations();
 		let charData: CharacterData | undefined = getUserCharacterData();
 		if (!charData) return;
@@ -80,9 +84,9 @@ class Tattoos {
 		await mp.game.waitAsync(50);
 
 		tatArr.forEach((data) => {
-			let tattoo: string = `${data}${charData?.characterModel.sex ? '_M' : '_F'}`;
-
-			Tattoos.LocalPlayer.setDecoration(mp.game.joaat(collection), mp.game.joaat(tattoo));
+			if(charData && charData.characterModel.sex) {
+				Tattoos.LocalPlayer.setDecoration(mp.game.joaat(collection), mp.game.joaat(Tattoos.formatTatHash(data, charData.characterModel.sex)));
+			}
 		});
 	}
 
@@ -91,9 +95,12 @@ class Tattoos {
 		entity.clearDecorations();
 
 		charModel.player_tattos.forEach(data => {
-			let tattoo: string = `${data.tattoo_collection}${charModel.sex ? '_M' : '_F'}`;
-			entity.setDecoration(mp.game.joaat(data.tattoo_lib), mp.game.joaat(tattoo));
+			entity.setDecoration(mp.game.joaat(data.tattoo_lib), mp.game.joaat(Tattoos.formatTatHash(data.tattoo_collection, charModel.sex)));
 		})
+	}
+
+	public static formatTatHash(hash: string, sex: boolean) {
+		return  `${hash}${sex ? '_M' : '_F'}`;
 	}
 
 	public static purchaseTattoos(tattooData: string) {
