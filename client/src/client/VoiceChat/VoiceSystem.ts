@@ -14,7 +14,7 @@ class VoiceSystem {
 	public static addListenerEvent: string = "server:voiceAddVoiceListener";
 	public static removeListenerEvent: string = "server:voiceRemoveVoiceListener";
 	public static togVoiceEvent: string = "server:togVoiceStatus";
-
+	public static _voiceToggleIdentifier: string = "voipIsTalking";
 
 	constructor() {
 		VoiceSystem.Localplayer = mp.players.local;
@@ -24,7 +24,7 @@ class VoiceSystem {
 
 		mp.events.add("entityStreamOut", VoiceSystem.handleStreamOut);
 		mp.events.add("entityStreamIn", VoiceSystem.handleStreamIn);
-		mp.events.addDataHandler(_sharedCharacterDataIdentifier, VoiceSystem.handleDataHandler);
+		mp.events.addDataHandler(VoiceSystem._voiceToggleIdentifier, VoiceSystem.handleDataHandler);
 		mp.events.add("playerQuit", VoiceSystem.handlePlayerLeave);
 
 		setInterval(() => {
@@ -59,10 +59,10 @@ class VoiceSystem {
 		}, 500);
 	}
 
-	public static handleDataHandler(entity: EntityMp, characterData: CharacterData) {
-		if(entity.type != "player" || !characterData) return;
+	public static handleDataHandler(entity: EntityMp, tog: boolean) {
+		if(entity.type != "player") return;
 
-		if(!characterData.voiceChatState) {
+		if(!tog) {
 			(entity as PlayerMp).playFacialAnim("mic_chatter", "mp_facial");
 		} else {
 			(entity as PlayerMp).playFacialAnim("mood_normal_1", "facials@gen_male@variations@normal");
@@ -72,19 +72,14 @@ class VoiceSystem {
 	public static handleStreamOut(entity: EntityMp) {
 		if(entity.type != "player") return;
 
-		let characterData: CharacterData | undefined = getTargetCharacterData(entity as PlayerMp);
-
-		if(!characterData?.voiceChatState) {
-			(entity as PlayerMp).playFacialAnim("mood_normal_1", "facials@gen_male@variations@normal");
-		}
+		(entity as PlayerMp).playFacialAnim("mood_normal_1", "facials@gen_male@variations@normal");
 	}
 
 	public static handleStreamIn(entity: EntityMp) {
 		if(entity.type != "player") return;
+		let voiceStatus = entity.getVariable(VoiceSystem._voiceToggleIdentifier);
 
-		let characterData: CharacterData | undefined = getTargetCharacterData(entity as PlayerMp);
-
-		if(!characterData?.voiceChatState) {
+		if(!voiceStatus) {
 			(entity as PlayerMp).playFacialAnim("mic_chatter", "mp_facial");
 		}
 	}

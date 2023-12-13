@@ -110,7 +110,7 @@ namespace CloudRP.DeathSystem
                 dbContext.SaveChanges();
             }
 
-            PlayersData.setPlayerCharacterData(player, characterData, false);
+            PlayersData.setPlayerCharacterData(player, characterData);
 
             player.TriggerEvent("injured:startInterval", time);
         }
@@ -136,7 +136,7 @@ namespace CloudRP.DeathSystem
                 dbContext.SaveChanges();
             }
 
-            PlayersData.setPlayerCharacterData(player, characterData, false);
+            PlayersData.setPlayerCharacterData(player, characterData);
         }
 
         public static void removeInjuredStatus(Player player, DbCharacter character, bool respawn = true)

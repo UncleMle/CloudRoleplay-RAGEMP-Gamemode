@@ -138,7 +138,7 @@ namespace CloudRP.ClothingStores
                         uiHandling.sendPushNotif(player, "You successfully purchase a new item of clothing.", 6600, false, false);
 
                         characterData.money_amount -= 300;
-                        PlayersData.setPlayerCharacterData(player, characterData, false, true);
+                        PlayersData.setPlayerCharacterData(player, characterData, true, true);
                         CommandUtils.successSay(player, $"You purchased a new clothing item for {ChatUtils.moneyGreen}$300");
                     }
                 }
