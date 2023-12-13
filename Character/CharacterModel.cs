@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace CloudRP.Character
@@ -58,6 +59,9 @@ namespace CloudRP.Character
         public int molesFreckles { get; set; }
         public int blushStyle { get; set; }
         public int makeup { get; set; }
+
+        [NotMapped]
+        public List<Tattoo> player_tattos { get; set; } = new List<Tattoo>();
     }
 
 }

@@ -359,16 +359,19 @@ namespace CloudRP.Authentication
                         .Where(charModel => charModel.owner_id == character.character_id)
                         .FirstOrDefault();
                     if(charModel == null) return;
-
                     CharacterClothing charClothing = dbContext.character_clothes
                         .Where(clothes => clothes.character_id ==  character.character_id)
                         .FirstOrDefault();
+                    List<Tattoo> charTats = dbContext.player_tattoos
+                        .Where(tat => tat.tattoo_owner_id ==  character.character_id)
+                        .ToList();
 
                     character.characterModel = charModel;
                     character.characterClothing = charClothing;
+                    character.characterModel.player_tattos = charTats;
 
                     ChatUtils.charSysPrint($"Character {character.character_name} has logged in (#{character.character_id})");
-                    PlayersData.setPlayerCharacterData(player, character);
+                    PlayersData.setPlayerCharacterData(player, character, true);
                     DiscordUtils.creationConnection(player, character, LogCreation.Join);
 
                     welcomeAndSpawnPlayer(player, userData, character);

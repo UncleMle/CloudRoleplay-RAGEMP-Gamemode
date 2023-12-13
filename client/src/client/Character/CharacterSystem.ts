@@ -3,6 +3,7 @@ import getTargetCharacterData from "../PlayerMethods/getTargetCharacterData";
 import { CharacterData, CharacterModel, UserData } from "@types";
 import getTargetData from "../PlayerMethods/getTargetData";
 import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
+import Tattoos from "./Tattoos";
 
 class CharacterSystem {
 	public static LocalPlayer: PlayerMp;
@@ -80,6 +81,10 @@ class CharacterSystem {
 
 
 		entity.setHeadBlendData(parseInt(charData.firstHeadShape), parseInt(charData.secondHeadShape), 0, parseInt(charData.firstHeadShape), parseInt(charData.secondHeadShape), 0, Number(charData.headMix) * 0.01, Number(charData.skinMix) * 0.01, 0, false);
+
+		if(charData.player_tattos.length > 0) {
+			Tattoos.setDbTats(entity, charData);
+		}
 	}
 
 	public static handleAdmins(entity: PlayerMp, data: UserData) {

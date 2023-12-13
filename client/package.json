@@ -17,7 +17,7 @@
 		"@rollup/plugin-replace": "^4.0.0",
 		"@swc/core": "^1.2.118",
 		"@swc/helpers": "^0.3.2",
-		"@types/node": "^17.0.23",
+		"@types/node": "^17.0.45",
 		"builtin-modules": "^3.2.0",
 		"fs-jetpack": "^4.2.0",
 		"prettier": "^2.5.0",
@@ -30,7 +30,8 @@
 	},
 	"dependencies": {
 		"colorette": "^2.0.16",
-		"dotenv": "^16.0.0"
+		"dotenv": "^16.0.0",
+		"fs": "^0.0.1-security"
 	},
 	"prettier": {
 		"$schema": "http://json.schemastore.org/prettierrc",

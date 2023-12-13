@@ -1,4 +1,4 @@
-[
+const mpvinewood_overlays = [
     {
       "Name": "TAT_VW_000",
       "LocalizedName": "In the Pocket",
@@ -297,3 +297,4 @@
       "Price": 42885
     }
   ]
+export default mpvinewood_overlays;

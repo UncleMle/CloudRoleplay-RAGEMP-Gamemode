@@ -49,7 +49,7 @@
                                     <input id="steps-range" v-model="clothingData.undershirt_texture" type="range" min="0" max="10" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                                     <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Torso ({{ clothingData.torso }})</label>
-                                    <input id="steps-range" v-model="clothingData.torso" type="range" min="0" max="10" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                    <input id="steps-range" v-model="clothingData.torso" type="range" min="0" max="196" class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                                 </div>
 

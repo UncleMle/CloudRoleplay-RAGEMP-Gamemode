@@ -124,6 +124,14 @@ export interface CharacterModel {
 	makeup: string;
 	lipstick: string;
 	blushColour: string;
+	player_tattos: Tatto[]
+}
+
+export interface Tatto {
+	tattoo_id: number,
+	tattoo_owner_id: number,
+	tattoo_lib: string,
+	tattoo_collection: string
 }
 
 export interface Gui {
@@ -337,5 +345,11 @@ export interface DealerVehicle {
 
 export interface TattoShop {
 	name: string,
+	overlayDlc: string,
 	position: Vector3
+}
+
+export interface TattoData {
+	name: string,
+	data: object
 }

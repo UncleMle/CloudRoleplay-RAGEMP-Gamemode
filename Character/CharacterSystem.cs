@@ -251,6 +251,7 @@ namespace CloudRP.Character
                 await dbContext.SaveChangesAsync();
                 
                 CharacterUtils.createCharModel(newCharacter.character_id, createdCharacterModel);
+                uiHandling.setLoadingState(player, false);
             }
 
             

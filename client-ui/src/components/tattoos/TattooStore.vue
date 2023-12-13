@@ -9,7 +9,7 @@
                         <div class="relative w-full h-fit py-4 rounded-lg border border-gray-900 ">
                             <h1 class="font-bold text-2xl border-b-2 pb-2 border-gray-500 pl-4"><i
                                     class="fa-solid fa-shirt text-gray-400"></i> Tattoo Store</h1>
-                            <CloseButton />
+                            <CloseButton :callback="close" />
 
                             <ui class="flex justify-center mt-2 space-x-10 border-b-2 pb-2 border-gray-500">
                                 <button @click="browsingType = 'armRight'" class="hover:text-white">
@@ -34,11 +34,16 @@
                                                 class="block mt-2 mb-2 text-lg font-medium text-center text-white ">{{
                                                     item.LocalizedName }}</label>
                                             <div class="flex justify-center space-x-16 mt-4 pb-2">
-                                                <button v-if="!checkIfSelectedContains(item.Name)"
-                                                    @click="addTat(item.Name)"
-                                                    class="border p-1 w-32 border-green-400/40 rounded-xl font-medium">
-                                                    <i class="fa-solid fa-check-to-slot text-green-400"></i> Apply</button>
-                                                <button @click="removeTat(item.Name)" v-else
+                                                <button :disabled="checkIfAlreadyHave(item.HashNameMale)"
+                                                    v-if="!checkIfSelectedContains(item.HashNameMale)"
+                                                    @click="addTat(item.HashNameMale)"
+                                                    :class="checkIfAlreadyHave(item.HashNameMale) ? 'text-gray-400 border-gray-500' : 'border-green-400/40'"
+                                                    class="border p-1 w-44 rounded-xl font-medium">
+                                                    <i v-if="!checkIfAlreadyHave(item.HashNameMale)"
+                                                        class="fa-solid fa-check-to-slot text-green-400"></i>
+                                                    {{ checkIfAlreadyHave(item.HashNameMale) ? "You already have this " :
+                                                        "Apply" }}</button>
+                                                <button @click="removeTat(item.HashNameMale)" v-else
                                                     class="border p-1 w-32 border-red-400/20 rounded-xl">
                                                     <i class="fa-solid fa-rotate-left text-red-400"></i> Reset</button>
                                             </div>
@@ -55,11 +60,16 @@
                                                 class="block mt-2 mb-2 text-lg font-medium text-center text-white ">{{
                                                     item.LocalizedName }}</label>
                                             <div class="flex justify-center space-x-16 mt-4 pb-2">
-                                                <button v-if="!checkIfSelectedContains(item.Name)"
-                                                    @click="addTat(item.Name)"
-                                                    class="border p-1 w-32 border-green-400/40 rounded-xl font-medium">
-                                                    <i class="fa-solid fa-check-to-slot text-green-400"></i> Apply</button>
-                                                <button @click="removeTat(item.Name)" v-else
+                                                <button :disabled="checkIfAlreadyHave(item.HashNameMale)"
+                                                    v-if="!checkIfSelectedContains(item.HashNameMale)"
+                                                    @click="addTat(item.HashNameMale)"
+                                                    :class="checkIfAlreadyHave(item.HashNameMale) ? 'text-gray-400 border-gray-500' : 'border-green-400/40'"
+                                                    class="border p-1 w-44 rounded-xl font-medium">
+                                                    <i v-if="!checkIfAlreadyHave(item.HashNameMale)"
+                                                        class="fa-solid fa-check-to-slot text-green-400"></i>
+                                                    {{ checkIfAlreadyHave(item.HashNameMale) ? "You already have this " :
+                                                        "Apply" }}</button>
+                                                <button @click="removeTat(item.HashNameMale)" v-else
                                                     class="border p-1 w-32 border-red-400/20 rounded-xl">
                                                     <i class="fa-solid fa-rotate-left text-red-400"></i> Reset</button>
                                             </div>
@@ -75,11 +85,16 @@
                                                 class="block mt-2 mb-2 text-lg font-medium text-center text-white ">{{
                                                     item.LocalizedName }}</label>
                                             <div class="flex justify-center space-x-16 mt-4 pb-2">
-                                                <button v-if="!checkIfSelectedContains(item.Name)"
-                                                    @click="addTat(item.Name)"
-                                                    class="border p-1 w-32 border-green-400/40 rounded-xl font-medium">
-                                                    <i class="fa-solid fa-check-to-slot text-green-400"></i> Apply</button>
-                                                <button @click="removeTat(item.Name)" v-else
+                                                <button :disabled="checkIfAlreadyHave(item.HashNameMale)"
+                                                    v-if="!checkIfSelectedContains(item.HashNameMale)"
+                                                    @click="addTat(item.HashNameMale)"
+                                                    :class="checkIfAlreadyHave(item.HashNameMale) ? 'text-gray-400 border-gray-500' : 'border-green-400/40'"
+                                                    class="border p-1 w-44 rounded-xl font-medium">
+                                                    <i v-if="!checkIfAlreadyHave(item.HashNameMale)"
+                                                        class="fa-solid fa-check-to-slot text-green-400"></i>
+                                                    {{ checkIfAlreadyHave(item.HashNameMale) ? "You already have this " :
+                                                        "Apply" }}</button>
+                                                <button @click="removeTat(item.HashNameMale)" v-else
                                                     class="border p-1 w-32 border-red-400/20 rounded-xl">
                                                     <i class="fa-solid fa-rotate-left text-red-400"></i> Reset</button>
                                             </div>
@@ -101,9 +116,9 @@
             </div>
 
             <div class="text-center mt-5 text-white font-medium">
-                <button v-if="!loadingState" :disabled="loadingState"
+                <button @click="purchaseTat" v-if="!loadingState" :disabled="loadingState"
                     class="bg-black/60 w-full p-3 rounded-xl duration-300 hover:text-green-400"><i
-                        class="fa-solid fa-cart-shopping"></i> Purchase clothing</button>
+                        class="fa-solid fa-cart-shopping"></i> Purchase Tattoos</button>
                 <LoadingSpinner class="bg-black/60 w-full p-3 rounded-xl" v-if="loadingState" />
             </div>
         </div>
@@ -132,8 +147,8 @@ export default {
     },
     watch: {
         selectedTats() {
-            console.log(this.selectedTats);
-            window.mp.trigger("tat:setTatto", this.selectedTats);
+            console.log(this.selectedTats + " TRIGGERED");
+            window.mp.trigger("tat:setTatto", JSON.stringify(this.selectedTats));
         },
         rotation() {
             window.mp.trigger("clothes:setRot", this.rotation);
@@ -161,12 +176,31 @@ export default {
         addTat(name) {
             this.selectedTats.push(name);
         },
+        close() {
+            window.mp.trigger("tat:resync");
+        },
         removeTat(name) {
             let idx = this.selectedTats.indexOf(name);
 
             if (idx != -1) {
                 this.selectedTats.splice(idx, 1);
             }
+        },
+        purchaseTat() {
+            this.$store.state.uiStates.serverLoading = true;
+            window.mp.trigger("tat:purchase", JSON.stringify(this.selectedTats));
+            window.mp.trigger("browser:resetRouter");
+        },
+        checkIfAlreadyHave(spawnName) {
+            let found;
+
+            this.playerData.player_current_tats.forEach(data => {
+                if (data.tattoo_collection == spawnName) {
+                    found = true;
+                }
+            })
+
+            return found;
         }
     },
     mounted() {

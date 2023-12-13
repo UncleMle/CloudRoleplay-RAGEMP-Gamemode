@@ -91,6 +91,7 @@ namespace CloudRP.Character
     public class TattooShop
     {
         public string name { get; set; }
+        public string overlayDlc { get; set; }
         public Vector3 position { get; set; }
     }
 }

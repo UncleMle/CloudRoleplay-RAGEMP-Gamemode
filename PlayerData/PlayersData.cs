@@ -52,6 +52,7 @@ namespace CloudRP.PlayerData
                 characterId = character.character_id,
                 characterName = character.character_name,
                 characterModel = resyncModel ? character.characterModel : null,
+                characterTats = resyncModel ? character.player_tattoos : null,
                 voiceChatState = character.voiceChatState,
                 data = character,
                 characterClothing = character.characterClothing

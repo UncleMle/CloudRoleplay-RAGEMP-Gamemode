@@ -1,5 +1,6 @@
 <template>
     <div id="app">
+        <p class="text-red-400">{{ uiStates }}</p>
         <ChatBox class="absolute" />
         <InventoryHud v-if="false"/>
         <PushNotification class="bg-red-200" ref="notification" />

@@ -1,8 +1,15 @@
-﻿using CloudRP.World;
+﻿using CloudRP.Database;
+using CloudRP.PlayerData;
+using CloudRP.World;
 using GTANetworkAPI;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CloudRP.Character
 {
@@ -14,6 +21,7 @@ namespace CloudRP.Character
             new TattooShop
             {
                 name = "Vinewood Tattoos",
+                overlayDlc = "mpvinewood_overlays",
                 position = new Vector3(322.0, 180.5, 103.6)
             }
         };
@@ -56,11 +64,67 @@ namespace CloudRP.Character
             }
         }
 
+        [RemoteEvent("server:purchaseTattoos")]
+        public async Task purchaseTattoos(Player player, string tatLib, string tatData)
+        {
+            TattooShop shopData = player.GetData<TattooShop>(_tattoStoreIdentifier);
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+
+            if(shopData != null && characterData != null)
+            {
+                List<string> addedTats = JsonConvert.DeserializeObject<List<string>>(tatData);
+
+                Console.WriteLine(tatLib + "__" + JsonConvert.SerializeObject(addedTats));
+
+                foreach (string item in addedTats)
+                {
+                    using(DefaultDbContext dbContext = new DefaultDbContext())
+                    {
+                        Tattoo findTat = dbContext.player_tattoos
+                            .Where(tat => tat.tattoo_lib == tatLib && tat.tattoo_collection == item)
+                            .FirstOrDefault();
+
+                        if(findTat == null)
+                        {
+                            dbContext.player_tattoos.Add(new Tattoo
+                            {
+                                tattoo_lib = tatLib,
+                                tattoo_collection = item,
+                                tattoo_owner_id = characterData.character_id
+                            });
+                            await dbContext.SaveChangesAsync();                            
+                        }
+                    }
+                }
+
+                List<Tattoo> newTattoList = getAllPlayerTats(characterData.character_id);
+                characterData.characterModel.player_tattos = newTattoList;
+                PlayersData.setPlayerCharacterData(player, characterData, true);
+                uiHandling.sendPushNotif(player, "You purchased some tattoos", 6600, true, true, true);
+            } else
+            {
+                uiHandling.setLoadingState(player, false);
+            }
+        }
+
         [Command("tat", "~r~/tat col lib")]
         public void tatCommnad(Player player, string col, string lib)
         {
             player.TriggerEvent("tat:setTatto", col, lib);
         }
 
+        public static List<Tattoo> getAllPlayerTats(int charId)
+        {
+            List<Tattoo> findTats;
+
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                findTats = dbContext.player_tattoos
+                    .Where(tat => tat.tattoo_owner_id == charId)
+                    .ToList();
+            }
+
+            return findTats;
+        }
     }
 }
