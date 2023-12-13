@@ -68,6 +68,22 @@
                 </div>
 
                 <div class="bg-black/70 shadow-2xl shadow-black p-4 rounded-xl relative h-full w-[24vw] mt-14">
+                    <div class="w-full">
+                        <div class=" w-full" v-for="item in performanceStats"
+                            :key="performanceStats.indexOf(item)">
+                            <div class="mt-2">{{item.performanceName}}</div>
+                            <div class="p-3 bg-purple-400/30 mt-2 text-center rounded-lg" :style="{'width': item.val+'%'}">{{item.val}}%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-black/70 shadow-2xl shadow-black rounded-xl mt-14">
+                    <ui class="flex justify-center space-x-5 border-gray-500 p-4">
+                        Choose your vehicle's colour
+                    </ui>
+                </div>
+
+                <div class="bg-black/70 shadow-2xl shadow-black p-4 rounded-xl relative h-full w-[24vw] mt-14">
                     <div class="grid grid-cols-4 gap-4">
                         <div class="text-center" v-for="item in possibleVehicleColours"
                             :key="possibleVehicleColours.indexOf(item)">
@@ -142,6 +158,12 @@ export default {
                 { html: "#df5891", rage: 137 },
                 { html: "#f21f99", rage: 135 },
                 { html: "#c00e1a", rage: 27 },
+            ],
+            performanceStats: [
+                { performanceName: "Engine", val: 60 },
+                { performanceName: "Accleration", val: 20 },
+                { performanceName: "Brakes", val: 40 },
+                { performanceName: "Top Speed", val: 100 },
             ],
             selectedColour: 111
         }
