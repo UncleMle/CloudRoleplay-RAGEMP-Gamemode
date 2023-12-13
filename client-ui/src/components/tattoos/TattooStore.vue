@@ -41,7 +41,7 @@
                                                 <button :disabled="checkIfAlreadyHave(item.HashNameMale, item.HashNameFemale)"
                                                     v-if="!checkIfSelectedContains(item.HashNameMale, item.HashNameFemale)"
                                                     @click="addTat(item.HashNameMale, item.HashNameFemale)"
-                                                    :class="checkIfAlreadyHave(item.HashNameMale) ? 'text-gray-400 border-gray-500' : 'border-green-400/40'"
+                                                    :class="checkIfAlreadyHave(item.HashNameMale, item.HashNameFemale) ? 'text-gray-400 border-gray-500' : 'border-green-400/40'"
                                                     class="border p-1 w-44 rounded-xl font-medium">
                                                     <i v-if="!checkIfAlreadyHave(item.HashNameMale, item.HashNameFemale)"
                                                         class="fa-solid fa-check-to-slot text-green-400"></i>
@@ -177,7 +177,7 @@ export default {
     },
     watch: {
         selectedTats() {
-            console.log(this.selectedTats + " TRIGGERED");
+            console.log(JSON.stringify(this.selectedTats) + " TRIGGERED");
             window.mp.trigger("tat:setTatto", JSON.stringify(this.selectedTats));
         },
         rotation() {
@@ -214,13 +214,10 @@ export default {
             let idx;
 
             this.selectedTats.forEach((data, i) => {
-                console.log(data, tatNameM);
                 if (data.male != "" && data.male == tatNameM || data.female == tatNameF && data.female != "") {
                     idx = i;
                 }
             });
-
-            console.log(idx);
 
             this.selectedTats.splice(idx, 1);
         },

@@ -87,11 +87,15 @@ class Clothing {
         }
     }
 
-    public static setClothingData(clothingData: any, parse: boolean, entity: PlayerMp | PedMp = Clothing.LocalPlayer) {
+    public static async setClothingData(clothingData: any, parse: boolean, entity: PlayerMp | PedMp = Clothing.LocalPlayer) {
         if(!clothingData) return;
         if(parse) {
             clothingData = JSON.parse(clothingData as string);
         }
+
+        await mp.game.waitAsync(300);
+
+        if(!entity || !clothingData) return;
 
         entity.setComponentVariation(1, Number(clothingData.mask), Number(clothingData.mask_texture), 0);
         entity.setComponentVariation(3, Number(clothingData.torso), Number(clothingData.torso_texture), 0);

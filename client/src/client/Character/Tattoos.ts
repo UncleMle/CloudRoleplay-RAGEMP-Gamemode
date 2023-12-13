@@ -84,8 +84,7 @@ class Tattoos {
 		await mp.game.waitAsync(50);
 
 		tatArr.forEach((data) => {
-			if(charData && charData.characterModel.sex) {
-				mp.gui.chat.push(charData.characterModel.sex ? data.male : data.female + " hash");
+			if(charData) {
 				Tattoos.LocalPlayer.setDecoration(mp.game.joaat(collection), mp.game.joaat(charData.characterModel.sex ? data.male : data.female));
 			}
 		});
