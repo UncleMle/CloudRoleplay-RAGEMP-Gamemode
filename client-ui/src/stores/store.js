@@ -21,7 +21,8 @@ const store = new Vuex.Store({
 			otp_ui: false,
 			player_water: 0,
 			player_hunger: 0,
-			parked_vehicles: []
+			parked_vehicles: [],
+			vehicle_dealer_data: {}
 		},
 		uiStates: {
 			characterSelection: false,

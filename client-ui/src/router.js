@@ -11,6 +11,7 @@ import AdminReports from './components/admin/AdminReports.vue';
 import ClothingStore from './components/clothing/clothingStore.vue';
 import VehicleCustoms from './components/customs/VehicleCustoms.vue';
 import VehicleParking from './components/vehicle/ParkingLot.vue';
+import VehicleDealerships from './components/dealership/VehicleDealerships.vue';
 
 export default new Router({
     routes: [
@@ -21,6 +22,7 @@ export default new Router({
         { path: '/reports', component: AdminReports },
         { path: '/clothing', component: ClothingStore },
         { path: '/vehiclemods', component: VehicleCustoms },
-        { path: '/parking', component: VehicleParking }
+        { path: '/parking', component: VehicleParking },
+        { path: '/dealerships', component: VehicleDealerships }
     ]
 });

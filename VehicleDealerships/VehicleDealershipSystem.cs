@@ -1,7 +1,9 @@
-﻿using CloudRP.World;
+﻿using CloudRP.PlayerData;
+using CloudRP.World;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 
 namespace CloudRP.VehicleDealerships
 {
@@ -19,7 +21,7 @@ namespace CloudRP.VehicleDealerships
                 spawnPosition = new Vector3(-44.3, -1097.0, 26.4),
                 vehicles = new List<string>{ "kamacho", "sultan3" },
                 viewPosition = new Vector3(-30.0, -1104.8, 26.4),
-                viewRange = 2f
+                viewRange = 1f
             }
         };
 
@@ -30,7 +32,6 @@ namespace CloudRP.VehicleDealerships
             foreach(DealerShip dealerShip in dealerships)
             {
                 ColShape viewingCol = NAPI.ColShape.CreateSphereColShape(dealerShip.viewPosition, dealerShip.viewRange, 0);
-
                 
                 viewingCol.SetData(_dealershipIdentifer, dealerShip);
                 MarkersAndLabels.setTextLabel(dealerShip.viewPosition, $"{dealerShip.dealershipName} ~y~Y~w~ to interact", dealerShip.viewRange);
@@ -70,6 +71,7 @@ namespace CloudRP.VehicleDealerships
 
             if (dealerData != null)
             {
+                uiHandling.pushRouterToClient(player, Browsers.Dealership);
                 Console.WriteLine("Player can access dealer view with ID " + dealerData.dealerShipId);
             }
         }

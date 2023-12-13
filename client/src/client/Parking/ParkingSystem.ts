@@ -1,5 +1,6 @@
 import { _control_ids } from "@/Constants/Constants";
 import DeathSystem from "@/DeathSystem/DeathSystem";
+import validateKeyPress from "@/PlayerMethods/validateKeyPress";
 import { Browsers } from "@/enums";
 
 class ParkingSystem {
@@ -22,7 +23,7 @@ class ParkingSystem {
     }
 
     public static handleKeyPressed() {
-        if(ParkingSystem.LocalPlayer.isTypingInTextChat) return;
+        if(!validateKeyPress(true)) return;
         let retrieveCol = ParkingSystem.LocalPlayer.getVariable(ParkingSystem._retrievalIdentifier)
 
         if(retrieveCol) {
