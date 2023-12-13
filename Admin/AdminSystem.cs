@@ -388,19 +388,33 @@ namespace CloudRP.Admin
             else AdminUtils.sendNoAuth(player);
         }
 
-        [Command("staff")]
+        [Command("staff", "~r~/staff")]
         public void staff(Player player)
         {
-            int index = 0;
-            foreach (var item in AdminUtils.gatherStaff())
-            {
-                index++;
-                User user = item.Value;
-                string adminRank = AdminUtils.getColouredAdminRank(user);
-                string duty = user.adminDuty ? "[!{green}On-Duty!{white}]" : "[!{red}Off-Duty!{white}]";
+            User userData = PlayersData.getPlayerAccountData(player);
 
-                AdminUtils.staffSay(player, index + $". {user.adminName} {adminRank} {duty}");
-            }
+            if(userData.adminLevel > (int)AdminRanks.Admin_None)
+            {
+                Dictionary<Player, User> onlineStaff = AdminUtils.gatherStaff();
+
+                if(onlineStaff.Count == 0)
+                {
+                    CommandUtils.errorSay(player, "There is no online staff.");
+                    return;
+                }
+
+                int index = 0;
+                foreach (KeyValuePair<Player, User> item in onlineStaff)
+                {
+                    index++;
+                    User user = item.Value;
+                    string adminRank = AdminUtils.getColouredAdminRank(user);
+                    string duty = user.adminDuty ? "[!{green}On-Duty!{white}]" : "[!{red}Off-Duty!{white}]";
+
+                    AdminUtils.staffSay(player, index + $". {user.adminName} {adminRank} {duty}");
+                }
+
+            } else AdminUtils.sendNoAuth(player);   
         }
 
         [Command("a", "~r~/adminchat [message]", GreedyArg = true, Alias = "adminchat")]
@@ -1092,9 +1106,11 @@ namespace CloudRP.Admin
                     return;
                 }
 
-
                 findPlayerData.adminLevel = adminRankSet;
+                findPlayerData.showAdminPed = false;
                 findPlayerData.adminDuty = false;
+                findPlayerData.isFlying = false;
+                player.TriggerEvent("admin:endFly");
 
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
@@ -1109,11 +1125,9 @@ namespace CloudRP.Admin
                 }
 
                 PlayersData.setPlayerAccountData(findPlayer, findPlayerData);
-
                 string setAdminRank = AdminUtils.getColouredAdminRank(findPlayerData); 
-;                AdminUtils.staffSay(player, $"You set {findPlayerCharData.character_name}'s admin level to {setAdminRank}");
-;                AdminUtils.staffSay(findPlayer, $"Your admin level was set to {setAdminRank} by Admin {userData.adminName}");
-
+;               AdminUtils.staffSay(player, $"You set {findPlayerCharData.character_name}'s admin level to {setAdminRank}");
+;               AdminUtils.staffSay(findPlayer, $"Your admin level was set to {setAdminRank} by Admin {userData.adminName}");
                 AdminUtils.sendMessageToAllStaff($"{userData.adminName} set {findPlayerCharData.character_name}'s admin level to {setAdminRank}");
             
             } else AdminUtils.sendNoAuth(player);
