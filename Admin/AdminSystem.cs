@@ -695,6 +695,12 @@ namespace CloudRP.Admin
 
             if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
             {
+                if(vehicleId == -1 && !player.IsInVehicle)
+                {
+                    CommandUtils.errorSay(player, "You must be in a vehicle or specifiy one.");
+                    return;
+                }
+
                 if(vehicleId == -1 && player.IsInVehicle)
                 {
                     DbVehicle vehicleData = VehicleSystem.getVehicleData(player.Vehicle);

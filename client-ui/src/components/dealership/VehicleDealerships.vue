@@ -12,7 +12,7 @@
         </div>
 
         <main v-if="!loadingState" class="relative">
-            <div class="absolute left-[3%] top-20">
+            <div class="absolute left-[1%] top-20">
 
                 <div class="bg-black/70 shadow-2xl shadow-black rounded-xl">
                     <ui class="flex justify-center space-x-5 border-gray-500 p-4">
@@ -60,7 +60,7 @@
                 </div>
             </div>
 
-            <div class="absolute right-[3%] top-20">
+            <div class="absolute right-[1%] top-20">
                 <div class="bg-black/70 shadow-2xl shadow-black rounded-xl">
                     <ui class="flex justify-center space-x-5 border-gray-500 p-4">
                         Choose your vehicle's colour
@@ -161,7 +161,7 @@ export default {
             ],
             performanceStats: [
                 { performanceName: "Engine", val: 60 },
-                { performanceName: "Accleration", val: 20 },
+                { performanceName: "Acceleration", val: 20 },
                 { performanceName: "Brakes", val: 40 },
                 { performanceName: "Top Speed", val: 100 },
             ],
@@ -179,6 +179,8 @@ export default {
         if (window.mp) {
             window.mp.trigger("gui:toggleHudComplete", false);
         }
+
+        this.selectedVehicle = this.playerData.vehicle_dealer_data.vehicles[0].spawnName;
     },
     watch: {
         rotation() {
