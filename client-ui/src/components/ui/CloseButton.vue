@@ -6,7 +6,7 @@
 
 <script>
     export default {
-        props: ['resetGui', 'vehData', 'customEvent'],
+        props: ['resetGui', 'vehData', 'customEvent', 'callback'],
         methods: {
             resetRouter() {
                 if (window.mp) {
@@ -15,6 +15,10 @@
                     if(this.customEvent) {
                         window.mp.trigger(this.customEvent);
                         return;
+                    }
+
+                    if(this.callback) {
+                        this.callback();
                     }
 
                     if(this.resetGui) {

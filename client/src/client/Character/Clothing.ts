@@ -39,8 +39,14 @@ class Clothing {
 
             if(currentClothingStoreData && playerClothingData) {
                 if(BrowserSystem._browserInstance) {
+
                     BrowserSystem._browserInstance.execute(`appSys.commit('playerMutationSetter', {
                         _mutationKey: "clothing_data",
+                        data: ${JSON.stringify(playerClothingData)}
+                    })`);
+
+                    BrowserSystem._browserInstance.execute(`appSys.commit('playerMutationSetter', {
+                        _mutationKey: "clothing_data_old",
                         data: ${JSON.stringify(playerClothingData)}
                     })`);
 

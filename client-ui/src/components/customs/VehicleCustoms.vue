@@ -127,25 +127,25 @@
 
             <div class="absolute right-[3%] top-20">
 
-                <div class="bg-black/70 shadow-2xl shadow-black p-4 rounded-xl relative h-full">
-                    <div v-if="getCarImagePath" class="absolute left-3">
-                        <img :src="getCarImagePath" alt="Car Image" class="w-70  h-20 rounded-xl" />
-                    </div>
-                    <div class="ml-[24%]" :class="getCarImagePath ? 'left-40' : 'left-3'">
-                        <font class="font-bold text-xl">
-                            {{ uiStates.vehicleSpeedoData.displayName != "NULL" ?
-                                uiStates.vehicleSpeedoData.displayName :
-                                "Vehicle" }}
-                        </font>
-                        <br />
-                        <div class="relative mt-2">
-                            <div id="numberplate" style="text-shadow: rgba(0, 0, 0, 0.563) 1px 0 10px;"
-                                class='bg-gray-300/40 w-40 text-center text-3xl outline-none rounded-lg'>
-                                {{ uiStates.vehicleSpeedoData.numberPlate }}
+                <div class="bg-black/70 shadow-2xl shadow-black p-4 rounded-xl relative">
+                    <div v-if="getCarImagePath" class="h-20">
+                        <div class="float-left">
+                            <font class="font-bold text-xl">
+                                {{ uiStates.vehicleSpeedoData.displayName != "NULL" ?
+                                    uiStates.vehicleSpeedoData.displayName :
+                                    "Vehicle" }}
+                            </font>
+                            <br />
+                            <div class="relative mt-2">
+                                <div id="numberplate" style="text-shadow: rgba(0, 0, 0, 0.563) 1px 0 10px;"
+                                    class='bg-gray-300/40 w-40 text-center text-3xl outline-none rounded-lg'>
+                                    {{ uiStates.vehicleSpeedoData.numberPlate }}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        <img :src="getCarImagePath" alt="Car Image" class="w-32 h-20 rounded-xl float-right">
 
+                    </div>
                 </div>
 
                 <div class="container flex items-center w-[24vw] mx-auto mt-14">

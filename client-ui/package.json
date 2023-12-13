@@ -13,6 +13,7 @@
     "dragula": "^3.7.3",
     "howler": "^2.2.3",
     "jquery": "^3.7.0",
+    "lodash": "^4.17.21",
     "node-polyfill-webpack-plugin": "^2.0.1",
     "particles.js": "^2.0.0",
     "vue": "^2.6.14",

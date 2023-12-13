@@ -18,6 +18,7 @@ const store = new Vuex.Store({
 			player_characters: [],
 			report_data: [],
 			clothing_data: [],
+			clothing_data_old: [],
 			otp_ui: false,
 			player_water: 0,
 			player_hunger: 0,

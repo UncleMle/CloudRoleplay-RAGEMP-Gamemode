@@ -107,7 +107,7 @@ namespace CloudRP.ClothingStores
 
             if (characterData != null && clothingData != null)
             {
-                if(clothingData.Equals(characterData.characterClothing))
+                if(characterData.characterClothing.Equals(clothingData))
                 {
                     uiHandling.sendPushNotifError(player, "You haven't purchased anything.", 6600);
                     return;

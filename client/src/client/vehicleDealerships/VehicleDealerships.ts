@@ -132,7 +132,7 @@ class VehicleDealerShips {
 			dimension: VehicleDealerShips.LocalPlayer.remoteId + 1
 		});
 
-        await mp.game.waitAsync(450);
+        await mp.game.waitAsync(100);
 
         VehicleDealerShips.dealerSelectedVehicle.setDirtLevel(0);
         VehicleDealerShips.dealerSelectedVehicle.setHeading(Number(rotation));
