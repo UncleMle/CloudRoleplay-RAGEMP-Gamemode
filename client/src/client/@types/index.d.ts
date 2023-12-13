@@ -135,8 +135,8 @@ export interface Tatto {
 }
 
 export interface TatFromUi {
-	mName: string,
-	fName: string
+	male: string,
+	female: string
 }
 
 export interface Gui {

@@ -82,7 +82,7 @@ class CharacterSystem {
 
 		entity.setHeadBlendData(parseInt(charData.firstHeadShape), parseInt(charData.secondHeadShape), 0, parseInt(charData.firstHeadShape), parseInt(charData.secondHeadShape), 0, Number(charData.headMix) * 0.01, Number(charData.skinMix) * 0.01, 0, false);
 
-		if(charData.player_tattos.length > 0) {
+		if(charData.player_tattos && charData.player_tattos.length > 0) {
 			Tattoos.setDbTats(entity, charData);
 		}
 	}

@@ -1,4 +1,4 @@
-import { CharacterModel, TattoData, TattoShop } from '@/@types';
+import { CharacterModel, TatFromUi, TattoData, TattoShop } from '@/@types';
 import BrowserSystem from '@/BrowserSystem/BrowserSystem';
 import { _control_ids } from '@/Constants/Constants';
 import validateKeyPress from '@/PlayerMethods/validateKeyPress';
@@ -75,7 +75,7 @@ class Tattoos {
 
 		Tattoos.setDbTats(Tattoos.LocalPlayer, charData.characterModel);
 
-		let tatArr: string[] = overlay;
+		let tatArr: TatFromUi[] = overlay;
 
 		if (parse) {
 			tatArr = JSON.parse(overlay);
@@ -85,7 +85,8 @@ class Tattoos {
 
 		tatArr.forEach((data) => {
 			if(charData && charData.characterModel.sex) {
-				Tattoos.LocalPlayer.setDecoration(mp.game.joaat(collection), mp.game.joaat(Tattoos.formatTatHash(data, charData.characterModel.sex)));
+				mp.gui.chat.push(charData.characterModel.sex ? data.male : data.female + " hash");
+				Tattoos.LocalPlayer.setDecoration(mp.game.joaat(collection), mp.game.joaat(charData.characterModel.sex ? data.male : data.female));
 			}
 		});
 	}
@@ -95,16 +96,21 @@ class Tattoos {
 		entity.clearDecorations();
 
 		charModel.player_tattos.forEach(data => {
-			entity.setDecoration(mp.game.joaat(data.tattoo_lib), mp.game.joaat(Tattoos.formatTatHash(data.tattoo_collection, charModel.sex)));
+			entity.setDecoration(mp.game.joaat(data.tattoo_lib), mp.game.joaat(data.tattoo_collection));
 		})
 	}
 
-	public static formatTatHash(hash: string, sex: boolean) {
-		return  `${hash}${sex ? '_M' : '_F'}`;
-	}
-
 	public static purchaseTattoos(tattooData: string) {
-		mp.events.callRemote(Tattoos._tatPurchaseEvent, Tattoos.currentTattooLibView, tattooData);
+		let charData: CharacterData | undefined = getUserCharacterData();
+		if(!charData) return;
+
+		let tats: string[] = [];
+
+		JSON.parse(tattooData).forEach((data: TatFromUi) => {
+			tats.push(charData?.characterModel.sex ? data.male : data.female);
+		})
+
+		mp.events.callRemote(Tattoos._tatPurchaseEvent, Tattoos.currentTattooLibView, JSON.stringify(tats));
 	}
 }
 
