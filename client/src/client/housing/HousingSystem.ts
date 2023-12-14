@@ -15,20 +15,29 @@ class HousingSystem {
         mp.keys.bind(_control_ids.Y, false, HousingSystem.handleKeyPress);
     }
 
-    public static handleKeyPress() {
+    public static async handleKeyPress() {
         if(!validateKeyPress(true)) return;
         let houseData: House | undefined = HousingSystem.LocalPlayer.getVariable(HousingSystem._housingDataIdentifier);
-        let interiorData: Interior | undefined = HousingSystem.LocalPlayer.getVariable(HousingSystem._housingDataIdentifier);
+        let interiorData: Interior | undefined = HousingSystem.LocalPlayer.getVariable(HousingSystem._interiorDataIdentifier);
 
         mp.gui.chat.push(JSON.stringify(interiorData));
 
         if(interiorData && !houseData) {
             mp.events.callRemote(HousingSystem._houseExitEvent);
+            await HousingSystem.playSwitch();
         }
 
         if(houseData) {
             mp.events.callRemote(HousingSystem._houseLoadEvent);
+            await HousingSystem.playSwitch();
         }
+    }
+
+    public static async playSwitch() {
+        mp.game.cam.doScreenFadeOut(100);
+
+        await mp.game.waitAsync(1500);
+        mp.game.cam.doScreenFadeIn(500);
     }
 
 }

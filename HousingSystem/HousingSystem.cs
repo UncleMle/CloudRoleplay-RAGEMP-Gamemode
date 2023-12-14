@@ -120,11 +120,12 @@ namespace CloudRP.HousingSystem
         {
             Interior interiorData = player.GetData<Interior>(_housingInteriorIdentifier);
 
-            if(interiorData != null)
+            if(interiorData != null && interiorData.housePosition != null)
             {
-                Vector3 housePos = new Vector3(interiorData.house.house_position_x, interiorData.house.house_position_y, interiorData.house.house_position_z);
-                player.Position = housePos;
+                player.Position = interiorData.housePosition;
                 player.Dimension = 0;
+
+                player.SendChatMessage(ChatUtils.info + " you exited interior with id " + interiorData.id);
             }
         }
 

@@ -29,6 +29,7 @@ namespace CloudRP.HousingSystem
             MarkersAndLabels.setPlaceMarker(interior.doorExitPosition, (uint)house.house_id);
             ColShape doorExit = NAPI.ColShape.CreateSphereColShape(interior.doorExitPosition, 2f, (uint)house.house_id);
 
+            interior.housePosition = new Vector3(house.house_position_x, house.house_position_y, house.house_position_z);
             house.interiorExitCol = doorExit;
 
             doorExit.SetData(_housingInteriorIdentifier, interior);
@@ -66,7 +67,7 @@ namespace CloudRP.HousingSystem
         {
             public int id;
             public string name;
-            public House house;
+            public Vector3 housePosition;
             public Vector3 interiorPosition;
             public Vector3 doorExitPosition;
             public ColShape doorExitCol;
