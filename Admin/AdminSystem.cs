@@ -1332,13 +1332,23 @@ namespace CloudRP.Admin
                         VehicleSystem.setVehicleData(pVeh, vehData);
                         AdminUtils.staffSay(player, $"You have set vehicle #{vehData.vehicle_id}'s license plate to {formattedPlate}");
                     }
-
-
                 }
 
             }
             else AdminUtils.sendNoAuth(player);
+        }
 
+        [Command("gotoc", "~r~/gotoc [x] [y] [z]")]
+        public void teleportToCoords(Player player, int x, int y, int z)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+            
+            if(AdminUtils.checkUserData(player, userData))
+            {
+                player.Position = new Vector3(x, y, z);
+
+                AdminUtils.staffSay(player, $"Teleported to vector {x} {y} {z}");
+            }
         }
     }
 }

@@ -25,7 +25,7 @@
                                 </button>
 
                                 <button v-if="head.length > 0" @click="browsingType = 'head'" class="hover:text-green-500 duration-300">
-                                    <span class="text-gray-300 hover:text-white duration-300">Head</span>
+                                    <span class="text-gray-300 hover:text-white duration-300">Neck</span>
                                 </button>
                             </ui>
 
