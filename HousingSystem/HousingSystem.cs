@@ -97,18 +97,21 @@ namespace CloudRP.HousingSystem
         public void loadHouseForPlayer(Player player)
         {
             House houseData = player.GetData<House>(_housingDataIdentifier);
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
-            if (houseData != null)
+            if (houseData != null && characterData != null)
             {
                 Interior houseInterior = houseData.houseInterior; 
 
                 if (houseInterior != null)
                 {
+                    characterData.player_dimension = (uint)houseData.house_id;
                     player.Dimension = (uint)houseData.house_id;
                     player.Position = houseInterior.interiorPosition;
                     houseData.playersInHouse.Add(player);
                     setHouseData(houseData.houseCol, houseData);
                     setHouseDataForPlayer(player, houseData);
+                    PlayersData.setPlayerCharacterData(player, characterData, false, true);
                 }
             }
         }

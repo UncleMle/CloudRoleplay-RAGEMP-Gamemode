@@ -34,13 +34,13 @@ class HousingSystem {
     }
 
     public static async playSwitch(notif: string) {
-        NotificationSystem.createNotification(notif, false)
-        GuiSystem.toggleHudComplete(true);
+        GuiSystem.toggleHudComplete(false);
         mp.game.cam.doScreenFadeOut(100);
 
         await mp.game.waitAsync(1500);
         mp.game.cam.doScreenFadeIn(500);
-        GuiSystem.toggleHudComplete(false);
+        GuiSystem.toggleHudComplete(true);
+        NotificationSystem.createNotification(notif, false)
     }
 
 }

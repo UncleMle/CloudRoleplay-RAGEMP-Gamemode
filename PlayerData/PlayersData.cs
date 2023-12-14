@@ -88,7 +88,7 @@ namespace CloudRP.PlayerData
                 water = water
             });
         }
-        
+
         public static void setCharacterClothes(Player player, CharacterClothing clothes)
         {
             player.SetSharedData(_characterClothesKey, clothes);

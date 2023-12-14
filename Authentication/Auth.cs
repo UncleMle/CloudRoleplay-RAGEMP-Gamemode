@@ -443,6 +443,7 @@ namespace CloudRP.Authentication
             player.TriggerEvent("client:moveSkyCamera", "up", 1);
 
             Chat.welcomePlayerOnSpawn(player);
+            player.Dimension = characterData.player_dimension;
             player.Position = new Vector3(characterData.position_x, characterData.position_y, characterData.position_z);
             player.Health = characterData.character_health;
 
