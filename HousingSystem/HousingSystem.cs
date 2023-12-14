@@ -18,7 +18,6 @@ namespace CloudRP.HousingSystem
     public class HousingSystem : Script
     {
         public static string _housingDataIdentifier = "houseData";
-        public static string _housingInteriorIdentifier = "houseInteriorData";
 
         [ServerEvent(Event.ResourceStart)]
         public void loadAllHouses()
@@ -87,6 +86,7 @@ namespace CloudRP.HousingSystem
 
 
                 setHouseData(houseCol, house);
+                loadInteriorData(house);
             } else
             {
                 Console.WriteLine("House with ID " + house.house_id +" was not loaded (interior not found)");
