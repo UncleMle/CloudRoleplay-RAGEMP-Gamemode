@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using static CloudRP.HousingSystem.Interiors;
 
 namespace CloudRP.HousingSystem
 {
@@ -40,5 +41,7 @@ namespace CloudRP.HousingSystem
         public Blip houseBlip { get; set; }
         [NotMapped]
         public List<Player> playersInHouse { get; set; } = new List<Player>();
+        [NotMapped]
+        public Interior houseInterior { get; set; }
     }
 }

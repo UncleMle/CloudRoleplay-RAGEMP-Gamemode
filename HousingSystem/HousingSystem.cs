@@ -59,6 +59,7 @@ namespace CloudRP.HousingSystem
             Vector3 housePos = new Vector3(house.house_position_x, house.house_position_y, house.house_position_z);
 
             TextLabel priceLabel = null;
+
             if(house.blip_visible)
             {
                 Vector3 pricePos = new Vector3(housePos.X, housePos.Y, housePos.Z + 0.4);
@@ -71,13 +72,47 @@ namespace CloudRP.HousingSystem
 
             Blip houseBlip = NAPI.Blip.CreateBlip(492, housePos, 1.0f, 43, house.house_name, 255, 20, true, 0, 0);
 
-            house.priceLabel = priceLabel;
-            house.houseLabel = houseLabel;
-            house.houseMarker = houseMarker;
-            house.houseBlip = houseBlip;
+            Interior findInterior = availableInteriors
+                     .Where(inte => inte.id == house.house_interior_id)
+                     .FirstOrDefault();
 
-            house.houseCol = houseCol;
-            setHouseData(houseCol, house);
+            if(findInterior != null)
+            {
+                house.houseInterior = findInterior;
+                house.priceLabel = priceLabel;
+                house.houseLabel = houseLabel;
+                house.houseMarker = houseMarker;
+                house.houseBlip = houseBlip;
+                house.houseCol = houseCol;
+
+
+                setHouseData(houseCol, house);
+            } else
+            {
+                Console.WriteLine("House with ID " + house.house_id +" was not loaded (interior not found)");
+            }
+        }
+
+        [RemoteEvent("server:loadHouseForPlayer")]
+        public void loadHouseForPlayer(Player player)
+        {
+            House houseData = player.GetData<House>(_housingDataIdentifier);
+
+            if (houseData != null)
+            {
+                Interior houseInterior = houseData.houseInterior; 
+
+                if (houseInterior != null)
+                {
+                    player.Dimension = (uint)houseData.house_id;
+                    player.Position = houseInterior.interiorPosition;
+                    player.SendChatMessage(ChatUtils.info + " You entered house #" + houseData.house_id);
+
+                    houseData.playersInHouse.Add(player);
+                    setHouseData(houseData.houseCol, houseData);
+                    setHouseDataForPlayer(player, houseData);
+                }
+            }
         }
 
         [ServerEvent(Event.PlayerEnterColshape)]
@@ -95,87 +130,11 @@ namespace CloudRP.HousingSystem
         public void removeHouseData(ColShape col, Player player)
         {
             House colData = col.GetData<House>(_housingDataIdentifier);
-            Interior interiorData = col.GetData<Interior>(_housingInteriorIdentifier);
-
-            if(interiorData != null)
-            {
-                resetInteriorDataForPlayer(player);
-            }
 
             if(colData != null)
             {
                 resetHouseDataForPlayer(player);
             }
-        }
-
-        [ServerEvent(Event.PlayerDisconnected)]
-        public void removePlayerFromHouse(Player player)
-        {
-            House playerHouseData = player.GetData<House>(_housingDataIdentifier);
-
-            if(playerHouseData != null && playerHouseData.playersInHouse.Contains(player))
-            {
-                playerHouseData.playersInHouse.Remove(player);
-            }
-        }
-
-        [RemoteEvent("server:loadHouseForPlayer")]
-        public void loadHouseForPlayer(Player player)
-        {
-            House houseData = player.GetData<House>(_housingDataIdentifier);
-
-            if(houseData != null)
-            {
-                Interior findInterior = availableInteriors
-                    .Where(inte => inte.id == houseData.house_interior_id)
-                    .FirstOrDefault();
-
-                if(findInterior != null)
-                {
-                    player.Dimension = (uint)houseData.house_id; 
-                    player.Position = findInterior.interiorPosition;
-                    player.SendChatMessage(ChatUtils.info + " You entered house #"+houseData.house_id);
-
-                    if(houseData.playersInHouse.Count == 0)
-                    {
-                        setInteriorExit(findInterior, houseData);
-                    }
-
-                    houseData.playersInHouse.Add(player);
-                    setHouseData(houseData.houseCol, houseData);
-                    setHouseDataForPlayer(player, houseData);
-                }
-            }
-        }
-        
-        [RemoteEvent("server:exitHouseForPlayer")]
-        public void exitHouseForPlayer(Player player)
-        {
-            Interior interiorData = player.GetData<Interior>(_housingInteriorIdentifier);
-
-            if(interiorData != null)
-            {
-                Vector3 housePos = new Vector3(interiorData.house.house_position_x, interiorData.house.house_position_y, interiorData.house.house_position_z);
-
-                player.Dimension = 0;
-                player.Position = housePos;
-                resetInteriorDataForPlayer(player);
-                player.SendChatMessage($"{ChatUtils.info} You have exited house #{interiorData.house.house_id}.");
-            }
-        }
-
-        public static void setInteriorExit(Interior interior, House house)
-        {
-            TextLabel interiorTextLabel = MarkersAndLabels.setTextLabel(interior.doorExitPosition, "exit property use ~y~Y~w~ to interact", 20f);
-            Marker interiorMarker = MarkersAndLabels.setPlaceMarker(interior.doorExitPosition);
-            ColShape interiorCol = NAPI.ColShape.CreateSphereColShape(interior.doorExitPosition, 2f, (uint)house.house_id);
-
-            interior.interiorMarker = interiorMarker;
-            interior.interiorTextLabel = interiorTextLabel;
-            interior.doorExitCol = interiorCol;
-            interior.house = house;
-
-            setInteriorData(interiorCol, interior);
         }
 
         public static void setHouseData(ColShape houseCol, House house)
@@ -191,28 +150,11 @@ namespace CloudRP.HousingSystem
             player.SetSharedData(_housingDataIdentifier, house);
         }
         
-        public static void setInteriorData(ColShape interiorCol, Interior interior)
-        {
-            if (interiorCol == null) return;
-            interiorCol.SetData(_housingDataIdentifier, interior);
-            interiorCol.SetSharedData(_housingDataIdentifier, interior);
-        }
-
-        public static void setInteriorDataForPlayer(Player player, Interior interior)
-        {
-            player.SetData(_housingInteriorIdentifier, interior);
-            player.SetSharedData(_housingInteriorIdentifier, interior);
-        }
         
         public static void resetHouseDataForPlayer(Player player)
         {
             player.ResetData(_housingDataIdentifier);
             player.ResetSharedData(_housingDataIdentifier);
-        }
-        public static void resetInteriorDataForPlayer(Player player)
-        {
-            player.ResetData(_housingInteriorIdentifier);
-            player.ResetSharedData(_housingInteriorIdentifier);
         }
 
     }

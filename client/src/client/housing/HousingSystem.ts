@@ -18,12 +18,8 @@ class HousingSystem {
     public static handleKeyPress() {
         if(!validateKeyPress(true)) return;
         let houseData: House | undefined = HousingSystem.LocalPlayer.getVariable(HousingSystem._housingDataIdentifier);
-        let interiorData: Interior | undefined = HousingSystem.LocalPlayer.getVariable(HousingSystem._interiorDataIdentifier);
 
-        if(interiorData) {
-            mp.events.callRemote(HousingSystem._houseExitEvent);
-            return;
-        }
+        mp.gui.chat.push(JSON.stringify(houseData));
 
         if(houseData) {
             mp.events.callRemote(HousingSystem._houseLoadEvent);
