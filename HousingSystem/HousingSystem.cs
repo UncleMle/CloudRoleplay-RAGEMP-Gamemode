@@ -114,6 +114,19 @@ namespace CloudRP.HousingSystem
                 }
             }
         }
+        
+        [RemoteEvent("server:exitHouseForPlayer")]
+        public void exitHouseForPlayer(Player player)
+        {
+            Interior interiorData = player.GetData<Interior>(_housingInteriorIdentifier);
+
+            if(interiorData != null)
+            {
+                Vector3 housePos = new Vector3(interiorData.house.house_position_x, interiorData.house.house_position_y, interiorData.house.house_position_z);
+                player.Position = housePos;
+                player.Dimension = 0;
+            }
+        }
 
         [ServerEvent(Event.PlayerEnterColshape)]
         public void addHouseData(ColShape house, Player player)
