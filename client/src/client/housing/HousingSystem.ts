@@ -2,22 +2,38 @@ import { House, Interior } from "@/@types";
 import GuiSystem from "@/BrowserSystem/GuiSystem";
 import { _control_ids } from "@/Constants/Constants";
 import NotificationSystem from "@/NotificationSystem/NotificationSystem";
+import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
 import validateKeyPress from "@/PlayerMethods/validateKeyPress";
+import { CharacterData } from "@/@types";
 
 class HousingSystem {
     public static _housingDataIdentifier: string = "houseData";
     public static _interiorDataIdentifier: string = "houseInteriorData";
     public static _houseLoadEvent: string = "server:loadHouseForPlayer";
     public static _houseExitEvent: string = "server:exitHouseForPlayer";
+    public static _houseLockToggleEvent: string = "server:toggleHouseLock";
     public static LocalPlayer: PlayerMp;
 
     constructor() {
         HousingSystem.LocalPlayer = mp.players.local;
 
-        mp.keys.bind(_control_ids.Y, false, HousingSystem.handleKeyPress);
+        mp.keys.bind(_control_ids.Y, false, HousingSystem.handleKeyPress_Y);
+        mp.keys.bind(_control_ids.K, false, HousingSystem.handleKeyPress_Y);
     }
 
-    public static async handleKeyPress() {
+    public static async handleKeyPress_K() {
+        let houseData: House | undefined = HousingSystem.LocalPlayer.getVariable(HousingSystem._housingDataIdentifier);
+        let characterData: CharacterData | undefined = getUserCharacterData();
+        let interiorData: Interior | undefined = HousingSystem.LocalPlayer.getVariable(HousingSystem._interiorDataIdentifier);
+
+        if(!characterData) return;
+
+        if(houseData && houseData.house_owner_id == characterData.characterId || interiorData) {
+            mp.events.callRemote(HousingSystem._houseLockToggleEvent);
+        }
+    }
+
+    public static async handleKeyPress_Y() {
         if(!validateKeyPress(true)) return;
         let houseData: House | undefined = HousingSystem.LocalPlayer.getVariable(HousingSystem._housingDataIdentifier);
         let interiorData: Interior | undefined = HousingSystem.LocalPlayer.getVariable(HousingSystem._interiorDataIdentifier);

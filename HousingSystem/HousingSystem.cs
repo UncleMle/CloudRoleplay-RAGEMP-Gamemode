@@ -85,6 +85,12 @@ namespace CloudRP.HousingSystem
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
             Vector3 interiorData = player.GetData<Vector3>(_housingInteriorIdentifier);
 
+            if(houseData.isLocked)
+            {
+                uiHandling.sendNotification(player, "~r~This house is locked!", false);
+                return;
+            }
+
             if (houseData != null && characterData != null && interiorData == null)
             {
                 Interior houseInterior = houseData.houseInterior; 
@@ -122,6 +128,21 @@ namespace CloudRP.HousingSystem
                         player.ResetSharedData(_housingInteriorIdentifier);
                     }
                 }, 6000);
+            }
+        }
+
+        [RemoteEvent("server:toggleHouseLock")]
+        public void toggleHouseLock(Player player)
+        {
+            House houseData = player.GetData<House>(_housingDataIdentifier);
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+
+            if(houseData != null && characterData != null && characterData.character_id == houseData.house_id)
+            {
+                houseData.isLocked = !houseData.isLocked;
+                House.updateHouseDataForWorld(houseData);
+
+                uiHandling.sendNotification(player, $"~r~You {(houseData.isLocked ? "locked" : "unlocked")} this house.", false)
             }
         }
 

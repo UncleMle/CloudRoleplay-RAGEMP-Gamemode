@@ -12,8 +12,8 @@ namespace CloudRP.HousingSystem
 {
     public class HousingCommands : Script
     {
-        [Command("addhouse", "~r~/addhouse [garageSize] [price] [houseName]", GreedyArg = true)]
-        public void addHouseCommand(Player player, int garageSize, int housePrice, string houseName)
+        [Command("addhouse", "~r~/addhouse [garageSize] [price] [interiorId] [houseName]", GreedyArg = true)]
+        public void addHouseCommand(Player player, int garageSize, int housePrice, int interiorId, string houseName)
         {
             User userData = PlayersData.getPlayerAccountData(player);
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
@@ -22,11 +22,19 @@ namespace CloudRP.HousingSystem
 
             if (userData.adminLevel > (int)AdminRanks.Admin_SeniorAdmin)
             {
+                int totalAvailableInteriors = Interiors.availableInteriors.Count - 1;
+
+                if (interiorId > totalAvailableInteriors || interiorId < 0)
+                {
+                    CommandUtils.errorSay(player, "Enter a valid interior id between 0 and " + totalAvailableInteriors);
+                    return;
+                }
+
                 House house = new House
                 {
                     blip_visible = true,
                     garage_size = garageSize,
-                    house_interior_id = 0,
+                    house_interior_id = interiorId,
                     house_owner_id = characterData.character_id,
                     house_price = housePrice,
                     house_name = houseName,

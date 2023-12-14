@@ -84,6 +84,30 @@ namespace CloudRP.HousingSystem
             });
         }
 
+        public static void updateHouseDataForWorld(House house)
+        {
+            NAPI.Pools.GetAllPlayers().ForEach(player =>
+            {
+                House houseData = player.GetData<House>(HousingSystem._housingDataIdentifier);
+
+                if (houseData != null && houseData.house_id == house.house_id)
+                {
+                    player.SetData(_housingInteriorIdentifier, house);
+                }
+            });
+            
+            NAPI.Pools.GetAllColShapes().ForEach(col =>
+            {
+                House houseData = col.GetData<House>(HousingSystem._housingDataIdentifier);
+
+                if (houseData != null && houseData.house_id == house.house_id)
+                {
+                    col.SetData(_housingInteriorIdentifier, house);
+                }
+            });
+
+        }
+
         public static void removeTextLabel(int houseId)
         {
             NAPI.Pools.GetAllTextLabels().ForEach(label =>
