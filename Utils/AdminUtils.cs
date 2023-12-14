@@ -20,15 +20,17 @@ namespace CloudRP.Utils
             NAPI.Chat.SendChatMessageToPlayer(player, "!{red}[Not Authorized]!{white} " + "you are not authorized to use this command.");
         }
 
-        public static void sendMessageToAllStaff(string message)
+        public static void sendMessageToAllStaff(string message, int rank = (int)AdminRanks.Admin_None)
         {
             Dictionary<Player, User> onlineStaff = gatherStaff();
 
             foreach (KeyValuePair<Player, User> entry in onlineStaff)
             {
-                Player recievingStaff = entry.Key;
-
-                staffSay(recievingStaff, message);
+                if(entry.Value.adminLevel > rank)
+                {
+                    Player recievingStaff = entry.Key;
+                    staffSay(recievingStaff, message);
+                }
             }
         }
 

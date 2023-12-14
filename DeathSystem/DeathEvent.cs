@@ -1,4 +1,5 @@
-﻿using CloudRP.AntiCheat;
+﻿using CloudRP.Admin;
+using CloudRP.AntiCheat;
 using CloudRP.Character;
 using CloudRP.Database;
 using CloudRP.PlayerData;
@@ -57,9 +58,16 @@ namespace CloudRP.DeathSystem
             }
 
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter killerData = null;
+
+            if (killer != null)
+            {
+                killerData = PlayersData.getPlayerCharacterData(killer);
+            }
 
             if (characterData != null)
             {
+                AdminUtils.sendMessageToAllStaff($"{characterData.character_name} [{player.Id}] was {(characterData.injured_timer > 0 ? "killed" : "injured")}{(killerData != null ? $" by {killerData.character_name} [{killer.Id}]" : "")}.", (int)AdminRanks.Admin_SeniorSupport);
                 if (characterData.injured_timer > 0)
                 {
                     resetTimer(player, characterData);
