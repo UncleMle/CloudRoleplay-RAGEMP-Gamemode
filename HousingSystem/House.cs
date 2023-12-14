@@ -26,21 +26,7 @@ namespace CloudRP.HousingSystem
         public bool blip_visible { get; set; }
 
         [NotMapped]
-        public ColShape interiorExitCol {  get; set; }
-        [NotMapped]
         public bool isLocked { get; set; }
-        [NotMapped]
-        public ColShape houseCol { get; set; }
-        [NotMapped]
-        public TextLabel houseLabel { get; set; }
-        [NotMapped]
-        public TextLabel priceLabel { get; set; }       
-        [NotMapped]
-        public Marker houseMarker { get; set; }
-        [NotMapped]
-        public Blip houseBlip { get; set; }
-        [NotMapped]
-        public List<Player> playersInHouse { get; set; } = new List<Player>();
         [NotMapped]
         public Interior houseInterior { get; set; }
     }

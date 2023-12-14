@@ -5,6 +5,7 @@ using CloudRP.PlayerData;
 using CloudRP.Utils;
 using CloudRP.World;
 using GTANetworkAPI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace CloudRP.HousingSystem
     public class HousingSystem : Script
     {
         public static string _housingDataIdentifier = "houseData";
+        public static Dictionary<House, Blip> houseBlips = new Dictionary<House, Blip>();
 
         [ServerEvent(Event.ResourceStart)]
         public void loadAllHouses()
@@ -43,6 +45,7 @@ namespace CloudRP.HousingSystem
 
                 if(houseColData != null && houseColData.house_id == house.house_id)
                 {
+                    /*
                     house.houseLabel.Delete();
                     house.houseMarker.Delete();
 
@@ -52,6 +55,7 @@ namespace CloudRP.HousingSystem
                     }
 
                     house.houseCol.Delete();
+                    */
                 }
             }
 
@@ -78,11 +82,11 @@ namespace CloudRP.HousingSystem
             if(findInterior != null)
             {
                 house.houseInterior = findInterior;
-                house.priceLabel = priceLabel;
-                house.houseLabel = houseLabel;
-                house.houseMarker = houseMarker;
-                house.houseBlip = houseBlip;
-                house.houseCol = houseCol;
+                //house.priceLabel = priceLabel;
+                //house.houseLabel = houseLabel;
+                //house.houseMarker = houseMarker;
+                //house.houseBlip = houseBlip;
+                //house.houseCol = houseCol;
 
 
                 setHouseData(houseCol, house);
@@ -98,8 +102,9 @@ namespace CloudRP.HousingSystem
         {
             House houseData = player.GetData<House>(_housingDataIdentifier);
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            Interior interiorData = player.GetData<Interior>(_housingInteriorIdentifier);
 
-            if (houseData != null && characterData != null)
+            if (houseData != null && characterData != null && interiorData == null)
             {
                 Interior houseInterior = houseData.houseInterior; 
 
@@ -108,8 +113,7 @@ namespace CloudRP.HousingSystem
                     characterData.player_dimension = (uint)houseData.house_id;
                     player.Dimension = (uint)houseData.house_id;
                     player.Position = houseInterior.interiorPosition;
-                    houseData.playersInHouse.Add(player);
-                    setHouseData(houseData.houseCol, houseData);
+                    //setHouseData(houseData.houseCol, houseData);
                     setHouseDataForPlayer(player, houseData);
                     PlayersData.setPlayerCharacterData(player, characterData, false, true);
                 }
@@ -125,13 +129,23 @@ namespace CloudRP.HousingSystem
             {
                 player.Position = interiorData.housePosition;
                 player.Dimension = 0;
+
+                NAPI.Task.Run(() =>
+                {
+                    if(player != null)
+                    {
+                        Console.WriteLine("Interior data was removed");
+
+                        player.ResetData(_housingInteriorIdentifier);
+                        player.ResetSharedData(_housingInteriorIdentifier);
+                    }
+                }, 6000);
             }
         }
-
         [ServerEvent(Event.PlayerEnterColshape)]
-        public void addHouseData(ColShape house, Player player)
+        public void addHouseData(ColShape colshape, Player player)
         {
-            House colData = house.GetData<House>(_housingDataIdentifier);
+            House colData = colshape.GetData<House>(_housingDataIdentifier);
 
             if(colData != null)
             {
@@ -140,9 +154,9 @@ namespace CloudRP.HousingSystem
         }
 
         [ServerEvent(Event.PlayerExitColshape)]
-        public void removeHouseData(ColShape col, Player player)
+        public void removeHouseData(ColShape colshape, Player player)
         {
-            House colData = col.GetData<House>(_housingDataIdentifier);
+            House colData = colshape.GetData<House>(_housingDataIdentifier);
 
             if(colData != null)
             {
