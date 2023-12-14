@@ -22,8 +22,12 @@ namespace CloudRP.HousingSystem
         {
             public int id;
             public string name;
+            public House house;
             public Vector3 interiorPosition;
             public Vector3 doorExitPosition;
+            public ColShape doorExitCol;
+            public TextLabel interiorTextLabel;
+            public Marker interiorMarker;
         }
     }
 }

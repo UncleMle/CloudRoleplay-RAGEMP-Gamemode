@@ -38,5 +38,7 @@ namespace CloudRP.HousingSystem
         public Marker houseMarker { get; set; }
         [NotMapped]
         public Blip houseBlip { get; set; }
+        [NotMapped]
+        public List<Player> playersInHouse { get; set; } = new List<Player>();
     }
 }

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Transactions;
 using static CloudRP.HousingSystem.Interiors;
 
 namespace CloudRP.HousingSystem
@@ -17,6 +18,7 @@ namespace CloudRP.HousingSystem
     public class HousingSystem : Script
     {
         public static string _housingDataIdentifier = "houseData";
+        public static string _housingInteriorIdentifier = "houseInteriorData";
 
         [ServerEvent(Event.ResourceStart)]
         public void loadAllHouses()
@@ -30,7 +32,6 @@ namespace CloudRP.HousingSystem
                     loadAHouse(house);
                 }
             }
-
         }
 
         public static void loadAHouse(House house)
@@ -76,9 +77,7 @@ namespace CloudRP.HousingSystem
             house.houseBlip = houseBlip;
 
             house.houseCol = houseCol;
-
-            houseCol.SetData(_housingDataIdentifier, house);
-            houseCol.SetSharedData(_housingDataIdentifier, house);
+            setHouseData(houseCol, house);
         }
 
         [ServerEvent(Event.PlayerEnterColshape)]
@@ -88,20 +87,35 @@ namespace CloudRP.HousingSystem
 
             if(colData != null)
             {
-                player.SetData(_housingDataIdentifier, colData);
-                player.SetSharedData(_housingDataIdentifier, colData);
+                setHouseDataForPlayer(player, colData);
             }
         }
 
         [ServerEvent(Event.PlayerExitColshape)]
-        public void removeHouseData(ColShape house, Player player)
+        public void removeHouseData(ColShape col, Player player)
         {
-            House colData = house.GetData<House>(_housingDataIdentifier);
+            House colData = col.GetData<House>(_housingDataIdentifier);
+            Interior interiorData = col.GetData<Interior>(_housingInteriorIdentifier);
+
+            if(interiorData != null)
+            {
+                resetInteriorDataForPlayer(player);
+            }
 
             if(colData != null)
             {
-                player.ResetData(_housingDataIdentifier);
-                player.ResetSharedData(_housingDataIdentifier);
+                resetHouseDataForPlayer(player);
+            }
+        }
+
+        [ServerEvent(Event.PlayerDisconnected)]
+        public void removePlayerFromHouse(Player player)
+        {
+            House playerHouseData = player.GetData<House>(_housingDataIdentifier);
+
+            if(playerHouseData != null && playerHouseData.playersInHouse.Contains(player))
+            {
+                playerHouseData.playersInHouse.Remove(player);
             }
         }
 
@@ -121,8 +135,84 @@ namespace CloudRP.HousingSystem
                     player.Dimension = (uint)houseData.house_id; 
                     player.Position = findInterior.interiorPosition;
                     player.SendChatMessage(ChatUtils.info + " You entered house #"+houseData.house_id);
+
+                    if(houseData.playersInHouse.Count == 0)
+                    {
+                        setInteriorExit(findInterior, houseData);
+                    }
+
+                    houseData.playersInHouse.Add(player);
+                    setHouseData(houseData.houseCol, houseData);
+                    setHouseDataForPlayer(player, houseData);
                 }
             }
+        }
+        
+        [RemoteEvent("server:exitHouseForPlayer")]
+        public void exitHouseForPlayer(Player player)
+        {
+            Interior interiorData = player.GetData<Interior>(_housingInteriorIdentifier);
+
+            if(interiorData != null)
+            {
+                Vector3 housePos = new Vector3(interiorData.house.house_position_x, interiorData.house.house_position_y, interiorData.house.house_position_z);
+
+                player.Dimension = 0;
+                player.Position = housePos;
+                resetInteriorDataForPlayer(player);
+                player.SendChatMessage($"{ChatUtils.info} You have exited house #{interiorData.house.house_id}.");
+            }
+        }
+
+        public static void setInteriorExit(Interior interior, House house)
+        {
+            TextLabel interiorTextLabel = MarkersAndLabels.setTextLabel(interior.doorExitPosition, "exit property use ~y~Y~w~ to interact", 20f);
+            Marker interiorMarker = MarkersAndLabels.setPlaceMarker(interior.doorExitPosition);
+            ColShape interiorCol = NAPI.ColShape.CreateSphereColShape(interior.doorExitPosition, 2f, (uint)house.house_id);
+
+            interior.interiorMarker = interiorMarker;
+            interior.interiorTextLabel = interiorTextLabel;
+            interior.doorExitCol = interiorCol;
+            interior.house = house;
+
+            setInteriorData(interiorCol, interior);
+        }
+
+        public static void setHouseData(ColShape houseCol, House house)
+        {
+            if (houseCol == null) return;
+            houseCol.SetData(_housingDataIdentifier, house);
+            houseCol.SetSharedData(_housingDataIdentifier, house);
+        }
+
+        public static void setHouseDataForPlayer(Player player, House house)
+        {
+            player.SetData(_housingDataIdentifier, house);
+            player.SetSharedData(_housingDataIdentifier, house);
+        }
+        
+        public static void setInteriorData(ColShape interiorCol, Interior interior)
+        {
+            if (interiorCol == null) return;
+            interiorCol.SetData(_housingDataIdentifier, interior);
+            interiorCol.SetSharedData(_housingDataIdentifier, interior);
+        }
+
+        public static void setInteriorDataForPlayer(Player player, Interior interior)
+        {
+            player.SetData(_housingInteriorIdentifier, interior);
+            player.SetSharedData(_housingInteriorIdentifier, interior);
+        }
+        
+        public static void resetHouseDataForPlayer(Player player)
+        {
+            player.ResetData(_housingDataIdentifier);
+            player.ResetSharedData(_housingDataIdentifier);
+        }
+        public static void resetInteriorDataForPlayer(Player player)
+        {
+            player.ResetData(_housingInteriorIdentifier);
+            player.ResetSharedData(_housingInteriorIdentifier);
         }
 
     }
