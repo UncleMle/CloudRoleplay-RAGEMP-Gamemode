@@ -592,7 +592,7 @@ namespace CloudRP.Vehicles
             
             if(!playerFindPlayer.IsInVehicle)
             {
-                CommandUtils.errorSay(player, "Target player must be in a vehicle.");
+                CommandUtils.errorSay(player, "Target must be in the same vehicle as you.");
                 return;
             }
 
@@ -644,6 +644,73 @@ namespace CloudRP.Vehicles
                 ChatUtils.sendWithNickName(player, playerFindPlayer, prefixToPlayer, suffixToPlayer);
                 ChatUtils.sendWithNickName(playerFindPlayer, player, prefixFromPlayer, suffixFromPlayer);
             }
+        }
+
+        [Command("removekeys", "~y~Use:~w~ /removekeys [nameOrId]")]
+        public void removeVehicleKeys(Player player, string nameOrId)
+        {
+            DbCharacter playerCharData = PlayersData.getPlayerCharacterData(player);
+            if (playerCharData == null) return;
+
+            if(!player.IsInVehicle)
+            {
+                CommandUtils.errorSay(player, "You must be in a vehicle to use this command.");
+                return;
+            }
+
+            Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+            if(findPlayer == null || findPlayer != null && Vector3.Distance(player.Position, findPlayer.Position) > 6)
+            {
+                CommandUtils.errorSay(player, "Player couldn't be found. (Are you within distance?)");
+                return;
+            }
+
+            if(!findPlayer.IsInVehicle)
+            {
+                CommandUtils.errorSay(player, "Target must be in the same vehicle as you.");
+                return;
+            }
+            
+            DbCharacter findPlayerData = PlayersData.getPlayerCharacterData(player);
+            if (findPlayerData == null) return;
+            
+            Vehicle targetVeh = player.Vehicle;
+            DbVehicle targetVehData = getVehicleData(targetVeh);
+            if (targetVeh == null) return;
+
+            if(playerCharData.character_id != targetVehData.owner_id)
+            {
+                CommandUtils.errorSay(player, "You must own this vehicle to remove a players access to it.");
+                return;
+            }
+
+            VehicleKey checkIfExists = targetVehData.vehicle_key_holders
+                .Where(keyHolder => keyHolder.target_character_id == findPlayerData.character_id && keyHolder.vehicle_id == targetVehData.vehicle_id)
+                .FirstOrDefault();
+
+            if(checkIfExists == null)
+            {
+                CommandUtils.errorSay(player, "This player doesn't have keys to this vehicle.");
+                return;
+            }
+
+            targetVehData.vehicle_key_holders.Remove(checkIfExists);
+
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                dbContext.vehicle_keys.Remove(checkIfExists);
+                dbContext.SaveChanges();
+            }
+
+            saveVehicleData(targetVeh, targetVehData);
+
+            string prefixToPlayer = ChatUtils.Success + "You removed ";
+            string suffixToPlayer = " access to your vehicle.";
+            string prefixFromPlayer = ChatUtils.info + "Your keys for ";
+            string suffixFromPlayer = "'s vehicle was revoked";
+
+            ChatUtils.sendWithNickName(player, findPlayer, prefixToPlayer, suffixToPlayer);
+            ChatUtils.sendWithNickName(findPlayer, player, prefixFromPlayer, suffixFromPlayer);
         }
 
         public static void closeAllDoors(Vehicle vehicle)
