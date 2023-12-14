@@ -107,12 +107,15 @@ namespace CloudRP.HousingSystem
         public void exitHouseForPlayer(Player player)
         {
             Vector3 housePos = player.GetData<Vector3>(_housingInteriorIdentifier);
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
-            if(housePos != null)
+            if (housePos != null && characterData != null)
             {
                 player.Position = housePos;
                 player.Dimension = 0;
+                characterData.player_dimension = 0;
 
+                PlayersData.setPlayerCharacterData(player, characterData, false, true);
                 NAPI.Task.Run(() =>
                 {
                     if(player != null)
