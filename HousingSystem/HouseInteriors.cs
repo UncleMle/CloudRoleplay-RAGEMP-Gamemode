@@ -1,5 +1,6 @@
 ﻿using CloudRP.World;
 using GTANetworkAPI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -23,31 +24,27 @@ namespace CloudRP.HousingSystem
 
         public static void loadInteriorData(House house)
         {
-            Interior interior = house.houseInterior;
+            MarkersAndLabels.setTextLabel(house.houseInterior.doorExitPosition, "Exit property use ~y~Y~w~ to interact", 5f, (uint)house.house_id);
+            MarkersAndLabels.setPlaceMarker(house.houseInterior.doorExitPosition, (uint)house.house_id);
+            ColShape doorExit = NAPI.ColShape.CreateSphereColShape(house.houseInterior.doorExitPosition, 2f, (uint)house.house_id);
 
-            MarkersAndLabels.setTextLabel(interior.doorExitPosition, "Exit property use ~y~Y~w~ to interact", 5f, (uint)house.house_id);
-            MarkersAndLabels.setPlaceMarker(interior.doorExitPosition, (uint)house.house_id);
-            ColShape doorExit = NAPI.ColShape.CreateSphereColShape(interior.doorExitPosition, 2f, (uint)house.house_id);
+            Vector3 hPos = new Vector3(house.house_position_x, house.house_position_y, house.house_position_z);
 
-            interior.housePosition = new Vector3(house.house_position_x, house.house_position_y, house.house_position_z);
-            house.interiorExitCol = doorExit;
-
-            doorExit.SetData(_housingInteriorIdentifier, interior);
-            doorExit.SetSharedData(_housingInteriorIdentifier, interior);
-
-            HousingSystem.setHouseData(house.houseCol, house);
+            doorExit.SetData(_housingInteriorIdentifier, hPos);
+            doorExit.SetSharedData(_housingInteriorIdentifier, hPos);
         }
 
 
         [ServerEvent(Event.PlayerEnterColshape)]
         public void addInteriorData(ColShape colshape, Player player)
         {
-            Interior interiorData = colshape.GetData<Interior>(_housingInteriorIdentifier);
+            Vector3 housePos = colshape.GetData<Vector3>(_housingInteriorIdentifier);
 
-            if(interiorData != null)
+            if(housePos != null)
             {
-                player.SetData(_housingInteriorIdentifier, interiorData);
-                player.SetSharedData(_housingInteriorIdentifier, interiorData);
+                Console.WriteLine(JsonConvert.SerializeObject(housePos));
+                player.SetData(_housingInteriorIdentifier, housePos);
+                player.SetSharedData(_housingInteriorIdentifier, housePos);
             }
 
         }
@@ -55,9 +52,9 @@ namespace CloudRP.HousingSystem
         [ServerEvent(Event.PlayerExitColshape)]
         public void removeInteriorData(ColShape colshape, Player player)
         {
-            Interior interiorData = colshape.GetData<Interior>(_housingInteriorIdentifier);
+            Vector3 housePos = colshape.GetData<Vector3>(_housingInteriorIdentifier);
 
-            if (interiorData != null)
+            if (housePos != null)
             {
                 player.ResetData(_housingInteriorIdentifier);
                 player.ResetSharedData(_housingInteriorIdentifier);

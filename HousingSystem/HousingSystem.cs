@@ -64,8 +64,8 @@ namespace CloudRP.HousingSystem
             if(findInterior != null)
             {
                 house.houseInterior = findInterior;
-                house.houseCol = houseCol;
 
+                houseCol.SetData(_housingDataIdentifier, house);
                 priceLabel.SetData(_housingDataIdentifier, house);
                 houseCol.SetData(_housingDataIdentifier, house);
                 houseLabel.SetData(_housingDataIdentifier, house);
@@ -96,7 +96,7 @@ namespace CloudRP.HousingSystem
                     characterData.player_dimension = (uint)houseData.house_id;
                     player.Dimension = (uint)houseData.house_id;
                     player.Position = houseInterior.interiorPosition;
-                    setHouseData(houseData.houseCol, houseData);
+
                     setHouseDataForPlayer(player, houseData);
                     PlayersData.setPlayerCharacterData(player, characterData, false, true);
                 }
@@ -106,11 +106,11 @@ namespace CloudRP.HousingSystem
         [RemoteEvent("server:exitHouseForPlayer")]
         public void exitHouseForPlayer(Player player)
         {
-            Interior interiorData = player.GetData<Interior>(_housingInteriorIdentifier);
+            Vector3 housePos = player.GetData<Vector3>(_housingInteriorIdentifier);
 
-            if(interiorData != null && interiorData.housePosition != null)
+            if(housePos != null)
             {
-                player.Position = interiorData.housePosition;
+                player.Position = housePos;
                 player.Dimension = 0;
 
                 NAPI.Task.Run(() =>
@@ -172,7 +172,8 @@ namespace CloudRP.HousingSystem
                 .Where(lbl => lbl.GetData<House>(_housingDataIdentifier) != null
                 && lbl.GetData<House>(_housingDataIdentifier).house_id == house.house_id)
                 .FirstOrDefault();
-            
+
+            houseCol?.Delete();
             priceLabel?.Delete();
             houseLabel?.Delete();
             houseMarker?.Delete();
