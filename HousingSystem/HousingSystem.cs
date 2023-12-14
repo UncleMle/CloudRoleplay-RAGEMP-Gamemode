@@ -78,41 +78,28 @@ namespace CloudRP.HousingSystem
             houseCol.SetSharedData(_housingDataIdentifier, house);
         }
 
-        [Command("addhouse", "~r~/addhouse [houseName] [garageSize] [price]")]
-        public static void addHouseCommand(Player player, string houseName, int garageSize, int housePrice)
+        [ServerEvent(Event.PlayerEnterColshape)]
+        public void addHouseData(ColShape house, Player player)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            House colData = house.GetData<House>(_housingDataIdentifier);
 
-            if (userData == null || characterData == null) return; 
-
-            if (userData.adminLevel > (int)AdminRanks.Admin_SeniorAdmin)
+            if(colData != null)
             {
-                House house = new House
-                {
-                    blip_visible = true,
-                    garage_size = garageSize,
-                    house_interior = "Example",
-                    house_owner_id = characterData.character_id,
-                    house_price = housePrice,
-                    house_name = houseName,
-                    house_position_x = player.Position.X,
-                    house_position_y = player.Position.Y,
-                    house_position_z = player.Position.Z,
-                };
-
-                using(DefaultDbContext dbContext = new DefaultDbContext())
-                {
-                    dbContext.houses.Add(house);
-                    dbContext.SaveChanges();
-
-                    loadAHouse(house);
-
-                    AdminUtils.staffSay(player, $"You created a new house with id {house.house_id}");
-                }
+                player.SetData(_housingDataIdentifier, colData);
+                player.SetSharedData(_housingDataIdentifier, colData);
             }
-            else AdminUtils.sendNoAuth(player);
+        }
 
+        [ServerEvent(Event.PlayerExitColshape)]
+        public void removeHouseData(ColShape house, Player player)
+        {
+            House colData = house.GetData<House>(_housingDataIdentifier);
+
+            if(colData != null)
+            {
+                player.ResetData(_housingDataIdentifier);
+                player.ResetSharedData(_housingDataIdentifier);
+            }
         }
 
     }

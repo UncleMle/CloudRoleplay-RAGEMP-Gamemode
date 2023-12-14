@@ -1,0 +1,52 @@
+﻿using CloudRP.Admin;
+using CloudRP.Character;
+using CloudRP.Database;
+using CloudRP.PlayerData;
+using CloudRP.Utils;
+using GTANetworkAPI;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace CloudRP.HousingSystem
+{
+    public class HousingCommands : Script
+    {
+        [Command("addhouse", "~r~/addhouse [houseName] [garageSize] [price]")]
+        public static void addHouseCommand(Player player, string houseName, int garageSize, int housePrice)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+
+            if (userData == null || characterData == null) return;
+
+            if (userData.adminLevel > (int)AdminRanks.Admin_SeniorAdmin)
+            {
+                House house = new House
+                {
+                    blip_visible = true,
+                    garage_size = garageSize,
+                    house_interior = "Example",
+                    house_owner_id = characterData.character_id,
+                    house_price = housePrice,
+                    house_name = houseName,
+                    house_position_x = player.Position.X,
+                    house_position_y = player.Position.Y,
+                    house_position_z = player.Position.Z,
+                };
+
+                using (DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    dbContext.houses.Add(house);
+                    dbContext.SaveChanges();
+
+                    HousingSystem.loadAHouse(house);
+
+                    AdminUtils.staffSay(player, $"You created a new house with id {house.house_id}");
+                }
+            }
+            else AdminUtils.sendNoAuth(player);
+
+        }
+    }
+}
