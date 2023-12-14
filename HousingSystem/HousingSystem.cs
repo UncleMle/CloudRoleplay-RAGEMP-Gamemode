@@ -62,10 +62,10 @@ namespace CloudRP.HousingSystem
             if(house.blip_visible)
             {
                 Vector3 pricePos = new Vector3(housePos.X, housePos.Y, housePos.Z + 0.4);
-                priceLabel = MarkersAndLabels.setTextLabel(pricePos, $"~g~On sale for {house.house_price.ToString("C")}", 20f);
+                priceLabel = MarkersAndLabels.setTextLabel(pricePos, $"~g~On sale for {house.house_price.ToString("C")}", 5f);
             }
 
-            TextLabel houseLabel = MarkersAndLabels.setTextLabel(housePos, house.house_name + " #" + house.house_id + "\n use ~y~Y~w~ to interact", 20f);
+            TextLabel houseLabel = MarkersAndLabels.setTextLabel(housePos, house.house_name + " #" + house.house_id + "\n use ~y~Y~w~ to interact", 5f);
             Marker houseMarker = MarkersAndLabels.setPlaceMarker(housePos);
             ColShape houseCol = NAPI.ColShape.CreateSphereColShape(housePos, 2f, 0);
 
@@ -106,8 +106,6 @@ namespace CloudRP.HousingSystem
                 {
                     player.Dimension = (uint)houseData.house_id;
                     player.Position = houseInterior.interiorPosition;
-                    player.SendChatMessage(ChatUtils.info + " You entered house #" + houseData.house_id);
-
                     houseData.playersInHouse.Add(player);
                     setHouseData(houseData.houseCol, houseData);
                     setHouseDataForPlayer(player, houseData);
@@ -124,8 +122,6 @@ namespace CloudRP.HousingSystem
             {
                 player.Position = interiorData.housePosition;
                 player.Dimension = 0;
-
-                player.SendChatMessage(ChatUtils.info + " you exited interior with id " + interiorData.id);
             }
         }
 
