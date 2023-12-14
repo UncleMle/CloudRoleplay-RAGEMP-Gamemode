@@ -562,6 +562,64 @@ namespace CloudRP.Vehicles
             }
         }
 
+        [Command("givekeys", "~y~Use:~w~ /givekeys [nameOrId]")]
+        public static void giveVehiclesKeys(Player player, string nameOrId)
+        {
+            if(!player.IsInVehicle)
+            {
+                CommandUtils.errorSay(player, "You must be in a vehicle to use this command.");
+                return;
+            }
+
+            DbCharacter playerCharData = PlayersData.getPlayerCharacterData(player);
+            if (playerCharData == null) return;
+            Player playerFindPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+            if(playerFindPlayer == null || playerFindPlayer != null && Vector3.Distance(playerFindPlayer.Position, player.Position) > 6)
+            {
+                CommandUtils.errorSay(player, "Player couldn't be found. (Are you within distance?)");
+                return;
+            } 
+
+            DbCharacter playerFindData = PlayersData.getPlayerCharacterData(player);
+            if (playerFindData == null) return;
+            
+            if(!playerFindPlayer.IsInVehicle)
+            {
+                CommandUtils.errorSay(player, "Target player must be in a vehicle.");
+                return;
+            }
+
+            Vehicle targetVeh = player.Vehicle;
+            DbVehicle targetVehData = getVehicleData(targetVeh);
+
+            if(targetVehData != null)
+            {
+                VehicleKey newKey = new VehicleKey
+                {
+                    target_character_id = playerFindData.character_id,
+                    vehicle_id = targetVehData.vehicle_id,
+                    vehicle_name = targetVehData.vehicle_name
+                };
+
+                targetVehData.vehicle_key_holders.Add(newKey);
+
+                using(DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    dbContext.vehicle_keys.Add(newKey);
+                    dbContext.SaveChanges();
+                }
+
+                string prefixToPlayer = ChatUtils.Success + "You gave ";
+                string suffixToPlayer = ChatUtils.Success + "a copy of your vehicle's keys.";
+                string prefixFromPlayer = ChatUtils.Success + "You were given a copy of ";
+                string suffixFromPlayer = ChatUtils.Success + "'s vehicle's keys";
+
+                ChatUtils.sendWithNickName(player, playerFindPlayer, prefixToPlayer, suffixToPlayer);
+                ChatUtils.sendWithNickName(playerFindPlayer, player, prefixFromPlayer, suffixFromPlayer);
+            }
+        }
+
         public static void closeAllDoors(Vehicle vehicle)
         {
             DbVehicle vehicleData = getVehicleData(vehicle);
