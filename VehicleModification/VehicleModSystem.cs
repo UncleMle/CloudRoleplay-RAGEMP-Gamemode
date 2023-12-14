@@ -83,6 +83,12 @@ namespace CloudRP.VehicleModification
 
             if (vehicleData != null)
             {
+                if(vehicleData.owner_id != characterData.owner_id)
+                {
+                    CommandUtils.errorSay(player, "You must be the owner of the vehicle.");
+                    return;
+                }
+
                 player.TriggerEvent("customs:loadIndexes");
 
                 uiHandling.handleObjectUiMutation(player, MutationKeys.VehicleMods, vehicleData.vehicle_mods);
@@ -103,6 +109,12 @@ namespace CloudRP.VehicleModification
             DbVehicle pVehData = VehicleSystem.getVehicleData(pVeh);
             if (pVehData != null)
             {
+                if(pVehData.owner_id != characterData.character_id)
+                {
+                    uiHandling.sendPushNotifError(player, "Not sure how you got here but you can't be here.", 6600, true);
+                    return;
+                }
+
                 VehicleMods newModData = JsonConvert.DeserializeObject<VehicleMods>(modData);
                 if (newModData == null)
                 {

@@ -1,10 +1,6 @@
 ﻿using CloudRP.World;
 using GTANetworkAPI;
-using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using static CloudRP.HousingSystem.Interiors;
 
 namespace CloudRP.HousingSystem
 {
@@ -29,7 +25,7 @@ namespace CloudRP.HousingSystem
                     new Vector3(266.0, -1007.5, -101.0)
                 },
                 interiorPosition = new Vector3(265.1, -1000.9, -99.0),
-                name = "Richard Majestic, Apt 2"
+                name = "Low end Apartment"
             },
         };
 

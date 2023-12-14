@@ -109,7 +109,7 @@ namespace CloudRP.Character
 
                 List<Tattoo> newTattoList = getAllPlayerTats(characterData.character_id);
                 characterData.characterModel.player_tattos = newTattoList;
-                PlayersData.setPlayerCharacterData(player, characterData);
+                PlayersData.setPlayerCharacterData(player, characterData, true);
                 uiHandling.sendPushNotif(player, "You purchased some tattoos", 6600, true, true, true);
             } else
             {

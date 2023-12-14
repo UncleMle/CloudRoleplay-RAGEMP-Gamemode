@@ -68,6 +68,7 @@ namespace CloudRP.DeathSystem
             if (characterData != null)
             {
                 AdminUtils.sendMessageToAllStaff($"{characterData.character_name} [{player.Id}] was {(characterData.injured_timer > 0 ? "killed" : "injured")}{(killerData != null ? $" by {killerData.character_name} [{killer.Id}]" : "")}.", (int)AdminRanks.Admin_SeniorSupport);
+                
                 if (characterData.injured_timer > 0)
                 {
                     resetTimer(player, characterData);
@@ -83,6 +84,16 @@ namespace CloudRP.DeathSystem
 
         public static void respawnAtHospital(Player player)
         {
+            DbCharacter playerCharacterData = PlayersData.getPlayerCharacterData(player);
+
+            if (playerCharacterData != null)
+            {
+                player.Dimension = 0;
+                playerCharacterData.player_dimension = 0;
+
+                PlayersData.setPlayerCharacterData(player, playerCharacterData, false, true);
+            }
+
             player.TriggerEvent("client:moveSkyCamera", "up", 1, false);
 
             Dictionary<float, Hospital> pDist = new Dictionary<float, Hospital>();

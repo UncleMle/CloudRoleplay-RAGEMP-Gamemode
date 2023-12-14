@@ -4,25 +4,15 @@ using CloudRP.Character;
 using CloudRP.Database;
 using CloudRP.DeathSystem;
 using CloudRP.DiscordSystem;
-using CloudRP.GeneralCommands;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
 using CloudRP.Vehicles;
 using Discord;
 using GTANetworkAPI;
 using Integration;
-using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Net;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
-using System.Threading.Channels;
 using System.Threading.Tasks;
-using System.Xml.Linq;
-using static CloudRP.Authentication.Account;
 
 namespace CloudRP.Admin
 {
@@ -461,6 +451,7 @@ namespace CloudRP.Admin
                 if (findPlayer != null)
                 {
                     player.Position = findPlayer.Position;
+                    player.Dimension = findPlayer.Dimension;
 
                     AdminUtils.staffSay(player, "Teleported to Player [" + findPlayer.Id + "]");
                 }
