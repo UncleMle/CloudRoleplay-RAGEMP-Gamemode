@@ -46,7 +46,6 @@ namespace CloudRP.HousingSystem
                 player.SetData(_housingInteriorIdentifier, housePos);
                 player.SetSharedData(_housingInteriorIdentifier, housePos);
             }
-
         }
         
         [ServerEvent(Event.PlayerExitColshape)]

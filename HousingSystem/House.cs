@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using static CloudRP.HousingSystem.Interiors;
 
@@ -48,6 +49,23 @@ namespace CloudRP.HousingSystem
             removeColshape(houseId);
             removeBlip(houseId);
             removePlaceMarker(houseId);
+            clearPlayerHouseData(houseId);
+        }
+
+        public static void clearPlayerHouseData(int houseId)
+        {
+            NAPI.Pools.GetAllPlayers().ForEach(player =>
+            {
+                House houseData = player.GetData<House>(HousingSystem._housingDataIdentifier);
+
+                if (houseData != null && houseData.house_id == houseId)
+                {
+                    player.ResetData(_housingInteriorIdentifier);
+                    player.ResetOwnSharedData(_housingInteriorIdentifier);
+                    player.ResetData(HousingSystem._housingDataIdentifier);
+                    player.ResetOwnSharedData(HousingSystem._housingDataIdentifier);
+                }
+            });
         }
 
         public static void removeTextLabel(int houseId)
