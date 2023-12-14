@@ -3,11 +3,12 @@ using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace CloudRP.HousingSystem
 {
-    public class House : BaseEntity
+    public class House : BaseEntity 
     {
         [Key]
         public int house_id { get; set; }
@@ -22,5 +23,14 @@ namespace CloudRP.HousingSystem
         public int house_price { get; set; }
         public int garage_size { get; set; }
         public bool blip_visible { get; set; }
+
+        [NotMapped]
+        public ColShape houseCol { get; set; }
+        [NotMapped]
+        public TextLabel houseLabel { get; set; }
+        [NotMapped]
+        public TextLabel priceLabel { get; set; }       
+        [NotMapped]
+        public Marker houseMarker { get; set; }
     }
 }
