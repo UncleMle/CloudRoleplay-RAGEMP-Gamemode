@@ -30,12 +30,12 @@ namespace CloudRP.HousingSystem
             ColShape doorExit = NAPI.ColShape.CreateSphereColShape(interior.doorExitPosition, 2f, (uint)house.house_id);
 
             interior.housePosition = new Vector3(house.house_position_x, house.house_position_y, house.house_position_z);
-            //house.interiorExitCol = doorExit;
+            house.interiorExitCol = doorExit;
 
             doorExit.SetData(_housingInteriorIdentifier, interior);
             doorExit.SetSharedData(_housingInteriorIdentifier, interior);
 
-            //HousingSystem.setHouseData(house.houseCol, house);
+            HousingSystem.setHouseData(house.houseCol, house);
         }
 
 

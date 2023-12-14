@@ -39,25 +39,7 @@ namespace CloudRP.HousingSystem
         {
             List<ColShape> loadedHouses = NAPI.Pools.GetAllColShapes();
 
-            foreach(ColShape colShape in loadedHouses)
-            {
-                House houseColData = colShape.GetData<House>(_housingDataIdentifier);
-
-                if(houseColData != null && houseColData.house_id == house.house_id)
-                {
-                    /*
-                    house.houseLabel.Delete();
-                    house.houseMarker.Delete();
-
-                    if (house.priceLabel != null)
-                    {
-                        house.priceLabel.Delete();
-                    }
-
-                    house.houseCol.Delete();
-                    */
-                }
-            }
+            deleteHouse(house);
 
             Vector3 housePos = new Vector3(house.house_position_x, house.house_position_y, house.house_position_z);
 
@@ -82,12 +64,13 @@ namespace CloudRP.HousingSystem
             if(findInterior != null)
             {
                 house.houseInterior = findInterior;
-                //house.priceLabel = priceLabel;
-                //house.houseLabel = houseLabel;
-                //house.houseMarker = houseMarker;
-                //house.houseBlip = houseBlip;
-                //house.houseCol = houseCol;
+                house.houseCol = houseCol;
 
+                priceLabel.SetData(_housingDataIdentifier, house);
+                houseCol.SetData(_housingDataIdentifier, house);
+                houseLabel.SetData(_housingDataIdentifier, house);
+                houseMarker.SetData(_housingDataIdentifier, house);
+                houseBlip.SetData(_housingDataIdentifier, house);
 
                 setHouseData(houseCol, house);
                 loadInteriorData(house);
@@ -113,7 +96,7 @@ namespace CloudRP.HousingSystem
                     characterData.player_dimension = (uint)houseData.house_id;
                     player.Dimension = (uint)houseData.house_id;
                     player.Position = houseInterior.interiorPosition;
-                    //setHouseData(houseData.houseCol, houseData);
+                    setHouseData(houseData.houseCol, houseData);
                     setHouseDataForPlayer(player, houseData);
                     PlayersData.setPlayerCharacterData(player, characterData, false, true);
                 }
@@ -134,14 +117,13 @@ namespace CloudRP.HousingSystem
                 {
                     if(player != null)
                     {
-                        Console.WriteLine("Interior data was removed");
-
                         player.ResetData(_housingInteriorIdentifier);
                         player.ResetSharedData(_housingInteriorIdentifier);
                     }
                 }, 6000);
             }
         }
+
         [ServerEvent(Event.PlayerEnterColshape)]
         public void addHouseData(ColShape colshape, Player player)
         {
@@ -162,6 +144,39 @@ namespace CloudRP.HousingSystem
             {
                 resetHouseDataForPlayer(player);
             }
+        }
+
+        public static void deleteHouse(House house)
+        {
+            TextLabel priceLabel = NAPI.Pools.GetAllTextLabels()
+                .Where(lbl => lbl.GetData<House>(_housingDataIdentifier) != null 
+                && lbl.GetData<House>(_housingDataIdentifier).house_id == house.house_id)
+                .FirstOrDefault();
+
+            TextLabel houseLabel = NAPI.Pools.GetAllTextLabels()
+                .Where(lbl => lbl.GetData<House>(_housingDataIdentifier) != null
+                && lbl.GetData<House>(_housingDataIdentifier).house_id == house.house_id)
+                .FirstOrDefault();
+            
+            ColShape houseCol = NAPI.Pools.GetAllColShapes()
+                .Where(lbl => lbl.GetData<House>(_housingDataIdentifier) != null
+                && lbl.GetData<House>(_housingDataIdentifier).house_id == house.house_id)
+                .FirstOrDefault();
+
+            Marker houseMarker = NAPI.Pools.GetAllMarkers()
+                .Where(lbl => lbl.GetData<House>(_housingDataIdentifier) != null
+                && lbl.GetData<House>(_housingDataIdentifier).house_id == house.house_id)
+                .FirstOrDefault();
+            
+            Blip houseBlip = NAPI.Pools.GetAllBlips()
+                .Where(lbl => lbl.GetData<House>(_housingDataIdentifier) != null
+                && lbl.GetData<House>(_housingDataIdentifier).house_id == house.house_id)
+                .FirstOrDefault();
+            
+            priceLabel?.Delete();
+            houseLabel?.Delete();
+            houseMarker?.Delete();
+            houseBlip?.Delete();
         }
 
         public static void setHouseData(ColShape houseCol, House house)
