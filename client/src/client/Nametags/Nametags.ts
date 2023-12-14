@@ -4,6 +4,7 @@ import { _TEXT_CLOUD_ADMINBLUE, _TEXT_R_RED, _TEXT_R_WHITE } from '../Constants/
 import getTargetCharacterData from "../PlayerMethods/getTargetCharacterData";
 import getTargetData from "../PlayerMethods/getTargetData";
 import distBetweenCoords from "@/PlayerMethods/distanceBetweenCoords";
+import VoiceSystem from "@/VoiceChat/VoiceSystem";
 
 class NameTags {
 	public static userData: UserData | undefined;
@@ -95,7 +96,7 @@ class NameTags {
 
 				y -= scale * (0.005 * (NameTags.ScreenRes.y / 1080)) - parseInt('0.010');
 
-				let voiceState: string = (targetCharacterData.voiceChatState ? "" : "~g~");
+				let voiceState: string = (Target.getVariable(VoiceSystem._voiceToggleIdentifier) ? "" : "~g~");
 				let injuredState: string = (targetCharacterData.data.injured_timer > 0 ? "~r~(( INJURED )) ~w~\n" : "");
 				let defaultTagContent: string = injuredState + voiceState + NameTags.getPlayerNick(Target);
 

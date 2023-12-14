@@ -539,7 +539,7 @@ namespace CloudRP.Vehicles
             if (vehicleData == null || charData == null) return;
 
             VehicleKey vehicleKey = vehicleData.vehicle_key_holders
-                .Where(holder => holder.target_character_id == charData.character_id)
+                .Where(holder => holder.target_character_id == charData.character_id && holder.vehicle_id == vehicleData.vehicle_id)
                 .FirstOrDefault();
 
             if (charData.character_id == vehicleData.owner_id || vehicleKey != null)
@@ -579,9 +579,15 @@ namespace CloudRP.Vehicles
             {
                 CommandUtils.errorSay(player, "Player couldn't be found. (Are you within distance?)");
                 return;
-            } 
+            }
 
-            DbCharacter playerFindData = PlayersData.getPlayerCharacterData(player);
+            if (player.Equals(playerFindPlayer))
+            {
+                CommandUtils.errorSay(player, "You cannot give vehicle keys to yourself.");
+                return;
+            }
+
+            DbCharacter playerFindData = PlayersData.getPlayerCharacterData(playerFindPlayer);
             if (playerFindData == null) return;
             
             if(!playerFindPlayer.IsInVehicle)
@@ -593,8 +599,26 @@ namespace CloudRP.Vehicles
             Vehicle targetVeh = player.Vehicle;
             DbVehicle targetVehData = getVehicleData(targetVeh);
 
+
             if(targetVehData != null)
             {
+                if (targetVehData.owner_id != playerCharData.character_id)
+                {
+                    CommandUtils.errorSay(player, "You must own the vehicle to give keys to it.");
+                    return;
+                }
+
+                VehicleKey findIfAlreadyHas = targetVehData.vehicle_key_holders
+                    .Where(key => key.target_character_id == playerFindData.character_id && key.vehicle_id == targetVehData.vehicle_id)
+                    .FirstOrDefault();
+
+                if(findIfAlreadyHas != null)
+                {
+                    CommandUtils.errorSay(player, "This player already has keys to this vehicle.");
+                    return;
+                } 
+
+
                 VehicleKey newKey = new VehicleKey
                 {
                     target_character_id = playerFindData.character_id,
@@ -610,10 +634,12 @@ namespace CloudRP.Vehicles
                     dbContext.SaveChanges();
                 }
 
+                saveVehicleData(targetVeh, targetVehData);
+
                 string prefixToPlayer = ChatUtils.Success + "You gave ";
-                string suffixToPlayer = ChatUtils.Success + "a copy of your vehicle's keys.";
-                string prefixFromPlayer = ChatUtils.Success + "You were given a copy of ";
-                string suffixFromPlayer = ChatUtils.Success + "'s vehicle's keys";
+                string suffixToPlayer = " a copy of your vehicle's keys.";
+                string prefixFromPlayer = ChatUtils.info + "You were given a copy of ";
+                string suffixFromPlayer = "'s vehicle's keys";
 
                 ChatUtils.sendWithNickName(player, playerFindPlayer, prefixToPlayer, suffixToPlayer);
                 ChatUtils.sendWithNickName(playerFindPlayer, player, prefixFromPlayer, suffixFromPlayer);
