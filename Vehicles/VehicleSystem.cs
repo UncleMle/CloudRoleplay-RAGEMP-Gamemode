@@ -332,13 +332,13 @@ namespace CloudRP.Vehicles
         {
             bool returnRes = false;
 
-            try
+            NAPI.Task.Run(() =>
             {
-                NAPI.Task.Run(() =>
-                {
-                    Vehicle vehicle = findVehicleById(vehicleId);
-                    DbVehicle vehicleData = getVehicleDataById(vehicleId);
+                Vehicle vehicle = findVehicleById(vehicleId);
+                DbVehicle vehicleData = getVehicleDataById(vehicleId);
 
+                if(vehicle != null && vehicleData != null)
+                {
                     using (DefaultDbContext dbContext = new DefaultDbContext())
                     {
                         dbContext.vehicles.Remove(vehicleData);
@@ -347,14 +347,11 @@ namespace CloudRP.Vehicles
 
                     vehicle.SetData<DbVehicle>(_vehicleSharedDataIdentifier, null);
                     vehicle.Delete();
-                    returnRes = true;
-                });
 
-            } catch
-            {
-                returnRes = false;  
-            }
-            
+                    returnRes = true;
+                }
+            });
+
             return returnRes;
         }
 

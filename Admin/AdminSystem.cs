@@ -726,15 +726,20 @@ namespace CloudRP.Admin
                     }
 
                     VehicleSystem.deleteVehicleById(vehicleData.vehicle_id);
-
-                    AdminUtils.staffSay(player, $"Vehicle with id {vehicleData.vehicle_id} was deleted.");
-
+                    AdminUtils.staffSay(player, $"Vehicle with id {vehicleData.vehicle_id} was deleted."); 
                     return;
                 }
 
-                VehicleSystem.deleteVehicleById(vehicleId);
+                bool findAndDelete = VehicleSystem.deleteVehicleById(vehicleId);
 
-                AdminUtils.staffSay(player, $"Vehicle with id {vehicleId} deleted.");
+                if (findAndDelete)
+                {
+                    AdminUtils.staffSay(player, $"Vehicle with id {vehicleId} deleted.");
+                }
+                else
+                {
+                    CommandUtils.errorSay(player, "Vehicle couldn't be found!");
+                }
             }
             else AdminUtils.sendNoAuth(player);
         }
