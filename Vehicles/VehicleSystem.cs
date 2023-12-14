@@ -671,7 +671,7 @@ namespace CloudRP.Vehicles
                 return;
             }
             
-            DbCharacter findPlayerData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter findPlayerData = PlayersData.getPlayerCharacterData(findPlayer);
             if (findPlayerData == null) return;
             
             Vehicle targetVeh = player.Vehicle;

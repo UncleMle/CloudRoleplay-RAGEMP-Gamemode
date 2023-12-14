@@ -4,6 +4,7 @@ using CloudRP.AntiCheat;
 using CloudRP.Authentication;
 using CloudRP.Character;
 using CloudRP.GeneralCommands;
+using CloudRP.HousingSystem;
 using CloudRP.VehicleModification;
 using CloudRP.Vehicles;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +33,7 @@ namespace CloudRP.Database
         public DbSet<VehicleKey> vehicle_keys { get; set; }
         public DbSet<DbVehicle> vehicles { get; set; }
         public DbSet<Tattoo> player_tattoos { get; set; }
+        public DbSet<House> houses { get; set; }
     }
 
     public class BaseEntity
