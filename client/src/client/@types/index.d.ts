@@ -13,68 +13,68 @@ declare global {
 	}
 
 	interface PedMp {
-		corpseId: number
-		corpseCharacterId: number
+		corpseId: number;
+		corpseCharacterId: number;
 	}
 }
 
 export interface UserData {
-	accountId: number,
-	adminDuty: boolean,
-	adminLevel: number,
-	adminName: string,
-	playerId: number,
-	username: string,
-	isFlying: boolean,
-	isFrozen: boolean,
-	adminEsp: boolean,
-	adminPed: string,
-	showAdminPed: boolean
+	accountId: number;
+	adminDuty: boolean;
+	adminLevel: number;
+	adminName: string;
+	playerId: number;
+	username: string;
+	isFlying: boolean;
+	isFrozen: boolean;
+	adminEsp: boolean;
+	adminPed: string;
+	showAdminPed: boolean;
 }
 
 export interface SubtractVector {
-	x: number,
-	y: number,
-	z: number
+	x: number;
+	y: number;
+	z: number;
 }
 
 export interface StreetData {
-	getStreet: GetStreetNameAtCoordResult,
-	zoneName: string,
-	zoneTwo: string
+	getStreet: GetStreetNameAtCoordResult;
+	zoneName: string;
+	zoneTwo: string;
 }
 
 export interface Hunger {
-	hunger: number,
-	water: number
+	hunger: number;
+	water: number;
 }
 
 export interface CharacterData {
-	characterId: number,
-	characterName: string,
-	characterModel: CharacterModel,
-	data: DbCharacter,
-	voiceChatState: boolean,
-	characterClothing: ClothingData
+	characterId: number;
+	characterName: string;
+	characterModel: CharacterModel;
+	data: DbCharacter;
+	voiceChatState: boolean;
+	characterClothing: ClothingData;
 }
 
 export interface DbCharacter {
-    character_id: number;
-    owner_id: number;
-    character_name: string;
-    position_x: number;
-    position_y: number;
-    position_z: number;
-    last_login: Date;
-    character_health: number;
-    character_isbanned: number;
-    money_amount: number;
-    play_time_seconds: bigint;
-    player_dimension: number;
-    player_exp: bigint;
-    injured_timer: number;
-    voiceChatState?: boolean;
-    characterModel?: CharacterModel;
+	character_id: number;
+	owner_id: number;
+	character_name: string;
+	position_x: number;
+	position_y: number;
+	position_z: number;
+	last_login: Date;
+	character_health: number;
+	character_isbanned: number;
+	money_amount: number;
+	play_time_seconds: bigint;
+	player_dimension: number;
+	player_exp: bigint;
+	injured_timer: number;
+	voiceChatState?: boolean;
+	characterModel?: CharacterModel;
 }
 
 export interface CharacterModel {
@@ -124,102 +124,102 @@ export interface CharacterModel {
 	makeup: string;
 	lipstick: string;
 	blushColour: string;
-	player_tattos: Tatto[]
+	player_tattos: Tatto[];
 }
 
 export interface Tatto {
-	tattoo_id: number,
-	tattoo_owner_id: number,
-	tattoo_lib: string,
-	tattoo_collection: string
+	tattoo_id: number;
+	tattoo_owner_id: number;
+	tattoo_lib: string;
+	tattoo_collection: string;
 }
 
 export interface TatFromUi {
-	male: string,
-	female: string
+	male: string;
+	female: string;
 }
 
 export interface Gui {
-	playerId: number,
-	direction: string,
-	isFrozen: boolean,
-	unix: number,
-	zoneName: string,
-	zoneNameTwo: string,
-	fps: number,
-	voiceMuted: boolean
+	playerId: number;
+	direction: string;
+	isFrozen: boolean;
+	unix: number;
+	zoneName: string;
+	zoneNameTwo: string;
+	fps: number;
+	voiceMuted: boolean;
 }
 
 export interface Flight {
-	flying: boolean,
-	f: number,
-	w: number,
-	h: number,
-	l: number,
-	point_distance: number
+	flying: boolean;
+	f: number;
+	w: number;
+	h: number;
+	l: number;
+	point_distance: number;
 }
 
 export interface VehicleMods {
-    vehicle_mod_id: number;
-    vehicle_owner_id: number;
-    spoilers: number;
-    front_bumper: number;
-    rear_bumper: number;
-    side_skirt: number;
-    exhaust: number;
-    frame: number;
-    grille: number;
-    hood: number;
-    fender: number;
-    right_fender: number;
-    roof: number;
-    engine: number;
-    brakes: number;
-    transmission: number;
-    horns: number;
-    suspension: number;
-    armor: number;
-    turbo: number;
-    xenon: number;
-    front_wheels: number;
+	vehicle_mod_id: number;
+	vehicle_owner_id: number;
+	spoilers: number;
+	front_bumper: number;
+	rear_bumper: number;
+	side_skirt: number;
+	exhaust: number;
+	frame: number;
+	grille: number;
+	hood: number;
+	fender: number;
+	right_fender: number;
+	roof: number;
+	engine: number;
+	brakes: number;
+	transmission: number;
+	horns: number;
+	suspension: number;
+	armor: number;
+	turbo: number;
+	xenon: number;
+	front_wheels: number;
 	wheel_type: number;
-    back_wheels: number;
-    plate_holders: number;
-    trim_design: number;
-    ornaments: number;
-    dial_design: number;
-    steering_wheel: number;
-    shift_lever: number;
-    plaques: number;
-    hydraulics: number;
-    boost: number;
-    window_tint: number;
-	pearleascent: number,
-	wheel_colour:number;
-    livery: number;
-    plate: number;
-    colour_1: number;
-    colour_2: number;
+	back_wheels: number;
+	plate_holders: number;
+	trim_design: number;
+	ornaments: number;
+	dial_design: number;
+	steering_wheel: number;
+	shift_lever: number;
+	plaques: number;
+	hydraulics: number;
+	boost: number;
+	window_tint: number;
+	pearleascent: number;
+	wheel_colour: number;
+	livery: number;
+	plate: number;
+	colour_1: number;
+	colour_2: number;
 }
 
 export interface VehicleData {
-	vehicle_id: number,
-	owner_id: number,
-	engine_status: boolean,
-	vehicle_name: string,
-	vehicle_locked: boolean,
-	vehicle_spawn_hash: number,
-	numberplate: string,
-	position_x: string,
-	position_y: string,
-	position_z: string,
-	vehicle_doors: string[],
-	vehicle_windows: string[],
-	indicator_status: number,
-	vehicle_siren: boolean,
-	vehicle_fuel: number,
-	vehicle_distance: number,
-	vehicle_mods: VehicleMods
+	vehicle_id: number;
+	owner_id: number;
+	engine_status: boolean;
+	vehicle_name: string;
+	vehicle_locked: boolean;
+	vehicle_spawn_hash: number;
+	numberplate: string;
+	position_x: string;
+	position_y: string;
+	position_z: string;
+	vehicle_doors: string[];
+	vehicle_windows: string[];
+	indicator_status: number;
+	vehicle_siren: boolean;
+	vehicle_fuel: number;
+	vehicle_distance: number;
+	vehicle_mods: VehicleMods;
 }
 
 interface ModInfo {
@@ -228,21 +228,21 @@ interface ModInfo {
 }
 
 export interface BoneData {
-	id: number,
-	boneIndex: number,
-	name: string,
-	locked: boolean,
-	bonePos: Vector3,
-	raycast: RaycastResult,
-	veh: VehicleMp,
-	distance: number,
-	pushTime: number
+	id: number;
+	boneIndex: number;
+	name: string;
+	locked: boolean;
+	bonePos: Vector3;
+	raycast: RaycastResult;
+	veh: VehicleMp;
+	distance: number;
+	pushTime: number;
 }
 
 export interface CreationCam {
-	angle: number,
-	dist: number,
-	height: number
+	angle: number;
+	dist: number;
+	height: number;
 }
 
 export interface Minimap {
@@ -257,35 +257,35 @@ export interface Minimap {
 }
 
 export interface Attachment {
-	id: number,
-	model: number,
-	offset: number,
-	rotation: number,
-	boneName: string
+	id: number;
+	model: number;
+	offset: number;
+	rotation: number;
+	boneName: string;
 }
 
 export interface SpeedoData {
-	vehicleSpeed: number,
-	vehicleRpm: number,
-	indicatorStatus: number,
-	lockStatus: boolean,
-	lightsStates: { lightsOn: boolean; highbeamsOn: boolean; },
-	fuelLevel: number,
-	vehicleMileage: number,
-	metric: number,
-	numberPlate: string,
-	displayName: string,
-	dbName: string
+	vehicleSpeed: number;
+	vehicleRpm: number;
+	indicatorStatus: number;
+	lockStatus: boolean;
+	lightsStates: { lightsOn: boolean; highbeamsOn: boolean };
+	fuelLevel: number;
+	vehicleMileage: number;
+	metric: number;
+	numberPlate: string;
+	displayName: string;
+	dbName: string;
 }
 
 export interface Corpse {
-	characterName: string,
-	characterId: number,
-	model: CharacterModel,
-	clothes: ClothingData,
-	corpseId: number,
-	position: Vector3,
-	unixCreated: number
+	characterName: string;
+	characterId: number;
+	model: CharacterModel;
+	clothes: ClothingData;
+	corpseId: number;
+	position: Vector3;
+	unixCreated: number;
 }
 
 export interface ClothingStore {
@@ -321,64 +321,59 @@ export interface ClothingData {
 }
 
 export interface ParkCol {
-	name: string,
-	owner_id: number,
-	position: Vector3
+	name: string;
+	owner_id: number;
+	position: Vector3;
 }
 
 export interface RetrieveCol {
-	name: string,
-	owner_id: number,
-	position: Vector3
+	name: string;
+	owner_id: number;
+	position: Vector3;
 }
 
 export interface DealerShip {
-	dealerShipId: number,
-	position: Vector3,
-	spawnPosition: Vector3,
-	viewPosition: Vector3,
-	dealershipName: string,
-	vehicles: DealerVehicle[],
-	viewRange: number,
-	vehDispNames: string[]
+	dealerShipId: number;
+	position: Vector3;
+	spawnPosition: Vector3;
+	viewPosition: Vector3;
+	dealershipName: string;
+	vehicles: DealerVehicle[];
+	viewRange: number;
+	vehDispNames: string[];
 }
 
 export interface DealerVehicle {
-	spawnName: string,
-	price: number
+	spawnName: string;
+	price: number;
 }
 
 export interface TattoShop {
-	name: string,
-	overlayDlc: string,
-	position: Vector3
+	name: string;
+	overlayDlc: string;
+	position: Vector3;
 }
 
 export interface TattoData {
-	name: string,
-	data: object
+	name: string;
+	data: object;
 }
 
-interface VehicleInfo {
-	displayName: string;
-	manufacturer: string;
-	price: number;
-	weightKG: number;
-	drivetrain: string;
-	realMaxSpeedMPH: number;
-	gameMaxSpeedKPH: number;
-	model: string;
-	hash: number;
-	class: {
-	  id: number;
-	  name: string;
-	};
-	seats: number;
-	maxPassengers: number;
-	inDealership: boolean;
-	stock: number;
-	estimatedMaxSpeed: number;
-	maxBraking: number;
-	maxTraction: number;
-	maxAcceleration: number;
-  }
+interface House {
+	house_id: number;
+	house_owner_id: number;
+	house_name: string;
+	house_position_x: number;
+	house_position_y: number;
+	house_position_z: number;
+	house_interior_id: number;
+	house_price: number;
+	garage_size: number;
+	blip_visible: boolean;
+	interiorExitCol: ColshapeMp;
+	isLocked: boolean;
+	houseCol: ColshapeMp;
+	houseLabel: TextLabelMp;
+	priceLabel: TextLabelMp;
+	houseMarker: TextLabelMp;
+}

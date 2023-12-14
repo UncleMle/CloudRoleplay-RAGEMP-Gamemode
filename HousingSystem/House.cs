@@ -19,11 +19,15 @@ namespace CloudRP.HousingSystem
         public float house_position_x { get; set; }
         public float house_position_y { get; set; }
         public float house_position_z { get; set; }
-        public string house_interior {  get; set; } 
+        public int house_interior_id {  get; set; } 
         public int house_price { get; set; }
         public int garage_size { get; set; }
         public bool blip_visible { get; set; }
 
+        [NotMapped]
+        public ColShape interiorExitCol {  get; set; }
+        [NotMapped]
+        public bool isLocked { get; set; }
         [NotMapped]
         public ColShape houseCol { get; set; }
         [NotMapped]

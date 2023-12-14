@@ -26,7 +26,7 @@ namespace CloudRP.HousingSystem
                 {
                     blip_visible = true,
                     garage_size = garageSize,
-                    house_interior = "Example",
+                    house_interior_id = 0,
                     house_owner_id = characterData.character_id,
                     house_price = housePrice,
                     house_name = houseName,

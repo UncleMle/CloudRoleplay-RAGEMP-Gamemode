@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using static CloudRP.HousingSystem.Interiors;
 
 namespace CloudRP.HousingSystem
 {
@@ -53,7 +54,6 @@ namespace CloudRP.HousingSystem
                     house.houseCol.Delete();
                 }
             }
-
 
             Vector3 housePos = new Vector3(house.house_position_x, house.house_position_y, house.house_position_z);
 
@@ -99,6 +99,26 @@ namespace CloudRP.HousingSystem
             {
                 player.ResetData(_housingDataIdentifier);
                 player.ResetSharedData(_housingDataIdentifier);
+            }
+        }
+
+        [RemoteEvent("server:loadHouseForPlayer")]
+        public void loadHouseForPlayer(Player player)
+        {
+            House houseData = player.GetData<House>(_housingDataIdentifier);
+
+            if(houseData != null)
+            {
+                Interior findInterior = availableInteriors
+                    .Where(inte => inte.id == houseData.house_interior_id)
+                    .FirstOrDefault();
+
+                if(findInterior != null)
+                {
+                    player.Dimension = (uint)houseData.house_id; 
+                    player.Position = findInterior.interiorPosition;
+                    player.SendChatMessage(ChatUtils.info + " You entered house #"+houseData.house_id);
+                }
             }
         }
 
