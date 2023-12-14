@@ -33,6 +33,7 @@ namespace CloudRP.Database
         public DbSet<Nickname> nicknames { get; set; }
         public DbSet<CharacterClothing> character_clothes { get; set; }
         public DbSet<VehicleMods> vehicle_mods { get; set; }
+        public DbSet<VehicleKey> vehicle_keys { get; set; }
         public DbSet<DbVehicle> vehicles { get; set; }
         public DbSet<Tattoo> player_tattoos { get; set; }
     }
@@ -40,7 +41,7 @@ namespace CloudRP.Database
     public class BaseEntity
     {
         public string key_uuid = Guid.NewGuid().ToString();
-        public DateTime CreatedDate { get; set; }
-        public DateTime UpdatedDate { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public DateTime UpdatedDate { get; set; } = DateTime.Now;
     }
 }
