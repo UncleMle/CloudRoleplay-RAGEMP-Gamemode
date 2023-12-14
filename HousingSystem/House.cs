@@ -44,12 +44,28 @@ namespace CloudRP.HousingSystem
             return findHouse;
         }
 
-        public static void deleteById(int houseId) { 
+        public static void deleteById(int houseId, bool deleteFromDb = false) { 
             removeTextLabel(houseId);
             removeColshape(houseId);
             removeBlip(houseId);
             removePlaceMarker(houseId);
             clearPlayerHouseData(houseId);
+
+            if(deleteFromDb)
+            {
+                using(DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    House findH = dbContext.houses
+                        .Where(house => house.house_id == houseId)
+                        .FirstOrDefault();
+
+                    if(findH != null)
+                    {
+                        dbContext.Remove(findH);
+                        dbContext.SaveChanges();
+                    }
+                }
+            }
         }
 
         public static void clearPlayerHouseData(int houseId)

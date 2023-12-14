@@ -16,22 +16,28 @@ namespace CloudRP.HousingSystem
             new Interior
             {
                 id = 0,
-                doorExitPosition = new Vector3(-912.4, -365.0, 114.3),
+                doorExitPosition = new List<Vector3> {
+                    new Vector3(-912.4, -365.0, 114.3),
+                    new Vector3(-917.2, -366.3, 114.3),
+                },
                 interiorPosition = new Vector3(-919.5, -368.7, 114.3),
                 name = "Richard Majestic, Apt 2"
-            }
+            },
         };
 
         public static void loadInteriorData(House house)
         {
-            MarkersAndLabels.setTextLabel(house.houseInterior.doorExitPosition, "Exit property use ~y~Y~w~ to interact", 5f, (uint)house.house_id);
-            MarkersAndLabels.setPlaceMarker(house.houseInterior.doorExitPosition, (uint)house.house_id);
-            ColShape doorExit = NAPI.ColShape.CreateSphereColShape(house.houseInterior.doorExitPosition, 2f, (uint)house.house_id);
-
             Vector3 hPos = new Vector3(house.house_position_x, house.house_position_y, house.house_position_z);
 
-            doorExit.SetData(_housingInteriorIdentifier, hPos);
-            doorExit.SetSharedData(_housingInteriorIdentifier, hPos);
+            house.houseInterior.doorExitPosition.ForEach(door =>
+            {
+                MarkersAndLabels.setTextLabel(door, "Exit property use ~y~Y~w~ to interact", 5f, (uint)house.house_id);
+                MarkersAndLabels.setPlaceMarker(door, (uint)house.house_id);
+                ColShape doorExit = NAPI.ColShape.CreateSphereColShape(door, 2f, (uint)house.house_id);
+
+                doorExit.SetData(_housingInteriorIdentifier, hPos);
+                doorExit.SetSharedData(_housingInteriorIdentifier, hPos);
+            });
         }
 
 
@@ -66,7 +72,7 @@ namespace CloudRP.HousingSystem
             public string name;
             public Vector3 housePosition;
             public Vector3 interiorPosition;
-            public Vector3 doorExitPosition;
+            public List<Vector3> doorExitPosition;
         }
     }
 }

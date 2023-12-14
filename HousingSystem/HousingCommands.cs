@@ -12,8 +12,8 @@ namespace CloudRP.HousingSystem
 {
     public class HousingCommands : Script
     {
-        [Command("addhouse", "~r~/addhouse [houseName] [garageSize] [price]")]
-        public void addHouseCommand(Player player, string houseName, int garageSize, int housePrice)
+        [Command("addhouse", "~r~/addhouse [garageSize] [price] [houseName]", GreedyArg = true)]
+        public void addHouseCommand(Player player, int garageSize, int housePrice, string houseName)
         {
             User userData = PlayersData.getPlayerAccountData(player);
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
@@ -48,8 +48,8 @@ namespace CloudRP.HousingSystem
             else AdminUtils.sendNoAuth(player);
         }
 
-        [Command("deletehouse", "~r~/deletehouse [houseId]")]
-        public void deleteHouseCommand(Player player, int houseId)
+        [Command("deletehouse", "~r~/deletehouse [houseId] [deleteFromDb(true/false)]")]
+        public void deleteHouseCommand(Player player, int houseId, bool deleteFromDb)
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
@@ -59,7 +59,7 @@ namespace CloudRP.HousingSystem
 
                 if(findH != null)
                 {
-                    House.deleteById(findH.house_id);
+                    House.deleteById(findH.house_id, deleteFromDb);
                 } else
                 {
                     CommandUtils.errorSay(player, "This house wasn't found.");
