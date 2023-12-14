@@ -25,7 +25,8 @@ const store = new Vuex.Store({
 			parked_vehicles: [],
 			vehicle_dealer_data: {},
 			tattoo_store_data: [],
-			player_current_tats: []
+			player_current_tats: [],
+			vehicle_performance_data: []
 		},
 		uiStates: {
 			characterSelection: false,

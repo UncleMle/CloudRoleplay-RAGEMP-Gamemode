@@ -61,17 +61,25 @@
             </div>
 
             <div class="absolute right-[1%] top-20">
-                <div class="bg-black/70 shadow-2xl shadow-black p-4 rounded-xl relative h-full w-[24vw]">
+                <div v-if="playerData.vehicle_performance_data" class="bg-black/70 shadow-2xl shadow-black p-4 rounded-xl relative h-full w-[24vw]">
                     <div class="w-full">
-                        <div class=" w-full" v-for="item in performanceStats"
-                            :key="performanceStats.indexOf(item)">
-                            <div class="mt-2">{{item.performanceName}}</div>
-                            <div class="p-3 bg-purple-400/30 mt-2 text-center rounded-lg" :style="{'width': item.val+'%'}">{{item.val}}%</div>
+                        <div class=" w-full duration-300">
+
+                            <div class="mt-2">Acceleration</div>
+                            <div class="p-3 duration-300 bg-purple-400/30 mt-2 text-center rounded-lg max-w-full" :style="{'width': playerData.vehicle_performance_data.maxTraction * 30+'%'}">{{(playerData.vehicle_performance_data.maxTraction * 30).toFixed(0)}}%</div>
+
+                            <div class="mt-2">Top Speed</div>
+                            <div class="p-3 duration-300 bg-purple-400/30 mt-2 text-center rounded-lg max-w-full" :style="{'width': playerData.vehicle_performance_data.estimatedMaxSpeed * 1.4+'%'}">{{(playerData.vehicle_performance_data.estimatedMaxSpeed * 1.4).toFixed(0)}}%</div>
+
+                            <div class="mt-2">Brakes</div>
+                            <div class="p-3 duration-300 bg-purple-400/30 mt-2 text-center rounded-lg max-w-full" :style="{'width': (playerData.vehicle_performance_data.maxBraking * 100).toFixed(0)+'%'}">{{(playerData.vehicle_performance_data.maxBraking * 100).toFixed(0)}}%</div>
+
+
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-black/70 shadow-2xl shadow-black rounded-xl mt-14">
+                <div class="bg-black/70 shadow-2xl shadow-black rounded-xl" :class="playerData.vehicle_performance_data ? 'mt-14' : ''">
                     <ui class="flex justify-center space-x-5 border-gray-500 p-4">
                         Choose your vehicle's colour
                     </ui>
@@ -152,12 +160,6 @@ export default {
                 { html: "#df5891", rage: 137 },
                 { html: "#f21f99", rage: 135 },
                 { html: "#c00e1a", rage: 27 },
-            ],
-            performanceStats: [
-                { performanceName: "Engine", val: 60 },
-                { performanceName: "Acceleration", val: 20 },
-                { performanceName: "Brakes", val: 40 },
-                { performanceName: "Top Speed", val: 100 },
             ],
             selectedColour: 111
         }

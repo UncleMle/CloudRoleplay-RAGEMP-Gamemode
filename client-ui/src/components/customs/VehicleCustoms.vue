@@ -101,7 +101,7 @@
                                                     class="block mb-2 text-sm font-medium  text-white">{{ item.name }} ({{
                                                         formatMod(vehicleData[item.dbName]) }})</label>
                                                 <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
-                                                    :min="getMinIdx(item.name)"
+                                                    :min="item.name == 'Colour One' || item.name == 'Colour Two' ? 0 : getMinIdx(item.name)"
                                                     :max="item.maxIdx ? item.maxIdx : getMaxIdx(item.name)"
                                                     class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
                                                 <button @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"

@@ -970,7 +970,7 @@ namespace CloudRP.Admin
 
             if (AdminUtils.checkUserData(player, userData))
             {
-                Vehicle findVeh = VehicleSystem.getClosestVehicleToPlayer(player);
+                Vehicle findVeh = VehicleSystem.getClosestVehicleToPlayer(player, 20);
 
                 if(findVeh == null)
                 {

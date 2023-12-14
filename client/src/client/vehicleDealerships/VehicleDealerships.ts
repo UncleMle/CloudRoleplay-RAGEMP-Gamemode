@@ -6,6 +6,7 @@ import DeathSystem from '@/DeathSystem/DeathSystem';
 import validateKeyPress from '@/PlayerMethods/validateKeyPress';
 import VehicleSpeedo from '@/VehicleSystems/VehicleSpeedo';
 import { Browsers } from '@/enums';
+import vehicleData from './VehicleData.json';
 
 class VehicleDealerShips {
 	public static LocalPlayer: PlayerMp;
@@ -113,10 +114,29 @@ class VehicleDealerShips {
         }
     }
 
+	public static insertPerformanceToBrowser(vehSpawnName: string) {
+		let vehiclePerformanceData: any;
+
+		vehicleData.forEach(data => {
+			if(data.model == vehSpawnName) {
+				vehiclePerformanceData = data;
+			}
+		});
+
+		BrowserSystem._browserInstance.execute(`appSys.commit("playerMutationSetter", {
+			_mutationKey: "vehicle_performance_data",
+			data: ${JSON.stringify(vehiclePerformanceData)}
+		})`);
+
+		mp.console.logInfo(JSON.stringify(vehiclePerformanceData));
+	}
+
 	public static async addDealerShipVehicle(vehName: string, rotation: string | number, colour: string | number) {
         if(!vehName) return;
 
 		let spawnHash: number = mp.game.joaat(vehName);
+
+		VehicleDealerShips.insertPerformanceToBrowser(vehName);
 
         if(VehicleDealerShips.dealerSelectedVehicle && VehicleDealerShips.dealerSelectedVehicle.model == spawnHash) return;
 
