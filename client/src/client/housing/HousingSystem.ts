@@ -18,7 +18,7 @@ class HousingSystem {
         HousingSystem.LocalPlayer = mp.players.local;
 
         mp.keys.bind(_control_ids.Y, false, HousingSystem.handleKeyPress_Y);
-        mp.keys.bind(_control_ids.K, false, HousingSystem.handleKeyPress_Y);
+        mp.keys.bind(_control_ids.K, false, HousingSystem.handleKeyPress_K);
     }
 
     public static async handleKeyPress_K() {
@@ -41,6 +41,11 @@ class HousingSystem {
         if(interiorData && !houseData) {
             mp.events.callRemote(HousingSystem._houseExitEvent);
             await HousingSystem.playSwitch("~o~You exited this house.");
+        }
+
+        if(houseData && houseData.isLocked) {
+            NotificationSystem.createNotification("~r~This house is locked", false);
+            return;
         }
 
         if(houseData) {

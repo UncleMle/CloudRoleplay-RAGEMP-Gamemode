@@ -51,7 +51,7 @@ namespace CloudRP.HousingSystem
 
             TextLabel houseLabel = MarkersAndLabels.setTextLabel(housePos, house.house_name + " #" + house.house_id + "\n use ~y~Y~w~ to interact", 5f);
             Marker houseMarker = MarkersAndLabels.setPlaceMarker(housePos);
-            ColShape houseCol = NAPI.ColShape.CreateSphereColShape(housePos, 2f, 0);
+            ColShape houseCol = NAPI.ColShape.CreateSphereColShape(housePos, 1f, 0);
 
             Blip houseBlip = NAPI.Blip.CreateBlip(492, housePos, 1.0f, 43, house.house_name, 255, 20, true, 0, 0);
 
@@ -137,12 +137,12 @@ namespace CloudRP.HousingSystem
             House houseData = player.GetData<House>(_housingDataIdentifier);
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
-            if(houseData != null && characterData != null && characterData.character_id == houseData.house_id)
+            if(houseData != null && characterData != null && characterData.character_id == houseData.house_owner_id)
             {
                 houseData.isLocked = !houseData.isLocked;
                 House.updateHouseDataForWorld(houseData);
 
-                uiHandling.sendNotification(player, $"~r~You {(houseData.isLocked ? "locked" : "unlocked")} this house.", false)
+                uiHandling.sendNotification(player, $"~r~You {(houseData.isLocked ? "locked" : "unlocked")} this house.", false);
             }
         }
 

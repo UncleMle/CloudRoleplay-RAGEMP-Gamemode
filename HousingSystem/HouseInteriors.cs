@@ -41,7 +41,7 @@ namespace CloudRP.HousingSystem
             {
                 MarkersAndLabels.setTextLabel(door, "Exit property use ~y~Y~w~ to interact", 5f, (uint)house.house_id);
                 MarkersAndLabels.setPlaceMarker(door, (uint)house.house_id);
-                ColShape doorExit = NAPI.ColShape.CreateSphereColShape(door, 2f, (uint)house.house_id);
+                ColShape doorExit = NAPI.ColShape.CreateSphereColShape(door, 1f, (uint)house.house_id);
 
                 doorExit.SetData(_housingInteriorIdentifier, hPos);
                 doorExit.SetSharedData(_housingInteriorIdentifier, hPos);

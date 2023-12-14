@@ -28,7 +28,7 @@ namespace CloudRP.HousingSystem
         public bool blip_visible { get; set; }
 
         [NotMapped]
-        public bool isLocked { get; set; }
+        public bool isLocked { get; set; } = true;
         [NotMapped]
         public Interior houseInterior { get; set; }
 
@@ -76,8 +76,8 @@ namespace CloudRP.HousingSystem
 
                 if (houseData != null && houseData.house_id == houseId)
                 {
-                    player.ResetData(_housingInteriorIdentifier);
-                    player.ResetOwnSharedData(_housingInteriorIdentifier);
+                    player.ResetData(HousingSystem._housingDataIdentifier);
+                    player.ResetOwnSharedData(HousingSystem._housingDataIdentifier);
                     player.ResetData(HousingSystem._housingDataIdentifier);
                     player.ResetOwnSharedData(HousingSystem._housingDataIdentifier);
                 }
@@ -92,7 +92,8 @@ namespace CloudRP.HousingSystem
 
                 if (houseData != null && houseData.house_id == house.house_id)
                 {
-                    player.SetData(_housingInteriorIdentifier, house);
+                    player.SetData(HousingSystem._housingDataIdentifier, house);
+                    player.SetSharedData(HousingSystem._housingDataIdentifier, house);
                 }
             });
             
@@ -102,7 +103,7 @@ namespace CloudRP.HousingSystem
 
                 if (houseData != null && houseData.house_id == house.house_id)
                 {
-                    col.SetData(_housingInteriorIdentifier, house);
+                    col.SetData(HousingSystem._housingDataIdentifier, house);
                 }
             });
 
