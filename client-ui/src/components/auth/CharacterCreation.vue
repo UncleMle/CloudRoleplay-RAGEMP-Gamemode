@@ -12,10 +12,10 @@
                     </div>
 
                     <ui class="flex justify-center mt-2 space-x-10 border-b-2 pb-2 border-gray-500">
-                        <button @click="browsingType = 'General'" class="hover:text-green-500 duration-300"><i class="fa-solid fa-gear"></i><br /><span class="text-gray-300">General</span></button>
-                        <button @click="browsingType = 'Face'" class="hover:text-green-500 duration-300"><i class="fa-solid fa-face-smile"></i><br /><span class="text-gray-300">Face</span></button>
-                        <button @click="browsingType = 'Hair'" class="hover:text-green-500 duration-300"><i class="fa-solid fa-user"></i><br /><span class="text-gray-300">Hair</span></button>
-                        <button @click="browsingType = 'Other'" class="hover:text-green-500 duration-300"><i class="fa-solid fa-shirt"></i><br /><span class="text-gray-300">Other</span></button>
+                        <button @click="browsingType = 'General'" class="hover:text-green-500 duration-300"><i class="fa-solid fa-gear text-gray-400"></i><br /><span class="text-gray-400">General</span></button>
+                        <button @click="browsingType = 'Face'" class="hover:text-green-500 duration-300"><i class="fa-solid fa-face-smile text-gray-400"></i><br /><span class="text-gray-400">Face</span></button>
+                        <button @click="browsingType = 'Hair'" class="hover:text-green-500 duration-300"><i class="fa-solid fa-user text-gray-400"></i><br /><span class="text-gray-400">Hair</span></button>
+                        <button @click="browsingType = 'Other'" class="hover:text-green-500 duration-300"><i class="fa-solid fa-shirt text-gray-400"></i><br /><span class="text-gray-400">Other</span></button>
                     </ui>
 
 
@@ -294,7 +294,7 @@
         },
         computed: {
             getCurrentHeight() {
-                let baseStyle = "overflow-x-scroll overlow-hidden select-none "
+                let baseStyle = "overflow-x-hidden overlow-hidden select-none "
 
                 switch (this.browsingType) {
                     case "General": {

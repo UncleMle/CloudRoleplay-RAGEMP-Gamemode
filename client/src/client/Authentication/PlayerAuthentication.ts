@@ -116,7 +116,6 @@ class PlayerAuthentication {
 	public static freezeAndBlurClient() {
 		mp.game.ui.displayRadar(false);
 		mp.gui.cursor.show(true, true);
-		PlayerAuthentication.LocalPlayer.position = new mp.Vector3(-811.6, 174.9, 76.8);
 		PlayerAuthentication.LocalPlayer.freezePosition(true);
 		PlayerAuthentication.LocalPlayer.setAlpha(0);
 		mp.game.cam.renderScriptCams(true, false, 0, true, false);
@@ -125,11 +124,10 @@ class PlayerAuthentication {
 	}
 
 	public static endClientLogin() {
+		PlayerAuthentication.LocalPlayer.freezePosition(false);
 		PlayerAuthentication.LocalPlayer.setAlpha(255);
 		mp.game.graphics.transitionFromBlurred(100);
 		mp.gui.cursor.show(false, false);
-		PlayerAuthentication.LocalPlayer.freezePosition(false);
-		// BrowserSystem._browserInstance.reload(true);
 		BrowserSystem.pushRouter("/");
 
 		PlayerAuthentication.LoginCamera.delete();
