@@ -78,9 +78,22 @@ namespace CloudRP.Vehicles
 
             veh.Locked = true;
             vehicle.vehicle_locked = true;
+            vehicle.vehicle_key_holders = getVehicleKeyHoldersFromDb(vehicle);
 
             setVehicleData(veh, vehicle);
             return veh;
+        }
+
+        public static List<VehicleKey> getVehicleKeyHoldersFromDb(DbVehicle vehicle)
+        {
+            List<VehicleKey> keyHolders = null;
+
+            using (DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                keyHolders = dbContext.vehicle_keys.Where(vKey => vKey.vehicle_id == vehicle.vehicle_id).ToList();
+            }
+
+            return keyHolders;
         }
 
         public static void sendVehicleToInsurance(Vehicle vehicle)
@@ -521,24 +534,32 @@ namespace CloudRP.Vehicles
         public static void toggleVehiclesLock(Player player, Vehicle vehicle)
         {
             DbVehicle vehicleData = getVehicleData(vehicle);
+            DbCharacter charData = PlayersData.getPlayerCharacterData(player);
 
-            if (vehicleData == null) return;
+            if (vehicleData == null || charData == null) return;
 
-            vehicleData.vehicle_locked = !vehicleData.vehicle_locked;
+            VehicleKey vehicleKey = vehicleData.vehicle_key_holders
+                .Where(holder => holder.target_character_id == charData.character_id)
+                .FirstOrDefault();
 
-            vehicle.Locked = vehicleData.vehicle_locked;
-
-            if(vehicle.Locked)
+            if (charData.character_id == vehicleData.owner_id || vehicleKey != null)
             {
-                closeAllDoors(vehicle);
-                closeAllWindows(vehicle);
+                vehicleData.vehicle_locked = !vehicleData.vehicle_locked;
+
+                vehicle.Locked = vehicleData.vehicle_locked;
+
+                if (vehicle.Locked)
+                {
+                    closeAllDoors(vehicle);
+                    closeAllWindows(vehicle);
+                }
+
+                saveVehicleData(vehicle, vehicleData);
+
+                string lockUnlockText = $" You {(vehicleData.vehicle_locked ? "locked" : "unlocked")} vehicle.";
+
+                uiHandling.sendNotification(player, lockUnlockText);
             }
-
-            saveVehicleData(vehicle, vehicleData);
-
-            string lockUnlockText = $" You {(vehicleData.vehicle_locked ? "locked" : "unlocked")} vehicle.";
-
-            uiHandling.sendNotification(player, lockUnlockText);
         }
 
         public static void closeAllDoors(Vehicle vehicle)

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
 using CloudRP.Admin;
 using CloudRP.AntiCheat;
 using CloudRP.Authentication;
@@ -10,7 +7,6 @@ using CloudRP.GeneralCommands;
 using CloudRP.VehicleModification;
 using CloudRP.Vehicles;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
 
 namespace CloudRP.Database
 {

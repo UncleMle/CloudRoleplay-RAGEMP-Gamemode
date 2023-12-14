@@ -44,6 +44,8 @@ namespace CloudRP.Vehicles
         public bool vehicle_siren { get; set; }
         [NotMapped]
         public VehicleMods vehicle_mods { get; set; }
+        [NotMapped]
+        public List<VehicleKey> vehicle_key_holders { get; set; }
     }
 
     class VehicleDimensions
