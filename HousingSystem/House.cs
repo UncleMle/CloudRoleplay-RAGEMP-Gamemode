@@ -36,5 +36,7 @@ namespace CloudRP.HousingSystem
         public TextLabel priceLabel { get; set; }       
         [NotMapped]
         public Marker houseMarker { get; set; }
+        [NotMapped]
+        public Blip houseBlip { get; set; }
     }
 }

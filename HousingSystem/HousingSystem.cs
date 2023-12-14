@@ -68,9 +68,12 @@ namespace CloudRP.HousingSystem
             Marker houseMarker = MarkersAndLabels.setPlaceMarker(housePos);
             ColShape houseCol = NAPI.ColShape.CreateSphereColShape(housePos, 2f, 0);
 
+            Blip houseBlip = NAPI.Blip.CreateBlip(492, housePos, 1.0f, 43, house.house_name, 255, 20, true, 0, 0);
+
             house.priceLabel = priceLabel;
             house.houseLabel = houseLabel;
             house.houseMarker = houseMarker;
+            house.houseBlip = houseBlip;
 
             house.houseCol = houseCol;
 

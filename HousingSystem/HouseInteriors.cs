@@ -13,7 +13,7 @@ namespace CloudRP.HousingSystem
             {
                 id = 0,
                 doorExitPosition = new Vector3(-912.4, -365.0, 114.3),
-                interiorPosition = new Vector3(-915.811, -379.432, 113.6748),
+                interiorPosition = new Vector3(-919.5, -368.7, 114.3),
                 name = "Richard Majestic, Apt 2"
             }
         };
