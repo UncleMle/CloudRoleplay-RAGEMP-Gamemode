@@ -1341,7 +1341,6 @@ namespace CloudRP.Admin
                         AdminUtils.staffSay(player, $"You have set vehicle #{vehData.vehicle_id}'s license plate to {formattedPlate}");
                     }
                 }
-
             }
             else AdminUtils.sendNoAuth(player);
         }

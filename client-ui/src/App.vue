@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <ChatBox class="absolute" />
-        <InventoryHud v-if="true"/>
+        <InventoryHud v-if="false"/>
         <PushNotification class="bg-red-200" ref="notification" />
         <VehicleSpeedo v-if="uiStates.guiEnabled" />
         <PlayerHud v-if="uiStates.guiEnabled" />

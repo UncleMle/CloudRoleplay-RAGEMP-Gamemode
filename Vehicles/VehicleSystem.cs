@@ -526,6 +526,7 @@ namespace CloudRP.Vehicles
         public static void toggleVehiclesLock(Player player, Vehicle vehicle)
         {
             DbVehicle vehicleData = getVehicleData(vehicle);
+            User playerData = PlayersData.getPlayerAccountData(player);
             DbCharacter charData = PlayersData.getPlayerCharacterData(player);
 
             if (vehicleData == null || charData == null) return;
@@ -534,7 +535,7 @@ namespace CloudRP.Vehicles
                 .Where(holder => holder.target_character_id == charData.character_id && holder.vehicle_id == vehicleData.vehicle_id)
                 .FirstOrDefault();
 
-            if (charData.character_id == vehicleData.owner_id || vehicleKey != null)
+            if (charData.character_id == vehicleData.owner_id || vehicleKey != null || playerData.adminDuty)
             {
                 vehicleData.vehicle_locked = !vehicleData.vehicle_locked;
 
@@ -548,9 +549,9 @@ namespace CloudRP.Vehicles
 
                 saveVehicleData(vehicle, vehicleData);
 
-                string lockUnlockText = $" You {(vehicleData.vehicle_locked ? "locked" : "unlocked")} vehicle.";
+                string lockUnlockText = $"{(playerData.adminDuty ? "~r~[Staff]" : "")} You {(vehicleData.vehicle_locked ? "locked" : "unlocked")} vehicle.";
 
-                uiHandling.sendNotification(player, lockUnlockText);
+                uiHandling.sendNotification(player, lockUnlockText, !playerData.adminDuty);
             }
         }
 

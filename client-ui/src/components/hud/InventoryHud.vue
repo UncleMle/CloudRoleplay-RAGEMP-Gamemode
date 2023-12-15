@@ -9,7 +9,8 @@
                         <div class="p-7">
 
                             <div id="dragparent" class="grid grid-cols-6 gap-4 w-full">
-                                <div class="border border-gray-500 rounded-lg" v-for="element in 12" :key="element.id">
+                                <div id="test" class="border border-gray-500 rounded-lg" v-for="element in 12"
+                                    :key="element.id">
                                     <div v-if="inventoryItems[element - 1]">
                                         <div class="flex justify-center text-center">
                                             <img :src="getItemImg(inventoryItems[element - 1].name)" class="scale-75" />
@@ -18,7 +19,7 @@
                                             {{ inventoryItems[element - 1].dispName }}
                                         </div>
                                     </div>
-                                    <div v-else class="w-32 h-32">
+                                    <div v-else id="dontdrag" class="w-32 h-32">
                                     </div>
 
                                 </div>
@@ -36,6 +37,7 @@
 import dragular from 'dragula';
 
 export default {
+    /* eslint-disable */
     data() {
         return {
             inventoryItems: [
@@ -63,7 +65,19 @@ export default {
         }
     },
     mounted() {
-        dragular([document.querySelector("#dragparent")]).on("drag", () => {
+        dragular([document.querySelector("#dragparent")], {
+            moves: function (el, container, handle) {
+                if (handle.id == "dontdrag") {
+                    console.log("Cant drag");
+                } else {
+                    return true;
+                }
+            },
+            accepts: function () {
+                console.log("has been accepted.");
+                return true;
+            },
+        }).on("drag", () => {
             console.log("being dragged");
         });
     }
