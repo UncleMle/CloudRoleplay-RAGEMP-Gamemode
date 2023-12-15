@@ -84,8 +84,6 @@ namespace CloudRP.Character
 
             if(shopData != null && characterData != null)
             {
-                Console.WriteLine(tatLib + tatData);
-
                 List<string> addedTats = JsonConvert.DeserializeObject<List<string>>(tatData);
 
                 foreach (string item in addedTats)
