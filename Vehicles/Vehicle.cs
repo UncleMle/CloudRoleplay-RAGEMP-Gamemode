@@ -48,6 +48,10 @@ namespace CloudRP.Vehicles
         public List<VehicleKey> vehicle_key_holders { get; set; } = new List<VehicleKey>();
         [NotMapped]
         public float dirt_level { get; set; } = new Random().Next(2, 15);
+        [NotMapped]
+        public double vehicle_fuel_purchase { get; set; }
+        [NotMapped]
+        public int vehicle_fuel_purchase_price { get; set; }
     }
     
 

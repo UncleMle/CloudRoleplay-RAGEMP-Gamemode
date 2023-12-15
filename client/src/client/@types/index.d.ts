@@ -395,3 +395,15 @@ interface Interior {
 	interiorTextLabel: TextLabelMp;
 	interiorMarker: MarkerMp;
 }
+
+interface RefuelStation {
+	station_id: number,
+	name: string,
+	position: Vector3,
+	pumps: RefuelPump[]
+}
+
+interface RefuelPump {
+	position: Vector3,
+	owner_id: number
+}
