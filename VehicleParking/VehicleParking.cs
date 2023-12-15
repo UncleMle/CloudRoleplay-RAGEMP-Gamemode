@@ -83,7 +83,7 @@ namespace CloudRP.VehicleParking
             {
                 name = "Paleto Parking",
                 parkingId = 4,
-                spawnVehiclesAt = new Vector3(-1633.7, -945.4, 8.2),
+                spawnVehiclesAt = new Vector3(80.7, 6395.3, 31.2),
                 park = new ParkCol
                 {
                     name = "Paleto",

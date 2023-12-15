@@ -31,9 +31,15 @@ namespace CloudRP.Utils
         public static string reports = "!{yellow}[Reports] " + White;
         public static string afk = "!{orange}[Afk] " + White;
 
-        public static void sendWithNickName(Player player, Player target, string prefix, string suffix)
+        public static void sendWithNickName(Player player, Player target, string prefix, string suffix, bool checkDims = true)
         {
-            if(player.Dimension == target.Dimension)
+            if(!checkDims)
+            {
+                player.TriggerEvent("sendWithNickName", target, prefix, suffix);
+                return;
+            }
+
+            if ((player.Dimension == target.Dimension) && checkDims)
             {
                 player.TriggerEvent("sendWithNickName", target, prefix, suffix);
             }

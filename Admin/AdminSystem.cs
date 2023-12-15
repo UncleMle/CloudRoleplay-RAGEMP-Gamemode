@@ -545,6 +545,7 @@ namespace CloudRP.Admin
 
                     AntiCheatSystem.sleepClient(findPlayer);
                     findPlayer.Position = player.Position;
+                    findPlayer.Dimension = player.Dimension;
 
                     AdminUtils.staffSay(player, "Teleported Player [" + findPlayer.Id + "] to you.");
                     AdminUtils.staffSay(findPlayer, $"Admin {userData.adminName} teleported you.");

@@ -3,12 +3,8 @@ using CloudRP.Database;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
 using GTANetworkAPI;
-using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace CloudRP.GeneralCommands
 {
@@ -59,7 +55,7 @@ namespace CloudRP.GeneralCommands
             if (character == null) return;
 
             string prefix = _meColour + "* ";
-            string suffix = me;
+            string suffix = " "+me;
 
             CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_commands_radius);
         }       
@@ -101,7 +97,6 @@ namespace CloudRP.GeneralCommands
 
             uiHandling.handleObjectUiMutation(player, MutationKeys.PlayerStats, character);
             uiHandling.handleObjectUiMutation(player, MutationKeys.PlayerData, player);
-
         }
 
         [Command("pm", "~y~Use:~w~ /pm [playerNameOrId] [message]", GreedyArg = true, Alias = "privatemessage")]
@@ -127,7 +122,7 @@ namespace CloudRP.GeneralCommands
             }
 
             string pmToPlayerPrefix = ChatUtils.yellow + $"[PM] from ";
-            string pmToPlayerSuffix = ChatUtils.grey + "(( " + ChatUtils.White + message + ChatUtils.grey + " ))";
+            string pmToPlayerSuffix = ChatUtils.grey + " (( " + ChatUtils.White + message + ChatUtils.grey + " ))";
             string editedPmToPlayer = null;
 
             string pmFromPlayer = ChatUtils.grey + $"[PM] You " + "(( " + message + " ))";
@@ -139,7 +134,7 @@ namespace CloudRP.GeneralCommands
 
             if(editedPmToPlayer == null)
             {
-                ChatUtils.sendWithNickName(findPlayer, player, pmToPlayerPrefix, pmToPlayerSuffix);
+                ChatUtils.sendWithNickName(findPlayer, player, pmToPlayerPrefix, pmToPlayerSuffix, false);
             } else
             {
                 NAPI.Chat.SendChatMessageToPlayer(findPlayer, editedPmToPlayer);
