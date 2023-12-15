@@ -1358,5 +1358,12 @@ namespace CloudRP.Admin
                 AdminUtils.staffSay(player, $"Teleported to vector {x} {y} {z}");
             }
         }
+
+        [Command("cobj", "~r~/cobj")]
+        public void spawnObject(Player player, string modelName)
+        {
+            player.TriggerEvent("housing:createObject", modelName);
+            player.SendChatMessage("Created house object " + modelName);
+        }
     }
 }

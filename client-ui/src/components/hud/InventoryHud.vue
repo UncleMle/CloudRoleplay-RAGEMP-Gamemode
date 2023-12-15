@@ -6,13 +6,21 @@
                     <div
                         class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
 
-                        <div class="p-7 grid grid-cols-5 space-x-4">
+                        <div class="p-7">
 
-                            <div id="dragparent">
-                                <div class="border p-4" v-for="element in myArray" :key="element.id">
-                                    <div class="dragthing w-70">
-                                        {{ element.name }}
+                            <div id="dragparent" class="grid grid-cols-6 gap-4 w-full">
+                                <div class="border border-gray-500 rounded-lg" v-for="element in 12" :key="element.id">
+                                    <div v-if="inventoryItems[element - 1]">
+                                        <div class="flex justify-center text-center">
+                                            <img :src="getItemImg(inventoryItems[element - 1].name)" class="scale-75" />
+                                        </div>
+                                        <div class="flex justify-center text-center text-gray-400 font-medium">
+                                            {{ inventoryItems[element - 1].dispName }}
+                                        </div>
                                     </div>
+                                    <div v-else class="w-32 h-32">
+                                    </div>
+
                                 </div>
                             </div>
 
@@ -30,16 +38,28 @@ import dragular from 'dragula';
 export default {
     data() {
         return {
-            myArray: [
+            inventoryItems: [
                 {
-                    name: "test",
-                    id: 2
+                    dispName: "Ak-47",
+                    name: "assaultrifle",
+                    id: 2,
                 },
                 {
-                    name: "test two",
+                    dispName: "Pistol .50",
+                    name: "pistol50",
                     id: 3
                 }
             ]
+        }
+    },
+    methods: {
+        getItemImg(itemName) {
+            try {
+                const imageModule = require(`../../assets/img/inventory/${itemName}.png`);
+                return imageModule;
+            } catch (error) {
+                return require("../../assets/img/cars/sentinel.png");
+            }
         }
     },
     mounted() {

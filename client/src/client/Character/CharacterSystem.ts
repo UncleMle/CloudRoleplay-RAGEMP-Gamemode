@@ -124,8 +124,6 @@ class CharacterSystem {
 			return;
 		}
 
-		mp.console.logInfo(JSON.stringify(data));
-
 		CharacterSystem.setCharacterCustomization(data, false, entity as PlayerMp);
 	}
 
