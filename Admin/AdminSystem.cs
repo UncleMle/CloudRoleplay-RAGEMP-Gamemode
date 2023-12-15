@@ -810,7 +810,11 @@ namespace CloudRP.Admin
             {
                 if(player.IsInVehicle)
                 {
+                    VehicleSystem.closeAllDoors(player.Vehicle);
+                    VehicleSystem.closeAllWindows(player.Vehicle);
                     NAPI.Vehicle.RepairVehicle(player.Vehicle);
+                    VehicleSystem.setVehicleDirtLevel(player.Vehicle, 0);
+
                     AdminUtils.staffSay(player, " Repaired vehicle.");
                 } else
                 {

@@ -96,10 +96,8 @@ namespace CloudRP.VehicleWashing
                     }
 
                     characterData.money_amount -= (ulong)vehicleWashData.washPrice;
+                    VehicleSystem.setVehicleDirtLevel(targetVehicle, 0);
 
-                    targetVehicleData.dirt_level = 0;
-                    
-                    VehicleSystem.saveVehicleData(targetVehicle, targetVehicleData);
                     PlayersData.setPlayerCharacterData(player, characterData, false, true);
 
                     CommandUtils.successSay(player, "You washed your vehicle [" + targetVehicleData.numberplate + "] for the price of $" + vehicleWashData.washPrice);

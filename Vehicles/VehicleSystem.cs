@@ -733,6 +733,17 @@ namespace CloudRP.Vehicles
             }
         }
 
+        public static void setVehicleDirtLevel(Vehicle vehicle, int dirtLevel)
+        {
+            DbVehicle vehicleData = getVehicleData(vehicle);
+
+            if(vehicleData != null)
+            {
+                vehicleData.dirt_level = dirtLevel;
+                saveVehicleData(vehicle, vehicleData);
+            }
+        }
+
         public static string genUniquePlate(int vehicleId)
         {
             string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
