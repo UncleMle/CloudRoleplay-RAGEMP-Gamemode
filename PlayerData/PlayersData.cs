@@ -15,10 +15,10 @@ namespace CloudRP.PlayerData
         public static readonly Vector3 defaultSpawnPosition = new Vector3(-1036.6, -2736.0, 13.8);
         private static readonly string _sharedAccountDataIdentifier = "PlayerAccountData";
         private static readonly string _sharedCharacterDataIdentifier = "PlayerCharacterData";
-        private static readonly string _characterModelData = "PlayerCharacterModelData";
         private static string _characterFoodAndWaterKey = "characterWaterAndHunger";
         private static string _characterClothesKey = "characterClothing";
         private static string _voipStatusKey = "voipIsTalking";
+        private static string _characterModelKey = "characterModel";
 
         public static void setPlayerAccountData(Player player, User userData)
         {
@@ -52,19 +52,22 @@ namespace CloudRP.PlayerData
             {
                 characterId = character.character_id,
                 characterName = character.character_name,
-                characterModel = character.characterModel,
                 voiceChatState = character.voiceChatState,
                 injuredTimer = character.injured_timer,
-                characterClothing = character.characterClothing
+                characterClothing = character.characterClothing,
+                characterModel = character.characterModel
             };
 
+            player.SetSharedData(_sharedCharacterDataIdentifier, data);
             setCharacterHungerAndThirst(player, character.character_hunger, character.character_water);
             setPlayerVoiceStatus(player, character.voiceChatState);
-            setCharacterClothes(player, character.characterClothing);
 
-            player.SetData(_characterModelData, character.characterModel);
-            player.SetSharedData(_sharedCharacterDataIdentifier, data);
-
+            if(resyncModel)
+            {
+                setCharacterClothes(player, character.characterClothing);
+                setCharacterModel(player, character.characterModel);
+            }
+            
             if (updateDb)
             {
                 using (DefaultDbContext dbContext = new DefaultDbContext())
@@ -93,12 +96,10 @@ namespace CloudRP.PlayerData
         {
             player.SetSharedData(_characterClothesKey, clothes);
         }
-
-        public static CharacterModel getCharacterModelData(Player player)
+        
+        public static void setCharacterModel(Player player, CharacterModel model)
         {
-            CharacterModel characterModel = player.GetData<CharacterModel>(_characterModelData);
-
-            return characterModel;
+            player.SetSharedData(_characterModelKey, model);
         }
 
         public static User getPlayerAccountData(Player player)
@@ -117,7 +118,7 @@ namespace CloudRP.PlayerData
         {
             player.SetData<User>(_sharedAccountDataIdentifier, null);
             player.SetData<DbCharacter>(_sharedCharacterDataIdentifier, null);
-            player.SetData<CharacterModel>(_characterModelData, null);
+            player.SetData<CharacterModel>(_characterModelKey, null);
             player.ResetData();
 
             player.ResetOwnSharedData(_sharedAccountDataIdentifier);

@@ -301,7 +301,7 @@ namespace CloudRP.Character
 
         public static void resetToCharacterModel(Player player)
         {
-            CharacterModel characterModelData = PlayersData.getCharacterModelData(player);
+            CharacterModel characterModelData = PlayersData.getPlayerCharacterData(player).characterModel;
             if(characterModelData == null) return;
             DbCharacter character = PlayersData.getPlayerCharacterData(player);
             if( character == null ) return; 

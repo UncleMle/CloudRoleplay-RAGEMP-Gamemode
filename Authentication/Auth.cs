@@ -371,7 +371,7 @@ namespace CloudRP.Authentication
                     character.characterModel.player_tattos = charTats;
 
                     ChatUtils.charSysPrint($"Character {character.character_name} has logged in (#{character.character_id})");
-                    PlayersData.setPlayerCharacterData(player, character);
+                    PlayersData.setPlayerCharacterData(player, character, true);
                     DiscordUtils.creationConnection(player, character, LogCreation.Join);
 
                     welcomeAndSpawnPlayer(player, userData, character);

@@ -20,6 +20,12 @@ namespace CloudRP.VehicleWashing
                 position = new Vector3(-699.8, -933.4, 19.0),
                 vehicleWashName = "Weazel Washes",
                 washPrice = 23
+            },
+            new VehicleWash
+            {
+                position = new Vector3(18.7, -1392.0, 29.3),
+                vehicleWashName = "Strawberry Washes",
+                washPrice = 57
             }
         };
 
@@ -92,7 +98,8 @@ namespace CloudRP.VehicleWashing
                     characterData.money_amount -= (ulong)vehicleWashData.washPrice;
 
                     targetVehicleData.dirt_level = 0;
-                    VehicleSystem.setVehicleData(targetVehicle, targetVehicleData);
+                    
+                    VehicleSystem.saveVehicleData(targetVehicle, targetVehicleData);
                     PlayersData.setPlayerCharacterData(player, characterData, false, true);
 
                     CommandUtils.successSay(player, "You washed your vehicle [" + targetVehicleData.numberplate + "] for the price of $" + vehicleWashData.washPrice);

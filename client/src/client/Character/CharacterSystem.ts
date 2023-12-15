@@ -1,4 +1,4 @@
-import { _sharedAccountDataIdentifier, _sharedCharacterDataIdentifier } from "../Constants/Constants";
+import { _sharedAccountDataIdentifier, _sharedCharacterDataIdentifier, _sharedCharacterModelIdentifier } from "../Constants/Constants";
 import getTargetCharacterData from "../PlayerMethods/getTargetCharacterData";
 import { CharacterData, CharacterModel, UserData } from "@types";
 import getTargetData from "../PlayerMethods/getTargetData";
@@ -15,7 +15,7 @@ class CharacterSystem {
 
 		mp.events.add("character:setModel", CharacterSystem.setCharacterCustomization);
 		mp.events.add("entityStreamIn", CharacterSystem.handleEntityStreamIn);
-		mp.events.addDataHandler(_sharedCharacterDataIdentifier, CharacterSystem.handleDataHandler);
+		mp.events.addDataHandler(_sharedCharacterModelIdentifier, CharacterSystem.handleDataHandler);
 		mp.events.addDataHandler(_sharedAccountDataIdentifier, CharacterSystem.handleAdmins);
 
 		setInterval(() => {
@@ -113,19 +113,20 @@ class CharacterSystem {
 		CharacterSystem.setCharacterCustomization(characterData.characterModel, false, entity as PlayerMp);
 	}
 
-	public static handleDataHandler(entity: EntityMp, data: CharacterData) {
+	public static handleDataHandler(entity: EntityMp, data: CharacterModel) {
 		if (entity.type != "player" || !data) return;
 		let userData: UserData | undefined = getTargetData(entity as PlayerMp);
-		let characterData: CharacterData | undefined = getTargetCharacterData(entity as PlayerMp);
 
-		if (!userData || !characterData) return;
+		if (!userData) return;
 
 		if(userData.showAdminPed) {
 			entity.model = mp.game.joaat(userData.adminPed);
 			return;
 		}
 
-		CharacterSystem.setCharacterCustomization(data.characterModel, false, entity as PlayerMp);
+		mp.console.logInfo(JSON.stringify(data));
+
+		CharacterSystem.setCharacterCustomization(data, false, entity as PlayerMp);
 	}
 
 }
