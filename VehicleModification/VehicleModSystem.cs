@@ -83,7 +83,7 @@ namespace CloudRP.VehicleModification
 
             if (vehicleData != null)
             {
-                if(vehicleData.owner_id != characterData.owner_id)
+                if(vehicleData.owner_id != characterData.character_id)
                 {
                     CommandUtils.errorSay(player, "You must be the owner of the vehicle.");
                     return;

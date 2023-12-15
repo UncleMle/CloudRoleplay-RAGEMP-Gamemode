@@ -79,7 +79,6 @@ class CharacterSystem {
 		entity.setFaceFeature(18, parseInt(charData.chinShape) / 10);
 		entity.setFaceFeature(19, parseInt(charData.neckWidth) / 10);
 
-
 		entity.setHeadBlendData(parseInt(charData.firstHeadShape), parseInt(charData.secondHeadShape), 0, parseInt(charData.firstHeadShape), parseInt(charData.secondHeadShape), 0, Number(charData.headMix) * 0.01, Number(charData.skinMix) * 0.01, 0, false);
 
 		if(charData.player_tattos && charData.player_tattos.length > 0) {

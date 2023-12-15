@@ -10,6 +10,7 @@ using CloudRP.Vehicles;
 using Discord;
 using GTANetworkAPI;
 using Integration;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -354,8 +355,9 @@ namespace CloudRP.Admin
         public void onAduty(Player player)
         {
             User userData = PlayersData.getPlayerAccountData(player);
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
-            if (userData != null && userData.adminLevel > (int)AdminRanks.Admin_SeniorSupport)
+            if (userData != null && characterData != null && userData.adminLevel > (int)AdminRanks.Admin_SeniorSupport)
             {
                 userData.adminDuty = !userData.adminDuty;
                 userData.showAdminPed = userData.adminDuty;
@@ -370,6 +372,7 @@ namespace CloudRP.Admin
                     userData.isFlying = false;
                     player.TriggerEvent("admin:endFly");
                     AdminUtils.sendMessageToAllStaff($"{userData.adminName} is off duty");
+                    PlayersData.setCharacterClothes(player, characterData.characterClothing);
                 }
 
                 PlayersData.setPlayerAccountData(player, userData);

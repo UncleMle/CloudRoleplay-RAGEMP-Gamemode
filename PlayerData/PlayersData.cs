@@ -59,8 +59,8 @@ namespace CloudRP.PlayerData
             };
 
             setCharacterHungerAndThirst(player, character.character_hunger, character.character_water);
-            setCharacterClothes(player, character.characterClothing);
             setPlayerVoiceStatus(player, character.voiceChatState);
+            setCharacterClothes(player, character.characterClothing);
 
             player.SetData(_characterModelData, character.characterModel);
             player.SetSharedData(_sharedCharacterDataIdentifier, data);

@@ -90,13 +90,13 @@ class Tattoos {
 		});
 	}
 
-	public static setDbTats(entity: PlayerMp | PedMp, charModel: CharacterModel) {
+	public static async setDbTats(entity: PlayerMp | PedMp, charModel: CharacterModel) {
 		if(!entity || !charModel) return;
 		entity.clearDecorations();
 
 		charModel.player_tattos.forEach(data => {
 			entity.setDecoration(mp.game.joaat(data.tattoo_lib), mp.game.joaat(data.tattoo_collection));
-		})
+		});
 	}
 
 	public static purchaseTattoos(tattooData: string) {
