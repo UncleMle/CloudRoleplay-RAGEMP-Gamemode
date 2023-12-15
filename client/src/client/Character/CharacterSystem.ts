@@ -94,7 +94,7 @@ class CharacterSystem {
 		if(data.showAdminPed) {
 			entity.model = mp.game.joaat(data.adminPed);
 		} else {
-			CharacterSystem.setCharacterCustomization(characterData?.data.characterModel, false, entity as PlayerMp);
+			CharacterSystem.setCharacterCustomization(characterData?.characterModel, false, entity as PlayerMp);
 		}
 	}
 
@@ -110,7 +110,7 @@ class CharacterSystem {
 			return;
 		}
 
-		CharacterSystem.setCharacterCustomization(characterData.data.characterModel, false, entity as PlayerMp);
+		CharacterSystem.setCharacterCustomization(characterData.characterModel, false, entity as PlayerMp);
 	}
 
 	public static handleDataHandler(entity: EntityMp, data: CharacterData) {

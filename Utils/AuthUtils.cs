@@ -269,7 +269,7 @@ namespace CloudRP.Utils
         public CharacterModel characterModel { get; set; }
         public CharacterClothing characterClothing { get; set; }
         public bool voiceChatState { get; set; }
-        public DbCharacter data {  get; set; }
+        public int injuredTimer { get; set; }
     }
 
     class Register

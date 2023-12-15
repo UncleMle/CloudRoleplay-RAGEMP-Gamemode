@@ -46,7 +46,10 @@ namespace CloudRP.Vehicles
         public VehicleMods vehicle_mods { get; set; }
         [NotMapped]
         public List<VehicleKey> vehicle_key_holders { get; set; } = new List<VehicleKey>();
+        [NotMapped]
+        public float dirt_level { get; set; } = new Random().Next(2, 15);
     }
+    
 
     class VehicleDimensions
     {

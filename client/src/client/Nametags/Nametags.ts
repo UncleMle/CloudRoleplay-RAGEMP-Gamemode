@@ -97,7 +97,7 @@ class NameTags {
 				y -= scale * (0.005 * (NameTags.ScreenRes.y / 1080)) - parseInt('0.010');
 
 				let voiceState: string = (Target.getVariable(VoiceSystem._voiceToggleIdentifier) ? "" : "~g~");
-				let injuredState: string = (targetCharacterData.data.injured_timer > 0 ? "~r~(( INJURED )) ~w~\n" : "");
+				let injuredState: string = (targetCharacterData.injuredTimer > 0 ? "~r~(( INJURED )) ~w~\n" : "");
 				let defaultTagContent: string = injuredState + voiceState + NameTags.getPlayerNick(Target);
 
 				if (targetUserData.adminDuty) {

@@ -27,7 +27,7 @@ class DeathSystem {
             mp.players.forEach(player => {
                 let targetCharData: CharacterData | undefined = getTargetCharacterData(player);
 
-                if(targetCharData && targetCharData.data.injured_timer > 0) {
+                if(targetCharData && targetCharData.injuredTimer > 0) {
                     DeathSystem.playDeathAnim(player);
                 }
             })
@@ -50,7 +50,7 @@ class DeathSystem {
             let characterData: CharacterData | undefined = getUserCharacterData();
             if(!characterData) return;
 
-            characterData.data.injured_timer <= 0 && DeathSystem._saveInterval ? (clearInterval(DeathSystem._saveInterval), DeathSystem._saveInterval = undefined) : DeathSystem.injuredTimer--;
+            characterData.injuredTimer <= 0 && DeathSystem._saveInterval ? (clearInterval(DeathSystem._saveInterval), DeathSystem._saveInterval = undefined) : DeathSystem.injuredTimer--;
         }, 1000);
 
         DeathSystem._injuredInterval = setInterval(() => {
@@ -64,7 +64,7 @@ class DeathSystem {
         let characterData: CharacterData | undefined = getUserCharacterData();
         if(!characterData) return;
 
-        if(characterData.data.injured_timer > 0) {
+        if(characterData.injuredTimer > 0) {
             DeathSystem.disableControls();
             DeathSystem.renderInjuredText();
         }
@@ -74,7 +74,7 @@ class DeathSystem {
         let characterData: CharacterData | undefined = getUserCharacterData();
         if(entity.type != "player" || !characterData) return;
 
-        if(characterData.data.injured_timer > 0) {
+        if(characterData.injuredTimer > 0) {
             DeathSystem.playDeathAnim(entity as PlayerMp);
         }
     }
@@ -82,8 +82,8 @@ class DeathSystem {
     public static handleDataHandler(entity: EntityMp, data: CharacterData) {
         if(entity.type != "player" || !data) return;
 
-        if(data.data.injured_timer > 0) {
-            DeathSystem.injuredTimer = data.data.injured_timer;
+        if(data.injuredTimer > 0) {
+            DeathSystem.injuredTimer = data.injuredTimer;
             DeathSystem.playDeathAnim(entity as PlayerMp);
         }
     }

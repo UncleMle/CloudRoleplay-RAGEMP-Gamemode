@@ -157,6 +157,13 @@ class VehicleCustoms {
         vehicle.setMod(53, Number(modData.plate));
         vehicle.setMod(66, Number(modData.colour_1));
         vehicle.setMod(67, Number(modData.colour_2));
+
+        let vehicleData: VehicleData | undefined = getVehicleData(vehicle);
+
+        if(vehicleData) {
+            mp.gui.chat.push("Dirt level " + vehicleData.dirt_level);
+            vehicle.setDirtLevel(vehicleData.dirt_level);
+        }
     }
 }
 

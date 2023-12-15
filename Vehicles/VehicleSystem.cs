@@ -17,7 +17,7 @@ namespace CloudRP.Vehicles
     {
         public static List<DbVehicle> vehicles;
         public static string _vehicleSharedDataIdentifier = "VehicleData";
-        private static int _timerInterval = 5000;
+        private static int _timerInterval = 30000;
         private static Timer saveVehicleTimer;
         public static readonly string[] bones = {"door_dside_f", "door_pside_f", "door_dside_r", "door_pside_r", "bonnet", "boot"};
         public static readonly string[] names = { "door", "door", "door", "door", "hood", "trunk", "trunk" };

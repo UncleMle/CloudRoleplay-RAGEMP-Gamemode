@@ -53,8 +53,8 @@ export interface CharacterData {
 	characterId: number;
 	characterName: string;
 	characterModel: CharacterModel;
-	data: DbCharacter;
 	voiceChatState: boolean;
+	injuredTimer: number,
 	characterClothing: ClothingData;
 }
 
@@ -220,6 +220,13 @@ export interface VehicleData {
 	vehicle_fuel: number;
 	vehicle_distance: number;
 	vehicle_mods: VehicleMods;
+	dirt_level: number;
+}
+
+export interface VehicleWash {
+	washPrice: number,
+	vehicleWashName: string,
+	position: Vector3
 }
 
 interface ModInfo {
@@ -376,4 +383,15 @@ interface House {
 	houseLabel: TextLabelMp;
 	priceLabel: TextLabelMp;
 	houseMarker: TextLabelMp;
+}
+
+interface Interior {
+	id: number;
+	name: string;
+	house: House;
+	interiorPosition: Vector3;
+	doorExitPosition: Vector3;
+	doorExitCol: Vector3;
+	interiorTextLabel: TextLabelMp;
+	interiorMarker: MarkerMp;
 }

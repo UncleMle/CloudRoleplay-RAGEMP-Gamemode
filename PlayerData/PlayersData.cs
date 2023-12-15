@@ -54,7 +54,7 @@ namespace CloudRP.PlayerData
                 characterName = character.character_name,
                 characterModel = character.characterModel,
                 voiceChatState = character.voiceChatState,
-                data = character,
+                injuredTimer = character.injured_timer,
                 characterClothing = character.characterClothing
             };
 
