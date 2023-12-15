@@ -91,7 +91,7 @@ namespace CloudRP.Character
                     using(DefaultDbContext dbContext = new DefaultDbContext())
                     {
                         Tattoo findTat = dbContext.player_tattoos
-                            .Where(tat => tat.tattoo_lib == tatLib && tat.tattoo_collection == item)
+                            .Where(tat => tat.tattoo_lib == tatLib && tat.tattoo_collection == item && tat.tattoo_owner_id == characterData.character_id)
                             .FirstOrDefault();
 
                         if(findTat == null)
