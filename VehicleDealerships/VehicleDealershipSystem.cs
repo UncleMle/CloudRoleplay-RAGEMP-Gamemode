@@ -73,6 +73,62 @@ namespace CloudRP.VehicleDealerships
                 },
                 viewPosition = new Vector3(-30.0, -1104.8, 26.4),
                 viewRange = 1f
+            },
+            new DealerShip
+            {
+                dealerShipId = 1,
+                dealershipName = "Vapid",
+                position = new Vector3(-202.1, -1158.6, 23.8),
+                spawnPosition = new Vector3(-223.6, -1162.2, 23.0),
+                vehicles = new List<DealerVehicle>{
+                    new DealerVehicle
+                    {
+                        spawnName = "kamacho",
+                        price = 40000
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "sultan3",
+                        price = 1235
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "blista",
+                        price = 8546345
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "panto",
+                        price = 6000
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "hakuchou2",
+                        price = 600000
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "issi2",
+                        price = 4300
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "baller8",
+                        price = 89000
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "baller3",
+                        price = 45000
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "dominator3",
+                        price = 56000
+                    }
+                },
+                viewPosition = new Vector3(-202.1, -1158.6, 23.8),
+                viewRange = 1f
             }
         };
 
@@ -87,7 +143,7 @@ namespace CloudRP.VehicleDealerships
                 viewingCol.SetData(_dealershipIdentifer, dealerShip);
                 MarkersAndLabels.setTextLabel(dealerShip.viewPosition, $"{dealerShip.dealershipName} ~y~Y~w~ to interact", dealerShip.viewRange);
                 MarkersAndLabels.setPlaceMarker(dealerShip.viewPosition);
-                NAPI.Blip.CreateBlip(595, dealerShip.position, 1.0f, 63, dealerShip.dealershipName, 255, 1.0f, true, 0, 0);
+                NAPI.Blip.CreateBlip(595, dealerShip.position, 1.0f, 7, dealerShip.dealershipName, 255, 1.0f, true, 0, 0);
             }
         }
 

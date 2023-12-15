@@ -73,14 +73,8 @@ namespace CloudRP.ChatSystem
             if (user.adminLevel > (int)AdminRanks.Admin_None)
             {
                 string colouredRank = AdminUtils.getColouredAdminRank(user, false);
-                NAPI.Chat.SendChatMessageToPlayer(player, AdminUtils.staffPrefix + $"Welcome back, {colouredRank}" + user.adminName + ".");
+                NAPI.Chat.SendChatMessageToPlayer(player, AdminUtils.staffPrefix + $"Welcome back, {colouredRank}{AdminUtils.staffSuffixColour}" + user.adminName + ".");
             }
-
-            if (characterData.player_dimension != 0)
-            {
-                AdminUtils.staffSay(player, $"You have been spawned into dimension {characterData.player_dimension}.");
-            }
-
         }
     }
 }

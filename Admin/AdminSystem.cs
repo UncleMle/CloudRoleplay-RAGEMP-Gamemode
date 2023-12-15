@@ -22,6 +22,7 @@ namespace CloudRP.Admin
         public static List<Report> activeReports = new List<Report>();
         public static Dictionary<int, Vector3> adminAdutyPositions = new Dictionary<int, Vector3>();
         public static int _maxReports = 2;
+        public static string defaultAdminPed = "ig_abigail";
 
         [ServerEvent(Event.PlayerDisconnected)]
         public void OnPlayerDisconnect(Player player, DisconnectionType type, string reason)
@@ -361,17 +362,18 @@ namespace CloudRP.Admin
             {
                 userData.adminDuty = !userData.adminDuty;
                 userData.showAdminPed = userData.adminDuty;
+                string colourAdminRank = AdminUtils.getColouredAdminRank(userData, false);
 
                 if (userData.adminDuty)
                 {
                     saveAdutyPosition(userData, player.Position);
-                    AdminUtils.sendMessageToAllStaff($"{userData.adminName} is on duty");
+                    AdminUtils.sendMessageToAllStaff($"{colourAdminRank} {AdminUtils.staffSuffixColour}{userData.adminName} is on duty");
                 }
                 else
                 {
                     userData.isFlying = false;
                     player.TriggerEvent("admin:endFly");
-                    AdminUtils.sendMessageToAllStaff($"{userData.adminName} is off duty");
+                    AdminUtils.sendMessageToAllStaff($"{colourAdminRank} {AdminUtils.staffSuffixColour}{userData.adminName} is off duty");
                     PlayersData.setCharacterClothes(player, characterData.characterClothing);
                 }
 
@@ -423,8 +425,7 @@ namespace CloudRP.Admin
 
                 foreach (KeyValuePair<Player, User> entry in onlineAdmins)
                 {
-
-                    NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.red + $"[Admin Chat] " + ChatUtils.White + colouredAdminRank + userData.adminName + ChatUtils.red + " says: " + ChatUtils.White + message);
+                    AdminUtils.staffSay(entry.Key, colouredAdminRank + userData.adminName + ChatUtils.red + " says: " + ChatUtils.White + message);
                 }
             }
             else AdminUtils.sendNoAuth(player);
@@ -916,7 +917,7 @@ namespace CloudRP.Admin
             {
                 NAPI.Player.GivePlayerWeapon(player, weaponName, ammo);
 
-                AdminUtils.staffSay(player, $"You gave yourself a {ChatUtils.yellow}{weaponName}{ChatUtils.White} with {ammo} ammo");
+                AdminUtils.staffSay(player, $"You gave yourself a {ChatUtils.yellow}{weaponName}{ChatUtils.White}{AdminUtils.staffSuffixColour} with {ammo} ammo");
             }
             else AdminUtils.sendNoAuth(player);
 
@@ -1096,6 +1097,12 @@ namespace CloudRP.Admin
                     return;
                 }
 
+                if(player.Equals(findPlayer) && userData.adminLevel >= (int)AdminRanks.Admin_HeadAdmin)
+                {
+                    AdminUtils.staffSay(player, "You cannot assign admin ranks to yourself.");
+                    return;
+                }
+
                 User findPlayerData = PlayersData.getPlayerAccountData(findPlayer);
                 DbCharacter findPlayerCharData = PlayersData.getPlayerCharacterData(findPlayer);
 
@@ -1106,6 +1113,7 @@ namespace CloudRP.Admin
                 }
 
                 findPlayerData.adminLevel = adminRankSet;
+                findPlayerData.adminPed = defaultAdminPed;
                 findPlayerData.showAdminPed = false;
                 findPlayerData.adminDuty = false;
                 findPlayerData.isFlying = false;
@@ -1118,15 +1126,16 @@ namespace CloudRP.Admin
                     if (findAcc == null) return;
 
                     findAcc.admin_status = adminRankSet;
+                    findAcc.admin_ped = defaultAdminPed;
 
                     dbContext.accounts.Update(findAcc);
                     dbContext.SaveChanges();
                 }
+                string setAdminRank = AdminUtils.getColouredAdminRank(findPlayerData);
 
                 PlayersData.setPlayerAccountData(findPlayer, findPlayerData);
-                string setAdminRank = AdminUtils.getColouredAdminRank(findPlayerData); 
 ;               AdminUtils.staffSay(player, $"You set {findPlayerCharData.character_name}'s admin level to {setAdminRank}");
-;               AdminUtils.staffSay(findPlayer, $"Your admin level was set to {setAdminRank} by Admin {userData.adminName}");
+;               AdminUtils.staffSay(findPlayer, $"Your admin level was set to {setAdminRank}{AdminUtils.staffSuffixColour} by Admin {userData.adminName}");
                 AdminUtils.sendMessageToAllStaff($"{userData.adminName} set {findPlayerCharData.character_name}'s admin level to {setAdminRank}");
             
             } else AdminUtils.sendNoAuth(player);

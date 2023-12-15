@@ -13,7 +13,8 @@ namespace CloudRP.Utils
 {
     internal class AdminUtils : Script
     {
-        public static string staffPrefix = "!{red}[Staff System]!{white} ";
+        public static string staffPrefix = "!{red}[Staff]!{#ffa6a6} ";
+        public static string staffSuffixColour = "!{#ffa6a6}";
 
         public static void sendNoAuth(Player player)
         {

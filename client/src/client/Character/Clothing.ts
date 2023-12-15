@@ -82,7 +82,6 @@ class Clothing {
             let clothingData: ClothingData | undefined = getClothingData(entity);
 
             if(!clothingData) return;
-            mp.gui.chat.push(JSON.stringify(clothingData));
             Clothing.setClothingData(clothingData, false, true, entity);
         }
     }
