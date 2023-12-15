@@ -26,7 +26,8 @@ const store = new Vuex.Store({
 			vehicle_dealer_data: {},
 			tattoo_store_data: [],
 			player_current_tats: [],
-			vehicle_performance_data: []
+			vehicle_performance_data: [],
+			vehicle_refuel_data: {}
 		},
 		uiStates: {
 			characterSelection: false,
@@ -35,6 +36,7 @@ const store = new Vuex.Store({
 			guiEnabled: false,
 			serverLoading: false,
 			speedoUi: false,
+			refuelUi: false,
 			vehicleSpeedoData: {}
 		}
 	},

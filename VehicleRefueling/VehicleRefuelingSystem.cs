@@ -1,17 +1,20 @@
-﻿using CloudRP.PlayerData;
+﻿using CloudRP.Character;
+using CloudRP.PlayerData;
 using CloudRP.Utils;
 using CloudRP.Vehicles;
 using CloudRP.World;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace CloudRP.VehicleRefueling
 {
     public class VehicleRefuelingSystem : Script
     {
-        public string _refuelPumpIdenfitier = "refuelingPumpData";
+        public static string _refuelPumpIdenfitier = "refuelingPumpData";
+        public static string _refuelDataIdentifier = "playerRefuelData";
         public static List<RefuelStation> refuelingStations = new List<RefuelStation>
         {
             new RefuelStation
@@ -19,6 +22,7 @@ namespace CloudRP.VehicleRefueling
                 station_id = 0,
                 name = "Mirror Park Gas",
                 position = new Vector3(1181.2, -330.1, 74.5),
+                pricePerLitre = 2,
                 pumps = new List<RefuelPump>
                 {
                     new RefuelPump
@@ -86,25 +90,38 @@ namespace CloudRP.VehicleRefueling
             }
         }
 
-        [RemoteEvent("server:refuelVehicleCycle")]
-        public void beginRefuelOfVehicle(Player player)
+        [RemoteEvent("server:startRefuelEvent")]
+        public void startVehicleRefuel(Player player)
         {
-            Vehicle targetVeh = VehicleSystem.getClosestVehicleToPlayer(player, 2);
-
-            if(targetVeh == null)
+            Vehicle findClosestVehicle = VehicleSystem.getClosestVehicleToPlayer(player, 4);
+            RefuelingData refuelData = player.GetData<RefuelingData>(_refuelDataIdentifier);
+            RefuelStation refuelStationData = player.GetData<RefuelStation>(_refuelPumpIdenfitier);
+            if (refuelData != null || refuelStationData == null) return;
+            
+            if(findClosestVehicle == null)
             {
-                uiHandling.sendPushNotifError(player, "You are not close enough to a vehicle to refuel it.", 5500);
+                uiHandling.sendPushNotifError(player, "No vehicle was found within proximity of you.", 6500);
                 return;
             }
+            
+            DbVehicle closeVehicleData = VehicleSystem.getVehicleData(findClosestVehicle);
+            
+            if(closeVehicleData != null)
+            {
+                RefuelingData playerRefuelData = new RefuelingData
+                {
+                    refuelStationId = refuelStationData.station_id,
+                    vehicleId = closeVehicleData.vehicle_id
+                };
 
-            DbVehicle vehicleData = VehicleSystem.getVehicleData(targetVeh);
-            if (vehicleData == null) return;
 
-            vehicleData.vehicle_fuel_purchase += 0.4;
-            vehicleData.vehicle_fuel_purchase_price += 2;
+                player.SetData(_refuelDataIdentifier, playerRefuelData);
+                player.SetSharedData(_refuelDataIdentifier, playerRefuelData);
 
-            Console.WriteLine("Fuel purchase amount " + vehicleData.vehicle_fuel_purchase + " __ " + vehicleData.vehicle_fuel_purchase_price);
-            VehicleSystem.saveVehicleData(targetVeh, vehicleData);
+                uiHandling.sendNotification(player, "Hold down ~y~Y~w~ to continue pumping fuel", false);
+
+                player.TriggerEvent("refuel:startRefuelInterval");
+            }
         }
 
 

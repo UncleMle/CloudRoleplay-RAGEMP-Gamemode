@@ -1,7 +1,9 @@
 <template>
     <div id="app">
+        {{ uiStates }}
         <ChatBox class="absolute" />
         <InventoryHud v-if="false"/>
+        <RefuelMeter class="absolute" v-if="uiStates.refuelUi" />
         <PushNotification class="bg-red-200" ref="notification" />
         <VehicleSpeedo v-if="uiStates.guiEnabled" />
         <PlayerHud v-if="uiStates.guiEnabled" />
@@ -16,6 +18,7 @@ import InventoryHud from "./components/hud/InventoryHud.vue";
 import PushNotification from "./components/ui/PushNotification.vue";
 import PlayerHud from "./components/hud/PlayerHud.vue";
 import VehicleSpeedo from "./components/hud/VehicleSpeedo.vue";
+import RefuelMeter from "./components/ui/RefuelMeter.vue";
 import { mapGetters } from "vuex";
 
 export default {
@@ -25,7 +28,8 @@ export default {
         PushNotification,
         VehicleSpeedo,
         PlayerHud,
-        InventoryHud
+        InventoryHud,
+        RefuelMeter
     },
     computed: {
         ...mapGetters({

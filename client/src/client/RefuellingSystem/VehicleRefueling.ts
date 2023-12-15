@@ -1,48 +1,70 @@
-import { RefuelStation } from "@/@types";
-import { _control_ids } from "@/Constants/Constants";
-import NotificationSystem from "@/NotificationSystem/NotificationSystem";
+import { RefuelStation } from '@/@types';
+import BrowserSystem from '@/BrowserSystem/BrowserSystem';
+import { _control_ids } from '@/Constants/Constants';
+import validateKeyPress from '@/PlayerMethods/validateKeyPress';
 
 class VehicleRefueling {
-    public static LocalPlayer: PlayerMp;
-    public static _refuelPumpIdenfitier: string = "refuelingPumpData";
-    public static _refuelServerEvent: string = "server:beginRefuelOfVehicle";
-    public static refuelInterval: ReturnType<typeof setInterval> | undefined;
-    public static _refuelInterval_seconds: number = 3;
+	public static LocalPlayer: PlayerMp;
+	public static _refuelPumpIdenfitier: string = 'refuelingPumpData';
+	public static _refuelServerEvent: string = 'server:refuelVehicleCycle';
+	public static _startRefuelEvent: string = 'server:startRefuelEvent';
+	public static refuelInterval: ReturnType<typeof setInterval> | undefined;
+	public static _refuelInterval_seconds: number = 2;
+    public static _refuelDataIdentifier: string = "playerRefuelData";
 
-    constructor() {
-        VehicleRefueling.LocalPlayer = mp.players.local;
+	constructor() {
+		VehicleRefueling.LocalPlayer = mp.players.local;
 
-        mp.keys.bind(_control_ids.Y, false, VehicleRefueling.handleKeyPress_Y);
-    }
+		mp.events.add('refuel:closeRefuelInterval', VehicleRefueling.endRefuelling);
+		mp.events.add('refuel:startRefuelInterval', VehicleRefueling.startRefuelInterval);
 
-    private static handleKeyPress_Y() {
-        let refuelStationData: RefuelStation | undefined = VehicleRefueling.LocalPlayer.getVariable(this._refuelPumpIdenfitier);
+		mp.keys.bind(_control_ids.Y, true, VehicleRefueling.handleKeyPress_Y);
+	}
 
-        if(refuelStationData) {
-            this.endRefuelling(false);
+	public static handleKeyPress_Y() {
+        if(!validateKeyPress(true)) return;
 
-            NotificationSystem.createNotification("~w~Hold down the ~y~Y~w~ key to continue refuelling your vehicle.", false);
+		let refuelStationData: RefuelStation | undefined = VehicleRefueling.LocalPlayer.getVariable(VehicleRefueling._refuelPumpIdenfitier);
 
-            this.refuelInterval = setInterval(() => {
-                if(mp.keys.isDown(_control_ids.Y)) {
-                    mp.events.callRemote(VehicleRefueling._refuelServerEvent);
-                } else {
-                    this.endRefuelling();
-                }
-            }, this._refuelInterval_seconds * 1000);
-        }
-    }
+		if (refuelStationData) {
+			VehicleRefueling.endRefuelling();
+            mp.events.callRemote(VehicleRefueling._startRefuelEvent);
+		}
+	}
 
-    private static endRefuelling(sendNotif: boolean = true) {
-        if(this.refuelInterval) {
-            if(sendNotif) {
-                NotificationSystem.createNotification("~r~You have stopped refuelling your vehicle.");
+    public static startRefuelInterval() {
+        VehicleRefueling.refuelInterval = setInterval(() => {
+            if(!VehicleRefueling.LocalPlayer.getVariable(VehicleRefueling._refuelDataIdentifier)) {
+                mp.events.callRemote(VehicleRefueling._refuelServerEvent, true);
+                VehicleRefueling.endRefuelling();
+                return;
             }
 
-            clearInterval(this.refuelInterval);
-            this.refuelInterval = undefined;
-        }
+            if (mp.keys.isDown(_control_ids.Y)) {
+                VehicleRefueling.toggleFuelUi(true);
+                mp.events.callRemote(VehicleRefueling._refuelServerEvent, false);
+            } else {
+                VehicleRefueling.endRefuelling();
+                mp.events.callRemote(VehicleRefueling._refuelServerEvent, true);
+            }
+        }, VehicleRefueling._refuelInterval_seconds * 1000);
     }
+
+	public static endRefuelling() {
+		if (VehicleRefueling.refuelInterval) {
+
+			VehicleRefueling.toggleFuelUi(false);
+			clearInterval(VehicleRefueling.refuelInterval);
+			VehicleRefueling.refuelInterval = undefined;
+		}
+	}
+
+	public static toggleFuelUi(toggle: boolean) {
+		BrowserSystem._browserInstance.execute(`appSys.commit('setUiState', {
+            _stateKey: "refuelUi",
+            status: ${toggle}
+        })`);
+	}
 }
 
 export default VehicleRefueling;

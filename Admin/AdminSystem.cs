@@ -1258,7 +1258,58 @@ namespace CloudRP.Admin
                     AdminUtils.staffSay(player, $"You refilled vehicle with id {findVehicleData.vehicle_id}.");
                 }
             }
+        }
+        
+        [Command("emptyfuel", "~r~/emptyfuel [currentVehicle|id|plate]")]
+        public void adminEmptyVehicleFuel(Player player, string vehicleIdOrPlate = null)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
 
+            if(userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            {
+                Vehicle findVehicle = null;
+
+                if (vehicleIdOrPlate == null && player.IsInVehicle)
+                {
+                    findVehicle = player.Vehicle;
+                } else if(!player.IsInVehicle &&  vehicleIdOrPlate == null)
+                {
+                    CommandUtils.errorSay(player, "Select the correct parameters (/emptyfuel [currentVehicle|id|plate]) or enter a vehicle to use this command.");
+                    return; 
+                }
+
+                if (findVehicle == null)
+                {
+                    findVehicle = VehicleSystem.getVehicleByPlate(vehicleIdOrPlate);
+
+                    if (findVehicle == null)
+                    {
+                        int? parseId = CommandUtils.tryParse(vehicleIdOrPlate);
+
+                        if (parseId == null)
+                        {
+                            CommandUtils.errorSay(player, "Vehicle was not found.");
+                            return;
+                        }
+
+                        findVehicle = VehicleSystem.getVehicleById((int)parseId, null, false);
+                    }
+                }
+
+                if(findVehicle != null)
+                {
+                    DbVehicle findVehicleData = VehicleSystem.getVehicleData(findVehicle);
+
+                    if (findVehicleData == null) return;
+
+                    findVehicleData.vehicle_fuel = 0;
+
+                    VehicleSystem.saveVehicleData(findVehicle, findVehicleData, true);
+
+                    AdminUtils.staffSay(player, $"You emptied vehicle with id {findVehicleData.vehicle_id}'s fuel tank.");
+                }
+
+            } else AdminUtils.sendNoAuth(player);
         }
 
         [Command("banchar", "~r~/banchar [characterName]", Alias = "bancharacter", GreedyArg = true)]
