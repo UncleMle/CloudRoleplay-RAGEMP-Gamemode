@@ -392,15 +392,15 @@ namespace CloudRP.Vehicles
         public static void sayInfoAboutVehicle(Player player, User userdata, DbVehicle vehicle)
         {
             AdminUtils.staffSay(player, ChatUtils.yellow + "-----------------------------------------------------------");
-            AdminUtils.staffSay(player, "Vehicle id: " + ChatUtils.red + vehicle.vehicle_id + ChatUtils.White + " VehName: " + ChatUtils.red + vehicle.vehicle_name);
-            AdminUtils.staffSay(player, "Owner id: " + ChatUtils.red + vehicle.owner_id + ChatUtils.White + " Numberplate: " + ChatUtils.red + vehicle.numberplate);
-            AdminUtils.staffSay(player, "Vehicle Dimension: " + ChatUtils.red + vehicle.vehicle_dimension + ChatUtils.White + " Lock Status: " + ChatUtils.red + vehicle.vehicle_locked);
-            AdminUtils.staffSay(player, "Mileage: " + ChatUtils.red + (vehicle.vehicle_distance / 1609).ToString("N0") + " Miles" + ChatUtils.White + " Fuel Level: " + ChatUtils.red + vehicle.vehicle_fuel.ToString("N1")+"%");
+            AdminUtils.staffSay(player, "Vehicle id: " + ChatUtils.red + vehicle.vehicle_id + AdminUtils.staffSuffixColour + " VehName: " + ChatUtils.red + vehicle.vehicle_name);
+            AdminUtils.staffSay(player, "Owner id: " + ChatUtils.red + vehicle.owner_id + AdminUtils.staffSuffixColour + " Numberplate: " + ChatUtils.red + vehicle.numberplate);
+            AdminUtils.staffSay(player, "Vehicle Dimension: " + ChatUtils.red + vehicle.vehicle_dimension + AdminUtils.staffSuffixColour + " Lock Status: " + ChatUtils.red + vehicle.vehicle_locked);
+            AdminUtils.staffSay(player, "Mileage: " + ChatUtils.red + (vehicle.vehicle_distance / 1609).ToString("N0") + " Miles" + AdminUtils.staffSuffixColour + " Fuel Level: " + ChatUtils.red + vehicle.vehicle_fuel.ToString("N1")+"%");
 
             DbCharacter vehicleOwnerData = getOwnerOfVehicleById(vehicle.owner_id);
-            if (userdata.adminDuty && vehicleOwnerData != null)
+            if ((userdata.adminDuty || userdata.adminLevel > (int)AdminRanks.Admin_HeadAdmin) && vehicleOwnerData != null)
             {
-                AdminUtils.staffSay(player, "Owner: " + ChatUtils.red + vehicleOwnerData.character_name+ ChatUtils.White + " Owner Last Login: " + ChatUtils.red + vehicleOwnerData.last_login);
+                AdminUtils.staffSay(player, "Owner: " + ChatUtils.red + vehicleOwnerData.character_name+ AdminUtils.staffSuffixColour + " Owner Last Login: " + ChatUtils.red + vehicleOwnerData.last_login);
             }
 
             AdminUtils.staffSay(player, ChatUtils.yellow + "-----------------------------------------------------------");
@@ -422,6 +422,7 @@ namespace CloudRP.Vehicles
                 vehicleData.position_y = VehicleDimensions.morsPosition.Y;
                 vehicleData.position_z = VehicleDimensions.morsPosition.Z;
                 vehicleData.vehicle_insurance_id = VehicleDimensions._morsId;
+                vehicleData.vehicle_fuel = 100;
 
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
