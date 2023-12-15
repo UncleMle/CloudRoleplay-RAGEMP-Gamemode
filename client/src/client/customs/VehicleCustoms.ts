@@ -161,7 +161,6 @@ class VehicleCustoms {
         let vehicleData: VehicleData | undefined = getVehicleData(vehicle);
 
         if(vehicleData) {
-            mp.gui.chat.push("Dirt level " + vehicleData.dirt_level);
             vehicle.setDirtLevel(vehicleData.dirt_level);
         }
     }

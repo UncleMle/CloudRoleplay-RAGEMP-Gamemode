@@ -17,7 +17,7 @@ namespace CloudRP.Vehicles
     {
         public static List<DbVehicle> vehicles;
         public static string _vehicleSharedDataIdentifier = "VehicleData";
-        private static int _timerInterval = 30000;
+        private static int _timerInterval_seconds = 10;
         private static Timer saveVehicleTimer;
         public static readonly string[] bones = {"door_dside_f", "door_pside_f", "door_dside_r", "door_pside_r", "bonnet", "boot"};
         public static readonly string[] names = { "door", "door", "door", "door", "hood", "trunk", "trunk" };
@@ -53,8 +53,8 @@ namespace CloudRP.Vehicles
             NAPI.Task.Run(() =>
             {
                 saveVehicleTimer = new Timer();
-                saveVehicleTimer.Interval = _timerInterval;
-                saveVehicleTimer.Elapsed += saveVehiclePositions;
+                saveVehicleTimer.Interval = _timerInterval_seconds * 1000;
+                saveVehicleTimer.Elapsed += saveAllVehicleDataToDb;
 
                 saveVehicleTimer.AutoReset = true;
                 saveVehicleTimer.Enabled = true;
@@ -163,7 +163,7 @@ namespace CloudRP.Vehicles
             return findVehicle;
         }
 
-        public static void saveVehiclePositions(object source, ElapsedEventArgs e)
+        public static void saveAllVehicleDataToDb(object source, ElapsedEventArgs e)
         {
             List<Vehicle> allVehicles = NAPI.Pools.GetAllVehicles();
 
@@ -177,7 +177,12 @@ namespace CloudRP.Vehicles
                         Console.WriteLine("Possible vehicle spawn cheat. Vehicle with no data found!");
                     } else
                     {
-                        saveVehicleData(vehicle);
+                        DbVehicle vehicleData = getVehicleData(vehicle);
+
+                        if(vehicleData != null)
+                        {
+                            saveVehicleData(vehicle, vehicleData, true);
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -187,29 +192,6 @@ namespace CloudRP.Vehicles
             }
         }
 
-        public static void saveVehicleData(Vehicle vehicle)
-        {
-            DbVehicle vehicleData = vehicle.GetData<DbVehicle>(_vehicleSharedDataIdentifier);
-            if (vehicleData == null) return;
-
-            using (DefaultDbContext dbContext = new DefaultDbContext())
-            {
-                DbVehicle findVehicle = dbContext.vehicles.Find(vehicleData.vehicle_id);
-                if (findVehicle == null) return;
-
-                findVehicle.UpdatedDate = DateTime.Now;
-                findVehicle.position_x = vehicle.Position.X;
-                findVehicle.position_y = vehicle.Position.Y;
-                findVehicle.position_z = vehicle.Position.Z;
-                findVehicle.vehicle_distance = vehicleData.vehicle_distance;
-                findVehicle.vehicle_locked = vehicleData.vehicle_locked;
-
-                findVehicle.rotation = vehicle.Rotation.Z;
-
-                dbContext.SaveChanges();
-            }
-
-        }
 
         public static void saveVehicleData(Vehicle vehicle, DbVehicle vehicleData, bool updateDb = false)
         {
@@ -219,6 +201,10 @@ namespace CloudRP.Vehicles
             {
                 using(DefaultDbContext dbContext = new DefaultDbContext())
                 {
+                    vehicleData.position_x = vehicle.Position.X;
+                    vehicleData.position_y = vehicle.Position.Y;
+                    vehicleData.position_z = vehicle.Position.Z;
+
                     dbContext.vehicles.Update(vehicleData);
                     dbContext.SaveChanges();
                 }
@@ -230,7 +216,12 @@ namespace CloudRP.Vehicles
         {
             vehicle.Position = player.Position;
 
-            saveVehicleData(vehicle);
+            DbVehicle vehicleData = getVehicleData(vehicle);
+
+            if(vehicleData != null)
+            {
+                saveVehicleData(vehicle , vehicleData, true);
+            }
         }
 
         public static Vehicle buildVehicle(string vehName, Vector3 position, float rotation, int ownerId, int colourOne, int colourTwo)
@@ -935,12 +926,6 @@ namespace CloudRP.Vehicles
             if(completedRemoval)
             {
                 saveVehicleData(vehicle, vehicleData);
-
-                using(DefaultDbContext dbContext = new DefaultDbContext())
-                {
-                    dbContext.vehicles.Update(vehicleData);
-                    dbContext.SaveChanges();
-                }
             }
         }
 
