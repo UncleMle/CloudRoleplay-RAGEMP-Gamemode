@@ -59,6 +59,46 @@ namespace CloudRP.VehicleParking
                 parkPosRange = 2.5f,
                 retrievePosRange = 1f
             },
+            new ParkingLot
+            {
+                name = "Del Perro Parking",
+                parkingId = 3,
+                spawnVehiclesAt = new Vector3(-1633.7, -945.4, 8.2),
+                park = new ParkCol
+                {
+                    name = "Del Perro",
+                    owner_id = 3,
+                    position = new Vector3(-1644.6, -948.3, 8.0)
+                },
+                retrieve = new RetrieveCol
+                {
+                    name = "Del Perro",
+                    owner_id = 3,
+                    position = new Vector3(-1653.4, -948.6, 7.7)
+                },
+                parkPosRange = 2.5f,
+                retrievePosRange = 1f
+            },
+            new ParkingLot
+            {
+                name = "Paleto Parking",
+                parkingId = 4,
+                spawnVehiclesAt = new Vector3(-1633.7, -945.4, 8.2),
+                park = new ParkCol
+                {
+                    name = "Paleto",
+                    owner_id = 4,
+                    position = new Vector3(74.3, 6388.5, 31.2)
+                },
+                retrieve = new RetrieveCol
+                {
+                    name = "Paleto",
+                    owner_id = 4,
+                    position = new Vector3(81.5, 6390.4, 31.4)
+                },
+                parkPosRange = 2.5f,
+                retrievePosRange = 1f
+            },
         };
 
         [ServerEvent(Event.ResourceStart)]
@@ -75,7 +115,7 @@ namespace CloudRP.VehicleParking
                 retrieveCol.SetData(_retrievalIdentifier, pLot.retrieve);
 
                 NAPI.TextLabel.CreateTextLabel($"{pLot.name} ~y~Y~w~ to interact", pLot.retrieve.position, 10f, 1.0f, 4, new Color(255, 255, 255, 255), true);
-                NAPI.Blip.CreateBlip(831, pLot.park.position, 1.0f, 63, pLot.name, 255, 1.0f, true, 0, 0);
+                NAPI.Blip.CreateBlip(831, pLot.park.position, 1.0f, 39, pLot.name, 255, 1.0f, true, 0, 0);
                 NAPI.Marker.CreateMarker(27, new Vector3(pLot.retrieve.position.X, pLot.retrieve.position.Y, pLot.retrieve.position.Z - 0.9), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
                 NAPI.Marker.CreateMarker(36, new Vector3(pLot.park.position.X, pLot.park.position.Y, pLot.park.position.Z), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
             }
