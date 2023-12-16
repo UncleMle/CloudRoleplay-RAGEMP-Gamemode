@@ -149,7 +149,7 @@ namespace CloudRP.VehicleRefueling
                         return;
                     }
                     
-                    foundVehData.vehicle_fuel += 0.43;
+                    foundVehData.vehicle_fuel += 1.89;
                     characterData.money_amount -= fuelPrice;
 
                     foundVehData.vehicle_fuel_purchase_price += fuelPrice;
