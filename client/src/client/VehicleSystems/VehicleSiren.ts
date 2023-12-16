@@ -2,12 +2,10 @@ import validateKeyPress from "@/PlayerMethods/validateKeyPress";
 import { VehicleData } from "../@types";
 import { _SHARED_VEHICLE_DATA, _control_ids } from "../Constants/Constants";
 import getVehicleData from "../PlayerMethods/getVehicleData";
-import NotificationSystem from "@/NotificationSystem/NotificationSystem";
 
 class VehicleSiren {
 	public static LocalPlayer: PlayerMp;
 	public static readonly eventName: string = "server:toggleSiren";
-	public static readonly lightsEventName: string = "server:toggleEmergencyLights";
 	public static _emergencyClass: number = 18;
 
 	constructor() {
@@ -18,7 +16,6 @@ class VehicleSiren {
 		mp.events.addDataHandler(_SHARED_VEHICLE_DATA, VehicleSiren.handleDataHandler);
 
 		mp.keys.bind(_control_ids.QBIND, false, VehicleSiren.toggleVehicleSiren);
-		mp.keys.bind(_control_ids.EBIND, false, VehicleSiren.toggleEmergencyLights);
 	}
 
 	public static handleRender() {
@@ -37,9 +34,6 @@ class VehicleSiren {
 		let vehicleData: VehicleData | undefined = getVehicleData(entity);
 		if (!vehicleData) return;
 
-		mp.gui.chat.push(vehicleData.emergency_lights + " siren sound.");
-
-		entity.setSiren(vehicleData.emergency_lights);
 		entity.setSirenSound(vehicleData.vehicle_siren);
 	}
 
@@ -47,17 +41,6 @@ class VehicleSiren {
 		if (entity.type != "vehicle" || !data) return;
 
 		entity.setSirenSound(data.vehicle_siren);
-	}
-
-	public static toggleEmergencyLights() {
-		if(!validateKeyPress() || !VehicleSiren.LocalPlayer.vehicle) return;
-
-		if(VehicleSiren.LocalPlayer.vehicle.getClass() == VehicleSiren._emergencyClass) {
-			let localPlayerVehicleData: VehicleData | undefined = getVehicleData(VehicleSiren.LocalPlayer.vehicle);
-			if (!localPlayerVehicleData) return;
-
-			mp.events.callRemote(VehicleSiren.lightsEventName);
-		}
 	}
 
 	public static toggleVehicleSiren() {

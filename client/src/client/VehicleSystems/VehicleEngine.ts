@@ -1,25 +1,46 @@
 import NotificationSystem from "@/NotificationSystem/NotificationSystem";
 import { VehicleData } from "../@types";
-import { _control_ids } from "../Constants/Constants";
+import { _SHARED_VEHICLE_DATA, _control_ids } from "../Constants/Constants";
 import getVehicleData from "../PlayerMethods/getVehicleData";
 import { Browsers } from "@/enums";
 
 class VehicleEngine {
 	public static LocalPlayer: PlayerMp;
+	public static engineResyncInterval_seconds: number = 5;
 	public static engineToggleEvent: string = "server:toggleEngine";
 
 	constructor() {
 		VehicleEngine.LocalPlayer = mp.players.local;
 
-		mp.events.add("render", VehicleEngine.engineSync);
 		mp.events.add("entityStreamIn", VehicleEngine.handleStreamIn);
+		mp.events.addDataHandler(_SHARED_VEHICLE_DATA, VehicleEngine.handleDataHandler);
 		mp.keys.bind(_control_ids.Y, false, VehicleEngine.toggleEngine);
+
+		setInterval(() => {
+			VehicleEngine.engineSync();
+		}, VehicleEngine.engineResyncInterval_seconds * 1000);
 	}
 
-	public static handleStreamIn(entity: VehicleMp) {
+	public static async handleStreamIn(entity: VehicleMp) {
 		let vehicleData: VehicleData | undefined = getVehicleData(entity);
 		if(entity.type == "vehicle" && vehicleData && vehicleData.engine_status && vehicleData.vehicle_fuel > 0) {
-			entity.setEngineOn(true, true, false);
+
+			for (let i = 0; entity.handle === 0 && i < 15; ++i) {
+				await mp.game.waitAsync(100);
+			}
+
+			entity.setEngineOn(true, true, true);
+		}
+	}
+
+	public static handleDataHandler(entity: VehicleMp, vehicleData: VehicleData) {
+		if(entity.type != "vehicle" || !vehicleData) return;
+
+		if(vehicleData.engine_status) {
+			entity.setEngineOn(true, true, true);
+		} else {
+			entity.setEngineOn(false, true, true);
+			entity.setUndriveable(true);
 		}
 	}
 
@@ -43,9 +64,9 @@ class VehicleEngine {
 			if (!vehicleData || vehicleData.engine_status == null) return;
 
 			if (vehicleData.engine_status && vehicleData.vehicle_fuel > 0) {
-				vehicle.setEngineOn(true, true, false);
+				vehicle.setEngineOn(true, true, true);
 			} else if (!vehicleData.engine_status) {
-				vehicle.setEngineOn(true, true, false);
+				vehicle.setEngineOn(false, true, true);
 				vehicle.setUndriveable(true);
 			}
 		})

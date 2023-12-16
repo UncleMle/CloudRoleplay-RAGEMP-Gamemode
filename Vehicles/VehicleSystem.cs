@@ -828,10 +828,6 @@ namespace CloudRP.Vehicles
 
             vehicleData.vehicle_siren = !vehicleData.vehicle_siren;
 
-            string sendText = "Toggled vehicle siren " + (vehicleData.vehicle_siren ? "off" : "on");
-
-            uiHandling.sendNotification(player, sendText);
-
             saveVehicleData(player.Vehicle, vehicleData);
         }
 
@@ -941,24 +937,6 @@ namespace CloudRP.Vehicles
             if(completedRemoval)
             {
                 saveVehicleData(vehicle, vehicleData);
-            }
-        }
-
-        [RemoteEvent("server:toggleEmergencyLights")]
-        public void toggleEmergencyLights(Player player)
-        {
-            if(!player.IsInVehicle) return;
-
-            Vehicle targetVeh = player.Vehicle;
-            DbVehicle targetVehData = getVehicleData(targetVeh);
-
-            if(targetVehData != null)
-            {
-                targetVehData.emergency_lights = !targetVehData.emergency_lights;
-
-                string text = $"You toggled {(targetVehData.emergency_lights ? "on" : "off")} your emergency lights.";
-                uiHandling.sendNotification(player, text);
-                saveVehicleData(targetVeh, targetVehData);
             }
         }
     }
