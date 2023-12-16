@@ -77,6 +77,8 @@ namespace CloudRP.Vehicles
             }
 
             veh.Locked = true;
+            veh.Rotation = new Vector3(0, 0, rotation);
+
             vehicle.vehicle_locked = true;
             vehicle.vehicle_key_holders = getVehicleKeyHoldersFromDb(vehicle);
 
@@ -204,6 +206,7 @@ namespace CloudRP.Vehicles
                     vehicleData.position_x = vehicle.Position.X;
                     vehicleData.position_y = vehicle.Position.Y;
                     vehicleData.position_z = vehicle.Position.Z;
+                    vehicleData.rotation = vehicle.Rotation.Z;
 
                     dbContext.vehicles.Update(vehicleData);
                     dbContext.SaveChanges();

@@ -10,6 +10,7 @@ declare global {
 		__attMgrData: any;
 		_nickName: string;
 		guiState: boolean;
+		_fuelNozzleObject: ObjectMp | null
 	}
 
 	interface PedMp {

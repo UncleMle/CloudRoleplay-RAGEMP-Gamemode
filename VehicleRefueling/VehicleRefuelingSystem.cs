@@ -1,13 +1,9 @@
 ﻿using CloudRP.Character;
 using CloudRP.PlayerData;
-using CloudRP.Utils;
 using CloudRP.Vehicles;
 using CloudRP.World;
 using GTANetworkAPI;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace CloudRP.VehicleRefueling
 {
@@ -108,22 +104,118 @@ namespace CloudRP.VehicleRefueling
             
             if(closeVehicleData != null)
             {
+                if(closeVehicleData.vehicle_locked)
+                {
+                    uiHandling.sendPushNotifError(player, "Ensure the vehicle is unlocked.", 6600);
+                    return;
+                }
+
+                if(closeVehicleData.engine_status)
+                {
+                    uiHandling.sendPushNotifError(player, "Ensure the vehicle's engine is off.", 6600);
+                    return;
+                }
+
+                closeVehicleData.vehicle_fuel_purchase_price = -1;
+                VehicleSystem.saveVehicleData(findClosestVehicle, closeVehicleData);
+
                 RefuelingData playerRefuelData = new RefuelingData
                 {
                     refuelStationId = refuelStationData.station_id,
                     vehicleId = closeVehicleData.vehicle_id
                 };
 
-
                 player.SetData(_refuelDataIdentifier, playerRefuelData);
                 player.SetSharedData(_refuelDataIdentifier, playerRefuelData);
 
-                uiHandling.sendNotification(player, "Hold down ~y~Y~w~ to continue pumping fuel", false);
+                uiHandling.sendNotification(player, "~w~Hold down ~y~Y~w~ to continue pumping fuel", false);
 
                 player.TriggerEvent("refuel:startRefuelInterval");
             }
         }
 
+        [RemoteEvent("server:refuelVehicleCycle")]
+        public void serverRefuelEventCycle(Player player)
+        {
+            RefuelingData refuelData = player.GetData<RefuelingData>(_refuelDataIdentifier);
+            RefuelStation stationData = player.GetData<RefuelStation>(_refuelPumpIdenfitier);
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            if (characterData == null) return;
+
+            if (refuelData != null && stationData != null)
+            {
+                List<Vehicle> closeVehicles = VehicleSystem.getVehicleInRange(player, 8);
+                KeyValuePair<Vehicle, DbVehicle> foundVeh = new KeyValuePair<Vehicle, DbVehicle>();
+
+                closeVehicles.ForEach(veh =>
+                {
+                    DbVehicle vehData = VehicleSystem.getVehicleData(veh);
+
+                    if (vehData != null && vehData.vehicle_id == refuelData.vehicleId)
+                    {
+                        foundVeh = new KeyValuePair<Vehicle, DbVehicle>(veh, vehData);
+                    }
+                });
+
+                if(foundVeh.Key != null && foundVeh.Value != null)
+                {
+                    int fuelPrice = stationData.pricePerLitre;
+                    Vehicle findVeh = foundVeh.Key;
+                    DbVehicle foundVehData = foundVeh.Value;
+
+                    if(foundVehData.vehicle_locked || foundVehData.engine_status)
+                    {
+                        endPlayerRefuellingCycle(player, "Ensure the vehicle is unlocked and the engine is off.");
+                        return;
+                    }
+
+                    if ((characterData.money_amount - (ulong)fuelPrice) < 0)
+                    {
+                        endPlayerRefuellingCycle(player, "You don't have enough money to continue to cover this payment.");
+                        return;
+                    }
+
+                    if(foundVehData.vehicle_fuel >= 100)
+                    {
+                        endPlayerRefuellingCycle(player, "~g~This vehicle's fuel tank is full!");
+                        return;
+                    }
+                    
+                    foundVehData.vehicle_fuel += 0.43;
+                    characterData.money_amount -= (ulong)fuelPrice;
+
+                    foundVehData.vehicle_fuel_purchase_price += fuelPrice;
+
+                    VehicleSystem.saveVehicleData(findVeh, foundVehData, true);
+                    PlayersData.setPlayerCharacterData(player, characterData, false, true);
+
+                    uiHandling.handleObjectUiMutation(player, MutationKeys.VehicleFuelData, new UiFuelData
+                    {
+                        fuel_literage = foundVehData.vehicle_fuel,
+                        price = foundVehData.vehicle_fuel_purchase_price
+                    });
+
+                    uiHandling.sendNotification(player, $"~w~You spent ~g~${fuelPrice}~w~ on fuel.", false);
+                } else
+                {
+                    endPlayerRefuellingCycle(player);
+                }
+
+            } else
+            {
+                endPlayerRefuellingCycle(player);
+            }
+        }
+
+        [RemoteEvent("server:stopRefuellingVehicle")]
+        public static void endPlayerRefuellingCycle(Player player, string notif = "You have moved too far from the vehicle or fuel pump.")
+        {
+            player.ResetData(_refuelDataIdentifier);
+            player.ResetSharedData(_refuelDataIdentifier);
+            player.TriggerEvent("refuel:closeRefuelInterval");
+
+            uiHandling.sendNotification(player, "~r~"+notif, false);
+        }
 
     }
 }
