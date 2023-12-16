@@ -14,7 +14,7 @@ namespace CloudRP.World
     class WeatherSystem : Script
     {
         private static Timer syncWeatherTimer;
-        private static int timerInterval_seconds = 600;
+        private static int timerInterval_seconds = 900;
         private static int interval_delay_seconds = 5;
         public static string weatherKeyIdentifier = "weatherApiKey";
         public static string weatherSyncTo = "london";

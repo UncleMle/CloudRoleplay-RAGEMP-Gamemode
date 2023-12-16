@@ -21,6 +21,7 @@ namespace CloudRP.World
         [ServerEvent(Event.ResourceStart)]
         public void onResourceStart()
         {
+            syncWorldTime();
             NAPI.Task.Run(() =>
             {
                 syncTime = new Timer();

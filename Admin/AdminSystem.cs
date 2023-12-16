@@ -421,11 +421,11 @@ namespace CloudRP.Admin
             {
                 Dictionary<Player, User> onlineAdmins = AdminUtils.gatherStaff();
 
-                string colouredAdminRank = AdminUtils.getColouredAdminRank(userData);
+                string colouredAdminRank = AdminUtils.getColouredAdminRank(userData, false);
 
                 foreach (KeyValuePair<Player, User> entry in onlineAdmins)
                 {
-                    AdminUtils.staffSay(entry.Key, colouredAdminRank + userData.adminName + ChatUtils.red + " says: " + ChatUtils.White + message);
+                    entry.Key.SendChatMessage(colouredAdminRank + userData.adminName + ChatUtils.red + " says: " + ChatUtils.White + message);
                 }
             }
             else AdminUtils.sendNoAuth(player);
@@ -1102,7 +1102,7 @@ namespace CloudRP.Admin
                     return;
                 }
 
-                if(player.Equals(findPlayer) && userData.adminLevel >= (int)AdminRanks.Admin_HeadAdmin)
+                if(player.Equals(findPlayer) && userData.adminLevel <= (int)AdminRanks.Admin_HeadAdmin)
                 {
                     AdminUtils.staffSay(player, "You cannot assign admin ranks to yourself.");
                     return;

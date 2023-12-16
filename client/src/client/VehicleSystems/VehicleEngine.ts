@@ -60,7 +60,10 @@ class VehicleEngine {
 
 	public static engineSync() {
 		mp.vehicles.forEachInStreamRange((vehicle: VehicleMp) => {
+			if(VehicleEngine.LocalPlayer.vehicle && VehicleEngine.LocalPlayer.vehicle == vehicle) return;
+
 			let vehicleData: VehicleData | undefined = getVehicleData(vehicle);
+
 			if (!vehicleData || vehicleData.engine_status == null) return;
 
 			if (vehicleData.engine_status && vehicleData.vehicle_fuel > 0) {
