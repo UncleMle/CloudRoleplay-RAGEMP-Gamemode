@@ -43,6 +43,8 @@ namespace CloudRP.Vehicles
         [NotMapped]
         public bool vehicle_siren { get; set; }
         [NotMapped]
+        public bool emergency_lights { get; set; }
+        [NotMapped]
         public VehicleMods vehicle_mods { get; set; }
         [NotMapped]
         public List<VehicleKey> vehicle_key_holders { get; set; } = new List<VehicleKey>();

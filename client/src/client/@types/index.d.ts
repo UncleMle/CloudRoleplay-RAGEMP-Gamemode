@@ -222,6 +222,7 @@ export interface VehicleData {
 	vehicle_distance: number;
 	vehicle_mods: VehicleMods;
 	dirt_level: number;
+	emergency_lights: boolean;
 }
 
 export interface VehicleWash {

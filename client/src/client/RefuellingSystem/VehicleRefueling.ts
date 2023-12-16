@@ -32,7 +32,7 @@ class VehicleRefueling {
 		let refuelStationData: RefuelStation | undefined = VehicleRefueling.LocalPlayer.getVariable(VehicleRefueling._refuelPumpIdenfitier);
 
 		if (refuelStationData) {
-			VehicleRefueling.endRefuelling();
+			VehicleRefueling.endRefuelling(true);
             mp.events.callRemote(VehicleRefueling._startRefuelEvent);
 		}
 	}
@@ -48,12 +48,16 @@ class VehicleRefueling {
         }, VehicleRefueling._refuelInterval_seconds * 1000);
     }
 
-	public static endRefuelling() {
+	public static endRefuelling(callRemote: boolean = false) {
 		if (VehicleRefueling.refuelInterval) {
 			VehicleRefueling.toggleFuelUi(false);
 			clearInterval(VehicleRefueling.refuelInterval);
 			VehicleRefueling.refuelInterval = undefined;
-		}
+
+            if(callRemote) {
+                mp.events.callRemote(VehicleRefueling._stopRefuelEvent, "");
+            }
+        }
 	}
 
     public static async handleEntityStreamIn(entity: PlayerMp) {
@@ -89,12 +93,11 @@ class VehicleRefueling {
 	}
 
     public static async playRefuelAnimation(entity: PlayerMp) {
-        mp.game.streaming.requestAnimDict('timetable@gardener@filling_can');
-
         for (let i = 0; entity.handle === 0 && i < 15; ++i) {
             await mp.game.waitAsync(100);
         }
 
+        mp.game.streaming.requestAnimDict('timetable@gardener@filling_can');
         entity.taskPlayAnim('timetable@gardener@filling_can', 'gar_ig_5_filling_can', 8.0, 1.0, -1, 1, 1.0, false, false, false);
     }
 

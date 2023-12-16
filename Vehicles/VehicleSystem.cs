@@ -944,6 +944,22 @@ namespace CloudRP.Vehicles
             }
         }
 
+        [RemoteEvent("server:toggleEmergencyLights")]
+        public void toggleEmergencyLights(Player player)
+        {
+            if(!player.IsInVehicle) return;
 
+            Vehicle targetVeh = player.Vehicle;
+            DbVehicle targetVehData = getVehicleData(targetVeh);
+
+            if(targetVehData != null)
+            {
+                targetVehData.emergency_lights = !targetVehData.emergency_lights;
+
+                string text = $"You toggled {(targetVehData.emergency_lights ? "on" : "off")} your emergency lights.";
+                uiHandling.sendNotification(player, text);
+                saveVehicleData(targetVeh, targetVehData);
+            }
+        }
     }
 }

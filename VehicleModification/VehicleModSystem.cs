@@ -32,7 +32,7 @@ namespace CloudRP.VehicleModification
             foreach (CustomArea col in customsAreas)
             {
                 ColShape colshape = NAPI.ColShape.CreateSphereColShape(col.position, col.size, 0);
-                NAPI.Blip.CreateBlip(544, col.position, 1.0f, 63, col.name, 255, 1.0f, true, 0, 0);
+                NAPI.Blip.CreateBlip(544, col.position, 1.0f, 4, col.name, 255, 1.0f, true, 0, 0);
                 setColData(colshape, col);
             }
         }
