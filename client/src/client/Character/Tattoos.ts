@@ -50,8 +50,6 @@ class Tattoos {
 				if(data.name == tattooShopData?.overlayDlc) {
 					Tattoos.currentTattooLibView = tattooShopData?.overlayDlc;
 
-					mp.console.logInfo(Tattoos.currentTattooLibView);
-
 					BrowserSystem._browserInstance.execute(`appSys.commit('playerMutationSetter', {
 						_mutationKey: "tattoo_store_data",
 						data: ${JSON.stringify(data.data)}

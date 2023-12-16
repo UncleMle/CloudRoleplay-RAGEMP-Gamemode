@@ -70,7 +70,6 @@ class VehicleCustoms {
         ];
 
         if(BrowserSystem._browserInstance) {
-            mp.console.logInfo(JSON.stringify(indexData));
             BrowserSystem._browserInstance.execute(`appSys.commit("playerMutationSetter", {
                 _mutationKey: "vehicle_mod_indexes",
                 data: ${JSON.stringify(indexData)}

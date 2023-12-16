@@ -127,8 +127,6 @@ class VehicleDealerShips {
 			_mutationKey: "vehicle_performance_data",
 			data: ${JSON.stringify(vehiclePerformanceData)}
 		})`);
-
-		mp.console.logInfo(JSON.stringify(vehiclePerformanceData));
 	}
 
 	public static async addDealerShipVehicle(vehName: string, rotation: string | number, colour: string | number) {

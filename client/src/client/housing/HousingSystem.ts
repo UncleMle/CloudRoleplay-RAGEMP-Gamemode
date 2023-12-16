@@ -74,8 +74,6 @@ class HousingSystem {
 			alpha: 255,
 			dimension: 0
 		});
-
-        mp.console.logInfo(JSON.stringify(obj));
 	}
 }
 
