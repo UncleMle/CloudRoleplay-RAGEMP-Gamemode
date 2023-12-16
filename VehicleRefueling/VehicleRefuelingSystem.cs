@@ -3,6 +3,7 @@ using CloudRP.PlayerData;
 using CloudRP.Vehicles;
 using CloudRP.World;
 using GTANetworkAPI;
+using System;
 using System.Collections.Generic;
 
 namespace CloudRP.VehicleRefueling
@@ -136,7 +137,7 @@ namespace CloudRP.VehicleRefueling
                         return;
                     }
 
-                    if ((characterData.money_amount - (ulong)fuelPrice) < 0)
+                    if ((characterData.money_amount - fuelPrice) < 0)
                     {
                         endPlayerRefuellingCycle(player, "You don't have enough money to continue to cover this payment.");
                         return;
@@ -149,9 +150,11 @@ namespace CloudRP.VehicleRefueling
                     }
                     
                     foundVehData.vehicle_fuel += 0.43;
-                    characterData.money_amount -= (ulong)fuelPrice;
+                    characterData.money_amount -= fuelPrice;
 
                     foundVehData.vehicle_fuel_purchase_price += fuelPrice;
+
+                    Console.WriteLine(characterData.money_amount + " money amount");
 
                     VehicleSystem.saveVehicleData(findVeh, foundVehData, true);
                     PlayersData.setPlayerCharacterData(player, characterData, false, true);

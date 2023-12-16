@@ -51,7 +51,7 @@ namespace CloudRP.Vehicles
         [NotMapped]
         public double vehicle_fuel_purchase { get; set; } = -1;
         [NotMapped]
-        public int vehicle_fuel_purchase_price { get; set; }
+        public long vehicle_fuel_purchase_price { get; set; }
     }
     
 

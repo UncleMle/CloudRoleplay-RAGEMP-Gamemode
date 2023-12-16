@@ -22,7 +22,7 @@ namespace CloudRP.VehicleRefueling
 
     public class UiFuelData
     {
-        public int price { get; set; }
+        public long price { get; set; }
         public double fuel_literage { get; set; }
     }
 

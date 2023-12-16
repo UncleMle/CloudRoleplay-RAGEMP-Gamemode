@@ -209,7 +209,7 @@ namespace CloudRP.VehicleDealerships
             
             if (playerDealerData != null && dealerActive && charData != null)
             {
-                ulong currentMoney = charData.money_amount;
+                long currentMoney = charData.money_amount;
                 DealerVehicle findDealerVeh = playerDealerData.vehicles.Where(veh => veh.spawnName == vehName).FirstOrDefault();
                 if(findDealerVeh == null)
                 {
@@ -217,8 +217,8 @@ namespace CloudRP.VehicleDealerships
                     return;
                 }
 
-                ulong moneyDifference = currentMoney - (ulong)findDealerVeh.price;
-                ulong priceDifference = (ulong)findDealerVeh.price - moneyDifference;
+                long moneyDifference = currentMoney - findDealerVeh.price;
+                long priceDifference = findDealerVeh.price - moneyDifference;
 
                 if (moneyDifference < 0)
                 {
@@ -232,7 +232,7 @@ namespace CloudRP.VehicleDealerships
                     return;
                 }
 
-                charData.money_amount -= (ulong)findDealerVeh.price;
+                charData.money_amount -= findDealerVeh.price;
 
                 Vehicle buildVeh = VehicleSystem.buildVehicle(vehName, playerDealerData.spawnPosition, 0, charData.character_id, spawnColour, spawnColour);
                 PlayersData.setPlayerCharacterData(player, charData, true, true);
