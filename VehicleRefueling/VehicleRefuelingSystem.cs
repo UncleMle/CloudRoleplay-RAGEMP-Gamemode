@@ -143,9 +143,11 @@ namespace CloudRP.VehicleRefueling
                         return;
                     }
 
-                    if(foundVehData.vehicle_fuel >= 100)
+                    if((foundVehData.vehicle_fuel + 1.89) >= 100)
                     {
                         endPlayerRefuellingCycle(player, "~g~This vehicle's fuel tank is full!");
+                        foundVehData.vehicle_fuel = 100;
+                        VehicleSystem.saveVehicleData(findVeh, foundVehData, true);
                         return;
                     }
                     
