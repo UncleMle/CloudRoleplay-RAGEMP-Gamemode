@@ -98,6 +98,9 @@ class VehicleRefueling {
         }
 
         mp.game.streaming.requestAnimDict('timetable@gardener@filling_can');
+
+        await mp.game.waitAsync(50);
+
         entity.taskPlayAnim('timetable@gardener@filling_can', 'gar_ig_5_filling_can', 8.0, 1.0, -1, 1, 1.0, false, false, false);
     }
 

@@ -1,8 +1,9 @@
-import { ClothingData, ClothingStore } from "@/@types";
+import { ClothingData, ClothingStore, UserData } from "@/@types";
 import BrowserSystem from "@/BrowserSystem/BrowserSystem";
 import { _control_ids, _sharedAccountDataIdentifier, _sharedClothingDataIdentifier } from "@/Constants/Constants";
 import DeathSystem from "@/DeathSystem/DeathSystem";
 import getClothingData from "@/PlayerMethods/getClothingData";
+import getTargetData from "@/PlayerMethods/getTargetData";
 import { Browsers } from "@/enums";
 
 class Clothing {
@@ -65,24 +66,32 @@ class Clothing {
         }
     }
 
-    public static handleDataHandlerAccount(entity: PlayerMp) {
-        if(entity.type == "player" && getClothingData(entity)) {
+    public static handleDataHandlerAccount(entity: PlayerMp, user: UserData) {
+        if(entity.type == "player" && getClothingData(entity) && !user?.adminDuty) {
             Clothing.setClothingData(getClothingData(entity) as ClothingData, false, true, entity);
         }
     }
 
     public static handleDataHandler(entity: PlayerMp, clothingData: ClothingData) {
         if(entity.type == "player" && clothingData) {
-            Clothing.setClothingData(clothingData, false, true, entity);
+            let userData: UserData | undefined = getTargetData(entity);
+
+            if(userData && !userData.adminDuty) {
+                Clothing.setClothingData(clothingData, false, true, entity);
+            }
         }
     }
 
     public static handleStreamIn(entity: PlayerMp) {
         if(entity.type == "player" || entity.type == "ped") {
             let clothingData: ClothingData | undefined = getClothingData(entity);
+            let userData: UserData | undefined = getTargetData(entity);
 
-            if(!clothingData) return;
-            Clothing.setClothingData(clothingData, false, true, entity);
+            if(!clothingData || !userData) return;
+
+            if(!userData.adminDuty) {
+                Clothing.setClothingData(clothingData, false, true, entity);
+            }
         }
     }
 
