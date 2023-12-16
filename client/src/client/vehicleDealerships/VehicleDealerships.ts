@@ -35,7 +35,7 @@ class VehicleDealerShips {
 	public static handleRender() {
 		if (VehicleDealerShips.LocalPlayer.browserRouter == Browsers.Dealership) {
 			DeathSystem.disableControls();
-            mp.gui.cursor.show(true, true);
+			mp.gui.cursor.show(true, true);
 		}
 	}
 
@@ -61,7 +61,7 @@ class VehicleDealerShips {
 				mp.game.invoke(CLEAR_FOCUS);
 			}
 
-            mp.gui.cursor.show(false, false);
+			mp.gui.cursor.show(false, false);
 			GuiSystem.toggleHudComplete(true);
 		}
 	}
@@ -80,11 +80,11 @@ class VehicleDealerShips {
 			VehicleDealerShips.dealerCam.pointAtCoord(227.5, -987.2, -99);
 			mp.game.cam.renderScriptCams(true, false, 0, true, false);
 
-            if(dealerData.vehicles.length > 0) {
-                VehicleDealerShips.addDealerShipVehicle(dealerData.vehicles[0].spawnName, 180, VehicleDealerShips.defaultSpawnColour);
-            }
+			if (dealerData.vehicles.length > 0) {
+				VehicleDealerShips.addDealerShipVehicle(dealerData.vehicles[0].spawnName, 180, VehicleDealerShips.defaultSpawnColour);
+			}
 
-            dealerData.vehDispNames = [];
+			dealerData.vehDispNames = [];
 
 			dealerData.vehicles.forEach((data) => {
 				let dispName = VehicleSpeedo.getVehDispName(mp.game.joaat(data.spawnName));
@@ -102,23 +102,23 @@ class VehicleDealerShips {
 		}
 	}
 
-    public static setDealerVehRot(rotation: number) {
-        if(VehicleDealerShips.dealerSelectedVehicle) {
-            VehicleDealerShips.dealerSelectedVehicle.setHeading(Number(rotation));
-        }
-    }
+	public static setDealerVehRot(rotation: number) {
+		if (VehicleDealerShips.dealerSelectedVehicle) {
+			VehicleDealerShips.dealerSelectedVehicle.setHeading(Number(rotation));
+		}
+	}
 
-    public static setDealerVehColour(colour: string | number) {
-        if(VehicleDealerShips.dealerSelectedVehicle) {
-            VehicleDealerShips.dealerSelectedVehicle.setColours(Number(colour), Number(colour));
-        }
-    }
+	public static setDealerVehColour(colour: string | number) {
+		if (VehicleDealerShips.dealerSelectedVehicle) {
+			VehicleDealerShips.dealerSelectedVehicle.setColours(Number(colour), Number(colour));
+		}
+	}
 
 	public static insertPerformanceToBrowser(vehSpawnName: string) {
 		let vehiclePerformanceData: any;
 
-		vehicleData.forEach(data => {
-			if(data.model == vehSpawnName) {
+		vehicleData.forEach((data) => {
+			if (data.model == vehSpawnName) {
 				vehiclePerformanceData = data;
 			}
 		});
@@ -130,13 +130,13 @@ class VehicleDealerShips {
 	}
 
 	public static async addDealerShipVehicle(vehName: string, rotation: string | number, colour: string | number) {
-        if(!vehName) return;
+		if (!vehName) return;
 
 		let spawnHash: number = mp.game.joaat(vehName);
 
 		VehicleDealerShips.insertPerformanceToBrowser(vehName);
 
-        if(VehicleDealerShips.dealerSelectedVehicle && VehicleDealerShips.dealerSelectedVehicle.model == spawnHash) return;
+		if (VehicleDealerShips.dealerSelectedVehicle && VehicleDealerShips.dealerSelectedVehicle.model == spawnHash) return;
 
 		if (VehicleDealerShips.dealerSelectedVehicle) {
 			VehicleDealerShips.dealerSelectedVehicle.destroy();
@@ -150,20 +150,22 @@ class VehicleDealerShips {
 			dimension: VehicleDealerShips.LocalPlayer.remoteId + 1
 		});
 
-        await mp.game.waitAsync(100);
+		for (let i = 0; VehicleDealerShips.dealerSelectedVehicle.handle === 0 && i < 15; ++i) {
+			await mp.game.waitAsync(100);
+		}
 
-        VehicleDealerShips.dealerSelectedVehicle.setDirtLevel(0);
-        VehicleDealerShips.dealerSelectedVehicle.setHeading(Number(rotation));
-        VehicleDealerShips.dealerSelectedVehicle.setColours(Number(colour), Number(colour));
+		VehicleDealerShips.dealerSelectedVehicle.setDirtLevel(0);
+		VehicleDealerShips.dealerSelectedVehicle.setHeading(Number(rotation));
+		VehicleDealerShips.dealerSelectedVehicle.setColours(Number(colour), Number(colour));
 	}
 
-    public static purchaseDealerVehicle(vehName: string, spawnColour: string | number) {
-        if(!vehName) return;
+	public static purchaseDealerVehicle(vehName: string, spawnColour: string | number) {
+		if (!vehName) return;
 
-        let dispName: string = VehicleSpeedo.getVehDispName(mp.game.joaat(vehName));
+		let dispName: string = VehicleSpeedo.getVehDispName(mp.game.joaat(vehName));
 
-        mp.events.callRemote(VehicleDealerShips._dealerPurchaseEvent, vehName, Number(spawnColour), dispName == "NULL" ? "Vehicle" : dispName);
-    }
+		mp.events.callRemote(VehicleDealerShips._dealerPurchaseEvent, vehName, Number(spawnColour), dispName == 'NULL' ? 'Vehicle' : dispName);
+	}
 }
 
 export default VehicleDealerShips;
