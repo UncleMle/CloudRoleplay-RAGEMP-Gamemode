@@ -28,12 +28,16 @@ class VehicleSiren {
 		});
 	}
 
-	public static handleEntityStreamIn(entity: EntityMp) {
+	public static handleEntityStreamIn(entity: VehicleMp) {
 		if (entity.type != "vehicle") return;
-		let vehicleData: VehicleData | undefined = getVehicleData(entity as VehicleMp);
+		let vehicleData: VehicleData | undefined = getVehicleData(entity);
 		if (!vehicleData) return;
 
-		(entity as VehicleMp).setSirenSound(vehicleData.vehicle_siren);
+		if(vehicleData.vehicle_siren) {
+			entity.setSiren(true);
+		}
+
+		entity.setSirenSound(vehicleData.vehicle_siren);
 	}
 
 	public static handleDataHandler(entity: EntityMp, data: VehicleData) {

@@ -40,7 +40,7 @@ namespace CloudRP.VehicleParking
 
             foreach (Vehicle vehicle in onlineVehs)
             {
-                if ((vehicle.Position.X >= pos.X - 2 && vehicle.Position.X <= pos.X + 2) && (vehicle.Position.Y >= pos.Y - 4 && vehicle.Position.Y <= vehicle.Position.Y + 4))
+                if ((vehicle.Position.X >= pos.X - 2 && vehicle.Position.X <= pos.X + 2) && (vehicle.Position.Y >= pos.Y - 2 && vehicle.Position.Y <= pos.Y + 2))
                 {
                     isInVector = true;
                 }
