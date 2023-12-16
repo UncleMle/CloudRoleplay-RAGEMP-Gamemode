@@ -218,7 +218,7 @@ namespace CloudRP.VehicleDealerships
                 }
 
                 long moneyDifference = currentMoney - findDealerVeh.price;
-                long priceDifference = findDealerVeh.price - moneyDifference;
+                long priceDifference = findDealerVeh.price - charData.money_amount;
 
                 if (moneyDifference < 0)
                 {

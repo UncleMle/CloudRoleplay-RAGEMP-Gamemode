@@ -1,6 +1,5 @@
 <template>
     <div id="app">
-        {{ uiStates }}
         <ChatBox class="absolute" />
         <InventoryHud v-if="false"/>
         <RefuelMeter class="absolute" v-if="uiStates.refuelUi" />

@@ -154,8 +154,6 @@ namespace CloudRP.VehicleRefueling
 
                     foundVehData.vehicle_fuel_purchase_price += fuelPrice;
 
-                    Console.WriteLine(characterData.money_amount + " money amount");
-
                     VehicleSystem.saveVehicleData(findVeh, foundVehData, true);
                     PlayersData.setPlayerCharacterData(player, characterData, false, true);
 
