@@ -79,17 +79,24 @@ class DeathSystem {
         }
     }
 
-    public static handleDataHandler(entity: EntityMp, data: CharacterData) {
+    public static handleDataHandler(entity: PlayerMp, data: CharacterData) {
         if(entity.type != "player" || !data) return;
 
         if(data.injuredTimer > 0) {
             DeathSystem.injuredTimer = data.injuredTimer;
-            DeathSystem.playDeathAnim(entity as PlayerMp);
+            DeathSystem.playDeathAnim(entity);
         }
     }
 
-    public static playDeathAnim(player: PlayerMp) {
+    public static async playDeathAnim(player: PlayerMp) {
+		for (let i = 0; player.handle === 0 && i < 15; ++i) {
+			await mp.game.waitAsync(100);
+		}
+
         mp.game.streaming.requestAnimDict(DeathSystem.injuredAnim);
+
+        await mp.game.waitAsync(50);
+
         player.taskPlayAnim(DeathSystem.injuredAnim, DeathSystem._lib_injuredAnim, 8.0, 1.0, -1, 1, 1.0, false, false, false);
     }
 

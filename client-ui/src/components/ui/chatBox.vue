@@ -77,14 +77,14 @@ export default {
             }
 
             if (e.keyCode == this.KEYBIND_UPARR && this.inputFieldShowing) {
-                this.chatIteration > this.playerMessages.length - 1 ? this.chatIteration = 0 : 0;
+                this.chatIteration && this.playerMessages.length > this.playerMessages.length - 1 ? this.chatIteration = 0 : 0;
 
                 this.userText = this.playerMessages.slice().reverse()[this.chatIteration++];
 
             }
 
             if (e.keyCode == this.KEYBIND_DOWNARR && this.inputFieldShowing) {
-                this.chatIteration < this.playerMessages.length - 1 ? this.chatIteration = 0 : 0;
+                this.chatIteration && this.playerMessages.length < this.playerMessages.length - 1 ? this.chatIteration = 0 : 0;
 
                 this.userText = this.playerMessages.slice().reverse()[this.chatIteration--];
             }

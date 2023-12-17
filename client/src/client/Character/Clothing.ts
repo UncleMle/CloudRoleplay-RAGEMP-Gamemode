@@ -68,7 +68,7 @@ class Clothing {
 
     public static handleDataHandlerAccount(entity: PlayerMp, user: UserData) {
         if(entity.type == "player" && getClothingData(entity) && !user?.adminDuty) {
-            Clothing.setClothingData(getClothingData(entity) as ClothingData, false, true, entity);
+            Clothing.setClothingData(getClothingData(entity), false, true, entity);
         }
     }
 

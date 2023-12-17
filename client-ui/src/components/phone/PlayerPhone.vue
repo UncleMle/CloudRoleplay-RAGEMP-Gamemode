@@ -79,7 +79,7 @@ export default {
             appBaseStyle: "rounded-t-[1.7vw] " + this.phoneOpen ? 'rounded-b-[1.7vw]' : '',
             currentApp: "",
             topPhoneStyle: "bottom-16",
-            phoneOpen: true,
+            phoneOpen: false,
             spaceOrTabPressed: false,
             textShadow: "text-shadow: rgba(0, 0, 0, 0.563) 1px 0 10px;",
             availableApps: [
