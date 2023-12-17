@@ -1,5 +1,6 @@
 ﻿using CloudRP.Character;
 using CloudRP.PlayerData;
+using CloudRP.VehicleParking;
 using CloudRP.Vehicles;
 using CloudRP.World;
 using GTANetworkAPI;
@@ -55,7 +56,7 @@ namespace CloudRP.VehicleRefueling
         }
 
         [ServerEvent(Event.PlayerDisconnected)]
-        public void removeRefuellingPlayer(Player player)
+        public void OnPlayerDisconnect(Player player, DisconnectionType type, string reason)
         {
             removeRefuellingPlayerFromVehicle(player);
         }
@@ -66,7 +67,8 @@ namespace CloudRP.VehicleRefueling
             Vehicle findClosestVehicle = VehicleSystem.getClosestVehicleToPlayer(player, 4);
             RefuelingData refuelData = player.GetData<RefuelingData>(_refuelDataIdentifier);
             RefuelStation refuelStationData = player.GetData<RefuelStation>(_refuelPumpIdenfitier);
-            if (refuelData != null || refuelStationData == null) return;
+            DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+            if (refuelData != null || refuelStationData == null || charData == null) return;
             
             if(findClosestVehicle == null)
             {
@@ -79,7 +81,7 @@ namespace CloudRP.VehicleRefueling
             if(closeVehicleData != null)
             {
 
-                if(closeVehicleData.player_refuelling != null)
+                if(closeVehicleData.player_refuelling_char_id != -1)
                 {
                     uiHandling.sendPushNotifError(player, "There is already a player refuelling this vehicle.", 6600);
                     return;
@@ -97,7 +99,7 @@ namespace CloudRP.VehicleRefueling
                     return;
                 }
 
-                closeVehicleData.player_refuelling = player;
+                closeVehicleData.player_refuelling_char_id = charData.character_id;
                 closeVehicleData.vehicle_fuel_purchase_price = -1;
                 VehicleSystem.saveVehicleData(findClosestVehicle, closeVehicleData);
 
@@ -204,16 +206,20 @@ namespace CloudRP.VehicleRefueling
 
         public static void removeRefuellingPlayerFromVehicle(Player player)
         {
-            List<Vehicle> onlineVehicles = NAPI.Pools.GetAllVehicles();
-
-            foreach (Vehicle vehicle in onlineVehicles)
+            DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+            if(charData != null)
             {
-                DbVehicle vehicleData = VehicleSystem.getVehicleData(vehicle);
+                List<Vehicle> onlineVehicles = NAPI.Pools.GetAllVehicles();
 
-                if(vehicleData.player_refuelling.Equals(player))
+                foreach (Vehicle vehicle in onlineVehicles)
                 {
-                    vehicleData.player_refuelling = null;
-                    VehicleSystem.saveVehicleData(vehicle, vehicleData);
+                    DbVehicle vehicleData = VehicleSystem.getVehicleData(vehicle);
+
+                    if (vehicleData.player_refuelling_char_id == charData.character_id)
+                    {
+                        vehicleData.player_refuelling_char_id = -1;
+                        VehicleSystem.saveVehicleData(vehicle, vehicleData);
+                    }
                 }
             }
         }

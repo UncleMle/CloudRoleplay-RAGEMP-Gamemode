@@ -29,9 +29,9 @@ namespace CloudRP.GeneralCommands
         [Command("afk", "~y~Use: ~w~/afk [answer]")]
         public static void afkCommand(Player player, string afkAns)
         {
-            if(PlayersData.getPlayerCharacterData(player) == null) return;
+            if (PlayersData.getPlayerCharacterData(player) == null) return;
             AfkData afkData = player.GetData<AfkData>(Events._afkKeyIdentifier);
-            if(afkData == null)
+            if (afkData == null)
             {
                 CommandUtils.errorSay(player, "You are not considered to be afk.");
                 return;
@@ -55,11 +55,11 @@ namespace CloudRP.GeneralCommands
             if (character == null) return;
 
             string prefix = _meColour + "* ";
-            string suffix = " "+me;
+            string suffix = " " + me;
 
             CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_commands_radius);
-        }       
-        
+        }
+
         [Command("shout", "~y~Use:~w~ /shout [message]", Alias = "s", GreedyArg = true)]
         public void onShoutCommand(Player player, string message)
         {
@@ -132,7 +132,7 @@ namespace CloudRP.GeneralCommands
                 editedPmToPlayer = ChatUtils.red + $"[ADMIN PM] from {userData.adminName} [{player.Id}] " + ChatUtils.grey + "(( " + ChatUtils.White + message + ChatUtils.grey + " ))";
             }
 
-            if(editedPmToPlayer == null)
+            if (editedPmToPlayer == null)
             {
                 ChatUtils.sendWithNickName(findPlayer, player, pmToPlayerPrefix, pmToPlayerSuffix, false);
             } else
@@ -154,7 +154,7 @@ namespace CloudRP.GeneralCommands
             {
                 setPlayersNick(player, target, nickname);
             }
-            
+
         }
 
         public static void setPlayersNick(Player player, Player targetEnt, string nick)
@@ -172,7 +172,7 @@ namespace CloudRP.GeneralCommands
 
             Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
 
-            if(findPlayer == null)
+            if (findPlayer == null)
             {
                 CommandUtils.errorSay(player, "Player wasn't found. (Are you within distance?)");
                 return;
@@ -188,13 +188,13 @@ namespace CloudRP.GeneralCommands
 
             setPlayersNick(player, findPlayer, null);
 
-            using(DefaultDbContext dbContext = new DefaultDbContext())
+            using (DefaultDbContext dbContext = new DefaultDbContext())
             {
                 Nickname findNick = dbContext.nicknames
                     .Where(nick => nick.owner_id == characterData.character_id && nick.target_character_id == findPlayerData.character_id)
                     .FirstOrDefault();
 
-                if(findNick == null)
+                if (findNick == null)
                 {
                     CommandUtils.errorSay(player, "You do not have a nickname set for this player!");
                     return;
@@ -226,13 +226,13 @@ namespace CloudRP.GeneralCommands
 
             DbCharacter findCharData = PlayersData.getPlayerCharacterData(findPlayer);
 
-            if(Vector3.Distance(player.Position, findPlayer.Position) > 5)
+            if (Vector3.Distance(player.Position, findPlayer.Position) > 5)
             {
                 CommandUtils.errorSay(player, "Player couldn't be found. (Are you within distance?)");
                 return;
             }
 
-            if(!AuthUtils.validateNick(nickname))
+            if (!AuthUtils.validateNick(nickname))
             {
                 CommandUtils.errorSay(player, "You cannot use certain special characters within player nicknames.");
                 return;
@@ -272,6 +272,13 @@ namespace CloudRP.GeneralCommands
                 dbContext.SaveChanges();
             }
         }
+
+        [Command("dc", "~y~Use:~w~ /dc")]
+        public static void disconnectCommand(Player player)
+        {
+            player.KickSilent();
+        }
+
 
         public static string findNickNameForPlayer(Player player, Player target)
         {

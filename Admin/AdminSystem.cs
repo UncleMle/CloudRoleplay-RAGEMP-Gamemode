@@ -1427,8 +1427,8 @@ namespace CloudRP.Admin
                 charData.money_amount += amount;
                 PlayersData.setPlayerCharacterData(player, charData, false, true);
 
-                AdminUtils.staffSay(player, $"You gave {charData.character_name} ${amount.ToString("C")} their total money level is at {charData.money_amount}");
-                AdminUtils.staffSay(findPlayer, $"You have been given {amount.ToString("C")} from Admin {userData.adminName}");
+                AdminUtils.staffSay(player, $"You gave {charData.character_name} {ChatUtils.moneyGreen}${amount.ToString("C")}{ChatUtils.White} their total money level is at {ChatUtils.moneyGreen}${charData.money_amount.ToString("C")}");
+                AdminUtils.staffSay(findPlayer, $"You have been given {ChatUtils.moneyGreen}{amount.ToString("C")}{ChatUtils.White} from Admin {userData.adminName}");
             }
             else AdminUtils.sendNoAuth(player);
         }
@@ -1457,8 +1457,8 @@ namespace CloudRP.Admin
                 charData.money_amount -= amount;
                 PlayersData.setPlayerCharacterData(player, charData, false, true);
 
-                AdminUtils.staffSay(player, $"You gave {charData.character_name} ${amount.ToString("C")} their total money level is at {charData.money_amount}");
-                AdminUtils.staffSay(findPlayer, $"You have been given {amount.ToString("C")} from Admin {userData.adminName}");
+                AdminUtils.staffSay(player, $"You removed {ChatUtils.moneyGreen}${amount.ToString("C")}{ChatUtils.White} from {charData.character_name} their total money level is at {ChatUtils.moneyGreen}${charData.money_amount.ToString("C")}");
+                AdminUtils.staffSay(findPlayer, $"You had {ChatUtils.moneyGreen}${amount.ToString("C")}{ChatUtils.White} removed from you by Admin {userData.adminName}");
             }
             else AdminUtils.sendNoAuth(player);
         }
