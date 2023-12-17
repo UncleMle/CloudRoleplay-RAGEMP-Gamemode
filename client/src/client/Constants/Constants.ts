@@ -39,6 +39,8 @@ export const _control_ids = {
 	Q: 44,
 	D: 35,
 	Space: 321,
+	SPACEBIND: 32,
+	TAB: 9,
 	LCtrl: 326,
 	RELOADBIND: 0x52,
 	NBIND: 78,

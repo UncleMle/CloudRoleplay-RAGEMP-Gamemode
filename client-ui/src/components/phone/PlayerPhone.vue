@@ -2,11 +2,10 @@
 <template>
     <main class="relative duration-500">
 
-        <div id="phone duration-300" :class="topPhoneStyle"
-            class="fixed bottom-[-18vw] right-[27%] shadow-2xl h-[35%] shadow-black bg-black text-white font-medium w-[11%] rounded-t-[1.7vw]  rounded-b-[1.7vw] border-t-2 border-r-2  border-b-2 border-l-2 border-slate-400 bg-cover bg-no-repeat bg-[url('https://i.imgur.com/LeX52i6.jpg')]">
+        <div id="phone duration-300" :class="phoneOpen ? 'bottom-0' : 'bottom-[-18vw]'"
+            class="fixed right-[27%] shadow-2xl h-[35%] shadow-black bg-black text-white font-medium w-[11%] rounded-t-[1.7vw]  rounded-b-[1.7vw] border-t-2 border-r-2  border-b-2 border-l-2 border-slate-400 bg-cover bg-no-repeat bg-[url('https://i.imgur.com/LeX52i6.jpg')]">
             <div
                 class="w-full h-full border-r-[4px] border-t-[4px] border-b-[4px] border-l-[4px] rounded-t-[1.7vw] rounded-b-[1.7vw] border-black ">
-
                 <button @click="openPhone" class="w-full content-normal flex justify-center h-5">
                     <div class="bg-black w-[30%] mt-1 rounded-xl relative h-full">
                         <p class="absolute left-2 top-[5px] rounded-full bg-gray-400/40 w-[0.5vw] h-[0.5vw]"></p>
@@ -46,7 +45,8 @@
                 </div>
             </div>
 
-            <button @click="currentApp = ''" class="absolute bottom-1 w-full duration-500 hover:bottom-5 p-2">
+            <button @click="!spaceOrTabPressed ? currentApp = '' : ''"
+                class="absolute bottom-1 w-full duration-500 hover:bottom-5 p-2">
                 <div class="flex justify-center ml-7 mr-7 h-1 bg-gray-200 rounded-lg">
                 </div>
             </button>
@@ -56,6 +56,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import MyCarsApp from './MyCarsApp.vue';
 
 export default {
@@ -65,6 +66,7 @@ export default {
             currentApp: "",
             topPhoneStyle: "bottom-16",
             phoneOpen: false,
+            spaceOrTabPressed: false,
             textShadow: "text-shadow: rgba(0, 0, 0, 0.563) 1px 0 10px;",
             availableApps: [
                 { name: "My Cars", img: "https://i.imgur.com/iXN6nMI.png" },
@@ -72,15 +74,29 @@ export default {
             ]
         }
     },
+    computed: {
+        ...mapGetters({
+            uiStates: 'getUiStates'
+        })
+    },
     components: {
         MyCarsApp
     },
     methods: {
         openPhone() {
+            if (this.spaceOrTabPressed) return;
+
             let targetStyle = "bottom-16";
             this.topPhoneStyle === targetStyle ? this.topPhoneStyle = "" : this.topPhoneStyle = targetStyle;
             this.phoneOpen = !this.phoneOpen;
+        },
+        keyUpListener(e) {
+            this.spaceOrTabPressed = e.keyCode == 32 || e.keyCode == 9;
+            console.log(e.keyCode)
         }
+    },
+    created() {
+        document.addEventListener("keyup", this.keyUpListener);
     }
 }
 </script>

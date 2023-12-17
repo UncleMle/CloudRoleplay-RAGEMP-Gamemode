@@ -1,5 +1,5 @@
 import { IS_RADAR_ENABLED, IS_RADAR_HIDDEN, _IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE, _control_ids } from '@/Constants/Constants';
-import { UserData, CharacterData, StreetData, Hunger, Gui } from '../@types';
+import { UserData, CharacterData, StreetData, Hunger, Gui, RenderKeys } from '../@types';
 import getUserCharacterData from '../PlayerMethods/getUserCharacterData';
 import getUserData from '../PlayerMethods/getUserData';
 import BrowserSystem from './BrowserSystem';

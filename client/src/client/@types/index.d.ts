@@ -225,6 +225,11 @@ export interface VehicleData {
 	emergency_lights: boolean;
 }
 
+export interface RenderKeys {
+	space: boolean,
+	tab: boolean
+}
+
 export interface VehicleWash {
 	washPrice: number,
 	vehicleWashName: string,

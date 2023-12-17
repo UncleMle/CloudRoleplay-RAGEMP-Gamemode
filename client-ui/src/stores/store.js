@@ -37,7 +37,8 @@ const store = new Vuex.Store({
 			serverLoading: false,
 			speedoUi: false,
 			refuelUi: false,
-			vehicleSpeedoData: {}
+			vehicleSpeedoData: {},
+			renderKeys: {}
 		}
 	},
 	getters: {
