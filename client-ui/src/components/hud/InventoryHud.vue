@@ -6,20 +6,20 @@
                     <div
                         class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
 
-                        <div class="p-7">
-
+                        <div class="p-3">
+                            <div class="p-1 text-xl pb-4 font-medium">
+                                <h2>Inventory Items ({{ inventoryItems.length }} KG)</h2>
+                            </div>
                             <div id="dragparent" class="grid grid-cols-6 gap-4 w-full">
-                                <div id="test" class="border border-gray-500 rounded-lg" v-for="element in 12"
+                                <div id="test" class="border border-gray-500 rounded-lg" v-for="element in inventoryItems"
                                     :key="element.id">
-                                    <div v-if="inventoryItems[element - 1]">
+                                    <div>
                                         <div class="flex justify-center text-center">
-                                            <img :src="getItemImg(inventoryItems[element - 1].name)" class="scale-75" />
+                                            <img :src="getItemImg(element.name)" class="scale-75" />
                                         </div>
                                         <div class="flex justify-center text-center text-gray-400 font-medium">
-                                            {{ inventoryItems[element - 1].dispName }}
+                                            {{ element.dispName }}
                                         </div>
-                                    </div>
-                                    <div v-else id="dontdrag" class="w-32 h-32">
                                     </div>
 
                                 </div>
@@ -62,7 +62,13 @@ export default {
             } catch (error) {
                 return require("../../assets/img/cars/sentinel.png");
             }
+        },
+        startContextMenu(e) {
+            console.log(e);
         }
+    },
+    created() {
+        document.addEventListener("contextmenu", this.startContextMenu);
     },
     mounted() {
         dragular([document.querySelector("#dragparent")], {
@@ -76,6 +82,21 @@ export default {
             accepts: function () {
                 console.log("has been accepted.");
                 return true;
+            },
+        }).on("drag", () => {
+            console.log("being dragged");
+        });
+
+        dragular([document.querySelector("#dragcontain")], {
+            moves: function (el, container, handle) {
+                if (handle.id == "dontdrag") {
+                    console.log("Cant drag");
+                } else {
+                    return true;
+                }
+            },
+            accepts: function () {
+                console.log("has been accepted.");
             },
         }).on("drag", () => {
             console.log("being dragged");

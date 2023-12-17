@@ -23,7 +23,7 @@ class VehicleIndicators {
 		if (!vehicleData) return;
 
 		if (vehicleData.indicator_status != -1) {
-			entity.setIndicatorLights(vehicleData.indicator_status, true);
+			entity.setIndicatorLights(-1, true);
 		} else {
 			entity.setIndicatorLights(1, false);
 			entity.setIndicatorLights(0, false);
@@ -34,7 +34,7 @@ class VehicleIndicators {
 		if (entity.type != "vehicle" || !data) return;
 
 		if (data.indicator_status != -1) {
-			entity.setIndicatorLights(data.indicator_status, true);
+			entity.setIndicatorLights(-1, true);
 		} else {
 			entity.setIndicatorLights(1, false);
 			entity.setIndicatorLights(0, false);

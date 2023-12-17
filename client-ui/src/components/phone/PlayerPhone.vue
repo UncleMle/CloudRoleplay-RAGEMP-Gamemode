@@ -46,10 +46,15 @@
                 </div>
             </div>
 
-            <div class="absolute bottom-3 w-full">
-                <div class="flex justify-center mr-4 text-center w-full p-4 rounded-2xl backdrop-blur-lg">
-                    <div>
-                        Home
+            <div v-if="currentApp == ''" class="absolute bottom-1 w-full">
+                <div class="flex justify-center text-center w-full p-4 rounded-2xl">
+                    <div class="grid grid-cols-3 w-full p-3 rounded-2xl backdrop-blur-2xl">
+                        <button class="rounded-xl bg-[url('https://i.imgur.com/UEbUqV3.png')] bg-contain bg-no-repeat h-[3rem] w-[3rem]">
+                        </button>
+                        <button class="rounded-xl bg-[url('https://i.imgur.com/R6rAT5m.png')] bg-contain bg-no-repeat h-[3rem] w-[3rem]">
+                        </button>
+                        <button class="rounded-xl bg-[url('https://i.imgur.com/LiDybTZ.png')] bg-contain bg-no-repeat h-[3rem] w-[3rem]">
+                        </button>
                     </div>
                 </div>
             </div>
@@ -74,7 +79,7 @@ export default {
             appBaseStyle: "rounded-t-[1.7vw] " + this.phoneOpen ? 'rounded-b-[1.7vw]' : '',
             currentApp: "",
             topPhoneStyle: "bottom-16",
-            phoneOpen: false,
+            phoneOpen: true,
             spaceOrTabPressed: false,
             textShadow: "text-shadow: rgba(0, 0, 0, 0.563) 1px 0 10px;",
             availableApps: [

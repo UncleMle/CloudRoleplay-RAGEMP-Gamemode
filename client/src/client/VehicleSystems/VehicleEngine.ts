@@ -6,7 +6,6 @@ import { Browsers } from "@/enums";
 
 class VehicleEngine {
 	public static LocalPlayer: PlayerMp;
-	public static engineResyncInterval_seconds: number = 5;
 	public static engineToggleEvent: string = "server:toggleEngine";
 
 	constructor() {
@@ -16,10 +15,6 @@ class VehicleEngine {
 		mp.events.add("entityStreamIn", VehicleEngine.handleStreamIn);
 		mp.events.addDataHandler(_SHARED_VEHICLE_DATA, VehicleEngine.handleDataHandler);
 		mp.keys.bind(_control_ids.Y, false, VehicleEngine.toggleEngine);
-
-		setInterval(() => {
-			VehicleEngine.engineSync();
-		}, VehicleEngine.engineResyncInterval_seconds * 1000);
 	}
 
 	public static handleStartUp() {
@@ -62,24 +57,6 @@ class VehicleEngine {
 			mp.events.callRemote(VehicleEngine.engineToggleEvent);
 		}
 	}
-
-	public static engineSync() {
-		mp.vehicles.forEachInStreamRange((vehicle: VehicleMp) => {
-			if(VehicleEngine.LocalPlayer.vehicle && VehicleEngine.LocalPlayer.vehicle == vehicle) return;
-
-			let vehicleData: VehicleData | undefined = getVehicleData(vehicle);
-
-			if (!vehicleData || vehicleData.engine_status == null) return;
-
-			if (vehicleData.engine_status && vehicleData.vehicle_fuel > 0) {
-				vehicle.setEngineOn(true, true, true);
-			} else if (!vehicleData.engine_status) {
-				vehicle.setEngineOn(false, true, true);
-				vehicle.setUndriveable(true);
-			}
-		})
-	}
-
 }
 
 export default VehicleEngine;

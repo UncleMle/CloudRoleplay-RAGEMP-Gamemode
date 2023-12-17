@@ -367,13 +367,13 @@ namespace CloudRP.Admin
                 if (userData.adminDuty)
                 {
                     saveAdutyPosition(userData, player.Position);
-                    AdminUtils.sendMessageToAllStaff($"{colourAdminRank} {AdminUtils.staffSuffixColour}{userData.adminName} is on duty");
+                    AdminUtils.sendMessageToAllStaff($"{colourAdminRank} {AdminUtils.staffSuffixColour}{userData.adminName} is {ChatUtils.moneyGreen}on duty");
                 }
-                else
+                else  
                 {
                     userData.isFlying = false;
                     player.TriggerEvent("admin:endFly");
-                    AdminUtils.sendMessageToAllStaff($"{colourAdminRank} {AdminUtils.staffSuffixColour}{userData.adminName} is off duty");
+                    AdminUtils.sendMessageToAllStaff($"{colourAdminRank} {AdminUtils.staffSuffixColour}{userData.adminName} is {ChatUtils.red}off duty");
                     PlayersData.setCharacterClothes(player, characterData.characterClothing);
                 }
 
@@ -539,7 +539,7 @@ namespace CloudRP.Admin
                 {
                     if (findPlayer.Equals(player))
                     {
-                        AdminUtils.staffSay(player, "You cannot bring yourself");
+                        CommandUtils.errorSay(player, "You cannot bring yourself");
                         return;
                     }
 

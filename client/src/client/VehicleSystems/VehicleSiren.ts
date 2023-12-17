@@ -34,13 +34,13 @@ class VehicleSiren {
 		let vehicleData: VehicleData | undefined = getVehicleData(entity);
 		if (!vehicleData) return;
 
-		entity.setSirenSound(vehicleData.vehicle_siren);
+		entity.setSirenSound(vehicleData.vehicle_siren ? true : false);
 	}
 
 	public static handleDataHandler(entity: VehicleMp, data: VehicleData) {
 		if (entity.type != "vehicle" || !data) return;
 
-		entity.setSirenSound(data.vehicle_siren);
+		entity.setSirenSound(data.vehicle_siren ? true : false);
 	}
 
 	public static toggleVehicleSiren() {
