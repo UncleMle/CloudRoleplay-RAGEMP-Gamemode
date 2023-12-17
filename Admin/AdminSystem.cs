@@ -1409,11 +1409,60 @@ namespace CloudRP.Admin
             }
         }
 
-        [Command("cobj", "~r~/cobj")]
-        public void spawnObject(Player player, string modelName)
+        [Command("giveamoney", "~r~/giveamoney [nameOrId] [moneyAmount]")]
+        public void giveAdminMoney(Player player, string nameOrId, long amount)
         {
-            player.TriggerEvent("housing:createObject", modelName);
-            player.SendChatMessage("Created house object " + modelName);
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            {
+                Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+                if(findPlayer == null)
+                {
+                    CommandUtils.notFound(player);
+                    return;
+                }
+                DbCharacter charData = PlayersData.getPlayerCharacterData(findPlayer);
+
+                charData.money_amount += amount;
+                PlayersData.setPlayerCharacterData(player, charData, false, true);
+
+                AdminUtils.staffSay(player, $"You gave {charData.character_name} ${amount.ToString("C")} their total money level is at {charData.money_amount}");
+                AdminUtils.staffSay(findPlayer, $"You have been given {amount.ToString("C")} from Admin {userData.adminName}");
+            }
+            else AdminUtils.sendNoAuth(player);
         }
+        
+        [Command("removeamoney", "~r~/removeamoney [nameOrId] [moneyAmount]")]
+        public void removeAdminMoney(Player player, string nameOrId, long amount)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            {
+                Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+                if(findPlayer == null)
+                {
+                    CommandUtils.notFound(player);
+                    return;
+                }
+                DbCharacter charData = PlayersData.getPlayerCharacterData(findPlayer);
+
+                if( (charData.money_amount - amount) < 0)
+                {
+                    CommandUtils.errorSay(player, "You cannot set money amount below zero. Target's current money amount " + charData.money_amount.ToString("C"));
+                    return;
+                }
+
+                charData.money_amount -= amount;
+                PlayersData.setPlayerCharacterData(player, charData, false, true);
+
+                AdminUtils.staffSay(player, $"You gave {charData.character_name} ${amount.ToString("C")} their total money level is at {charData.money_amount}");
+                AdminUtils.staffSay(findPlayer, $"You have been given {amount.ToString("C")} from Admin {userData.adminName}");
+            }
+            else AdminUtils.sendNoAuth(player);
+        }
+
+        
     }
 }

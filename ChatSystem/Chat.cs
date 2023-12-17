@@ -19,7 +19,6 @@ namespace CloudRP.ChatSystem
         [ServerEvent(Event.ResourceStart)]
         public void onResourceStart()
         {
-            Console.WriteLine("Default chat disabled.");
             NAPI.Server.SetGlobalServerChat(false);
         }
 

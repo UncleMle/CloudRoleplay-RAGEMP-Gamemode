@@ -14,7 +14,7 @@ namespace CloudRP.VoiceSystem
         [RemoteEvent("server:voiceAddVoiceListener")]
         public void addListener(Player player, Player target)
         {
-            if(target != null)
+            if(target != null && Vector3.Distance(player.Position, target.Position) < 60)
             {
                 player.EnableVoiceTo(target);
             }
