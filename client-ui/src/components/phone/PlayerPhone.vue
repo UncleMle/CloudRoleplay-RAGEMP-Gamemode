@@ -2,8 +2,8 @@
 <template>
     <main class="relative duration-500">
 
-        <div id="phone duration-300" :class="phoneOpen ? 'bottom-0' : 'bottom-[-18vw]'"
-            class="fixed right-[27%] shadow-2xl h-[35%] shadow-black bg-black text-white font-medium w-[11%] rounded-t-[1.7vw]  rounded-b-[1.7vw] border-t-2 border-r-2  border-b-2 border-l-2 border-slate-400 bg-cover bg-no-repeat bg-[url('https://i.imgur.com/LeX52i6.jpg')]">
+        <div id="phone duration-300" :class="phoneOpen ? 'bottom-[2%]' : 'bottom-[-26.9rem]'"
+            class="fixed right-[22%] shadow-2xl h-[30rem] shadow-black bg-black text-white font-medium w-[16rem] rounded-t-[1.7vw]  rounded-b-[1.7vw] border-t-2 border-r-2  border-b-2 border-l-2 border-slate-400 bg-cover bg-no-repeat bg-[url('https://i.imgur.com/C8nWb8y.jpg')]">
             <div
                 class="w-full h-full border-r-[4px] border-t-[4px] border-b-[4px] border-l-[4px] rounded-t-[1.7vw] rounded-b-[1.7vw] border-black ">
                 <button @click="openPhone" class="w-full content-normal flex justify-center h-5">
@@ -13,19 +13,20 @@
                             class="absolute right-2 top-[5px] rounded-full bg-gray-400/40 w-[0.5vw] h-[0.5vw] border-[3px] border-gray-400/70">
                         </p>
                     </div>
-                    <font class="absolute left-[10%] top-2 text-sm">
+                    <font :style="textShadow" class="absolute left-[10%] top-2 text-sm">
                         11:00
                     </font>
-                    <font class="absolute right-[10%] top-2 text-sm">
+                    <font :style="textShadow" class="absolute right-[10%] top-2 text-sm">
                         <i class="fa-solid fa-signal pr-2"></i>
                         <i class="fa-solid fa-battery-three-quarters"></i>
                     </font>
                 </button>
 
-                <div v-if="currentApp == 'My Cars'" class="flex w-full">
-                    <MyCarsApp />
+                <div v-if="currentApp != ''">
+                    <div v-if="currentApp == 'My Cars'" class="flex w-full">
+                        <MyCarsApp />
+                    </div>
                 </div>
-
 
                 <div v-else>
                     <div class="w-full mt-6">
@@ -45,7 +46,15 @@
                 </div>
             </div>
 
-            <button @click="!spaceOrTabPressed ? currentApp = '' : ''"
+            <div class="absolute bottom-3 w-full">
+                <div class="flex justify-center mr-4 text-center w-full p-4 rounded-2xl backdrop-blur-lg">
+                    <div>
+                        Home
+                    </div>
+                </div>
+            </div>
+
+            <button v-if="currentApp != ''" @click="!spaceOrTabPressed ? currentApp = '' : ''"
                 class="absolute bottom-1 w-full duration-500 hover:bottom-5 p-2">
                 <div class="flex justify-center ml-7 mr-7 h-1 bg-gray-200 rounded-lg">
                 </div>
@@ -92,7 +101,6 @@ export default {
         },
         keyUpListener(e) {
             this.spaceOrTabPressed = e.keyCode == 32 || e.keyCode == 9;
-            console.log(e.keyCode)
         }
     },
     created() {
