@@ -19,7 +19,7 @@ class Clothing {
         mp.events.add("clothes:setRot", Clothing.handleRotation);
         mp.events.add("playerExitColshape", Clothing.exitColHandle);
 
-        mp.keys.bind(_control_ids.Y, false, Clothing.handleYPressed);
+        mp.keys.bind(_control_ids.Y, false, Clothing.handleKeyPressed_Y);
 
         mp.events.addDataHandler(_sharedClothingDataIdentifier, Clothing.handleStreamIn);
         mp.events.addDataHandler(_sharedAccountDataIdentifier, Clothing.handleDataHandlerAccount);
@@ -42,7 +42,7 @@ class Clothing {
         Clothing.LocalPlayer.setHeading(parseInt(rot));
     }
 
-    public static handleYPressed() {
+    public static handleKeyPressed_Y() {
         if(!Clothing.LocalPlayer.isTypingInTextChat) {
             let currentClothingStoreData: ClothingStore | undefined = Clothing.LocalPlayer.getVariable(Clothing._clothingStoreIdentifier);
             let playerClothingData: ClothingData | undefined = getClothingData(Clothing.LocalPlayer);

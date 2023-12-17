@@ -3,6 +3,7 @@ import { _control_ids, SET_PARTICLE_FX_, _SET_FORCE_PED_FOOTSTEPS_TRACKS } from 
 import getUserData from '../PlayerMethods/getUserData';
 import { AdminRanks } from '../enums';
 import getTargetData from '@/PlayerMethods/getTargetData';
+import validateKeyPress from '@/PlayerMethods/validateKeyPress';
 
 class AdminFly {
 	public static LocalPlayer: PlayerMp;
@@ -37,7 +38,7 @@ class AdminFly {
 	}
 
 	public static handleFlyClick() {
-		if(AdminFly.LocalPlayer.isTypingInTextChat) return;
+		if(!validateKeyPress()) return;
 
 		let userData: UserData | undefined = getUserData();
 		if(!userData) return;

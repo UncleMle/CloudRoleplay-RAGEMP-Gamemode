@@ -3,6 +3,7 @@ import { UserData } from "../@types";
 import { _TEXT_R_WHITE, _control_ids, _sharedAccountDataIdentifier, _sharedCharacterDataIdentifier } from '../Constants/Constants';
 import getTargetData from "../PlayerMethods/getTargetData";
 import getUserData from "../PlayerMethods/getUserData";
+import validateKeyPress from "@/PlayerMethods/validateKeyPress";
 
 class AdminSystem {
 	public static userData: UserData | undefined;
@@ -19,7 +20,7 @@ class AdminSystem {
 	}
 
 	public static viewActiveReports() {
-		if(AdminSystem.LocalPlayer.isTypingInTextChat) return;
+		if(!validateKeyPress()) return;
 
 		let userData: UserData | undefined = getUserData();
 

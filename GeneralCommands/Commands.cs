@@ -267,8 +267,7 @@ namespace CloudRP.GeneralCommands
                     });
                 }
 
-
-                NAPI.Chat.SendChatMessageToPlayer(player, $"{ChatUtils.Success} You {(nicknameExisting != null ? "updated" : "set")} Player [{findPlayer.Id}]'s nickname to {nickname}");
+                player.SendChatMessage($"{ChatUtils.Success} You {(nicknameExisting != null ? "updated" : "set")} Player [{findPlayer.Id}]'s nickname to {nickname}");
                 setPlayersNick(player, findPlayer, nickname);
                 dbContext.SaveChanges();
             }

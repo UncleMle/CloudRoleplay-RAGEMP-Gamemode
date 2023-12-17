@@ -1,7 +1,6 @@
 import NotificationSystem from "@/NotificationSystem/NotificationSystem";
 import { UserData } from "../@types";
 import getUserData from "../PlayerMethods/getUserData";
-import sendNotification from "../PlayerMethods/SendNotification";
 
 class AdminEvents {
 	public static LocalPlayer: PlayerMp;

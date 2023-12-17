@@ -24,7 +24,7 @@ class Corpses {
 				if (!corpseData) return;
 
                 Corpses.initPed(ped, corpseData);
-				if (getTimeUnix() - corpseData.unixCreated > Corpses._pedTimeout_seconds) {
+				if ((getTimeUnix() - corpseData.unixCreated) > Corpses._pedTimeout_seconds) {
 					mp.events.callRemote(Corpses.corpseValEvent, JSON.stringify(corpseData));
 				}
 			});

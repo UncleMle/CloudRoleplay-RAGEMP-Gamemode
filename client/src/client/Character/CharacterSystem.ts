@@ -18,6 +18,8 @@ class CharacterSystem {
 		mp.events.addDataHandler(_sharedCharacterModelIdentifier, CharacterSystem.handleDataHandler);
 		mp.events.addDataHandler(_sharedAccountDataIdentifier, CharacterSystem.handleAdmins);
 
+		CharacterSystem.setDiscordStatus();
+
 		setInterval(() => {
 			CharacterSystem.setDiscordStatus();
 		}, CharacterSystem.discordStatusUpdate_seconds * 1000)

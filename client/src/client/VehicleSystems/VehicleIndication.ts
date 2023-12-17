@@ -17,27 +17,27 @@ class VehicleIndicators {
 		mp.keys.bind(_control_ids.RIGHTARR, false, () => VehicleIndicators.handleVehicleIndicator(0));
 	}
 
-	public static handleVehicleStreamIn(entity: EntityMp) {
+	public static handleVehicleStreamIn(entity: VehicleMp) {
 		if (entity.type != "vehicle") return;
-		let vehicleData: VehicleData | undefined = getVehicleData(entity as VehicleMp);
+		let vehicleData: VehicleData | undefined = getVehicleData(entity);
 		if (!vehicleData) return;
 
 		if (vehicleData.indicator_status != -1) {
-			(entity as VehicleMp).setIndicatorLights(vehicleData.indicator_status, true);
+			entity.setIndicatorLights(vehicleData.indicator_status, true);
 		} else {
-			(entity as VehicleMp).setIndicatorLights(1, false);
-			(entity as VehicleMp).setIndicatorLights(0, false);
+			entity.setIndicatorLights(1, false);
+			entity.setIndicatorLights(0, false);
 		}
 	}
 
-	public static handleDataHandler(entity: EntityMp, data: VehicleData) {
+	public static handleDataHandler(entity: VehicleMp, data: VehicleData) {
 		if (entity.type != "vehicle" || !data) return;
 
 		if (data.indicator_status != -1) {
-			(entity as VehicleMp).setIndicatorLights(data.indicator_status, true);
+			entity.setIndicatorLights(data.indicator_status, true);
 		} else {
-			(entity as VehicleMp).setIndicatorLights(1, false);
-			(entity as VehicleMp).setIndicatorLights(0, false);
+			entity.setIndicatorLights(1, false);
+			entity.setIndicatorLights(0, false);
 		}
 	}
 

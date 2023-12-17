@@ -12,6 +12,7 @@ class VehicleEngine {
 	constructor() {
 		VehicleEngine.LocalPlayer = mp.players.local;
 
+		mp.events.add("playerReady", VehicleEngine.handleStartUp);
 		mp.events.add("entityStreamIn", VehicleEngine.handleStreamIn);
 		mp.events.addDataHandler(_SHARED_VEHICLE_DATA, VehicleEngine.handleDataHandler);
 		mp.keys.bind(_control_ids.Y, false, VehicleEngine.toggleEngine);
@@ -19,6 +20,10 @@ class VehicleEngine {
 		setInterval(() => {
 			VehicleEngine.engineSync();
 		}, VehicleEngine.engineResyncInterval_seconds * 1000);
+	}
+
+	public static handleStartUp() {
+		mp.game.vehicle.defaultEngineBehaviour = false;
 	}
 
 	public static async handleStreamIn(entity: VehicleMp) {
