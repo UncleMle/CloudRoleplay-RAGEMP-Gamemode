@@ -54,6 +54,12 @@ namespace CloudRP.VehicleRefueling
             }
         }
 
+        [ServerEvent(Event.PlayerDisconnected)]
+        public void removeRefuellingPlayer(Player player)
+        {
+            removeRefuellingPlayerFromVehicle(player);
+        }
+
         [RemoteEvent("server:startRefuelEvent")]
         public void startVehicleRefuel(Player player)
         {
@@ -72,6 +78,13 @@ namespace CloudRP.VehicleRefueling
             
             if(closeVehicleData != null)
             {
+
+                if(closeVehicleData.player_refuelling != null)
+                {
+                    uiHandling.sendPushNotifError(player, "There is already a player refuelling this vehicle.", 6600);
+                    return;
+                }
+
                 if(closeVehicleData.vehicle_locked)
                 {
                     uiHandling.sendPushNotifError(player, "Ensure the vehicle is unlocked.", 6600);
@@ -84,6 +97,7 @@ namespace CloudRP.VehicleRefueling
                     return;
                 }
 
+                closeVehicleData.player_refuelling = player;
                 closeVehicleData.vehicle_fuel_purchase_price = -1;
                 VehicleSystem.saveVehicleData(findClosestVehicle, closeVehicleData);
 
@@ -180,11 +194,28 @@ namespace CloudRP.VehicleRefueling
         [RemoteEvent("server:stopRefuellingVehicle")]
         public static void endPlayerRefuellingCycle(Player player, string notif = "You have moved too far from the vehicle or fuel pump.")
         {
+            removeRefuellingPlayerFromVehicle(player);
             player.ResetData(_refuelDataIdentifier);
             player.ResetSharedData(_refuelDataIdentifier);
             player.TriggerEvent("refuel:closeRefuelInterval");
 
             uiHandling.sendNotification(player, "~r~"+notif, false);
+        }
+
+        public static void removeRefuellingPlayerFromVehicle(Player player)
+        {
+            List<Vehicle> onlineVehicles = NAPI.Pools.GetAllVehicles();
+
+            foreach (Vehicle vehicle in onlineVehicles)
+            {
+                DbVehicle vehicleData = VehicleSystem.getVehicleData(vehicle);
+
+                if(vehicleData.player_refuelling.Equals(player))
+                {
+                    vehicleData.player_refuelling = null;
+                    VehicleSystem.saveVehicleData(vehicle, vehicleData);
+                }
+            }
         }
 
     }

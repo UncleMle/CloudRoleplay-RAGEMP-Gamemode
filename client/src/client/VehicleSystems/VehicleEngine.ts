@@ -36,6 +36,8 @@ class VehicleEngine {
 	public static handleDataHandler(entity: VehicleMp, vehicleData: VehicleData) {
 		if(entity.type != "vehicle" || !vehicleData) return;
 
+		if(VehicleEngine.LocalPlayer.vehicle && VehicleEngine.LocalPlayer.vehicle == entity && VehicleEngine.LocalPlayer.browserRouter == Browsers.ModsView) return;
+
 		if(vehicleData.engine_status) {
 			entity.setEngineOn(true, true, true);
 		} else {

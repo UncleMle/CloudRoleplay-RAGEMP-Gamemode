@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
-using System.Numerics;
 using CloudRP.VehicleModification;
+using GTANetworkAPI;
 
 namespace CloudRP.Vehicles
 {
@@ -54,6 +54,8 @@ namespace CloudRP.Vehicles
         public double vehicle_fuel_purchase { get; set; } = -1;
         [NotMapped]
         public long vehicle_fuel_purchase_price { get; set; }
+        [NotMapped]
+        public Player player_refuelling { get; set; }
     }
     
 
