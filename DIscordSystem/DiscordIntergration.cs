@@ -35,7 +35,7 @@ namespace Integration
                 await InitAsync();
                 IsSetupCompleted = true;
 
-                ChatUtils.discordSysPrint("Bot started throw intergration");
+                ChatUtils.formatConsolePrint("Bot started throw intergration", ConsoleColor.Magenta);
             }
             else
             {
@@ -301,7 +301,7 @@ namespace Integration
                         await channel.DeleteAsync();
                     }
 
-                    ChatUtils.discordSysPrint("Flushed old reports.");
+                    ChatUtils.formatConsolePrint("Flushed old reports.", ConsoleColor.Magenta);
                 });
             }
             catch

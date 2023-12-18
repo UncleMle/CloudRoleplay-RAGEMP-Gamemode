@@ -51,13 +51,13 @@ namespace CloudRP.DiscordSystem
             }
             catch
             {
-                ChatUtils.discordSysPrint("Discord staff channels where not found or are incorrectly formatted.");
+                ChatUtils.formatConsolePrint("Discord staff channels where not found or are incorrectly formatted.", ConsoleColor.Magenta);
             }
 
 
             if (token == null)
             {
-                ChatUtils.discordSysPrint("Discord Token was not found.");
+                ChatUtils.formatConsolePrint("Discord Token was not found.", ConsoleColor.Magenta);
                 return;
             }
 
@@ -69,7 +69,7 @@ namespace CloudRP.DiscordSystem
                 DiscordIntegration.RegisterChannelForListenting(staffChannel);
                 DiscordIntegration.RegisterChannelForListenting(reportAlertChannel);
 
-                ChatUtils.discordSysPrint("Started listening on staff channel and report alert channel.");
+                ChatUtils.formatConsolePrint("Started listening on staff channel and report alert channel.", ConsoleColor.Magenta);
                 DiscordIntegration.flushOldReports();
             }, 5000);
 

@@ -73,6 +73,16 @@ namespace CloudRP.ChatSystem
             {
                 string colouredRank = AdminUtils.getColouredAdminRank(user, false);
                 NAPI.Chat.SendChatMessageToPlayer(player, AdminUtils.staffPrefix + $"Welcome back, {colouredRank}{AdminUtils.staffSuffixColour}" + user.adminName + ".");
+
+                Dictionary<Player, User> onlineStaff = AdminUtils.gatherAdminGroupAbove(AdminRanks.Admin_None);
+
+                foreach (KeyValuePair<Player, User> item in onlineStaff)
+                {
+                    if(item.Key != player)
+                    {
+                        AdminUtils.sendMessageToAllStaff($"{user.adminName} [{player.Id}] has connected to the server.");
+                    }
+                }
             }
         }
     }

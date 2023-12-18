@@ -237,10 +237,10 @@ namespace CloudRP.Utils
             }
         }
 
-        public static Dictionary<Player, Dictionary<User, DbCharacter>> gatherAdminGroupAbove(AdminRanks adminRank)
+        public static Dictionary<Player, User> gatherAdminGroupAbove(AdminRanks adminRank)
         {
             List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
-            Dictionary<Player, Dictionary<User, DbCharacter>> adminGroup = new Dictionary<Player, Dictionary<User, DbCharacter>>();
+            Dictionary<Player, User> adminGroup = new Dictionary<Player, User>();
 
             foreach(Player player in onlinePlayers)
             {
@@ -249,10 +249,7 @@ namespace CloudRP.Utils
 
                 if(playerData != null && characterData != null && playerData.adminLevel > (int)adminRank)
                 {
-                    adminGroup.Add(player, new Dictionary<User, DbCharacter>
-                    {
-                        { playerData, characterData }
-                    });
+                    adminGroup.Add(player, playerData);
                 }
             }
 

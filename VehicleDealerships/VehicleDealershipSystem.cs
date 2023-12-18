@@ -234,11 +234,13 @@ namespace CloudRP.VehicleDealerships
 
                 charData.money_amount -= findDealerVeh.price;
 
-                Vehicle buildVeh = VehicleSystem.buildVehicle(vehName, playerDealerData.spawnPosition, 0, charData.character_id, spawnColour, spawnColour);
+                (Vehicle buildVeh, DbVehicle vehicleData) = VehicleSystem.buildVehicle(vehName, playerDealerData.spawnPosition, 0, charData.character_id, spawnColour, spawnColour);
                 PlayersData.setPlayerCharacterData(player, charData, true, true);
 
                 player.TriggerEvent("dealers:closeDealership");
                 CommandUtils.successSay(player, $"You purchased a new {dispName} for ${findDealerVeh.price}");
+                ChatUtils.formatConsolePrint($"{ChatUtils._c_Server}{charData.character_name} purchased a new {dispName} with id #{vehicleData.vehicle_id}", ConsoleColor.Blue);
+                
                 uiHandling.setLoadingState(player, false);
                 uiHandling.pushRouterToClient(player, Browsers.None);
             }

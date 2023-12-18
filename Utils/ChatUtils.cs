@@ -46,46 +46,29 @@ namespace CloudRP.Utils
             }
         }
 
-        public static void charSysPrint(string str)
+        public static void formatConsolePrint(string message, ConsoleColor colour = ConsoleColor.Red)
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(_c_CharacterSystem + str);
-            Console.ForegroundColor = ConsoleColor.White;
-        }
-
-        public static void acSysPrint(string str)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(_c_AntiCheatSystem + str);
-            Console.ForegroundColor = ConsoleColor.White;
-        }
-
-        public static void discordSysPrint(string str)
-        {
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine(_c_DiscordSystem + str);
-            Console.ForegroundColor = ConsoleColor.White;
-        }
-        
-        public static void adminSysPrint(string str)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(_c_AdminSys + str);
-            Console.ForegroundColor = ConsoleColor.White;
-        }  
-        
-        public static void formatConsolePrint(string message, ConsoleColor colour)
-        {
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.Write(getTimeString());
             Console.ForegroundColor = colour;
-            Console.WriteLine(message);
+            Console.Write(_c_Server + message);
             Console.ForegroundColor = ConsoleColor.White;
+            
+            Console.WriteLine();
         }
 
-        public static void deathSystem(string str)
+        public static string getTimeString()
         {
-            Console.ForegroundColor = ConsoleColor.DarkRed;
-            Console.WriteLine(_c_DiscordSystem + str);
-            Console.ForegroundColor = ConsoleColor.White;
+            DateTime dateTime = DateTime.Now;
+            dateTime.ToFileTimeUtc();
+            string dateStr = $"[{addZero(dateTime.Hour)}:{addZero(dateTime.Minute)}:{addZero(dateTime.Second)}] ";
+
+            return dateStr;
+        }
+
+        public static string addZero(int time)
+        {
+            return time < 10 ? "0" + time : time.ToString();
         }
     }
 }

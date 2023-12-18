@@ -75,7 +75,7 @@ namespace CloudRP.AntiCheat
                     NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.antiCheat + "Player [" + player.Id + "] was kicked.");
                 }
 
-                ChatUtils.acSysPrint("Player [" + player.Id + "] was kicked.");
+                ChatUtils.formatConsolePrint("Player [" + player.Id + "] was kicked.");
                 player.Kick("[Anti Cheat]");
                 return;
             }
@@ -91,7 +91,7 @@ namespace CloudRP.AntiCheat
                     NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.antiCheat + "Player [" + player.Id + $"] ({userData.username}) was banned for disallowed weapon flag.");
                 }
 
-                ChatUtils.acSysPrint("Player [" + player.Id + "] was banned.");
+                ChatUtils.formatConsolePrint("Player [" + player.Id + "] was banned.");
 
                 return;
             }
@@ -100,7 +100,7 @@ namespace CloudRP.AntiCheat
 
             string suffix = (characterData != null ? " from " + characterData.character_name : $" Player") + $" [{player.Id}]" ;
 
-            ChatUtils.acSysPrint(message + suffix);
+            ChatUtils.formatConsolePrint(message + suffix);
 
             foreach (KeyValuePair<Player, User> entry in onlineStaff)
             {

@@ -370,7 +370,7 @@ namespace CloudRP.Authentication
                     character.characterClothing = charClothing;
                     character.characterModel.player_tattos = charTats;
 
-                    ChatUtils.charSysPrint($"Character {character.character_name} has logged in (#{character.character_id})");
+                    ChatUtils.formatConsolePrint($"Character {character.character_name} has logged in (#{character.character_id})", ConsoleColor.Yellow);
                     PlayersData.setPlayerCharacterData(player, character, true);
                     DiscordUtils.creationConnection(player, character, LogCreation.Join);
 
@@ -465,7 +465,7 @@ namespace CloudRP.Authentication
 
             PlayersData.setPlayerAccountData(player, userData);
 
-            ChatUtils.charSysPrint($"{userData.username} (#{userData.accountId}) has entered character selection process.");
+            ChatUtils.formatConsolePrint($"{userData.username} (#{userData.accountId}) has entered character selection process.", ConsoleColor.Yellow);
 
             CharacterSystem.fillCharacterSelectionTable(player, userData);
         }

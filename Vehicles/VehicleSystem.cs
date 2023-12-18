@@ -227,7 +227,7 @@ namespace CloudRP.Vehicles
             }
         }
 
-        public static Vehicle buildVehicle(string vehName, Vector3 position, float rotation, int ownerId, int colourOne, int colourTwo)
+        public static (Vehicle, DbVehicle) buildVehicle(string vehName, Vector3 position, float rotation, int ownerId, int colourOne, int colourTwo)
         {
             string vehiclePlate = "notset";
             uint vehicleHash = NAPI.Util.GetHashKey(vehName);
@@ -273,11 +273,11 @@ namespace CloudRP.Vehicles
                 dbContext.SaveChanges();
             }
 
-            if (vehicleData == null) return null;
+            if (vehicleData == null) return (null, null);
 
             Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicleHash, position, rotation, 255, 255, vehiclePlate, 255, false, true, 0);
             setVehicleData(veh, vehicleData);
-            return veh;
+            return (veh, vehicleData);
         }
 
         public static Vehicle findVehicleById(int vehicleId)

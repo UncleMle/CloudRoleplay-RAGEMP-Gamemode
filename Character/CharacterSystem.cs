@@ -32,7 +32,7 @@ namespace CloudRP.Character
 
         void beginSaveInterval()
         {
-            ChatUtils.charSysPrint("Began saving characters.");
+            ChatUtils.formatConsolePrint("Began saving characters.", ConsoleColor.Yellow);
 
             NAPI.Task.Run(() =>
             {
