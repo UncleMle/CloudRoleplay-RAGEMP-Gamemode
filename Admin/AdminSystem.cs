@@ -714,6 +714,7 @@ namespace CloudRP.Admin
                     }
 
                     VehicleSystem.deleteVehicleById(vehicleData.vehicle_id);
+                    ChatUtils.formatConsolePrint($"{userData.adminName} deleted vehicle #{vehicleId}");
                     AdminUtils.staffSay(player, $"Vehicle with id {vehicleData.vehicle_id} was deleted."); 
                     return;
                 }

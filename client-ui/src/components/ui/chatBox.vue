@@ -68,8 +68,10 @@ export default {
                 e.preventDefault();
             }
 
-            if (e.keyCode == this.KEYBIND_ENTER && this.userText.length) {
+            if (e.keyCode == this.KEYBIND_ENTER) {
                 this.inputFieldShowing = false;
+
+                if (!this.userText.length) return;
                 let text = this.userText;
 
                 if (text.length > 0) {
@@ -82,29 +84,31 @@ export default {
                 }
             }
 
-            /*
-            if (this.inputFieldShowing && this.playerMessages.length) {
+            if ((e.keyCode == this.KEYBIND_DOWNARR || e.keyCode == this.KEYBIND_UPARR) && this.inputFieldShowing) {
+
                 if (e.keyCode == this.KEYBIND_UPARR) {
-                    this.chatIteration > this.playerMessages.length - 1 ? this.chatIteration = -1 : 0;
 
-                    this.chatIteration++;
-
-                    console.log("Up" + this.chatIteration);
-                    this.userText = this.playerMessages.slice().reverse()[this.chatIteration];
-
-                }
-
-                if (e.keyCode == this.KEYBIND_DOWNARR && this.inputFieldShowing) {
-                    this.chatIteration > this.playerMessages.length - 1 || this.chatIteration < 0 ? this.chatIteration = -1 : 0;
-
-                    this.chatIteration--;
-
-                    console.log("Down" + this.chatIteration);
+                    if( (this.chatIteration + 1) > this.playerMessages.length - 1) {
+                        this.chatIteration = 0;
+                    } else {
+                        this.chatIteration++;
+                    }
 
                     this.userText = this.playerMessages.slice().reverse()[this.chatIteration];
                 }
+
+                if (e.keyCode == this.KEYBIND_DOWNARR) {
+
+                    if( (this.chatIteration - 1) < 0) {
+                        this.chatIteration = 0;
+                    } else {
+                        this.chatIteration--;
+                    }
+
+                    this.userText = this.playerMessages.slice().reverse()[this.chatIteration];
+                }
+
             }
-            */
         },
         typingState(toggle) {
             if (window.mp) {
