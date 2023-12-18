@@ -33,6 +33,7 @@ import Tattoos from "./Character/Tattoos";
 import HousingSystem from "./housing/HousingSystem";
 import VehicleRefueling from "./RefuellingSystem/VehicleRefueling";
 import VehicleInsurance from "./VehicleInsurance/VehicleInsurance";
+import MarkersAndLabels from "./MarkersAndLabels/MarkersAndLabels";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -70,3 +71,4 @@ new Tattoos();
 new HousingSystem();
 new VehicleRefueling();
 new VehicleInsurance();
+new MarkersAndLabels();

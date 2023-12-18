@@ -26,7 +26,15 @@ namespace CloudRP.VehicleInsurance
                 retrievePosition = new Vector3(-836.5, -273.6, 38.8),
                 spawnPosition = new Vector3(-860.4, -262.6, 39.8),
                 retrieveFee = 1200
-            }
+            },
+            new InsuranceArea
+            {
+                insuranceId = 1,
+                insuranceName = "Mors Mutual Paleto",
+                retrievePosition = new Vector3(-227.6, 6333.6, 32.4),
+                spawnPosition = new Vector3(-219.7, 6342.0, 32.3),
+                retrieveFee = 2500
+            },
         };
 
         [ServerEvent(Event.ResourceStart)]
@@ -127,7 +135,9 @@ namespace CloudRP.VehicleInsurance
 
                         PlayersData.setPlayerCharacterData(player, charData, false, true);
                         ChatUtils.formatConsolePrint($"{charData.character_name} retrieved their vehicle [{findFromDb.numberplate}] from {playerInsuranceData.insuranceName} for {playerInsuranceData.retrieveFee.ToString("C")}");
-                        CommandUtils.successSay(player, $"You retrieved your vehicle [{findFromDb.numberplate}] from {playerInsuranceData.insuranceName} for {playerInsuranceData.retrieveFee.ToString("C")}");
+                        CommandUtils.successSay(player, $"You retrieved your vehicle [{findFromDb.numberplate}] from {playerInsuranceData.insuranceName} for {playerInsuranceData.retrieveFee.ToString("C")}. The vehicle has ~y~been marked on the map~w~.");
+
+                        MarkersAndLabels.addBlipForClient(player, 380, $"Your vehicle [{findFromDb.numberplate}]", playerInsuranceData.spawnPosition, 70, 255);
                     }
                     else
                     {
