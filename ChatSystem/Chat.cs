@@ -9,12 +9,14 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
 
 namespace CloudRP.ChatSystem
 {
     internal class Chat : Script
     {
         public static double _chatradius = 30.0;
+        public static string _typingStateIdentifier = "playerIsTypingState";
 
         [ServerEvent(Event.ResourceStart)]
         public void onResourceStart()
@@ -83,6 +85,18 @@ namespace CloudRP.ChatSystem
                         AdminUtils.sendMessageToAllStaff($"{user.adminName} [{player.Id}] has connected to the server.");
                     }
                 }
+            }
+        }
+
+        [RemoteEvent("server:togglePlayerTyping")]
+        public static void toggleTypingState(Player player, bool state)
+        {
+            DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+
+            if(charData != null)
+            {
+                player.SetData(_typingStateIdentifier, state);
+                player.SetSharedData(_typingStateIdentifier, state);
             }
         }
     }

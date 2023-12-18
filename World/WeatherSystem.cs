@@ -94,7 +94,7 @@ namespace CloudRP.World
                     break;
             }
 
-            ChatUtils.formatConsolePrint( ChatUtils._c_Server + "Set weather to " +  code, ConsoleColor.Cyan);
+            ChatUtils.formatConsolePrint("Set weather to " +  code, ConsoleColor.Cyan);
         }
 
         [Command("wsync", "~r~/wsync")]

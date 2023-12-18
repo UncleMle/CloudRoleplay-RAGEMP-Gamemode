@@ -29,8 +29,6 @@ class VehicleIndicators {
 	public static handleDataHandler(entity: VehicleMp, data: VehicleData) {
 		if (entity.type != "vehicle" || !data) return;
 
-		mp.gui.chat.push(data.indicator_status + " indicator");
-
 		VehicleIndicators.setIndicationForVeh(entity, data.indicator_status);
 	}
 

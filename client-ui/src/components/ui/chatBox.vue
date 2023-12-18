@@ -113,6 +113,7 @@ export default {
         typingState(toggle) {
             if (window.mp) {
                 window.mp.invoke("focus", toggle);
+                window.mp.trigger("browser:sendString", "server:togglePlayerTyping", toggle);
                 window.mp.invoke("setTypingInChatState", toggle);
             }
         },
