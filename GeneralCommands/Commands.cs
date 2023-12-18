@@ -1,4 +1,5 @@
-﻿using CloudRP.Character;
+﻿using CloudRP.Authentication;
+using CloudRP.Character;
 using CloudRP.Database;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
@@ -204,7 +205,31 @@ namespace CloudRP.GeneralCommands
                     dbContext.SaveChanges();
                     CommandUtils.successSay(player, $"Removed nickname of {findNick.nickname} for Player [{findPlayer.Id}]");
                 }
+            }
+        }
 
+        [Command("disableautologin", "~y~Use:~w~ /disableautologin")]
+        public void disableAutoLogin(Player player)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(userData != null)
+            {
+                using(DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    Account findAcc = dbContext.accounts.Find(userData.accountId);
+
+                    if(findAcc != null && findAcc.auto_login == 1)
+                    {
+                        findAcc.auto_login = 0;
+                        dbContext.Update(findAcc);
+                        dbContext.SaveChanges();
+                        CommandUtils.successSay(player, "You disabled auto login!");
+                    } else
+                    {
+                        CommandUtils.errorSay(player, "You don't have auto login enabled.");
+                    } 
+                }
             }
         }
 

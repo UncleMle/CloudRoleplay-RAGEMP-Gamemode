@@ -167,7 +167,7 @@ class AdminEsp {
 			let dispText: string = `Vehicle (RID #${ent.remoteId}) (Model ${AdminEsp.getVehicleName(ent as VehicleMp)}) (Dist ${distBetweenCoords(AdminEsp.LocalPlayer.position, ent.position).toFixed(1)}M) `;
 
 			if (vehicleData != null) {
-				dispText += `(VID #${vehicleData.vehicle_id}) (Locked ${vehicleData.vehicle_locked})`;
+				dispText += `(VID #${vehicleData.vehicle_id}) (Locked ${vehicleData.vehicle_locked}) I = ${vehicleData.indicator_status}`;
 			}
 
 			AdminEsp.renderText(dispText, drawTextCoords);

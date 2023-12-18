@@ -472,7 +472,7 @@ namespace CloudRP.Authentication
 
         public void setUpAutoLogin(Player player, Account userAccount)
         {
-            string randomString = AuthUtils.generateString(6) + userAccount.account_id;
+            string randomString = AuthUtils.generateString(15) + userAccount.account_id;
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {

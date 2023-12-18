@@ -1,3 +1,4 @@
+import validateKeyPress from "@/PlayerMethods/validateKeyPress";
 import { VehicleData } from "../@types";
 import { _control_ids } from "../Constants/Constants";
 import getVehicleData from "../PlayerMethods/getVehicleData";
@@ -13,8 +14,8 @@ class VehicleIndicators {
 		mp.events.add("entityStreamIn", VehicleIndicators.handleVehicleStreamIn);
 		mp.events.addDataHandler(_SHARED_VEHICLE_DATA, VehicleIndicators.handleDataHandler);
 
-		mp.keys.bind(_control_ids.LEFTARR, false, () => VehicleIndicators.handleVehicleIndicator(1));
-		mp.keys.bind(_control_ids.RIGHTARR, false, () => VehicleIndicators.handleVehicleIndicator(0));
+		mp.keys.bind(_control_ids.LEFTARR, false, () => validateKeyPress() && VehicleIndicators.handleVehicleIndicator(1));
+		mp.keys.bind(_control_ids.RIGHTARR, false, () => validateKeyPress() && VehicleIndicators.handleVehicleIndicator(0));
 	}
 
 	public static handleVehicleStreamIn(entity: VehicleMp) {
@@ -22,23 +23,15 @@ class VehicleIndicators {
 		let vehicleData: VehicleData | undefined = getVehicleData(entity);
 		if (!vehicleData) return;
 
-		if (vehicleData.indicator_status != -1) {
-			entity.setIndicatorLights(-1, true);
-		} else {
-			entity.setIndicatorLights(1, false);
-			entity.setIndicatorLights(0, false);
-		}
+		VehicleIndicators.setIndicationForVeh(entity, vehicleData.indicator_status);
 	}
 
 	public static handleDataHandler(entity: VehicleMp, data: VehicleData) {
 		if (entity.type != "vehicle" || !data) return;
 
-		if (data.indicator_status != -1) {
-			entity.setIndicatorLights(-1, true);
-		} else {
-			entity.setIndicatorLights(1, false);
-			entity.setIndicatorLights(0, false);
-		}
+		mp.gui.chat.push(data.indicator_status + " indicator");
+
+		VehicleIndicators.setIndicationForVeh(entity, data.indicator_status);
 	}
 
 	public static handleVehicleIndicator(indicateId: number) {
@@ -53,6 +46,15 @@ class VehicleIndicators {
 			mp.events.callRemote(VehicleIndicators.eventName, indicateId);
 		}
 
+	}
+
+	public static setIndicationForVeh(entity: VehicleMp, indicatorStatus: number) {
+		entity.setIndicatorLights(0, false);
+		entity.setIndicatorLights(1, false);
+
+		if(indicatorStatus != -1) {
+			entity.setIndicatorLights(indicatorStatus, true);
+		}
 	}
 }
 

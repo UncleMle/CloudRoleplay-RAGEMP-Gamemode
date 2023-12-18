@@ -1,12 +1,12 @@
 <template>
-    <div v-if="getUiStates.chatEnabled && getUiStates.guiEnabled" class="duration-300"
+    <div v-if="getUiStates.chatEnabled && getUiStates.guiEnabled" class="duration-300 "
         :class="!showing ? 'opacity-40' : ''">
         <div id="chat">
             <ul id="chat_messages">
                 <li v-for="(item, i) in chatMessages" :key="i" v-html="item.toString()">
                 </li>
             </ul>
-            <input class="border-l-2 border-gray-500" v-show="inputFieldShowing" v-model="userText" ref="input"
+            <input class="border-l-2 border-gray-500 resize" v-show="inputFieldShowing" v-model="userText" ref="input"
                 id="chat_msg" type="text" />
         </div>
     </div>
