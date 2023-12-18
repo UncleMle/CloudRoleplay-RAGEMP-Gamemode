@@ -253,7 +253,8 @@ namespace CloudRP.Authentication
                     find.password = newHash;
 
 
-                    uiHandling.sendPushNotif(player, "You have reset your password!", 6000, false, false);
+                    uiHandling.sendPushNotif(player, "You have reset your password!", 6000, false, false, true);
+                    uiHandling.setAuthState(player, "");
                     dbContext.Update(find);
                     dbContext.SaveChanges();
                 }
