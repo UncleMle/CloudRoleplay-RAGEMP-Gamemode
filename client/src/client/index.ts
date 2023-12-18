@@ -34,6 +34,7 @@ import HousingSystem from "./housing/HousingSystem";
 import VehicleRefueling from "./RefuellingSystem/VehicleRefueling";
 import VehicleInsurance from "./VehicleInsurance/VehicleInsurance";
 import MarkersAndLabels from "./MarkersAndLabels/MarkersAndLabels";
+import PhoneSystem from "./PhoneSystem/PhoneSystem";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -72,3 +73,4 @@ new HousingSystem();
 new VehicleRefueling();
 new VehicleInsurance();
 new MarkersAndLabels();
+new PhoneSystem();
