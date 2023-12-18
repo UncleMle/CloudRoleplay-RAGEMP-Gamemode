@@ -201,7 +201,6 @@ namespace CloudRP.DeathSystem
             {
                 player.TriggerEvent("corpse:removeCorpse", corpse);
             }
-
         }
 
         public static void addCorpseToClients(Corpse corpse)

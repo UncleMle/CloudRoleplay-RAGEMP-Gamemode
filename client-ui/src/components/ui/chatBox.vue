@@ -3,7 +3,7 @@
         :class="!showing ? 'opacity-40' : ''">
         <div id="chat">
             <ul id="chat_messages">
-                <li v-for="item in chatMessages" :key="getKey(item)" v-html="item.toString()">
+                <li v-for="(item, i) in chatMessages" :key="i" v-html="item.toString()">
                 </li>
             </ul>
             <input class="border-l-2 border-gray-500" v-show="inputFieldShowing" v-model="userText" ref="input"
@@ -27,7 +27,7 @@ export default {
             showing: true,
             chatMessages: [],
             playerMessages: [],
-            chatIteration: 0,
+            chatIteration: -1,
             inactiveTimer: 15000,
             closeInterval: null,
             closeTimeout: null
@@ -57,12 +57,18 @@ export default {
                 this.showing = true;
 
                 this.inputFieldShowing = true;
-                this.$nextTick().then(() => this.$refs.input.focus());
+
+                if (this.$refs.input) {
+                    this.$nextTick().then(() => {
+                        this.$refs.input.focus();
+                        this.$refs.input.select();
+                    });
+                }
 
                 e.preventDefault();
             }
 
-            if (e.keyCode == this.KEYBIND_ENTER) {
+            if (e.keyCode == this.KEYBIND_ENTER && this.userText.length) {
                 this.inputFieldShowing = false;
                 let text = this.userText;
 
@@ -76,18 +82,29 @@ export default {
                 }
             }
 
-            if (e.keyCode == this.KEYBIND_UPARR && this.inputFieldShowing) {
-                this.chatIteration && this.playerMessages.length > this.playerMessages.length - 1 ? this.chatIteration = 0 : 0;
+            /*
+            if (this.inputFieldShowing && this.playerMessages.length) {
+                if (e.keyCode == this.KEYBIND_UPARR) {
+                    this.chatIteration > this.playerMessages.length - 1 ? this.chatIteration = -1 : 0;
 
-                this.userText = this.playerMessages.slice().reverse()[this.chatIteration++];
+                    this.chatIteration++;
 
+                    console.log("Up" + this.chatIteration);
+                    this.userText = this.playerMessages.slice().reverse()[this.chatIteration];
+
+                }
+
+                if (e.keyCode == this.KEYBIND_DOWNARR && this.inputFieldShowing) {
+                    this.chatIteration > this.playerMessages.length - 1 || this.chatIteration < 0 ? this.chatIteration = -1 : 0;
+
+                    this.chatIteration--;
+
+                    console.log("Down" + this.chatIteration);
+
+                    this.userText = this.playerMessages.slice().reverse()[this.chatIteration];
+                }
             }
-
-            if (e.keyCode == this.KEYBIND_DOWNARR && this.inputFieldShowing) {
-                this.chatIteration && this.playerMessages.length < this.playerMessages.length - 1 ? this.chatIteration = 0 : 0;
-
-                this.userText = this.playerMessages.slice().reverse()[this.chatIteration--];
-            }
+            */
         },
         typingState(toggle) {
             if (window.mp) {
