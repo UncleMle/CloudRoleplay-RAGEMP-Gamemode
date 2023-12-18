@@ -77,9 +77,9 @@ export default {
     data() {
         return {
             appBaseStyle: "rounded-t-[1.7vw] " + this.phoneOpen ? 'rounded-b-[1.7vw]' : '',
-            currentApp: "My Cars",
+            currentApp: "",
             basePhoneBg: "bg-[url('https://i.imgur.com/C8nWb8y.jpg')]",
-            phoneBg: "bg-[#0b0b0b]",
+            phoneBg: "bg-[url('https://i.imgur.com/C8nWb8y.jpg')]",
             topPhoneStyle: "bottom-16",
             phoneOpen: true,
             spaceOrTabPressed: false,
@@ -87,6 +87,7 @@ export default {
             availableApps: [
                 { name: "My Cars", img: "https://i.imgur.com/iXN6nMI.png", bg: "bg-[#0b0b0b]" },
                 { name: "Rob App", img: "https://i.imgur.com/XqotRh0.png" },
+                { name: "Settings", img: "https://i.imgur.com/4NIL7l1.png" },
             ]
         }
     },
