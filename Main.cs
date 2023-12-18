@@ -31,7 +31,7 @@ namespace CloudRP
             
             NAPI.Server.SetCommandErrorMessage(defaultErrorMessage);
             NAPI.World.SetWeather(defaultWeather);
-            ChatUtils.formatConsolePrint(ChatUtils._c_Server + " Gamemode has started", ConsoleColor.Cyan);
+            ChatUtils.formatConsolePrint(" Gamemode has started", ConsoleColor.Cyan);
         }
     }
 }
