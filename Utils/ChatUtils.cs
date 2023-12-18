@@ -21,6 +21,7 @@ namespace CloudRP.Utils
         public static string _c_DeathSystem = "[Death] ";
         public static string _c_Hospital = "[Hospital] ";
         public static string _c_Server = "[Server] ";
+        public static string _c_AdminSys = "[Staff] ";
         public static string yellow = "!{yellow}";
         public static string red = "!{red}";
         public static string Success = "!{#61d480}[Success] " + White;
@@ -63,6 +64,13 @@ namespace CloudRP.Utils
         {
             Console.ForegroundColor = ConsoleColor.Magenta;
             Console.WriteLine(_c_DiscordSystem + str);
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+        
+        public static void adminSysPrint(string str)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(_c_AdminSys + str);
             Console.ForegroundColor = ConsoleColor.White;
         }  
         
