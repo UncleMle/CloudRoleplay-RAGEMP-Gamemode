@@ -34,7 +34,7 @@ namespace CloudRP.AntiCheat
 
                     if (data.security.vpn || data.security.proxy)
                     {
-                        Console.WriteLine($"Player [{player.Id}] was kicked for VPN or Proxy! Address: {player.Address}");
+                        ChatUtils.formatConsolePrint($"Player [{player.Id}] was kicked for VPN or Proxy! Address: {player.Address}");
                         player.Kick();
                     }
                 }

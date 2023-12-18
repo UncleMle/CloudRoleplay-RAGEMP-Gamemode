@@ -31,7 +31,7 @@ namespace CloudRP.Vehicles
                 vehicles = dbContext.vehicles.ToList();
             }
 
-            Console.WriteLine($"A total of {vehicles.Count} vehicles where loaded in.");
+            ChatUtils.formatConsolePrint($"A total of {vehicles.Count} vehicles where loaded in.", ConsoleColor.Cyan);
 
             if (vehicles.Count > 0)
             {
@@ -176,7 +176,7 @@ namespace CloudRP.Vehicles
                     if(getVehicleData(vehicle) == null)
                     {
                         vehicle.Delete();
-                        Console.WriteLine("Possible vehicle spawn cheat. Vehicle with no data found!");
+                        ChatUtils.formatConsolePrint("Possible vehicle spawn cheat. Vehicle with no data found!");
                     } else
                     {
                         DbVehicle vehicleData = getVehicleData(vehicle);
@@ -189,7 +189,7 @@ namespace CloudRP.Vehicles
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex);
+                    ChatUtils.formatConsolePrint(ex.ToString());
                 }
             }
         }
@@ -425,11 +425,10 @@ namespace CloudRP.Vehicles
                 }
 
                 vehicle.Delete();
-                Console.WriteLine($"Vehicle #{vehicleData.vehicle_id} was saved to insurance. ");
+                ChatUtils.formatConsolePrint($"Vehicle #{vehicleData.vehicle_id} was saved to insurance. ");
             }
             catch
             {
-
             }
             
         }

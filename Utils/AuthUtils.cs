@@ -81,7 +81,7 @@ namespace CloudRP.Utils
 
                 if (smtpClientUsername == null || smtpClientPassword == null)
                 {
-                    Console.WriteLine("Email Client enviroment variables couldn't be found.");
+                    ChatUtils.formatConsolePrint("Email Client enviroment variables couldn't be found.");
                     return;
                 }
 

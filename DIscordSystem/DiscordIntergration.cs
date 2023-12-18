@@ -372,9 +372,7 @@ namespace Integration
 
         private static void ThrowErrorMessage(string StrErrorMessage)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(StrErrorMessage);
-            Console.ResetColor();
+            ChatUtils.formatConsolePrint(StrErrorMessage);
         }
 
 

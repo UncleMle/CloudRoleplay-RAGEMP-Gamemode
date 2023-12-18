@@ -103,7 +103,7 @@ namespace CloudRP.Authentication
                             setUpAutoLogin(player, findAccount);
                         }
 
-                        Console.WriteLine($"User {findAccount.username} (#{findAccount.account_id}) has logged in.");
+                        ChatUtils.formatConsolePrint($"User {findAccount.username} (#{findAccount.account_id}) has logged in.", ConsoleColor.Green);
                     } else {
                         uiHandling.sendPushNotifError(player, "Incorrect account credentials", 4000, true);
                     }

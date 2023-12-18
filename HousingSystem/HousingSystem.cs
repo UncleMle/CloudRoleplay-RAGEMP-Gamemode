@@ -74,7 +74,7 @@ namespace CloudRP.HousingSystem
                 loadInteriorData(house);
             } else
             {
-                Console.WriteLine("House with ID " + house.house_id +" was not loaded (interior not found)");
+                ChatUtils.formatConsolePrint("House with ID " + house.house_id +" was not loaded (interior not found)");
             }
         }
 
