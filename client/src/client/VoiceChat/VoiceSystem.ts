@@ -1,7 +1,6 @@
 import getUserCharacterData from '@/PlayerMethods/getUserCharacterData';
 import { CharacterData } from '../@types';
 import { _control_ids, _sharedCharacterDataIdentifier } from '../Constants/Constants';
-import getTargetCharacterData from '@/PlayerMethods/getTargetCharacterData';
 
 class VoiceSystem {
 	public static Localplayer: PlayerMp;

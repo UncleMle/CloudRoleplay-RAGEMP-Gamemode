@@ -2,8 +2,8 @@
 <template>
     <main class="relative duration-500">
 
-        <div id="phone duration-300" :class="phoneOpen ? 'bottom-[2%]' : 'bottom-[-26.9rem]'"
-            class="fixed right-[22%] shadow-2xl h-[30rem] shadow-black bg-black text-white font-medium w-[16rem] rounded-t-[1.7vw]  rounded-b-[1.7vw] border-t-2 border-r-2  border-b-2 border-l-2 border-slate-400 bg-cover bg-no-repeat bg-[url('https://i.imgur.com/C8nWb8y.jpg')]">
+        <div id="phone duration-300" :class="(phoneOpen ? 'bottom-[2%]' : 'bottom-[-26.9rem]') + ' ' + phoneBg"
+            class="fixed right-[22%] shadow-2xl h-[30rem] shadow-black bg-black text-white font-medium w-[16rem] rounded-t-[1.7vw]  rounded-b-[1.7vw] border-t-2 border-r-2  border-b-2 border-l-2 border-slate-400 bg-cover bg-no-repeat">
             <div
                 class="w-full h-full border-r-[4px] border-t-[4px] border-b-[4px] border-l-[4px] rounded-t-[1.7vw] rounded-b-[1.7vw] border-black ">
                 <button @click="openPhone" class="w-full content-normal flex justify-center h-5">
@@ -32,7 +32,7 @@
                     <div class="w-full mt-6">
                         <div class="grid grid-cols-3 gap-4 mr-2 ml-2">
                             <div v-for="app in availableApps" :key="app.name">
-                                <button @click="currentApp = app.name" class="relative text-center">
+                                <button @click="currentApp = app.name, phoneBg = app.bg" class="relative text-center">
                                     <div class=" rounded-2xl bg-cover bg-no-repeat text-center">
                                         <img :src="app.img" class="scale-100 rounded-2xl" />
                                     </div>
@@ -59,7 +59,7 @@
                 </div>
             </div>
 
-            <button v-if="currentApp != ''" @click="!spaceOrTabPressed ? currentApp = '' : ''"
+            <button v-if="currentApp != ''" @click="homeButton"
                 class="absolute bottom-1 w-full duration-500 hover:bottom-5 p-2">
                 <div class="flex justify-center ml-7 mr-7 h-1 bg-gray-200 rounded-lg">
                 </div>
@@ -77,13 +77,15 @@ export default {
     data() {
         return {
             appBaseStyle: "rounded-t-[1.7vw] " + this.phoneOpen ? 'rounded-b-[1.7vw]' : '',
-            currentApp: "",
+            currentApp: "My Cars",
+            basePhoneBg: "bg-[url('https://i.imgur.com/C8nWb8y.jpg')]",
+            phoneBg: "bg-[#0b0b0b]",
             topPhoneStyle: "bottom-16",
-            phoneOpen: false,
+            phoneOpen: true,
             spaceOrTabPressed: false,
             textShadow: "text-shadow: rgba(0, 0, 0, 0.563) 1px 0 10px;",
             availableApps: [
-                { name: "My Cars", img: "https://i.imgur.com/iXN6nMI.png" },
+                { name: "My Cars", img: "https://i.imgur.com/iXN6nMI.png", bg: "bg-[#0b0b0b]" },
                 { name: "Rob App", img: "https://i.imgur.com/XqotRh0.png" },
             ]
         }
@@ -103,6 +105,12 @@ export default {
             let targetStyle = "bottom-16";
             this.topPhoneStyle === targetStyle ? this.topPhoneStyle = "" : this.topPhoneStyle = targetStyle;
             this.phoneOpen = !this.phoneOpen;
+        },
+        homeButton() {
+            if(!this.spaceOrTabPressed) {
+                this.phoneBg = this.basePhoneBg;
+                this.currentApp = "";
+            }
         },
         keyUpListener(e) {
             this.spaceOrTabPressed = e.keyCode == 32 || e.keyCode == 9;

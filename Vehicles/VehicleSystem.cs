@@ -440,7 +440,7 @@ namespace CloudRP.Vehicles
                     }
 
                     vehicle.Delete();
-                    ChatUtils.formatConsolePrint($"Vehicle #{vehicleData.vehicle_id} was saved to insurance. ");
+                    ChatUtils.formatConsolePrint($"Vehicle #{vehicleData.vehicle_id} ({vehicleData.vehicle_spawn_hash}) was saved to {closestInsuranceToDeath.insuranceName}.");
                 }
             }
             catch

@@ -28,7 +28,8 @@ const store = new Vuex.Store({
 			player_current_tats: [],
 			vehicle_performance_data: [],
 			vehicle_refuel_data: {},
-			insurance_vehicle_data: {}
+			insurance_vehicle_data: {},
+			phone_data_player_vehicles: {}
 		},
 		uiStates: {
 			characterSelection: false,
