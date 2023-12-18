@@ -81,7 +81,7 @@ export default {
             basePhoneBg: "bg-[url('https://i.imgur.com/C8nWb8y.jpg')]",
             phoneBg: "bg-[url('https://i.imgur.com/C8nWb8y.jpg')]",
             topPhoneStyle: "bottom-16",
-            phoneOpen: true,
+            phoneOpen: false,
             spaceOrTabPressed: false,
             textShadow: "text-shadow: rgba(0, 0, 0, 0.563) 1px 0 10px;",
             availableApps: [

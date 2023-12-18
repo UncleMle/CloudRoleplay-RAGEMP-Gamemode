@@ -50,7 +50,7 @@ class VehicleIndicators {
 		entity.setIndicatorLights(0, false);
 		entity.setIndicatorLights(1, false);
 
-		if(indicatorStatus != -1) {
+		if(indicatorStatus != -1 && typeof indicatorStatus == "number") {
 			entity.setIndicatorLights(indicatorStatus, true);
 		}
 	}

@@ -3,8 +3,10 @@ using CloudRP.Database;
 using CloudRP.PlayerData;
 using CloudRP.Vehicles;
 using GTANetworkAPI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 
@@ -18,13 +20,15 @@ namespace CloudRP.PhoneSystem
         {
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
-            if(characterData != null )
+            if(characterData != null)
             {
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
                     List<DbVehicle> playerVehicles = dbContext.vehicles.Where(veh => veh.owner_id == characterData.owner_id).ToList();
 
-                    uiHandling.handleObjectUiMutation(player, MutationKeys.PhoneDataVehicles, playerVehicles);
+                    List<PhoneUiVeh> phoneUiVeh = JsonConvert.DeserializeObject<List<PhoneUiVeh>>(JsonConvert.SerializeObject(playerVehicles));
+                    
+                    uiHandling.handleObjectUiMutation(player, MutationKeys.PhoneDataVehicles, phoneUiVeh);
                 }
             }
         }

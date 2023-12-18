@@ -32,7 +32,7 @@ class VehicleInteraction {
 			if (raycast == null || (raycast.entity as EntityMp).type != 'vehicle') return;
 			VehicleInteraction.boneTarget = VehicleInteraction.getClosestBone(raycast);
 
-			if (VehicleInteraction.boneTarget.boneIndex) {
+			if (VehicleInteraction.boneTarget) {
 				const bonePos: Vector3 = (raycast.entity as EntityMp).getWorldPositionOfBone(VehicleInteraction.boneTarget.boneIndex);
 
 				const vehicleData: VehicleData | undefined = getVehicleData(raycast.entity as VehicleMp);
