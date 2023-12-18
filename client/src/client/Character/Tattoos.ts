@@ -35,7 +35,6 @@ class Tattoos {
 	public static handleRender() {
 		if(Tattoos.LocalPlayer.browserRouter == Browsers.Tattoos) {
 			DeathSystem.disableControls();
-			mp.gui.cursor.show(true, true);
 		}
 	}
 

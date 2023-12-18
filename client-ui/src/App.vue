@@ -35,6 +35,7 @@ export default {
     },
     computed: {
         ...mapGetters({
+            playerData: 'getPlayerInfo',
             uiStates: 'getUiStates',
             serverData: 'getPlayerCharacters'
         })

@@ -266,8 +266,6 @@ namespace CloudRP.Admin
             activeReports.Remove(findReport);
             NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.Success + "You closed report with id " + reportId);
             NAPI.Chat.SendChatMessageToPlayer(findReport.playerReporting, ChatUtils.reports + $"Your report was closed");
-
-
         }
 
         [Command("rr", "~r~Use: ~w~/rr [message]", GreedyArg = true, Alias = "reportrespond")]
@@ -572,8 +570,8 @@ namespace CloudRP.Admin
             else AdminUtils.sendNoAuth(player);
         }
 
-        [Command("bringv", "~r~/bringv [vehicleIdOrPlate]", Alias = "vbring")]
-        public void bringVehicle(Player player, string vehicleIdOrPlate)
+        [Command("bringv", "~r~/bringv [vehicleIdOrPlate] [setIntoVeh(true | false)]", Alias = "vbring")]
+        public void bringVehicle(Player player, string vehicleIdOrPlate, bool setIntoVeh = true)
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
@@ -601,9 +599,13 @@ namespace CloudRP.Admin
                 else
                 {
                     ChatUtils.formatConsolePrint($"{userData.adminName} v brought {findVehicle.NumberPlate} to them.");
-                    findVehicle.Position = player.Position;
+                    findVehicle.Position = player.Position.Around(5);
                     AdminUtils.staffSay(player, $"Vehicle was brought to you.");
-                    player.SetIntoVehicle(findVehicle, 0);
+                    
+                    if(setIntoVeh)
+                    {
+                        player.SetIntoVehicle(findVehicle, 0);
+                    }
                 }
             }
             else AdminUtils.sendNoAuth(player);
@@ -1182,7 +1184,7 @@ namespace CloudRP.Admin
 
                 if(findVehicle != null)
                 {
-                    player.Position = findVehicle.Position;
+                    player.Position = findVehicle.Position.Around(5);
 
                     ChatUtils.formatConsolePrint($"{userData.adminName} teleported to vehicle {idOrPlate}");
                     AdminUtils.staffSay(player, "Teleported to vehicle " + idOrPlate);

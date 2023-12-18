@@ -70,6 +70,7 @@ export default {
 
             if (e.keyCode == this.KEYBIND_ENTER) {
                 this.inputFieldShowing = false;
+                this.chatIteration = -1;
 
                 if (!this.userText.length) return;
                 let text = this.userText;
@@ -116,11 +117,6 @@ export default {
                 window.mp.trigger("browser:sendString", "server:togglePlayerTyping", toggle);
                 window.mp.invoke("setTypingInChatState", toggle);
             }
-        },
-        getKey(item) {
-            let unix = Math.floor(Date.now() / 1000);
-            let ran = Math.floor(Math.random() * 2000);
-            return unix + item + ran + this.chatMessages.indexOf(item);
         },
         setCloseInterval() {
             this.showing = true;

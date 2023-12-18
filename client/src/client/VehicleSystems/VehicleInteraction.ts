@@ -29,33 +29,36 @@ class VehicleInteraction {
 
 		if (VehicleInteraction.checkInteractionRender()) {
 			const raycast: RaycastResult | null = VehicleInteraction.getLocalTargetVehicle();
-			if (raycast == null || (raycast.entity as EntityMp).type != 'vehicle' || !VehicleInteraction.boneTarget || !VehicleInteraction.boneTarget.boneIndex) return;
+			if (raycast == null || (raycast.entity as EntityMp).type != 'vehicle') return;
 			VehicleInteraction.boneTarget = VehicleInteraction.getClosestBone(raycast);
-			const bonePos: Vector3 = (raycast.entity as EntityMp).getWorldPositionOfBone(VehicleInteraction.boneTarget.boneIndex);
 
-			const vehicleData: VehicleData | undefined = getVehicleData(raycast.entity as VehicleMp);
-			if (!vehicleData) return;
+			if (VehicleInteraction.boneTarget.boneIndex) {
+				const bonePos: Vector3 = (raycast.entity as EntityMp).getWorldPositionOfBone(VehicleInteraction.boneTarget.boneIndex);
 
-			if (vehicleData.vehicle_locked) {
-				return;
+				const vehicleData: VehicleData | undefined = getVehicleData(raycast.entity as VehicleMp);
+				if (!vehicleData) return;
+
+				if (vehicleData.vehicle_locked) {
+					return;
+				}
+
+				let renderText: string =
+					'~g~[E]~w~' +
+					` ${
+						VehicleInteraction.boneTarget.locked
+							? `Close ${VehicleInteraction.names[VehicleInteraction.bones.indexOf(VehicleInteraction.boneTarget.name)]}`
+							: `Open ${VehicleInteraction.names[VehicleInteraction.bones.indexOf(VehicleInteraction.boneTarget.name)]}`
+					}`;
+
+				let dist: number = distBetweenCoords(VehicleInteraction.LocalPlayer.position, bonePos);
+
+				mp.game.graphics.drawText(renderText, [bonePos.x, bonePos.y, bonePos.z], {
+					scale: [0.3, 0.3],
+					outline: false,
+					color: [255, 255, 255, 255 - dist * 80],
+					font: 4
+				});
 			}
-
-			let renderText: string =
-				'~g~[E]~w~' +
-				` ${
-					VehicleInteraction.boneTarget.locked
-						? `Close ${VehicleInteraction.names[VehicleInteraction.bones.indexOf(VehicleInteraction.boneTarget.name)]}`
-						: `Open ${VehicleInteraction.names[VehicleInteraction.bones.indexOf(VehicleInteraction.boneTarget.name)]}`
-				}`;
-
-			let dist: number = distBetweenCoords(VehicleInteraction.LocalPlayer.position, bonePos);
-
-			mp.game.graphics.drawText(renderText, [bonePos.x, bonePos.y, bonePos.z], {
-				scale: [0.3, 0.3],
-				outline: false,
-				color: [255, 255, 255, 255 - dist * 80],
-				font: 4
-			});
 		}
 	}
 

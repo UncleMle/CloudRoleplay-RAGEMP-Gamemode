@@ -120,6 +120,7 @@ namespace CloudRP.PlayerData
         public static readonly string ModsView = "/vehiclemods";
         public static readonly string Dealership = "/dealerships";
         public static readonly string Refuel = "/refuel";
+        public static readonly string Insurance = "/insurance";
     }
 
     public static class AuthStates
@@ -143,5 +144,6 @@ namespace CloudRP.PlayerData
         public static readonly string AuthUiState = "auth_ui";
         public static readonly string PlayerReportData = "report_data";
         public static readonly string VehicleFuelData = "vehicle_refuel_data";
+        public static readonly string InsuranceVehicles = "insurance_vehicle_data";
     }   
 }

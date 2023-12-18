@@ -414,3 +414,10 @@ interface RefuelPump {
 	position: Vector3,
 	owner_id: number
 }
+
+interface InsuranceArea {
+	insuranceId: number,
+	insuranceName: string,
+	spawnPosition: Vector3,
+	retrievePosition: Vector3
+}

@@ -32,6 +32,7 @@ import VehicleDealerShips from "./vehicleDealerships/VehicleDealerships";
 import Tattoos from "./Character/Tattoos";
 import HousingSystem from "./housing/HousingSystem";
 import VehicleRefueling from "./RefuellingSystem/VehicleRefueling";
+import VehicleInsurance from "./VehicleInsurance/VehicleInsurance";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -68,3 +69,4 @@ new VehicleDealerShips();
 new Tattoos();
 new HousingSystem();
 new VehicleRefueling();
+new VehicleInsurance();
