@@ -191,12 +191,6 @@ namespace CloudRP.DeathSystem
             player.TriggerEvent("injured:removeStatus");
         }
 
-        [ServerEvent(Event.PlayerConnected)]
-        public static void addCorpsesForPlayer(Player player)
-        {
-            initCorpses(player);
-        }
-
         public static void removeCorpse(Corpse corpse)
         {
             corpses.Remove(corpse);

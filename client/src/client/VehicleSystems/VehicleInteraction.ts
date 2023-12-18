@@ -29,7 +29,7 @@ class VehicleInteraction {
 
 		if (VehicleInteraction.checkInteractionRender()) {
 			const raycast: RaycastResult | null = VehicleInteraction.getLocalTargetVehicle();
-			if (raycast == null || (raycast.entity as EntityMp).type != 'vehicle') return;
+			if (raycast == null || (raycast.entity as EntityMp).type != 'vehicle' || !VehicleInteraction.boneTarget.boneIndex) return;
 			VehicleInteraction.boneTarget = VehicleInteraction.getClosestBone(raycast);
 			const bonePos: Vector3 = (raycast.entity as EntityMp).getWorldPositionOfBone(VehicleInteraction.boneTarget.boneIndex);
 

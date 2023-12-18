@@ -452,6 +452,7 @@ namespace CloudRP.Authentication
                 DeathEvent.updateAndSetInjuredState(player, characterData, characterData.injured_timer);
             }
 
+            DeathEvent.initCorpses(player);
             uiHandling.pushRouterToClient(player, Browsers.None);
             player.Dimension = characterData.player_dimension;
 
