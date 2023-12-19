@@ -170,7 +170,8 @@ export default {
         addKey() {
             window.mp.trigger("browser:sendObject", "server:addVehicleKey", JSON.stringify({
                 nameOrId: this.keyHolderId,
-                nickname: this.keyHolderNick
+                nickname: this.keyHolderNick,
+                vehicleId: this.targetVehicleData.vehicle_id
             }));
 
             this.getAllVehicleData();

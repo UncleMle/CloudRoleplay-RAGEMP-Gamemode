@@ -6,6 +6,7 @@ namespace CloudRP.Vehicles
 {
     public class VehicleKeyData
     {
+        public int vehicleId {  get; set; }
         public string nameOrId { get; set; }
         public string nickname { get; set; }
     }

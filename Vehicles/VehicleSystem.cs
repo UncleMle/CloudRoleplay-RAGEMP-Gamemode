@@ -621,6 +621,12 @@ namespace CloudRP.Vehicles
                 Vehicle targetVeh = player.Vehicle;
                 DbVehicle targetVehData = getVehicleData(targetVeh);
 
+                if(targetVehData.vehicle_id != keyData.vehicleId)
+                {
+                    uiHandling.sendPushNotifError(player, "You and the target must both be in the same vehicle.", 6600);
+                    return;
+                }
+
                 if (targetVehData != null)
                 {
                     if (targetVehData.owner_id != playerCharData.character_id) return;
