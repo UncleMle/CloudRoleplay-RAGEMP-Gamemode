@@ -93,7 +93,7 @@ namespace CloudRP.VehicleRefueling
                     return;
                 }
 
-                if(closeVehicleData.engine_status)
+                if(closeVehicleData.engine_status && closeVehicleData.vehicle_fuel > 0)
                 {
                     uiHandling.sendPushNotifError(player, "Ensure the vehicle's engine is off.", 6600);
                     return;
