@@ -573,88 +573,103 @@ namespace CloudRP.Vehicles
             }
         }
 
-        [Command("givekeys", "~y~Use:~w~ /givekeys [nameOrId] [nickname]", GreedyArg = true)]
-        public static void giveVehiclesKeys(Player player, string nameOrId, string nickName)
+        [RemoteEvent("server:addVehicleKey")]
+        public static void giveVehiclesKeys(Player player, string data)
         {
-            if(!player.IsInVehicle)
+            VehicleKeyData keyData = JsonConvert.DeserializeObject<VehicleKeyData>(data);
+            if(keyData == null) return; 
+
+            if (!player.IsInVehicle)
             {
                 CommandUtils.errorSay(player, "You must be in a vehicle to use this command.");
                 return;
             }
 
-            DbCharacter playerCharData = PlayersData.getPlayerCharacterData(player);
-            if (playerCharData == null) return;
-            Player playerFindPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
-
-            if(playerFindPlayer == null || playerFindPlayer != null && Vector3.Distance(playerFindPlayer.Position, player.Position) > 6)
+            if (keyData.nickname != null && keyData.nameOrId != null)
             {
-                CommandUtils.errorSay(player, "Player couldn't be found. (Are you within distance?)");
-                return;
-            }
-
-            if (player.Equals(playerFindPlayer))
-            {
-                CommandUtils.errorSay(player, "You cannot give vehicle keys to yourself.");
-                return;
-            }
-
-            DbCharacter playerFindData = PlayersData.getPlayerCharacterData(playerFindPlayer);
-            if (playerFindData == null) return;
-            
-            if(!playerFindPlayer.IsInVehicle)
-            {
-                CommandUtils.errorSay(player, "Target must be in the same vehicle as you.");
-                return;
-            }
-
-            Vehicle targetVeh = player.Vehicle;
-            DbVehicle targetVehData = getVehicleData(targetVeh);
-
-
-            if(targetVehData != null)
-            {
-                if (targetVehData.owner_id != playerCharData.character_id)
+                if(keyData.nickname.Length > 40)
                 {
-                    CommandUtils.errorSay(player, "You must own the vehicle to give keys to it.");
+                    uiHandling.sendPushNotifError(player, "Key nickname must be less than 40 characters", 6600, true);
                     return;
                 }
 
-                VehicleKey findIfAlreadyHas = targetVehData.vehicle_key_holders
-                    .Where(key => key.target_character_id == playerFindData.character_id && key.vehicle_id == targetVehData.vehicle_id)
-                    .FirstOrDefault();
+                DbCharacter playerCharData = PlayersData.getPlayerCharacterData(player);
+                if (playerCharData == null) return;
+                Player playerFindPlayer = CommandUtils.getPlayerFromNameOrId(keyData.nameOrId);
 
-                if(findIfAlreadyHas != null)
+                if (playerFindPlayer == null || playerFindPlayer != null && Vector3.Distance(playerFindPlayer.Position, player.Position) > 6)
                 {
-                    CommandUtils.errorSay(player, "This player already has keys to this vehicle.");
+                    CommandUtils.errorSay(player, "Player couldn't be found. (Are you within distance?)");
                     return;
-                } 
-
-
-                VehicleKey newKey = new VehicleKey
-                {
-                    target_character_id = playerFindData.character_id,
-                    vehicle_id = targetVehData.vehicle_id,
-                    vehicle_name = targetVehData.vehicle_name,
-                    nickname = nickName
-                };
-
-                targetVehData.vehicle_key_holders.Add(newKey);
-
-                using(DefaultDbContext dbContext = new DefaultDbContext())
-                {
-                    dbContext.vehicle_keys.Add(newKey);
-                    dbContext.SaveChanges();
                 }
 
-                saveVehicleData(targetVeh, targetVehData);
+                if (player.Equals(playerFindPlayer))
+                {
+                    CommandUtils.errorSay(player, "You cannot give vehicle keys to yourself.");
+                    return;
+                }
 
-                string prefixToPlayer = ChatUtils.Success + "You gave ";
-                string suffixToPlayer = " a copy of your vehicle's keys.";
-                string prefixFromPlayer = ChatUtils.info + "You were given a copy of ";
-                string suffixFromPlayer = "'s vehicle's keys";
+                DbCharacter playerFindData = PlayersData.getPlayerCharacterData(playerFindPlayer);
+                if (playerFindData == null) return;
 
-                ChatUtils.sendWithNickName(player, playerFindPlayer, prefixToPlayer, suffixToPlayer);
-                ChatUtils.sendWithNickName(playerFindPlayer, player, prefixFromPlayer, suffixFromPlayer);
+                if (!playerFindPlayer.IsInVehicle)
+                {
+                    CommandUtils.errorSay(player, "Target must be in the same vehicle as you.");
+                    return;
+                }
+
+                Vehicle targetVeh = player.Vehicle;
+                DbVehicle targetVehData = getVehicleData(targetVeh);
+
+
+                if (targetVehData != null)
+                {
+                    if (targetVehData.owner_id != playerCharData.character_id)
+                    {
+                        CommandUtils.errorSay(player, "You must own the vehicle to give keys to it.");
+                        return;
+                    }
+
+                    VehicleKey findIfAlreadyHas = targetVehData.vehicle_key_holders
+                        .Where(key => key.target_character_id == playerFindData.character_id && key.vehicle_id == targetVehData.vehicle_id)
+                        .FirstOrDefault();
+
+                    if (findIfAlreadyHas != null)
+                    {
+                        CommandUtils.errorSay(player, "This player already has keys to this vehicle.");
+                        return;
+                    }
+
+                    VehicleKey newKey = new VehicleKey
+                    {
+                        target_character_id = playerFindData.character_id,
+                        vehicle_id = targetVehData.vehicle_id,
+                        vehicle_name = targetVehData.vehicle_name,
+                        nickname = keyData.nickname
+                    };
+
+                    targetVehData.vehicle_key_holders.Add(newKey);
+
+                    using (DefaultDbContext dbContext = new DefaultDbContext())
+                    {
+                        dbContext.vehicle_keys.Add(newKey);
+                        dbContext.SaveChanges();
+                    }
+
+                    saveVehicleData(targetVeh, targetVehData);
+
+                    string prefixToPlayer = ChatUtils.Success + "You gave ";
+                    string suffixToPlayer = " a copy of your vehicle's keys.";
+                    string prefixFromPlayer = ChatUtils.info + "You were given a copy of ";
+                    string suffixFromPlayer = "'s vehicle's keys";
+
+                    ChatUtils.sendWithNickName(player, playerFindPlayer, prefixToPlayer, suffixToPlayer);
+                    ChatUtils.sendWithNickName(playerFindPlayer, player, prefixFromPlayer, suffixFromPlayer);
+                }
+            }
+            else
+            {
+                uiHandling.sendPushNotifError(player, "Ensure all fields are filled", 6000, true);
             }
         }
 

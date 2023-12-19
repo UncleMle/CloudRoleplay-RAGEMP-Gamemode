@@ -81,10 +81,10 @@
         <div class="flex justify-center mt-7 w-full" v-if="viewState == 'manageVeh'">
             <div class="mr-4 ml-4 text-center">
                 <h1 class="border-b-2 border-gray-600 pb-1 text-md">Add a new keyholder</h1>
-                <input class="w-full p-2 rounded-lg bg-transparent border border-gray-600 mt-3" placeholder="Player ID...">
-                <input class="w-full p-2 mt-5 rounded-lg bg-transparent border border-gray-600" placeholder="Nickname...">
+                <input v-model="keyHolderId" class="w-full p-2 rounded-lg bg-transparent border border-gray-600 mt-3" placeholder="Player ID...">
+                <input v-model="keyHolderNick" class="w-full p-2 mt-5 rounded-lg bg-transparent border border-gray-600" placeholder="Nickname...">
 
-                <button class="mt-3 border w-full p-0.5 rounded-lg border-gray-600 duration-300 hover:text-green-400">Add <i
+                <button @click="addKey" class="mt-3 border w-full p-0.5 rounded-lg border-gray-600 duration-300 hover:text-green-400">Add <i
                         class="fa-solid fa-plus"></i></button>
 
                 <div v-if="targetVehicleData.vehicle_key_holders && targetVehicleData.vehicle_key_holders.length > 0">
@@ -166,6 +166,15 @@ export default {
         },
         manage() {
             this.viewState = "manageVeh";
+        },
+        addKey() {
+            window.mp.trigger("browser:sendObject", "server:addVehicleKey", JSON.stringify({
+                nameOrId: this.keyHolderId,
+                nickname: this.keyHolderNick
+            }));
+
+            this.keyHolderId = "";
+            this.keyHolderNick = "";
         }
     },
     computed: {
