@@ -32,7 +32,9 @@ class CharacterSystem {
 	}
 
 	public static async setCharacterCustomization(characterModel: any, parse: boolean = true, entity: PlayerMp | PedMp = CharacterSystem.LocalPlayer) {
-		if(!characterModel) return;
+		if(!characterModel || !entity) return;
+
+		if(entity.type == "player" && !mp.players.at(entity.remoteId)) return;
 
 		for (let i = 0; entity.handle === 0 && i < 15; ++i) {
             await mp.game.waitAsync(100);
