@@ -59,6 +59,7 @@ namespace CloudRP.Authentication
                             {
                                 account_id = -1,
                                 admin = "System",
+                                username = "N/A",
                                 ban_reason = $"Attempting to breach accounts. REFID #{findAccount.account_id}",
                                 ip_address = player.Address,
                                 lift_unix_time = -1,
