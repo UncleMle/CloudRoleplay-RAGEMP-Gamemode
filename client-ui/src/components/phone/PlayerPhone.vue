@@ -3,9 +3,9 @@
     <main class="relative duration-500">
 
         <div id="phone duration-300" :class="(phoneOpen ? 'bottom-[2%]' : 'bottom-[-26.9rem]') + ' ' + phoneBg"
-            class="fixed right-[22%] shadow-2xl h-[30rem] shadow-black bg-black text-white font-medium w-[16rem] rounded-t-[1.7vw]  rounded-b-[1.7vw] border-t-2 border-r-2  border-b-2 border-l-2 border-slate-400 bg-cover bg-no-repeat">
+            class="fixed right-[22%] shadow-2xl h-[30rem] shadow-black bg-black text-white font-medium w-[16rem] rounded-t-[2rem]  rounded-b-[2rem] border-t-2 border-r-2  border-b-2 border-l-2 border-slate-400 bg-cover bg-no-repeat">
             <div
-                class="w-full h-full border-r-[4px] border-t-[4px] border-b-[4px] border-l-[4px] rounded-t-[1.7vw] rounded-b-[1.7vw] border-black ">
+                class="w-full h-full border-r-[4px] border-t-[4px] border-b-[4px] border-l-[4px] rounded-t-[2rem] rounded-b-[2rem] border-black ">
                 <button @click="openPhone" class="w-full content-normal flex justify-center h-5">
                     <div class="bg-black w-[30%] mt-1 rounded-xl relative h-full">
                         <p class="absolute left-2 top-[5px] rounded-full bg-gray-400/40 w-[0.5vw] h-[0.5vw]"></p>
@@ -76,7 +76,7 @@ import MyCarsApp from './MyCarsApp.vue';
 export default {
     data() {
         return {
-            appBaseStyle: "rounded-t-[1.7vw] " + this.phoneOpen ? 'rounded-b-[1.7vw]' : '',
+            appBaseStyle: "rounded-t-[2rem] " + this.phoneOpen ? 'rounded-b-[2rem]' : '',
             currentApp: "",
             basePhoneBg: "bg-[url('https://i.imgur.com/C8nWb8y.jpg')]",
             phoneBg: "bg-[url('https://i.imgur.com/C8nWb8y.jpg')]",

@@ -12,7 +12,6 @@ namespace CloudRP.PhoneSystem
 {
     public class PhoneSystem : Script
     {
-
         [RemoteEvent("server:myCarsApp::fetchVehicles")]
         public void fetchPlayerVehicles(Player player)
         {
@@ -25,8 +24,6 @@ namespace CloudRP.PhoneSystem
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
                     List<DbVehicle> playerVehicles = dbContext.vehicles.Where(veh => veh.owner_id == characterData.character_id).ToList();
-
-                    Console.WriteLine(JsonConvert.SerializeObject(playerVehicles));
 
                     List<PhoneUiVeh> phoneUiVeh = JsonConvert.DeserializeObject<List<PhoneUiVeh>>(JsonConvert.SerializeObject(playerVehicles));
 
