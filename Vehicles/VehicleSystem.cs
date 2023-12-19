@@ -804,7 +804,7 @@ namespace CloudRP.Vehicles
         {
             if (!player.IsInVehicle) return;
 
-            if (player.VehicleSeat != 0) return;
+            if (player.VehicleSeat != 0 || NAPI.Vehicle.GetVehicleBodyHealth(player.Vehicle) <= 0) return;
 
             DbVehicle vehicleData = getVehicleData(player.Vehicle);
 
@@ -854,6 +854,13 @@ namespace CloudRP.Vehicles
                 if(vehicleData != null)
                 {
                     vehicleData.vehicle_health = NAPI.Vehicle.GetVehicleBodyHealth(player.Vehicle);
+                    
+                    if(vehicleData.vehicle_health <= 0)
+                    {
+                        vehicleData.engine_status = false;
+                        return;
+                    }
+
                     saveVehicleData(player.Vehicle, vehicleData, true);
                 }
             }

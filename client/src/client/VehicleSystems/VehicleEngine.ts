@@ -51,7 +51,7 @@ class VehicleEngine {
 			let vehicleData: VehicleData | undefined = getVehicleData(VehicleEngine.LocalPlayer.vehicle);
 			if (!vehicleData) return;
 
-			if(vehicleData.vehicle_fuel <= 0) {
+			if(vehicleData.vehicle_fuel <= 0 || vehicleData.vehicle_health <= 0) {
 				NotificationSystem.createNotification("~r~Engine fails to start.", false);
 				return;
 			}
