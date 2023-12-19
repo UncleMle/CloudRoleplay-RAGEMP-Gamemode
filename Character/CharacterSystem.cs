@@ -81,7 +81,6 @@ namespace CloudRP.Character
             if (userData == null || characterData == null) return;
 
             checkForDups(characterData.character_name);
-
             try
             {
                 using (DefaultDbContext dbContext = new DefaultDbContext())
@@ -125,12 +124,9 @@ namespace CloudRP.Character
             {
                 DbCharacter charData = PlayersData.getPlayerCharacterData(p);
 
-                if(charData != null)
+                if(charData != null && charData.character_name == charName)
                 {
-                    if (charData.character_name == charName)
-                    {
-                        onlineChars.Add(p, charData);
-                    }
+                    onlineChars.Add(p, charData);
                 }
             });
 

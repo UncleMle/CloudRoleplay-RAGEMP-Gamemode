@@ -10,6 +10,10 @@ const validateKeyPress = (testForVehicle: boolean = false): boolean => {
         return false;
     }
 
+    if(mp.game.ui.isPauseMenuActive()) {
+        return false;
+    }
+
     if(mp.players.local.isTypingInTextChat) {
         return false;
     }
