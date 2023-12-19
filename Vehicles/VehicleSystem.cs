@@ -82,7 +82,6 @@ namespace CloudRP.Vehicles
 
             vehicle.vehicle_locked = true;
             vehicle.vehicle_key_holders = getVehicleKeyHoldersFromDb(vehicle);
-            veh.Health = 5;
 
             setVehicleData(veh, vehicle);
             return veh;
@@ -209,6 +208,7 @@ namespace CloudRP.Vehicles
                     vehicleData.position_y = vehicle.Position.Y;
                     vehicleData.position_z = vehicle.Position.Z;
                     vehicleData.rotation = vehicle.Rotation.Z;
+                    vehicleData.vehicle_health = NAPI.Vehicle.GetVehicleBodyHealth(vehicle);
 
                     dbContext.vehicles.Update(vehicleData);
                     dbContext.SaveChanges();
@@ -842,6 +842,21 @@ namespace CloudRP.Vehicles
             vehicleData.vehicle_siren = !vehicleData.vehicle_siren;
 
             saveVehicleData(player.Vehicle, vehicleData);
+        }
+
+        [RemoteEvent("server:saveVehicleDamage")]
+        public void saveVehicleDamage(Player player)
+        {
+            if(player.IsInVehicle)
+            {
+                DbVehicle vehicleData = getVehicleData(player.Vehicle);
+
+                if(vehicleData != null)
+                {
+                    vehicleData.vehicle_health = NAPI.Vehicle.GetVehicleBodyHealth(player.Vehicle);
+                    saveVehicleData(player.Vehicle, vehicleData, true);
+                }
+            }
         }
 
         [Command("vw", "~y~Use: ~w~/vw [window]", Alias = "vehiclewindow")]

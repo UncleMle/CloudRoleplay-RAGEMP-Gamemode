@@ -3,10 +3,13 @@
         <div class="absolute right-[3%] bottom-[13.5%] text-white font-medium">
             <div class="rounded-xl w-[20rem] bg-black/40">
                 <div class="p-4">
-                    <div class="w-full flex justify-center text-4xl p-3" style="text-shadow: rgba(255, 0, 0, 1) 5px 0 10px;">
+                    <div class="w-full flex justify-center text-4xl p-3"
+                        style="text-shadow: rgba(255, 0, 0, 1) 5px 0 10px;">
                         <h2 style="text-shadow: rgb(0, 0, 0) 3px 0 16px;">
-                            <i>{{ uiStates.vehicleSpeedoData.metric == 0 ? (uiStates.vehicleSpeedoData.vehicleSpeed * 3.6).toFixed(0) : (uiStates.vehicleSpeedoData.vehicleSpeed * 2.236936).toFixed(0) }}</i> <span
-                                class="text-gray-400 text-xl" >{{uiStates.vehicleSpeedoData.metric == 0 ? "KM/H" : "MPH"}}</span>
+                            <i>{{ uiStates.vehicleSpeedoData.metric == 0 ? (uiStates.vehicleSpeedoData.vehicleSpeed *
+                                3.6).toFixed(0) : (uiStates.vehicleSpeedoData.vehicleSpeed * 2.236936).toFixed(0) }}</i>
+                            <span class="text-gray-400 text-xl">{{ uiStates.vehicleSpeedoData.metric == 0 ? "KM/H" :
+                                "MPH" }}</span>
                         </h2>
                     </div>
 
@@ -41,15 +44,15 @@
                 </div>
 
 
-                <div class="bg-black/50 rounded-b-xl flex justify-center h-[3vw] mt-2 items-center border-t-2 shadow-2xl shadow-black/50 border-gray-600 overflow-hidden">
+                <div
+                    class="bg-black/50 rounded-b-xl flex justify-center h-[3vw] mt-2 items-center border-t-2 shadow-2xl shadow-black/50 border-gray-600 overflow-hidden">
                     <div class="rounded-lg" v-for="num in getMileageArr()" :key="num.key">
-                        <font id="odometer"
-                            class="border-1 p-2.5 bg-black/70 border border-gray-900/50"
+                        <font id="odometer" class="border-1 p-2.5 bg-black/70 border border-gray-900/50"
                             :class="num.key == getMileageArr().length - 1 ? 'rounded-r-lg' : num.key == 0 ? 'rounded-l-lg' : ''">
                             {{ num.num }}</font>
                     </div>
                     <div class="ml-4 text-gray-300 font-normal">
-                        <p>{{uiStates.vehicleSpeedoData.metric == 0 ? "KM" : "Miles"}}</p>
+                        <p>{{ uiStates.vehicleSpeedoData.metric == 0 ? "KM" : "Miles" }}</p>
                     </div>
                 </div>
             </div>
@@ -58,14 +61,23 @@
 
         <div class="bg-black/50 absolute right-[3%] w-[20rem] bottom-[1%] text-white font-medium h-26 rounded-xl">
             <div class="w-full text-center items-center h-full relative p-3">
-                <div :class="uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) < 20 ? uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) < 10 ? 'bg-red-400' : 'bg-orange-400' : 'bg-green-500'"
-                    class="rounded-lg h-2" :style="{ 'width': uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) + '%' }">
-                </div>
-                <i class="fa-solid fa-gas-pump mt-3 text-red-400"></i> {{ uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) }} {{ uiStates.vehicleSpeedoData.metric == 0 ? "Litres" : "Gallons" }}
 
-                <div class="bg-gray-300 rounded-lg h-2 mt-2">
+                <div class="bg-black/50 rounded-lg">
+                    <div :class="uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) < 20 ? uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) < 10 ? 'bg-red-400' : 'bg-orange-400' : 'bg-green-500'"
+                        class="rounded-lg h-2" :style="{ 'width': uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) + '%' }">
+                    </div>
                 </div>
-                <i class="fa-solid fa-gears text-gray-400 mt-3 "></i> 100%
+                <i class="fa-solid fa-gas-pump mt-3 text-red-400"></i> {{
+                    uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) }}
+                {{ uiStates.vehicleSpeedoData.metric == 0 ? "Litres" : "Gallons" }}
+
+                <div class="bg-black/50 rounded-lg">
+                    <div class="bg-gray-300 rounded-lg h-2 mt-2 "
+                        :style="{ 'width': (uiStates.vehicleSpeedoData.vehHealth / 10).toFixed(0) + '%' }">
+                    </div>
+                </div>
+                <i class="fa-solid fa-gears text-gray-400 mt-3 "></i> {{ (uiStates.vehicleSpeedoData.vehHealth /
+                    10).toFixed(0) }}%
             </div>
         </div>
     </div>

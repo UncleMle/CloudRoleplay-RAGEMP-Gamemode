@@ -60,9 +60,14 @@ class VehicleSystems {
 	}
 
 	public static handleRender() {
+		if(VehicleSystems.LocalPlayer.vehicle && VehicleSystems.LocalPlayer.vehicle.getHealth() <= 0) {
+			VehicleSystems.LocalPlayer.vehicle.setUndriveable(true);
+		}
+
 		if (VehicleSystems.LocalPlayer.vehicle && isFlipped(VehicleSystems.LocalPlayer.vehicle)) {
 			VehicleSystems.disableControls();
 		}
+
 		if (VehicleSystems.LocalPlayer.vehicle) {
 			VehicleSystems.turnOffRadio();
 		}

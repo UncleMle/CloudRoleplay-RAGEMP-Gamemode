@@ -35,6 +35,7 @@ import VehicleRefueling from "./RefuellingSystem/VehicleRefueling";
 import VehicleInsurance from "./VehicleInsurance/VehicleInsurance";
 import MarkersAndLabels from "./MarkersAndLabels/MarkersAndLabels";
 import PhoneSystem from "./PhoneSystem/PhoneSystem";
+import VehicleDamage from "./VehicleSystems/VehicleDamage";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -74,3 +75,4 @@ new VehicleRefueling();
 new VehicleInsurance();
 new MarkersAndLabels();
 new PhoneSystem();
+new VehicleDamage();
