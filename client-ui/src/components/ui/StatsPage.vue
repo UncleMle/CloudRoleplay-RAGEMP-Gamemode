@@ -23,12 +23,12 @@
                                     <span class="absolute right-0 top-0 text-green-400">${{ characterStats.money_amount.toLocaleString("en-US") }}</span>
                                 </div>
                                 <div class="relative w-full mt-4">
-                                    <span class="left-0 top-0 "><i class="fa-regular fa-calendar-days pr-2"></i>Created At</span>
-                                    <span class="absolute right-0 top-0">{{ characterStats.CreatedDate }}</span>
+                                    <span class="left-0 top-0 "><i class="fa-solid fa-star pr-2"></i>Experience</span>
+                                    <span class="absolute right-0 top-0">{{ characterStats.player_exp.toLocaleString("en-US") }}</span>
                                 </div>
                                 <div class="relative w-full mt-4">
-                                    <span class="left-0 top-0 "><i class="fa-regular fa-calendar-days pr-2"></i>Updated At</span>
-                                    <span class="absolute right-0 top-0">{{ characterStats.UpdatedDate }}</span>
+                                    <span class="left-0 top-0 "><i class="fa-solid fa-clock pr-2"></i>Play Time</span>
+                                    <span class="absolute right-0 top-0">{{ (characterStats.play_time_seconds / 60).toFixed(0) }} minutes</span>
                                 </div>
                             </div>
                         </div>
