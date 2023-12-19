@@ -82,7 +82,7 @@ namespace CloudRP.ChatSystem
                 {
                     if(item.Key != player)
                     {
-                        AdminUtils.sendMessageToAllStaff($"{user.adminName} [{player.Id}] has connected to the server.");
+                        item.Key.SendChatMessage($"{AdminUtils.staffPrefix}{user.adminName} [{player.Id}] has connected to the server.");
                     }
                 }
             }

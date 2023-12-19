@@ -22,8 +22,8 @@
                     </font>
                 </button>
 
-                <div v-if="currentApp != ''">
-                    <div v-if="currentApp == 'My Cars'" class="flex w-full">
+                <div v-if="currentApp != ''" class="flex w-full h-full">
+                    <div v-if="currentApp == 'My Cars'" class="flex w-full h-full">
                         <MyCarsApp />
                     </div>
                 </div>

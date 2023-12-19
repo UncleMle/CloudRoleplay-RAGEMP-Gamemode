@@ -29,7 +29,7 @@ const store = new Vuex.Store({
 			vehicle_performance_data: [],
 			vehicle_refuel_data: {},
 			insurance_vehicle_data: {},
-			phone_data_player_vehicles: {}
+			phone_data_player_vehicles: []
 		},
 		uiStates: {
 			characterSelection: false,

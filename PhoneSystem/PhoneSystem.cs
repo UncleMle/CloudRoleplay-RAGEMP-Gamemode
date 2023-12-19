@@ -6,9 +6,7 @@ using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Text;
 
 namespace CloudRP.PhoneSystem
 {
@@ -22,13 +20,20 @@ namespace CloudRP.PhoneSystem
 
             if(characterData != null)
             {
+                uiHandling.resetMutationPusher(player, MutationKeys.PhoneDataVehicles);
+
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
-                    List<DbVehicle> playerVehicles = dbContext.vehicles.Where(veh => veh.owner_id == characterData.owner_id).ToList();
+                    List<DbVehicle> playerVehicles = dbContext.vehicles.Where(veh => veh.owner_id == characterData.character_id).ToList();
+
+                    Console.WriteLine(JsonConvert.SerializeObject(playerVehicles));
 
                     List<PhoneUiVeh> phoneUiVeh = JsonConvert.DeserializeObject<List<PhoneUiVeh>>(JsonConvert.SerializeObject(playerVehicles));
-                    
-                    uiHandling.handleObjectUiMutation(player, MutationKeys.PhoneDataVehicles, phoneUiVeh);
+
+                    phoneUiVeh.ForEach(phoneV =>
+                    {
+                        uiHandling.handleObjectUiMutationPush(player, MutationKeys.PhoneDataVehicles, phoneV);
+                    });
                 }
             }
         }

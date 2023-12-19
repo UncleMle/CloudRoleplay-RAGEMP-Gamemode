@@ -80,6 +80,8 @@ namespace CloudRP.Character
 
             if (userData == null || characterData == null) return;
 
+            checkForDups(characterData.character_name);
+
             try
             {
                 using (DefaultDbContext dbContext = new DefaultDbContext())
@@ -114,6 +116,31 @@ namespace CloudRP.Character
             }
         }
 
+        public static void checkForDups(string charName)
+        {
+            Dictionary<Player, DbCharacter> onlineChars = new Dictionary<Player, DbCharacter>();
+
+            NAPI.Pools.GetAllPlayers().ForEach(p =>
+            {
+                DbCharacter charData = PlayersData.getPlayerCharacterData(p);
+
+                if(charData != null)
+                {
+                    if (charData.character_name == charName)
+                    {
+                        onlineChars.Add(p, charData);
+                    }
+                }
+            });
+
+            if(onlineChars.Count > 1)
+            {
+                foreach (var item in onlineChars)
+                {
+                    item.Key.Kick();
+                }
+            }
+        }
 
         public static int getUsersCharacter(User userData)
         {

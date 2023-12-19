@@ -180,14 +180,7 @@ namespace CloudRP.DeathSystem
         public static void resetTimer(Player player, DbCharacter character)
         {
             character.injured_timer = 0;
-
-            using (DefaultDbContext dbContext = new DefaultDbContext())
-            {
-                dbContext.Update(character);
-                dbContext.SaveChanges();
-            }
-
-            PlayersData.setPlayerCharacterData(player, character);
+            PlayersData.setPlayerCharacterData(player, character, false, true);
             player.TriggerEvent("injured:removeStatus");
         }
 

@@ -533,7 +533,7 @@ namespace CloudRP.Admin
                     findPlayer.Position = player.Position;
                     findPlayer.Dimension = player.Dimension;
 
-                    ChatUtils.formatConsolePrint($"{userData.adminName} teleported {findPlayer} [{findPlayer.Id}] to themselves.");
+                    ChatUtils.formatConsolePrint($"{userData.adminName} teleported Player [{findPlayer.Id}] to themselves.");
                     AdminUtils.staffSay(player, "Teleported Player [" + findPlayer.Id + "] to you.");
                     AdminUtils.staffSay(findPlayer, $"Admin {userData.adminName} teleported you.");
                 }

@@ -6,9 +6,9 @@
             <i class="fa-solid fa-arrow-left"></i>
         </button>
 
-        <div class="w-full overflow-y-scroll h-[35%]"
+        <div class="w-full overflow-y-scroll h-[90%]"
             v-if="viewState == 'home' && playerData.phone_data_player_vehicles">
-            <div v-for="(item, i) in 12" :key="i">
+            <div v-for="(item, i) in playerData.phone_data_player_vehicles" :key="i">
                 <div class="relative border border-gray-700 rounded-lg p-3 mt-3 mr-1 ml-1">
                     <img :src="getCarImagePath(item.vehicle_name)" class="w-20 h-10 rounded-lg" />
                     <font class="absolute text-gray-400">{{ item.numberplate }}</font>
@@ -29,7 +29,6 @@
 
                 <div class="text-center mt-2">
                     {{ targetVehicleData.numberplate }}
-                    {{ targetVehicleData.vehicle_insurance_id }}
                 </div>
 
                 <div v-if="targetVehicleData.vehicle_dimension == 'world'" class="mt-2 text-lg">
