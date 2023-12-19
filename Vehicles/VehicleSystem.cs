@@ -673,71 +673,57 @@ namespace CloudRP.Vehicles
             }
         }
 
-        [Command("removekeys", "~y~Use:~w~ /removekeys [nameOrId]")]
-        public void removeVehicleKeys(Player player, string nameOrId)
+        [RemoteEvent("server:removeKey")]
+        public void removeVehicleKeys(Player player, string data)
         {
+            VehicleKeyRemoveData vehicleKeyRemoveData = JsonConvert.DeserializeObject<VehicleKeyRemoveData>(data);
+            if (vehicleKeyRemoveData == null) return;
+
             DbCharacter playerCharData = PlayersData.getPlayerCharacterData(player);
             if (playerCharData == null) return;
 
-            if(!player.IsInVehicle)
-            {
-                CommandUtils.errorSay(player, "You must be in a vehicle to use this command.");
-                return;
-            }
-
-            Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
-            if(findPlayer == null || findPlayer != null && Vector3.Distance(player.Position, findPlayer.Position) > 6)
-            {
-                CommandUtils.errorSay(player, "Player couldn't be found. (Are you within distance?)");
-                return;
-            }
-
-            if(!findPlayer.IsInVehicle)
-            {
-                CommandUtils.errorSay(player, "Target must be in the same vehicle as you.");
-                return;
-            }
-            
-            DbCharacter findPlayerData = PlayersData.getPlayerCharacterData(findPlayer);
-            if (findPlayerData == null) return;
-            
-            Vehicle targetVeh = player.Vehicle;
-            DbVehicle targetVehData = getVehicleData(targetVeh);
-            if (targetVeh == null) return;
-
-            if(playerCharData.character_id != targetVehData.owner_id)
-            {
-                CommandUtils.errorSay(player, "You must own this vehicle to remove a players access to it.");
-                return;
-            }
-
-            VehicleKey checkIfExists = targetVehData.vehicle_key_holders
-                .Where(keyHolder => keyHolder.target_character_id == findPlayerData.character_id && keyHolder.vehicle_id == targetVehData.vehicle_id)
-                .FirstOrDefault();
-
-            if(checkIfExists == null)
-            {
-                CommandUtils.errorSay(player, "This player doesn't have keys to this vehicle.");
-                return;
-            }
-
-            targetVehData.vehicle_key_holders.Remove(checkIfExists);
 
             using(DefaultDbContext dbContext = new DefaultDbContext())
             {
+                DbVehicle findVeh = dbContext.vehicles
+                    .Where(veh => veh.vehicle_id == vehicleKeyRemoveData.vehicle_id && veh.owner_id == playerCharData.character_id)
+                    .FirstOrDefault();
+
+                if(findVeh == null) return;
+
+                VehicleKey checkIfExists = dbContext.vehicle_keys
+                    .Where(vehKey => vehKey.vehicle_id == findVeh.vehicle_id && vehKey.vehicle_key_id == vehicleKeyRemoveData.keyId)
+                    .FirstOrDefault();
+
+                if(checkIfExists == null) return;
+
                 dbContext.vehicle_keys.Remove(checkIfExists);
+
                 dbContext.SaveChanges();
+
+                removeKeyFromWorldVeh(findVeh.vehicle_id, checkIfExists.vehicle_key_id);
+                CommandUtils.successSay(player, "You removed a vehicle key.");
             }
+        }
 
-            saveVehicleData(targetVeh, targetVehData);
+        public static void removeKeyFromWorldVeh(int vehicleId, int keyId)
+        {
+            NAPI.Pools.GetAllVehicles().ForEach(veh =>
+            {
+                DbVehicle vehData = getVehicleData(veh);
 
-            string prefixToPlayer = ChatUtils.Success + "You removed ";
-            string suffixToPlayer = " access to your vehicle.";
-            string prefixFromPlayer = ChatUtils.info + "Your keys for ";
-            string suffixFromPlayer = "'s vehicle was revoked";
+                if(vehData != null && vehData.vehicle_id == vehicleId)
+                {
+                    VehicleKey findKey = vehData.vehicle_key_holders
+                    .Where(key => key.vehicle_id == vehicleId && key.vehicle_key_id == keyId)
+                    .FirstOrDefault();
 
-            ChatUtils.sendWithNickName(player, findPlayer, prefixToPlayer, suffixToPlayer);
-            ChatUtils.sendWithNickName(findPlayer, player, prefixFromPlayer, suffixFromPlayer);
+                    if(findKey != null)
+                    {
+                        vehData.vehicle_key_holders.Remove(findKey);
+                    }
+                }
+            });
         }
 
         public static void closeAllDoors(Vehicle vehicle)

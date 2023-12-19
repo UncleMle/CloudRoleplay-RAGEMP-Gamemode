@@ -9,4 +9,10 @@ namespace CloudRP.Vehicles
         public string nameOrId { get; set; }
         public string nickname { get; set; }
     }
+
+    public class VehicleKeyRemoveData
+    {
+        public int keyId { get; set; }
+        public int vehicle_id { get; set; }
+    }
 }

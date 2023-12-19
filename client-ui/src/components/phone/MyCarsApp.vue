@@ -93,8 +93,8 @@
                         <div class="relative border p-2 text-right rounded-lg border-gray-600">
                             <font class="absolute left-2 max-w-[65%] overflow-hidden text-ellipsis whitespace-nowrap">
                                 {{ item.nickname }}</font>
-                            <button class="">
-                                <i class="fa-solid fa-trash text-red-400"></i>
+                            <button @click="removeKey(item)" class="">
+                                <i class="fa-solid fa-trash text-red-400 duration-300 hover:text-red-200"></i>
                             </button>
                         </div>
                     </div>
@@ -173,8 +173,20 @@ export default {
                 nickname: this.keyHolderNick
             }));
 
+            this.getAllVehicleData();
+            this.viewState = "home";
+
             this.keyHolderId = "";
             this.keyHolderNick = "";
+        },
+        removeKey(keyData) {
+            window.mp.trigger("browser:sendObject", "server:removeKey", JSON.stringify({
+                keyId: keyData.vehicle_key_id,
+                vehicle_id: keyData.vehicle_id
+            }));
+
+            this.getAllVehicleData();
+            this.viewState = "home";
         }
     },
     computed: {
