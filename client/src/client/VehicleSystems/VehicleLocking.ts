@@ -1,5 +1,6 @@
 import { _control_ids } from 'Constants/Constants';
 import getClosestVehicleInRange from '../PlayerMethods/getVehicleInRange';
+import validateKeyPress from '@/PlayerMethods/validateKeyPress';
 
 class VehicleLocking {
 	public static LocalPlayer: PlayerMp;
@@ -14,7 +15,8 @@ class VehicleLocking {
 	}
 
 	public static toggleVehicleLock() {
-		if(VehicleLocking.LocalPlayer.isTypingInTextChat) return;
+		if(!validateKeyPress()) return;
+
 		let lockVehicle = getClosestVehicleInRange(VehicleLocking._lockVehicleRange);
 		if (!lockVehicle) return;
 

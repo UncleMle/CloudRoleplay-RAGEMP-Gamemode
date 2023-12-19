@@ -82,6 +82,7 @@ namespace CloudRP.Vehicles
 
             vehicle.vehicle_locked = true;
             vehicle.vehicle_key_holders = getVehicleKeyHoldersFromDb(vehicle);
+            veh.Health = 5;
 
             setVehicleData(veh, vehicle);
             return veh;

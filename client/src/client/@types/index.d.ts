@@ -290,6 +290,7 @@ export interface SpeedoData {
 	numberPlate: string;
 	displayName: string;
 	dbName: string;
+	vehHealth: number;
 }
 
 export interface Corpse {

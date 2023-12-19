@@ -48,7 +48,8 @@ class VehicleSpeedo {
                 metric: mp.game.gameplay.getProfileSetting(227),
                 numberPlate: vehicle.getNumberPlateText(),
                 displayName: VehicleSpeedo.getVehDispName(vehicle.model),
-                dbName: vehicleData.vehicle_name
+                dbName: vehicleData.vehicle_name,
+                vehHealth: vehicle.getHealth()
             }
 
             BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {

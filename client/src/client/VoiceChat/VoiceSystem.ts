@@ -1,6 +1,7 @@
 import getUserCharacterData from '@/PlayerMethods/getUserCharacterData';
 import { CharacterData } from '../@types';
 import { _control_ids, _sharedCharacterDataIdentifier } from '../Constants/Constants';
+import validateKeyPress from '@/PlayerMethods/validateKeyPress';
 
 class VoiceSystem {
 	public static Localplayer: PlayerMp;
@@ -128,9 +129,11 @@ class VoiceSystem {
 	}
 
 	public static toggleVoice(tog: boolean) {
+		if(!validateKeyPress()) return;
+
 		let characterData: CharacterData | undefined = getUserCharacterData();
 
-		if (!VoiceSystem.Localplayer.isTypingInTextChat && characterData) {
+		if (characterData) {
 			mp.voiceChat.muted = tog;
 			mp.events.callRemote(VoiceSystem.togVoiceEvent, tog);
 		}
