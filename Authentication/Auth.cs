@@ -82,6 +82,7 @@ namespace CloudRP.Authentication
 
                         findAccount.client_serial = player.Serial;
                         findAccount.user_ip = player.Address;
+                        findAccount.UpdatedDate = DateTime.Now;
 
                         dbContext.Update(findAccount);
                         dbContext.SaveChanges();
@@ -368,6 +369,11 @@ namespace CloudRP.Authentication
                         .Where(tat => tat.tattoo_owner_id ==  character.character_id)
                         .ToList();
 
+                    character.UpdatedDate = DateTime.Now;
+                    character.last_login = DateTime.Now;
+                    dbContext.Update(character);
+                    dbContext.SaveChanges();
+                    
                     character.characterModel = charModel;
                     character.characterClothing = charClothing;
                     character.characterModel.player_tattos = charTats;
@@ -409,6 +415,7 @@ namespace CloudRP.Authentication
 
                     findAccount.client_serial = player.Serial;
                     findAccount.user_ip = player.Address;
+                    findAccount.UpdatedDate = DateTime.Now;
 
                     dbContext.Update(findAccount);
                     dbContext.SaveChanges();

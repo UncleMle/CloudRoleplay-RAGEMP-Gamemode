@@ -107,6 +107,8 @@ namespace CloudRP.Vehicles
             {
                 vehicleData.vehicle_dimension = VehicleDimensions.Insurance;
                 vehicleData.UpdatedDate = DateTime.Now;
+                vehicleData.vehicle_health = 1000;
+                vehicleData.vehicle_fuel = 100;
 
                 using(DefaultDbContext dbContext = new DefaultDbContext())
                 {
@@ -433,6 +435,7 @@ namespace CloudRP.Vehicles
                     vehicleData.position_z = closestInsuranceToDeath.spawnPosition.Z;
                     vehicleData.vehicle_insurance_id = closestInsuranceToDeath.insuranceId;
                     vehicleData.vehicle_fuel = 100;
+                    vehicleData.vehicle_health = 1000;
 
                     using (DefaultDbContext dbContext = new DefaultDbContext())
                     {

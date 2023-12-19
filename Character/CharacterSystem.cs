@@ -92,6 +92,7 @@ namespace CloudRP.Character
                     characterData.character_health = player.Health;
                     characterData.play_time_seconds += 5;
                     characterData.player_exp += 1;
+                    characterData.last_login = DateTime.Now;
 
                     if (characterData.injured_timer == 0 && !userData.adminDuty && ((characterData.character_hunger - _characterHungerRemover) > 0 || (characterData.character_water - _characterWaterRemover) > 0))
                     {
