@@ -8,7 +8,7 @@
                         <h2 style="text-shadow: rgb(0, 0, 0) 3px 0 16px;">
                             <i>{{ uiStates.vehicleSpeedoData.metric == 0 ? (uiStates.vehicleSpeedoData.vehicleSpeed *
                                 3.6).toFixed(0) : (uiStates.vehicleSpeedoData.vehicleSpeed * 2.236936).toFixed(0) }}</i>
-                            <span class="text-gray-400 text-xl">{{ uiStates.vehicleSpeedoData.metric == 0 ? "KM/H" :
+                            <span class="text-gray-400 text-xl"> {{ uiStates.vehicleSpeedoData.metric == 0 ? "KM/H" :
                                 "MPH" }}</span>
                         </h2>
                     </div>

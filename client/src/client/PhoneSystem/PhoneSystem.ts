@@ -40,7 +40,10 @@ class PhoneSystem {
     }
 
     public static async attachPhoneToPlayer(entity: PlayerMp) {
-        PhoneSystem.resetEntityPhone(entity);
+        if(entity._mobilePhone) {
+            PhoneSystem.resetEntityPhone(entity);
+            await mp.game.waitAsync(50);
+        }
 
         entity._mobilePhone = mp.objects.new('p_amb_phone_01', entity.position, {
             rotation: new mp.Vector3(0, 0, 0),

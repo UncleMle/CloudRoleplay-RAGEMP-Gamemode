@@ -80,8 +80,6 @@ namespace CloudRP.Vehicles
             veh.Locked = true;
             veh.Rotation = new Vector3(0, 0, rotation);
 
-            Console.WriteLine(vehicle.vehicle_health + " h");
-
             vehicle.vehicle_locked = true;
             vehicle.vehicle_key_holders = getVehicleKeyHoldersFromDb(vehicle);
 
