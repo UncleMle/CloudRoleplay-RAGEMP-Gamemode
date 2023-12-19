@@ -1,7 +1,12 @@
 import { _IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE } from "@/Constants/Constants";
+import PhoneSystem from "@/PhoneSystem/PhoneSystem";
 
 const validateKeyPress = (testForVehicle: boolean = false): boolean => {
     if(mp.game.invoke(_IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE)) {
+        return false;
+    }
+
+    if(mp.players.local.getVariable(PhoneSystem._phoneStatusIdentifer)) {
         return false;
     }
 

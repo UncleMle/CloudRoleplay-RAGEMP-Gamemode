@@ -51,7 +51,7 @@ export default {
     },
     methods: {
         keyDownListener(e) {
-            if (this.$router.currentRoute.path != "/" || !this.getUiStates.chatEnabled || !this.getUiStates.guiEnabled) return;
+            if (this.$router.currentRoute.path != "/" || !this.getUiStates.chatEnabled || !this.getUiStates.guiEnabled || this.$store.state.uiStates.phoneState) return;
 
             if (e.keyCode == this.KEYBIND_T && !this.inputFieldShowing) {
                 this.showing = true;

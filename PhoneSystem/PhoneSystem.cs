@@ -12,6 +12,8 @@ namespace CloudRP.PhoneSystem
 {
     public class PhoneSystem : Script
     {
+        public static string _phoneStatusIdentifer = "playerPhoneStatus";
+
         [RemoteEvent("server:myCarsApp::fetchVehicles")]
         public void fetchPlayerVehicles(Player player)
         {
@@ -38,6 +40,21 @@ namespace CloudRP.PhoneSystem
                     });
                 }
             }
+        }
+
+        [RemoteEvent("server:togglePhoneStatus")]
+        public void togglePhoneStatus(Player player)
+        {
+            if(!player.GetData<bool>(_phoneStatusIdentifer))
+            {
+                player.SetSharedData(_phoneStatusIdentifer, true);
+                player.SetData(_phoneStatusIdentifer, true);
+            } else
+            {
+                player.ResetData(_phoneStatusIdentifer);
+                player.ResetSharedData(_phoneStatusIdentifer);
+            }
+
         }
 
     }

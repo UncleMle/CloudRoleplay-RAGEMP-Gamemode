@@ -106,6 +106,9 @@ export default {
             let targetStyle = "bottom-16";
             this.topPhoneStyle === targetStyle ? this.topPhoneStyle = "" : this.topPhoneStyle = targetStyle;
             this.phoneOpen = !this.phoneOpen;
+            this.$store.state.uiStates.phoneState = this.phoneOpen;
+
+            window.mp.trigger("browser:sendString", "server:togglePhoneStatus");
         },
         homeButton() {
             if(!this.spaceOrTabPressed) {

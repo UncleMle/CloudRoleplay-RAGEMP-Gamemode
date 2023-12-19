@@ -5,6 +5,7 @@ class PhoneSystem {
     public static LocalPlayer: PlayerMp;
     public static trackVehicleBlipDespawn_seconds: number = 40;
     public static trackerBlip: BlipMp | null;
+    public static _phoneStatusIdentifer: string = "playerPhoneStatus";
 
     constructor() {
         PhoneSystem.LocalPlayer = mp.players.local;

@@ -581,7 +581,7 @@ namespace CloudRP.Vehicles
 
             if (!player.IsInVehicle)
             {
-                CommandUtils.errorSay(player, "You must be in a vehicle to use this command.");
+                uiHandling.sendPushNotifError(player, "You must be in a vehicle to use this!", 5600);
                 return;
             }
 
@@ -599,36 +599,31 @@ namespace CloudRP.Vehicles
 
                 if (playerFindPlayer == null || playerFindPlayer != null && Vector3.Distance(playerFindPlayer.Position, player.Position) > 6)
                 {
-                    CommandUtils.errorSay(player, "Player couldn't be found. (Are you within distance?)");
+                    uiHandling.sendPushNotifError(player, "Player couldn't be found. (Are you within distance?)", 6600);
                     return;
                 }
 
                 if (player.Equals(playerFindPlayer))
                 {
-                    CommandUtils.errorSay(player, "You cannot give vehicle keys to yourself.");
+                    uiHandling.sendPushNotifError(player, "You cannot give keys to yourself.", 6600);
                     return;
                 }
 
                 DbCharacter playerFindData = PlayersData.getPlayerCharacterData(playerFindPlayer);
                 if (playerFindData == null) return;
 
-                if (!playerFindPlayer.IsInVehicle)
+                if (!playerFindPlayer.IsInVehicle || playerFindPlayer.IsInVehicle && !player.Vehicle.Equals(playerFindPlayer.Vehicle))
                 {
-                    CommandUtils.errorSay(player, "Target must be in the same vehicle as you.");
+                    uiHandling.sendPushNotifError(player, "Target must be in the same vehicle as you.", 6600);
                     return;
                 }
 
                 Vehicle targetVeh = player.Vehicle;
                 DbVehicle targetVehData = getVehicleData(targetVeh);
 
-
                 if (targetVehData != null)
                 {
-                    if (targetVehData.owner_id != playerCharData.character_id)
-                    {
-                        CommandUtils.errorSay(player, "You must own the vehicle to give keys to it.");
-                        return;
-                    }
+                    if (targetVehData.owner_id != playerCharData.character_id) return;
 
                     VehicleKey findIfAlreadyHas = targetVehData.vehicle_key_holders
                         .Where(key => key.target_character_id == playerFindData.character_id && key.vehicle_id == targetVehData.vehicle_id)
@@ -636,7 +631,7 @@ namespace CloudRP.Vehicles
 
                     if (findIfAlreadyHas != null)
                     {
-                        CommandUtils.errorSay(player, "This player already has keys to this vehicle.");
+                        uiHandling.sendPushNotif(player, "This player already has keys to this vehicle.", 6600);
                         return;
                     }
 
@@ -658,13 +653,7 @@ namespace CloudRP.Vehicles
 
                     saveVehicleData(targetVeh, targetVehData);
 
-                    string prefixToPlayer = ChatUtils.Success + "You gave ";
-                    string suffixToPlayer = " a copy of your vehicle's keys.";
-                    string prefixFromPlayer = ChatUtils.info + "You were given a copy of ";
-                    string suffixFromPlayer = "'s vehicle's keys";
-
-                    ChatUtils.sendWithNickName(player, playerFindPlayer, prefixToPlayer, suffixToPlayer);
-                    ChatUtils.sendWithNickName(playerFindPlayer, player, prefixFromPlayer, suffixFromPlayer);
+                    uiHandling.sendPushNotif(player, "You gave a vehicle key.", 6600, true, true, true);
                 }
             }
             else
@@ -702,7 +691,7 @@ namespace CloudRP.Vehicles
                 dbContext.SaveChanges();
 
                 removeKeyFromWorldVeh(findVeh.vehicle_id, checkIfExists.vehicle_key_id);
-                CommandUtils.successSay(player, "You removed a vehicle key.");
+                uiHandling.sendPushNotif(player, "You removed a vehicle key!", 6600, true, true, true);
             }
         }
 
