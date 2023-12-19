@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CloudRP.Vehicles;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -17,5 +18,6 @@ namespace CloudRP.PhoneSystem
         public int vehicle_insurance_id { get; set; }
         public int vehicle_garage_id { get; set; }
         public int vehicle_id { get; set; }
+        public List<VehicleKey> vehicle_key_holders { get; set; } = new List<VehicleKey>();
     }
 }

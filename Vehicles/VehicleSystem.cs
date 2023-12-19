@@ -573,8 +573,8 @@ namespace CloudRP.Vehicles
             }
         }
 
-        [Command("givekeys", "~y~Use:~w~ /givekeys [nameOrId]")]
-        public static void giveVehiclesKeys(Player player, string nameOrId)
+        [Command("givekeys", "~y~Use:~w~ /givekeys [nameOrId] [nickname]", GreedyArg = true)]
+        public static void giveVehiclesKeys(Player player, string nameOrId, string nickName)
         {
             if(!player.IsInVehicle)
             {
@@ -634,7 +634,8 @@ namespace CloudRP.Vehicles
                 {
                     target_character_id = playerFindData.character_id,
                     vehicle_id = targetVehData.vehicle_id,
-                    vehicle_name = targetVehData.vehicle_name
+                    vehicle_name = targetVehData.vehicle_name,
+                    nickname = nickName
                 };
 
                 targetVehData.vehicle_key_holders.Add(newKey);

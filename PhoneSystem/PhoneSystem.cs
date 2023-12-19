@@ -25,6 +25,11 @@ namespace CloudRP.PhoneSystem
                 {
                     List<DbVehicle> playerVehicles = dbContext.vehicles.Where(veh => veh.owner_id == characterData.character_id).ToList();
 
+                    playerVehicles.ForEach(playerVehicle =>
+                    {
+                        playerVehicle.vehicle_key_holders = VehicleSystem.getVehicleKeyHoldersFromDb(playerVehicle);
+                    });
+
                     List<PhoneUiVeh> phoneUiVeh = JsonConvert.DeserializeObject<List<PhoneUiVeh>>(JsonConvert.SerializeObject(playerVehicles));
 
                     phoneUiVeh.ForEach(phoneV =>

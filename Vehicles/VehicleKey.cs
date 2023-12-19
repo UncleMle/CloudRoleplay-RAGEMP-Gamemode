@@ -13,6 +13,7 @@ namespace CloudRP.Vehicles
 
         [Required]
         public int vehicle_id { get; set; }
+        public string nickname { get; set; }
         public int target_character_id { get; set; }
         public string vehicle_name { get; set; }
     }

@@ -31,8 +31,14 @@ class CharacterSystem {
 		mp.discord.update(`Playing on ${CharacterSystem.serverName}`, `${characterData ? `Playing as ${characterData.characterName.replace("_", " ")}` : `Currently logged in`}`)
 	}
 
-	public static setCharacterCustomization(characterModel: any, parse: boolean = true, entity: PlayerMp | PedMp = CharacterSystem.LocalPlayer) {
+	public static async setCharacterCustomization(characterModel: any, parse: boolean = true, entity: PlayerMp | PedMp = CharacterSystem.LocalPlayer) {
 		if(!characterModel) return;
+
+		for (let i = 0; entity.handle === 0 && i < 15; ++i) {
+            await mp.game.waitAsync(100);
+        }
+
+		await mp.game.waitAsync(200);
 
 		let charData: CharacterModel = characterModel;
 

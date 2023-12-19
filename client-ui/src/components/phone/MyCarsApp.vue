@@ -1,13 +1,11 @@
 <template>
     <main class="w-full mt-2 relative">
 
-        <button @click="viewState = 'home'" v-if="viewState != 'home'"
-            class="absolute left-2 duration-300 hover:text-red-400">
+        <button @click="backToHome" v-if="viewState != 'home'" class="absolute left-2 duration-300 hover:text-red-400">
             <i class="fa-solid fa-arrow-left"></i>
         </button>
 
-        <div class="w-full overflow-y-scroll h-[90%]"
-            v-if="viewState == 'home' && playerData.phone_data_player_vehicles">
+        <div class="w-full overflow-y-scroll h-[90%]" v-if="viewState == 'home' && playerData.phone_data_player_vehicles">
             <div v-for="(item, i) in playerData.phone_data_player_vehicles" :key="i">
                 <div class="relative border border-gray-700 rounded-lg p-3 mt-3 mr-1 ml-1">
                     <img :src="getCarImagePath(item.vehicle_name)" class="w-20 h-10 rounded-lg" />
@@ -31,6 +29,11 @@
                     {{ targetVehicleData.numberplate }}
                 </div>
 
+                <button @click="manage"
+                    class="w-full bg-gray-600 outline outline-green-200/20 p-1 rounded-lg mt-3 duration-300 hover:text-green-400">
+                    Manage Key Holders
+                </button>
+
                 <div v-if="targetVehicleData.vehicle_dimension == 'world'" class="mt-2 text-lg">
                     <div class="relative h-5 w-full">
                         <font class="absolute left-0 top-2">Track Vehicle</font>
@@ -53,7 +56,8 @@
                         <font class="absolute left-0 top-2">Distance</font>
                         <font class="absolute right-0 top-2 overflow-hidden text-ellipsis whitespace-nowrap max-w-[120px]">
                             <i class="fa-solid fa-gauge pr-2 text-orange-400"></i>{{
-                                (targetVehicleData.vehicle_distance / 1609).toFixed(0) }}KM</font>
+                                (targetVehicleData.vehicle_distance / 1609).toFixed(0) }}KM
+                        </font>
                     </div>
                 </div>
                 <div class="mt-4 text-lg">
@@ -74,6 +78,35 @@
             </div>
         </div>
 
+        <div class="flex justify-center mt-7 w-full" v-if="viewState == 'manageVeh'">
+            <div class="mr-4 ml-4 text-center">
+                <h1 class="border-b-2 border-gray-600 pb-1 text-md">Add a new keyholder</h1>
+                <input class="w-full p-2 rounded-lg bg-transparent border border-gray-600 mt-3" placeholder="Player ID...">
+                <input class="w-full p-2 mt-5 rounded-lg bg-transparent border border-gray-600" placeholder="Nickname...">
+
+                <button class="mt-3 border w-full p-0.5 rounded-lg border-gray-600 duration-300 hover:text-green-400">Add <i
+                        class="fa-solid fa-plus"></i></button>
+
+                <div v-if="targetVehicleData.vehicle_key_holders && targetVehicleData.vehicle_key_holders.length > 0">
+                    <h1 class="mt-2 border-b-2 pb-1 border-gray-600">Current Key Holders</h1>
+                    <div class="mt-2" v-for="(item, i) in targetVehicleData.vehicle_key_holders" :key="i">
+                        <div class="relative border p-2 text-right rounded-lg border-gray-600">
+                            <font class="absolute left-2 max-w-[65%] overflow-hidden text-ellipsis whitespace-nowrap">
+                                {{ item.nickname }}</font>
+                            <button class="">
+                                <i class="fa-solid fa-trash text-red-400"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div v-else>
+                    <h1 class="mt-6 text-gray-400">You haven't given this vehicle's key to anyone.</h1>
+                </div>
+
+            </div>
+
+        </div>
+
         <LoadingSpinner class="mt-6" v-if="!playerData.phone_data_player_vehicles && viewState == 'home'" />
     </main>
 </template>
@@ -88,12 +121,19 @@ export default {
         return {
             insurances: ['Mors Mutual', 'Paleto Bay'],
             viewState: "home",
-            targetVehicleData: {},
+            keyHolderId: "",
+            keyHolderNick: "",
+            targetVehicleData: "",
             fetchVehiclesEvent: "server:myCarsApp::fetchVehicles",
         }
     },
     components: {
         LoadingSpinner
+    },
+    watch: {
+        targetVehicleData() {
+            console.log(JSON.stringify(this.targetVehicleData));
+        }
     },
     methods: {
         getCarImagePath,
@@ -107,8 +147,15 @@ export default {
                 }
             });
         },
+        backToHome() {
+            if (this.viewState == 'manageVeh') {
+                this.viewState = 'vehData';
+            } else {
+                this.viewState = 'home';
+            }
+        },
         getAllVehicleData() {
-            if(window.mp) {
+            if (window.mp) {
                 window.mp.trigger("browser:sendString", this.fetchVehiclesEvent);
             }
         },
@@ -116,6 +163,9 @@ export default {
             if (this.targetVehicleData && window.mp) {
                 window.mp.trigger("phone:trackVehicle", this.targetVehicleData.numberplate, this.targetVehicleData.position_x, this.targetVehicleData.position_y, this.targetVehicleData.position_z);
             }
+        },
+        manage() {
+            this.viewState = "manageVeh";
         }
     },
     computed: {
