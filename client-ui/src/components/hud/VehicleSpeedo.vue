@@ -11,7 +11,7 @@
                         <h1>Speed</h1>
                         <div class="mt-2 text-center p-2 bg-black/50 rounded-lg">
                             <font>
-                                {{ uiStates.vehicleRadarData.speed != null ? (uiStates.vehicleRadarData.speed / 1609).toFixed(0) : "..." }} {{ uiStates.vehicleRadarData.speed != null ? 'KM/H' : '' }}
+                                {{ uiStates.vehicleRadarData.speed != null ? (uiStates.vehicleRadarData.speed * 3.6).toFixed(0) : "..." }} {{ uiStates.vehicleRadarData.speed != null ? 'KM/H' : '' }}
                             </font>
                         </div>
                     </div>

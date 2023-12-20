@@ -598,14 +598,31 @@ namespace CloudRP.Admin
                 }
                 else
                 {
-                    ChatUtils.formatConsolePrint($"{userData.adminName} v brought {findVehicle.NumberPlate} to them.");
-                    findVehicle.Position = player.Position.Around(5);
-                    AdminUtils.staffSay(player, $"Vehicle was brought to you.");
-                    
-                    if(setIntoVeh)
+                    NAPI.Pools.GetAllPlayers().ForEach(p =>
                     {
-                        player.SetIntoVehicle(findVehicle, 0);
-                    }
+                        if(p.IsInVehicle && p.Vehicle.Id == findVehicle.Id)
+                        {
+                            p.WarpOutOfVehicle();
+                            p.Position = player.Position.Around(5);
+                        }
+                    });
+
+                    findVehicle.Position = player.Position.Around(5);
+
+                    NAPI.Task.Run(() =>
+                    {
+                        if(findVehicle != null && player != null)
+                        {
+                            ChatUtils.formatConsolePrint($"{userData.adminName} v brought {findVehicle.NumberPlate} to them.");
+                            findVehicle.Position = player.Position.Around(5);
+                            AdminUtils.staffSay(player, $"Vehicle was brought to you.");
+
+                            if (setIntoVeh)
+                            {
+                                player.SetIntoVehicle(findVehicle, 0);
+                            }
+                        }
+                    }, 1500);
                 }
             }
             else AdminUtils.sendNoAuth(player);
