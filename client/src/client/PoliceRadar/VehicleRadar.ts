@@ -51,7 +51,7 @@ class VehicleRadar {
 
 					let targetV: VehicleMp = distList[0].veh;
 
-					if (!targetV || distList[0].dist > VehicleRadar.maxFindDist) {
+					if (!targetV || distList[0].dist > VehicleRadar.maxFindDist || !mp.vehicles.at(targetV.remoteId)) {
 						VehicleRadar.toggleLastTracked(true);
 						return;
 					}

@@ -1477,6 +1477,45 @@ namespace CloudRP.Admin
             else AdminUtils.sendNoAuth(player);
         }
 
+        [Command("slap", "~r~/slap [nameOrId] [units]")]
+        public void slapPlayer(Player player, string nameOrId, int units)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin || userData.adminDuty)
+            {
+                if(units > 5000 || units < 0)
+                {
+                    CommandUtils.errorSay(player, "Enter a valid unit amount between 0 and 5000.");
+                    return;
+                }
+
+                Player findP = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+                if(findP != null)
+                {
+                    DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+
+                    if(charData != null)
+                    {
+                        if (findP.IsInVehicle)
+                        {
+                            findP.WarpOutOfVehicle();
+                        }
+                        
+                        findP.Position = new Vector3(findP.Position.X, findP.Position.Y, findP.Position.Z + units);
+                        findP.Health -= 5;
+
+                        ChatUtils.formatConsolePrint($"{userData.adminName} slapped {charData.character_name} for {units} units.");
+                        AdminUtils.staffSay(player, $"You slapped {charData.character_name} for {units} units");
+                    }
+                } else AdminUtils.playerNotFound(player);
+
+
+            }
+            else AdminUtils.sendNoAuth(player);
+
+        }
         
     }
 }
