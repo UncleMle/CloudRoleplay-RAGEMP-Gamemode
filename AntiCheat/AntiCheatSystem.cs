@@ -6,6 +6,7 @@ using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 
 namespace CloudRP.AntiCheat
@@ -18,7 +19,11 @@ namespace CloudRP.AntiCheat
         [ServerEvent(Event.PlayerConnected)]
         public async void OnPlayerConnected(Player player)
         {
-            if (player.Address == "127.0.0.1") return;
+            if (player.Address == null) return;
+
+            string str = player.Address.Substring(0, 7);
+
+            if (str == "192.168" || player.Address == "127.0.0.1") return;
 
             try
             {

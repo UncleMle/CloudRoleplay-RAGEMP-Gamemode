@@ -14,6 +14,7 @@ import VehicleParking from './components/vehicle/ParkingLot.vue';
 import VehicleDealerships from './components/dealership/VehicleDealerships.vue';
 import TattooStore from './components/tattoos/TattooStore.vue';
 import VehicleInsurance from './components/vehicleInsurance/VehicleInsurance.vue';
+import HelpModal from './components/help/HelpModal.vue';
 
 export default new Router({
     routes: [
@@ -28,5 +29,6 @@ export default new Router({
         { path: '/dealerships', component: VehicleDealerships },
         { path: '/tattoos', component: TattooStore },
         { path: '/insurance', component: VehicleInsurance },
+        { path: '/help', component: HelpModal }
     ]
 });

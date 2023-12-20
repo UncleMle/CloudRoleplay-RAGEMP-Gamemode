@@ -13,7 +13,7 @@
                                     <h2>Clothing</h2>
                                 </div>
 
-                                <div class="grid grid-cols-3">
+                                <div id="clothing" class="grid grid-cols-3">
                                     <div v-for="(element, i) in clothingItems" :key="i">
                                         <div class="flex justify-center text-center border mr-4 p-3 border-gray-500">
                                             <img :src="getItemImg(element.name)" class="scale-25 w-20" />
@@ -36,7 +36,7 @@
                                     <h2>Inventory Items ({{ inventoryItems.length }} KG)</h2>
                                 </div>
 
-                                <div id="dragparent" class="grid grid-cols-3">
+                                <div id="inventory" class="grid grid-cols-3">
                                     <div v-for="(element, i) in inventoryItems" :key="i">
                                         <div class="flex justify-center text-center border mr-4 p-3 border-gray-500">
                                             <img :src="getItemImg(element.name)" class="scale-25 w-20" />
@@ -109,36 +109,8 @@ export default {
         document.addEventListener("contextmenu", this.startContextMenu);
     },
     mounted() {
-        dragular([document.querySelector("#dragparent")], {
-            moves: function (el, container, handle) {
-                if (handle.id == "dontdrag") {
-                    console.log("Cant drag");
-                } else {
-                    return true;
-                }
-            },
-            accepts: function () {
-                console.log("has been accepted.");
-                return true;
-            },
-        }).on("drag", () => {
-            console.log("being dragged");
-        });
+        dragular([document.getElementById("clothing"), document.getElementById("inventory")]);
 
-        dragular([document.querySelector("#dragcontain")], {
-            moves: function (el, container, handle) {
-                if (handle.id == "dontdrag") {
-                    console.log("Cant drag");
-                } else {
-                    return true;
-                }
-            },
-            accepts: function () {
-                console.log("has been accepted.");
-            },
-        }).on("drag", () => {
-            console.log("being dragged");
-        });
     }
 }
 </script>
