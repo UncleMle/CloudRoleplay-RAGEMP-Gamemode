@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <ChatBox class="absolute" />
-        <InventoryHud v-if="false" />
+        <InventoryHud v-if="true" />
         <PlayerPhone class="absolute" v-if="uiStates.guiEnabled" />
         <RefuelMeter class="absolute" v-if="uiStates.refuelUi" />
         <PushNotification class="bg-red-200" ref="notification" />

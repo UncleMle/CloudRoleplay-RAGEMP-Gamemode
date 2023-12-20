@@ -40,24 +40,6 @@ namespace CloudRP.Admin
             }
         }
 
-        [Command("vh")]
-        public void vhCmd(Player player)
-        {
-            if(player.IsInVehicle)
-            {
-                player.SendChatMessage(NAPI.Vehicle.GetVehicleBodyHealth(player.Vehicle) + " veh health");
-            }
-        }
-
-        [Command("setvh")]
-        public void setVh(Player player, int vehH)
-        {
-            if(player.IsInVehicle)
-            {
-                NAPI.Vehicle.SetVehicleBodyHealth(player.Vehicle, vehH);
-            }
-        }
-
         public static void saveAdutyPosition(User userData, Vector3 pos)
         {
             if (adminAdutyPositions.ContainsKey(userData.accountId))
