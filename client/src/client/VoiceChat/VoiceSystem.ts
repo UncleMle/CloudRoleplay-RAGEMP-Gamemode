@@ -129,7 +129,7 @@ class VoiceSystem {
 	}
 
 	public static toggleVoice(tog: boolean) {
-		if(!validateKeyPress()) return;
+		if(!validateKeyPress(false, false)) return;
 
 		let characterData: CharacterData | undefined = getUserCharacterData();
 
