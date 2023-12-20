@@ -121,6 +121,7 @@ namespace CloudRP.PlayerData
         public static readonly string Dealership = "/dealerships";
         public static readonly string Refuel = "/refuel";
         public static readonly string Insurance = "/insurance";
+        public static readonly string Help = "/help";
     }
 
     public static class AuthStates

@@ -87,6 +87,12 @@ namespace CloudRP.GeneralCommands
             CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_commands_radius);
         }
 
+        [Command("help", "~y~Use: ~w~/help")]
+        public void onHelpCommand(Player player)
+        {
+            uiHandling.pushRouterToClient(player, Browsers.Help);
+        }
+
         [Command("stats", "~y~Use:~w~ /stats")]
         public void onStatsCommand(Player player)
         {
