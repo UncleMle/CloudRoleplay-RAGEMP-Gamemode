@@ -65,7 +65,7 @@ import { mapGetters } from 'vuex';
 export default {
     data() {
         return {
-            browseView: "keybinds",
+            browseView: "commands",
             keybinds: [
                 {
                     bind: "F2",

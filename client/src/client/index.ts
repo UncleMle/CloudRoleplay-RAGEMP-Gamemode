@@ -36,6 +36,7 @@ import VehicleInsurance from "./VehicleInsurance/VehicleInsurance";
 import MarkersAndLabels from "./MarkersAndLabels/MarkersAndLabels";
 import PhoneSystem from "./PhoneSystem/PhoneSystem";
 import VehicleDamage from "./VehicleSystems/VehicleDamage";
+import VehicleRadar from "./PoliceRadar/VehicleRadar";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -76,3 +77,4 @@ new VehicleInsurance();
 new MarkersAndLabels();
 new PhoneSystem();
 new VehicleDamage();
+new VehicleRadar();
