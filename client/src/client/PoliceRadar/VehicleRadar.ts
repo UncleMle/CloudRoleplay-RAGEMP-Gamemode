@@ -1,4 +1,7 @@
+import { VehicleData } from '@/@types';
 import BrowserSystem from '@/BrowserSystem/BrowserSystem';
+import getVehicleData from '@/PlayerMethods/getVehicleData';
+import VehicleSpeedo from '@/VehicleSystems/VehicleSpeedo';
 
 class VehicleRadar {
 	public static LocalPlayer: PlayerMp;
@@ -16,73 +19,88 @@ class VehicleRadar {
 
 	public static handleRender() {
 		if (VehicleRadar.LocalPlayer.vehicle && VehicleRadar.LocalPlayer.vehicle.getClass() == VehicleRadar.emergencyVehicleClass) {
-			const targetVehs: VehicleMp[] | undefined = mp.vehicles.getClosest(VehicleRadar.LocalPlayer.vehicle.position, 2);
+			if (
+				VehicleRadar.LocalPlayer.vehicle.getPedInSeat(0) == VehicleRadar.LocalPlayer.handle ||
+				VehicleRadar.LocalPlayer.vehicle.getPedInSeat(1) == VehicleRadar.LocalPlayer.handle
+			) {
+				const targetVehs: VehicleMp[] | undefined = mp.vehicles.getClosest(VehicleRadar.LocalPlayer.vehicle.position, 2);
 
-			if (targetVehs.length > 1) {
-				let distList: { veh: VehicleMp; dist: number }[] = [];
+				if (targetVehs.length > 1) {
+					let distList: { veh: VehicleMp; dist: number }[] = [];
 
-				targetVehs.forEach((veh: VehicleMp) => {
-					if (veh.handle != VehicleRadar.LocalPlayer.vehicle.handle) {
-						let pPos: Vector3 = VehicleRadar.LocalPlayer.vehicle.position;
+					targetVehs.forEach((veh: VehicleMp) => {
+						if (veh.handle != VehicleRadar.LocalPlayer.vehicle.handle) {
+							let pPos: Vector3 = VehicleRadar.LocalPlayer.vehicle.position;
 
-						distList.push({
-							dist: mp.game.gameplay.getDistanceBetweenCoords(
-								veh.position.x,
-								veh.position.y,
-								veh.position.z,
-								pPos.x,
-								pPos.y,
-								pPos.z,
-								true
-							),
-							veh: veh
-						});
+							distList.push({
+								dist: mp.game.gameplay.getDistanceBetweenCoords(
+									veh.position.x,
+									veh.position.y,
+									veh.position.z,
+									pPos.x,
+									pPos.y,
+									pPos.z,
+									true
+								),
+								veh: veh
+							});
+						}
+					});
+
+					distList.sort((a, b) => a.dist - b.dist);
+
+					let targetV: VehicleMp = distList[0].veh;
+
+					if (!targetV || distList[0].dist > VehicleRadar.maxFindDist) {
+						VehicleRadar.toggleLastTracked(true);
+						return;
 					}
-				});
 
-				distList.sort((a, b) => a.dist - b.dist);
+					const boneIndex: number = VehicleRadar.LocalPlayer.vehicle.getBoneIndexByName(VehicleRadar.drawBoneStart);
 
-				let targetV: VehicleMp = distList[0].veh;
+					const playerVehBonePos: Vector3 = VehicleRadar.LocalPlayer.vehicle.getWorldPositionOfBone(boneIndex);
+					const targetVehBonePos: Vector3 = targetV.getWorldPositionOfBone(boneIndex);
 
-				if (!targetV || distList[0].dist > VehicleRadar.maxFindDist) return;
-
-				const boneIndex: number = VehicleRadar.LocalPlayer.vehicle.getBoneIndexByName(VehicleRadar.drawBoneStart);
-
-				const playerVehBonePos: Vector3 = VehicleRadar.LocalPlayer.vehicle.getWorldPositionOfBone(boneIndex);
-				const targetVehBonePos: Vector3 = targetV.getWorldPositionOfBone(boneIndex);
-
-				let intersectWithWorld: RaycastResult | undefined = mp.raycasting.testPointToPoint(
-					playerVehBonePos,
-					targetVehBonePos,
-					[VehicleRadar.LocalPlayer.vehicle.handle],
-					1 + 16
-				);
-
-				if (!intersectWithWorld) {
-					mp.game.graphics.drawLine(
-						playerVehBonePos.x,
-						playerVehBonePos.y,
-						playerVehBonePos.z,
-						targetVehBonePos.x,
-						targetVehBonePos.y,
-						targetVehBonePos.z,
-						255,
-						255,
-						255,
-						255
+					let intersectWithWorld: RaycastResult | undefined = mp.raycasting.testPointToPoint(
+						playerVehBonePos,
+						targetVehBonePos,
+						[VehicleRadar.LocalPlayer.vehicle.handle],
+						1 + 16
 					);
 
-					BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
-                        _stateKey: "vehicleSpeedoData",
-                        status: true
-                    })`);
+					if (!intersectWithWorld) {
+						let targetVehicleData: VehicleData | undefined = getVehicleData(targetV);
+						if (!targetVehicleData) return;
+
+						VehicleRadar.toggleLastTracked(false);
+						BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
+                            _stateKey: "vehicleRadarData",
+                            status: ${JSON.stringify({
+								speed: targetV.getSpeed(),
+								numberplate: targetVehicleData.numberplate,
+								vehicleName: VehicleSpeedo.getVehDispName(targetV.model)
+							})}
+                        })`);
+					}
 				}
 			}
 		}
 	}
 
+	public static toggleLastTracked(tog: boolean) {
+		BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
+            _stateKey: "vehRadarLastTracked",
+            status: ${tog}
+        })`);
+	}
+
 	public static toggleRadarOn(veh: VehicleMp, tog: boolean) {
-		if (veh.getClass() == VehicleRadar.emergencyVehicleClass) {
+		if (veh && veh.getClass() == VehicleRadar.emergencyVehicleClass) {
+			BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
+                _stateKey: "vehicleRadarData",
+                status: {}
+            })`);
+
 			BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
                 _stateKey: "vehicleRadar",
                 status: ${tog}

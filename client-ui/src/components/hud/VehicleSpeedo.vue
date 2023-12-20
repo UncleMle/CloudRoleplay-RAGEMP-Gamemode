@@ -1,8 +1,38 @@
 <template>
     <div v-if="uiStates.speedoUi" class="text-white font-medium">
-        <div v-if="uiStates.vehicleRadar" class="absolute left-[1%] bottom-[40.5%]">
-            <div class="rounded-xl w-[20rem] bg-black/40">
-                Radar
+        <div v-if="uiStates.vehicleRadar" class="absolute left-[1%] bottom-[32.5%]">
+            <div class="rounded-xl w-[18rem] bg-black/40">
+                <div class="text-xl border-b-2 border-gray-500 p-2">
+                    Police Radar <font class="text-sm text-gray-400">{{Object.entries(uiStates.vehicleRadarData).length > 0 && uiStates.vehRadarLastTracked ? "- Last locked on" :"" }}</font>
+                </div>
+
+                <div class="p-3">
+                    <div>
+                        <h1>Speed</h1>
+                        <div class="mt-2 text-center p-2 bg-black/50 rounded-lg">
+                            <font>
+                                {{ uiStates.vehicleRadarData.speed != null ? (uiStates.vehicleRadarData.speed / 1609).toFixed(0) : "..." }} {{ uiStates.vehicleRadarData.speed != null ? 'KM/H' : '' }}
+                            </font>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <h1>Number plate</h1>
+                        <div class="mt-2 text-center p-2 bg-black/50 rounded-lg">
+                            <font>
+                                {{ uiStates.vehicleRadarData.numberplate ? uiStates.vehicleRadarData.numberplate : '...' }}
+                            </font>
+                        </div>
+                    </div>
+                    <div v-if="uiStates.vehicleRadarData.vehicleName && uiStates.vehicleRadarData.vehicleName != 'NULL'" class="mt-2">
+                        <h1>Vehicle Name</h1>
+                        <div class="mt-2 text-center p-2 bg-black/50 rounded-lg">
+                            <font>
+                                {{ uiStates.vehicleRadarData.vehicleName }}
+                            </font>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
