@@ -603,7 +603,8 @@ namespace CloudRP.Admin
                         if(p.IsInVehicle && p.Vehicle.Id == findVehicle.Id)
                         {
                             p.WarpOutOfVehicle();
-                            p.Position = player.Position.Around(5);
+                            p.Position = player.Position;
+                            AdminUtils.staffSay(p, $"Admin {userData.adminName} teleported your vehicle.");
                         }
                     });
 

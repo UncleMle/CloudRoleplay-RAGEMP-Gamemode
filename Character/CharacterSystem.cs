@@ -332,5 +332,20 @@ namespace CloudRP.Character
 
             PlayersData.setPlayerCharacterData(player, character);
         }
+
+        [RemoteEvent("fpsync.update")]
+        public void syncPointing(Player player, int camPitch, int camHeading)
+        {
+            NAPI.Pools.GetAllPlayers().ForEach(p =>
+            {
+                p.TriggerEvent("fpsync.update", p.Id, camPitch, camHeading);
+            });
+        }
+
+        [RemoteEvent("pointingStop")]
+        public void stopPointing(Player player)
+        {
+            player.StopAnimation();
+        }
     }
 }

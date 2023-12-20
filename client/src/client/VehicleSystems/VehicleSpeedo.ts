@@ -37,24 +37,22 @@ class VehicleSpeedo {
             let vehicle = VehicleSpeedo.LocalPlayer.vehicle;
 			let lightState = vehicle.getLightsState(1, 1);
 
-            let speedoData: SpeedoData = {
-                vehicleSpeed: vehicle.getSpeed(),
-				vehicleRpm: vehicleData.engine_status ? VehicleSpeedo.LocalPlayer.vehicle.rpm : 0,
-				indicatorStatus: vehicleData.indicator_status,
-				lockStatus: vehicleData.vehicle_locked,
-				lightsStates: lightState,
-                fuelLevel: vehicleData.vehicle_fuel,
-                vehicleMileage: vehicleData.vehicle_distance,
-                metric: mp.game.gameplay.getProfileSetting(227),
-                numberPlate: vehicle.getNumberPlateText(),
-                displayName: VehicleSpeedo.getVehDispName(vehicle.model),
-                dbName: vehicleData.vehicle_name,
-                vehHealth: vehicle.getHealth()
-            }
-
             BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
                 _stateKey: "vehicleSpeedoData",
-                status: ${JSON.stringify(speedoData)}
+                status: ${JSON.stringify({
+                    vehicleSpeed: vehicle.getSpeed(),
+                    vehicleRpm: vehicleData.engine_status ? VehicleSpeedo.LocalPlayer.vehicle.rpm : 0,
+                    indicatorStatus: vehicleData.indicator_status,
+                    lockStatus: vehicleData.vehicle_locked,
+                    lightsStates: lightState,
+                    fuelLevel: vehicleData.vehicle_fuel,
+                    vehicleMileage: vehicleData.vehicle_distance,
+                    metric: mp.game.gameplay.getProfileSetting(227),
+                    numberPlate: vehicle.getNumberPlateText(),
+                    displayName: VehicleSpeedo.getVehDispName(vehicle.model),
+                    dbName: vehicleData.vehicle_name,
+                    vehHealth: vehicle.getHealth()
+                })}
             })`);
         }
     }

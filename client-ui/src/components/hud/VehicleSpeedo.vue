@@ -3,7 +3,7 @@
         <div v-if="uiStates.vehicleRadar" class="absolute left-[1%] bottom-[32.5%]">
             <div class="rounded-xl w-[18rem] bg-black/40">
                 <div class="text-xl border-b-2 border-gray-500 p-2">
-                    <i class="fa-solid fa-satellite-dish text-gray-400"></i> Police Radar <font class="text-sm text-gray-400">{{Object.entries(uiStates.vehicleRadarData).length > 0 && uiStates.vehRadarLastTracked ? "- Last locked on" :"" }}</font>
+                    <i class="fa-solid fa-satellite-dish text-gray-400"></i> Police Radar <font class="text-sm text-red-400">{{Object.entries(uiStates.vehicleRadarData).length > 0 && uiStates.vehRadarLastTracked ? "- Last locked on" :"" }}</font>
                 </div>
 
                 <div class="p-3">

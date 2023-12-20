@@ -4,6 +4,7 @@ import { _TEXT_R_WHITE, _control_ids, _sharedAccountDataIdentifier, _sharedChara
 import getTargetData from "../PlayerMethods/getTargetData";
 import getUserData from "../PlayerMethods/getUserData";
 import validateKeyPress from "@/PlayerMethods/validateKeyPress";
+import AdminRank from "./AdminRank";
 
 class AdminSystem {
 	public static userData: UserData | undefined;
@@ -49,14 +50,24 @@ class AdminSystem {
 			let poz_y: string = AdminSystem.LocalPlayer.position.y.toFixed(1);
 			let poz_z: string = AdminSystem.LocalPlayer.position.z.toFixed(1);
 
-			let positionString = `${_TEXT_R_WHITE} X: ${poz_x} Y: ${poz_y} Z: ${poz_z}`;
+			let adminRankData = AdminRank.getAdminRankInfo(AdminSystem.userData.adminLevel);
+			if(!adminRankData) return;
 
-			let msg = `~r~On duty as ${AdminSystem.userData.adminName} ${AdminSystem.userData.isFlying ? "~g~[Fly enabled]~w~" : ""}\n${positionString}`;
+			let positionString = `~r~X:~w~ ${poz_x} ~r~Y:~w~ ${poz_y} ~r~Z:~w~ ${poz_z}`;
+
+			let msg = `~r~On duty as ~w~<font color="${adminRankData.colour}">${adminRankData.rank}~r~ ${AdminSystem.userData.adminName} ${AdminSystem.userData.isFlying ? "\n~g~[Fly enabled]~w~" : ""}`;
 
 			mp.game.graphics.drawText(msg, [0.5, 0.90], {
 				font: 4,
 				color: [255, 255, 255, 255],
-				scale: [0.7, 0.7],
+				scale: [0.65, 0.65],
+				outline: false
+			});
+
+			mp.game.graphics.drawText(positionString, [0.5, AdminSystem.userData.isFlying ? 0.86 : 0.94], {
+				font: 4,
+				color: [255, 255, 255, 180],
+				scale: [0.61, 0.61],
 				outline: false
 			});
 		}

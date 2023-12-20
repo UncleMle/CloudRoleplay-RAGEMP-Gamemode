@@ -95,13 +95,9 @@ class VehicleRadar {
 	}
 
 	public static toggleRadarOn(veh: VehicleMp, tog: boolean) {
-		BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
-            _stateKey: "vehicleRadarData",
-            status: {}
-        })`);
+        VehicleRadar.resetRadarData();
 
-
-		if (veh && veh.getClass() == VehicleRadar.emergencyVehicleClass) {
+        if (veh && veh.getClass() == VehicleRadar.emergencyVehicleClass) {
 			BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
                 _stateKey: "vehicleRadar",
                 status: ${tog}
@@ -113,6 +109,13 @@ class VehicleRadar {
             })`);
         }
 	}
+
+    public static resetRadarData() {
+        BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
+            _stateKey: "vehicleRadarData",
+            status: {}
+        })`);
+    }
 }
 
 export default VehicleRadar;
