@@ -50,7 +50,7 @@
 
                                     <div v-if="browsingType == 'general'">
                                         <div v-for="item in generalItems" :key="item">
-                                            <div class="pb-5 duration-300">
+                                            <div v-if="getMaxIdx(item.name) > 0" class="pb-5 duration-300">
                                                 <label for="steps-range"
                                                     class="block mb-2 text-sm font-medium  text-white">{{ item.name }} ({{
                                                         formatMod(vehicleData[item.dbName]) }})</label>
@@ -73,7 +73,7 @@
 
                                     <div v-if="browsingType == 'performance'">
                                         <div v-for="item in performanceItems" :key="item">
-                                            <div class="pb-5 duration-300">
+                                            <div v-if="getMaxIdx(item.name) > 0" class="pb-5 duration-300">
                                                 <label for="steps-range"
                                                     class="block mb-2 text-sm font-medium  text-white">{{ item.name }} ({{
                                                         formatMod(vehicleData[item.dbName]) }})</label>
@@ -96,7 +96,7 @@
 
                                     <div v-if="browsingType == 'other'">
                                         <div v-for="item in otherItems" :key="item">
-                                            <div class="pb-5 duration-300">
+                                            <div v-if="getMaxIdx(item.name) > 0" class="pb-5 duration-300">
                                                 <label for="steps-range"
                                                     class="block mb-2 text-sm font-medium  text-white">{{ item.name }} ({{
                                                         formatMod(vehicleData[item.dbName]) }})</label>
