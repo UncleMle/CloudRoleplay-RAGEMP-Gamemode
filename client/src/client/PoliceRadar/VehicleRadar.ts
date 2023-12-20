@@ -6,7 +6,7 @@ import VehicleSpeedo from '@/VehicleSystems/VehicleSpeedo';
 class VehicleRadar {
 	public static LocalPlayer: PlayerMp;
 	public static drawBoneStart: string = 'bonnet';
-	public static maxFindDist: number = 15;
+	public static maxFindDist: number = 25;
 	public static emergencyVehicleClass: number = 18;
 
 	constructor() {
@@ -20,8 +20,8 @@ class VehicleRadar {
 	public static handleRender() {
 		if (VehicleRadar.LocalPlayer.vehicle && VehicleRadar.LocalPlayer.vehicle.getClass() == VehicleRadar.emergencyVehicleClass) {
 			if (
-				VehicleRadar.LocalPlayer.vehicle.getPedInSeat(0) == VehicleRadar.LocalPlayer.handle ||
-				VehicleRadar.LocalPlayer.vehicle.getPedInSeat(1) == VehicleRadar.LocalPlayer.handle
+				VehicleRadar.LocalPlayer.vehicle.getPedInSeat(-1) == VehicleRadar.LocalPlayer.handle ||
+				VehicleRadar.LocalPlayer.vehicle.getPedInSeat(0) == VehicleRadar.LocalPlayer.handle
 			) {
 				const targetVehs: VehicleMp[] | undefined = mp.vehicles.getClosest(VehicleRadar.LocalPlayer.vehicle.position, 2);
 
@@ -95,17 +95,23 @@ class VehicleRadar {
 	}
 
 	public static toggleRadarOn(veh: VehicleMp, tog: boolean) {
-		if (veh && veh.getClass() == VehicleRadar.emergencyVehicleClass) {
-			BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
-                _stateKey: "vehicleRadarData",
-                status: {}
-            })`);
+		BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
+            _stateKey: "vehicleRadarData",
+            status: {}
+        })`);
 
+
+		if (veh && veh.getClass() == VehicleRadar.emergencyVehicleClass) {
 			BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
                 _stateKey: "vehicleRadar",
                 status: ${tog}
             })`);
-		}
+		} else {
+            BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
+                _stateKey: "vehicleRadar",
+                status: false
+            })`);
+        }
 	}
 }
 
