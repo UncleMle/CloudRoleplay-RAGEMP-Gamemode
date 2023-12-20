@@ -1,6 +1,12 @@
 <template>
-    <div v-if="uiStates.speedoUi">
-        <div class="absolute right-[3%] bottom-[13.5%] text-white font-medium">
+    <div v-if="uiStates.speedoUi" class="text-white font-medium">
+        <div v-if="uiStates.vehicleRadar" class="absolute left-[1%] bottom-[40.5%]">
+            <div class="rounded-xl w-[20rem] bg-black/40">
+                Radar
+            </div>
+        </div>
+
+        <div class="absolute right-[3%] bottom-[13.5%]">
             <div class="rounded-xl w-[20rem] bg-black/40">
                 <div class="p-4">
                     <div class="w-full flex justify-center text-4xl p-3"
@@ -46,7 +52,7 @@
 
                 <div
                     class="bg-black/50 rounded-b-xl flex justify-center h-[3vw] mt-2 items-center border-t-2 shadow-2xl shadow-black/50 border-gray-600 overflow-hidden">
-                    <div class="rounded-lg" v-for="num in getMileageArr()" :key="num.key">
+                    <div class="rounded-lg text-gray-300" v-for="num in getMileageArr()" :key="num.key">
                         <font id="odometer" class="border-1 p-2.5 bg-black/70 border border-gray-900/50"
                             :class="num.key == getMileageArr().length - 1 ? 'rounded-r-lg' : num.key == 0 ? 'rounded-l-lg' : ''">
                             {{ num.num }}</font>
