@@ -228,6 +228,7 @@ namespace CloudRP.Utils
     public class User
     {
         public int account_id { get; set; }
+        public int auto_login {  get; set; }
         public string username { get; set; }
         public int admin_status { get; set; }
         public bool adminDuty { get; set; } = false;

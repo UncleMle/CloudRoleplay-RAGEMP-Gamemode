@@ -121,19 +121,7 @@ namespace CloudRP.Admin
             {
                 userData.admin_esp = !userData.admin_esp;
 
-                PlayersData.setPlayerAccountData(player, userData);
-
-                using (DefaultDbContext dbContext = new DefaultDbContext())
-                {
-                    Account account = dbContext.accounts.Find(userData.account_id);
-
-                    if (account == null) return;
-
-                    account.admin_esp = userData.admin_esp;
-
-                    dbContext.accounts.Update(account);
-                    dbContext.SaveChanges();
-                }
+                PlayersData.setPlayerAccountData(player, userData, true, true);
 
                 AdminUtils.staffSay(player, $"You have {(userData.admin_esp ? "disabled" : "enabled")} admin esp.");
                 ChatUtils.formatConsolePrint($"{userData.admin_name} toggled admin esp {(userData.admin_esp ? "on" : "off")}");

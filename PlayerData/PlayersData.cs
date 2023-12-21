@@ -2,11 +2,15 @@
 using CloudRP.Character;
 using CloudRP.Database;
 using CloudRP.Utils;
+using Discord;
 using GTANetworkAPI;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Xml.Schema;
 
@@ -22,15 +26,43 @@ namespace CloudRP.PlayerData
         private static string _voipStatusKey = "voipIsTalking";
         private static string _characterModelKey = "characterModel";
 
-        public static void setPlayerAccountData(Player player, User userData)
+        public static void setPlayerAccountData(Player player, User userData, bool triggerShared = true, bool updateDb = false)
         {
             if(!checkIfAccountIsLogged(userData.account_id))
             {
                 player.SetData(_sharedAccountDataIdentifier, userData);
 
-                SharedDataAccount sharedData = JsonConvert.DeserializeObject<SharedDataAccount>(JsonConvert.SerializeObject(userData));
+                if(triggerShared)
+                {
+                    SharedDataAccount sharedData = JsonConvert.DeserializeObject<SharedDataAccount>(JsonConvert.SerializeObject(userData));
 
-                player.SetSharedData(_sharedAccountDataIdentifier, sharedData);
+                    player.SetSharedData(_sharedAccountDataIdentifier, sharedData);
+                }
+
+                if(updateDb)
+                {
+                    using (DefaultDbContext dbContext = new DefaultDbContext())
+                    {
+                        Account targetAcc = JsonConvert.DeserializeObject<Account>(JsonConvert.SerializeObject(userData));
+
+                        dbContext.Attach(targetAcc);
+                        dbContext.Entry(targetAcc).State = EntityState.Modified;
+
+                        var entry = dbContext.Entry(targetAcc);
+
+                        Type type = typeof(Account);
+                        PropertyInfo[] properties = type.GetProperties();
+                        foreach (PropertyInfo property in properties)
+                        {
+                            if (property.GetValue(targetAcc, null) == null)
+                            {
+                                entry.Property(property.Name).IsModified = false;
+                            }
+                        }
+
+                        dbContext.SaveChanges();
+                    }
+                }
             }
         }
 

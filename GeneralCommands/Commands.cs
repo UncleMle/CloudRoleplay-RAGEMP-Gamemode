@@ -233,21 +233,16 @@ namespace CloudRP.GeneralCommands
 
             if(userData != null)
             {
-                using(DefaultDbContext dbContext = new DefaultDbContext())
+                if(userData.auto_login == 1)
                 {
-                    Account findAcc = dbContext.accounts.Find(userData.account_id);
-
-                    if(findAcc != null && findAcc.auto_login == 1)
-                    {
-                        findAcc.auto_login = 0;
-                        dbContext.Update(findAcc);
-                        dbContext.SaveChanges();
-                        CommandUtils.successSay(player, "You disabled auto login!");
-                    } else
-                    {
-                        CommandUtils.errorSay(player, "You don't have auto login enabled.");
-                    } 
+                    userData.auto_login = 0;
+                } else
+                {
+                    userData.auto_login = 1;
                 }
+
+                PlayersData.setPlayerAccountData(player, userData, false, true);
+                CommandUtils.successSay(player, $"You {(userData.auto_login == 1 ? "enabled" : "disabled")}");
             }
         }
 
