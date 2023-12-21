@@ -81,9 +81,9 @@ namespace CloudRP.PlayerData
             }
         }
 
-        public static void pushRouterToClient(Player player, string route)
+        public static void pushRouterToClient(Player player, string route, bool resetRouter = true)
         {
-            if(route == Browsers.None)
+            if(route == Browsers.None && resetRouter)
             {
                 player.TriggerEvent("browser:resetRouter");
                 return;

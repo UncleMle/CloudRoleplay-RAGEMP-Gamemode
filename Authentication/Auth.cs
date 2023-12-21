@@ -304,37 +304,36 @@ namespace CloudRP.Authentication
         {
             string passwordHash = AuthUtils.hashPasword(registeringData.registerPassword);
 
-            Account creatingAccount = new Account
-            {
-                admin_name = "Placeholder",
-                admin_ped = _startAdminPed,
-                auto_login = 0,
-                ban_status = 0,
-                client_serial = player.Serial,
-                password = passwordHash,
-                email_address = registeringData.registerEmail,
-                social_club_id = player.SocialClubId,
-                CreatedDate = DateTime.Now,
-                UpdatedDate = DateTime.Now,
-                username = registeringData.registerUsername.ToLower(),
-                user_ip = player.Address,
-                vip_status = 0,
-                admin_status = (int)AdminRanks.Admin_None,
-                auto_login_key = "",
-                max_characters = 2
-            };
-
             using(DefaultDbContext dbContext = new DefaultDbContext())
             {
+                Account creatingAccount = new Account
+                {
+                    admin_name = "notset",
+                    admin_ped = _startAdminPed,
+                    auto_login = 0,
+                    ban_status = 0,
+                    client_serial = player.Serial,
+                    password = passwordHash,
+                    email_address = registeringData.registerEmail,
+                    social_club_id = player.SocialClubId,
+                    CreatedDate = DateTime.Now,
+                    UpdatedDate = DateTime.Now,
+                    username = registeringData.registerUsername.ToLower(),
+                    user_ip = player.Address,
+                    vip_status = 0,
+                    admin_status = (int)AdminRanks.Admin_None,
+                    auto_login_key = "",
+                    max_characters = 2
+                };
+
                 dbContext.Add(creatingAccount);
                 dbContext.SaveChanges();
+
+                uiHandling.sendPushNotif(player, $"You have successfully created an account.", 6000);
+                User userData = createUser(creatingAccount);
+
+                setUserToCharacterSelection(player, userData);
             }
-
-            uiHandling.sendPushNotif(player, $"You have successfully created an account.", 6000);
-
-            User userData = createUser(creatingAccount);
-
-            setUserToCharacterSelection(player, userData);
         }
 
         [ServerEvent(Event.PlayerConnected)]
@@ -422,8 +421,6 @@ namespace CloudRP.Authentication
 
                     uiHandling.resetMutationPusher(player, MutationKeys.PlayerCharacters);
                     setUserToCharacterSelection(player, user);
-
-                    return;
                 }
             }
         }
@@ -451,7 +448,7 @@ namespace CloudRP.Authentication
             }
 
             DeathEvent.initCorpses(player);
-            uiHandling.pushRouterToClient(player, Browsers.None);
+            uiHandling.pushRouterToClient(player, Browsers.None, false);
             player.Dimension = characterData.player_dimension;
 
             player.TriggerEvent("client:moveSkyCamera", "down");
