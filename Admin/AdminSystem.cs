@@ -1455,11 +1455,11 @@ namespace CloudRP.Admin
                 DbCharacter charData = PlayersData.getPlayerCharacterData(findPlayer);
 
                 charData.money_amount += amount;
-                PlayersData.setPlayerCharacterData(player, charData, false, true);
+                PlayersData.setPlayerCharacterData(findPlayer, charData, false, true);
 
                 ChatUtils.formatConsolePrint($"{userData.adminName} gave {charData.character_name} {amount.ToString("C")}.");
-                AdminUtils.staffSay(player, $"You gave {charData.character_name} {ChatUtils.moneyGreen}${amount.ToString("C")}{ChatUtils.White} their total money level is at {ChatUtils.moneyGreen}${charData.money_amount.ToString("C")}");
-                AdminUtils.staffSay(findPlayer, $"You have been given {ChatUtils.moneyGreen}{amount.ToString("C")}{ChatUtils.White} from Admin {userData.adminName}");
+                AdminUtils.staffSay(player, $"You gave {charData.character_name} {ChatUtils.moneyGreen}{amount.ToString("C")}{AdminUtils.staffSuffixColour} their total money level is at {ChatUtils.moneyGreen}${charData.money_amount.ToString("C")}");
+                AdminUtils.staffSay(findPlayer, $"You have been given {ChatUtils.moneyGreen}{amount.ToString("C")}{AdminUtils.staffSuffixColour} from Admin {userData.adminName}");
             }
             else AdminUtils.sendNoAuth(player);
         }
@@ -1486,11 +1486,11 @@ namespace CloudRP.Admin
                 }
 
                 charData.money_amount -= amount;
-                PlayersData.setPlayerCharacterData(player, charData, false, true);
+                PlayersData.setPlayerCharacterData(findPlayer, charData, false, true);
 
                 ChatUtils.formatConsolePrint($"{userData.adminName} removed {amount.ToString("C")} from {charData.character_name}.");
-                AdminUtils.staffSay(player, $"You removed {ChatUtils.moneyGreen}${amount.ToString("C")}{ChatUtils.White} from {charData.character_name} their total money level is at {ChatUtils.moneyGreen}${charData.money_amount.ToString("C")}");
-                AdminUtils.staffSay(findPlayer, $"You had {ChatUtils.moneyGreen}${amount.ToString("C")}{ChatUtils.White} removed from you by Admin {userData.adminName}");
+                AdminUtils.staffSay(player, $"You removed {ChatUtils.moneyGreen}${amount.ToString("C")}{AdminUtils.staffSuffixColour} from {charData.character_name} their total money level is at {ChatUtils.moneyGreen}{charData.money_amount.ToString("C")}");
+                AdminUtils.staffSay(findPlayer, $"You had {ChatUtils.moneyGreen}${amount.ToString("C")}{AdminUtils.staffSuffixColour} removed from you by Admin {userData.adminName}");
             }
             else AdminUtils.sendNoAuth(player);
         }
@@ -1502,9 +1502,9 @@ namespace CloudRP.Admin
 
             if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin || userData.adminDuty)
             {
-                if(units > 5000 || units < 0)
+                if(units > 8000 || units < 0)
                 {
-                    CommandUtils.errorSay(player, "Enter a valid unit amount between 0 and 5000.");
+                    CommandUtils.errorSay(player, "Enter a valid unit amount between 0 and 800.");
                     return;
                 }
 
