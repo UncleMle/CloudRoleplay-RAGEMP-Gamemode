@@ -33,12 +33,12 @@ class SwitchCamera {
 	public static async checkCamInAir() {
 		if (mp.game.invoke(_IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE)) {
 
-			GuiSystem.toggleHudComplete(false);
+			GuiSystem.toggleHudComplete(false, false, false);
 
 			await mp.game.waitAsync(40);
 			SwitchCamera.checkCamInAir();
 		} else {
-			GuiSystem.toggleHudComplete(true);
+			GuiSystem.toggleHudComplete(true, false, false);
 		}
 	}
 }

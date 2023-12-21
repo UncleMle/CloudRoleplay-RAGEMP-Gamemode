@@ -8,6 +8,7 @@ import getTimeUnix from '@/PlayerMethods/getTimeUnix';
 import NotificationSystem from '@/NotificationSystem/NotificationSystem';
 import ScaleForm from '@/Scaleform/ScaleformMessages';
 import toggleChat from '@/PlayerMethods/ToggleChat';
+import validateKeyPress from '@/PlayerMethods/validateKeyPress';
 
 class GuiSystem {
 	public static LocalPlayer: PlayerMp;
@@ -22,15 +23,15 @@ class GuiSystem {
 	}
 
 	public static toggleHud() {
-		if(GuiSystem.LocalPlayer.isTypingInTextChat || mp.game.invoke(_IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE)) return;
+		if(!validateKeyPress()) return;
 
 		GuiSystem.hudToggle = !GuiSystem.hudToggle;
 
-		GuiSystem.toggleHudComplete(GuiSystem.hudToggle);
+		GuiSystem.toggleHudComplete(GuiSystem.hudToggle, false, true);
 	}
 
-	public static toggleHudComplete(toggle: boolean, notif: boolean = false, checkForScaleForm: boolean = true) {
-		if(mp.game.invoke(_IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE) || checkForScaleForm && ScaleForm.isActive()) return;
+	public static toggleHudComplete(toggle: boolean, notif: boolean = false, checkForScaleFormAndSwitch: boolean = true) {
+		if(checkForScaleFormAndSwitch && (mp.game.invoke(_IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE) ||  ScaleForm.isActive())) return;
 
 		let browser: BrowserMp = BrowserSystem._browserInstance;
 		GuiSystem.hudToggle = toggle;
