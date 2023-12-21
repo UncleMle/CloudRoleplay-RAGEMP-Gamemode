@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Schema;
 
 namespace CloudRP.PlayerData
 {
@@ -22,58 +23,64 @@ namespace CloudRP.PlayerData
 
         public static void setPlayerAccountData(Player player, User userData)
         {
-            player.SetData(_sharedAccountDataIdentifier, userData);
-
-            // Explicitly specify data as it will be sent freely to other clients
-            SharedDataAccount data = new SharedDataAccount
+            if(!checkIfAccountIsLogged(userData.accountId))
             {
-                accountId = userData.accountId,
-                adminDuty = userData.adminDuty,
-                adminLevel = userData.adminLevel,
-                adminName = userData.adminName,
-                adminPed = userData.adminPed,
-                showAdminPed = userData.showAdminPed,
-                playerId = userData.playerId,
-                username = userData.username,
-                isFlying = userData.isFlying,
-                isFrozen = userData.isFrozen,
-                adminEsp = userData.adminEsp
-            };
+                player.SetData(_sharedAccountDataIdentifier, userData);
 
-            player.SetSharedData(_sharedAccountDataIdentifier, data);
+                // Explicitly specify data as it will be sent freely to other clients
+                SharedDataAccount data = new SharedDataAccount
+                {
+                    accountId = userData.accountId,
+                    adminDuty = userData.adminDuty,
+                    adminLevel = userData.adminLevel,
+                    adminName = userData.adminName,
+                    adminPed = userData.adminPed,
+                    showAdminPed = userData.showAdminPed,
+                    playerId = userData.playerId,
+                    username = userData.username,
+                    isFlying = userData.isFlying,
+                    isFrozen = userData.isFrozen,
+                    adminEsp = userData.adminEsp
+                };
+
+                player.SetSharedData(_sharedAccountDataIdentifier, data);
+            }
         }
 
         public static void setPlayerCharacterData(Player player, DbCharacter character, bool resyncModel = true, bool updateDb = false)
         {
-            player.SetData(_sharedCharacterDataIdentifier, character);
-
-            // Explicitly specify data as it will be sent freely to other clients
-            SharedDataCharacter data = new SharedDataCharacter
+            if(!checkIfCharacterIsLogged(character.character_id))
             {
-                characterId = character.character_id,
-                characterName = character.character_name,
-                voiceChatState = character.voiceChatState,
-                injuredTimer = character.injured_timer,
-                characterClothing = character.characterClothing,
-                characterModel = character.characterModel
-            };
+                player.SetData(_sharedCharacterDataIdentifier, character);
 
-            player.SetSharedData(_sharedCharacterDataIdentifier, data);
-            setCharacterHungerAndThirst(player, character.character_hunger, character.character_water);
-            setPlayerVoiceStatus(player, character.voiceChatState);
-
-            if(resyncModel)
-            {
-                setCharacterClothes(player, character.characterClothing);
-                setCharacterModel(player, character.characterModel);
-            }
-            
-            if (updateDb)
-            {
-                using (DefaultDbContext dbContext = new DefaultDbContext())
+                // Explicitly specify data as it will be sent freely to other clients
+                SharedDataCharacter data = new SharedDataCharacter
                 {
-                    dbContext.Update(character);
-                    dbContext.SaveChanges();
+                    characterId = character.character_id,
+                    characterName = character.character_name,
+                    voiceChatState = character.voiceChatState,
+                    injuredTimer = character.injured_timer,
+                    characterClothing = character.characterClothing,
+                    characterModel = character.characterModel
+                };
+
+                player.SetSharedData(_sharedCharacterDataIdentifier, data);
+                setCharacterHungerAndThirst(player, character.character_hunger, character.character_water);
+                setPlayerVoiceStatus(player, character.voiceChatState);
+
+                if (resyncModel)
+                {
+                    setCharacterClothes(player, character.characterClothing);
+                    setCharacterModel(player, character.characterModel);
+                }
+
+                if (updateDb)
+                {
+                    using (DefaultDbContext dbContext = new DefaultDbContext())
+                    {
+                        dbContext.Update(character);
+                        dbContext.SaveChanges();
+                    }
                 }
             }
         }
@@ -112,6 +119,36 @@ namespace CloudRP.PlayerData
         {
             DbCharacter character= player.GetData<DbCharacter>(_sharedCharacterDataIdentifier);
             return character;
+        }
+
+        public static bool checkIfCharacterIsLogged(int charId)
+        {
+            bool wasFound = false;
+
+            NAPI.Pools.GetAllPlayers().ForEach(p =>
+            {
+                if(getPlayerCharacterData(p) != null && getPlayerCharacterData(p).character_id == charId)
+                {
+                    wasFound = true;
+                }
+            });
+
+            return wasFound;
+        }
+        
+        public static bool checkIfAccountIsLogged(int accId)
+        {
+            bool wasFound = false;
+
+            NAPI.Pools.GetAllPlayers().ForEach(p =>
+            {
+                if(getPlayerAccountData(p) != null && getPlayerAccountData(p).accountId == accId)
+                {
+                    wasFound = true;
+                }
+            });
+
+            return wasFound;
         }
 
         public static void flushUserAndCharacterData(Player player)
