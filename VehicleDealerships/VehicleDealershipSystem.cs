@@ -234,7 +234,7 @@ namespace CloudRP.VehicleDealerships
 
                 charData.money_amount -= findDealerVeh.price;
 
-                (Vehicle buildVeh, DbVehicle vehicleData) = VehicleSystem.buildVehicle(vehName, playerDealerData.spawnPosition, 0, charData.character_id, spawnColour, spawnColour);
+                (Vehicle buildVeh, DbVehicle vehicleData) = VehicleSystem.buildVehicle(vehName, playerDealerData.spawnPosition, 0, charData.character_id, spawnColour, spawnColour, charData.character_name);
                 PlayersData.setPlayerCharacterData(player, charData, true, true);
 
                 player.TriggerEvent("dealers:closeDealership");

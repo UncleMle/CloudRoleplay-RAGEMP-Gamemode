@@ -231,7 +231,7 @@ namespace CloudRP.Vehicles
             }
         }
 
-        public static (Vehicle, DbVehicle) buildVehicle(string vehName, Vector3 position, float rotation, int ownerId, int colourOne, int colourTwo)
+        public static (Vehicle, DbVehicle) buildVehicle(string vehName, Vector3 position, float rotation, int ownerId, int colourOne, int colourTwo, string ownerName = "N/A")
         {
             string vehiclePlate = "notset";
             uint vehicleHash = NAPI.Util.GetHashKey(vehName);
@@ -244,6 +244,7 @@ namespace CloudRP.Vehicles
                     CreatedDate = DateTime.Now,
                     UpdatedDate = DateTime.Now,
                     owner_id = ownerId,
+                    owner_name = ownerName,
                     position_x = position.X,
                     position_y = position.Y,
                     position_z = position.Z,

@@ -1,7 +1,7 @@
 <template>
     <div v-if="uiStates.speedoUi" class="text-white font-medium">
-        <div v-if="uiStates.vehicleRadar" class="absolute left-[1%] bottom-[32.5%]">
-            <div class="rounded-xl w-[18rem] bg-black/40">
+        <div v-if="uiStates.vehicleRadar" class="absolute left-[1%] bottom-[28.5%]">
+            <div class="rounded-xl w-[20rem] bg-black/40">
                 <div class="text-xl border-b-2 border-gray-500 p-2">
                     <i class="fa-solid fa-satellite-dish text-gray-400"></i> Police Radar <font class="text-sm text-red-400">{{Object.entries(uiStates.vehicleRadarData).length > 0 && uiStates.vehRadarLastTracked ? "- Last locked on" :"" }}</font>
                 </div>
@@ -28,6 +28,14 @@
                         <div class="mt-2 text-center p-2 bg-black/50 rounded-lg">
                             <font>
                                 {{ uiStates.vehicleRadarData.vehicleName }}
+                            </font>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <h1>Registered Owner</h1>
+                        <div class="mt-2 text-center p-2 bg-black/50 rounded-lg">
+                            <font>
+                                {{ uiStates.vehicleRadarData.ownerName ? uiStates.vehicleRadarData.ownerName : '...' }}
                             </font>
                         </div>
                     </div>

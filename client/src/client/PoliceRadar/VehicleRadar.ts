@@ -5,8 +5,8 @@ import VehicleSpeedo from '@/VehicleSystems/VehicleSpeedo';
 
 class VehicleRadar {
 	public static LocalPlayer: PlayerMp;
-	public static drawBoneStart: string = 'bonnet';
-	public static maxFindDist: number = 25;
+	public static drawBoneStart: string = 'chassis';
+	public static maxFindDist: number = 45;
 	public static emergencyVehicleClass: number = 18;
 
 	constructor() {
@@ -76,6 +76,7 @@ class VehicleRadar {
 						BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
                             _stateKey: "vehicleRadarData",
                             status: ${JSON.stringify({
+								ownerName: targetVehicleData.owner_name,
 								speed: targetV.getSpeed(),
 								numberplate: targetVehicleData.numberplate,
 								vehicleName: VehicleSpeedo.getVehDispName(targetV.model)

@@ -210,6 +210,7 @@ export interface VehicleMods {
 export interface VehicleData {
 	vehicle_id: number;
 	owner_id: number;
+	owner_name: string;
 	engine_status: boolean;
 	vehicle_name: string;
 	vehicle_locked: boolean;
