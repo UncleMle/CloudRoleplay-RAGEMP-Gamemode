@@ -2,16 +2,26 @@ import { _control_ids } from "@/Constants/Constants";
 import validateKeyPress from "@/PlayerMethods/validateKeyPress";
 
 class HandsUp {
+    public static LocalPlayer: PlayerMp;
     public static hasHandsUp: boolean;
     public static syncEvent: string = "server:anim:startHandsUp";
     public static _handsUpAnimIdentifer: string = "anim:hasHandsUp";
 
     constructor() {
+        HandsUp.LocalPlayer = mp.players.local;
+
         mp.keys.bind(_control_ids.X, false, HandsUp.startAnim);
 
         mp.events.add("entityStreamIn", HandsUp.handleStreamIn);
+        mp.events.add("render", HandsUp.handleRender);
 
         mp.events.addDataHandler(HandsUp._handsUpAnimIdentifer, HandsUp.handleDataHandler)
+    }
+
+    public static handleRender() {
+        if(HandsUp.LocalPlayer.vehicle && HandsUp.LocalPlayer.vehicle.getPedInSeat(-1) == HandsUp.LocalPlayer.handle && HandsUp.LocalPlayer.getVariable(HandsUp._handsUpAnimIdentifer)) {
+            HandsUp.LocalPlayer.vehicle.setUndriveable(true);
+        }
     }
 
     public static handleStreamIn(entity: PlayerMp) {
@@ -42,7 +52,7 @@ class HandsUp {
     }
 
     public static startAnim() {
-        if(validateKeyPress(false, true)) {
+        if(validateKeyPress(false, true, true)) {
             HandsUp.hasHandsUp = !HandsUp.hasHandsUp;
             mp.events.callRemote(HandsUp.syncEvent, HandsUp.hasHandsUp);
         }

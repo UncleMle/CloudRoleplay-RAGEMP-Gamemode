@@ -16,7 +16,7 @@ namespace CloudRP.AnimationSync
         {
             DbCharacter charData = PlayersData.getPlayerCharacterData(player);
 
-            if(charData != null)
+            if(charData != null && charData.injured_timer <= 0)
             {
                 player.SetData(_handsUpAnimIdentifer, animState);
                 player.SetSharedData(_handsUpAnimIdentifer, animState);

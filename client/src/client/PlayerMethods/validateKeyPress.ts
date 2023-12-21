@@ -1,7 +1,11 @@
 import { _IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE } from "@/Constants/Constants";
 import PhoneSystem from "@/PhoneSystem/PhoneSystem";
+import getUserCharacterData from "./getUserCharacterData";
+import { CharacterData } from "@/@types";
 
-const validateKeyPress = (testForVehicle: boolean = false, testForPhone: boolean = true): boolean => {
+const validateKeyPress = (testForVehicle: boolean = false, testForPhone: boolean = true, testForInjured: boolean = false): boolean => {
+    let localCharData: CharacterData | undefined = getUserCharacterData();
+
     if(mp.game.invoke(_IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE)) {
         return false;
     }
@@ -19,6 +23,10 @@ const validateKeyPress = (testForVehicle: boolean = false, testForPhone: boolean
     }
 
     if(testForVehicle && mp.players.local.vehicle) {
+        return false;
+    }
+
+    if(testForInjured && localCharData && localCharData.injuredTimer > 0) {
         return false;
     }
 
