@@ -108,7 +108,7 @@
 
                 <div class="bg-black/50 rounded-lg">
                     <div :class="uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) < 20 ? uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) < 10 ? 'bg-red-400' : 'bg-orange-400' : 'bg-green-500'"
-                        class="rounded-lg h-2" :style="{ 'width': uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) + '%' }">
+                        class="rounded-lg h-2 duration-300" :style="{ 'width': uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) + '%' }">
                     </div>
                 </div>
                 <i class="fa-solid fa-gas-pump mt-3 text-red-400"></i> {{
@@ -116,7 +116,7 @@
                 {{ uiStates.vehicleSpeedoData.metric == 0 ? "Litres" : "Gallons" }}
 
                 <div class="bg-black/50 rounded-lg">
-                    <div class="bg-gray-300 rounded-lg h-2 mt-2 "
+                    <div class="bg-gray-300 rounded-lg h-2 mt-2 duration-300"
                         :style="{ 'width': (uiStates.vehicleSpeedoData.vehHealth / 10).toFixed(0) + '%' }">
                     </div>
                 </div>
