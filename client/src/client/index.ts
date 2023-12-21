@@ -37,6 +37,8 @@ import MarkersAndLabels from "./MarkersAndLabels/MarkersAndLabels";
 import PhoneSystem from "./PhoneSystem/PhoneSystem";
 import VehicleDamage from "./VehicleSystems/VehicleDamage";
 import VehicleRadar from "./PoliceRadar/VehicleRadar";
+import Fingerpointing from "./Animation/Fingerpointing";
+import HandsUp from "./Animation/HandsUpAnim";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -78,3 +80,5 @@ new MarkersAndLabels();
 new PhoneSystem();
 new VehicleDamage();
 new VehicleRadar();
+new Fingerpointing();
+new HandsUp();

@@ -326,26 +326,11 @@ namespace CloudRP.Character
             CharacterModel characterModelData = PlayersData.getPlayerCharacterData(player).characterModel;
             if(characterModelData == null) return;
             DbCharacter character = PlayersData.getPlayerCharacterData(player);
-            if( character == null ) return; 
+            if(character == null) return;
 
             character.characterModel = characterModelData;
 
             PlayersData.setPlayerCharacterData(player, character);
-        }
-
-        [RemoteEvent("fpsync.update")]
-        public void syncPointing(Player player, int camPitch, int camHeading)
-        {
-            NAPI.Pools.GetAllPlayers().ForEach(p =>
-            {
-                p.TriggerEvent("fpsync.update", p.Id, camPitch, camHeading);
-            });
-        }
-
-        [RemoteEvent("pointingStop")]
-        public void stopPointing(Player player)
-        {
-            player.StopAnimation();
         }
     }
 }

@@ -12,6 +12,9 @@ declare global {
 		guiState: boolean;
 		_fuelNozzleObject: ObjectMp | null;
 		_mobilePhone: ObjectMp | null;
+		lastReceivedPointing: number | undefined;
+		pointingInterval: number | undefined;
+
 	}
 
 	interface PedMp {
