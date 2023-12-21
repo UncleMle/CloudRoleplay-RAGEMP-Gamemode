@@ -153,14 +153,7 @@ namespace CloudRP.DeathSystem
             }
 
             characterData.injured_timer -= 10;
-
-            using(DefaultDbContext dbContext = new DefaultDbContext())
-            {
-                dbContext.characters.Update(characterData);
-                dbContext.SaveChanges();
-            }
-
-            PlayersData.setPlayerCharacterData(player, characterData);
+            PlayersData.setPlayerCharacterData(player, characterData, false, true);
         }
 
         public static void removeInjuredStatus(Player player, DbCharacter character, bool respawn = true)
