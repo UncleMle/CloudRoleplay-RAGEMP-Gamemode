@@ -201,7 +201,10 @@ namespace CloudRP.DeathSystem
 
         public static void initCorpses(Player player)
         {
-            player.TriggerEvent("corpse:setCorpses", corpses);
+            if(corpses.Count > 0)
+            {
+                player.TriggerEvent("corpse:setCorpses", corpses);
+            }
         }
 
         [RemoteEvent("sync:corpseValidation")]
