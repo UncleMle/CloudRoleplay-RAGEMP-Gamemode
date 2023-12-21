@@ -27,7 +27,7 @@ namespace CloudRP.Utils
 
             foreach (KeyValuePair<Player, User> entry in onlineStaff)
             {
-                if(entry.Value.adminLevel > rank)
+                if(entry.Value.admin_status > rank)
                 {
                     Player recievingStaff = entry.Key;
                     staffSay(recievingStaff, message);
@@ -39,8 +39,8 @@ namespace CloudRP.Utils
         {
             User user = new User
             {
-                accountId = -1,
-                adminName = "[Anti-Cheat]",
+                account_id = -1,
+                admin_name = "[Anti-Cheat]",
                 username = "Anti-Cheat",
             };
 
@@ -56,7 +56,7 @@ namespace CloudRP.Utils
             foreach(Player entry in onlinePlayers)
             {
                 User userData = PlayersData.getPlayerAccountData(entry);
-                if (userData != null && userData.adminLevel > (int)AdminRanks.Admin_None)
+                if (userData != null && userData.admin_status > (int)AdminRanks.Admin_None)
                 {
                     onlineStaff.Add(entry, userData);
                 }
@@ -67,8 +67,8 @@ namespace CloudRP.Utils
 
         public static string getColouredAdminRank(User user, bool hasBrackets = true)
         {
-            string adminRank = RankList.adminRanksList[user.adminLevel];
-            string adminRankColour = "!{" + RankList.adminRanksColours[user.adminLevel] + "}";
+            string adminRank = RankList.adminRanksList[user.admin_status];
+            string adminRankColour = "!{" + RankList.adminRanksColours[user.admin_status] + "}";
 
 
             return $"{adminRankColour} {(hasBrackets ? "[" : "")}{adminRank}{(hasBrackets ? "]" : "")} " + ChatUtils.White;
@@ -86,7 +86,7 @@ namespace CloudRP.Utils
 
         public static bool checkUserData(Player player, User userData)
         {
-            if(userData.adminLevel > (int)AdminRanks.Admin_SeniorSupport && userData.adminDuty || userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            if(userData.admin_status > (int)AdminRanks.Admin_SeniorSupport && userData.adminDuty || userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
                 return true;
             } else
@@ -158,8 +158,8 @@ namespace CloudRP.Utils
 
             Ban ban = new Ban
             {
-                account_id = banPlayerUserData.accountId,
-                admin = adminUserData.adminName,
+                account_id = banPlayerUserData.account_id,
+                admin = adminUserData.admin_name,
                 ban_reason = reason,
                 ip_address = banPlayer.Address,
                 lift_unix_time = lift_unix_time,
@@ -174,7 +174,7 @@ namespace CloudRP.Utils
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
-                Account findAccount = dbContext.accounts.Find(banPlayerUserData.accountId);
+                Account findAccount = dbContext.accounts.Find(banPlayerUserData.account_id);
 
                 if (findAccount != null)
                 {
@@ -247,7 +247,7 @@ namespace CloudRP.Utils
                 User playerData = PlayersData.getPlayerAccountData(player);
                 DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
-                if(playerData != null && characterData != null && playerData.adminLevel > (int)adminRank)
+                if(playerData != null && characterData != null && playerData.admin_status > (int)adminRank)
                 {
                     adminGroup.Add(player, playerData);
                 }

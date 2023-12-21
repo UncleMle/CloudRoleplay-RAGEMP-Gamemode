@@ -143,7 +143,7 @@ namespace CloudRP.Character
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
-                characters = dbContext.characters.Where(acc => acc.owner_id == userData.accountId).ToList();
+                characters = dbContext.characters.Where(acc => acc.owner_id == userData.account_id).ToList();
             }
 
             return characters.Count;
@@ -153,7 +153,7 @@ namespace CloudRP.Character
         {
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
-                Account account = dbContext.accounts.Where(acc => acc.account_id == userData.accountId).FirstOrDefault();
+                Account account = dbContext.accounts.Where(acc => acc.account_id == userData.account_id).FirstOrDefault();
 
                 if(account != null)
                 {
@@ -173,7 +173,7 @@ namespace CloudRP.Character
 
             int currentCharacters = getUsersCharacter(userData);
 
-            if (currentCharacters >= userData.maxCharacters)
+            if (currentCharacters >= userData.max_characters)
             {
                 uiHandling.sendPushNotifError(player, "You already have the maximum amount of characters", 5600);
                 return;
@@ -209,7 +209,7 @@ namespace CloudRP.Character
                     player_dimension = 0,
                     player_exp = 0,
                     UpdatedDate = DateTime.Now,
-                    owner_id = userData.accountId
+                    owner_id = userData.account_id
                 };
 
                 dbContext.characters.Add(newCharacter);
@@ -290,7 +290,7 @@ namespace CloudRP.Character
 
             int currentCharacters = getUsersCharacter(userData);
 
-            if(currentCharacters >= userData.maxCharacters)
+            if(currentCharacters >= userData.max_characters)
             {
                 uiHandling.sendPushNotifError(player, "You already have the maximum amount of characters", 5600);
                 return;
@@ -312,7 +312,7 @@ namespace CloudRP.Character
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
-                List<DbCharacter> allPlayerCharacters = dbContext.characters.Where(character => character.owner_id == userData.accountId).ToList();
+                List<DbCharacter> allPlayerCharacters = dbContext.characters.Where(character => character.owner_id == userData.account_id).ToList();
 
                 allPlayerCharacters.ForEach(character =>
                 {

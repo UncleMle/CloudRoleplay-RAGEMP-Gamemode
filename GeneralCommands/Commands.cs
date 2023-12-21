@@ -148,7 +148,7 @@ namespace CloudRP.GeneralCommands
 
             if (userData.adminDuty)
             {
-                editedPmToPlayer = ChatUtils.red + $"[ADMIN PM] from {userData.adminName} [{player.Id}] " + ChatUtils.grey + "(( " + ChatUtils.White + message + ChatUtils.grey + " ))";
+                editedPmToPlayer = ChatUtils.red + $"[ADMIN PM] from {userData.admin_name} [{player.Id}] " + ChatUtils.grey + "(( " + ChatUtils.White + message + ChatUtils.grey + " ))";
             }
 
             if (editedPmToPlayer == null)
@@ -235,7 +235,7 @@ namespace CloudRP.GeneralCommands
             {
                 using(DefaultDbContext dbContext = new DefaultDbContext())
                 {
-                    Account findAcc = dbContext.accounts.Find(userData.accountId);
+                    Account findAcc = dbContext.accounts.Find(userData.account_id);
 
                     if(findAcc != null && findAcc.auto_login == 1)
                     {

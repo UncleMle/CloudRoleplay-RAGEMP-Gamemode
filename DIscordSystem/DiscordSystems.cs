@@ -333,11 +333,11 @@ namespace CloudRP.DiscordSystem
                 foreach(KeyValuePair<Player, User> admin in isHandling.adminsHandling)
                 {
                     if (isHandling.playerReporting.Equals(admin.Key)) return;
-                    NAPI.Chat.SendChatMessageToPlayer(admin.Key, ChatUtils.reports + $"Admin {adminData.adminName} who was joined in your report has disconnected from the server.");
+                    NAPI.Chat.SendChatMessageToPlayer(admin.Key, ChatUtils.reports + $"Admin {adminData.admin_name} who was joined in your report has disconnected from the server.");
                 }
 
-                NAPI.Chat.SendChatMessageToPlayer(isHandling.playerReporting, $"{ChatUtils.reports} Admin {adminData.adminName} who was part of your report disconnected from the server.");
-                DiscordIntegration.SendMessage(isHandling.discordChannelId, $"Admin {adminData.adminName} has disconnected from the server.");
+                NAPI.Chat.SendChatMessageToPlayer(isHandling.playerReporting, $"{ChatUtils.reports} Admin {adminData.admin_name} who was part of your report disconnected from the server.");
+                DiscordIntegration.SendMessage(isHandling.discordChannelId, $"Admin {adminData.admin_name} has disconnected from the server.");
             }
 
             if (findRep != null)

@@ -24,16 +24,15 @@ declare global {
 }
 
 export interface UserData {
-	accountId: number;
+	account_id: number;
 	adminDuty: boolean;
-	adminLevel: number;
-	adminName: string;
-	playerId: number;
+	admin_status: number;
+	admin_name: string;
 	username: string;
 	isFlying: boolean;
 	isFrozen: boolean;
-	adminEsp: boolean;
-	adminPed: string;
+	admin_esp: boolean;
+	admin_ped: string;
 	showAdminPed: boolean;
 }
 
@@ -55,11 +54,10 @@ export interface Hunger {
 }
 
 export interface CharacterData {
-	characterId: number;
-	characterName: string;
+	character_id: number;
+	character_name: string;
 	characterModel: CharacterModel;
-	voiceChatState: boolean;
-	injuredTimer: number,
+	injured_timer: number,
 	characterClothing: ClothingData;
 }
 

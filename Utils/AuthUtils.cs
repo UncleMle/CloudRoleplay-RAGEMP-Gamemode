@@ -227,49 +227,46 @@ namespace CloudRP.Utils
 
     public class User
     {
-        public int accountId { get; set; }
-        public int playerId { get; set; }
+        public int account_id { get; set; }
         public string username { get; set; }
-        public int adminLevel { get; set; }
+        public int admin_status { get; set; }
         public bool adminDuty { get; set; } = false;
-        public string adminName { get; set; }
-        public string emailAddress { get; set; }
-        public string adminPed { get; set; }
+        public string admin_name { get; set; }
+        public string email_address { get; set; }
+        public string admin_ped { get; set; }
         public bool isFlying { get; set; }
         public bool isFrozen { get; set; } = false;
         public uint playerDimension { get; set; }
-        public int maxCharacters { get; set; }
-        public bool triggerHandler { get; set; } = true;
-        public bool adminEsp { get; set; } = true;
+        public int max_characters { get; set; }
+        public bool admin_esp { get; set; } = true;
         public bool showAdminPed { get; set; } = false;
     }
 
     class SharedDataAccount
     {
-        public int accountId { get; set; }
-        public int playerId { get; set; }
+        public int account_id { get; set; }
         public string username { get; set; }
-        public int adminLevel { get; set; }
+        public int admin_status { get; set; }
         public bool adminDuty { get; set; } = false;
-        public string adminPed { get; set; }
-        public string adminName { get; set; }
+        public string admin_ped { get; set; }
+        public string admin_name { get; set; }
         public bool isFlying { get; set; }
         public bool isFrozen {get; set;}
         public bool isOnCharacterCreation { get; set; }
-        public bool adminEsp { get; set; }
+        public bool admin_esp { get; set; }
         public bool showAdminPed { get; set; }
     }
 
     class SharedDataCharacter
     {
-        public int characterId { get; set; }
-        public double characterWater { get; set; }
-        public double characterHunger { get; set; }
-        public string characterName { get; set; }
+        public int character_id { get; set; }
+        public double character_water { get; set; }
+        public double character_hunger { get; set; }
+        public string character_name { get; set; }
+        public int injured_timer { get; set; }
         public CharacterModel characterModel { get; set; }
         public CharacterClothing characterClothing { get; set; }
         public bool voiceChatState { get; set; }
-        public int injuredTimer { get; set; }
     }
 
     class Register

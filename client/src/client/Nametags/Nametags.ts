@@ -37,7 +37,7 @@ class NameTags {
 		if(!targetEnt) return;
 		if(targetEnt == NameTags.LocalPlayer) {
 			let characterData: CharacterData | undefined = getUserCharacterData();
-			mp.gui.chat.push(prefix + characterData?.characterName.replace("_", " ") + " " + suffix);
+			mp.gui.chat.push(prefix + characterData?.character_name.replace("_", " ") + " " + suffix);
 		} else {
 			mp.gui.chat.push(prefix + NameTags.getPlayerNick(targetEnt) + suffix);
 		}
@@ -104,11 +104,11 @@ class NameTags {
 				y -= scale * (0.005 * (NameTags.ScreenRes.y / 1080)) - parseInt('0.010');
 
 				let voiceState: string = (target.getVariable(VoiceSystem._voiceToggleIdentifier) ? "" : "~g~");
-				let injuredState: string = (targetCharacterData.injuredTimer > 0 ? "~r~(( INJURED )) ~w~\n" : "");
+				let injuredState: string = (targetCharacterData.injured_timer > 0 ? "~r~(( INJURED )) ~w~\n" : "");
 				let defaultTagContent: string = injuredState + voiceState + NameTags.getPlayerNick(target);
 
 				if (targetUserData.adminDuty) {
-					defaultTagContent = `~w~<font color="${_TEXT_CLOUD_ADMINBLUE}">[Staff]</font> ${voiceState} ${targetUserData.adminName}`;
+					defaultTagContent = `~w~<font color="${_TEXT_CLOUD_ADMINBLUE}">[Staff]</font> ${voiceState} ${targetUserData.admin_name}`;
 				}
 
 				target.getVariable(NameTags.playerIsTypingState) ? defaultTagContent += "\n ~m~(( Typing... ))~w~" : "";

@@ -40,7 +40,7 @@ namespace CloudRP.ChatSystem
             if(userData.adminDuty)
             {
                 string adminRank = AdminUtils.getColouredAdminRank(userData);
-                prefix += adminRank + "!{red}" + $"{userData.adminName}" + "!{white} ";
+                prefix += adminRank + "!{red}" + $"{userData.admin_name}" + "!{white} ";
             } 
 
             List<Player> playersInRange = CommandUtils.getPlayersInRadius(player, _chatradius);
@@ -71,10 +71,10 @@ namespace CloudRP.ChatSystem
             NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.CloudRP + $"For server commands and general help view {ChatUtils.CloudBlueLight}/help{ChatUtils.White}.");
             NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.CloudRP + $"Visit {ChatUtils.CloudBlueLight}cloudrp.net{ChatUtils.White} for server information{ChatUtils.White}.");
 
-            if (user.adminLevel > (int)AdminRanks.Admin_None)
+            if (user.admin_status > (int)AdminRanks.Admin_None)
             {
                 string colouredRank = AdminUtils.getColouredAdminRank(user, false);
-                NAPI.Chat.SendChatMessageToPlayer(player, AdminUtils.staffPrefix + $"Welcome back, {colouredRank}{AdminUtils.staffSuffixColour}" + user.adminName + ".");
+                NAPI.Chat.SendChatMessageToPlayer(player, AdminUtils.staffPrefix + $"Welcome back, {colouredRank}{AdminUtils.staffSuffixColour}" + user.admin_name + ".");
 
                 Dictionary<Player, User> onlineStaff = AdminUtils.gatherAdminGroupAbove(AdminRanks.Admin_None);
 
@@ -82,7 +82,7 @@ namespace CloudRP.ChatSystem
                 {
                     if(item.Key != player)
                     {
-                        item.Key.SendChatMessage($"{AdminUtils.staffPrefix}{user.adminName} [{player.Id}] has connected to the server.");
+                        item.Key.SendChatMessage($"{AdminUtils.staffPrefix}{user.admin_name} [{player.Id}] has connected to the server.");
                     }
                 }
             }

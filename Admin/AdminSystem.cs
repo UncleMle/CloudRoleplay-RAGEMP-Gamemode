@@ -10,6 +10,8 @@ using CloudRP.Vehicles;
 using Discord;
 using GTANetworkAPI;
 using Integration;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,7 +34,7 @@ namespace CloudRP.Admin
             {
                 foreach(KeyValuePair<int, Vector3> adminPos in adminAdutyPositions)
                 {
-                    if(adminPos.Key == userData.accountId)
+                    if(adminPos.Key == userData.account_id)
                     {
                         adminAdutyPositions.Remove(adminPos.Key);
                     }
@@ -42,12 +44,12 @@ namespace CloudRP.Admin
 
         public static void saveAdutyPosition(User userData, Vector3 pos)
         {
-            if (adminAdutyPositions.ContainsKey(userData.accountId))
+            if (adminAdutyPositions.ContainsKey(userData.account_id))
             {
-                adminAdutyPositions.Remove(userData.accountId);
+                adminAdutyPositions.Remove(userData.account_id);
             }
 
-            adminAdutyPositions.Add(userData.accountId, pos);   
+            adminAdutyPositions.Add(userData.account_id, pos);   
         }
 
         [ServerEvent(Event.PlayerConnected)]
@@ -117,24 +119,24 @@ namespace CloudRP.Admin
 
             if(AdminUtils.checkUserData(player, userData))
             {
-                userData.adminEsp = !userData.adminEsp;
+                userData.admin_esp = !userData.admin_esp;
 
                 PlayersData.setPlayerAccountData(player, userData);
 
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
-                    Account account = dbContext.accounts.Find(userData.accountId);
+                    Account account = dbContext.accounts.Find(userData.account_id);
 
                     if (account == null) return;
 
-                    account.admin_esp = userData.adminEsp;
+                    account.admin_esp = userData.admin_esp;
 
                     dbContext.accounts.Update(account);
                     dbContext.SaveChanges();
                 }
 
-                AdminUtils.staffSay(player, $"You have {(userData.adminEsp ? "disabled" : "enabled")} admin esp.");
-                ChatUtils.formatConsolePrint($"{userData.adminName} toggled admin esp {(userData.adminEsp ? "on" : "off")}");
+                AdminUtils.staffSay(player, $"You have {(userData.admin_esp ? "disabled" : "enabled")} admin esp.");
+                ChatUtils.formatConsolePrint($"{userData.admin_name} toggled admin esp {(userData.admin_esp ? "on" : "off")}");
             }
         }
 
@@ -166,7 +168,7 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if(userData.adminLevel > (int)AdminRanks.Admin_None)
+            if(userData.admin_status > (int)AdminRanks.Admin_None)
             {
                 if(activeReports.Count == 0)
                 {
@@ -200,7 +202,7 @@ namespace CloudRP.Admin
             User userData = PlayersData.getPlayerAccountData(player);
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
-            if (userData == null || characterData == null || userData.adminLevel < 1) return;
+            if (userData == null || characterData == null || userData.admin_status < 1) return;
 
             if (reportId > activeReports.Count || reportId < 0)
             {
@@ -228,16 +230,16 @@ namespace CloudRP.Admin
 
                 if(findReport.adminsHandling.Count == 0 && findReport.discordAdminsHandling.Count == 0)
                 {
-                    NAPI.Chat.SendChatMessageToPlayer(findReport.playerReporting, ChatUtils.reports + $"Your report was accepted by {userData.adminName}");
+                    NAPI.Chat.SendChatMessageToPlayer(findReport.playerReporting, ChatUtils.reports + $"Your report was accepted by {userData.admin_name}");
                 } else
                 {
-                    NAPI.Chat.SendChatMessageToPlayer(findReport.playerReporting, ChatUtils.reports + $"Admin {userData.adminName} joined your report.");
+                    NAPI.Chat.SendChatMessageToPlayer(findReport.playerReporting, ChatUtils.reports + $"Admin {userData.admin_name} joined your report.");
                 }
 
                 uiHandling.resetRouter(player);
                 NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.reports + $"You accepted report {reportId}.");
 
-                DiscordIntegration.SendMessage(findReport.discordChannelId, $"Admin {userData.adminName} joined your report.");
+                DiscordIntegration.SendMessage(findReport.discordChannelId, $"Admin {userData.admin_name} joined your report.");
             }
         }
 
@@ -247,7 +249,7 @@ namespace CloudRP.Admin
             User userData = PlayersData.getPlayerAccountData(player);
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
-            if (userData == null || characterData == null || userData.adminLevel < 1) return;
+            if (userData == null || characterData == null || userData.admin_status < 1) return;
 
             Report findReport = activeReports[reportId];
 
@@ -287,10 +289,10 @@ namespace CloudRP.Admin
 
             if(handlingReport != null)
             {
-                AdminUtils.sendToAdminsHandlingReport(handlingReport, ChatUtils.reports + ChatUtils.red + "[Admin] " + ChatUtils.White + userData.adminName + ChatUtils.grey + " says:" + ChatUtils.White + message, player);
+                AdminUtils.sendToAdminsHandlingReport(handlingReport, ChatUtils.reports + ChatUtils.red + "[Admin] " + ChatUtils.White + userData.admin_name + ChatUtils.grey + " says:" + ChatUtils.White + message, player);
                 NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.reports + $"You {ChatUtils.grey}say:{ChatUtils.White} " + message);
-                NAPI.Chat.SendChatMessageToPlayer(handlingReport.playerReporting, ChatUtils.reports + $"{ChatUtils.red}[Admin] {ChatUtils.White}{userData.adminName} {ChatUtils.grey}says:{ChatUtils.White} " + message);
-                await DiscordIntegration.SendMessage(handlingReport.discordChannelId, "``[ADMIN]`` " + userData.adminName + " **says:** " + message, false);
+                NAPI.Chat.SendChatMessageToPlayer(handlingReport.playerReporting, ChatUtils.reports + $"{ChatUtils.red}[Admin] {ChatUtils.White}{userData.admin_name} {ChatUtils.grey}says:{ChatUtils.White} " + message);
+                await DiscordIntegration.SendMessage(handlingReport.discordChannelId, "``[ADMIN]`` " + userData.admin_name + " **says:** " + message, false);
                 return;
             }
 
@@ -320,7 +322,7 @@ namespace CloudRP.Admin
 
             if(AdminUtils.checkUserData(player, userData))
             {
-                KeyValuePair<int, Vector3> savedAdminPosition = adminAdutyPositions.Where(savePos => savePos.Key == userData.accountId).FirstOrDefault(); 
+                KeyValuePair<int, Vector3> savedAdminPosition = adminAdutyPositions.Where(savePos => savePos.Key == userData.account_id).FirstOrDefault(); 
 
                 if(savedAdminPosition.Value == null)
                 {
@@ -340,7 +342,7 @@ namespace CloudRP.Admin
             User userData = PlayersData.getPlayerAccountData(player);
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
-            if (userData != null && characterData != null && userData.adminLevel > (int)AdminRanks.Admin_SeniorSupport)
+            if (userData != null && characterData != null && userData.admin_status > (int)AdminRanks.Admin_SeniorSupport)
             {
                 userData.adminDuty = !userData.adminDuty;
                 userData.showAdminPed = userData.adminDuty;
@@ -349,17 +351,17 @@ namespace CloudRP.Admin
                 if (userData.adminDuty)
                 {
                     saveAdutyPosition(userData, player.Position);
-                    AdminUtils.sendMessageToAllStaff($"{colourAdminRank} {AdminUtils.staffSuffixColour}{userData.adminName} is {ChatUtils.moneyGreen}on duty");
+                    AdminUtils.sendMessageToAllStaff($"{colourAdminRank} {AdminUtils.staffSuffixColour}{userData.admin_name} is {ChatUtils.moneyGreen}on duty");
                 }
                 else  
                 {
                     userData.isFlying = false;
                     player.TriggerEvent("admin:endFly");
-                    AdminUtils.sendMessageToAllStaff($"{colourAdminRank} {AdminUtils.staffSuffixColour}{userData.adminName} is {ChatUtils.red}off duty");
+                    AdminUtils.sendMessageToAllStaff($"{colourAdminRank} {AdminUtils.staffSuffixColour}{userData.admin_name} is {ChatUtils.red}off duty");
                     PlayersData.setCharacterClothes(player, characterData.characterClothing);
                 }
 
-                ChatUtils.formatConsolePrint($"{userData.adminName} has toggled admin duty {(userData.adminDuty ? "on" : "off")}");
+                ChatUtils.formatConsolePrint($"{userData.admin_name} has toggled admin duty {(userData.adminDuty ? "on" : "off")}");
 
                 PlayersData.setPlayerAccountData(player, userData);
 
@@ -372,7 +374,7 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if(userData.adminLevel > (int)AdminRanks.Admin_None)
+            if(userData.admin_status > (int)AdminRanks.Admin_None)
             {
                 Dictionary<Player, User> onlineStaff = AdminUtils.gatherStaff();
 
@@ -390,7 +392,7 @@ namespace CloudRP.Admin
                     string adminRank = AdminUtils.getColouredAdminRank(user);
                     string duty = user.adminDuty ? "[!{green}On-Duty!{white}]" : "[!{red}Off-Duty!{white}]";
 
-                    AdminUtils.staffSay(player, index + $". {user.adminName} {adminRank} {duty}");
+                    AdminUtils.staffSay(player, index + $". {user.admin_name} {adminRank} {duty}");
                 }
 
             } else AdminUtils.sendNoAuth(player);   
@@ -401,7 +403,7 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (userData.adminLevel > (int)AdminRanks.Admin_None)
+            if (userData.admin_status > (int)AdminRanks.Admin_None)
             {
                 Dictionary<Player, User> onlineAdmins = AdminUtils.gatherStaff();
 
@@ -409,7 +411,7 @@ namespace CloudRP.Admin
 
                 foreach (KeyValuePair<Player, User> entry in onlineAdmins)
                 {
-                    entry.Key.SendChatMessage(colouredAdminRank + userData.adminName + ChatUtils.red + " says: " + ChatUtils.White + message);
+                    entry.Key.SendChatMessage(colouredAdminRank + userData.admin_name + ChatUtils.red + " says: " + ChatUtils.White + message);
                 }
             }
             else AdminUtils.sendNoAuth(player);
@@ -442,7 +444,7 @@ namespace CloudRP.Admin
                     player.Dimension = findPlayer.Dimension;
 
                     AdminUtils.staffSay(player, "Teleported to Player [" + findPlayer.Id + "]");
-                    ChatUtils.formatConsolePrint($"{userData.adminName} teleported to player {findPlayer.Id}");
+                    ChatUtils.formatConsolePrint($"{userData.admin_name} teleported to player {findPlayer.Id}");
                 }
             }
         }
@@ -467,10 +469,10 @@ namespace CloudRP.Admin
                     }
 
                     findPlayer.Kick();
-                    ChatUtils.formatConsolePrint($"{userData.adminName} kicked {characterData.character_name}");
+                    ChatUtils.formatConsolePrint($"{userData.admin_name} kicked {characterData.character_name}");
                     if (!isSilent)
                     {
-                        AdminUtils.sendMessageToAllStaff(userData.adminName + " kicked " + characterData.character_name);
+                        AdminUtils.sendMessageToAllStaff(userData.admin_name + " kicked " + characterData.character_name);
                     }
                 } else
                 {
@@ -506,8 +508,8 @@ namespace CloudRP.Admin
                 NAPI.Player.SpawnPlayer(findPlayer, findPlayer.Position);
                 
                 AdminUtils.staffSay(player, "You revived " + findCharacter.character_name);
-                AdminUtils.staffSay(findPlayer, "You were revived by Admin " + userData.adminName);
-                ChatUtils.formatConsolePrint($"{userData.adminName} revived {findCharacter.character_name}");
+                AdminUtils.staffSay(findPlayer, "You were revived by Admin " + userData.admin_name);
+                ChatUtils.formatConsolePrint($"{userData.admin_name} revived {findCharacter.character_name}");
             }
 
         }
@@ -533,9 +535,9 @@ namespace CloudRP.Admin
                     findPlayer.Position = player.Position;
                     findPlayer.Dimension = player.Dimension;
 
-                    ChatUtils.formatConsolePrint($"{userData.adminName} teleported Player [{findPlayer.Id}] to themselves.");
+                    ChatUtils.formatConsolePrint($"{userData.admin_name} teleported Player [{findPlayer.Id}] to themselves.");
                     AdminUtils.staffSay(player, "Teleported Player [" + findPlayer.Id + "] to you.");
-                    AdminUtils.staffSay(findPlayer, $"Admin {userData.adminName} teleported you.");
+                    AdminUtils.staffSay(findPlayer, $"Admin {userData.admin_name} teleported you.");
                 }
                 else
                 {
@@ -553,7 +555,7 @@ namespace CloudRP.Admin
 
             if (charData == null) return;
 
-            if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin || userData.adminLevel > (int)AdminRanks.Admin_SeniorAdmin && userData.adminDuty)
+            if (userData.admin_status > (int)AdminRanks.Admin_HeadAdmin || userData.admin_status > (int)AdminRanks.Admin_SeniorAdmin && userData.adminDuty)
             {
                 Vector3 playerPosition = player.Position;
                 float playerRotation = player.Rotation.Z;
@@ -565,7 +567,7 @@ namespace CloudRP.Admin
                 player.SetIntoVehicle(vehicle, 0);
 
                 AdminUtils.staffSay(player, $"You spawned in vehicle {vehName} #{vehicleData.vehicle_id}");
-                ChatUtils.formatConsolePrint($"{userData.adminName} spawned in a {vehName} #{vehicleData.vehicle_id}");
+                ChatUtils.formatConsolePrint($"{userData.admin_name} spawned in a {vehName} #{vehicleData.vehicle_id}");
             }
             else AdminUtils.sendNoAuth(player);
         }
@@ -575,7 +577,7 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (userData.adminLevel > (int)AdminRanks.Admin_SeniorSupport && userData.adminDuty || userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            if (userData.admin_status > (int)AdminRanks.Admin_SeniorSupport && userData.adminDuty || userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
                 Vehicle findVehicle = VehicleSystem.getVehicleByPlate(vehicleIdOrPlate);
 
@@ -604,7 +606,7 @@ namespace CloudRP.Admin
                         {
                             p.WarpOutOfVehicle();
                             p.Position = player.Position;
-                            AdminUtils.staffSay(p, $"Admin {userData.adminName} teleported your vehicle.");
+                            AdminUtils.staffSay(p, $"Admin {userData.admin_name} teleported your vehicle.");
                         }
                     });
 
@@ -614,7 +616,7 @@ namespace CloudRP.Admin
                     {
                         if(findVehicle != null && player != null)
                         {
-                            ChatUtils.formatConsolePrint($"{userData.adminName} v brought {findVehicle.NumberPlate} to them.");
+                            ChatUtils.formatConsolePrint($"{userData.admin_name} v brought {findVehicle.NumberPlate} to them.");
                             findVehicle.Position = player.Position.Around(5);
                             AdminUtils.staffSay(player, $"Vehicle was brought to you.");
 
@@ -639,7 +641,7 @@ namespace CloudRP.Admin
             {
                 userData.isFlying = !userData.isFlying;
 
-                ChatUtils.formatConsolePrint($"{userData.adminName} {(userData.isFlying ? "enabled" : "disabled")} fly.");
+                ChatUtils.formatConsolePrint($"{userData.admin_name} {(userData.isFlying ? "enabled" : "disabled")} fly.");
 
                 if (userData.isFlying)
                 {
@@ -691,9 +693,9 @@ namespace CloudRP.Admin
                         getPlayer.WarpOutOfVehicle();
                     }
 
-                    ChatUtils.formatConsolePrint($"{userData.adminName} {isFrozen} {targetCharData.character_name}.");
+                    ChatUtils.formatConsolePrint($"{userData.admin_name} {isFrozen} {targetCharData.character_name}.");
                     AdminUtils.staffSay(player, $"You {isFrozen} {targetPlayerData.username}");
-                    AdminUtils.staffSay(getPlayer, $"You were {isFrozen + "n"} by Admin {userData.adminName}");
+                    AdminUtils.staffSay(getPlayer, $"You were {isFrozen + "n"} by Admin {userData.admin_name}");
                 }
             }
         }
@@ -705,7 +707,7 @@ namespace CloudRP.Admin
 
             if (AdminUtils.checkUserData(player, userData))
             {
-                ChatUtils.formatConsolePrint($"{userData.adminName} teleported to way point.");
+                ChatUtils.formatConsolePrint($"{userData.admin_name} teleported to way point.");
                 player.TriggerEvent("admin:events:teleportWay");
             }
         }
@@ -715,7 +717,7 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            if (userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
                 if(vehicleId == -1 && !player.IsInVehicle)
                 {
@@ -734,7 +736,7 @@ namespace CloudRP.Admin
                     }
 
                     VehicleSystem.deleteVehicleById(vehicleData.vehicle_id);
-                    ChatUtils.formatConsolePrint($"{userData.adminName} deleted vehicle #{vehicleId}");
+                    ChatUtils.formatConsolePrint($"{userData.admin_name} deleted vehicle #{vehicleId}");
                     AdminUtils.staffSay(player, $"Vehicle with id {vehicleData.vehicle_id} was deleted."); 
                     return;
                 }
@@ -743,7 +745,7 @@ namespace CloudRP.Admin
 
                 if (findAndDelete)
                 {
-                    ChatUtils.formatConsolePrint($"{userData.adminName} deleted vehicle #{vehicleId}");
+                    ChatUtils.formatConsolePrint($"{userData.admin_name} deleted vehicle #{vehicleId}");
                     AdminUtils.staffSay(player, $"Vehicle with id {vehicleId} deleted.");
                 }
                 else
@@ -759,7 +761,7 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
             
-            if(userData.adminLevel > 0)
+            if(userData.admin_status > 0)
             {
                 Vehicle findVeh = VehicleSystem.getClosestVehicleToPlayer(player);
 
@@ -810,9 +812,9 @@ namespace CloudRP.Admin
                     dbContext.SaveChanges();
                 }
 
-                ChatUtils.formatConsolePrint($"{userData.adminName} set {characterData.character_name}'s dimension to {dimension}");
+                ChatUtils.formatConsolePrint($"{userData.admin_name} set {characterData.character_name}'s dimension to {dimension}");
                 AdminUtils.staffSay(player, $"Set {characterData.character_name}'s dimension to {dimension}");
-                AdminUtils.staffSay(getPlayer, $"Your dimension was set to {dimension} by Admin {userData.adminName}");
+                AdminUtils.staffSay(getPlayer, $"Your dimension was set to {dimension} by Admin {userData.admin_name}");
             }
         }
 
@@ -830,7 +832,7 @@ namespace CloudRP.Admin
                     NAPI.Vehicle.RepairVehicle(player.Vehicle);
                     VehicleSystem.setVehicleDirtLevel(player.Vehicle, 0);
 
-                    ChatUtils.formatConsolePrint($"{userData.adminName} repaired a vehicle.");
+                    ChatUtils.formatConsolePrint($"{userData.admin_name} repaired a vehicle.");
                     AdminUtils.staffSay(player, " Repaired vehicle.");
                 } else
                 {
@@ -844,16 +846,16 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if(userData.adminLevel > (int)AdminRanks.Admin_SeniorSupport)
+            if(userData.admin_status > (int)AdminRanks.Admin_SeniorSupport)
             {
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
-                    Account findAccount = dbContext.accounts.Find(userData.accountId);
+                    Account findAccount = dbContext.accounts.Find(userData.account_id);
 
                     if (findAccount != null)
                     {
                         findAccount.admin_ped = pedName;
-                        userData.adminPed = pedName;
+                        userData.admin_ped = pedName;
                     }
 
                     dbContext.Update(findAccount);
@@ -904,8 +906,8 @@ namespace CloudRP.Admin
                 string playerAdminRank = AdminUtils.getColouredAdminRank(userData);
                 string endOfBanString = lift_unix_time == 1 ? ChatUtils.red + "is permanent" : "expires at " + ChatUtils.orange + CommandUtils.unixTimeStampToDateTime(lift_unix_time);
 
-                ChatUtils.formatConsolePrint($"{userData.adminName} banned {characterData.character_name} with reason {reason} ban {endOfBanString}");
-                CommandUtils.sendToAllPlayers($"{AdminUtils.staffPrefix}{playerAdminRank} {userData.adminName} banned {characterData.character_name} with reason {reason} ban {endOfBanString}");
+                ChatUtils.formatConsolePrint($"{userData.admin_name} banned {characterData.character_name} with reason {reason} ban {endOfBanString}");
+                CommandUtils.sendToAllPlayers($"{AdminUtils.staffPrefix}{playerAdminRank} {userData.admin_name} banned {characterData.character_name} with reason {reason} ban {endOfBanString}");
             }
         }
 
@@ -920,7 +922,7 @@ namespace CloudRP.Admin
 
                 if(unbanViaUsername)
                 {
-                    ChatUtils.formatConsolePrint($"{userData.adminName} unbanned {accountName}");
+                    ChatUtils.formatConsolePrint($"{userData.admin_name} unbanned {accountName}");
                     AdminUtils.staffSay(player, $"Unbanned user {accountName}");
                 } else
                 {
@@ -936,11 +938,11 @@ namespace CloudRP.Admin
             User userData = PlayersData.getPlayerAccountData(player);
             if (userData == null) return;
 
-            if(userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            if(userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
                 NAPI.Player.GivePlayerWeapon(player, weaponName, ammo);
 
-                ChatUtils.formatConsolePrint($"{userData.adminName} spawned in a {weaponName} with {ammo} ammo");
+                ChatUtils.formatConsolePrint($"{userData.admin_name} spawned in a {weaponName} with {ammo} ammo");
                 AdminUtils.staffSay(player, $"You gave yourself a {ChatUtils.yellow}{weaponName}{ChatUtils.White}{AdminUtils.staffSuffixColour} with {ammo} ammo");
             }
             else AdminUtils.sendNoAuth(player);
@@ -954,7 +956,7 @@ namespace CloudRP.Admin
 
             if (userData == null) return;
 
-            if(userData.adminLevel > 2 && userData.adminDuty || userData.adminLevel > (int)AdminRanks.Admin_SeniorAdmin)
+            if(userData.admin_status > 2 && userData.adminDuty || userData.admin_status > (int)AdminRanks.Admin_SeniorAdmin)
             {
                 if(vehicleId == -1 && !player.IsInVehicle)
                 {
@@ -976,7 +978,7 @@ namespace CloudRP.Admin
                     return;
                 }
 
-                ChatUtils.formatConsolePrint($"{userData.adminName} flipped a vehicle.");
+                ChatUtils.formatConsolePrint($"{userData.admin_name} flipped a vehicle.");
                 findById.Rotation = new Vector3(0, 0, 0);
                 AdminUtils.staffSay(player, "Flipped vehicle");
 
@@ -1052,9 +1054,9 @@ namespace CloudRP.Admin
 
                 findPlayer.Health = health;
 
-                ChatUtils.formatConsolePrint($"{userData.adminName} set {characterData.character_name} health to {health}");
+                ChatUtils.formatConsolePrint($"{userData.admin_name} set {characterData.character_name} health to {health}");
                 AdminUtils.staffSay(player, $"Set {characterData.character_name}'s health to {health}");
-                AdminUtils.staffSay(findPlayer, $"Your health was set to {health} by Admin {userData.adminName}");
+                AdminUtils.staffSay(findPlayer, $"Your health was set to {health} by Admin {userData.admin_name}");
 
             }
         }
@@ -1064,7 +1066,7 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if(userData.adminLevel > (int)AdminRanks.Admin_Admin && userData.adminDuty || userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            if(userData.admin_status > (int)AdminRanks.Admin_Admin && userData.adminDuty || userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
                 Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
 
@@ -1076,11 +1078,11 @@ namespace CloudRP.Admin
 
                 User findPlayerData = PlayersData.getPlayerAccountData(findPlayer);
 
-                findPlayerData.adminName = adminName;
+                findPlayerData.admin_name = adminName;
 
                 using(DefaultDbContext dbContext = new DefaultDbContext())
                 {
-                    Account findAccount = dbContext.accounts.Find(findPlayerData.accountId);
+                    Account findAccount = dbContext.accounts.Find(findPlayerData.account_id);
 
                     findAccount.admin_name = adminName;
 
@@ -1090,7 +1092,7 @@ namespace CloudRP.Admin
 
                 PlayersData.setPlayerAccountData(findPlayer, findPlayerData);
                 AdminUtils.staffSay(player, $"Set Player [{findPlayer.Id}]'s admin name to {adminName}.");
-                AdminUtils.staffSay(findPlayer, $"Your admin name was set to {adminName} by {userData.adminName}.");
+                AdminUtils.staffSay(findPlayer, $"Your admin name was set to {adminName} by {userData.admin_name}.");
 
 
             } else AdminUtils.sendNoAuth(player);
@@ -1103,7 +1105,7 @@ namespace CloudRP.Admin
 
             Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
 
-            if(userData != null && (userData.adminLevel > (int)AdminRanks.Admin_Admin && userData.adminDuty || userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin))
+            if(userData != null && (userData.admin_status > (int)AdminRanks.Admin_Admin && userData.adminDuty || userData.admin_status > (int)AdminRanks.Admin_HeadAdmin))
             {
                 if(adminRankSet > RankList.adminRanksList.Length || adminRankSet < 0)
                 {
@@ -1111,19 +1113,19 @@ namespace CloudRP.Admin
                     return;
                 }
 
-                if (adminRankSet > 3 && userData.adminLevel <= (int)AdminRanks.Admin_SeniorAdmin)
+                if (adminRankSet > 3 && userData.admin_status <= (int)AdminRanks.Admin_SeniorAdmin)
                 {
                     AdminUtils.staffSay(player, "You cannot set admin ranks that high. You can set up to moderator and below.");
                     return;
                 }
                 
-                if(adminRankSet > 6 && userData.adminLevel <= (int)AdminRanks.Admin_HeadAdmin)
+                if(adminRankSet > 6 && userData.admin_status <= (int)AdminRanks.Admin_HeadAdmin)
                 {
                     AdminUtils.staffSay(player, "You cannot set admin ranks that high. You can set up to Senior Admin and below.");
                     return;
                 }
 
-                if(player.Equals(findPlayer) && userData.adminLevel <= (int)AdminRanks.Admin_HeadAdmin)
+                if(player.Equals(findPlayer) && userData.admin_status <= (int)AdminRanks.Admin_HeadAdmin)
                 {
                     AdminUtils.staffSay(player, "You cannot assign admin ranks to yourself.");
                     return;
@@ -1132,14 +1134,14 @@ namespace CloudRP.Admin
                 User findPlayerData = PlayersData.getPlayerAccountData(findPlayer);
                 DbCharacter findPlayerCharData = PlayersData.getPlayerCharacterData(findPlayer);
 
-                if(findPlayerData.adminLevel >= (int)AdminRanks.Admin_SeniorAdmin && userData.adminLevel <= (int)AdminRanks.Admin_SeniorAdmin)
+                if(findPlayerData.admin_status >= (int)AdminRanks.Admin_SeniorAdmin && userData.admin_status <= (int)AdminRanks.Admin_SeniorAdmin)
                 {
                     AdminUtils.staffSay(player, "You cannot remove admin ranks from a rank that high.");
                     return;
                 }
 
-                findPlayerData.adminLevel = adminRankSet;
-                findPlayerData.adminPed = defaultAdminPed;
+                findPlayerData.admin_status = adminRankSet;
+                findPlayerData.admin_ped = defaultAdminPed;
                 findPlayerData.showAdminPed = false;
                 findPlayerData.adminDuty = false;
                 findPlayerData.isFlying = false;
@@ -1147,7 +1149,7 @@ namespace CloudRP.Admin
 
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
-                    Account findAcc = dbContext.accounts.Find(findPlayerData.accountId);
+                    Account findAcc = dbContext.accounts.Find(findPlayerData.account_id);
 
                     if (findAcc == null) return;
 
@@ -1159,11 +1161,11 @@ namespace CloudRP.Admin
                 }
                 string setAdminRank = AdminUtils.getColouredAdminRank(findPlayerData);
 
-                ChatUtils.formatConsolePrint($"{userData.adminName} set {findPlayerCharData.character_name}'s admin level to {RankList.adminRanksList[adminRankSet]}");
+                ChatUtils.formatConsolePrint($"{userData.admin_name} set {findPlayerCharData.character_name}'s admin level to {RankList.adminRanksList[adminRankSet]}");
                 PlayersData.setPlayerAccountData(findPlayer, findPlayerData);
 ;               AdminUtils.staffSay(player, $"You set {findPlayerCharData.character_name}'s admin level to {setAdminRank}");
-;               AdminUtils.staffSay(findPlayer, $"Your admin level was set to {setAdminRank}{AdminUtils.staffSuffixColour} by Admin {userData.adminName}");
-                AdminUtils.sendMessageToAllStaff($"{userData.adminName} set {findPlayerCharData.character_name}'s admin level to {setAdminRank}");
+;               AdminUtils.staffSay(findPlayer, $"Your admin level was set to {setAdminRank}{AdminUtils.staffSuffixColour} by Admin {userData.admin_name}");
+                AdminUtils.sendMessageToAllStaff($"{userData.admin_name} set {findPlayerCharData.character_name}'s admin level to {setAdminRank}");
             
             } else AdminUtils.sendNoAuth(player);
         }
@@ -1181,7 +1183,7 @@ namespace CloudRP.Admin
                 {
                     VehicleSystem.sendVehicleToInsurance(findVehicle);
 
-                    ChatUtils.formatConsolePrint($"Admin {userData.adminName} sent {plateOrId} to insurance.");
+                    ChatUtils.formatConsolePrint($"Admin {userData.admin_name} sent {plateOrId} to insurance.");
                     AdminUtils.staffSay(player, "Sent vehicle " + plateOrId + " to insurance.");
                 } else
                 {
@@ -1204,7 +1206,7 @@ namespace CloudRP.Admin
                 {
                     player.Position = findVehicle.Position.Around(5);
 
-                    ChatUtils.formatConsolePrint($"{userData.adminName} teleported to vehicle {idOrPlate}");
+                    ChatUtils.formatConsolePrint($"{userData.admin_name} teleported to vehicle {idOrPlate}");
                     AdminUtils.staffSay(player, "Teleported to vehicle " + idOrPlate);
 
                 } else
@@ -1219,7 +1221,7 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (userData.adminLevel > (int)AdminRanks.Admin_SeniorAdmin)
+            if (userData.admin_status > (int)AdminRanks.Admin_SeniorAdmin)
             {
                 Dictionary<Player, User> adminGroup = AdminUtils.gatherAdminGroupAbove(AdminRanks.Admin_SeniorAdmin);
 
@@ -1228,7 +1230,7 @@ namespace CloudRP.Admin
 
                 foreach (KeyValuePair<Player, User> admin in adminGroup)
                 {
-                    NAPI.Chat.SendChatMessageToPlayer(admin.Key, prefix + adminRank + userData.adminName + ChatUtils.red + " says: " + ChatUtils.White + message);
+                    NAPI.Chat.SendChatMessageToPlayer(admin.Key, prefix + adminRank + userData.admin_name + ChatUtils.red + " says: " + ChatUtils.White + message);
                 }
             }
             else AdminUtils.sendNoAuth(player);
@@ -1280,7 +1282,7 @@ namespace CloudRP.Admin
 
                     VehicleSystem.saveVehicleData(findVehicle, findVehicleData, true);
 
-                    ChatUtils.formatConsolePrint($"{userData.adminName} refilled {findVehicleData.vehicle_id}'s fuel level to 100.");
+                    ChatUtils.formatConsolePrint($"{userData.admin_name} refilled {findVehicleData.vehicle_id}'s fuel level to 100.");
                     AdminUtils.staffSay(player, $"You refilled vehicle with id {findVehicleData.vehicle_id}.");
                 }
             }
@@ -1291,7 +1293,7 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if(userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            if(userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
                 Vehicle findVehicle = null;
 
@@ -1332,7 +1334,7 @@ namespace CloudRP.Admin
 
                     VehicleSystem.saveVehicleData(findVehicle, findVehicleData, true);
 
-                    ChatUtils.formatConsolePrint($"{userData.adminName} emptied vehicle {findVehicleData.vehicle_id}'s fuel tank.");
+                    ChatUtils.formatConsolePrint($"{userData.admin_name} emptied vehicle {findVehicleData.vehicle_id}'s fuel tank.");
                     AdminUtils.staffSay(player, $"You emptied vehicle with id {findVehicleData.vehicle_id}'s fuel tank.");
                 }
 
@@ -1350,7 +1352,7 @@ namespace CloudRP.Admin
 
                 if(bannedCharacter)
                 {
-                    ChatUtils.formatConsolePrint($"{userData.adminName} banned character {characterName}");
+                    ChatUtils.formatConsolePrint($"{userData.admin_name} banned character {characterName}");
                     AdminUtils.staffSay(player, "You banned character " + characterName +"!");
                 } else
                 {
@@ -1370,7 +1372,7 @@ namespace CloudRP.Admin
 
                 if(hasUnBanCharacter)
                 {
-                    ChatUtils.formatConsolePrint($"{userData.adminName} unbanned character {characterName}");
+                    ChatUtils.formatConsolePrint($"{userData.admin_name} unbanned character {characterName}");
                     AdminUtils.staffSay(player, "You unbanned character " + characterName +"!");
                 } else
                 {
@@ -1385,7 +1387,7 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (userData.adminLevel > (int)AdminRanks.Admin_SeniorAdmin)
+            if (userData.admin_status > (int)AdminRanks.Admin_SeniorAdmin)
             {
                 if(!player.IsInVehicle)
                 {
@@ -1418,7 +1420,7 @@ namespace CloudRP.Admin
                         dbContext.SaveChanges();
 
                         VehicleSystem.setVehicleData(pVeh, vehData);
-                        ChatUtils.formatConsolePrint($"{userData.adminName} has set {vehData.vehicle_id}'s license plate to {formattedPlate}");
+                        ChatUtils.formatConsolePrint($"{userData.admin_name} has set {vehData.vehicle_id}'s license plate to {formattedPlate}");
                         AdminUtils.staffSay(player, $"You have set vehicle #{vehData.vehicle_id}'s license plate to {formattedPlate}");
                     }
                 }
@@ -1444,7 +1446,7 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            if (userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
                 Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
                 if(findPlayer == null)
@@ -1457,9 +1459,9 @@ namespace CloudRP.Admin
                 charData.money_amount += amount;
                 PlayersData.setPlayerCharacterData(findPlayer, charData, false, true);
 
-                ChatUtils.formatConsolePrint($"{userData.adminName} gave {charData.character_name} {amount.ToString("C")}.");
+                ChatUtils.formatConsolePrint($"{userData.admin_name} gave {charData.character_name} {amount.ToString("C")}.");
                 AdminUtils.staffSay(player, $"You gave {charData.character_name} {ChatUtils.moneyGreen}{amount.ToString("C")}{AdminUtils.staffSuffixColour} their total money level is at {ChatUtils.moneyGreen}${charData.money_amount.ToString("C")}");
-                AdminUtils.staffSay(findPlayer, $"You have been given {ChatUtils.moneyGreen}{amount.ToString("C")}{AdminUtils.staffSuffixColour} from Admin {userData.adminName}");
+                AdminUtils.staffSay(findPlayer, $"You have been given {ChatUtils.moneyGreen}{amount.ToString("C")}{AdminUtils.staffSuffixColour} from Admin {userData.admin_name}");
             }
             else AdminUtils.sendNoAuth(player);
         }
@@ -1469,7 +1471,7 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            if (userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
                 Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
                 if(findPlayer == null)
@@ -1488,9 +1490,9 @@ namespace CloudRP.Admin
                 charData.money_amount -= amount;
                 PlayersData.setPlayerCharacterData(findPlayer, charData, false, true);
 
-                ChatUtils.formatConsolePrint($"{userData.adminName} removed {amount.ToString("C")} from {charData.character_name}.");
+                ChatUtils.formatConsolePrint($"{userData.admin_name} removed {amount.ToString("C")} from {charData.character_name}.");
                 AdminUtils.staffSay(player, $"You removed {ChatUtils.moneyGreen}${amount.ToString("C")}{AdminUtils.staffSuffixColour} from {charData.character_name} their total money level is at {ChatUtils.moneyGreen}{charData.money_amount.ToString("C")}");
-                AdminUtils.staffSay(findPlayer, $"You had {ChatUtils.moneyGreen}${amount.ToString("C")}{AdminUtils.staffSuffixColour} removed from you by Admin {userData.adminName}");
+                AdminUtils.staffSay(findPlayer, $"You had {ChatUtils.moneyGreen}${amount.ToString("C")}{AdminUtils.staffSuffixColour} removed from you by Admin {userData.admin_name}");
             }
             else AdminUtils.sendNoAuth(player);
         }
@@ -1500,7 +1502,7 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin || userData.adminDuty)
+            if (userData.admin_status > (int)AdminRanks.Admin_HeadAdmin || userData.adminDuty)
             {
                 if(units > 8000 || units < 0)
                 {
@@ -1524,7 +1526,7 @@ namespace CloudRP.Admin
                         findP.Position = new Vector3(findP.Position.X, findP.Position.Y, findP.Position.Z + units);
                         findP.Health -= 5;
 
-                        ChatUtils.formatConsolePrint($"{userData.adminName} slapped {charData.character_name} for {units} units.");
+                        ChatUtils.formatConsolePrint($"{userData.admin_name} slapped {charData.character_name} for {units} units.");
                         AdminUtils.staffSay(player, $"You slapped {charData.character_name} for {units} units");
                     }
                 } else AdminUtils.playerNotFound(player);

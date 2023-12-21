@@ -43,7 +43,7 @@ class AdminFly {
 		let userData: UserData | undefined = getUserData();
 		if(!userData) return;
 
-		if(userData?.adminDuty || userData.adminLevel > AdminRanks.Admin_HeadAdmin) {
+		if(userData?.adminDuty || userData.admin_status > AdminRanks.Admin_HeadAdmin) {
 			mp.events.callRemote(AdminFly.flyEvent);
 		}
 	}
@@ -52,7 +52,7 @@ class AdminFly {
 		let localUserData: UserData | undefined = getUserData();
 		if (!localUserData) return;
 
-		if (localUserData?.adminLevel > AdminRanks.Admin_SeniorSupport) {
+		if (localUserData?.admin_status > AdminRanks.Admin_SeniorSupport) {
 			AdminFly.LocalPlayer.freezePosition(true);
 			AdminFly.LocalPlayer.setInvincible(true);
 		}

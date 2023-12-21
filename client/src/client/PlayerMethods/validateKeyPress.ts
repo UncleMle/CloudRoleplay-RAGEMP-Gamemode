@@ -26,7 +26,7 @@ const validateKeyPress = (testForVehicle: boolean = false, testForPhone: boolean
         return false;
     }
 
-    if(testForInjured && localCharData && localCharData.injuredTimer > 0) {
+    if(testForInjured && localCharData && localCharData.injured_timer > 0) {
         return false;
     }
 

@@ -27,7 +27,7 @@ class AdminSystem {
 
 		if(!userData) return;
 
-		if(userData.adminLevel > AdminRanks.admin_None) {
+		if(userData.admin_status > AdminRanks.admin_None) {
 			mp.events.callRemote(AdminSystem.viewReportsEvent);
 		}
 	}
@@ -50,12 +50,12 @@ class AdminSystem {
 			let poz_y: string = AdminSystem.LocalPlayer.position.y.toFixed(1);
 			let poz_z: string = AdminSystem.LocalPlayer.position.z.toFixed(1);
 
-			let adminRankData = AdminRank.getAdminRankInfo(AdminSystem.userData.adminLevel);
+			let adminRankData = AdminRank.getAdminRankInfo(AdminSystem.userData.admin_status);
 			if(!adminRankData) return;
 
 			let positionString = `~r~X:~w~ ${poz_x} ~r~Y:~w~ ${poz_y} ~r~Z:~w~ ${poz_z}`;
 
-			let msg = `~r~On duty as ~w~<font color="${adminRankData.colour}">${adminRankData.rank}~r~ ${AdminSystem.userData.adminName} ${AdminSystem.userData.isFlying ? "\n~g~[Fly enabled]~w~" : ""}`;
+			let msg = `~r~On duty as ~w~<font color="${adminRankData.colour}">${adminRankData.rank}~r~ ${AdminSystem.userData.admin_name} ${AdminSystem.userData.isFlying ? "\n~g~[Fly enabled]~w~" : ""}`;
 
 			mp.game.graphics.drawText(msg, [0.5, 0.90], {
 				font: 4,
@@ -66,8 +66,8 @@ class AdminSystem {
 
 			mp.game.graphics.drawText(positionString, [0.5, AdminSystem.userData.isFlying ? 0.86 : 0.94], {
 				font: 4,
-				color: [255, 255, 255, 180],
-				scale: [0.61, 0.61],
+				color: [255, 255, 255, 255],
+				scale: [0.45, 0.45],
 				outline: false
 			});
 		}

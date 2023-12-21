@@ -36,5 +36,16 @@ namespace CloudRP.Authentication
         public ulong social_club_id { get; set; }
         public int max_characters { get; set; }
         public bool admin_esp { get; set; }
+
+        [NotMapped]
+        public bool adminDuty { get; set; }
+        [NotMapped]
+        public bool isFlying { get; set; }
+        [NotMapped]
+        public bool isFrozen { get; set; }
+        [NotMapped]
+        public bool isOnCharacterCreation { get; set; }
+        [NotMapped]
+        public bool showAdminPed { get; set; }
     }
 }

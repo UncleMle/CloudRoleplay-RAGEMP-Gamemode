@@ -6,6 +6,7 @@ using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Xml.Schema;
 
@@ -23,27 +24,13 @@ namespace CloudRP.PlayerData
 
         public static void setPlayerAccountData(Player player, User userData)
         {
-            if(!checkIfAccountIsLogged(userData.accountId))
+            if(!checkIfAccountIsLogged(userData.account_id))
             {
                 player.SetData(_sharedAccountDataIdentifier, userData);
 
-                // Explicitly specify data as it will be sent freely to other clients
-                SharedDataAccount data = new SharedDataAccount
-                {
-                    accountId = userData.accountId,
-                    adminDuty = userData.adminDuty,
-                    adminLevel = userData.adminLevel,
-                    adminName = userData.adminName,
-                    adminPed = userData.adminPed,
-                    showAdminPed = userData.showAdminPed,
-                    playerId = userData.playerId,
-                    username = userData.username,
-                    isFlying = userData.isFlying,
-                    isFrozen = userData.isFrozen,
-                    adminEsp = userData.adminEsp
-                };
+                SharedDataAccount sharedData = JsonConvert.DeserializeObject<SharedDataAccount>(JsonConvert.SerializeObject(userData));
 
-                player.SetSharedData(_sharedAccountDataIdentifier, data);
+                player.SetSharedData(_sharedAccountDataIdentifier, sharedData);
             }
         }
 
@@ -53,18 +40,9 @@ namespace CloudRP.PlayerData
             {
                 player.SetData(_sharedCharacterDataIdentifier, character);
 
-                // Explicitly specify data as it will be sent freely to other clients
-                SharedDataCharacter data = new SharedDataCharacter
-                {
-                    characterId = character.character_id,
-                    characterName = character.character_name,
-                    voiceChatState = character.voiceChatState,
-                    injuredTimer = character.injured_timer,
-                    characterClothing = character.characterClothing,
-                    characterModel = character.characterModel
-                };
+                SharedDataCharacter sharedData = JsonConvert.DeserializeObject<SharedDataCharacter>(JsonConvert.SerializeObject(character));
 
-                player.SetSharedData(_sharedCharacterDataIdentifier, data);
+                player.SetSharedData(_sharedCharacterDataIdentifier, sharedData);
                 setCharacterHungerAndThirst(player, character.character_hunger, character.character_water);
                 setPlayerVoiceStatus(player, character.voiceChatState);
 
@@ -125,13 +103,20 @@ namespace CloudRP.PlayerData
         {
             bool wasFound = false;
 
+            List<DbCharacter> onlineChars = new List<DbCharacter>();
+
             NAPI.Pools.GetAllPlayers().ForEach(p =>
             {
                 if(getPlayerCharacterData(p) != null && getPlayerCharacterData(p).character_id == charId)
                 {
-                    wasFound = true;
+                    onlineChars.Add(getPlayerCharacterData(p));
                 }
             });
+
+            if(onlineChars.Count > 1)
+            {
+                wasFound = true;
+            }
 
             return wasFound;
         }
@@ -140,13 +125,20 @@ namespace CloudRP.PlayerData
         {
             bool wasFound = false;
 
+            List<User> onlineAccounts = new List<User>();
+
             NAPI.Pools.GetAllPlayers().ForEach(p =>
             {
-                if(getPlayerAccountData(p) != null && getPlayerAccountData(p).accountId == accId)
+                if(getPlayerAccountData(p) != null && getPlayerAccountData(p).account_id == accId)
                 {
-                    wasFound = true;
+                    onlineAccounts.Add(getPlayerAccountData(p));
                 }
             });
+
+            if(onlineAccounts.Count > 1)
+            {
+                wasFound = true;
+            }
 
             return wasFound;
         }

@@ -27,7 +27,7 @@ class DeathSystem {
             mp.players.forEach(player => {
                 let targetCharData: CharacterData | undefined = getTargetCharacterData(player);
 
-                if(targetCharData && targetCharData.injuredTimer > 0) {
+                if(targetCharData && targetCharData.injured_timer > 0) {
                     DeathSystem.playDeathAnim(player);
                 }
             })
@@ -51,7 +51,7 @@ class DeathSystem {
             let characterData: CharacterData | undefined = getUserCharacterData();
             if(!characterData) return;
 
-            characterData.injuredTimer <= 0 && DeathSystem._saveInterval ? (clearInterval(DeathSystem._saveInterval), DeathSystem._saveInterval = undefined) : DeathSystem.injuredTimer--;
+            characterData.injured_timer <= 0 && DeathSystem._saveInterval ? (clearInterval(DeathSystem._saveInterval), DeathSystem._saveInterval = undefined) : DeathSystem.injuredTimer--;
         }, 1000);
 
         DeathSystem._injuredInterval = setInterval(() => {
@@ -65,7 +65,7 @@ class DeathSystem {
         let characterData: CharacterData | undefined = getUserCharacterData();
         if(!characterData) return;
 
-        if(characterData.injuredTimer > 0) {
+        if(characterData.injured_timer > 0) {
             DeathSystem.disableControls();
             DeathSystem.renderInjuredText();
         }
@@ -75,7 +75,7 @@ class DeathSystem {
         let characterData: CharacterData | undefined = getUserCharacterData();
         if(entity.type != "player" || !characterData) return;
 
-        if(characterData.injuredTimer > 0) {
+        if(characterData.injured_timer > 0) {
             DeathSystem.playDeathAnim(entity as PlayerMp);
         }
     }
@@ -83,8 +83,8 @@ class DeathSystem {
     public static handleDataHandler(entity: PlayerMp, data: CharacterData) {
         if(entity.type != "player" || !data) return;
 
-        if(data.injuredTimer > 0) {
-            DeathSystem.injuredTimer = data.injuredTimer;
+        if(data.injured_timer > 0) {
+            DeathSystem.injuredTimer = data.injured_timer;
             DeathSystem.playDeathAnim(entity);
         } else if(entity.remoteId == DeathSystem.LocalPlayer.remoteId) {
             mp.game.graphics.stopAllScreenEffects();

@@ -28,7 +28,7 @@ class CharacterSystem {
 	public static setDiscordStatus() {
 		let characterData: CharacterData | undefined = getUserCharacterData();
 
-		mp.discord.update(`Playing on ${CharacterSystem.serverName}`, `${characterData ? `Playing as ${characterData.characterName.replace("_", " ")}` : `Currently logged in`}`)
+		mp.discord.update(`Playing on ${CharacterSystem.serverName}`, `${characterData ? `Playing as ${characterData.character_name.replace("_", " ")}` : `Currently logged in`}`)
 	}
 
 	public static async setCharacterCustomization(characterModel: any, parse: boolean = true, entity: PlayerMp | PedMp = CharacterSystem.LocalPlayer) {
@@ -102,7 +102,7 @@ class CharacterSystem {
 		let characterData: CharacterData | undefined = getTargetCharacterData(entity);
 
 		if(data.showAdminPed) {
-			entity.model = mp.game.joaat(data.adminPed);
+			entity.model = mp.game.joaat(data.admin_ped);
 		} else {
 			CharacterSystem.setCharacterCustomization(characterData?.characterModel, false, entity as PlayerMp);
 		}
@@ -116,7 +116,7 @@ class CharacterSystem {
 		if (!userData || !characterData) return;
 
 		if(userData.showAdminPed) {
-			entity.model = mp.game.joaat(userData.adminPed);
+			entity.model = mp.game.joaat(userData.admin_ped);
 			return;
 		}
 
@@ -130,7 +130,7 @@ class CharacterSystem {
 		if (!userData) return;
 
 		if(userData.showAdminPed) {
-			entity.model = mp.game.joaat(userData.adminPed);
+			entity.model = mp.game.joaat(userData.admin_ped);
 			return;
 		}
 

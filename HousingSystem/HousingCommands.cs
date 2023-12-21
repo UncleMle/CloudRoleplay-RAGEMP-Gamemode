@@ -20,7 +20,7 @@ namespace CloudRP.HousingSystem
 
             if (userData == null || characterData == null) return;
 
-            if (userData.adminLevel > (int)AdminRanks.Admin_SeniorAdmin)
+            if (userData.admin_status > (int)AdminRanks.Admin_SeniorAdmin)
             {
                 int totalAvailableInteriors = Interiors.availableInteriors.Count - 1;
 
@@ -61,7 +61,7 @@ namespace CloudRP.HousingSystem
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            if (userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
                 House findH = House.getHouseById(houseId);
 

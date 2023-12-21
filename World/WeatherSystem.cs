@@ -102,7 +102,7 @@ namespace CloudRP.World
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if(userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            if(userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
                 weatherSyncOn = !weatherSyncOn;
                 AdminUtils.staffSay(player, $"You turned weather sync {(weatherSyncOn ? "on" : "off")}.");
@@ -115,7 +115,7 @@ namespace CloudRP.World
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            if (userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
                 NAPI.World.SetWeather(weather);
 

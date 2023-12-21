@@ -55,7 +55,7 @@ namespace CloudRP.World
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            if (userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
                 timeSyncOn = !timeSyncOn;
                 AdminUtils.staffSay(player, $"You turned time sync {(timeSyncOn ? "on" : "off")}");
@@ -68,7 +68,7 @@ namespace CloudRP.World
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin)
+            if (userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
                 AdminUtils.staffSay(player, $"You set time to {h}:{m}:{s}");
                 NAPI.World.SetTime(h, m, s);

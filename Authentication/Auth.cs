@@ -91,7 +91,7 @@ namespace CloudRP.Authentication
                         {
                             User acUser = new User
                             {
-                                adminName = "System"
+                                admin_name = "System"
                             };
 
                             AdminUtils.banAPlayer(-1, user, user, player, "Logging into banned accounts");
@@ -144,7 +144,7 @@ namespace CloudRP.Authentication
 
                 if(pData != null)
                 {
-                    if (pData.accountId == accountId)
+                    if (pData.account_id == accountId)
                     {
                         wasFound = p;
                     }
@@ -355,7 +355,7 @@ namespace CloudRP.Authentication
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
                     DbCharacter character = dbContext.characters
-                        .Where(b => b.character_name == name && b.owner_id == userData.accountId)
+                        .Where(b => b.character_name == name && b.owner_id == userData.account_id)
                         .FirstOrDefault();
                     if (character == null || character?.character_isbanned == 1) return;
                     CharacterModel charModel = dbContext.character_models
@@ -430,19 +430,8 @@ namespace CloudRP.Authentication
 
         public static User createUser(Account accountData)
         {
-            User user = new User
-            {
-                username = accountData.username,
-                accountId = accountData.account_id,
-                adminLevel = accountData.admin_status,
-                adminName = accountData.admin_name,
-                emailAddress = accountData.email_address,
-                adminPed = accountData.admin_ped,
-                maxCharacters = accountData.max_characters,
-                adminEsp = accountData.admin_esp
-            };
-
-            return user;
+            User newUser = JsonConvert.DeserializeObject<User>(JsonConvert.SerializeObject(accountData));
+            return newUser;
         }
 
         void welcomeAndSpawnPlayer(Player player, User user, DbCharacter characterData)
@@ -474,7 +463,7 @@ namespace CloudRP.Authentication
 
             PlayersData.setPlayerAccountData(player, userData);
 
-            ChatUtils.formatConsolePrint($"{userData.username} (#{userData.accountId}) has entered character selection process.", ConsoleColor.Yellow);
+            ChatUtils.formatConsolePrint($"{userData.username} (#{userData.account_id}) has entered character selection process.", ConsoleColor.Yellow);
 
             CharacterSystem.fillCharacterSelectionTable(player, userData);
         }

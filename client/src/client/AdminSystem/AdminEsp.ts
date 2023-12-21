@@ -23,7 +23,7 @@ class AdminEsp {
 	public static handleRender() {
 		let userData: UserData | undefined = getUserData();
 
-		if (userData != null && userData.adminDuty && !userData.adminEsp) {
+		if (userData != null && userData.adminDuty && !userData.admin_esp) {
 			AdminEsp.renderPlayerEsp();
 			AdminEsp.renderVehiclesEsp();
 		}
@@ -108,11 +108,11 @@ class AdminEsp {
 
 		let characterData: CharacterData | undefined = getTargetCharacterData(ent);
 
-		let dispTextCenter: string =  userData?.adminDuty ? `~r~[ADMIN ON DUTY] ${userData.adminName}` : `Player (RID #${ent.remoteId}) (Dist ${distBetweenCoords(AdminEsp.LocalPlayer.position, ent.position).toFixed(1)}M) `;
+		let dispTextCenter: string =  userData?.adminDuty ? `~r~[ADMIN ON DUTY] ${userData.admin_name}` : `Player (RID #${ent.remoteId}) (Dist ${distBetweenCoords(AdminEsp.LocalPlayer.position, ent.position).toFixed(1)}M) `;
 		let dispTextHead: string = userData?.adminDuty ? "" : `Health ~g~${ent.getHealth()} ~w~Armour: ~b~${ent.getArmour()}`;
 
 		if (characterData != null) {
-			dispTextCenter += `\n(CID #${characterData.characterId}) (Name ${characterData.characterName})`;
+			dispTextCenter += `\n(CID #${characterData.character_name}) (Name ${characterData.character_name})`;
 		}
 
 		AdminEsp.renderText(dispTextCenter, drawTextCoordsCenter);

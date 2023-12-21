@@ -397,7 +397,7 @@ namespace CloudRP.Vehicles
             AdminUtils.staffSay(player, "Mileage: " + ChatUtils.red + (vehicle.vehicle_distance / 1609).ToString("N0") + " Miles" + AdminUtils.staffSuffixColour + " Fuel Level: " + ChatUtils.red + vehicle.vehicle_fuel.ToString("N1")+"%");
 
             DbCharacter vehicleOwnerData = getOwnerOfVehicleById(vehicle.owner_id);
-            if ((userdata.adminDuty || userdata.adminLevel > (int)AdminRanks.Admin_HeadAdmin) && vehicleOwnerData != null)
+            if ((userdata.adminDuty || userdata.admin_status > (int)AdminRanks.Admin_HeadAdmin) && vehicleOwnerData != null)
             {
                 AdminUtils.staffSay(player, "Owner: " + ChatUtils.red + vehicleOwnerData.character_name+ AdminUtils.staffSuffixColour + " Owner Last Login: " + ChatUtils.red + vehicleOwnerData.last_login);
             }
@@ -910,7 +910,7 @@ namespace CloudRP.Vehicles
             DbVehicle vehicleData = getVehicleData(vehicle);
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if(userData == null || vehicleData == null || vehicleData.vehicle_locked && !(userData.adminLevel > (int)AdminRanks.Admin_HeadAdmin || userData.adminDuty))
+            if(userData == null || vehicleData == null || vehicleData.vehicle_locked && !(userData.admin_status > (int)AdminRanks.Admin_HeadAdmin || userData.adminDuty))
             {
                 player.WarpOutOfVehicle();
                 return;
