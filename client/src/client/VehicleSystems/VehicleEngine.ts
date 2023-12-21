@@ -3,6 +3,8 @@ import { VehicleData } from "../@types";
 import { _SHARED_VEHICLE_DATA, _control_ids } from "../Constants/Constants";
 import getVehicleData from "../PlayerMethods/getVehicleData";
 import { Browsers } from "@/enums";
+import getTargetCharacterData from "@/PlayerMethods/getTargetCharacterData";
+import HandsUp from "@/Animation/HandsUpAnim";
 
 class VehicleEngine {
 	public static LocalPlayer: PlayerMp;
@@ -37,6 +39,7 @@ class VehicleEngine {
 		if(entity.type != "vehicle" || !vehicleData) return;
 
 		if(VehicleEngine.LocalPlayer.vehicle && VehicleEngine.LocalPlayer.vehicle == entity && VehicleEngine.LocalPlayer.browserRouter == Browsers.ModsView) return;
+		if(mp.players.atHandle(entity.getPedInSeat(-1)) && mp.players.atHandle(entity.getPedInSeat(-1)).getVariable(HandsUp._handsUpAnimIdentifer)) return;
 
 		if(vehicleData.engine_status) {
 			entity.setEngineOn(true, true, true);

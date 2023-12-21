@@ -44,6 +44,7 @@ class DeathSystem {
     }
 
     public static handleIntervalStart(time: number) {
+        mp.game.graphics.startScreenEffect("DeathFailMPIn", 12000, true);
         DeathSystem.injuredTimer = time;
 
         DeathSystem._saveInterval = setInterval(() => {
@@ -85,11 +86,7 @@ class DeathSystem {
         if(data.injuredTimer > 0) {
             DeathSystem.injuredTimer = data.injuredTimer;
             DeathSystem.playDeathAnim(entity);
-
-            if(entity == DeathSystem.LocalPlayer) {
-                mp.game.graphics.startScreenEffect("DeathFailMPIn", 0, true);
-            }
-        } else {
+        } else if(entity.remoteId == DeathSystem.LocalPlayer.remoteId) {
             mp.game.graphics.stopAllScreenEffects();
         }
     }
