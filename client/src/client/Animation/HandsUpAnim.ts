@@ -1,5 +1,6 @@
 import { _control_ids } from "@/Constants/Constants";
 import validateKeyPress from "@/PlayerMethods/validateKeyPress";
+import VehicleSystems from "@/VehicleSystems/VehicleSystem";
 
 class HandsUp {
     public static LocalPlayer: PlayerMp;
@@ -21,6 +22,7 @@ class HandsUp {
     public static handleRender() {
         if(HandsUp.LocalPlayer.vehicle && HandsUp.LocalPlayer.vehicle.getPedInSeat(-1) == HandsUp.LocalPlayer.handle && HandsUp.LocalPlayer.getVariable(HandsUp._handsUpAnimIdentifer)) {
             HandsUp.LocalPlayer.vehicle.setUndriveable(true);
+            VehicleSystems.disableControls();
         }
     }
 

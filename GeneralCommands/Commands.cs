@@ -90,6 +90,12 @@ namespace CloudRP.GeneralCommands
         [Command("ame", "~y~Use: ~w~/ame [message]", GreedyArg = true, Description = "testaisdj aiosdjaio sdjioj")]
         public void onAmeCommand(Player player, string ameText)
         {
+            if(!AuthUtils.validateNick(ameText))
+            {
+                CommandUtils.errorSay(player, "Ame texts cannot have certain special characters.");
+                return;
+            }
+
             if(ameText.Length > 100)
             {
                 CommandUtils.errorSay(player, "Ame message cannot be longer than 100 characters.");

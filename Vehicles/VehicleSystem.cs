@@ -390,7 +390,7 @@ namespace CloudRP.Vehicles
 
         public static void sayInfoAboutVehicle(Player player, User userdata, DbVehicle vehicle)
         {
-            AdminUtils.staffSay(player, ChatUtils.yellow + "-----------------------------------------------------------");
+            player.SendChatMessage(ChatUtils.yellow + "-----------------------------------------------------------");
             AdminUtils.staffSay(player, "Vehicle id: " + ChatUtils.red + vehicle.vehicle_id + AdminUtils.staffSuffixColour + " VehName: " + ChatUtils.red + vehicle.vehicle_name);
             AdminUtils.staffSay(player, "Owner id: " + ChatUtils.red + vehicle.owner_id + AdminUtils.staffSuffixColour + " Numberplate: " + ChatUtils.red + vehicle.numberplate);
             AdminUtils.staffSay(player, "Vehicle Dimension: " + ChatUtils.red + vehicle.vehicle_dimension + AdminUtils.staffSuffixColour + " Lock Status: " + ChatUtils.red + vehicle.vehicle_locked);
@@ -402,7 +402,7 @@ namespace CloudRP.Vehicles
                 AdminUtils.staffSay(player, "Owner: " + ChatUtils.red + vehicleOwnerData.character_name+ AdminUtils.staffSuffixColour + " Owner Last Login: " + ChatUtils.red + vehicleOwnerData.last_login);
             }
 
-            AdminUtils.staffSay(player, ChatUtils.yellow + "-----------------------------------------------------------");
+            player.SendChatMessage(ChatUtils.yellow + "-----------------------------------------------------------");
         }
 
         [ServerEvent(Event.VehicleDeath)]

@@ -55,7 +55,7 @@ class VehicleSystems {
 			VehicleSystems.beltToggle = !VehicleSystems.beltToggle;
 			VehicleSystems.LocalPlayer.setConfigFlag(CF_PED_FLAG_CAN_FLY_THRU_WINDSCREEN, !VehicleSystems.beltToggle);
 
-			NotificationSystem.createNotification(`You have ${VehicleSystems.beltToggle ? "buckled" : "unbuckled"} your seat belt.`);
+			NotificationSystem.createNotification(`You have ${VehicleSystems.beltToggle ? "buckled" : "unbuckled"} your seat belt.`, true, true, `${VehicleSystems.beltToggle ? "Buckles" : "Unbuckles"} seatbelt.`);
 		}
 	}
 

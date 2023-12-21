@@ -48,6 +48,8 @@ class CharacterSystem {
 			charData = JSON.parse(characterModel);
 		}
 
+		if(typeof charData.hairStyle != "number") return;
+
 		let female: number = mp.game.joaat("mp_m_freemode_01");
 		let male: number = mp.game.joaat("mp_f_freemode_01");
 

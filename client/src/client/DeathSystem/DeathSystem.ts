@@ -4,6 +4,7 @@ import { _sharedCharacterDataIdentifier } from "@/Constants/Constants";
 import getTargetCharacterData from "@/PlayerMethods/getTargetCharacterData";
 import ScaleForm from "@/Scaleform/ScaleformMessages";
 import GuiSystem from "@/BrowserSystem/GuiSystem";
+import VehicleSystems from "@/VehicleSystems/VehicleSystem";
 
 class DeathSystem {
     public static LocalPlayer: PlayerMp;
@@ -72,6 +73,11 @@ class DeathSystem {
         if(characterData.injured_timer > 0) {
             DeathSystem.disableControls();
             DeathSystem.renderInjuredText();
+
+            if(DeathSystem.LocalPlayer.vehicle && DeathSystem.LocalPlayer.vehicle.getPedInSeat(-1) == DeathSystem.LocalPlayer.handle) {
+                VehicleSystems.disableControls();
+                DeathSystem.LocalPlayer.vehicle.setUndriveable(true);
+            }
         }
     }
 
