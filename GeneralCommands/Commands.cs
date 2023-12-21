@@ -87,6 +87,12 @@ namespace CloudRP.GeneralCommands
             CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_commands_radius);
         }
 
+        [Command("ame", "~y~Use: ~w~/ame [message]")]
+        public void onAmeCommand(Player player, string ameText)
+        {
+            uiHandling.sendNotification(player, ameText, true, true, ameText);
+        }
+
         [Command("help", "~y~Use: ~w~/help")]
         public void onHelpCommand(Player player)
         {

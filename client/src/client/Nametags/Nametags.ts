@@ -123,7 +123,7 @@ class NameTags {
 					});
 
 					if(target.getVariable(NotificationSystem._ameTextIdentifier) && !targetUserData.adminDuty) {
-						mp.game.graphics.drawText(target.getVariable(NotificationSystem._ameTextIdentifier), [x, y - 0.032], {
+						mp.game.graphics.drawText(target.getVariable(NotificationSystem._ameTextIdentifier), [x, y - target.getVariable(NameTags.playerIsTypingState) ? 0.062 : 0.032], {
 							font: 4,
 							color: [220, 125, 225, 255],
 							scale: [0.325, 0.325],
