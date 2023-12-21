@@ -64,7 +64,7 @@ class AdminSystem {
 				outline: false
 			});
 
-			mp.game.graphics.drawText(positionString, [0.5, AdminSystem.userData.isFlying ? 0.86 : 0.94], {
+			mp.game.graphics.drawText(positionString, [0.5, AdminSystem.userData.isFlying ? 0.87 : 0.94], {
 				font: 4,
 				color: [255, 255, 255, 255],
 				scale: [0.45, 0.45],
