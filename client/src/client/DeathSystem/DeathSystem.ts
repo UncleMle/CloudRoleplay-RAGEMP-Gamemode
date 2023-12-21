@@ -45,6 +45,7 @@ class DeathSystem {
 
     public static handleIntervalStart(time: number) {
         mp.game.graphics.startScreenEffect("DeathFailMPIn", 12000, true);
+        DeathSystem.LocalPlayer.freezePosition(true);
         DeathSystem.injuredTimer = time;
 
         DeathSystem._saveInterval = setInterval(() => {
