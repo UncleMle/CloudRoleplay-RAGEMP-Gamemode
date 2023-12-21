@@ -10,6 +10,7 @@ using CloudRP.Vehicles;
 using Discord;
 using GTANetworkAPI;
 using Integration;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -124,6 +125,7 @@ namespace CloudRP.Admin
                 PlayersData.setPlayerAccountData(player, userData, true, true);
 
                 AdminUtils.staffSay(player, $"You have {(userData.admin_esp ? "disabled" : "enabled")} admin esp.");
+                uiHandling.sendNotification(player, $"~r~You {(userData.admin_esp ? "~r~disabled" : "~g~enabled")} admin esp", false);
                 ChatUtils.formatConsolePrint($"{userData.admin_name} toggled admin esp {(userData.admin_esp ? "on" : "off")}");
             }
         }
@@ -320,6 +322,7 @@ namespace CloudRP.Admin
 
                 player.Position = savedAdminPosition.Value;
 
+                uiHandling.sendNotification(player, "~r~Teleported to last admin duty position", false);
                 AdminUtils.staffSay(player, "Returned to admin duty position.");
             }
         }
@@ -339,16 +342,16 @@ namespace CloudRP.Admin
                 if (userData.adminDuty)
                 {
                     saveAdutyPosition(userData, player.Position);
-                    AdminUtils.sendMessageToAllStaff($"{colourAdminRank} {AdminUtils.staffSuffixColour}{userData.admin_name} is {ChatUtils.moneyGreen}on duty");
                 }
                 else  
                 {
                     userData.isFlying = false;
                     player.TriggerEvent("admin:endFly");
-                    AdminUtils.sendMessageToAllStaff($"{colourAdminRank} {AdminUtils.staffSuffixColour}{userData.admin_name} is {ChatUtils.red}off duty");
                     PlayersData.setCharacterClothes(player, characterData.characterClothing);
                 }
 
+                uiHandling.sendNotification(player, $"Toggled admin duty {(userData.adminDuty ? "~g~on" : "~r~off")}", false);
+                AdminUtils.sendMessageToAllStaff($"{colourAdminRank} {AdminUtils.staffSuffixColour}{userData.admin_name} is {(userData.adminDuty ? $"{ChatUtils.moneyGreen}on" : $"{ChatUtils.red}off")} duty");
                 ChatUtils.formatConsolePrint($"{userData.admin_name} has toggled admin duty {(userData.adminDuty ? "on" : "off")}");
 
                 PlayersData.setPlayerAccountData(player, userData);
@@ -413,6 +416,8 @@ namespace CloudRP.Admin
             if(AdminUtils.checkUserData(player, userData))
             {
                 Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+                DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+                if (characterData == null) return;
 
                 if(findPlayer == null)
                 {
@@ -433,6 +438,8 @@ namespace CloudRP.Admin
 
                     AdminUtils.staffSay(player, "Teleported to Player [" + findPlayer.Id + "]");
                     ChatUtils.formatConsolePrint($"{userData.admin_name} teleported to player {findPlayer.Id}");
+
+                    uiHandling.sendNotification(player, $"~r~You teleported to {characterData.character_name}", false);
                 }
             }
         }
@@ -458,6 +465,8 @@ namespace CloudRP.Admin
 
                     findPlayer.Kick();
                     ChatUtils.formatConsolePrint($"{userData.admin_name} kicked {characterData.character_name}");
+                    uiHandling.sendNotification(player, $"~r~You kicked {userData.admin_name}", false);
+
                     if (!isSilent)
                     {
                         AdminUtils.sendMessageToAllStaff(userData.admin_name + " kicked " + characterData.character_name);
@@ -497,6 +506,10 @@ namespace CloudRP.Admin
                 
                 AdminUtils.staffSay(player, "You revived " + findCharacter.character_name);
                 AdminUtils.staffSay(findPlayer, "You were revived by Admin " + userData.admin_name);
+
+                uiHandling.sendNotification(player, $"~r~You revived {findCharacter.character_name}", false);
+                uiHandling.sendNotification(findPlayer, $"~r~You where revived by {userData.admin_name}", false);
+
                 ChatUtils.formatConsolePrint($"{userData.admin_name} revived {findCharacter.character_name}");
             }
 
@@ -513,6 +526,9 @@ namespace CloudRP.Admin
 
                 if (findPlayer != null)
                 {
+                    DbCharacter findPlayerData = PlayersData.getPlayerCharacterData(player);
+                    if (findPlayerData == null) return;
+
                     if (findPlayer.Equals(player))
                     {
                         CommandUtils.errorSay(player, "You cannot bring yourself");
@@ -523,9 +539,12 @@ namespace CloudRP.Admin
                     findPlayer.Position = player.Position;
                     findPlayer.Dimension = player.Dimension;
 
-                    ChatUtils.formatConsolePrint($"{userData.admin_name} teleported Player [{findPlayer.Id}] to themselves.");
+                    ChatUtils.formatConsolePrint($"{userData.admin_name} teleported Player [{findPlayerData.character_name}] to themselves.");
                     AdminUtils.staffSay(player, "Teleported Player [" + findPlayer.Id + "] to you.");
                     AdminUtils.staffSay(findPlayer, $"Admin {userData.admin_name} teleported you.");
+
+                    uiHandling.sendNotification(player, $"~r~You teleported {findPlayerData.character_name}.", false);
+                    uiHandling.sendNotification(findPlayer, $"~r~You have been teleported by {userData.admin_name}.", false);
                 }
                 else
                 {
@@ -633,14 +652,14 @@ namespace CloudRP.Admin
 
                 if (userData.isFlying)
                 {
-                    uiHandling.sendPushNotif(player, "Enabled fly", 6000);
                     player.TriggerEvent("admin:startFly");
                 }
                 else
                 {
-                    uiHandling.sendPushNotif(player, "Disabled fly", 6000);
                     player.TriggerEvent("admin:endFly");
                 }
+
+                uiHandling.sendNotification(player, userData.isFlying ? "~g~Enabled fly" : "~r~Disabled fly", false);
 
                 PlayersData.setPlayerAccountData(player, userData);
             }
@@ -684,6 +703,9 @@ namespace CloudRP.Admin
                     ChatUtils.formatConsolePrint($"{userData.admin_name} {isFrozen} {targetCharData.character_name}.");
                     AdminUtils.staffSay(player, $"You {isFrozen} {targetPlayerData.username}");
                     AdminUtils.staffSay(getPlayer, $"You were {isFrozen + "n"} by Admin {userData.admin_name}");
+
+                    uiHandling.sendNotification(player, $"~r~You have {isFrozen} {targetCharData.character_name}", false);
+                    uiHandling.sendNotification(getPlayer, $"~r~You have been {isFrozen} by {userData.admin_name}", false);
                 }
             }
         }
@@ -803,6 +825,9 @@ namespace CloudRP.Admin
                 ChatUtils.formatConsolePrint($"{userData.admin_name} set {characterData.character_name}'s dimension to {dimension}");
                 AdminUtils.staffSay(player, $"Set {characterData.character_name}'s dimension to {dimension}");
                 AdminUtils.staffSay(getPlayer, $"Your dimension was set to {dimension} by Admin {userData.admin_name}");
+
+                uiHandling.sendNotification(player, $"~r~Set {characterData.character_name}'s dimension to {dimension}", false);
+                uiHandling.sendNotification(getPlayer, $"~r~Your dimension was set to {dimension} by {userData.admin_name}", false);
             }
         }
 
@@ -932,6 +957,8 @@ namespace CloudRP.Admin
 
                 ChatUtils.formatConsolePrint($"{userData.admin_name} spawned in a {weaponName} with {ammo} ammo");
                 AdminUtils.staffSay(player, $"You gave yourself a {ChatUtils.yellow}{weaponName}{ChatUtils.White}{AdminUtils.staffSuffixColour} with {ammo} ammo");
+
+                uiHandling.sendNotification(player, $"~r~You spawned in a ~y~{weaponName}~w~ with ~y~{ammo}~w~ ammo", false);
             }
             else AdminUtils.sendNoAuth(player);
 
@@ -970,6 +997,8 @@ namespace CloudRP.Admin
                 findById.Rotation = new Vector3(0, 0, 0);
                 AdminUtils.staffSay(player, "Flipped vehicle");
 
+                uiHandling.sendNotification(player, "~r~Flipped vehicle", false);
+
             } else AdminUtils.sendNoAuth(player);
         }
 
@@ -988,6 +1017,7 @@ namespace CloudRP.Admin
                     return;
                 }
 
+                uiHandling.sendNotification(player, $"~r~Entered vehicle.", false);
                 player.SetIntoVehicle(findVeh, seatId);
             }
         }
@@ -1045,6 +1075,9 @@ namespace CloudRP.Admin
                 ChatUtils.formatConsolePrint($"{userData.admin_name} set {characterData.character_name} health to {health}");
                 AdminUtils.staffSay(player, $"Set {characterData.character_name}'s health to {health}");
                 AdminUtils.staffSay(findPlayer, $"Your health was set to {health} by Admin {userData.admin_name}");
+
+                uiHandling.sendNotification(findPlayer, $"~r~Your health was set to {health} by {userData.admin_name}", false);
+                uiHandling.sendNotification(player, $"~r~You set {characterData.character_name}", false);
 
             }
         }
@@ -1197,6 +1230,7 @@ namespace CloudRP.Admin
                     ChatUtils.formatConsolePrint($"{userData.admin_name} teleported to vehicle {idOrPlate}");
                     AdminUtils.staffSay(player, "Teleported to vehicle " + idOrPlate);
 
+                    uiHandling.sendNotification(player, $"~r~Teleported to vehicle", false);
                 } else
                 {
                     CommandUtils.errorSay(player, "Vehicle couldn't be found.");
@@ -1272,6 +1306,8 @@ namespace CloudRP.Admin
 
                     ChatUtils.formatConsolePrint($"{userData.admin_name} refilled {findVehicleData.vehicle_id}'s fuel level to 100.");
                     AdminUtils.staffSay(player, $"You refilled vehicle with id {findVehicleData.vehicle_id}.");
+
+                    uiHandling.sendNotification(player, $"~r~You refuelled vehicle with id {findVehicleData.vehicle_id}", false);
                 }
             }
         }
@@ -1324,6 +1360,8 @@ namespace CloudRP.Admin
 
                     ChatUtils.formatConsolePrint($"{userData.admin_name} emptied vehicle {findVehicleData.vehicle_id}'s fuel tank.");
                     AdminUtils.staffSay(player, $"You emptied vehicle with id {findVehicleData.vehicle_id}'s fuel tank.");
+
+                    uiHandling.sendNotification(player, $"~r~You emptied vehicle with id {findVehicleData.vehicle_id}'s fuel tank.", false);
                 }
 
             } else AdminUtils.sendNoAuth(player);
@@ -1516,6 +1554,8 @@ namespace CloudRP.Admin
 
                         ChatUtils.formatConsolePrint($"{userData.admin_name} slapped {charData.character_name} for {units} units.");
                         AdminUtils.staffSay(player, $"You slapped {charData.character_name} for {units} units");
+
+                        uiHandling.sendNotification(player, $"~r~You slapped {charData.character_name} for {units}", false);
                     }
                 } else AdminUtils.playerNotFound(player);
 
