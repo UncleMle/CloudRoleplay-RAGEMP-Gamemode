@@ -1,5 +1,4 @@
-import BrowserSystem from '@/BrowserSystem/BrowserSystem';
-import toggleChat from '@/PlayerMethods/ToggleChat';
+import GuiSystem from '@/BrowserSystem/GuiSystem';
 import { _SWITCH_OUT_PLAYER_NATIVE, _SWITCH_IN_PLAYER_NATIVE, _IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE } from 'Constants/Constants';
 
 class SwitchCamera {
@@ -34,24 +33,13 @@ class SwitchCamera {
 	public static async checkCamInAir() {
 		if (mp.game.invoke(_IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE)) {
 
-			mp.game.ui.displayRadar(false);
-			SwitchCamera.toggleGui(false);
-			toggleChat(false);
+			GuiSystem.toggleHudComplete(false);
 
 			await mp.game.waitAsync(40);
 			SwitchCamera.checkCamInAir();
 		} else {
-			mp.game.ui.displayRadar(true);
-			toggleChat(true);
-			SwitchCamera.toggleGui(true);
+			GuiSystem.toggleHudComplete(true);
 		}
-	}
-
-	public static toggleGui(tog: boolean) {
-		if(!BrowserSystem._browserInstance) return;
-		BrowserSystem._browserInstance.execute(`appSys.commit("setGuiState", {
-			toggle: ${tog}
-		})`);
 	}
 }
 

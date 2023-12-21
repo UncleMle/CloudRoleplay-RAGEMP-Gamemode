@@ -1,5 +1,3 @@
-import GuiSystem from "@/BrowserSystem/GuiSystem";
-
 class ScaleForm {
     public static LocalPlayer: PlayerMp
     public static midsizedMessageScaleform: BasicScaleform | null = null;
@@ -23,11 +21,6 @@ class ScaleForm {
     }
 
     public static handleRender() {
-
-        if(ScaleForm.isActive()) {
-            GuiSystem.toggleHudComplete(false);
-        }
-
         if (ScaleForm.midsizedMessageScaleform != null) {
             ScaleForm.midsizedMessageScaleform.renderFullscreen();
 
@@ -106,7 +99,7 @@ class ScaleForm {
         ScaleForm.msgBgColor = bgColor;
     }
 
-    public static isActive() {
+    public static isActive(): boolean | number {
         return BasicScaleform.handle && mp.game.graphics.hasScaleformMovieLoaded(BasicScaleform.handle);
     }
 }

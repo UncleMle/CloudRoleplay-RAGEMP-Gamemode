@@ -1,11 +1,13 @@
 import { IS_RADAR_ENABLED, IS_RADAR_HIDDEN, _IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE, _control_ids } from '@/Constants/Constants';
-import { UserData, CharacterData, StreetData, Hunger, Gui, RenderKeys } from '../@types';
+import { UserData, CharacterData, StreetData, Hunger, Gui } from '../@types';
 import getUserCharacterData from '../PlayerMethods/getUserCharacterData';
 import getUserData from '../PlayerMethods/getUserData';
 import BrowserSystem from './BrowserSystem';
 import { getWaterAndHungerData } from '@/PlayerMethods/getWaterAndHungerData';
 import getTimeUnix from '@/PlayerMethods/getTimeUnix';
 import NotificationSystem from '@/NotificationSystem/NotificationSystem';
+import ScaleForm from '@/Scaleform/ScaleformMessages';
+import toggleChat from '@/PlayerMethods/ToggleChat';
 
 class GuiSystem {
 	public static LocalPlayer: PlayerMp;
@@ -27,8 +29,8 @@ class GuiSystem {
 		GuiSystem.toggleHudComplete(GuiSystem.hudToggle);
 	}
 
-	public static toggleHudComplete(toggle: boolean, notif: boolean = false) {
-		if(mp.game.invoke(_IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE)) return;
+	public static toggleHudComplete(toggle: boolean, notif: boolean = false, checkForScaleForm: boolean = true) {
+		if(mp.game.invoke(_IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE) || checkForScaleForm && ScaleForm.isActive()) return;
 
 		let browser: BrowserMp = BrowserSystem._browserInstance;
 		GuiSystem.hudToggle = toggle;
@@ -36,6 +38,7 @@ class GuiSystem {
 		if(browser) {
 			mp.game.ui.displayRadar(toggle);
 			GuiSystem.LocalPlayer.guiState = toggle;
+			toggleChat(toggle);
 
 			browser.execute(`appSys.commit('setUiState', {
 				_stateKey: "guiEnabled",
@@ -49,6 +52,11 @@ class GuiSystem {
 	}
 
 	public static fillGuiRenderValues() {
+		if(ScaleForm.isActive()) {
+			GuiSystem.toggleHudComplete(false, false, false);
+			return;
+		}
+
 		let PlayerData: UserData | undefined = getUserData();
 		let characterData: CharacterData | undefined = getUserCharacterData();
 
