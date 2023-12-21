@@ -52,6 +52,12 @@ namespace CloudRP.AntiCheat
             sleepClient(player);
         }
 
+        [ServerEvent(Event.IncomingConnection)]
+        public void OnIncomingConnection(string ip, string serial, string rgscName, ulong rgscId, GameTypes gameType, CancelEventArgs cancel)
+        {
+            ChatUtils.formatConsolePrint($"Player Connecting: RGNAME {rgscName} | IP {ip} | RGID {rgscId} | GTYPE {gameType}", ConsoleColor.Green);
+        }
+
         [ServerEvent(Event.PlayerWeaponSwitch)]
         public void OnPlayerWeaponSwitch(Player player, WeaponHash oldWeapon, WeaponHash newWeapon)
         {
