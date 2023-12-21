@@ -10,7 +10,7 @@ namespace CloudRP.PlayerData
     internal class uiHandling : Script
     {
         public static string _sharedMutationStoreSetter = "playerMutationSetter";
-        public static int _loadingStateTimeout_seconds = 2;
+        public static int _loadingStateTimeout_seconds = 1;
 
         public static void togglePlayerChat(Player player, bool toggle)
         {

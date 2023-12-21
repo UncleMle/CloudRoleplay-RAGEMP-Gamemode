@@ -109,7 +109,7 @@ namespace CloudRP.ClothingStores
             NAPI.Task.Run(() =>
             {
                 uiHandling.setLoadingState(player, false);
-            }, 5500);
+            }, 1500);
 
             if (characterData != null && clothingData != null)
             {
