@@ -2,6 +2,8 @@ import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
 import { CharacterData } from "@/@types";
 import { _sharedCharacterDataIdentifier } from "@/Constants/Constants";
 import getTargetCharacterData from "@/PlayerMethods/getTargetCharacterData";
+import ScaleForm from "@/Scaleform/ScaleformMessages";
+import GuiSystem from "@/BrowserSystem/GuiSystem";
 
 class DeathSystem {
     public static LocalPlayer: PlayerMp;
@@ -44,7 +46,8 @@ class DeathSystem {
     }
 
     public static handleIntervalStart(time: number) {
-        mp.game.graphics.startScreenEffect("DeathFailMPIn", 12000, true);
+        DeathSystem.playInjuredEffects();
+        DeathSystem.turnGuiOnAfterScaleform();
         DeathSystem.LocalPlayer.freezePosition(true);
         DeathSystem.injuredTimer = time;
 
@@ -69,6 +72,23 @@ class DeathSystem {
         if(characterData.injured_timer > 0) {
             DeathSystem.disableControls();
             DeathSystem.renderInjuredText();
+        }
+    }
+
+    public static async playInjuredEffects() {
+        mp.game.cam.setCamEffect(1);
+        ScaleForm.showShardMessage("~r~INJURED~w~", "You were injured", "", 0);
+        mp.game.graphics.startScreenEffect('DeathFailMichaelIn', 60000, true);
+        mp.game.audio.playSoundFrontend(-1, "Bed", "WastedSounds", true);
+    }
+
+    public static async turnGuiOnAfterScaleform() {
+        await mp.game.waitAsync(2500);
+
+        if(ScaleForm.isActive()) {
+            DeathSystem.turnGuiOnAfterScaleform();
+        } else {
+            GuiSystem.toggleHudComplete(true);
         }
     }
 
@@ -117,18 +137,20 @@ class DeathSystem {
     }
 
     public static renderInjuredText() {
-        mp.game.graphics.drawText(`~r~INJURED`, [0.5, 0.81], {
-            font: 4,
-            color: [255, 255, 255, 255],
-            scale: [0.6, 0.6],
-            outline: true
-        });
-        mp.game.graphics.drawText(`You will bleed out in ~HUD_COLOUR_ORANGE~${DeathSystem.injuredTimer}~w~ seconds.`, [0.5, 0.85], {
-            font: 4,
-            color: [255, 255, 255, 255],
-            scale: [0.42, 0.42],
-            outline: true
-        });
+        if(!ScaleForm.isActive()) {
+            mp.game.graphics.drawText(`~r~INJURED`, [0.5, 0.81], {
+                font: 4,
+                color: [255, 255, 255, 255],
+                scale: [0.6, 0.6],
+                outline: true
+            });
+            mp.game.graphics.drawText(`You will bleed out in ~HUD_COLOUR_ORANGE~${DeathSystem.injuredTimer}~w~ seconds.`, [0.5, 0.85], {
+                font: 4,
+                color: [255, 255, 255, 255],
+                scale: [0.42, 0.42],
+                outline: true
+            });
+        }
     }
 
 }

@@ -39,6 +39,7 @@ import VehicleDamage from "./VehicleSystems/VehicleDamage";
 import VehicleRadar from "./PoliceRadar/VehicleRadar";
 import Fingerpointing from "./Animation/Fingerpointing";
 import HandsUp from "./Animation/HandsUpAnim";
+import ScaleForm from "./Scaleform/ScaleformMessages";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -82,3 +83,4 @@ new VehicleDamage();
 new VehicleRadar();
 new Fingerpointing();
 new HandsUp();
+new ScaleForm();
