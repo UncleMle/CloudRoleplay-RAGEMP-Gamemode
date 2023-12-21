@@ -13,6 +13,7 @@ namespace CloudRP.GeneralCommands
     {
         public static int afkMaxCalcNum = 10;
         public static string _afkKeyIdentifier = "playerAfkData";
+        public static string _ameTextIdentifier = "playerAmeTextMessage";
         public static long kickTime_seconds = 40;
 
         [RemoteEvent("server:beginAfk")]
@@ -43,6 +44,29 @@ namespace CloudRP.GeneralCommands
                     }
                 }, kickTime_seconds * 1000);
             }
+        }
+
+        [RemoteEvent("server:createAmeText")]
+        public static void createAmeText(Player player, string? text)
+        {
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            if (characterData == null) return;
+
+            if(text == null)
+            {
+                player.ResetData(_ameTextIdentifier);
+                player.ResetSharedData(_ameTextIdentifier);
+                return;
+            }
+
+            if(player.GetData<string>(_ameTextIdentifier) != null)
+            {
+                player.ResetData(_ameTextIdentifier);
+                player.ResetSharedData(_ameTextIdentifier);
+            }
+
+            player.SetData(_ameTextIdentifier, text);
+            player.SetSharedData(_ameTextIdentifier, text);
         }
     }
 }

@@ -70,7 +70,6 @@ class PlayerAuthentication {
 			PlayerAuthentication.LoginCamera.setActive();
 			PlayerAuthentication.freezeAndBlurClient();
 		}
-
 	}
 
 	public static setAuthenticationKey(newAuthKey: string) {
