@@ -816,7 +816,7 @@ namespace CloudRP.Vehicles
 
             vehicleData.engine_status = !vehicleData.engine_status;
 
-            uiHandling.sendNotification(player, "You " + (vehicleData.engine_status ? "started" : "turned off") + " this vehicle's engine.", true, true, (vehicleData.engine_status ? "started" : "turned off") + " the vehicle's engine.");
+            uiHandling.sendNotification(player, "You " + (vehicleData.engine_status ? "started" : "turned off") + " this vehicle's engine.", true, true, (vehicleData.engine_status ? "Started" : "Turned off") + " the vehicle's engine.");
 
             saveVehicleData(player.Vehicle, vehicleData);
         }
@@ -899,7 +899,7 @@ namespace CloudRP.Vehicles
 
             string openCloseTextNotif = "You " + (vehicleData.vehicle_windows[vehicleIndex] ? "opened" : "closed") + " this vehicle's window.";
 
-            uiHandling.sendNotification(player, openCloseTextNotif);
+            uiHandling.sendNotification(player, openCloseTextNotif, true, true, "Rolled " + (vehicleData.vehicle_windows[vehicleIndex] ? "down" : "up") + " a vehicle window.");
 
             saveVehicleData(player.Vehicle, vehicleData);
         }

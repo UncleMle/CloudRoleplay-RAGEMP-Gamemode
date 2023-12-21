@@ -87,9 +87,15 @@ namespace CloudRP.GeneralCommands
             CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_commands_radius);
         }
 
-        [Command("ame", "~y~Use: ~w~/ame [message]")]
+        [Command("ame", "~y~Use: ~w~/ame [message]", GreedyArg = true, Description = "testaisdj aiosdjaio sdjioj")]
         public void onAmeCommand(Player player, string ameText)
         {
+            if(ameText.Length > 100)
+            {
+                CommandUtils.errorSay(player, "Ame message cannot be longer than 100 characters.");
+                return;
+            }
+
             uiHandling.sendNotification(player, ameText, true, true, ameText);
         }
 
