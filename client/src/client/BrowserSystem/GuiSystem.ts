@@ -28,6 +28,8 @@ class GuiSystem {
 	}
 
 	public static toggleHudComplete(toggle: boolean, notif: boolean = false) {
+		if(mp.game.invoke(_IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE)) return;
+
 		let browser: BrowserMp = BrowserSystem._browserInstance;
 		GuiSystem.hudToggle = toggle;
 

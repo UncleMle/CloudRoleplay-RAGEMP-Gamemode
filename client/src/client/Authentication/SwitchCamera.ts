@@ -4,7 +4,6 @@ import { _SWITCH_OUT_PLAYER_NATIVE, _SWITCH_IN_PLAYER_NATIVE, _IS_PLAYER_SWITCH_
 
 class SwitchCamera {
 	public static LocalPlayer: PlayerMp;
-	public static WelcomeEvent: string = "server:welcomePlayerOnSpawn";
 
 	constructor() {
 		SwitchCamera.LocalPlayer = mp.players.local;
@@ -12,7 +11,7 @@ class SwitchCamera {
 		mp.events.add("client:moveSkyCamera", SwitchCamera.moveCameraFromAir);
 	}
 
-	public static async moveCameraFromAir(moveTo: string, switchType: number, triggerWelcome = true) {
+	public static async moveCameraFromAir(moveTo: string, switchType: number) {
 		mp.gui.cursor.show(false, false);
 		mp.game.cam.doScreenFadeOut(0);
 		switch (moveTo) {
@@ -20,7 +19,7 @@ class SwitchCamera {
 				mp.game.invoke(_SWITCH_OUT_PLAYER_NATIVE, SwitchCamera.LocalPlayer.handle, 0, switchType);
 				break;
 			case 'down':
-				SwitchCamera.checkCamInAir(triggerWelcome);
+				SwitchCamera.checkCamInAir();
 				mp.game.invoke(_SWITCH_IN_PLAYER_NATIVE, SwitchCamera.LocalPlayer.handle);
 				break;
 			default:
@@ -32,7 +31,7 @@ class SwitchCamera {
 		mp.game.cam.doScreenFadeIn(500);
 	}
 
-	public static async checkCamInAir(triggerWelcome: boolean) {
+	public static async checkCamInAir() {
 		if (mp.game.invoke(_IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE)) {
 
 			mp.game.ui.displayRadar(false);
@@ -40,7 +39,7 @@ class SwitchCamera {
 			toggleChat(false);
 
 			await mp.game.waitAsync(40);
-			SwitchCamera.checkCamInAir(triggerWelcome);
+			SwitchCamera.checkCamInAir();
 		} else {
 			mp.game.ui.displayRadar(true);
 			toggleChat(true);

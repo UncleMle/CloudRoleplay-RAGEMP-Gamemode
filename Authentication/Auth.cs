@@ -421,6 +421,8 @@ namespace CloudRP.Authentication
 
                     uiHandling.resetMutationPusher(player, MutationKeys.PlayerCharacters);
                     setUserToCharacterSelection(player, user);
+
+                    return;
                 }
             }
         }
@@ -448,7 +450,7 @@ namespace CloudRP.Authentication
             }
 
             DeathEvent.initCorpses(player);
-            uiHandling.pushRouterToClient(player, Browsers.None, false);
+            uiHandling.pushRouterToClient(player, Browsers.None);
             player.Dimension = characterData.player_dimension;
 
             player.TriggerEvent("client:moveSkyCamera", "down");
