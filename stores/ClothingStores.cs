@@ -49,6 +49,12 @@ namespace CloudRP.ClothingStores
                 name = "Surburban Hawick Ave", 
                 position = new Vector3(125.4, -224.7, 54.6)
             });
+            
+            clothingStores.Add(new ClothingStore { 
+                displayName = "Discount Clothing", 
+                name = "Discount Grapeseed", 
+                position = new Vector3(1693.9, 4822.6, 42.1)
+            });
 
             for (int i = 0; i < clothingStores.Count; i++)
             {

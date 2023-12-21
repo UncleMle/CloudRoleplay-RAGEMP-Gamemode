@@ -258,6 +258,26 @@ namespace CloudRP.VehicleRefueling
                         position = new Vector3(2589.2, 364.0, 108.6)
                     },
                 }
+            },
+            new RefuelStation
+            {
+                name = "Palomino Gas",
+                station_id = 7,
+                position = new Vector3(49.4, 2779.0, 62.8),
+                pricePerLitre = 15,
+                pumps = new List<RefuelPump>
+                {
+                    new RefuelPump
+                    {
+                        owner_id = 7,
+                        position = new Vector3(49.9, 2777.9, 58.0)
+                    },
+                    new RefuelPump
+                    {
+                        owner_id = 7,
+                        position = new Vector3(48.5, 2779.0, 58.0)
+                    },
+                }
             }
         };
     }
