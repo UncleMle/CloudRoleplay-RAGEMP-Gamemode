@@ -39,9 +39,9 @@ namespace CloudRP.PlayerData
             player.TriggerEvent("browser:handlePlayerObjectMutationPush", mutationKey, data);
         }
 
-        public static void sendNotification(Player player, string text, bool isRp = true, bool isAme = false)
+        public static void sendNotification(Player player, string text, bool isRp = true, bool isAme = false, string ameText = "")
         {
-            player.TriggerEvent("client:addNotif", text, isRp, isAme);
+            player.TriggerEvent("client:addNotif", text, isRp, isAme, ameText);
         }
 
         public static void setAuthState(Player player, string state)

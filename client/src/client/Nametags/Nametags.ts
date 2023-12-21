@@ -6,6 +6,7 @@ import gettargetData from "../PlayerMethods/getTargetData";
 import distBetweenCoords from "@/PlayerMethods/distanceBetweenCoords";
 import VoiceSystem from "@/VoiceChat/VoiceSystem";
 import DeathSystem from "@/DeathSystem/DeathSystem";
+import NotificationSystem from "@/NotificationSystem/NotificationSystem";
 
 class NameTags {
 	public static userData: UserData | undefined;
@@ -120,6 +121,15 @@ class NameTags {
 						scale: [0.325, 0.325],
 						outline: false
 					});
+
+					if(target.getVariable(NotificationSystem._ameTextIdentifier) && !targetUserData.adminDuty) {
+						mp.game.graphics.drawText(target.getVariable(NotificationSystem._ameTextIdentifier), [x, y - 0.032], {
+							font: 4,
+							color: [220, 125, 225, 255],
+							scale: [0.325, 0.325],
+							outline: false
+						});
+					}
 				}
 			}
 		});

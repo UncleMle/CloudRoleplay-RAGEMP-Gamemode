@@ -574,7 +574,7 @@ namespace CloudRP.Vehicles
 
                 string lockUnlockText = $"{(playerData.adminDuty ? "~r~[Staff]" : "")} You {(vehicleData.vehicle_locked ? "locked" : "unlocked")} vehicle.";
 
-                uiHandling.sendNotification(player, lockUnlockText, !playerData.adminDuty, !playerData.adminDuty);
+                uiHandling.sendNotification(player, lockUnlockText, !playerData.adminDuty, !playerData.adminDuty, (vehicleData.vehicle_locked ? "Locks" : "Unlocks") + " vehicle.");
             }
         }
 

@@ -47,7 +47,7 @@ namespace CloudRP.GeneralCommands
         }
 
         [RemoteEvent("server:createAmeText")]
-        public static void createAmeText(Player player, string? text)
+        public static void createAmeText(Player player, string text)
         {
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
             if (characterData == null) return;

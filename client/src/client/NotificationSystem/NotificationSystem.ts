@@ -1,7 +1,7 @@
 class NotificationSystem {
 	public static x_pos: number = 0.5;
 	public static y_pos: number = 0.5;
-	public static ameDuration_seconds: number = 10;
+	public static ameDuration_seconds: number = 6;
 	public static opacity: number = 255;
 	public static scale: number = 0.55;
 	public static draw_text: string;
@@ -17,7 +17,7 @@ class NotificationSystem {
 		mp.events.add("client:addNotif", NotificationSystem.createNotification);
 	}
 
-	public static createNotification(text: string, isRpText: boolean = true, isAme: boolean = false) {
+	public static createNotification(text: string, isRpText: boolean = true, isAme: boolean = false, ameText: string = "") {
 		clearInterval(NotificationSystem.interval);
 
 		NotificationSystem.resetData();
@@ -37,7 +37,7 @@ class NotificationSystem {
 		}, 10);
 
 		if(isAme) {
-			mp.events.callRemote(NotificationSystem._ameServerEvent, text);
+			mp.events.callRemote(NotificationSystem._ameServerEvent, ameText);
 
 			if(NotificationSystem.ameCancelTimeout) {
 				clearTimeout(NotificationSystem.ameCancelTimeout);
@@ -69,16 +69,6 @@ class NotificationSystem {
 				scale: [NotificationSystem.scale, NotificationSystem.scale]
 			})
 		}
-
-		if(mp.players.local.getVariable(NotificationSystem._ameTextIdentifier)) {
-			mp.game.graphics.drawText(mp.players.local.getVariable(NotificationSystem._ameTextIdentifier) + " test", [0.5, 0.5], {
-				outline: true,
-				font: 4,
-				color: [220, 125, 225, 255],
-				scale: [0.6, 0.6]
-			})
-		}
-
 	}
 }
 
