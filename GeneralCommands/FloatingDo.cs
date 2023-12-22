@@ -26,7 +26,7 @@ namespace CloudRP.GeneralCommands
         }
 
         [NotMapped]
-        public string _floatingDoDataIdentifier = "floatingDoData";
+        public static string _floatingDoDataIdentifier = "floatingDoData";
 
         [Key]
         public int float_do_id { get; set; }
@@ -73,6 +73,25 @@ namespace CloudRP.GeneralCommands
 
             TextLabel fdoLabel = NAPI.TextLabel.CreateTextLabel($"Floating Do #{float_do_id} \n~p~(( ~w~"+text + " ~p~))", new Vector3(pos_x, pos_y, pos_z), 20f, 1.0f, 4, new Color(255, 255, 255, 180), false, 0);
             fdoLabel.SetData(_floatingDoDataIdentifier, this);
+        }
+
+        public static bool deleteById(int fdoId)
+        {
+            bool wasDeleted = false;
+
+            NAPI.Pools.GetAllTextLabels().ForEach(label =>
+            {
+                FloatingDo labelData = label.GetData<FloatingDo>(_floatingDoDataIdentifier);
+
+                if(labelData != null && labelData.float_do_id == fdoId)
+                {
+                    labelData.delete();
+                    label.Delete();
+                    wasDeleted = true;
+                }
+            });
+
+            return wasDeleted;
         }
 
         public static int getAllByPlayer(DbCharacter character)

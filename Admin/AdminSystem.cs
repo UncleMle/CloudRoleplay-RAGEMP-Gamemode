@@ -4,6 +4,7 @@ using CloudRP.Character;
 using CloudRP.Database;
 using CloudRP.DeathSystem;
 using CloudRP.DiscordSystem;
+using CloudRP.GeneralCommands;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
 using CloudRP.Vehicles;
@@ -12,6 +13,7 @@ using GTANetworkAPI;
 using Integration;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace CloudRP.Admin
@@ -1620,7 +1622,7 @@ namespace CloudRP.Admin
             else AdminUtils.sendNoAuth(player);
         }
 
-        [Command("amarker", "~r~/amarker [text]")]
+        [Command("amarker", "~r~/amarker [text]", GreedyArg = true)]
         public void adminMarker(Player player, string text)
         {
             User userData = PlayersData.getPlayerAccountData(player);
@@ -1633,8 +1635,33 @@ namespace CloudRP.Admin
                     return;
                 }
 
+                if(!AuthUtils.validateNick(text))
+                {
+                    CommandUtils.errorSay(player, "Certain special characters are not allowed within admin markers.");
+                    return;
+                }
+
                 AdminMarker newMarker = AdminMarker.add(text, player.Position, userData.account_id);
                 AdminUtils.staffSay(player, "Created a new admin marker #" + newMarker.admin_marker_id);
+            }
+        }
+
+        [Command("delfdo", "~r~/delfdo [fdoId]")]
+        public void deleteFdo(Player player, int fdoId)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(AdminUtils.checkUserData(player, userData))
+            {
+                bool wasDeleted = FloatingDo.deleteById(fdoId);
+
+                if(wasDeleted)
+                {
+                    AdminUtils.staffSay(player, "Floating do with id #" + fdoId + " was deleted"); 
+                } else
+                {
+                    AdminUtils.staffSay(player, "Floating do with that id wasn't found.");
+                }
             }
         }
         
@@ -1651,12 +1678,19 @@ namespace CloudRP.Admin
                     return;
                 }
 
-                AdminMarker.deleteById(markId);
+                if (AdminMarker.deleteById(markId))
+                {
+                    AdminUtils.staffSay(player, "Admin Marker deleted");
+                }
+                else
+                {
+                    AdminUtils.staffSay(player, $"Admin marker with id {markId} was not found");
+                }
             }
         }
         
         [Command("rmamarks", "~r~/rmamarks")]
-        public void rmarmars(Player player, int markId)
+        public void rmarmars(Player player)
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
@@ -1669,6 +1703,7 @@ namespace CloudRP.Admin
                 }
 
                 AdminMarker.deleteAllByAccount(userData.account_id);
+                AdminUtils.staffSay(player, "Deleted all admin markers associated with your account.");
             }
         }
         

@@ -85,8 +85,10 @@ namespace CloudRP.Admin
             }
         }
 
-        public static void deleteById(int markerId)
+        public static bool deleteById(int markerId)
         {
+            bool wasDeleted = false;
+
             NAPI.Pools.GetAllTextLabels().ForEach(label =>
             {
                 AdminMarker labelData = label.GetData<AdminMarker>(_adminMarkerDataIdentifier);
@@ -95,8 +97,11 @@ namespace CloudRP.Admin
                 {
                     labelData.delete();
                     label.Delete();
+                    wasDeleted = true;
                 }
             });
+
+            return wasDeleted;
         }
         
         public static void deleteAllByAccount(int accountId)
@@ -105,7 +110,7 @@ namespace CloudRP.Admin
             {
                 AdminMarker labelData = label.GetData<AdminMarker>(_adminMarkerDataIdentifier);
 
-                if(labelData.owner_id == accountId)
+                if(labelData != null && labelData.owner_id == accountId)
                 {
                     labelData.delete();
                     label.Delete();
@@ -125,7 +130,9 @@ namespace CloudRP.Admin
                 }
             });
 
-            TextLabel newLabel = NAPI.TextLabel.CreateTextLabel(text, new Vector3(pos_x, pos_y, pos_z), 20f, 1.0f, 4, new Color(255, 0, 0, 255), false);
+            string targetText = $"Admin Marker #{admin_marker_id}\n~r~((~w~ {text} ~r~))";
+
+            TextLabel newLabel = NAPI.TextLabel.CreateTextLabel(targetText, new Vector3(pos_x, pos_y, pos_z), 25f, 2.0f, 4, new Color(255, 0, 0, 255), false);
 
             newLabel.SetData(_adminMarkerDataIdentifier, this);
         }
