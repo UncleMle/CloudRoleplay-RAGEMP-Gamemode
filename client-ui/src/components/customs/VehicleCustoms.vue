@@ -26,11 +26,6 @@
                             <span class="text-gray-300 hover:text-white duration-300">Performance</span>
                         </button>
 
-                        <!-- <button @click="browsingType = 'interior'" class="hover:text-green-500 duration-300">
-                            <i class="fa-solid fa-person-shelter text-2xl text-gray-300"></i><br />
-                            <span class="text-gray-300 hover:text-white duration-300">Interior</span>
-                        </button> -->
-
                         <button @click="browsingType = 'other'" class="hover:text-green-500 duration-300">
                             <i class="fa-solid fa-wrench text-2xl text-gray-300"></i><br />
                             <span class="text-gray-300 hover:text-white duration-300">Other</span>
@@ -96,7 +91,7 @@
 
                                     <div v-if="browsingType == 'other'">
                                         <div v-for="item in otherItems" :key="item">
-                                            <div v-if="getMaxIdx(item.name) > 0" class="pb-5 duration-300">
+                                            <div v-if="getMaxIdx(item.name) > 0 || item.name == 'Xenon'" class="pb-5 duration-300">
                                                 <label for="steps-range"
                                                     class="block mb-2 text-sm font-medium  text-white">{{ item.name }} ({{
                                                         formatMod(vehicleData[item.dbName]) }})</label>
@@ -234,7 +229,7 @@ import { mapGetters } from 'vuex';
 export default {
     data() {
         return {
-            browsingType: "general",
+            browsingType: "other",
             basketItems: [],
             vehicleData: null,
             vehicleDataOld: null,
