@@ -1,10 +1,13 @@
-import { ClothingData, ClothingStore, UserData } from "@/@types";
+import { ClothingData, ClothingStore, UserData, CharacterData } from "@/@types";
 import BrowserSystem from "@/BrowserSystem/BrowserSystem";
 import { _control_ids, _sharedAccountDataIdentifier, _sharedClothingDataIdentifier } from "@/Constants/Constants";
 import DeathSystem from "@/DeathSystem/DeathSystem";
 import getClothingData from "@/PlayerMethods/getClothingData";
+import getTargetCharacterData from "@/PlayerMethods/getTargetCharacterData";
 import getTargetData from "@/PlayerMethods/getTargetData";
 import { Browsers } from "@/enums";
+import torsoDataFemale from './torsoDataF.json'
+import torsoDataMale from './torsoDataM.json'
 
 class Clothing {
     public static LocalPlayer: PlayerMp;
@@ -100,6 +103,8 @@ class Clothing {
             clothingData = JSON.parse(clothingData as string);
         }
 
+        let characterModel: CharacterData | undefined = getTargetCharacterData(entity as PlayerMp);
+
         timeout ? await mp.game.waitAsync(300) : null;
 
         if(!entity || !clothingData) return;
@@ -114,6 +119,22 @@ class Clothing {
         entity.setComponentVariation(9, Number(clothingData.armor), Number(clothingData.armor_texture), 0);
         entity.setComponentVariation(10, Number(clothingData.decals), Number(clothingData.decals_texture), 0);
         entity.setComponentVariation(11, Number(clothingData.top), Number(clothingData.top_texture), 0);
+
+        if(!characterModel) return;
+
+        let sex: boolean = characterModel.characterModel.sex;
+
+        if(clothingData.torso > 0) return;
+
+        if (sex) {
+            if((torsoDataMale as any)[clothingData.top] === undefined || (torsoDataMale as any)[clothingData.top][clothingData.top_texture] === undefined) {
+                return;
+            } else {
+                if ((torsoDataMale as any)[clothingData.top][clothingData.top_texture].BestTorsoDrawable != -1) {
+                    entity.setComponentVariation(3, Number((torsoDataMale as any)[clothingData.top][clothingData.top_texture].BestTorsoDrawable), Number((torsoDataMale as any)[clothingData.top][clothingData.top_texture].BestTorsoTexture), 0);
+                }
+            }
+        }
     }
 }
 
