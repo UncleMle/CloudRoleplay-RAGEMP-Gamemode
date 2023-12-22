@@ -1,15 +1,30 @@
-﻿using CloudRP.Database;
+﻿using CloudRP.Character;
+using CloudRP.Database;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 
 namespace CloudRP.GeneralCommands
 {
-    public class FloatingDo : BaseEntity
+    public class FloatingDo : Script
     {
+        [ServerEvent(Event.ResourceStart)]
+        public void loadFdos()
+        {
+            using (DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                foreach (FloatingDo item in dbContext.floating_dos)
+                {
+                    item.init();
+                }
+            }
+        }
+
         [NotMapped]
         public string _floatingDoDataIdentifier = "floatingDoData";
 
@@ -18,18 +33,72 @@ namespace CloudRP.GeneralCommands
 
         [Required]
         public int owner_id { get; set; }
+        public float pos_x { get; set; }
+        public float pos_y { get; set; }
+        public float pos_z { get; set; }
         public string text { get; set; }
 
-        public void add(int ownerId, string text)
+        public static FloatingDo add(int ownerId, string text, Vector3 position)
         {
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
-                dbContext.Add(new FloatingDo
+                FloatingDo floatingDo = new FloatingDo
                 {
-                    CreatedDate = DateTime.Now,
+                    pos_x = position.X,
+                    pos_z = position.Z,
+                    pos_y = position.Y,
                     owner_id = ownerId,
                     text = text
-                });
+                };
+
+                dbContext.Add(floatingDo);
+                dbContext.SaveChanges();
+
+                return floatingDo;
+            }
+        }
+
+        public void init()
+        {
+            NAPI.Pools.GetAllTextLabels().ForEach(label =>
+            {
+                FloatingDo fDoData = label.GetData<FloatingDo>(_floatingDoDataIdentifier);
+
+                if(fDoData != null && fDoData.float_do_id == float_do_id)
+                {
+                    label.Delete();
+                }
+            });
+
+            NAPI.TextLabel.CreateTextLabel($"Floating Do #{float_do_id} \n~p~(( ~w~"+text + " ~p~))", new Vector3(pos_x, pos_y, pos_z), 20f, 1.0f, 4, new Color(255, 255, 255, 180), false, 0);
+        }
+
+        public static int getAllByPlayer(DbCharacter character)
+        {
+            int count = 0;
+            using (DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                List<FloatingDo> floatingDos = dbContext.floating_dos
+                    .Where(fdo => fdo.owner_id == character.character_id)
+                    .ToList();
+
+                count = floatingDos.Count;
+            }
+
+            return count;
+        } 
+
+        public static void deleteAllByCharacter(int characterId)
+        {
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                foreach (FloatingDo item in dbContext.floating_dos)
+                {
+                    if(item.owner_id == characterId)
+                    {
+                        item.delete();
+                    }
+                }
             }
         }
 

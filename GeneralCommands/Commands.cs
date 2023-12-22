@@ -14,6 +14,7 @@ namespace CloudRP.GeneralCommands
         public static string _oocColour = "!{#78acff}";
         public static string _meColour = "!{#d2bae9}";
         public static int nickNameMaxLength_M = 7;
+        public static int maxFloatingDos = 10;
 
         [Command("b", "~y~Use:~w~ /b [message]", Alias = "ooc", GreedyArg = true)]
         public void oocCommand(Player player, string oocChat)
@@ -72,6 +73,46 @@ namespace CloudRP.GeneralCommands
             string suffix = $" {ChatUtils.CloudBlueLight}shouts:{ChatUtils.White} " + message.ToUpper();
 
             CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_shout_radius);
+        }
+
+        [Command("floatingdo", "~y~Use: /fdo [messsage]", Alias = "fdo", GreedyArg = true)]
+        public void addFdoCommand(Player player, string message)
+        {
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            if(characterData == null) return;
+
+            if(FloatingDo.getAllByPlayer(characterData) >= maxFloatingDos)
+            {
+                CommandUtils.errorSay(player, "You already have max floating dos. Use /deletefdos.");
+                return;
+            }
+
+            if(!AuthUtils.validateNick(message))
+            {
+                CommandUtils.errorSay(player, "Floating dos cannot have certain special characters.");
+                return;
+            }
+
+            FloatingDo newFdo = FloatingDo.add(characterData.owner_id, message, player.Position);
+            newFdo.init();
+
+            CommandUtils.successSay(player, "Added new floating do #" + newFdo.float_do_id);
+        }
+
+        [Command("deletefdos", "~y~Use: ~w~/deletefdos", GreedyArg = true)]
+        public void deleteFdos(Player player, string text)
+        {
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+
+            if(FloatingDo.getAllByPlayer(characterData) > 0)
+            {
+                FloatingDo.deleteAllByCharacter(characterData.character_id);
+                CommandUtils.successSay(player, "You have delete all of your floating do statements.");
+            } else
+            {
+                CommandUtils.errorSay(player, "You haven't created any floating dos.");
+            }
+
         }
 
         [Command("do", "~y~Use:~w~ /do [message]", GreedyArg = true)]

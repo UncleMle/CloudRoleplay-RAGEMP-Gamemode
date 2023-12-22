@@ -1,4 +1,5 @@
 ﻿using CloudRP.Admin;
+using CloudRP.Authentication;
 using CloudRP.Character;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
@@ -27,7 +28,7 @@ namespace CloudRP.AntiCheat
 
             try
             {
-                string uri = $"https://vpnapi.io/api/{player.Address}?key={Environment.GetEnvironmentVariable(vpnApiKeyIdentifier)}";
+                string uri = $"https://vpnapi.io/api/{player.Address}?key={Env._vpnApiKey}";
 
                 HttpClient client = new HttpClient();
 

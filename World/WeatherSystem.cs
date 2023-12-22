@@ -1,4 +1,5 @@
 ﻿using CloudRP.Admin;
+using CloudRP.Authentication;
 using CloudRP.ChatSystem;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
@@ -26,7 +27,7 @@ namespace CloudRP.World
         {
             NAPI.Task.Run(() =>
             {
-                weatherApiKey = Environment.GetEnvironmentVariable(weatherKeyIdentifier);
+                weatherApiKey = Env._weatherApiKey;
 
                 syncWeatherTimer = new Timer();
                 syncWeatherTimer.Interval = timerInterval_seconds * 1000;
