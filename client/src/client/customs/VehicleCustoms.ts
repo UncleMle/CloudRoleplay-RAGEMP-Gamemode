@@ -14,12 +14,19 @@ class VehicleCustoms {
         VehicleCustoms.LocalPlayer = mp.players.local;
 
         mp.events.add("playerExitColshape", VehicleCustoms.handleColEnter);
+        mp.events.add("customs:toggleVehicleFreeze", VehicleCustoms.handleVehFreeze);
         mp.events.add("playerLeaveVehicle", VehicleCustoms.handleLeaveVehicle);
         mp.events.add("customs:loadIndexes", VehicleCustoms.loadIndexesIntoBrowser);
         mp.events.add("vehicle:setAttachments", VehicleCustoms.setVehicleAttachments);
         mp.events.add("entityStreamIn", VehicleCustoms.handleStreamIn);
         mp.events.addDataHandler(_SHARED_VEHICLE_DATA, VehicleCustoms.handleDataHandler);
         mp.events.add("render", VehicleCustoms.handleRender);
+    }
+
+    public static handleVehFreeze(tog: boolean) {
+        if(VehicleCustoms.LocalPlayer.vehicle) {
+            VehicleCustoms.LocalPlayer.vehicle.freezePosition(tog);
+        }
     }
 
     public static handleLeaveVehicle() {
@@ -32,6 +39,8 @@ class VehicleCustoms {
     public static loadIndexesIntoBrowser() {
         if(!VehicleCustoms.LocalPlayer.vehicle) return;
         let veh: VehicleMp = VehicleCustoms.LocalPlayer.vehicle;
+
+        VehicleCustoms.handleVehFreeze(true);
 
         const indexData: ModInfo[] = [
             { name: "Front Bumper", modNumber: veh.getNumMods(1) },
@@ -95,7 +104,7 @@ class VehicleCustoms {
     public static handleRender() {
         if(VehicleCustoms.LocalPlayer.browserRouter == Browsers.ModsView && VehicleCustoms.LocalPlayer.vehicle) {
             DeathSystem.disableControls();
-            VehicleCustoms.LocalPlayer.vehicle.setUndriveable(true);
+            VehicleCustoms.LocalPlayer.vehicle.freezePosition(true);
         }
     }
 
@@ -120,6 +129,14 @@ class VehicleCustoms {
         vehicle.setWindowTint(Number(modData.window_tint));
         vehicle.setColours(Number(modData.colour_1), Number(modData.colour_2));
         vehicle.setExtraColours(Number(modData.pearleascent), Number(modData.wheel_colour));
+
+        if(Number(modData.neon_colour_r) != -1 || Number(modData.neon_colour_b) != -1 || Number(modData.neon_colour_g) != -1) {
+            vehicle.setNeonLightsColour(Number(modData.neon_colour_r), Number(modData.neon_colour_g), Number(modData.neon_colour_b));
+
+            VehicleCustoms.toggleNeons(vehicle, true);
+        } else {
+            VehicleCustoms.toggleNeons(vehicle, false);
+        }
 
         vehicle.setMod(0, Number(modData.spoilers));
         vehicle.setMod(1, Number(modData.front_bumper));
@@ -161,6 +178,12 @@ class VehicleCustoms {
 
         if(vehicleData) {
             vehicle.setDirtLevel(vehicleData.dirt_level);
+        }
+    }
+
+    public static toggleNeons(veh: VehicleMp, tog: boolean) {
+        for(let i = 0; i <= 3; i++) {
+            veh.setNeonLightEnabled(i, tog);
         }
     }
 }

@@ -709,7 +709,7 @@ namespace CloudRP.Admin
 
                     if(getPlayer.IsInVehicle)
                     {
-                        getPlayer.WarpOutOfVehicle();
+                        getPlayer.TriggerEvent("customs:toggleVehicleFreeze", true);
                     }
 
                     ChatUtils.formatConsolePrint($"{userData.admin_name} {isFrozen} {targetCharData.character_name}.");

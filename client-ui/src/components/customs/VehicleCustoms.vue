@@ -340,6 +340,18 @@ export default {
                     name: "Window Tint",
                     dbName: "window_tint",
                 },
+                {
+                    name: "Neons Red",
+                    dbName: "neon_colour_r",
+                },
+                {
+                    name: "Neons Green",
+                    dbName: "neon_colour_g",
+                },
+                {
+                    name: "Neons Blue",
+                    dbName: "neon_colour_b",
+                },
             ]
         }
     },
@@ -437,6 +449,7 @@ export default {
             window.mp.trigger("browser:resetRouter");
             window.mp.trigger("gui:toggleHudComplete", true);
             window.mp.trigger("vehicle:setAttachments", JSON.stringify(this.vehicleDataOld), true);
+            window.mp.trigger("customs:toggleVehicleFreeze", false);
         },
         getMaxIdx(modName) {
             let getMaxIdx = this.playerData.vehicle_mod_indexes;
@@ -466,6 +479,9 @@ export default {
                 foundIdx = 50;
             }
 
+            if(modName.substring(0, 5) == "Neons") {
+                foundIdx = 256;
+            }
 
             return foundIdx != null ? foundIdx == 0 ? foundIdx : foundIdx - 1 : 100;
         },

@@ -105,6 +105,8 @@ namespace CloudRP.VehicleModification
 
             if (!player.IsInVehicle || characterData == null) return;
 
+            player.TriggerEvent("customs:toggleVehicleFreeze", false);
+
             Vehicle pVeh = player.Vehicle;
             DbVehicle pVehData = VehicleSystem.getVehicleData(pVeh);
             if (pVehData != null)

@@ -203,6 +203,9 @@ export interface VehicleMods {
 	plate: number;
 	colour_1: number;
 	colour_2: number;
+	neon_colour_r: number;
+	neon_colour_b: number;
+	neon_colour_g: number;
 }
 
 export interface VehicleData {

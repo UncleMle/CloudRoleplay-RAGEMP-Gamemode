@@ -3,14 +3,16 @@ using System;
 using CloudRP.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CloudRP.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231222151500_Added neon columns for vehicle mods")]
+    partial class Addedneoncolumnsforvehiclemods
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -625,6 +627,9 @@ namespace CloudRP.Migrations
 
                     b.Property<int>("neon_colour_r")
                         .HasColumnType("int");
+
+                    b.Property<bool>("neon_enabled")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("ornaments")
                         .HasColumnType("int");
