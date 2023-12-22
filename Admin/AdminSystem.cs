@@ -852,8 +852,11 @@ namespace CloudRP.Admin
             {
                 if(player.IsInVehicle)
                 {
-                    VehicleSystem.closeAllDoors(player.Vehicle);
-                    VehicleSystem.closeAllWindows(player.Vehicle);
+                    DbVehicle vehicleData = VehicleSystem.getVehicleData(player.Vehicle);
+                    if (vehicleData == null) return;
+
+                    vehicleData.closeAllDoors(player.Vehicle);
+                    vehicleData.closeAllWindows(player.Vehicle);
                     NAPI.Vehicle.RepairVehicle(player.Vehicle);
                     VehicleSystem.setVehicleDirtLevel(player.Vehicle, 0);
 

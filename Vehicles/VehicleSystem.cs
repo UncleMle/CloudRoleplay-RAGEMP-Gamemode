@@ -573,8 +573,8 @@ namespace CloudRP.Vehicles
 
                 if (vehicle.Locked)
                 {
-                    closeAllDoors(vehicle);
-                    closeAllWindows(vehicle);
+                    vehicleData.closeAllDoors(vehicle);
+                    vehicleData.closeAllWindows(vehicle);
                 }
 
                 saveVehicleData(vehicle, vehicleData);
@@ -731,34 +731,6 @@ namespace CloudRP.Vehicles
                     }
                 }
             });
-        }
-
-        public static void closeAllDoors(Vehicle vehicle)
-        {
-            DbVehicle vehicleData = getVehicleData(vehicle);
-            if(vehicleData != null)
-            {
-                for(int i = 0; i < vehicleData.vehicle_doors.Length; i++)
-                {
-                    vehicleData.vehicle_doors[i] = false;
-                }
-
-                saveVehicleData(vehicle, vehicleData);
-            }
-        }
-
-        public static void closeAllWindows(Vehicle vehicle)
-        {
-            DbVehicle vehicleData = getVehicleData(vehicle);
-            if (vehicleData != null)
-            {
-                for (int i = 0; i < vehicleData.vehicle_windows.Length; i++)
-                {
-                    vehicleData.vehicle_windows[i] = false;
-                }
-
-                saveVehicleData(vehicle, vehicleData);
-            }
         }
 
         public static void setVehicleDirtLevel(Vehicle vehicle, int dirtLevel)

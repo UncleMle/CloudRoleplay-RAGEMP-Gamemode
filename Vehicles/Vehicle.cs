@@ -58,6 +58,27 @@ namespace CloudRP.Vehicles
         public long vehicle_fuel_purchase_price { get; set; }
         [NotMapped]
         public int player_refuelling_char_id { get; set; } = -1;
+
+        public void closeAllDoors(Vehicle vehicle)
+        {
+            for (int i = 0; i < vehicle_doors.Length; i++)
+            {
+                vehicle_doors[i] = false;
+            }
+
+            VehicleSystem.saveVehicleData(vehicle, this);
+        }
+
+        public void closeAllWindows(Vehicle vehicle)
+        {
+            for (int i = 0; i < vehicle_windows.Length; i++)
+            {
+                vehicle_windows[i] = false;
+            }
+
+           VehicleSystem.saveVehicleData(vehicle, this);
+        }
+
     }
     
 
