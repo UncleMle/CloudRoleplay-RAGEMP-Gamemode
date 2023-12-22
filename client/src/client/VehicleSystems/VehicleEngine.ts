@@ -41,7 +41,7 @@ class VehicleEngine {
 		if(VehicleEngine.LocalPlayer.vehicle && VehicleEngine.LocalPlayer.vehicle == entity && VehicleEngine.LocalPlayer.browserRouter == Browsers.ModsView) return;
 		if(mp.players.atHandle(entity.getPedInSeat(-1)) && mp.players.atHandle(entity.getPedInSeat(-1)).getVariable(HandsUp._handsUpAnimIdentifer)) return;
 
-		if(vehicleData.engine_status) {
+		if(vehicleData.engine_status && vehicleData.vehicle_fuel > 0 && vehicleData.vehicle_health > 0) {
 			entity.setEngineOn(true, true, true);
 		} else {
 			entity.setEngineOn(false, true, true);
