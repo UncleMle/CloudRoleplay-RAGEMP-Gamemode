@@ -231,7 +231,7 @@ namespace CloudRP.Vehicles
             }
         }
 
-        public static (Vehicle, DbVehicle) buildVehicle(string vehName, Vector3 position, float rotation, int ownerId, int colourOne, int colourTwo, string ownerName = "N/A")
+        public static (Vehicle, DbVehicle) buildVehicle(string vehName, Vector3 position, float rotation, int ownerId, int colourOne, int colourTwo, string ownerName = "N/A", bool isAdmin = false)
         {
             string vehiclePlate = "notset";
             uint vehicleHash = NAPI.Util.GetHashKey(vehName);
@@ -260,7 +260,14 @@ namespace CloudRP.Vehicles
 
                 DbVehicle findJustInserted = dbContext.vehicles.Find(vehicleInsert.vehicle_id);
 
-                vehiclePlate = genUniquePlate(vehicleInsert.vehicle_id);
+                if(isAdmin)
+                {
+                    vehiclePlate = $"ADM_{vehicleInsert.vehicle_id}";
+                } else
+                {
+                    vehiclePlate = genUniquePlate(vehicleInsert.vehicle_id);
+                }
+                
                 findJustInserted.numberplate = vehiclePlate;
 
                 vehicleData = dbContext.vehicles.Find(vehicleInsert.vehicle_id);

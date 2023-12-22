@@ -579,7 +579,7 @@ namespace CloudRP.Admin
                 Vector3 playerPosition = player.Position;
                 float playerRotation = player.Rotation.Z;
 
-                (Vehicle vehicle, DbVehicle vehicleData) = VehicleSystem.buildVehicle(vehName, playerPosition, playerRotation, charData.character_id, colourOne, colourTwo, charData.character_name);
+                (Vehicle vehicle, DbVehicle vehicleData) = VehicleSystem.buildVehicle(vehName, playerPosition, playerRotation, charData.character_id, colourOne, colourTwo, charData.character_name, true);
 
                 if (vehicle == null) return;
 
