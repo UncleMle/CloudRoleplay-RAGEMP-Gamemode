@@ -40,6 +40,7 @@ import VehicleRadar from "./PoliceRadar/VehicleRadar";
 import Fingerpointing from "./Animation/Fingerpointing";
 import HandsUp from "./Animation/HandsUpAnim";
 import ScaleForm from "./Scaleform/ScaleformMessages";
+import SpeedCameras from "./SpeedCameras/SpeedCameras";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -84,3 +85,4 @@ new VehicleRadar();
 new Fingerpointing();
 new HandsUp();
 new ScaleForm();
+new SpeedCameras();
