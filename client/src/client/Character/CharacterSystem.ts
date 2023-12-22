@@ -101,12 +101,8 @@ class CharacterSystem {
 	public static handleAdmins(entity: PlayerMp, data: UserData) {
 		if(entity.type != "player" || !data) return;
 
-		let characterData: CharacterData | undefined = getTargetCharacterData(entity);
-
-		if(data.showAdminPed) {
+		if(data && data.showAdminPed) {
 			entity.model = mp.game.joaat(data.admin_ped);
-		} else {
-			CharacterSystem.setCharacterCustomization(characterData?.characterModel, false, entity as PlayerMp);
 		}
 	}
 

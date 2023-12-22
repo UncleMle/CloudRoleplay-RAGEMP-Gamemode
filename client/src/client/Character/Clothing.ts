@@ -76,7 +76,7 @@ class Clothing {
         if(entity.type == "player" && clothingData) {
             let userData: UserData | undefined = getTargetData(entity);
 
-            if(userData && !userData.adminDuty) {
+            if(userData && !userData.showAdminPed) {
                 Clothing.setClothingData(clothingData, false, true, entity);
             }
         }
@@ -89,7 +89,7 @@ class Clothing {
 
             if(!clothingData || !userData) return;
 
-            if(!userData.adminDuty) {
+            if(!userData.showAdminPed) {
                 Clothing.setClothingData(clothingData, false, true, entity);
             }
         }

@@ -36,8 +36,10 @@ class VehicleDamage {
                     mp.events.callRemote(VehicleDamage.saveDamageEvent);
                     await mp.game.waitAsync(500);
 
-                    if(VehicleDamage.LocalPlayer.vehicle) {
-                        VehicleDamage.LocalPlayer.vehicle.setEngineHealth(vehicleData.vehicle_health);
+                    let data: VehicleData | undefined = getVehicleData(VehicleDamage.LocalPlayer.vehicle);
+
+                    if(VehicleDamage.LocalPlayer.vehicle && data && typeof data.vehicle_health == "number") {
+                        VehicleDamage.LocalPlayer.vehicle.setEngineHealth(data.vehicle_health);
                     }
                 }
             }

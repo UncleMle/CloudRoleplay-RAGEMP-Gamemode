@@ -336,7 +336,16 @@ namespace CloudRP.Admin
             if (userData != null && characterData != null && userData.admin_status > (int)AdminRanks.Admin_SeniorSupport)
             {
                 userData.adminDuty = !userData.adminDuty;
-                userData.showAdminPed = userData.adminDuty;
+
+                if (userData.admin_ped != "none")
+                {
+                    userData.showAdminPed = userData.adminDuty;
+                } else
+                {
+                    userData.showAdminPed = false;
+                }
+                PlayersData.setPlayerAccountData(player, userData);
+
                 string colourAdminRank = AdminUtils.getColouredAdminRank(userData, false);
 
                 if (userData.adminDuty)
@@ -347,15 +356,18 @@ namespace CloudRP.Admin
                 {
                     userData.isFlying = false;
                     player.TriggerEvent("admin:endFly");
-                    PlayersData.setCharacterClothes(player, characterData.characterClothing);
+
+                    if(userData.admin_ped != "none")
+                    {
+                        PlayersData.setCharacterModel(player, characterData.characterModel);
+                        PlayersData.setCharacterClothes(player, characterData.characterClothing);
+                    }
                 }
 
+                PlayersData.setPlayerAccountData(player, userData);
                 uiHandling.sendNotification(player, $"Toggled admin duty {(userData.adminDuty ? "~g~on" : "~r~off")}", false);
                 AdminUtils.sendMessageToAllStaff($"{colourAdminRank} {AdminUtils.staffSuffixColour}{userData.admin_name} is {(userData.adminDuty ? $"{ChatUtils.moneyGreen}on" : $"{ChatUtils.red}off")} duty");
                 ChatUtils.formatConsolePrint($"{userData.admin_name} has toggled admin duty {(userData.adminDuty ? "on" : "off")}");
-
-                PlayersData.setPlayerAccountData(player, userData);
-
             }
             else AdminUtils.sendNoAuth(player);
         }
@@ -508,7 +520,7 @@ namespace CloudRP.Admin
                 AdminUtils.staffSay(findPlayer, "You were revived by Admin " + userData.admin_name);
 
                 uiHandling.sendNotification(player, $"~r~You revived {findCharacter.character_name}", false);
-                uiHandling.sendNotification(findPlayer, $"~r~You where revived by {userData.admin_name}", false);
+                uiHandling.sendNotification(findPlayer, $"~r~You were revived by {userData.admin_name}", false);
 
                 ChatUtils.formatConsolePrint($"{userData.admin_name} revived {findCharacter.character_name}");
             }
@@ -854,13 +866,15 @@ namespace CloudRP.Admin
             }
         }
 
-        [Command("setaped", "~r~/setaped [pedName]")]
+        [Command("setaped", "~r~/setaped [pedName | none]")]
         public void setAdminPed(Player player, string pedName)
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
             if(userData.admin_status > (int)AdminRanks.Admin_SeniorSupport)
             {
+                pedName = pedName.ToLower();
+
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
                     Account findAccount = dbContext.accounts.Find(userData.account_id);
@@ -874,7 +888,6 @@ namespace CloudRP.Admin
                     dbContext.Update(findAccount);
                     dbContext.SaveChanges();
                     PlayersData.setPlayerAccountData(player, userData);
-                    AdminUtils.setPed(player, pedName);
 
                     AdminUtils.staffSay(player, $"You set your admin ped to {pedName}");
                 }
@@ -958,7 +971,7 @@ namespace CloudRP.Admin
                 ChatUtils.formatConsolePrint($"{userData.admin_name} spawned in a {weaponName} with {ammo} ammo");
                 AdminUtils.staffSay(player, $"You gave yourself a {ChatUtils.yellow}{weaponName}{ChatUtils.White}{AdminUtils.staffSuffixColour} with {ammo} ammo");
 
-                uiHandling.sendNotification(player, $"~r~You spawned in a ~y~{weaponName}~w~ with ~y~{ammo}~w~ ammo", false);
+                uiHandling.sendNotification(player, $"~r~You spawned in a ~y~{weaponName}~r~ with ~y~{ammo}~r~ ammo", false);
             }
             else AdminUtils.sendNoAuth(player);
 
@@ -1077,7 +1090,7 @@ namespace CloudRP.Admin
                 AdminUtils.staffSay(findPlayer, $"Your health was set to {health} by Admin {userData.admin_name}");
 
                 uiHandling.sendNotification(findPlayer, $"~r~Your health was set to {health} by {userData.admin_name}", false);
-                uiHandling.sendNotification(player, $"~r~You set {characterData.character_name}", false);
+                uiHandling.sendNotification(player, $"~r~You set {characterData.character_name}'s health to {health}", false);
 
             }
         }
@@ -1574,7 +1587,7 @@ namespace CloudRP.Admin
 
                 if(findPlayer != null && findPlayerCharData != null)
                 {
-                    DeathEvent.respawnAtHospital(player);
+                    DeathEvent.respawnAtHospital(findPlayer);
                     AdminUtils.staffSay(player, $"You were slain by {userData.admin_name}.");
                     AdminUtils.staffSay(findPlayer, $"You slayed {findPlayerCharData.character_name}.");
 

@@ -35,7 +35,6 @@ class Corpses {
 		mp.peds.forEachInStreamRange(ped => {
 			if(ped.corpseId !== undefined) {
 				if(Corpses.corpses[ped.corpseId]) {
-					let corpseData: Corpse = Corpses.corpses[ped.corpseId];
 					let rootBone: Vector3 = ped.getBoneCoords(0, 0, 0, 0);
 
 					let rootDrawCoords: { x: number, y: number } = mp.game.graphics.world3dToScreen2d(new mp.Vector3(rootBone.x, rootBone.y, rootBone.z));
