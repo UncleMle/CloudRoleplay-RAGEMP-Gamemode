@@ -21,6 +21,7 @@ namespace CloudRP.Admin
         public static List<Report> activeReports = new List<Report>();
         public static Dictionary<int, Vector3> adminAdutyPositions = new Dictionary<int, Vector3>();
         public static int _maxReports = 2;
+        public static int _maxAdminMarkers = 20;
         public static string defaultAdminPed = "ig_abigail";
 
         [ServerEvent(Event.PlayerDisconnected)]
@@ -1617,6 +1618,58 @@ namespace CloudRP.Admin
 
             }
             else AdminUtils.sendNoAuth(player);
+        }
+
+        [Command("amarker", "~r~/amarker [text]")]
+        public void adminMarker(Player player, string text)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(AdminUtils.checkUserData(player, userData))
+            {
+                if(AdminMarker.getAllByAccount(userData.account_id) > _maxAdminMarkers)
+                {
+                    CommandUtils.errorSay(player, $"You already have the max amount of admin markers ({_maxAdminMarkers}). Use /rmamark or /rmamarks");
+                    return;
+                }
+
+                AdminMarker newMarker = AdminMarker.add(text, player.Position, userData.account_id);
+                AdminUtils.staffSay(player, "Created a new admin marker #" + newMarker.admin_marker_id);
+            }
+        }
+        
+        [Command("rmamark", "~r~/rmamark [adminMarkId]")]
+        public void rmarmar(Player player, int markId)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(AdminUtils.checkUserData(player, userData))
+            {
+                if(AdminMarker.getAllByAccount(userData.account_id) == 0)
+                {
+                    CommandUtils.errorSay(player, $"You haven't created any admin markers.");
+                    return;
+                }
+
+                AdminMarker.deleteById(markId);
+            }
+        }
+        
+        [Command("rmamarks", "~r~/rmamarks")]
+        public void rmarmars(Player player, int markId)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(AdminUtils.checkUserData(player, userData))
+            {
+                if(AdminMarker.getAllByAccount(userData.account_id) == 0)
+                {
+                    CommandUtils.errorSay(player, $"You haven't created any admin markers.");
+                    return;
+                }
+
+                AdminMarker.deleteAllByAccount(userData.account_id);
+            }
         }
         
     }

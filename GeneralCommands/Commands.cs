@@ -94,13 +94,12 @@ namespace CloudRP.GeneralCommands
             }
 
             FloatingDo newFdo = FloatingDo.add(characterData.owner_id, message, player.Position);
-            newFdo.init();
 
             CommandUtils.successSay(player, "Added new floating do #" + newFdo.float_do_id);
         }
 
         [Command("deletefdos", "~y~Use: ~w~/deletefdos", GreedyArg = true)]
-        public void deleteFdos(Player player, string text)
+        public void deleteFdos(Player player)
         {
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 

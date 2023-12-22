@@ -54,6 +54,7 @@ namespace CloudRP.GeneralCommands
                 dbContext.Add(floatingDo);
                 dbContext.SaveChanges();
 
+                floatingDo.init();
                 return floatingDo;
             }
         }
@@ -70,7 +71,8 @@ namespace CloudRP.GeneralCommands
                 }
             });
 
-            NAPI.TextLabel.CreateTextLabel($"Floating Do #{float_do_id} \n~p~(( ~w~"+text + " ~p~))", new Vector3(pos_x, pos_y, pos_z), 20f, 1.0f, 4, new Color(255, 255, 255, 180), false, 0);
+            TextLabel fdoLabel = NAPI.TextLabel.CreateTextLabel($"Floating Do #{float_do_id} \n~p~(( ~w~"+text + " ~p~))", new Vector3(pos_x, pos_y, pos_z), 20f, 1.0f, 4, new Color(255, 255, 255, 180), false, 0);
+            fdoLabel.SetData(_floatingDoDataIdentifier, this);
         }
 
         public static int getAllByPlayer(DbCharacter character)

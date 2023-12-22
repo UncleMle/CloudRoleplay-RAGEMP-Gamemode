@@ -35,6 +35,7 @@ namespace CloudRP.Database
         public DbSet<Tattoo> player_tattoos { get; set; }
         public DbSet<House> houses { get; set; }
         public DbSet<FloatingDo> floating_dos { get; set; }
+        public DbSet<AdminMarker> admin_markers { get; set; }
     }
 
     public class BaseEntity
