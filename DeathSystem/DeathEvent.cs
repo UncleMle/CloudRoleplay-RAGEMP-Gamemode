@@ -5,14 +5,10 @@ using CloudRP.Database;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
 using GTANetworkAPI;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.EntityFrameworkCore.Internal;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 
 namespace CloudRP.DeathSystem
 {

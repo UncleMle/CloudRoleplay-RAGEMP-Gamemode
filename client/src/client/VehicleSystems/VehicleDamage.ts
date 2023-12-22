@@ -19,6 +19,7 @@ class VehicleDamage {
 
         if(vehicleData) {
             vehicle.setHealth(vehicleData.vehicle_health);
+            vehicle.setEngineHealth(vehicleData.vehicle_health);
         }
 
         await mp.game.waitAsync(500);
@@ -34,6 +35,10 @@ class VehicleDamage {
                 if(vehicleData && vehicleData.vehicle_health != VehicleDamage.LocalPlayer.vehicle.getHealth()) {
                     mp.events.callRemote(VehicleDamage.saveDamageEvent);
                     await mp.game.waitAsync(500);
+
+                    if(VehicleDamage.LocalPlayer.vehicle) {
+                        VehicleDamage.LocalPlayer.vehicle.setEngineHealth(vehicleData.vehicle_health);
+                    }
                 }
             }
         }, 1000);
