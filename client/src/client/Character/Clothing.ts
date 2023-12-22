@@ -28,7 +28,6 @@ class Clothing {
     public static handleRender() {
         if(BrowserSystem.LocalPlayer.browserRouter == Browsers.Clothing) {
             DeathSystem.disableControls();
-            mp.gui.cursor.show(true, true);
         }
     }
 

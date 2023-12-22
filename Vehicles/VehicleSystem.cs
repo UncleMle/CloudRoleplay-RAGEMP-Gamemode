@@ -262,7 +262,7 @@ namespace CloudRP.Vehicles
 
                 if(isAdmin)
                 {
-                    vehiclePlate = $"ADM_{vehicleInsert.vehicle_id}";
+                    vehiclePlate = $"ADMIN_{vehicleInsert.vehicle_id}";
                 } else
                 {
                     vehiclePlate = genUniquePlate(vehicleInsert.vehicle_id);
