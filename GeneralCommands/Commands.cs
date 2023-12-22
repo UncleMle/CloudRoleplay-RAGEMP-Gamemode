@@ -75,7 +75,7 @@ namespace CloudRP.GeneralCommands
             CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_shout_radius);
         }
 
-        [Command("floatingdo", "~y~Use: /fdo [messsage]", Alias = "fdo", GreedyArg = true)]
+        [Command("floatingdo", "~y~Use:~w~ /fdo [messsage]", Alias = "fdo", GreedyArg = true)]
         public void addFdoCommand(Player player, string message)
         {
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
@@ -162,6 +162,21 @@ namespace CloudRP.GeneralCommands
 
             uiHandling.handleObjectUiMutation(player, MutationKeys.PlayerStats, character);
             uiHandling.handleObjectUiMutation(player, MutationKeys.PlayerData, player);
+        }
+
+        [Command("players", "~y~Use: ~w~/players")]
+        public void playerCommannd(Player player)
+        {
+            int count = 0;
+            NAPI.Pools.GetAllPlayers().ForEach(p =>
+            {
+                if(PlayersData.getPlayerCharacterData(player) != null)
+                {
+                    count++;
+                }
+            });
+
+            player.SendChatMessage(ChatUtils.info + $"There are currently {ChatUtils.yellow}{count}{ChatUtils.White} players online.");
         }
 
         [Command("pm", "~y~Use:~w~ /pm [playerNameOrId] [message]", GreedyArg = true, Alias = "privatemessage")]

@@ -100,6 +100,11 @@ export default {
                     info: "Displays a OOC message to players within proximity."
                 },
                 {
+                    name: "ame",
+                    arguments: ["message"],
+                    info: "Created an RP AME message."
+                },
+                {
                     name: "afk",
                     arguments: ["answer"],
                     info: "Used to reset afk timer when promted."
@@ -113,6 +118,11 @@ export default {
                     name: "stats",
                     arguments: [],
                     info: "Displays info about your character."
+                },
+                {
+                    name: "report",
+                    arguments: ["message"],
+                    info: "Creates a report."
                 },
                 {
                     name: "help",
@@ -153,6 +163,21 @@ export default {
                     name: "mods",
                     arguments: [],
                     info: "Opens the mod menu to view mods for your vehicle."
+                },
+                {
+                    name: "/players",
+                    arguments: [],
+                    info: "Says the current player count."
+                },
+                {
+                    name: "fdo",
+                    arguments: ["message"],
+                    info: "Creates a floating do statement."
+                },
+                {
+                    name: "deletefdos",
+                    arguments: [],
+                    info: "Deletes your created Floating Do statements."
                 }
             ]
         }
