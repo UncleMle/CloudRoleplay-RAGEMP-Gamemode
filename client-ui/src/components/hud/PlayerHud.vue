@@ -1,5 +1,11 @@
 <template>
     <div style="text-shadow: rgba(0, 0, 0, 0.563) 1px 0 10px;">
+        <div class="absolute bottom-[25%] left-[2%]" v-if="playerData.player_data_gui.isFrozen">
+            <font>
+                <span class="font-bold text-3xl text-red-500">You have been frozen.</span>
+            </font>
+        </div>
+
         <div class="absolute left-[1.6%] w-[14%] rounded-xl bottom-[19%] text-white font-medium h-[3.4%] p-1">
             <div class="ml-2">
                 <span>
@@ -15,12 +21,6 @@
         </div>
 
         <div class="absolute left-[16.5%] w-[20%] rounded-xl bottom-[14%] text-white font-medium text-xl h-[3.4%] p-1">
-            <div class="absolute" v-if="playerData.player_data_gui.isFrozen">
-                <font>
-                    <span class="font-bold text-3xl text-red-500">You have been frozen.</span>
-                </font>
-            </div>
-
             <div>
                 <font>
                     <i class="fa-solid fa-compass text-4xl text-gray-400"></i>
