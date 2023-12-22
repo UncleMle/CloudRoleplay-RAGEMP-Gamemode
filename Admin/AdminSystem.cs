@@ -1558,11 +1558,52 @@ namespace CloudRP.Admin
                         uiHandling.sendNotification(player, $"~r~You slapped {charData.character_name} for {units}", false);
                     }
                 } else AdminUtils.playerNotFound(player);
+            }
+            else AdminUtils.sendNoAuth(player);
+        }
 
+        [Command("slay", "~r~/slay [nameOrId]")]
+        public void slayCommand(Player player, string nameOrId)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(AdminUtils.checkUserData(player, userData))
+            {
+                Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+                DbCharacter findPlayerCharData = PlayersData.getPlayerCharacterData(findPlayer);
+
+                if(findPlayer != null && findPlayerCharData != null)
+                {
+                    DeathEvent.respawnAtHospital(player);
+                    AdminUtils.staffSay(player, $"You were slain by {userData.admin_name}.");
+                    AdminUtils.staffSay(findPlayer, $"You slayed {findPlayerCharData.character_name}.");
+
+                    uiHandling.sendNotification(player, $"~r~You slayed {findPlayerCharData.character_name}", false);
+                    uiHandling.sendNotification(findPlayer, $"~r~You have been slain by {userData.admin_name}", false);
+                } else AdminUtils.playerNotFound(player);
+            }
+        }
+
+        [Command("delcorpse", "~r~/delcorpse [corpseId]")]
+        public void deleteCorpse(Player player, int corpseId)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if (AdminUtils.checkUserData(player, userData))
+            {
+                Corpse findCorpse = DeathEvent.corpses
+                    .Where(corpse => corpse.corpseId == corpseId)
+                    .FirstOrDefault();
+
+                if (findCorpse != null)
+                {
+                    DeathEvent.removeCorpse(findCorpse);
+                    AdminUtils.staffSay(player, "You removed corpse with id " + corpseId);
+                }
+                else CommandUtils.errorSay(player, "Corpse ID is invalid.");
 
             }
             else AdminUtils.sendNoAuth(player);
-
         }
         
     }

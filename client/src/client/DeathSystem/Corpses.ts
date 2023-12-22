@@ -31,6 +31,26 @@ class Corpses {
 		}, 5000);
 	}
 
+	public static renderCorpses() {
+		mp.peds.forEachInStreamRange(ped => {
+			if(ped.corpseId !== undefined) {
+				if(Corpses.corpses[ped.corpseId]) {
+					let corpseData: Corpse = Corpses.corpses[ped.corpseId];
+					let rootBone: Vector3 = ped.getBoneCoords(0, 0, 0, 0);
+
+					let rootDrawCoords: { x: number, y: number } = mp.game.graphics.world3dToScreen2d(new mp.Vector3(rootBone.x, rootBone.y, rootBone.z));
+
+					mp.game.graphics.drawText("Corpse ID " + ped.corpseId, [rootDrawCoords.x, rootDrawCoords.y], {
+						font: 4,
+						color: [255, 255, 255, 185],
+						scale: [0.3, 0.3],
+						outline: true
+					});
+				}
+			}
+		});
+	}
+
 	public static async handleStreamIn(entity: PedMp) {
         if (entity.type != 'ped') return;
         await mp.game.waitAsync(900);
@@ -51,6 +71,8 @@ class Corpses {
 
 	public static setCorpses(corpses: Corpse[]) {
 		if(!corpses) return;
+		Corpses.corpses = [];
+
 
 		corpses.forEach((corpse: Corpse, index: number) => {
 			let ped: PedMp = mp.peds.new(

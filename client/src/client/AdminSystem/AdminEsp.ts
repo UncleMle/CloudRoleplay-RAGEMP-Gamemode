@@ -1,3 +1,4 @@
+import Corpses from "@/DeathSystem/Corpses";
 import { UserData, VehicleData, CharacterData } from "../@types";
 import distBetweenCoords from "../PlayerMethods/distanceBetweenCoords";
 import getTargetCharacterData from "../PlayerMethods/getTargetCharacterData";
@@ -25,6 +26,7 @@ class AdminEsp {
 
 		if (userData != null && userData.adminDuty && !userData.admin_esp) {
 			AdminEsp.renderPlayerEsp();
+			Corpses.renderCorpses();
 			AdminEsp.renderVehiclesEsp();
 		}
 	}

@@ -240,6 +240,8 @@ namespace CloudRP.DeathSystem
 
             playerCorpse.corpseId = corpses.IndexOf(playerCorpse);
 
+            Console.WriteLine(playerCorpse.corpseId);
+
             addCorpseToClients(playerCorpse);
         }
 

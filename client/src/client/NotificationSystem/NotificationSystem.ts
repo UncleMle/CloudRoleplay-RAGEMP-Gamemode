@@ -10,6 +10,7 @@ class NotificationSystem {
 	public static ameCancelTimeout: ReturnType<typeof setInterval> | undefined;
 	public static _ameServerEvent: string = "server:createAmeText";
 	public static _ameTextIdentifier: string = "playerAmeTextMessage";
+	public static isRpText: boolean;
 
 
 	constructor() {
@@ -23,6 +24,8 @@ class NotificationSystem {
 		NotificationSystem.resetData();
 		NotificationSystem.visible = true;
 		NotificationSystem.draw_text = isRpText ? "* " + text : text;
+
+		NotificationSystem.isRpText = isRpText;
 
 		NotificationSystem.interval = setInterval(() => {
 
@@ -65,7 +68,7 @@ class NotificationSystem {
 			mp.game.graphics.drawText(NotificationSystem.draw_text, [NotificationSystem.x_pos, NotificationSystem.y_pos], {
 				outline: true,
 				font: 4,
-				color: [220, 125, 225, NotificationSystem.opacity],
+				color: NotificationSystem.isRpText ? [220, 125, 225, NotificationSystem.opacity] : [255, 255, 255, NotificationSystem.opacity],
 				scale: [NotificationSystem.scale, NotificationSystem.scale]
 			})
 		}
