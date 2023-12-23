@@ -11,6 +11,7 @@ using CloudRP.Vehicles;
 using Discord;
 using GTANetworkAPI;
 using Integration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -1471,7 +1472,7 @@ namespace CloudRP.Admin
         }
 
         [Command("gotoc", "~r~/gotoc [x] [y] [z]")]
-        public void teleportToCoords(Player player, int x, int y, int z)
+        public void teleportToCoords(Player player, double x, double y, double z)
         {
             User userData = PlayersData.getPlayerAccountData(player);
             
@@ -1720,7 +1721,21 @@ namespace CloudRP.Admin
                 uiHandling.sendNotification(player, $"~r~You spawned in a ped ~y~{pedName}", false);
             }
             else AdminUtils.sendNoAuth(player);
+        }
+        
+        [Command("makeobj", "~r~/makeobj [objName] [rot]")]
+        public void makeObject(Player player, string objName, double rot = 0)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
 
+            if (userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
+            {
+                NAPI.Object.CreateObject(NAPI.Util.GetHashKey(objName), player.Position, new Vector3(0, 0, rot), 255);
+                AdminUtils.staffSay(player, $"You spawned in a object {ChatUtils.yellow}{objName}{ChatUtils.White}");
+
+                uiHandling.sendNotification(player, $"~r~You spawned in a ped ~y~{objName}", false);
+            }
+            else AdminUtils.sendNoAuth(player);
         }
 
     }

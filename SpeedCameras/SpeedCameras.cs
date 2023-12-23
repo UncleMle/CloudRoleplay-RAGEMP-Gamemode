@@ -19,56 +19,72 @@ namespace CloudRP.SpeedCameras
             new SpeedCamera
             {
                 position = new Vector3(431.9, -548.4, 28.8),
-                camPropPos = new Vector3(427.9, -564.7, 35.8),
+                camPropPos = new Vector3(399.9, -561.0, 27.1),
+                camFlashPos = new Vector3(400.1, -560.8, 32.7),
+                camRot = -101.37,
                 range = 10,
                 speedLimit = 80,
             },
             new SpeedCamera
             {
                 position = new Vector3(425.8, -536.1, 28.7),
-                camPropPos = new Vector3(427.9, -564.7, 35.8),
+                camPropPos = new Vector3(399.9, -561.0, 27.1),
+                camFlashPos = new Vector3(400.1, -560.8, 32.7),
+                camRot = -101.37,
                 range = 10,
                 speedLimit = 80,
             },
             new SpeedCamera
             {
                 position = new Vector3(-2006.4, -388.6, 11.4),
-                camPropPos = new Vector3(-2012.1, -392.4, 17.3),
+                camPropPos = new Vector3(-2007.4, -395.9, 9.9),
+                camFlashPos = new Vector3(-2007.3, -395.0, 14.4),
+                camRot = 20,
                 range = 10,
                 speedLimit = 80,
             },
             new SpeedCamera
             {
                 position = new Vector3(-76.7, 259.1, 101.4),
-                camPropPos = new Vector3(-87.6, 244.5, 107.2),
+                camPropPos = new Vector3(-74.8, 272.1, 99.9),
+                camFlashPos = new Vector3(-75.0, 271.8, 103.9),
+                camRot = 152,
                 range = 15,
                 speedLimit = 80,
             },
             new SpeedCamera
             {
                 position = new Vector3(616.7, 42.3, 89.8),
-                camPropPos = new Vector3(616.3, 75.2, 103.6),
+                camPropPos = new Vector3(630.7, 57.3, 87.7),
+                camFlashPos = new Vector3(631.0, 57.3, 92.4),
+                camRot = 117,
                 range = 15,
                 speedLimit = 80,
             },
             new SpeedCamera
             {
                 position = new Vector3(170.8, -818.6, 31.2),
-                camPropPos = new Vector3(157.6, -797.0, 39.1),
+                camPropPos = new Vector3(142.7, -823, 29.9),
+                camFlashPos = new Vector3(142.7, -823.8, 35.2),
+                camRot = -52,
                 range = 25,
                 speedLimit = 80,
             },
             new SpeedCamera
             {
                 position = new Vector3(399.7, -989.6, 29.5),
-                camPropPos = new Vector3(392.3, -1009.4, 37.8),
+                camPropPos = new Vector3(391.5, -1003.7, 27.8),
+                camFlashPos = new Vector3(391.5, -1003.7, 32.6),
+                camRot = -57,
                 range = 15,
                 speedLimit = 80,
             },
             new SpeedCamera
             {
                 position = new Vector3(-1032.5, 263.4, 64.8),
-                camPropPos = new Vector3(-1033.8, 277.8, 72.7),
+                camPropPos = new Vector3(-1042.7, 279.5, 62.5),
+                camFlashPos = new Vector3(-1042.7, 279.5, 66.9),
+                camRot = 145,
                 range = 25,
                 speedLimit = 80,
             }
@@ -97,7 +113,7 @@ namespace CloudRP.SpeedCameras
         {
             cameras.ForEach(cam =>
             {
-                NAPI.Object.CreateObject(NAPI.Util.GetHashKey("prop_cctv_cam_04a"), cam.camPropPos, new Vector3(0, 0, 0));
+                NAPI.Object.CreateObject(NAPI.Util.GetHashKey("prop_cctv_pole_04"), cam.camPropPos, new Vector3(0, 0, cam.camRot));
                 ColShape speedCamCol = NAPI.ColShape.CreateSphereColShape(cam.position, cam.range, 0);
                 speedCamCol.SetData(_speedCameraDataIdentifier, cam);
             });
@@ -146,7 +162,7 @@ namespace CloudRP.SpeedCameras
 
                         closePlayers.ForEach(p =>
                         {
-                            p.TriggerEvent("client:handleCameraFlash", player.Vehicle.Id, cameraData.camPropPos.X, cameraData.camPropPos.Y, cameraData.camPropPos.Z);
+                            p.TriggerEvent("client:handleCameraFlash", player.Vehicle.Id, cameraData.camFlashPos.X, cameraData.camFlashPos.Y, cameraData.camFlashPos.Z);
                         });
 
                         characterData.money_amount -= closest.finePrice;

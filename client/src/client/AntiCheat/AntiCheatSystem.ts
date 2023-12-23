@@ -1,5 +1,7 @@
-import { SubtractVector } from "../@types";
+import getUserData from "@/PlayerMethods/getUserData";
+import { SubtractVector, UserData } from "../@types";
 import { _control_ids } from "../Constants/Constants";
+import { AdminRanks } from "@/enums";
 
 class AntiCheat {
 	public static LocalPlayer: PlayerMp;
@@ -65,6 +67,10 @@ class AntiCheat {
 	}
 
 	public static handleWeaponShot() {
+		let userData: UserData | undefined= getUserData();
+
+		if(userData && (userData.adminDuty || userData.admin_status > AdminRanks.Admin_HeadAdmin)) return;
+
 		if (AntiCheat.checkWeaponhash()) {
 			AntiCheat.alertAdmins(AcExceptions.disallowedWeapon, "Disallowed weapon");
 		}
