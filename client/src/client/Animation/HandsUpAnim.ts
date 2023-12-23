@@ -1,6 +1,7 @@
 import { _control_ids } from "@/Constants/Constants";
 import validateKeyPress from "@/PlayerMethods/validateKeyPress";
 import VehicleSystems from "@/VehicleSystems/VehicleSystem";
+import WeaponSystem from "@/WeaponSystem/WeaponSystem";
 
 class HandsUp {
     public static LocalPlayer: PlayerMp;
@@ -20,9 +21,25 @@ class HandsUp {
     }
 
     public static handleRender() {
-        if(HandsUp.LocalPlayer.vehicle && HandsUp.LocalPlayer.vehicle.getPedInSeat(-1) == HandsUp.LocalPlayer.handle && HandsUp.LocalPlayer.getVariable(HandsUp._handsUpAnimIdentifer)) {
-            HandsUp.LocalPlayer.vehicle.setUndriveable(true);
-            VehicleSystems.disableControls();
+        if(HandsUp.LocalPlayer.getVariable(HandsUp._handsUpAnimIdentifer)) {
+            WeaponSystem.disableGunShooting();
+
+            let myPos: Vector3 = HandsUp.LocalPlayer.position;
+            let nearest: VehicleMp[] = mp.vehicles.getClosest(myPos, 1);
+            if(!nearest) return;
+
+            let destinationCoords: Vector3 = nearest[0].position;
+
+            let dirVector: Vector3 = destinationCoords.subtract(myPos);
+
+            mp.game.graphics.drawSpotLight(myPos.x, myPos.y, myPos.z, dirVector.x, dirVector.y, dirVector.z, 255, 255, 255, 100, 150, 0, 13, 1);
+
+            mp.game.graphics.drawLine(myPos.x, myPos.y, myPos.z, destinationCoords.x, destinationCoords.y, destinationCoords.z, 255, 255, 255, 255);
+
+            if(HandsUp.LocalPlayer.vehicle && HandsUp.LocalPlayer.vehicle.getPedInSeat(-1) == HandsUp.LocalPlayer.handle) {
+                HandsUp.LocalPlayer.vehicle.setUndriveable(true);
+                VehicleSystems.disableControls();
+            }
         }
     }
 

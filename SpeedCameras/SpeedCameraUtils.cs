@@ -7,8 +7,8 @@ namespace CloudRP.SpeedCameras
 {
     public class SpeedCamera
     {
-        public string name {  get; set; }
         public Vector3 position { get; set; }
+        public Vector3 camPropPos { get; set; }
         public float range { get; set; }
         public int speedLimit { get; set; }
     }

@@ -7,22 +7,31 @@ class SpeedCameras {
 		SpeedCameras.LocalPlayer = mp.players.local;
 
 		mp.events.add('client:speedCameraTrigger', SpeedCameras.handleTriggerEvent);
-		mp.events.add('client:speedCameraSound', SpeedCameras.handleSound);
+		mp.events.add('client:handleCameraFlash', SpeedCameras.handleCameraFlash);
 	}
 
-	public static async handleSound() {
-		mp.game.audio.playSoundFrontend(1, 'Camera_Shoot', 'Phone_Soundset_Franklin', true);
+    public static async handleCameraFlash(vehId: number, camPos_x: number, camPos_y: number, camPos_z: number) {
+        if(!vehId) return;
+        let camPos: Vector3 = new mp.Vector3(camPos_x, camPos_y, camPos_z);
+        if(!camPos) return;
 
-        mp.game.graphics.requestStreamedTextureDict("heistflash", true);
+        mp.game.audio.playSoundFromCoord(1, "Camera_Shoot", camPos.x, camPos.y, camPos.z, "Phone_Soundset_Franklin", false, 0, false);
 
-        const flashInterval = setInterval(() => {
-            mp.game.graphics.drawSprite("heistflash", "heist_flash", 0.5, 0.5, 1.0, 1.0, 0.0, 255, 255, 255, 180, false);
-        }, 0);
+        let takeFlashInterval = setInterval(() => {
+            let targetVeh: VehicleMp = mp.vehicles.at(vehId);
 
-        await mp.game.waitAsync(SpeedCameras.flashDuration);
+            if(targetVeh) {
+                let destinationCoords: Vector3 = targetVeh.position;
+                let dirVector: Vector3 = destinationCoords.subtract(camPos);
 
-        clearInterval(flashInterval);
-	}
+                mp.game.graphics.drawSpotLight(camPos.x, camPos.y, camPos.z, dirVector.x, dirVector.y, dirVector.z, 255, 255, 255, 100, 5, 2, 100, 10);
+            }
+        }, 0)
+
+        await mp.game.waitAsync(300);
+
+        clearInterval(takeFlashInterval);
+    }
 
 	public static handleTriggerEvent() {
 		if (SpeedCameras.LocalPlayer.vehicle && SpeedCameras.LocalPlayer.vehicle.getPedInSeat(-1) == SpeedCameras.LocalPlayer.handle) {
