@@ -6,6 +6,12 @@ class SpeedCameras {
         SpeedCameras.LocalPlayer = mp.players.local;
 
         mp.events.add("client:speedCameraTrigger", SpeedCameras.handleTriggerEvent);
+        mp.events.add("client:speedCameraSound", SpeedCameras.handleSound);
+    }
+
+    public static handleSound() {
+        mp.game.audio.playSoundFrontend(1, "Camera_Shoot", "Phone_Soundset_Franklin", true);
+
     }
 
     public static handleTriggerEvent() {

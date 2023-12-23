@@ -89,10 +89,12 @@ namespace CloudRP.SpeedCameras
 
                     if(closest != null)
                     {
+                        player.TriggerEvent("client:speedCameraSound");
                         characterData.money_amount -= closest.finePrice;
                         PlayersData.setPlayerCharacterData(player, characterData, false, true);
                         
-                        player.SendChatMessage(ChatUtils.info + $"You have been fined in excess of {closest.finePrice.ToString("C")} for speeding ({speed.ToString("N")}KMH in a {cameraData.speedLimit}KMH Zone). Please go to a police station and pay your fine or you it will end in further legal action being taken.");
+                        player.SendChatMessage(ChatUtils.info + $"You have been fined in excess of {closest.finePrice.ToString("C")} for speeding ({speed.ToString("N0")}KMH in a {cameraData.speedLimit}KMH Zone). " +
+                            $"Please go to a police station and pay your fine or it will end in further legal action being taken.");
                     }
                 }
             }
