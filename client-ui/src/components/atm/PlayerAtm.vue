@@ -43,9 +43,10 @@
                                 <div class="mt-6 mr-[15%] ml-[15%] space-y-5">
                                     <div class="p-3 rounded-lg bg-black/60">
                                         <i class="fa-solid fa-dollar-sign"></i>
-                                            <input class="pr-3 pl-2 pb-3 pt-3 w-[90%] bg-transparent" placeholder="Enter an amount to withdraw"/>
+                                            <input v-model="withdrawCash" class="pr-3 pl-2 pb-3 pt-3 w-[90%] bg-transparent" placeholder="Enter an amount to withdraw"/>
                                     </div>
-                                    <button class="w-full border p-3.5 rounded-lg border-gray-600 bg-black/50 duration-300 hover:text-green-400">
+                                    {{ getLoadingState }}
+                                    <button @click="withdrawPlayerCash" :disabled="serverLoading" class="w-full border p-3.5 rounded-lg border-gray-600 bg-black/50 duration-300 hover:text-green-400">
                                         <LoadingSpinner v-if="serverLoading" />
                                         <span v-else>Withdraw</span>
                                     </button>
@@ -84,7 +85,7 @@ export default {
     },
     methods: {
         withdrawPlayerCash() {
-            this.$store.state.uiStates.loadingState = true;
+            this.$store.state.uiStates.serverLoading = true;
             window.mp.trigger("browser:sendString", "server:atmWithdrawCash", this.withdrawCash);
         }
     }

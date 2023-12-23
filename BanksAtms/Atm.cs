@@ -1,5 +1,6 @@
 ﻿using CloudRP.Character;
 using CloudRP.PlayerData;
+using CloudRP.Utils;
 using CloudRP.World;
 using GTANetworkAPI;
 using Newtonsoft.Json;
@@ -254,7 +255,40 @@ namespace CloudRP.BanksAtms
 
             if(atmData != null && characterData != null)
             {
-                Console.WriteLine("Amount --> " + amount);
+                if(amount == null || string.IsNullOrWhiteSpace(amount))
+                {
+                    uiHandling.sendPushNotifError(player, "Enter a valid cash amount.", 5400, true);
+                    return;
+                }
+
+                try
+                {
+                    int withdrawAmount = int.Parse(amount);
+
+                    if(withdrawAmount > 0 && withdrawAmount < 200000)
+                    {
+                        if((characterData.money_amount - withdrawAmount) < 0)
+                        {
+                            uiHandling.sendPushNotifError(player, "You do not have enough money to withdraw this amount.", 5400, true);
+                            return;
+                        }
+
+                        characterData.money_amount -= withdrawAmount;
+                        characterData.cash_amount += withdrawAmount;
+
+                        PlayersData.setPlayerCharacterData(player, characterData, false, true);
+                        CommandUtils.successSay(player, $"You withdrew {withdrawAmount.ToString("C")}.");
+                        uiHandling.pushRouterToClient(player, Browsers.None);
+                        uiHandling.setLoadingState(player, false);
+                    } else
+                    {
+                        uiHandling.sendPushNotifError(player, "Amount must be greater than zero and less than $200,000.", 5400, true);
+                    }
+                }
+                catch
+                {
+                    uiHandling.sendPushNotifError(player, "Enter a valid cash amount.", 5400, true);
+                }
             }
         }
 

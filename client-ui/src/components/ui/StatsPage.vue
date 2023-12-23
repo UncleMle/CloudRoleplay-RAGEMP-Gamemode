@@ -23,6 +23,10 @@
                                     <span class="absolute right-0 top-0 text-green-400">${{ characterStats.money_amount.toLocaleString("en-US") }}</span>
                                 </div>
                                 <div class="relative w-full mt-4">
+                                    <span class="left-0 top-0 "><i class="fa-solid fa-money-bill pr-2"></i>Cash Amount</span>
+                                    <span class="absolute right-0 top-0 text-green-400">${{ characterStats.cash_amount.toLocaleString("en-US") }}</span>
+                                </div>
+                                <div class="relative w-full mt-4">
                                     <span class="left-0 top-0 "><i class="fa-solid fa-star pr-2"></i>Experience</span>
                                     <span class="absolute right-0 top-0">{{ characterStats.player_exp.toLocaleString("en-US") }}</span>
                                 </div>
