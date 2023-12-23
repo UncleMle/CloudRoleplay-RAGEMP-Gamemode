@@ -246,5 +246,17 @@ namespace CloudRP.BanksAtms
             }
         }
 
+        [RemoteEvent("server:atmWithdrawCash")]
+        public void atmWithdrawCash(Player player, string amount)
+        {
+            Atm atmData = player.GetData<Atm>(_atmDataIdentifier);
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+
+            if(atmData != null && characterData != null)
+            {
+                Console.WriteLine("Amount --> " + amount);
+            }
+        }
+
     }
 }
