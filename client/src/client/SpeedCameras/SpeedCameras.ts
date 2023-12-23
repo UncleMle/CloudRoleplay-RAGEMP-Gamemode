@@ -3,6 +3,8 @@ class SpeedCameras {
     public static serverCameraTrigger: string = "server:handleSpeedCamera";
 
     constructor() {
+        SpeedCameras.LocalPlayer = mp.players.local;
+
         mp.events.add("client:speedCameraTrigger", SpeedCameras.handleTriggerEvent);
     }
 

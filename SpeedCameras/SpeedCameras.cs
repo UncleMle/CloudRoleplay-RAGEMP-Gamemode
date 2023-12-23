@@ -1,8 +1,11 @@
 ﻿using CloudRP.Character;
 using CloudRP.PlayerData;
+using CloudRP.Utils;
 using GTANetworkAPI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace CloudRP.SpeedCameras
@@ -16,8 +19,27 @@ namespace CloudRP.SpeedCameras
             {
                 name = "",
                 position = new Vector3(431.9, -548.4, 28.8),
-                range = 6
+                range = 6,
+                speedLimit = 80,
             }
+        };
+        List<SpeedFine> speedFines = new List<SpeedFine>
+        {
+            new SpeedFine
+            {
+                finePrice = 400,
+                speed = 82
+            },
+            new SpeedFine
+            {
+                finePrice = 800,
+                speed = 120
+            },
+            new SpeedFine
+            {
+                finePrice = 2500,
+                speed = 200
+            },
         };
 
         public SpeedCameras()
@@ -34,7 +56,7 @@ namespace CloudRP.SpeedCameras
         {
             SpeedCamera camData = colshape.GetData<SpeedCamera>(_speedCameraDataIdentifier);
         
-            if(camData != null)
+            if(camData != null && player.IsInVehicle)
             {
                 player.TriggerEvent("client:speedCameraTrigger");
                 player.SetData(_speedCameraDataIdentifier, camData);
@@ -58,9 +80,21 @@ namespace CloudRP.SpeedCameras
             SpeedCamera cameraData = player.GetData<SpeedCamera>(_speedCameraDataIdentifier);
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
-            if(cameraData != null && characterData != null)
+            if(cameraData != null && characterData != null && player.IsInVehicle)
             {
-                Console.WriteLine("Vehicle speed " + vehicleSpeed);
+                double speed = vehicleSpeed * 3.6;
+                if(speed > speedFines[0].speed && speed > cameraData.speedLimit)
+                {
+                    SpeedFine closest = speedFines.OrderBy(item => Math.Abs(speed - item.speed)).First();
+
+                    if(closest != null)
+                    {
+                        characterData.money_amount -= closest.finePrice;
+                        PlayersData.setPlayerCharacterData(player, characterData, false, true);
+                        
+                        player.SendChatMessage(ChatUtils.info + $"You have been fined in excess of {closest.finePrice.ToString("C")} for speeding ({speed.ToString("N")}KMH in a {cameraData.speedLimit}KMH Zone). Please go to a police station and pay your fine or you it will end in further legal action being taken.");
+                    }
+                }
             }
 
         }
