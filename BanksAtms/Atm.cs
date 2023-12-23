@@ -1,4 +1,5 @@
-﻿using CloudRP.PlayerData;
+﻿using CloudRP.Character;
+using CloudRP.PlayerData;
 using CloudRP.World;
 using GTANetworkAPI;
 using Newtonsoft.Json;
@@ -232,9 +233,15 @@ namespace CloudRP.BanksAtms
         public void openAtm(Player player)
         {
             Atm atmData = player.GetData<Atm>(_atmDataIdentifier);
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
-            if(atmData != null)
+            if(atmData != null && characterData != null)
             {
+                uiHandling.handleObjectUiMutation(player, MutationKeys.AtmData, new AtmUiData
+                {
+                    balance = characterData.money_amount
+                });
+
                 uiHandling.pushRouterToClient(player, Browsers.Atm);
             }
         }

@@ -148,5 +148,6 @@ namespace CloudRP.PlayerData
         public static readonly string VehicleFuelData = "vehicle_refuel_data";
         public static readonly string InsuranceVehicles = "insurance_vehicle_data";
         public static readonly string PhoneDataVehicles = "phone_data_player_vehicles";
+        public static readonly string AtmData = "atm_data";
     }   
 }
