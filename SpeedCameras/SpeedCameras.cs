@@ -1,6 +1,7 @@
 ﻿using CloudRP.Character;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
+using CloudRP.Vehicles;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
@@ -18,8 +19,15 @@ namespace CloudRP.SpeedCameras
             new SpeedCamera
             {
                 position = new Vector3(431.9, -548.4, 28.8),
-                camPropPos = new Vector3(-2012.1, -392.4, 17.3),
-                range = 6,
+                camPropPos = new Vector3(427.9, -564.7, 35.8),
+                range = 10,
+                speedLimit = 80,
+            },
+            new SpeedCamera
+            {
+                position = new Vector3(425.8, -536.1, 28.7),
+                camPropPos = new Vector3(427.9, -564.7, 35.8),
+                range = 10,
                 speedLimit = 80,
             },
             new SpeedCamera
@@ -32,35 +40,35 @@ namespace CloudRP.SpeedCameras
             new SpeedCamera
             {
                 position = new Vector3(-76.7, 259.1, 101.4),
-                camPropPos = new Vector3(-2012.1, -392.4, 17.3),
+                camPropPos = new Vector3(-87.6, 244.5, 107.2),
                 range = 15,
                 speedLimit = 80,
             },
             new SpeedCamera
             {
                 position = new Vector3(616.7, 42.3, 89.8),
-                camPropPos = new Vector3(-2012.1, -392.4, 17.3),
+                camPropPos = new Vector3(616.3, 75.2, 103.6),
                 range = 15,
                 speedLimit = 80,
             },
             new SpeedCamera
             {
                 position = new Vector3(170.8, -818.6, 31.2),
-                camPropPos = new Vector3(-2012.1, -392.4, 17.3),
+                camPropPos = new Vector3(157.6, -797.0, 39.1),
                 range = 25,
                 speedLimit = 80,
             },
             new SpeedCamera
             {
                 position = new Vector3(399.7, -989.6, 29.5),
-                camPropPos = new Vector3(-2012.1, -392.4, 17.3),
+                camPropPos = new Vector3(392.3, -1009.4, 37.8),
                 range = 15,
                 speedLimit = 80,
             },
             new SpeedCamera
             {
                 position = new Vector3(-1032.5, 263.4, 64.8),
-                camPropPos = new Vector3(-2012.1, -392.4, 17.3),
+                camPropPos = new Vector3(-1033.8, 277.8, 72.7),
                 range = 25,
                 speedLimit = 80,
             }
@@ -88,7 +96,7 @@ namespace CloudRP.SpeedCameras
         {
             cameras.ForEach(cam =>
             {
-                NAPI.Object.CreateObject(NAPI.Util.GetHashKey("prop_cctv_cam_04a"), cam.position, new Vector3(0, 0, 0));
+                NAPI.Object.CreateObject(NAPI.Util.GetHashKey("prop_cctv_cam_04a"), cam.camPropPos, new Vector3(0, 0, 0));
                 ColShape speedCamCol = NAPI.ColShape.CreateSphereColShape(cam.position, cam.range, 0);
                 speedCamCol.SetData(_speedCameraDataIdentifier, cam);
             });
@@ -126,6 +134,7 @@ namespace CloudRP.SpeedCameras
             if(cameraData != null && characterData != null && player.IsInVehicle)
             {
                 double speed = vehicleSpeed * 3.6;
+
                 if(speed > speedFines[0].speed && speed > cameraData.speedLimit)
                 {
                     SpeedFine closest = speedFines.OrderBy(item => Math.Abs(speed - item.speed)).First();

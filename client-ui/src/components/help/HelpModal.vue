@@ -165,7 +165,7 @@ export default {
                     info: "Opens the mod menu to view mods for your vehicle."
                 },
                 {
-                    name: "/players",
+                    name: "players",
                     arguments: [],
                     info: "Says the current player count."
                 },
