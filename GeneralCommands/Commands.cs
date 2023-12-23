@@ -3,8 +3,10 @@ using CloudRP.Character;
 using CloudRP.Database;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
+using CloudRP.Vehicles;
 using GTANetworkAPI;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace CloudRP.GeneralCommands
@@ -305,6 +307,27 @@ namespace CloudRP.GeneralCommands
                 PlayersData.setPlayerAccountData(player, userData, false, true);
                 CommandUtils.successSay(player, $"You {(userData.auto_login == 1 ? "enabled" : "disabled")}");
             }
+        }
+
+        [Command("dice", "~y~Use:~w~ /dice [amount]")]
+        public void diceCommand(Player player, int amount = 6)
+        {
+            DbCharacter character = PlayersData.getPlayerCharacterData(player);
+
+            if (character == null) return;
+
+            if(amount < 0 || amount > 1000)
+            {
+                CommandUtils.errorSay(player, "Dice value must be greater than zero and less than 1000");
+                return;
+            }
+
+            int diceRoll = new Random().Next(1, amount);
+
+            string prefix = _meColour + $"**** ";
+            string suffix = $" Rolls a {amount} sided dice. It lands on {diceRoll}";
+
+            CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_commands_radius);
         }
 
         [Command("nick", "~y~Use: ~w~/nick [nameOrId] [nickname]", GreedyArg = true)]
