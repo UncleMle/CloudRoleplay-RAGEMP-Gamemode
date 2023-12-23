@@ -5,6 +5,7 @@ import getTargetCharacterData from "@/PlayerMethods/getTargetCharacterData";
 import ScaleForm from "@/Scaleform/ScaleformMessages";
 import GuiSystem from "@/BrowserSystem/GuiSystem";
 import VehicleSystems from "@/VehicleSystems/VehicleSystem";
+import WeaponSystem from "@/WeaponSystem/WeaponSystem";
 
 class DeathSystem {
     public static LocalPlayer: PlayerMp;
@@ -72,6 +73,7 @@ class DeathSystem {
 
         if(characterData.injured_timer > 0) {
             DeathSystem.disableControls();
+            WeaponSystem.disableGunShooting();
             DeathSystem.renderInjuredText();
 
             if(DeathSystem.LocalPlayer.vehicle && DeathSystem.LocalPlayer.vehicle.getPedInSeat(-1) == DeathSystem.LocalPlayer.handle) {

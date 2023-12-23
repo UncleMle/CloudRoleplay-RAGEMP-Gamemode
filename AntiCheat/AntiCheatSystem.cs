@@ -70,7 +70,6 @@ namespace CloudRP.AntiCheat
             player.TriggerEvent("client:weaponSwap");
         }
 
-
         [RemoteEvent("server:CheatDetection")]
         public static void alertAdmins(Player player, int exception, string message)
         {
