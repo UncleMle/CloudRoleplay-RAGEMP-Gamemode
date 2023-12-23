@@ -22,7 +22,7 @@ import VoiceSystem from "./VoiceChat/VoiceSystem";
 import DeathSystem from "./DeathSystem/DeathSystem";
 import VehicleSpeedo from "./VehicleSystems/VehicleSpeedo";
 import VehicleFuel from "./VehicleSystems/VehicleFuel";
-import WeaponSystem from "./weaponSystem/weaponSystem";
+import WeaponSystem from "./WeaponSystem/WeaponSystem";
 import Corpses from "./DeathSystem/Corpses";
 import Afk from "./AntiCheat/Afk";
 import Clothing from "./Character/Clothing";
@@ -41,6 +41,7 @@ import Fingerpointing from "./Animation/Fingerpointing";
 import HandsUp from "./Animation/HandsUpAnim";
 import ScaleForm from "./Scaleform/ScaleformMessages";
 import SpeedCameras from "./SpeedCameras/SpeedCameras";
+import AtmSystem from "./Atms/AtmSystem";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -86,3 +87,4 @@ new Fingerpointing();
 new HandsUp();
 new ScaleForm();
 new SpeedCameras();
+new AtmSystem();

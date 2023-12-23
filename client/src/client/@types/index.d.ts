@@ -429,3 +429,10 @@ interface InsuranceArea {
 	spawnPosition: Vector3,
 	retrievePosition: Vector3
 }
+
+interface Atm {
+	Id: number;
+	OwnerId: number;
+	Position: Vector3;
+	Name: string
+}
