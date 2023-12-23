@@ -73,6 +73,7 @@ namespace CloudRP.SpeedCameras
                 speedLimit = 80,
             }
         };
+
         List<SpeedFine> speedFines = new List<SpeedFine>
         {
             new SpeedFine

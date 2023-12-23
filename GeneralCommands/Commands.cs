@@ -322,7 +322,7 @@ namespace CloudRP.GeneralCommands
                 return;
             }
 
-            int diceRoll = new Random().Next(1, amount);
+            int diceRoll = new Random().Next(1, amount + 1);
 
             string prefix = _meColour + $"**** ";
             string suffix = $" Rolls a {amount} sided dice. It lands on {diceRoll}";

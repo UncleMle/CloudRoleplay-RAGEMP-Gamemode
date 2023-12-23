@@ -7,8 +7,8 @@ import validateKeyPress from "@/PlayerMethods/validateKeyPress";
 import AdminRank from "./AdminRank";
 
 class AdminSystem {
-	public static userData: UserData | undefined;
 	public static LocalPlayer: PlayerMp;
+	public static userData: UserData | undefined;
 	public static viewReportsEvent: string = "server:viewReports";
 
 	constructor() {
@@ -53,7 +53,7 @@ class AdminSystem {
 			let adminRankData = AdminRank.getAdminRankInfo(AdminSystem.userData.admin_status);
 			if(!adminRankData) return;
 
-			let positionString = `~r~X:~w~ ${poz_x} ~r~Y:~w~ ${poz_y} ~r~Z:~w~ ${poz_z}`;
+			let positionString = `~r~X:~w~ ${poz_x} ~r~Y:~w~ ${poz_y} ~r~Z:~w~ ${poz_z} ~r~ROT:~w~ ${AdminSystem.LocalPlayer.getHeading()}`;
 
 			let msg = `~r~On duty as ~w~<font color="${adminRankData.colour}">${adminRankData.rank}~r~ ${AdminSystem.userData.admin_name} ${AdminSystem.userData.isFlying ? "\n~g~[Fly enabled]~w~" : ""}`;
 

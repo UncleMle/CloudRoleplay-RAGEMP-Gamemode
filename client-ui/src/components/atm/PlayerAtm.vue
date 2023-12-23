@@ -69,7 +69,7 @@ import { mapGetters } from 'vuex';
 export default {
     data() {
         return {
-            browserView: "withdraw",
+            browserView: "home",
             withdrawCash: ""
         }
     },

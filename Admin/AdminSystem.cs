@@ -1706,6 +1706,22 @@ namespace CloudRP.Admin
                 AdminUtils.staffSay(player, "Deleted all admin markers associated with your account.");
             }
         }
-        
+
+        [Command("makeped", "~r~/makeped [pedName]")]
+        public void makePed(Player player, string pedName)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if (userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
+            {
+                NAPI.Ped.CreatePed(NAPI.Util.GetHashKey(pedName), player.Position, 0, 0);
+                AdminUtils.staffSay(player, $"You spawned in a ped {ChatUtils.yellow}{pedName}{ChatUtils.White}");
+
+                uiHandling.sendNotification(player, $"~r~You spawned in a ped ~y~{pedName}", false);
+            }
+            else AdminUtils.sendNoAuth(player);
+
+        }
+
     }
 }

@@ -12,6 +12,8 @@ class WeaponSystem {
     }
 
     public static handleRender() {
+        mp.game.weapon.unequipEmptyWeapons = false;
+
         if(WeaponSystem.LocalPlayer.vehicle && WeaponSystem.LocalPlayer.vehicle.getPedInSeat(-1) == WeaponSystem.LocalPlayer.handle) {
             WeaponSystem.disableGunShooting();
         }
