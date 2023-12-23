@@ -15,6 +15,7 @@ import VehicleDealerships from './components/dealership/VehicleDealerships.vue';
 import TattooStore from './components/tattoos/TattooStore.vue';
 import VehicleInsurance from './components/vehicleInsurance/VehicleInsurance.vue';
 import HelpModal from './components/help/HelpModal.vue';
+import PlayerAtm from './components/atm/PlayerAtm.vue';
 
 export default new Router({
     routes: [
@@ -29,6 +30,7 @@ export default new Router({
         { path: '/dealerships', component: VehicleDealerships },
         { path: '/tattoos', component: TattooStore },
         { path: '/insurance', component: VehicleInsurance },
-        { path: '/help', component: HelpModal }
+        { path: '/help', component: HelpModal },
+        { path: '/atm', component: PlayerAtm }
     ]
 });

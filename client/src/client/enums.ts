@@ -34,4 +34,5 @@ export class Browsers {
 	public static readonly Dealership: string = "/dealerships";
 	public static readonly Tattoos: string = "/tattoos";
 	public static readonly Insurance: string = "/insurance";
+	public static readonly Atm: string = "/atm";
 }

@@ -1,4 +1,5 @@
-﻿using CloudRP.World;
+﻿using CloudRP.PlayerData;
+using CloudRP.World;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
@@ -234,7 +235,7 @@ namespace CloudRP.BanksAtms
 
             if(atmData != null)
             {
-                Console.WriteLine("Triggered");
+                uiHandling.pushRouterToClient(player, Browsers.Atm);
             }
         }
 

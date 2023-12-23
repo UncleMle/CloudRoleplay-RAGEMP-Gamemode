@@ -1,6 +1,7 @@
 import { Atm } from "@/@types";
 import { _control_ids } from "@/Constants/Constants";
 import validateKeyPress from "@/PlayerMethods/validateKeyPress";
+import { Browsers } from "@/enums";
 
 class AtmSystem {
     public static LocalPlayer: PlayerMp;
@@ -11,6 +12,14 @@ class AtmSystem {
         AtmSystem.LocalPlayer = mp.players.local;
 
         mp.keys.bind(_control_ids.Y, false, AtmSystem.handleKeyPress_Y);
+        mp.events.add("render", AtmSystem.handleRender);
+    }
+
+    public static handleRender() {
+        if(AtmSystem.LocalPlayer.browserRouter == Browsers.Atm) {
+            mp.gui.cursor.show(true, true);
+        }
+
     }
 
     public static handleKeyPress_Y() {
@@ -18,7 +27,7 @@ class AtmSystem {
             let atmData: Atm = AtmSystem.LocalPlayer.getVariable(AtmSystem._atmDataIdentifier);
 
             if(atmData) {
-                mp.events.callRemote(AtmSystem._atmDataIdentifier);
+                mp.events.callRemote(AtmSystem.serverAtmEvent);
             }
         }
     }
