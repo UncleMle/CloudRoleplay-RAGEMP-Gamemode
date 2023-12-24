@@ -30,7 +30,7 @@ class HousingSystem {
 
 		if (!characterData) return;
 
-		if ((houseData && houseData.house_owner_id == characterData.characterId) || interiorData) {
+		if ((houseData && houseData.house_owner_id == characterData.character_id) || interiorData) {
 			mp.events.callRemote(HousingSystem._houseLockToggleEvent);
 		}
 	}

@@ -13,14 +13,15 @@ class BanksAtms {
 
     constructor() {
         BanksAtms.LocalPlayer = mp.players.local;
-
         mp.keys.bind(_control_ids.Y, false, BanksAtms.handleKeyPress_Y);
+
         mp.events.add("render", BanksAtms.handleRender);
+
         mp.events.add("playerExitColshape", BanksAtms.handleColShapeLeave);
     }
 
     public static handleColShapeLeave(colShape: ColshapeMp) {
-        if(colShape.getVariable(BanksAtms._atmDataIdentifier) && BanksAtms.LocalPlayer.browserRouter == Browsers.Atm) {
+        if((colShape.getVariable(BanksAtms._atmDataIdentifier) || colShape.getVariable(BanksAtms._tellerColshapeDataIdentifier) ) && BanksAtms.LocalPlayer.browserRouter == Browsers.Atm) {
             BrowserSystem.handleReset();
         }
     }
