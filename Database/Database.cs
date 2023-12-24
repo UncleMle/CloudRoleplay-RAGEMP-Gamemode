@@ -5,6 +5,7 @@ using CloudRP.Authentication;
 using CloudRP.Character;
 using CloudRP.GeneralCommands;
 using CloudRP.HousingSystem;
+using CloudRP.InventorySystem;
 using CloudRP.VehicleModification;
 using CloudRP.Vehicles;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +37,7 @@ namespace CloudRP.Database
         public DbSet<House> houses { get; set; }
         public DbSet<FloatingDo> floating_dos { get; set; }
         public DbSet<AdminMarker> admin_markers { get; set; }
+        public DbSet<InventoryItem> inventory_items { get; set; }
     }
 
     public class BaseEntity

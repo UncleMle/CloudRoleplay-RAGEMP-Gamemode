@@ -10,7 +10,7 @@
 
                             <div class="p-3">
                                 <div class="p-1 text-xl pb-4 font-medium">
-                                    <h2>Inventory Items ({{ inventoryItems.length }} KG)</h2>
+                                    <h2>Inventory Items ({{ inventoryItems.length }} KG) {{playerData.inventory_items}}</h2>
                                 </div>
 
                                 <div id="inventory" class="grid grid-cols-6">
@@ -37,39 +37,22 @@
 
 <script>
 import dragular from 'dragula';
+import { mapGetters } from 'vuex';
 
 export default {
     /* eslint-disable */
     data() {
         return {
             inventoryItems: [
-                {
-                    dispName: "Ak-47",
-                    name: "assaultrifle",
-                    id: 2,
-                },
-                {
-                    dispName: "Pistol .50",
-                    name: "pistol50",
-                    id: 3
-                }, {
-                    dispName: "Pistol .50",
-                    name: "pistol50",
-                    id: 3
-                }, {
-                    dispName: "Pistol .50",
-                    name: "pistol50",
-                    id: 3
-                }
             ],
             clothingItems: [
-                {
-                    dispName: "Pistol .50",
-                    name: "pistol50",
-                    id: 3
-                }
             ]
         }
+    },
+    computed: {
+        ...mapGetters({
+            playerData: 'getPlayerInfo'
+        })
     },
     methods: {
         getItemImg(itemName) {
