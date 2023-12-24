@@ -95,6 +95,21 @@ export default {
                     info: "Displays a /me roleplay message to players within proximity."
                 },
                 {
+                    name: "melow",
+                    arguments: ["message"],
+                    info: "Displays a /melow roleplay message to players within proximity."
+                },
+                {
+                    name: "do",
+                    arguments: ["message"],
+                    info: "Displays a /do roleplay message to players within proximity."
+                },
+                {
+                    name: "dolow",
+                    arguments: ["message"],
+                    info: "Displays a /dolow roleplay message to players within proximity."
+                },
+                {
                     name: "ooc or /b",
                     arguments: ["message"],
                     info: "Displays a OOC message to players within proximity."
@@ -108,6 +123,16 @@ export default {
                     name: "afk",
                     arguments: ["answer"],
                     info: "Used to reset afk timer when promted."
+                },
+                {
+                    name: "vlow",
+                    arguments: ["message"],
+                    info: "Sends a message to occupants of a players vehicle."
+                },
+                {
+                    name: "whisper or /w",
+                    arguments: ["nameOrId", "message"],
+                    info: "Whispers to another player within proximity."
                 },
                 {
                     name: "shout or /s",
