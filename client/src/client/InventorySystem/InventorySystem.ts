@@ -16,6 +16,8 @@ class InventorySystem {
         if(validateKeyPress(false, true, true) && getUserCharacterData()) {
             InventorySystem.LocalPlayer.inventoryStatus = !InventorySystem.LocalPlayer.inventoryStatus;
 
+            mp.gui.cursor.show(false, InventorySystem.LocalPlayer.inventoryStatus);
+
             BrowserSystem._browserInstance.execute(`appSys.commit('setUiState', {
                 _stateKey: "inventory",
                 status: ${InventorySystem.LocalPlayer.inventoryStatus}

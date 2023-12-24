@@ -26,7 +26,26 @@ namespace CloudRP.BanksAtms
                     new Vector3(247.1, 222.0, 106.3),
                     new Vector3(252.2, 220.0, 106.3)
                 }
-            }
+            },
+            new Bank
+            {
+                blipPos = new Vector3(309.1, -301.2, 76.4),
+                tellers = new List<Vector3>
+                {
+                    new Vector3(313.1, -278.1, 54.2),
+                    new Vector3(314.7, -278.7, 54.2)
+                }
+            },
+            new Bank
+            {
+                blipPos = new Vector3(-108.7, 6473.3, 39.5),
+                tellers = new List<Vector3>
+                {
+                    new Vector3(-113.7, 6469.6, 31.6),
+                    new Vector3(-112.7, 6468.6, 31.6),
+                    new Vector3(-111.6, 6467.5, 31.6)
+                }
+            },
         };
 
         public Banks()
@@ -76,6 +95,7 @@ namespace CloudRP.BanksAtms
                 {
                     uiHandling.sendPushNotifError(player, "Enter a valid money amount", 6600, true);
                 }
+
                 try
                 {
                     int cashDepo = int.Parse(amount);
@@ -114,7 +134,6 @@ namespace CloudRP.BanksAtms
         [RemoteEvent("server:bankTransferSomeone")]
         public void bankTransferEvent(Player player, string data)
         {
-            Console.WriteLine(data);
             Bank bankData = player.GetData<Bank>(_tellerColshapeDataIdentifier);
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
             BankTransfer bankTransfer = JsonConvert.DeserializeObject<BankTransfer>(data);
