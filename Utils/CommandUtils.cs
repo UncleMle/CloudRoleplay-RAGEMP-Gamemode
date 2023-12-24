@@ -11,6 +11,7 @@ namespace CloudRP.Utils
     internal class CommandUtils : Script
     {
         public static double _rp_commands_radius = 20.0;
+        public static double _rp_commands_radius_low = 6.0;
         public static double _rp_shout_radius = 35.0;
 
         public static Player getPlayerFromNameOrId(string nameOrId)

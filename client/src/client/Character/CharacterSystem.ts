@@ -40,7 +40,7 @@ class CharacterSystem {
 
 		await mp.game.waitAsync(200);
 
-		if(entity.type == "player" && !mp.players.at(entity.remoteId)) return;
+		if(entity.type == "player" && !mp.players.at(entity.remoteId) || entity.type == "ped" && (entity as PedMp).corpseId === undefined) return;
 
 		let charData: CharacterModel = characterModel;
 

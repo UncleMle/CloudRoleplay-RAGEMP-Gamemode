@@ -51,6 +51,43 @@ namespace CloudRP.GeneralCommands
             CommandUtils.errorSay(player, "Invalid answer.");
         }
 
+        [Command("whisper", "~y~Use:~w~ /whisper [nameOrId] [message]", Alias = "w", GreedyArg = true)]
+        public void whisperCommmand(Player player, string nameOrId, string message)
+        {
+            DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+            if (charData == null) return;
+            Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+            if(findPlayer == null || findPlayer != null && Vector3.Distance(findPlayer.Position, player.Position) >= 5)
+            {
+                CommandUtils.errorSay(player, "The player wasn't found. (Are you within distance?)");
+                return;
+            }
+
+            ChatUtils.sendWithNickName(player, findPlayer, "", $"{ChatUtils.yellow}whispers:{ChatUtils.White} " + ChatUtils.White + message);
+            player.SendChatMessage($"{charData.character_name} {ChatUtils.yellow}whispers:{ChatUtils.White} {message}");
+        }
+
+        [Command("vlow", "~y~Use:~w~/vlow [message]", Alias = "vehiclelow", GreedyArg = true)]
+        public void vehicleLowCommand(Player player, string message)
+        {
+            if(!player.IsInVehicle)
+            {
+                CommandUtils.errorSay(player, "You must be in a vehicle to use this command.");
+                return;
+            }
+
+            List<Player> closePlayers = CommandUtils.getPlayersInRadius(player, 20f);
+
+            closePlayers.ForEach(p =>
+            {
+                if(p.IsInVehicle && p.Vehicle.Equals(player.Vehicle))
+                {
+                    ChatUtils.sendWithNickName(player, p, "", $"{ChatUtils.grey}says in vehicle:{ChatUtils.White} {message}");
+                }
+            });
+        }
+
         [Command("me", "~y~Use:~w~ /me [message]", GreedyArg = true)]
         public void onMeCommand(Player player, string me)
         {
@@ -62,6 +99,19 @@ namespace CloudRP.GeneralCommands
             string suffix = " " + me;
 
             CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_commands_radius);
+        }
+        
+        [Command("melow", "~y~Use:~w~ /melow [message]", GreedyArg = true)]
+        public void onMeLowCommand(Player player, string me)
+        {
+            DbCharacter character = PlayersData.getPlayerCharacterData(player);
+
+            if (character == null) return;
+
+            string prefix = _meColour + "[Low] * ";
+            string suffix = " " + me;
+
+            CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_commands_radius_low);
         }
 
         [Command("shout", "~y~Use:~w~ /shout [message]", Alias = "s", GreedyArg = true)]
@@ -127,6 +177,19 @@ namespace CloudRP.GeneralCommands
             string suffix = " ))";
 
             CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_commands_radius);
+        }
+        
+        [Command("dolow", "~y~Use:~w~ /dolow [message]", GreedyArg = true)]
+        public void onDoLowCommand(Player player, string docommand)
+        {
+            DbCharacter character = PlayersData.getPlayerCharacterData(player);
+
+            if (character == null) return;
+
+            string prefix = _meColour + "[Low] * " + docommand + " " + $"(( ";
+            string suffix = " ))";
+
+            CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_commands_radius_low);
         }
 
         [Command("ame", "~y~Use: ~w~/ame [message]", GreedyArg = true, Description = "testaisdj aiosdjaio sdjioj")]

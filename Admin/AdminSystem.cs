@@ -429,14 +429,15 @@ namespace CloudRP.Admin
             if(AdminUtils.checkUserData(player, userData))
             {
                 Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
-                DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
-                if (characterData == null) return;
 
                 if(findPlayer == null)
                 {
                     CommandUtils.notFound(player);
                     return;
                 }
+
+                DbCharacter characterData = PlayersData.getPlayerCharacterData(findPlayer);
+                if (characterData == null) return;
 
                 if (findPlayer.Equals(player))
                 {
@@ -449,7 +450,7 @@ namespace CloudRP.Admin
                     player.Position = findPlayer.Position;
                     player.Dimension = findPlayer.Dimension;
 
-                    AdminUtils.staffSay(player, "Teleported to Player [" + findPlayer.Id + "]");
+                    AdminUtils.staffSay(player, $"Teleported to {characterData.character_name}");
                     ChatUtils.formatConsolePrint($"{userData.admin_name} teleported to player {findPlayer.Id}");
 
                     uiHandling.sendNotification(player, $"~r~You teleported to {characterData.character_name}", false);
@@ -539,7 +540,7 @@ namespace CloudRP.Admin
 
                 if (findPlayer != null)
                 {
-                    DbCharacter findPlayerData = PlayersData.getPlayerCharacterData(player);
+                    DbCharacter findPlayerData = PlayersData.getPlayerCharacterData(findPlayer);
                     if (findPlayerData == null) return;
 
                     if (findPlayer.Equals(player))
@@ -1557,7 +1558,7 @@ namespace CloudRP.Admin
 
                 if(findP != null)
                 {
-                    DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+                    DbCharacter charData = PlayersData.getPlayerCharacterData(findP);
 
                     if(charData != null)
                     {
