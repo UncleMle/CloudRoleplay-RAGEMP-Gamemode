@@ -1,10 +1,13 @@
 ﻿using CloudRP.Character;
+using CloudRP.Database;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
 using CloudRP.World;
 using GTANetworkAPI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace CloudRP.BanksAtms
@@ -73,7 +76,6 @@ namespace CloudRP.BanksAtms
                 {
                     uiHandling.sendPushNotifError(player, "Enter a valid money amount", 6600, true);
                 }
-                
                 try
                 {
                     int cashDepo = int.Parse(amount);
@@ -95,6 +97,8 @@ namespace CloudRP.BanksAtms
 
                     PlayersData.setPlayerCharacterData(player, characterData, false, true);
                     CommandUtils.successSay(player, $"You deposited ${cashDepo} into your bank account.");
+                    uiHandling.setLoadingState(player, false);
+                    uiHandling.pushRouterToClient(player, Browsers.None);
                 }
                 catch
                 {
@@ -105,6 +109,76 @@ namespace CloudRP.BanksAtms
             {
                 uiHandling.sendPushNotifError(player, "You must be in a bank to use this.", 5500, true);
             }
+        }
+
+        [RemoteEvent("server:bankTransferSomeone")]
+        public void bankTransferEvent(Player player, string data)
+        {
+            Console.WriteLine(data);
+            Bank bankData = player.GetData<Bank>(_tellerColshapeDataIdentifier);
+            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            BankTransfer bankTransfer = JsonConvert.DeserializeObject<BankTransfer>(data);
+
+            if(bankData != null && characterData != null && bankTransfer != null)
+            {
+                try
+                {
+                    long transferAmount = long.Parse(bankTransfer.transferAmount);
+
+                    if ((characterData.money_amount - transferAmount) < 0)
+                    {
+                        uiHandling.sendPushNotifError(player, "You don't have enough money to send that amount.", 6600, true);
+                        return;
+                    }
+
+
+                    if (transferAmount < 0 || transferAmount > 200000)
+                    {
+                        uiHandling.sendPushNotifError(player, "Transfer amount must be between $0 and $200,000", 6600, true);
+                        return;
+                    }
+
+                    bool found = false;
+
+                    if (bankTransfer.recieverName != null)
+                    {
+                        NAPI.Pools.GetAllPlayers().ForEach(p =>
+                        {
+                            DbCharacter targetCharData = PlayersData.getPlayerCharacterData(p);
+
+                            if (targetCharData != null && targetCharData.character_name == bankTransfer.recieverName.Replace(" ", "_"))
+                            {
+                                found = true;
+
+                                if (targetCharData.character_id == characterData.character_id)
+                                {
+                                    uiHandling.sendPushNotifError(player, "You cannot bank transfer money to yourself.", 6600, true);
+                                    return;
+                                }
+
+                                characterData.money_amount -= transferAmount;
+                                targetCharData.money_amount += transferAmount;
+
+                                PlayersData.setPlayerCharacterData(player, characterData, false, true);
+                                PlayersData.setPlayerCharacterData(p, targetCharData, false, true);
+                                p.SendChatMessage(ChatUtils.info + $"You have just been bank transferred {transferAmount.ToString("C")}.");
+                                CommandUtils.successSay(player, $"You successfully bank transferred {targetCharData.character_name} {transferAmount.ToString("C")}");
+                                uiHandling.setLoadingState(player, false);
+                            }
+                        });
+                    }
+
+                    if (!found)
+                    {
+                        uiHandling.sendPushNotifError(player, "Player wasn't found.", 6600, true);
+                    }
+                }
+                catch
+                {
+                    uiHandling.sendPushNotifError(player, "Enter a valid transfer amount.", 6600, true);
+                }
+            }
+
         }
 
         [ServerEvent(Event.PlayerEnterColshape)]

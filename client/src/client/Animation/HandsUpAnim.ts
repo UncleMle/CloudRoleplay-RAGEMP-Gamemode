@@ -3,6 +3,7 @@ import NotificationSystem from "@/NotificationSystem/NotificationSystem";
 import validateKeyPress from "@/PlayerMethods/validateKeyPress";
 import VehicleSystems from "@/VehicleSystems/VehicleSystem";
 import WeaponSystem from "@/WeaponSystem/WeaponSystem";
+import { Browsers } from "@/enums";
 
 class HandsUp {
     public static LocalPlayer: PlayerMp;
@@ -60,7 +61,7 @@ class HandsUp {
     }
 
     public static startAnim() {
-        if(validateKeyPress(true, true, true)) {
+        if(validateKeyPress(true, true, true) && HandsUp.LocalPlayer.browserRouter == "/") {
 
             if(HandsUp.LocalPlayer._fuelNozzleObject) {
                 NotificationSystem.createNotification("~r~You can't do this whilst refuelling", false);

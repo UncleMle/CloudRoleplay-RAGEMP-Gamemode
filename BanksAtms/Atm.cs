@@ -252,9 +252,10 @@ namespace CloudRP.BanksAtms
         public void atmWithdrawCash(Player player, string amount)
         {
             Atm atmData = player.GetData<Atm>(_atmDataIdentifier);
+            Bank bankData = player.GetData<Bank>(Banks._tellerColshapeDataIdentifier);
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
 
-            if(atmData != null && characterData != null)
+            if((atmData != null || bankData != null) && characterData != null)
             {
                 if(amount == null || string.IsNullOrWhiteSpace(amount))
                 {

@@ -101,6 +101,9 @@ class BrowserSystem {
 
 	public static resetMutationPusher = (_mutationKey: string) => {
 		if (!BrowserSystem._browserInstance) return;
+		BrowserSystem._browserInstance.execute(`appSys.commit('setLoadingState', {
+			toggle: false
+		})`);
 		BrowserSystem._browserInstance.execute(`appSys.commit("resetPlayerMutationPusher", {
 			_mutationKey: "${_mutationKey}",
 		})`);

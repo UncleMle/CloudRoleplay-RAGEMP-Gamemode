@@ -28,7 +28,7 @@
                                         class="border p-3 rounded-xl border-gray-600 bg-black/50 hover:text-green-400 duration-300 w-full">Withdraw</button>
                                 </div>
                                 <div>
-                                    <button @click="browserView = 'salary'"
+                                    <button
                                         class="border p-3 rounded-xl border-gray-600 bg-black/50 hover:text-green-400 duration-300 w-full">Retrieve
                                         Salary</button>
                                 </div>
@@ -48,18 +48,18 @@
                             </div>
 
                             <div v-if="browserView == 'viewBal'" class="text-center mt-4">
-                                <p>Your current balance is <font class="bg-black/60 p-2 rounded-lg text-green-400">${{
+                                <p>Your current balance is <font class="p-2 rounded-lg text-green-400">${{
                                     playerData.atm_data.balanceMoney.toLocaleString("en-US") }}</font>
                                 </p>
                                 <p class="mt-6">Your current balance in cash is <font
-                                        class="bg-black/60 p-2 rounded-lg text-green-400">${{
+                                        class=" p-2 rounded-lg text-green-400">${{
                                             playerData.atm_data.balanceCash.toLocaleString("en-US") }}</font>
                                 </p>
                             </div>
 
                             <div v-if="browserView == 'withdraw'" class="text-center mt-4">
                                 <div>
-                                    <p>Your current balance is <font class="bg-black/60 p-2 rounded-lg text-green-400">${{
+                                    <p>Your current balance is <font class=" p-2 rounded-lg text-green-400">${{
                                         playerData.atm_data.balanceMoney.toLocaleString("en-US") }}</font>
                                     </p>
                                 </div>
@@ -70,7 +70,6 @@
                                         <input v-model="withdrawCash" class="pr-3 pl-2 pb-3 pt-3 w-[90%] bg-transparent"
                                             placeholder="Enter an amount to withdraw" />
                                     </div>
-                                    {{ getLoadingState }}
                                     <button @click="withdrawPlayerCash" :disabled="serverLoading"
                                         class="w-full border p-3.5 rounded-lg border-gray-600 bg-black/50 duration-300 hover:text-green-400">
                                         <LoadingSpinner v-if="serverLoading" />
@@ -81,7 +80,7 @@
 
                             <div v-if="browserView == 'transfer'" class="text-center mt-4">
                                 <div>
-                                    <p>Your current balance is <font class="bg-black/60 p-2 rounded-lg text-green-400">${{
+                                    <p>Your current balance is <font class="p-2 rounded-lg text-green-400">${{
                                         playerData.atm_data.balanceMoney.toLocaleString("en-US") }}</font>
                                     </p>
                                 </div>
@@ -98,8 +97,7 @@
                                             class="pr-3 pl-2 pb-3 pt-3 w-[90%] bg-transparent"
                                             placeholder="Enter an amount to withdraw" />
                                     </div>
-                                    {{ getLoadingState }}
-                                    <button @click="withdrawPlayerCash" :disabled="serverLoading"
+                                    <button @click="transferCash" :disabled="serverLoading"
                                         class="w-full border p-3.5 rounded-lg border-gray-600 bg-black/50 duration-300 hover:text-green-400">
                                         <LoadingSpinner v-if="serverLoading" />
                                         <span v-else>Transfer</span>
@@ -109,7 +107,7 @@
 
                             <div v-if="browserView == 'deposit'" class="text-center mt-4">
                                 <div>
-                                    <p>Your current cash balance is <font class="bg-black/60 p-2 rounded-lg text-green-400">${{
+                                    <p>Your current cash balance is <font class=" p-2 rounded-lg text-green-400">${{
                                         playerData.atm_data.balanceCash.toLocaleString("en-US") }}</font>
                                     </p>
                                 </div>
@@ -145,7 +143,7 @@ import { mapGetters } from 'vuex';
 export default {
     data() {
         return {
-            browserView: "deposit",
+            browserView: "home",
             withdrawCash: "",
             transferCashName: "",
             transferCashAmount: "",
@@ -170,6 +168,13 @@ export default {
         depositPlayerCash() {
             this.$store.state.uiStates.serverLoading = true;
             window.mp.trigger("browser:sendString", "server:bankDepositCash", this.depositAmount);
+        },
+        transferCash() {
+            this.$store.state.uiStates.serverLoading = true;
+            window.mp.trigger("browser:sendString", "server:bankTransferSomeone", JSON.stringify({
+                recieverName: this.transferCashName,
+                transferAmount: this.transferCashAmount
+            }));
         }
     }
 }
