@@ -3,10 +3,10 @@
         <div class="fixed inset-0 w-full text-white text-lg">
             <div class="container flex items-center mx-auto mt-52">
 
-                <div class="w-full mt-60">
+                <div class="w-full">
                     <div class="flex justify-center w-full">
                         <div
-                            class="rounded-xl text-white w-[90%] bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
+                            class="rounded-xl text-white w-[50%] bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
 
                             <div class="p-3">
                                 <div class="p-1 text-xl pb-4 font-medium">
@@ -14,7 +14,7 @@
                                 </div>
 
                                 <div id="inventory" class="grid grid-cols-6">
-                                    <div v-for="i in 12" :key="i" class="p-0.5">
+                                    <div v-for="i in 24" :key="i" class="p-0.5">
                                         <div v-if="inventoryItems[i]" class="w-32 h-fit text-center border border-gray-500 font-medium text-gray-300">
                                             <div>
                                                 <img :src="getItemImg(inventoryItems[i].name)" class="scale-75"/>
