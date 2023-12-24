@@ -58,6 +58,12 @@ namespace CloudRP.GeneralCommands
             if (charData == null) return;
             Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
 
+            if(findPlayer.Equals(player))
+            {
+                CommandUtils.errorSay(player, "You cannot whisper to yourself.");
+                return;
+            }
+ 
             if(findPlayer == null || findPlayer != null && Vector3.Distance(findPlayer.Position, player.Position) >= 5)
             {
                 CommandUtils.errorSay(player, "The player wasn't found. (Are you within distance?)");
