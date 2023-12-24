@@ -240,7 +240,8 @@ namespace CloudRP.BanksAtms
             {
                 uiHandling.handleObjectUiMutation(player, MutationKeys.AtmData, new AtmUiData
                 {
-                    balance = characterData.money_amount
+                    balanceMoney = characterData.money_amount,
+                    balanceCash = characterData.cash_amount
                 });
 
                 uiHandling.pushRouterToClient(player, Browsers.Atm);

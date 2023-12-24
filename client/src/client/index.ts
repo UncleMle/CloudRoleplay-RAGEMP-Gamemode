@@ -41,8 +41,8 @@ import Fingerpointing from "./Animation/Fingerpointing";
 import HandsUp from "./Animation/HandsUpAnim";
 import ScaleForm from "./Scaleform/ScaleformMessages";
 import SpeedCameras from "./SpeedCameras/SpeedCameras";
-import AtmSystem from "./Atms/AtmSystem";
 import InventorySystem from "./InventorySystem/InventorySystem";
+import BanksAtms from "./BanksAtms/BanksAtmSystem";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -88,5 +88,5 @@ new Fingerpointing();
 new HandsUp();
 new ScaleForm();
 new SpeedCameras();
-new AtmSystem();
+new BanksAtms();
 new InventorySystem();

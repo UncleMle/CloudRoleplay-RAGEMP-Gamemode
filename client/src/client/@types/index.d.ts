@@ -436,3 +436,9 @@ interface Atm {
 	Position: Vector3;
 	Name: string
 }
+
+interface Bank {
+	name: string,
+	blipPos: Vector3,
+	tellers: Vector3[]
+}

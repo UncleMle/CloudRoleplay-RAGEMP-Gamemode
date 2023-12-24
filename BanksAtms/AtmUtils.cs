@@ -6,6 +6,8 @@ namespace CloudRP.BanksAtms
 {
     public class AtmUiData
     {
-        public long balance { get; set; }
+        public bool isBank {  get; set; }
+        public long balanceMoney { get; set; }
+        public long balanceCash { get; set; }
     }
 }
