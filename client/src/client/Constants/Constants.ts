@@ -33,6 +33,7 @@ export const _control_ids = {
 	E: 38,
 	J: 74,
 	X: 88,
+	I: 73,
 	LEFTARR: 37,
 	RIGHTARR: 39,
 	EBIND: 69,

@@ -1,6 +1,7 @@
 declare global {
 	interface PlayerMp {
 		browserRouter: string;
+		inventoryStatus: boolean,
 		fps: number;
 		browserInstance: BrowserMp;
 		browserCurrentState: string;
@@ -14,7 +15,6 @@ declare global {
 		_mobilePhone: ObjectMp | null;
 		lastReceivedPointing: number | undefined;
 		pointingInterval: number | undefined;
-
 	}
 
 	interface PedMp {

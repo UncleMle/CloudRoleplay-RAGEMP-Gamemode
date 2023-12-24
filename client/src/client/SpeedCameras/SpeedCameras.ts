@@ -11,26 +11,28 @@ class SpeedCameras {
 	}
 
     public static async handleCameraFlash(vehId: number, camPos_x: number, camPos_y: number, camPos_z: number) {
-        if(!vehId) return;
-        let camPos: Vector3 = new mp.Vector3(camPos_x, camPos_y, camPos_z);
-        if(!camPos) return;
+        if(vehId !== undefined) {
+            let camPos: Vector3 = new mp.Vector3(camPos_x, camPos_y, camPos_z);
 
-        mp.game.audio.playSoundFromCoord(1, "Camera_Shoot", camPos.x, camPos.y, camPos.z, "Phone_Soundset_Franklin", false, 0, false);
+            if(!camPos) return;
 
-        let takeFlashInterval = setInterval(() => {
-            let targetVeh: VehicleMp = mp.vehicles.at(vehId);
+            mp.game.audio.playSoundFromCoord(1, "Camera_Shoot", camPos.x, camPos.y, camPos.z, "Phone_Soundset_Franklin", false, 0, false);
 
-            if(targetVeh) {
-                let destinationCoords: Vector3 = targetVeh.position;
-                let dirVector: Vector3 = destinationCoords.subtract(camPos);
+            let takeFlashInterval = setInterval(() => {
+                let targetVeh: VehicleMp = mp.vehicles.at(vehId);
 
-                mp.game.graphics.drawSpotLight(camPos.x, camPos.y, camPos.z, dirVector.x, dirVector.y, dirVector.z, 255, 255, 255, 100, 5, 2, 100, 10);
-            }
-        }, 0)
+                if(targetVeh) {
+                    let destinationCoords: Vector3 = targetVeh.position;
+                    let dirVector: Vector3 = destinationCoords.subtract(camPos);
 
-        await mp.game.waitAsync(300);
+                    mp.game.graphics.drawSpotLight(camPos.x, camPos.y, camPos.z, dirVector.x, dirVector.y, dirVector.z, 255, 255, 255, 100, 5, 2, 100, 10);
+                }
+            }, 0)
 
-        clearInterval(takeFlashInterval);
+            await mp.game.waitAsync(300);
+
+            clearInterval(takeFlashInterval);
+        }
     }
 
 	public static handleTriggerEvent() {

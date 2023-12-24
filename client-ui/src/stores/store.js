@@ -45,7 +45,8 @@ const store = new Vuex.Store({
 			vehicleRadarData: {},
 			vehRadarLastTracked: false,
 			renderKeys: {},
-			phoneState: false
+			phoneState: false,
+			inventory: false
 		}
 	},
 	getters: {
@@ -100,7 +101,6 @@ const store = new Vuex.Store({
 			return;
 		},
 		playerMutationSetter: (state, { _mutationKey, data }) => {
-			//console.log(_mutationKey, data);
 			state.playerInfo[_mutationKey] = data;
 		},
 		playerMutationPusher: (state, { _mutationKey, data }) => {

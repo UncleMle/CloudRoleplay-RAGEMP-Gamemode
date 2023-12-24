@@ -3,30 +3,7 @@
         <div class="fixed inset-0 w-full text-white text-lg">
             <div class="container flex items-center mx-auto mt-52">
 
-                <div class="w-full grid grid-cols-2 mt-60">
-                    <div class="flex justify-center w-full">
-                        <div
-                            class="rounded-xl text-white w-[65%] bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
-
-                            <div class="p-3">
-                                <div class="p-1 text-xl pb-4 font-medium">
-                                    <h2>Clothing</h2>
-                                </div>
-
-                                <div id="clothing" class="grid grid-cols-3">
-                                    <div v-for="(element, i) in clothingItems" :key="i">
-                                        <div class="flex justify-center text-center border mr-4 p-3 border-gray-500">
-                                            <img :src="getItemImg(element.name)" class="scale-25 w-20" />
-                                        </div>
-                                        <div class="flex justify-center text-center text-gray-400 font-medium">
-                                            {{ element.dispName }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                <div class="w-full mt-60">
                     <div class="flex justify-center w-full">
                         <div
                             class="rounded-xl text-white w-[90%] bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
@@ -36,13 +13,15 @@
                                     <h2>Inventory Items ({{ inventoryItems.length }} KG)</h2>
                                 </div>
 
-                                <div id="inventory" class="grid grid-cols-3">
-                                    <div v-for="(element, i) in inventoryItems" :key="i">
-                                        <div class="flex justify-center text-center border mr-4 p-3 border-gray-500">
-                                            <img :src="getItemImg(element.name)" class="scale-25 w-20" />
+                                <div id="inventory" class="grid grid-cols-6">
+                                    <div v-for="i in 12" :key="i" class="p-0.5">
+                                        <div v-if="inventoryItems[i]" class="w-32 h-fit text-center border border-gray-500 font-medium text-gray-300">
+                                            <div>
+                                                <img :src="getItemImg(inventoryItems[i].name)" class="scale-75"/>
+                                                <p class="bg-black/20 w-full">{{ inventoryItems[i].dispName }}</p>
+                                            </div>
                                         </div>
-                                        <div class="flex justify-center text-center text-gray-400 font-medium">
-                                            {{ element.dispName }}
+                                        <div v-else class="w-32 h-32 border p-3">
                                         </div>
                                     </div>
                                 </div>

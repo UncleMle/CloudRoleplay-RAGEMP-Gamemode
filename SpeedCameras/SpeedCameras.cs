@@ -18,20 +18,11 @@ namespace CloudRP.SpeedCameras
         {
             new SpeedCamera
             {
-                position = new Vector3(431.9, -548.4, 28.8),
+                position = new Vector3(429.7, -543.6, 28.7),
                 camPropPos = new Vector3(399.9, -561.0, 27.1),
                 camFlashPos = new Vector3(400.1, -560.8, 32.7),
                 camRot = 155,
-                range = 10,
-                speedLimit = 80,
-            },
-            new SpeedCamera
-            {
-                position = new Vector3(425.8, -536.1, 28.7),
-                camPropPos = new Vector3(399.9, -561.0, 27.1),
-                camFlashPos = new Vector3(400.1, -560.8, 32.7),
-                camRot = 155,
-                range = 10,
+                range = 25,
                 speedLimit = 80,
             },
             new SpeedCamera

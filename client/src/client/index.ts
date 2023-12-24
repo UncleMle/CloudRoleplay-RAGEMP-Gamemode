@@ -42,6 +42,7 @@ import HandsUp from "./Animation/HandsUpAnim";
 import ScaleForm from "./Scaleform/ScaleformMessages";
 import SpeedCameras from "./SpeedCameras/SpeedCameras";
 import AtmSystem from "./Atms/AtmSystem";
+import InventorySystem from "./InventorySystem/InventorySystem";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -88,3 +89,4 @@ new HandsUp();
 new ScaleForm();
 new SpeedCameras();
 new AtmSystem();
+new InventorySystem();
