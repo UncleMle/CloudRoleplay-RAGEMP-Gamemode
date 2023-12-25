@@ -126,13 +126,13 @@ class NameTags {
 				if (NameTags.LocalPlayer.guiState || targetUserData.adminDuty) {
 
 
-					if (target.getVariable(VehicleSystems._seatBeltIdentifier) && distance < 5) {
+					if (target.getVariable(VehicleSystems._seatBeltIdentifier) && target.vehicle && distance < 5) {
 						if (!mp.game.graphics.hasStreamedTextureDictLoaded('3dtextures')) {
 							mp.game.graphics.requestStreamedTextureDict('3dtextures', true);
 						}
 
 						if (mp.game.graphics.hasStreamedTextureDictLoaded('3dtextures')) {
-							mp.game.graphics.drawSprite('3dtextures', 'mpgroundlogo_bikers', x, y + 0.054, 0.01, 0.01, 0, 255, 255, 255, 100, false);
+							mp.game.graphics.drawSprite('3dtextures', 'mpgroundlogo_bikers', x, y - 0.064, 0.025, 0.025, 0, 255, 255, 255, 255, false);
 						}
 					}
 

@@ -70,7 +70,7 @@ namespace CloudRP.GeneralCommands
                 return;
             }
 
-            ChatUtils.sendWithNickName(player, findPlayer, "", $"{ChatUtils.yellow}whispers:{ChatUtils.White} " + ChatUtils.White + message);
+            ChatUtils.sendWithNickName(findPlayer, player, "", $" {ChatUtils.yellow}whispers:{ChatUtils.White} " + ChatUtils.White + message);
             player.SendChatMessage($"{charData.character_name} {ChatUtils.yellow}whispers:{ChatUtils.White} {message}");
         }
 
@@ -89,7 +89,7 @@ namespace CloudRP.GeneralCommands
             {
                 if(p.IsInVehicle && p.Vehicle.Equals(player.Vehicle))
                 {
-                    ChatUtils.sendWithNickName(player, p, "", $"{ChatUtils.grey}says in vehicle:{ChatUtils.White} {message}");
+                    ChatUtils.sendWithNickName(p, player, "", $"{ChatUtils.grey}says in vehicle:{ChatUtils.White} {message}");
                 }
             });
         }

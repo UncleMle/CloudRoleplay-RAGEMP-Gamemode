@@ -28,10 +28,10 @@ namespace CloudRP.InventorySystem
 
                 if(findPlayer != null)
                 {
-                    DbCharacter findPlayerCharacterData = PlayersData.getPlayerCharacterData(player);
+                    DbCharacter findPlayerCharacterData = PlayersData.getPlayerCharacterData(findPlayer);
                     if (findPlayerCharacterData == null) return;
 
-                    InventoryItem newItem = InventoryItem.addItemForPlayer(player, itemId);
+                    InventoryItem newItem = InventoryItem.addItemForPlayer(findPlayer, itemId);
 
                     if (newItem != null)
                     {

@@ -17,9 +17,17 @@ class HandsUp {
         mp.keys.bind(_control_ids.X, false, HandsUp.startAnim);
 
         mp.events.add("entityStreamIn", HandsUp.handleStreamIn);
+        mp.events.add("playerEnterVehicle", HandsUp.handleVehEnter);
         mp.events.add("render", HandsUp.handleRender);
 
         mp.events.addDataHandler(HandsUp._handsUpAnimIdentifer, HandsUp.handleDataHandler)
+    }
+
+    public static handleVehEnter() {
+        if(HandsUp.hasHandsUp) {
+            HandsUp.hasHandsUp = false;
+            mp.events.callRemote(HandsUp.syncEvent, false);
+        }
     }
 
     public static handleRender() {
