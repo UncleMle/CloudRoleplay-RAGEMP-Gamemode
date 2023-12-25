@@ -8,6 +8,8 @@ class VehicleSystems {
 	public static beltToggle: boolean;
 	public static vehicleOldPos: Vector3;
 	public static updateVehicleDistEvent: string = "server:updateVehicleDistance";
+	public static toggleSeatBeltEvent: string = "vehicle:toggleSeatBelt";
+	public static _seatBeltIdentifier: string = "playerIsWearingSeatBelt";
 	public static updateDistInteral_seconds: number = 20;
 	public static blockVehicleSeatBelts: number[] = [13, 14, 15, 16, 21, 8];
 
@@ -53,6 +55,9 @@ class VehicleSystems {
 			}
 
 			VehicleSystems.beltToggle = !VehicleSystems.beltToggle;
+
+			mp.events.callRemote(VehicleSystems.toggleSeatBeltEvent, VehicleSystems.beltToggle);
+
 			VehicleSystems.LocalPlayer.setConfigFlag(CF_PED_FLAG_CAN_FLY_THRU_WINDSCREEN, !VehicleSystems.beltToggle);
 
 			NotificationSystem.createNotification(`You have ${VehicleSystems.beltToggle ? "buckled" : "unbuckled"} your seat belt.`, true, true, `${VehicleSystems.beltToggle ? "Buckles" : "Unbuckles"} seatbelt.`);

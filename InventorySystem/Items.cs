@@ -13,7 +13,19 @@ namespace CloudRP.InventorySystem
                 displayName = "Assault Rifle",
                 item_id = 0,
                 name = "assaultrifle",
-            }
+            },
+            new InventoryItem
+            {
+                displayName = "Water Bottle",
+                item_id = 1,
+                name = "water",
+            },
+            new InventoryItem
+            {
+                displayName = "Burger",
+                item_id = 1,
+                name = "burger",
+            },
         };
     }
 }

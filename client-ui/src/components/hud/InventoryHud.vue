@@ -8,20 +8,23 @@
                         <div
                             class="rounded-xl text-white w-[50%] bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
 
-                            <div class="p-3">
+                            <div>
                                 <div class="p-1 text-xl pb-4 font-medium">
-                                    <h2>Inventory Items ({{ inventoryItems.length }} KG) {{playerData.inventory_items}}</h2>
+                                    <h2>Inventory Items ({{ playerData.inventory_items.length }} KG)</h2>
                                 </div>
 
-                                <div id="inventory" class="grid grid-cols-6">
-                                    <div v-for="i in 24" :key="i" class="p-0.5">
-                                        <div v-if="inventoryItems[i]" class="w-32 h-fit text-center border border-gray-500 font-medium text-gray-300">
+                                <div id="inventory" class="grid grid-cols-4 mr-20 ml-20 pb-6">
+                                    <div v-for="i in 24" :key="i" class="border border-gray-500">
+                                        <div id="item" v-if="playerData.inventory_items[i - 1]"
+                                            class="max-h-20 max-w-20 text-center font-medium text-gray-300">
                                             <div>
-                                                <img :src="getItemImg(inventoryItems[i].name)" class="scale-75"/>
-                                                <p class="bg-black/20 w-full">{{ inventoryItems[i].dispName }}</p>
+                                                <img :src="getItemImg(playerData.inventory_items[i - 1].name)"
+                                                    class="w-full h-20 scale-[65%] text-center" />
+                                                <p class="bg-black/40">{{ playerData.inventory_items[i - 1].displayName }}
+                                                </p>
                                             </div>
                                         </div>
-                                        <div v-else class="w-32 h-32 border p-3">
+                                        <div id="dontdrag" v-else class="p-3 w-12 h-28">
                                         </div>
                                     </div>
                                 </div>
@@ -54,6 +57,11 @@ export default {
             playerData: 'getPlayerInfo'
         })
     },
+    watch: {
+        playerData() {
+            this.inventoryItems = this.playerData.inventory_items;
+        }
+    },
     methods: {
         getItemImg(itemName) {
             try {
@@ -71,8 +79,22 @@ export default {
         document.addEventListener("contextmenu", this.startContextMenu);
     },
     mounted() {
-        dragular([document.getElementById("clothing"), document.getElementById("inventory")]);
 
+        dragular([document.getElementById("inventory"), document.getElementById("dontdrag")], {
+            moves: function (el, container, handle) {
+                if (handle.id == "dontdrag") {
+                    console.log("Cant drag");
+                } else {
+                    return true;
+                }
+            },
+            accepts: function () {
+                console.log("has been accepted.");
+                return true;
+            },
+        }).on("drag", () => {
+            console.log("being dragged");
+        });
     }
 }
 </script>

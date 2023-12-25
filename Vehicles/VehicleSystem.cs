@@ -18,6 +18,7 @@ namespace CloudRP.Vehicles
     {
         public static List<DbVehicle> vehicles;
         public static string _vehicleSharedDataIdentifier = "VehicleData";
+        public static string _seatBeltIdentifier = "playerIsWearingSeatBelt";
         private static int _timerInterval_seconds = 10;
         private static Timer saveVehicleTimer;
         public static readonly string[] bones = {"door_dside_f", "door_pside_f", "door_dside_r", "door_pside_r", "bonnet", "boot"};
@@ -584,6 +585,17 @@ namespace CloudRP.Vehicles
                 uiHandling.sendNotification(player, lockUnlockText, !playerData.adminDuty, !playerData.adminDuty, (vehicleData.vehicle_locked ? "Locks" : "Unlocks") + " vehicle.");
             }
         }
+
+        [RemoteEvent("vehicle:toggleSeatBelt")]
+        public void toggleSeatBelt(Player player, bool toggle)
+        {
+            if(player.IsInVehicle)
+            {
+                player.SetData(_seatBeltIdentifier, toggle);
+                player.SetSharedData(_seatBeltIdentifier, toggle);
+            }
+        }
+
 
         [RemoteEvent("server:addVehicleKey")]
         public static void giveVehiclesKeys(Player player, string data)

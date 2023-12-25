@@ -78,7 +78,7 @@ namespace CloudRP.InventorySystem
 
                 getAllInventoryItems(target).ForEach(item =>
                 {
-                    uiHandling.handleObjectUiMutation(target, MutationKeys.Inventory, item);
+                    uiHandling.handleObjectUiMutationPush(target, MutationKeys.Inventory, item);
                 });
             }
         }
