@@ -46,37 +46,40 @@ namespace CloudRP.DeathSystem
         [ServerEvent(Event.PlayerDeath)]
         public void OnPlayerDeath(Player player, Player killer, uint reason)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
-
-            if (userData != null && userData.adminDuty)
+            NAPI.Task.Run(() =>
             {
-                NAPI.Player.SpawnPlayer(player, player.Position);
-                return;
-            }
+                User userData = PlayersData.getPlayerAccountData(player);
 
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
-            DbCharacter killerData = null;
-
-            if (killer != null)
-            {
-                killerData = PlayersData.getPlayerCharacterData(killer);
-            }
-
-            if (characterData != null)
-            {
-                AdminUtils.sendMessageToAllStaff($"{characterData.character_name} [{player.Id}] was {(characterData.injured_timer > 0 ? "killed" : "injured")}{(killerData != null ? $" by {killerData.character_name} [{killer.Id}]" : "")}.", (int)AdminRanks.Admin_SeniorSupport);
-                
-                if (characterData.injured_timer > 0)
+                if (userData != null && userData.adminDuty)
                 {
-                    resetTimer(player, characterData);
-                    respawnAtHospital(player);
+                    NAPI.Player.SpawnPlayer(player, player.Position);
+                    return;
                 }
-                else
+
+                DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+                DbCharacter killerData = null;
+
+                if (killer != null)
                 {
-                    NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.info + "You have been injured.");
-                    updateAndSetInjuredState(player, characterData);
+                    killerData = PlayersData.getPlayerCharacterData(killer);
                 }
-            }
+
+                if (characterData != null)
+                {
+                    AdminUtils.sendMessageToAllStaff($"{characterData.character_name} [{player.Id}] was {(characterData.injured_timer > 0 ? "killed" : "injured")}{(killerData != null ? $" by {killerData.character_name} [{killer.Id}]" : "")}.", (int)AdminRanks.Admin_SeniorSupport);
+
+                    if (characterData.injured_timer > 0)
+                    {
+                        resetTimer(player, characterData);
+                        respawnAtHospital(player);
+                    }
+                    else
+                    {
+                        NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.info + "You have been injured.");
+                        updateAndSetInjuredState(player, characterData);
+                    }
+                }
+            });
         }
 
         public static void respawnAtHospital(Player player)
@@ -140,7 +143,6 @@ namespace CloudRP.DeathSystem
         public static void saveInjuredTime(Player player)
         {
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
-
             if (characterData == null) return;
 
             if(characterData.injured_timer - 10 <= 0)

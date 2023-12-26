@@ -112,10 +112,12 @@ class DeathSystem {
     public static handleDataHandler(entity: PlayerMp, data: CharacterData) {
         if(entity.type != "player" || !data) return;
 
+        if(entity.remoteId != DeathSystem.LocalPlayer.remoteId) return;
+
         if(data.injured_timer > 0) {
             DeathSystem.injuredTimer = data.injured_timer;
             DeathSystem.playDeathAnim(entity);
-        } else if(entity.remoteId == DeathSystem.LocalPlayer.remoteId) {
+        } else {
             mp.game.graphics.stopAllScreenEffects();
         }
     }

@@ -15,9 +15,10 @@ class ConvienceStores {
     }
 
     private static initPed(ped: PedMp) {
+        ped.setDynamic(false);
         ped.freezePosition(true);
-		ped.setInvincible(true);
-		ped.setProofs(false, false, false, false, false, false, false, false);
+        ped.setInvincible(true);
+        ped.setProofs(false, false, false, false, false, false, false, false);
     }
 }
 
