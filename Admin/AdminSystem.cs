@@ -11,10 +11,8 @@ using CloudRP.Vehicles;
 using Discord;
 using GTANetworkAPI;
 using Integration;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace CloudRP.Admin
@@ -477,6 +475,8 @@ namespace CloudRP.Admin
                         return;
                     }
 
+                    if (AdminUtils.isImmune(player, PlayersData.getPlayerAccountData(findPlayer))) return;
+
                     findPlayer.Kick();
                     ChatUtils.formatConsolePrint($"{userData.admin_name} kicked {characterData.character_name}");
                     uiHandling.sendNotification(player, $"~r~You kicked {userData.admin_name}", false);
@@ -541,13 +541,14 @@ namespace CloudRP.Admin
                 if (findPlayer != null)
                 {
                     DbCharacter findPlayerData = PlayersData.getPlayerCharacterData(findPlayer);
-                    if (findPlayerData == null) return;
 
                     if (findPlayer.Equals(player))
                     {
                         CommandUtils.errorSay(player, "You cannot bring yourself");
                         return;
                     }
+
+                    if (AdminUtils.isImmune(player, PlayersData.getPlayerAccountData(findPlayer))) return;
 
                     AntiCheatSystem.sleepClient(findPlayer);
                     findPlayer.Position = player.Position;
@@ -560,11 +561,7 @@ namespace CloudRP.Admin
                     uiHandling.sendNotification(player, $"~r~You teleported {findPlayerData.character_name}.", false);
                     uiHandling.sendNotification(findPlayer, $"~r~You have been teleported by {userData.admin_name}.", false);
                 }
-                else
-                {
-                    CommandUtils.notFound(player);
-                    return;
-                }
+                else CommandUtils.notFound(player);
             }
         }
 
@@ -699,6 +696,8 @@ namespace CloudRP.Admin
                         return;
                     }
 
+                    if (AdminUtils.isImmune(player, targetPlayerData)) return;
+
                     targetPlayerData.isFrozen = targetPlayerData.isFrozen = !targetPlayerData.isFrozen;
                     string isFrozen = targetPlayerData.isFrozen ? "froze" : "unfroze";
 
@@ -827,6 +826,8 @@ namespace CloudRP.Admin
                     return;
                 }
 
+                if (AdminUtils.isImmune(player, PlayersData.getPlayerAccountData(getPlayer))) return;
+
                 characterData.player_dimension = dimension;
                 getPlayer.Dimension = dimension;
 
@@ -922,7 +923,7 @@ namespace CloudRP.Admin
                 User banPlayerUserData = PlayersData.getPlayerAccountData(banPlayer);
                 DbCharacter characterData = PlayersData.getPlayerCharacterData(banPlayer);
 
-                if(banPlayerUserData == null || characterData == null) return;
+                if (AdminUtils.isImmune(player, banPlayerUserData)) return;
 
                 if (time < -1)
                 {
@@ -960,7 +961,6 @@ namespace CloudRP.Admin
                     AdminUtils.staffSay(player, $"No ban for user {accountName} was found.");
                 }
             }
-            
         }
 
         [Command("spw", "~r~/spw [weaponName] [ammo]")]
@@ -1075,6 +1075,7 @@ namespace CloudRP.Admin
             {
                 Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
                 DbCharacter characterData = PlayersData.getPlayerCharacterData(findPlayer);
+                User targetUserData = PlayersData.getPlayerAccountData(findPlayer);
 
                 if(findPlayer == null)
                 {
@@ -1082,11 +1083,13 @@ namespace CloudRP.Admin
                     return;
                 }
 
-                if(PlayersData.getPlayerAccountData(findPlayer).adminDuty)
+                if (targetUserData != null && targetUserData.adminDuty)
                 {
                     CommandUtils.errorSay(player, "You cannot use this command with on duty admins.");
                     return;
                 }
+
+                if (AdminUtils.isImmune(player, targetUserData)) return;
 
                 findPlayer.Health = health;
 
@@ -1117,6 +1120,8 @@ namespace CloudRP.Admin
 
                 User findPlayerData = PlayersData.getPlayerAccountData(findPlayer);
 
+                if (AdminUtils.isImmune(player, findPlayerData)) return;
+
                 findPlayerData.admin_name = adminName;
 
                 using(DefaultDbContext dbContext = new DefaultDbContext())
@@ -1146,6 +1151,12 @@ namespace CloudRP.Admin
 
             if(userData != null && (userData.admin_status > (int)AdminRanks.Admin_Admin && userData.adminDuty || userData.admin_status > (int)AdminRanks.Admin_HeadAdmin))
             {
+                if(findPlayer == null)
+                {
+                    CommandUtils.notFound(player);
+                    return;
+                }
+
                 if(adminRankSet > RankList.adminRanksList.Length || adminRankSet < 0)
                 {
                     AdminUtils.staffSay(player, "Enter a valid admin rank between 0 and " +RankList.adminRanksList.Length);
@@ -1173,7 +1184,9 @@ namespace CloudRP.Admin
                 User findPlayerData = PlayersData.getPlayerAccountData(findPlayer);
                 DbCharacter findPlayerCharData = PlayersData.getPlayerCharacterData(findPlayer);
 
-                if(findPlayerData.admin_status >= (int)AdminRanks.Admin_SeniorAdmin && userData.admin_status <= (int)AdminRanks.Admin_SeniorAdmin)
+                if (AdminUtils.isImmune(player, findPlayerData)) return;
+
+                if (findPlayerData.admin_status >= (int)AdminRanks.Admin_SeniorAdmin && userData.admin_status <= (int)AdminRanks.Admin_SeniorAdmin)
                 {
                     AdminUtils.staffSay(player, "You cannot remove admin ranks from a rank that high.");
                     return;
@@ -1558,6 +1571,16 @@ namespace CloudRP.Admin
 
                 if(findP != null)
                 {
+                    User targetUserData = PlayersData.getPlayerAccountData(findP);
+
+                    if(targetUserData.adminDuty)
+                    {
+                        CommandUtils.errorSay(player, "You cannot apply this command for on duty admins.");
+                        return;
+                    }
+
+                    if (AdminUtils.isImmune(player, targetUserData)) return;
+
                     DbCharacter charData = PlayersData.getPlayerCharacterData(findP);
 
                     if(charData != null)
@@ -1592,11 +1615,16 @@ namespace CloudRP.Admin
 
                 if(findPlayer != null && findPlayerCharData != null)
                 {
-                    if(PlayersData.getPlayerAccountData(findPlayer) != null && PlayersData.getPlayerAccountData(player).adminDuty)
+                    User targetUserData = PlayersData.getPlayerAccountData(findPlayer);
+
+                    if(targetUserData.adminDuty)
                     {
-                        CommandUtils.errorSay(player, "You cannot use command on on duty admins.");
+                        CommandUtils.errorSay(player, "You cannot use this command with on duty admins.");
                         return;
                     }
+
+                    if (AdminUtils.isImmune(player, targetUserData)) return;
+
 
                     DeathEvent.respawnAtHospital(findPlayer);
                     AdminUtils.staffSay(findPlayer, $"You were slain by {userData.admin_name}.");
@@ -1720,7 +1748,7 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
+            if (userData.admin_status > (int)AdminRanks.Admin_Developer)
             {
                 NAPI.Ped.CreatePed(NAPI.Util.GetHashKey(pedName), player.Position, 0, 0);
                 AdminUtils.staffSay(player, $"You spawned in a ped {ChatUtils.yellow}{pedName}{ChatUtils.White}");
@@ -1735,7 +1763,7 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
+            if (userData.admin_status > (int)AdminRanks.Admin_Developer)
             {
                 NAPI.Object.CreateObject(NAPI.Util.GetHashKey(objName), player.Position, new Vector3(0, 0, rot), 255);
                 AdminUtils.staffSay(player, $"You spawned in a object {ChatUtils.yellow}{objName}{ChatUtils.White}");

@@ -96,6 +96,16 @@ namespace CloudRP.Utils
             }
         }
 
+        public static bool isImmune(Player player, User userData)
+        {
+            if (userData.admin_status > (int)AdminRanks.Admin_Founder)
+            {
+                CommandUtils.errorSay(player, "Specified player is immune to this command");
+                return true;
+            }
+            else return false;
+        }
+
         public static void setPed(Player player, string pedName)
         {
             uint hash = NAPI.Util.GetHashKey(pedName);
@@ -260,6 +270,8 @@ namespace CloudRP.Utils
         {
             string charName = CommandUtils.getCharName(characterName);
 
+            bool wasBanned = false;
+
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
                 DbCharacter findCharacter = dbContext.characters.Where(character => characterName.ToLower() == charName.ToLower()).FirstOrDefault(); 
@@ -268,29 +280,37 @@ namespace CloudRP.Utils
                 {
                     List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
 
-                    foreach(Player p in onlinePlayers)
+                    Account findAccount = dbContext.accounts
+                        .Where(acc => acc.account_id == findCharacter.owner_id)
+                        .FirstOrDefault();
+
+                    if(findAccount != null)
                     {
-                        DbCharacter pCharData = PlayersData.getPlayerCharacterData(p);
-
-                        if (pCharData != null && pCharData.character_id == findCharacter.character_id)
+                        if(findAccount.admin_status < (int)AdminRanks.Admin_Developer)
                         {
-                            staffSay(p, "Your character has been character banned.");
+                            foreach (Player p in onlinePlayers)
+                            {
+                                DbCharacter pCharData = PlayersData.getPlayerCharacterData(p);
 
-                            p.Kick();
+                                if (pCharData != null && pCharData.character_id == findCharacter.character_id)
+                                {
+                                    staffSay(p, "Your character has been character banned.");
+
+                                    p.Kick();
+                                }
+                            }
+
+                            findCharacter.character_isbanned = 1;
+
+                            dbContext.Update(findCharacter);
+                            dbContext.SaveChanges();
+                            wasBanned = true;
                         }
                     }
-
-                    findCharacter.character_isbanned = 1;
-                    
-                    dbContext.Update(findCharacter);
-                    dbContext.SaveChanges();
-
-                    return true;
-                } else
-                {
-                    return false;
-                }
+                } 
             }
+
+            return wasBanned;
         }       
         
         public static bool unBanCharacter(string characterName)
