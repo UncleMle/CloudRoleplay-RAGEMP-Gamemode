@@ -112,6 +112,23 @@ namespace CloudRP.Admin
             await DiscordIntegration.SendEmbed(report.discordChannelId, sendInChannel);
         }
 
+        [Command("ann", "~r~/ann [message]", Alias = "announce", GreedyArg = true)]
+        public void announceCommand(Player player, string message)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+
+            if(userData.admin_status > (int)AdminRanks.Admin_SeniorModerator && userData.adminDuty || userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
+            {
+                string colouredAdminRank = AdminUtils.getColouredAdminRank(userData);
+
+                string annMessage = $"{ChatUtils.red}[Announcement] {colouredAdminRank} {userData.admin_name} {ChatUtils.red}says:{ChatUtils.White} {message}";
+
+                NAPI.Chat.SendChatMessageToAll(annMessage);
+
+            } else AdminUtils.sendNoAuth(player);
+
+        }
+
         [Command("aesp", "~r~/asep")]
         public void adminEspToggle(Player player)
         {
@@ -578,7 +595,7 @@ namespace CloudRP.Admin
                 Vector3 playerPosition = player.Position;
                 float playerRotation = player.Rotation.Z;
 
-                (Vehicle vehicle, DbVehicle vehicleData) = VehicleSystem.buildVehicle(vehName, playerPosition, playerRotation, charData.character_id, colourOne, colourTwo, charData.character_name, true);
+                (Vehicle vehicle, DbVehicle vehicleData) = VehicleSystem.buildVehicle(vehName, playerPosition, playerRotation, charData.character_id, colourOne, colourTwo, charData.character_name);
 
                 if (vehicle == null) return;
 
