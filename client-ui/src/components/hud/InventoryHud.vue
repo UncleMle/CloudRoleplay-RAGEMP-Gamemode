@@ -70,6 +70,9 @@ export default {
                 return require("../../assets/img/cars/sentinel.png");
             }
         },
+        handler(e) {
+            console.log("Triggered");
+        },
         startContextMenu(e) {
             console.log(e);
         }

@@ -43,6 +43,7 @@ import ScaleForm from "./Scaleform/ScaleformMessages";
 import SpeedCameras from "./SpeedCameras/SpeedCameras";
 import InventorySystem from "./InventorySystem/InventorySystem";
 import BanksAtms from "./BanksAtms/BanksAtmSystem";
+import ConvienceStores from "./ConvienceStores/ConvIenceStores";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -90,3 +91,4 @@ new ScaleForm();
 new SpeedCameras();
 new BanksAtms();
 new InventorySystem();
+new ConvienceStores();
