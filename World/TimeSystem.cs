@@ -35,19 +35,22 @@ namespace CloudRP.World
 
         public void syncWorldTime(object source = null, ElapsedEventArgs e = null)
         {
-            if (!timeSyncOn) return;
+            NAPI.Task.Run(() =>
+            {
+                if (!timeSyncOn) return;
 
-            DateTime date = DateTime.Now;
-            float hourOne = date.Hour;
-            float minuteOne = date.Minute;
-            float secondsOne = date.Second;
-            float miliSeconds = date.Millisecond;
+                DateTime date = DateTime.Now;
+                float hourOne = date.Hour;
+                float minuteOne = date.Minute;
+                float secondsOne = date.Second;
+                float miliSeconds = date.Millisecond;
 
-            hour = (int)((Math.Floor(minuteOne / 2) + hourOne * 6) % 24);
-            min = (int)(Math.Floor(secondsOne / 2) + minuteOne * 30) % 60;
-            sec = (int)(Math.Floor(miliSeconds * 0.03) + secondsOne * 30) % 60;
+                hour = (int)((Math.Floor(minuteOne / 2) + hourOne * 6) % 24);
+                min = (int)(Math.Floor(secondsOne / 2) + minuteOne * 30) % 60;
+                sec = (int)(Math.Floor(miliSeconds * 0.03) + secondsOne * 30) % 60;
 
-            NAPI.World.SetTime(hour, min, sec);
+                NAPI.World.SetTime(hour, min, sec);
+            });
         }
 
         [Command("tsync", "~r~/tsync")]

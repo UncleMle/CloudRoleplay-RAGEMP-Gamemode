@@ -38,7 +38,8 @@ class CharacterSystem {
 			charData = JSON.parse(characterModel);
 		}
 
-		await mp.game.waitAsync(200);
+		await mp.game.waitAsync(50);
+		if(!entity) return;
 
 		if((entity.type == "ped" && mp.peds.exists(entity as PedMp)) || (entity.type == "player" && mp.players.exists(entity as PlayerMp))) {
 			mp.gui.chat.push(`[Debug] ${entity.handle} | ${entity.type}`);
@@ -103,8 +104,8 @@ class CharacterSystem {
 
 	public static handleEntityStreamIn(entity: PlayerMp) {
 		if (entity.type != "player") return;
-		let characterData: CharacterData | undefined = getTargetCharacterData(entity as PlayerMp);
-		let userData: UserData | undefined = getTargetData(entity as PlayerMp);
+		let characterData: CharacterData | undefined = getTargetCharacterData(entity);
+		let userData: UserData | undefined = getTargetData(entity);
 
 		if (!userData || !characterData) return;
 

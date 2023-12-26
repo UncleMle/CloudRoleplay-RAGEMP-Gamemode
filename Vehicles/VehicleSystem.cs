@@ -175,26 +175,30 @@ namespace CloudRP.Vehicles
 
             foreach (var vehicle in allVehicles)
             {
-                try
+                NAPI.Task.Run(() =>
                 {
-                    if(getVehicleData(vehicle) == null)
+                    try
                     {
-                        vehicle.Delete();
-                        ChatUtils.formatConsolePrint("Possible vehicle spawn cheat. Vehicle with no data found!");
-                    } else
-                    {
-                        DbVehicle vehicleData = getVehicleData(vehicle);
-
-                        if(vehicleData != null)
+                        if (getVehicleData(vehicle) == null)
                         {
-                            saveVehicleData(vehicle, vehicleData, true);
+                            vehicle.Delete();
+                            ChatUtils.formatConsolePrint("Possible vehicle spawn cheat. Vehicle with no data found!");
+                        }
+                        else
+                        {
+                            DbVehicle vehicleData = getVehicleData(vehicle);
+
+                            if (vehicleData != null)
+                            {
+                                saveVehicleData(vehicle, vehicleData, true);
+                            }
                         }
                     }
-                }
-                catch (Exception ex)
-                {
-                    ChatUtils.formatConsolePrint(ex.ToString());
-                }
+                    catch (Exception ex)
+                    {
+                        ChatUtils.formatConsolePrint(ex.ToString());
+                    }
+                });
             }
         }
 

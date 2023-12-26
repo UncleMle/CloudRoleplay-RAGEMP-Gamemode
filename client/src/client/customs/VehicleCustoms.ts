@@ -86,12 +86,12 @@ class VehicleCustoms {
         }
     }
 
-    public static handleDataHandler(entity: VehicleMp, data: VehicleData) {
-        if(entity.type != "vehicle" || !data) return;
+    public static handleDataHandler(entity: VehicleMp) {
+        if(entity.type != "vehicle") return;
 
         if(VehicleCustoms.LocalPlayer.vehicle == entity && VehicleCustoms.LocalPlayer.browserRouter == Browsers.ModsView) return;
 
-        VehicleCustoms.setVehicleAttachments(data.vehicle_mods, false, entity);
+        VehicleCustoms.setVehicleAttachments(getVehicleData(entity)?.vehicle_mods, false, entity);
     }
 
     public static handleStreamIn(entity: VehicleMp) {

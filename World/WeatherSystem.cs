@@ -62,40 +62,43 @@ namespace CloudRP.World
 
         public static void setWeather(int code)
         {
-            switch (code)
+            NAPI.Task.Run(() =>
             {
-                case 1000:
-                    NAPI.World.SetWeather(Weather.EXTRASUNNY);
-                    break;
-                case 1003:
-                    NAPI.World.SetWeather(Weather.CLOUDS);
-                    break;
-                case 1006:
-                    NAPI.World.SetWeather(Weather.CLOUDS);
-                    break;
-                case 1063:
-                case 1225:
-                case 1066:
-                    NAPI.World.SetWeather(Weather.SNOWLIGHT);
-                    break;
-                case 1135:
-                    NAPI.World.SetWeather(Weather.FOGGY);
-                    break;
-                case 1183:
-                    NAPI.World.SetWeather(Weather.RAIN);
-                    break;
-                case 1189:
-                    NAPI.World.SetWeather(Weather.RAIN);
-                    break;
-                case 1273:
-                    NAPI.World.SetWeather(Weather.THUNDER);
-                    break;
-                default:
-                    NAPI.World.SetWeather(Weather.CLEAR);
-                    break;
-            }
+                switch (code)
+                {
+                    case 1000:
+                        NAPI.World.SetWeather(Weather.EXTRASUNNY);
+                        break;
+                    case 1003:
+                        NAPI.World.SetWeather(Weather.CLOUDS);
+                        break;
+                    case 1006:
+                        NAPI.World.SetWeather(Weather.CLOUDS);
+                        break;
+                    case 1063:
+                    case 1225:
+                    case 1066:
+                        NAPI.World.SetWeather(Weather.SNOWLIGHT);
+                        break;
+                    case 1135:
+                        NAPI.World.SetWeather(Weather.FOGGY);
+                        break;
+                    case 1183:
+                        NAPI.World.SetWeather(Weather.RAIN);
+                        break;
+                    case 1189:
+                        NAPI.World.SetWeather(Weather.RAIN);
+                        break;
+                    case 1273:
+                        NAPI.World.SetWeather(Weather.THUNDER);
+                        break;
+                    default:
+                        NAPI.World.SetWeather(Weather.CLEAR);
+                        break;
+                }
 
-            ChatUtils.formatConsolePrint("Set weather to " +  code, ConsoleColor.Cyan);
+                ChatUtils.formatConsolePrint("Set weather to " + code, ConsoleColor.Cyan);
+            });
         }
 
         [Command("wsync", "~r~/wsync")]
