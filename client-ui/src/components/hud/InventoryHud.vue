@@ -13,18 +13,17 @@
                                     <h2>Inventory Items ({{ playerData.inventory_items.length }} KG)</h2>
                                 </div>
 
-                                <div id="inventory" class="grid grid-cols-4 mr-20 ml-20 pb-6">
-                                    <div v-for="i in 24" :key="i" class="border border-gray-500">
-                                        <div id="item" v-if="playerData.inventory_items[i - 1]"
-                                            class="max-h-20 max-w-20 text-center font-medium text-gray-300">
-                                            <div>
-                                                <img :src="getItemImg(playerData.inventory_items[i - 1].name)"
-                                                    class="w-full h-20 scale-[65%] text-center" />
-                                                <p class="bg-black/40">{{ playerData.inventory_items[i - 1].displayName }}
+                                <div id="inventory" class="grid grid-cols-6 w-full">
+                                    <div v-for="i in 24" :key="i" class="border border-gray-500 h-32 w-full">
+                                        <div v-if="playerData.inventory_items[i - 1]" class="h-full w-full relative">
+
+                                            <img :src="getItemImg(playerData.inventory_items[i - 1].name)" class="scale-[55%] absolute bottom-2" />
+
+                                            <div class="absolute bottom-0 bg-black/70 w-full">
+                                                <p class="text-center max-h-7 max-w-xs overflow-hidden text-ellipsis whitespace-nowrap font-medium text-gray-300">
+                                                    {{ playerData.inventory_items[i - 1].displayName }}
                                                 </p>
                                             </div>
-                                        </div>
-                                        <div id="dontdrag" v-else class="p-3 w-12 h-28">
                                         </div>
                                     </div>
                                 </div>

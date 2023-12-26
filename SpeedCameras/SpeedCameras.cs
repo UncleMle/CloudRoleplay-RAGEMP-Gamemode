@@ -149,9 +149,9 @@ namespace CloudRP.SpeedCameras
 
                     if(closest != null)
                     {
-                        List<Player> closePlayers = NAPI.Player.GetPlayersInRadiusOfPlayer(40f, player);
+                        List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
 
-                        closePlayers.ForEach(p =>
+                        onlinePlayers.ForEach(p =>
                         {
                             p.TriggerEvent("client:handleCameraFlash", player.Vehicle.Id, cameraData.camFlashPos.X, cameraData.camFlashPos.Y, cameraData.camFlashPos.Z);
                         });
