@@ -132,7 +132,7 @@ class NameTags {
 						}
 
 						if (mp.game.graphics.hasStreamedTextureDictLoaded('3dtextures')) {
-							mp.game.graphics.drawSprite('3dtextures', 'mpgroundlogo_bikers', x, y - 0.064, 0.025, 0.025, 0, 255, 255, 255, 255, false);
+							mp.game.graphics.drawSprite('3dtextures', 'mpgroundlogo_bikers', x, y - 0.064, 0.025, 0.025, 0, 0, 255, 0, 255, false);
 						}
 					}
 

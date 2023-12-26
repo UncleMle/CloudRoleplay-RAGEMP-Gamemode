@@ -39,7 +39,7 @@ class Corpses {
 
 					let rootDrawCoords: { x: number, y: number } = mp.game.graphics.world3dToScreen2d(new mp.Vector3(rootBone.x, rootBone.y, rootBone.z));
 
-					mp.game.graphics.drawText("Corpse ID " + ped.corpseId, [rootDrawCoords.x, rootDrawCoords.y], {
+					mp.game.graphics.drawText(`Corpse ID  ${ped.corpseId} handle ${ped.handle}`, [rootDrawCoords.x, rootDrawCoords.y], {
 						font: 4,
 						color: [255, 255, 255, 185],
 						scale: [0.3, 0.3],
@@ -52,8 +52,6 @@ class Corpses {
 
 	public static async handleStreamIn(entity: PedMp) {
         if (entity.type != 'ped') return;
-        await mp.game.waitAsync(900);
-
 
         let corpseData: Corpse | null = Corpses.getCorpseData(entity.corpseId);
         if (!corpseData) return;
@@ -135,7 +133,7 @@ class Corpses {
 	}
 
 	public static initPed(ped: PedMp, corpseData: Corpse) {
-		if (!ped || !corpseData) return;
+		if (ped.handle == 0 || !corpseData) return;
 
 		ped.freezePosition(true);
 		ped.setInvincible(true);

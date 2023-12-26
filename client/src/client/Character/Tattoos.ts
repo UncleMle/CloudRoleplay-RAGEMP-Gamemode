@@ -88,7 +88,10 @@ class Tattoos {
 	}
 
 	public static async setDbTats(entity: PlayerMp | PedMp, charModel: CharacterModel) {
-		if(!entity || !charModel) return;
+		if(!entity) return;
+
+		if((entity.type == "player" && !mp.players.atHandle(entity.handle)) || entity.type == "ped" && !mp.peds.atHandle(entity.handle)) return;
+
 		entity.clearDecorations();
 
 		charModel.player_tattos.forEach(data => {
