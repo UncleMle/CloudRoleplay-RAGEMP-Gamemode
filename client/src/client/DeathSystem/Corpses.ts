@@ -15,7 +15,6 @@ class Corpses {
 
 		mp.events.add('entityStreamIn', Corpses.handleStreamIn);
 		mp.events.add('corpse:add', Corpses.addCorpsePed);
-		mp.events.add('corpse:setCorpses', Corpses.setCorpses);
 		mp.events.add('corpse:removeCorpse', Corpses.spliceCorpsePed);
 
         setInterval(() => {
@@ -66,30 +65,8 @@ class Corpses {
 		});
 	}
 
-	public static setCorpses(corpses: Corpse[]) {
-		if(!corpses) return;
-		Corpses.corpses = [];
-
-
-		corpses.forEach((corpse: Corpse, index: number) => {
-			let ped: PedMp = mp.peds.new(
-				mp.game.joaat(corpse.model.sex ? 'mp_m_freemode_01' : 'mp_f_freemode_01'),
-				new mp.Vector3(corpse.position.x, corpse.position.y, corpse.position.z),
-				0,
-				0
-			);
-
-			ped.freezePosition(true);
-			ped.corpseCharacterId = corpse.characterId;
-			ped.corpseId = index;
-			corpse.corpseId = index;
-			corpses[index] = corpse;
-		});
-
-		Corpses.corpses = corpses;
-	}
-
 	public static addCorpsePed(corpse: Corpse) {
+		mp.console.logInfo("Corpse " + JSON.stringify(corpse));
 		let corpseData: Corpse = corpse;
 		let ped: PedMp = mp.peds.new(
 			mp.game.joaat(corpse.model.sex ? 'mp_m_freemode_01' : 'mp_f_freemode_01'),

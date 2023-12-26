@@ -199,10 +199,11 @@ namespace CloudRP.DeathSystem
         public static void initCorpses(Player player)
         {
             Console.WriteLine(JsonConvert.SerializeObject(corpses));
-            if(corpses.Count > 0)
+
+            corpses.ForEach(corpse =>
             {
-                player.TriggerEvent("corpse:setCorpses", corpses);
-            }
+                player.TriggerEvent("corpse:add", corpse);
+            });
         }
 
         [RemoteEvent("sync:corpseValidation")]
