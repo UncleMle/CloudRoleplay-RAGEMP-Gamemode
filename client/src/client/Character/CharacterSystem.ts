@@ -42,8 +42,6 @@ class CharacterSystem {
 		if(!entity) return;
 
 		if((entity.type == "ped" && mp.peds.exists(entity as PedMp)) || (entity.type == "player" && mp.players.exists(entity as PlayerMp))) {
-			mp.gui.chat.push(`[Debug] ${entity.handle} | ${entity.type}`);
-
 			let female: number = mp.game.joaat("mp_m_freemode_01");
 			let male: number = mp.game.joaat("mp_f_freemode_01");
 
