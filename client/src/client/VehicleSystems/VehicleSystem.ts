@@ -1,6 +1,7 @@
 import NotificationSystem from "@/NotificationSystem/NotificationSystem";
 import { CF_PED_FLAG_CAN_FLY_THRU_WINDSCREEN, _control_ids } from "../Constants/Constants";
 import isFlipped from "../PlayerMethods/getIfVehicleIsFlipped";
+import getTimeUnix from "@/PlayerMethods/getTimeUnix";
 
 class VehicleSystems {
 	public static LocalPlayer: PlayerMp;
@@ -17,6 +18,8 @@ class VehicleSystems {
 		VehicleSystems.LocalPlayer = mp.players.local;
 		VehicleSystems.GameControls = mp.game.controls;
 
+		mp.events.add("entityStreamIn", VehicleSystems.handleStreamIn);
+
 		mp.events.add("render", VehicleSystems.handleRender);
 		mp.events.add("playerLeaveVehicle", (veh: VehicleMp) => VehicleSystems.beltToggle ? VehicleSystems.toggleSeatBelt(veh) : null);
 		mp.events.add("playerEnterVehicle", VehicleSystems.handlePlayerEnterVehicle);
@@ -30,6 +33,19 @@ class VehicleSystems {
 			VehicleSystems.vehicleOldPos = VehicleSystems.LocalPlayer.vehicle.position;
 		}, VehicleSystems.updateDistInteral_seconds * 1000);
 	}
+
+	public static async handleStreamIn(entity: PlayerMp) {
+		if(entity.type != "player") return;
+
+		for(let i = 0; entity.vehicle == null && i < 10; i++) {
+			await mp.game.waitAsync(150);
+		}
+
+		if(entity.vehicle) {
+			mp.gui.chat.push(`Is in a vehicle handle ${entity.vehicle.handle}`);
+		}
+	}
+
 
 	public static handlePlayerEnterVehicle(vehicle: VehicleMp, seat: number) {
 		if(!vehicle) return;
