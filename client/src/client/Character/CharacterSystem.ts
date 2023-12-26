@@ -40,7 +40,7 @@ class CharacterSystem {
 
 		await mp.game.waitAsync(200);
 
-		if(entity.type === "ped" && mp.peds.exists(entity.handle) || entity.type === "player" && mp.players.exists(entity.handle)) {
+		if((entity.type == "ped" && mp.peds.exists(entity as PedMp)) || (entity.type == "player" && mp.players.exists(entity as PlayerMp))) {
 			mp.gui.chat.push(`[Debug] ${entity.handle} | ${entity.type}`);
 
 			let female: number = mp.game.joaat("mp_m_freemode_01");

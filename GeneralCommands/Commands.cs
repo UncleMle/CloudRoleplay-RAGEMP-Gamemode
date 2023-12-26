@@ -89,7 +89,7 @@ namespace CloudRP.GeneralCommands
             {
                 if(p.IsInVehicle && p.Vehicle.Equals(player.Vehicle))
                 {
-                    ChatUtils.sendWithNickName(p, player, "", $"{ChatUtils.grey}says in vehicle:{ChatUtils.White} {message}");
+                    ChatUtils.sendWithNickName(p, player, "", $" {ChatUtils.grey}says in vehicle:{ChatUtils.White} {message}");
                 }
             });
         }

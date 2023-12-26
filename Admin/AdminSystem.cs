@@ -1592,9 +1592,15 @@ namespace CloudRP.Admin
 
                 if(findPlayer != null && findPlayerCharData != null)
                 {
+                    if(PlayersData.getPlayerAccountData(findPlayer) != null && PlayersData.getPlayerAccountData(player).adminDuty)
+                    {
+                        CommandUtils.errorSay(player, "You cannot use command on on duty admins.");
+                        return;
+                    }
+
                     DeathEvent.respawnAtHospital(findPlayer);
-                    AdminUtils.staffSay(player, $"You were slain by {userData.admin_name}.");
-                    AdminUtils.staffSay(findPlayer, $"You slayed {findPlayerCharData.character_name}.");
+                    AdminUtils.staffSay(findPlayer, $"You were slain by {userData.admin_name}.");
+                    AdminUtils.staffSay(player, $"You slayed {findPlayerCharData.character_name}.");
 
                     uiHandling.sendNotification(player, $"~r~You slayed {findPlayerCharData.character_name}", false);
                     uiHandling.sendNotification(findPlayer, $"~r~You have been slain by {userData.admin_name}", false);
