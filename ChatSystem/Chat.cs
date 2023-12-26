@@ -73,7 +73,7 @@ namespace CloudRP.ChatSystem
 
             if (user.admin_status > (int)AdminRanks.Admin_None)
             {
-                string colouredRank = AdminUtils.getColouredAdminRank(user, false);
+                string colouredRank = AdminUtils.getColouredAdminRank(user);
                 NAPI.Chat.SendChatMessageToPlayer(player, AdminUtils.staffPrefix + $"Welcome back, {colouredRank}{AdminUtils.staffSuffixColour}" + user.admin_name + ".");
 
                 Dictionary<Player, User> onlineStaff = AdminUtils.gatherAdminGroupAbove(AdminRanks.Admin_None);

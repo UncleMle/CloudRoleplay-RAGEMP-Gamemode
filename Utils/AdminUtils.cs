@@ -56,7 +56,8 @@ namespace CloudRP.Utils
             foreach(Player entry in onlinePlayers)
             {
                 User userData = PlayersData.getPlayerAccountData(entry);
-                if (userData != null && userData.admin_status > (int)AdminRanks.Admin_None)
+                DbCharacter characterData = PlayersData.getPlayerCharacterData(entry);
+                if (characterData != null && userData != null && userData.admin_status > (int)AdminRanks.Admin_None)
                 {
                     onlineStaff.Add(entry, userData);
                 }
@@ -65,13 +66,13 @@ namespace CloudRP.Utils
             return onlineStaff;
         }
 
-        public static string getColouredAdminRank(User user, bool hasBrackets = true)
+        public static string getColouredAdminRank(User user)
         {
             string adminRank = RankList.adminRanksList[user.admin_status];
             string adminRankColour = "!{" + RankList.adminRanksColours[user.admin_status] + "}";
 
 
-            return $"{adminRankColour} {(hasBrackets ? "[" : "")}{adminRank}{(hasBrackets ? "]" : "")} " + ChatUtils.White;
+            return $"{adminRankColour} {adminRank}" + ChatUtils.White;
         }
 
         public static void staffSay(Player player, string message)

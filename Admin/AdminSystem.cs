@@ -345,7 +345,7 @@ namespace CloudRP.Admin
                 }
                 PlayersData.setPlayerAccountData(player, userData);
 
-                string colourAdminRank = AdminUtils.getColouredAdminRank(userData, false);
+                string colourAdminRank = AdminUtils.getColouredAdminRank(userData);
 
                 if (userData.adminDuty)
                 {
@@ -392,7 +392,7 @@ namespace CloudRP.Admin
                     index++;
                     User user = item.Value;
                     string adminRank = AdminUtils.getColouredAdminRank(user);
-                    string duty = user.adminDuty ? "[!{green}On-Duty!{white}]" : "[!{red}Off-Duty!{white}]";
+                    string duty = user.adminDuty ? $"{ChatUtils.grey}[{ChatUtils.moneyGreen}On-Duty{ChatUtils.grey}]" : $"{ChatUtils.grey}[{ChatUtils.red}Off-Duty{ChatUtils.grey}]";
 
                     AdminUtils.staffSay(player, index + $". {user.admin_name} {adminRank} {duty}");
                 }
@@ -409,7 +409,7 @@ namespace CloudRP.Admin
             {
                 Dictionary<Player, User> onlineAdmins = AdminUtils.gatherStaff();
 
-                string colouredAdminRank = AdminUtils.getColouredAdminRank(userData, false);
+                string colouredAdminRank = AdminUtils.getColouredAdminRank(userData);
 
                 foreach (KeyValuePair<Player, User> entry in onlineAdmins)
                 {

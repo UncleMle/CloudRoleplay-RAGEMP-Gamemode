@@ -377,9 +377,20 @@ namespace CloudRP.Authentication
                     character.characterClothing = charClothing;
                     character.characterModel.player_tattos = charTats;
 
+                    player.Dimension = character.player_dimension;
+                    player.Position = new Vector3(character.position_x, character.position_y, character.position_z);
+                    player.Health = character.character_health;
+
                     ChatUtils.formatConsolePrint($"Character {character.character_name} has logged in (#{character.character_id})", ConsoleColor.Yellow);
                     PlayersData.setPlayerCharacterData(player, character, true);
                     DiscordUtils.creationConnection(player, character, LogCreation.Join);
+
+                    Chat.welcomePlayerOnSpawn(player);
+
+                    if (character.injured_timer > 0)
+                    {
+                        DeathEvent.updateAndSetInjuredState(player, character, character.injured_timer);
+                    }
 
                     welcomeAndSpawnPlayer(player, userData, character);
                 }
@@ -439,19 +450,8 @@ namespace CloudRP.Authentication
             player.TriggerEvent("client:loginEnd");
             player.TriggerEvent("client:moveSkyCamera", "up", 1);
 
-            Chat.welcomePlayerOnSpawn(player);
-            player.Dimension = characterData.player_dimension;
-            player.Position = new Vector3(characterData.position_x, characterData.position_y, characterData.position_z);
-            player.Health = characterData.character_health;
-
-            if (characterData.injured_timer > 0)
-            {
-                DeathEvent.updateAndSetInjuredState(player, characterData, characterData.injured_timer);
-            }
-
             DeathEvent.initCorpses(player);
             uiHandling.pushRouterToClient(player, Browsers.None);
-            player.Dimension = characterData.player_dimension;
 
             player.TriggerEvent("client:moveSkyCamera", "down");
         }
