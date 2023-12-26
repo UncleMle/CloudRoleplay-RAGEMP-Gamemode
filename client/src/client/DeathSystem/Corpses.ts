@@ -25,7 +25,7 @@ class Corpses {
 
                 Corpses.initPed(ped, corpseData);
 				if ((getTimeUnix() - corpseData.unixCreated) > Corpses._pedTimeout_seconds) {
-					mp.events.callRemote(Corpses.corpseValEvent, JSON.stringify(corpseData));
+					mp.events.callRemote(Corpses.corpseValEvent, corpseData.corpseId);
 				}
 			});
 		}, 5000);
@@ -114,7 +114,7 @@ class Corpses {
 		Corpses.corpses.splice(index, 1);
 
 		mp.peds.forEach((ped: PedMp) => {
-			if (corpse.characterId == ped.corpseCharacterId) {
+			if (corpse.corpseId == ped.corpseId) {
 				ped.destroy();
 			}
 		});

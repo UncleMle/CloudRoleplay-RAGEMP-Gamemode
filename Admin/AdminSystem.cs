@@ -1640,7 +1640,7 @@ namespace CloudRP.Admin
                         return;
                     }
 
-                    if (AdminUtils.isImmune(player, targetUserData)) return;
+                    //if (AdminUtils.isImmune(player, targetUserData)) return;
 
 
                     DeathEvent.respawnAtHospital(findPlayer);

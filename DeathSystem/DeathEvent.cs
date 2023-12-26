@@ -8,6 +8,7 @@ using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace CloudRP.DeathSystem
@@ -197,6 +198,7 @@ namespace CloudRP.DeathSystem
 
         public static void initCorpses(Player player)
         {
+            Console.WriteLine(JsonConvert.SerializeObject(corpses));
             if(corpses.Count > 0)
             {
                 player.TriggerEvent("corpse:setCorpses", corpses);
@@ -204,16 +206,18 @@ namespace CloudRP.DeathSystem
         }
 
         [RemoteEvent("sync:corpseValidation")]
-        public static void validatePed(Player player, string corpseFromClient)
+        public static void validatePed(Player player, int corpseId)
         {
-            if (corpseFromClient == null) return;
+            Corpse selectedCorpse = corpses[corpseId];
 
-            Corpse corpse = JsonConvert.DeserializeObject<Corpse>(corpseFromClient);
-
-            if((CommandUtils.generateUnix() - corpse.unixCreated) > _pedTimeout_seconds)
+            if (selectedCorpse != null)
             {
-                removeCorpse(corpse);
+                if((CommandUtils.generateUnix() - selectedCorpse.unixCreated) > _pedTimeout_seconds)
+                {
+                    removeCorpse(selectedCorpse);
+                }
             }
+
         }
 
         public static void handleCorpseSet(Player player)
