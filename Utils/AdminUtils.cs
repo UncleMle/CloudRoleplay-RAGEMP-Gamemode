@@ -72,7 +72,7 @@ namespace CloudRP.Utils
             string adminRankColour = "!{" + RankList.adminRanksColours[user.admin_status] + "}";
 
 
-            return $"{adminRankColour} {adminRank}" + ChatUtils.White;
+            return $"{adminRankColour} {adminRank} " + ChatUtils.White;
         }
 
         public static void staffSay(Player player, string message)
