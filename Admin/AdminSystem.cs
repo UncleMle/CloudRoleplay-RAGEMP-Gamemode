@@ -953,7 +953,7 @@ namespace CloudRP.Admin
                 AdminUtils.banAPlayer(time, userData, banPlayerUserData, banPlayer, reason);
 
                 string playerAdminRank = AdminUtils.getColouredAdminRank(userData);
-                string endOfBanString = lift_unix_time == 1 ? ChatUtils.red + "is permanent" : "expires at " + ChatUtils.orange + CommandUtils.unixTimeStampToDateTime(lift_unix_time);
+                string endOfBanString = lift_unix_time == -1 ? ChatUtils.red + "is permanent" : "expires at " + ChatUtils.orange + CommandUtils.unixTimeStampToDateTime(lift_unix_time);
 
                 ChatUtils.formatConsolePrint($"{userData.admin_name} banned {characterData.character_name} with reason {reason} ban {endOfBanString}");
                 CommandUtils.sendToAllPlayers($"{AdminUtils.staffPrefix}{playerAdminRank} {userData.admin_name} banned {characterData.character_name} with reason {reason} ban {endOfBanString}");
@@ -1640,7 +1640,7 @@ namespace CloudRP.Admin
                         return;
                     }
 
-                    //if (AdminUtils.isImmune(player, targetUserData)) return;
+                    if (AdminUtils.isImmune(player, targetUserData)) return;
 
 
                     DeathEvent.respawnAtHospital(findPlayer);
@@ -1765,7 +1765,7 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (userData.admin_status > (int)AdminRanks.Admin_Developer)
+            if (userData.admin_status == (int)AdminRanks.Admin_Developer)
             {
                 NAPI.Ped.CreatePed(NAPI.Util.GetHashKey(pedName), player.Position, 0, 0);
                 AdminUtils.staffSay(player, $"You spawned in a ped {ChatUtils.yellow}{pedName}{ChatUtils.White}");
@@ -1780,7 +1780,7 @@ namespace CloudRP.Admin
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (userData.admin_status > (int)AdminRanks.Admin_Developer)
+            if (userData.admin_status == (int)AdminRanks.Admin_Developer)
             {
                 NAPI.Object.CreateObject(NAPI.Util.GetHashKey(objName), player.Position, new Vector3(0, 0, rot), 255);
                 AdminUtils.staffSay(player, $"You spawned in a object {ChatUtils.yellow}{objName}{ChatUtils.White}");

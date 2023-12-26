@@ -392,7 +392,7 @@ namespace CloudRP.Authentication
                         DeathEvent.updateAndSetInjuredState(player, character, character.injured_timer);
                     }
 
-                    welcomeAndSpawnPlayer(player, userData, character);
+                    welcomeAndSpawnPlayer(player);
                 }
             };
         }
@@ -444,7 +444,7 @@ namespace CloudRP.Authentication
             return newUser;
         }
 
-        void welcomeAndSpawnPlayer(Player player, User user, DbCharacter characterData)
+        void welcomeAndSpawnPlayer(Player player)
         {
             AntiCheatSystem.sleepClient(player);
             player.TriggerEvent("client:loginEnd");

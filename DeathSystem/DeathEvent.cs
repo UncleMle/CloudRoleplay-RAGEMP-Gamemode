@@ -20,7 +20,7 @@ namespace CloudRP.DeathSystem
         public static int _respawnTimeout_seconds = 3;
         public const int _deathTimer_seconds = 600;
         public static string corpseSharedKey = "corpsePed";
-        public static int _pedTimeout_seconds= 1800;
+        public static int _pedTimeout_seconds= 300;
 
         [ServerEvent(Event.ResourceStart)]
         public void initEvents()
@@ -182,7 +182,7 @@ namespace CloudRP.DeathSystem
 
             foreach(Player player in onlinePlayers.ToList())
             {
-                player.TriggerEvent("corpse:removeCorpse", corpse);
+                player.TriggerEvent("corpse:removeCorpse", corpse.corpseId);
             }
         }
 
@@ -198,8 +198,6 @@ namespace CloudRP.DeathSystem
 
         public static void initCorpses(Player player)
         {
-            Console.WriteLine(JsonConvert.SerializeObject(corpses));
-
             corpses.ForEach(corpse =>
             {
                 player.TriggerEvent("corpse:add", corpse);
@@ -209,7 +207,9 @@ namespace CloudRP.DeathSystem
         [RemoteEvent("sync:corpseValidation")]
         public static void validatePed(Player player, int corpseId)
         {
-            Corpse selectedCorpse = corpses[corpseId];
+            Corpse selectedCorpse = corpses
+                .Where(corpse => corpse.corpseId == corpseId)
+                .FirstOrDefault();
 
             if (selectedCorpse != null)
             {

@@ -99,6 +99,8 @@ namespace CloudRP.Utils
 
         public static bool isImmune(Player player, User userData)
         {
+            if (PlayersData.getPlayerAccountData(player)?.account_id == userData.account_id) return false;
+
             if (userData.admin_status > (int)AdminRanks.Admin_Founder)
             {
                 CommandUtils.errorSay(player, "Specified player is immune to this command");

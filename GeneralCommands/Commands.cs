@@ -70,6 +70,8 @@ namespace CloudRP.GeneralCommands
                 return;
             }
 
+            uiHandling.sendNotification(player, "Whispers.", true, true, "Whispers.");
+
             ChatUtils.sendWithNickName(findPlayer, player, "", $" {ChatUtils.yellow}whispers:{ChatUtils.White} " + ChatUtils.White + message);
             player.SendChatMessage($"{charData.character_name} {ChatUtils.yellow}whispers:{ChatUtils.White} {message}");
         }
@@ -84,6 +86,8 @@ namespace CloudRP.GeneralCommands
             }
 
             List<Player> closePlayers = CommandUtils.getPlayersInRadius(player, 20f);
+
+            uiHandling.sendNotification(player, "Talks in vehicle.", true, true, "Talks in vehicle.");
 
             closePlayers.ForEach(p =>
             {

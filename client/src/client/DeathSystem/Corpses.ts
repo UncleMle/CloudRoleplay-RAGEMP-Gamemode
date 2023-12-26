@@ -8,7 +8,7 @@ class Corpses {
 	public static corpseKey: string = 'sync:corpsePed';
 	public static corpseValEvent: string = 'sync:corpseValidation';
 	public static corpses: Corpse[] = [];
-	public static _pedTimeout_seconds: number = 1800;
+	public static _pedTimeout_seconds: number = 300;
 
 	constructor() {
 		Corpses.LocalPlayer = mp.players.local;
@@ -19,7 +19,7 @@ class Corpses {
 
         setInterval(() => {
 			mp.peds.forEachInStreamRange((ped) => {
-				let corpseData: Corpse = Corpses.corpses[ped.corpseId];
+				let corpseData: Corpse | undefined = Corpses.corpses.find(corpse => corpse.corpseId == ped.corpseId);
 				if (!corpseData) return;
 
                 Corpses.initPed(ped, corpseData);
@@ -77,21 +77,22 @@ class Corpses {
 
 		Corpses.corpses.push(corpse);
 
-		corpseData.corpseId = Corpses.corpses.indexOf(corpse);
 		ped.corpseId = corpse.corpseId;
 		ped.corpseCharacterId = corpse.characterId;
 		ped.taskPlayAnim('dead', 'dead_a', 8.0, 0, 600, 1, 1.0, false, false, false);
 
-		Corpses.corpses[corpse.corpseId] = corpseData;
 		Corpses.initPed(ped, corpseData);
 	}
 
-	public static spliceCorpsePed(corpse: Corpse) {
-		let index: number = Corpses.corpses.indexOf(corpse);
-		Corpses.corpses.splice(index, 1);
+	public static spliceCorpsePed(corpseId: number) {
+		let findCorpse: Corpse | undefined = Corpses.corpses.find(cor => cor.corpseId == corpseId);
+
+		if(findCorpse) {
+			Corpses.corpses.splice(Corpses.corpses.indexOf(findCorpse), 1);
+		}
 
 		mp.peds.forEach((ped: PedMp) => {
-			if (corpse.corpseId == ped.corpseId) {
+			if (corpseId == ped.corpseId) {
 				ped.destroy();
 			}
 		});
