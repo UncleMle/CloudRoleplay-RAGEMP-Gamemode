@@ -84,7 +84,7 @@ namespace CloudRP.Vehicles
             vehicle.vehicle_locked = true;
             vehicle.vehicle_key_holders = getVehicleKeyHoldersFromDb(vehicle);
 
-            setVehicleData(veh, vehicle);
+            setVehicleData(veh, vehicle, true);
             return veh;
         }
 
@@ -124,9 +124,13 @@ namespace CloudRP.Vehicles
             }
         }
 
-        public static void setVehicleData(Vehicle vehicle, DbVehicle vehicleData)
+        public static void setVehicleData(Vehicle vehicle, DbVehicle vehicleData, bool resyncMods = false)
         {
-            vehicleData.vehicle_mods = getVehiclesMods(vehicleData.vehicle_id);
+            if(resyncMods)
+            {
+                vehicleData.vehicle_mods = getVehiclesMods(vehicleData.vehicle_id);
+            }
+
             vehicle.SetSharedData(_vehicleSharedDataIdentifier, vehicleData);
             vehicle.SetData(_vehicleSharedDataIdentifier, vehicleData);
         }
@@ -293,7 +297,7 @@ namespace CloudRP.Vehicles
             if (vehicleData == null) return (null, null);
 
             Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicleHash, position, rotation, 255, 255, vehiclePlate, 255, false, true, 0);
-            setVehicleData(veh, vehicleData);
+            setVehicleData(veh, vehicleData, true);
             return (veh, vehicleData);
         }
 

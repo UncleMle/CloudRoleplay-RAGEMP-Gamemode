@@ -139,7 +139,7 @@ namespace CloudRP.VehicleModification
 
                         pVehData.vehicle_mods = newModData;
                         dbContext.SaveChanges();
-                        VehicleSystem.setVehicleData(pVeh, pVehData);
+                        VehicleSystem.setVehicleData(pVeh, pVehData, true);
                     }
                 }
             }

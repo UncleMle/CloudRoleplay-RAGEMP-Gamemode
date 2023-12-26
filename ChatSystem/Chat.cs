@@ -67,9 +67,9 @@ namespace CloudRP.ChatSystem
             DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
             if (characterData == null) return;
 
-            NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.CloudRP + $"Welcome back to Cloud RP {ChatUtils.CloudBlueLight}{user.username}{ChatUtils.White}.");
-            NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.CloudRP + $"For server commands and general help view {ChatUtils.CloudBlueLight}/help{ChatUtils.White}.");
-            NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.CloudRP + $"Visit {ChatUtils.CloudBlueLight}cloudrp.net{ChatUtils.White} for server information{ChatUtils.White}.");
+            player.SendChatMessage(ChatUtils.CloudRP + $"Welcome back to Cloud RP {ChatUtils.CloudBlueLight}{user.username}{ChatUtils.White}.");
+            player.SendChatMessage(ChatUtils.CloudRP + $"For server commands and general help view {ChatUtils.CloudBlueLight}/help{ChatUtils.White}.");
+            player.SendChatMessage(ChatUtils.CloudRP + $"Visit {ChatUtils.CloudBlueLight}cloudrp.net{ChatUtils.White} for server information{ChatUtils.White}.");
 
             if (user.admin_status > (int)AdminRanks.Admin_None)
             {
