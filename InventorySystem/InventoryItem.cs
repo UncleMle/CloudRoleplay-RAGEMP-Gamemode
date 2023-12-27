@@ -24,6 +24,7 @@ namespace CloudRP.InventorySystem
         public static InventoryItem addItemForPlayer(Player player, int itemId)
         {
             InventoryItem added = null;
+
             Items.inventoryItems.ForEach(item =>
             {
                 if(item.item_id == itemId)

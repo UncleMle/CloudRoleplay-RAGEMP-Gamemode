@@ -51,7 +51,7 @@ class PhoneSystem {
             dimension: entity.dimension
         });
 
-        for (let i = 0; entity._mobilePhone.handle === 0 && i < 15; ++i) {
+        for (let i = 0; entity._mobilePhone && entity._mobilePhone.handle === 0 && i < 15; ++i) {
             await mp.game.waitAsync(100);
         }
 

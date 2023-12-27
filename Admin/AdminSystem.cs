@@ -1789,6 +1789,5 @@ namespace CloudRP.Admin
             }
             else AdminUtils.sendNoAuth(player);
         }
-
     }
 }
