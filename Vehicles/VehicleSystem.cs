@@ -18,6 +18,7 @@ namespace CloudRP.Vehicles
     {
         public static List<DbVehicle> vehicles;
         public static string _vehicleSharedDataIdentifier = "VehicleData";
+        public static string _vehicleSharedModData = "VehicleModData";
         public static string _seatBeltIdentifier = "playerIsWearingSeatBelt";
         private static int _timerInterval_seconds = 10;
         private static Timer saveVehicleTimer;
@@ -129,6 +130,8 @@ namespace CloudRP.Vehicles
             if(resyncMods)
             {
                 vehicleData.vehicle_mods = getVehiclesMods(vehicleData.vehicle_id);
+                vehicle.SetSharedData(_vehicleSharedModData, vehicleData.vehicle_mods);
+                vehicle.SetData(_vehicleSharedDataIdentifier, vehicleData.vehicle_mods);
             }
 
             vehicle.SetSharedData(_vehicleSharedDataIdentifier, vehicleData);

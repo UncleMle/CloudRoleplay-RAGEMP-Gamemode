@@ -1,7 +1,7 @@
 import { ModInfo, VehicleData, VehicleMods } from "@/@types";
 import BrowserSystem from "@/BrowserSystem/BrowserSystem";
 import GuiSystem from "@/BrowserSystem/GuiSystem";
-import { _SHARED_VEHICLE_DATA } from "@/Constants/Constants";
+import { _SHARED_VEHICLE_DATA, _SHARED_VEHICLE_MODS_DATA } from "@/Constants/Constants";
 import DeathSystem from "@/DeathSystem/DeathSystem";
 import getVehicleData from "@/PlayerMethods/getVehicleData";
 import { Browsers } from "@/enums";
@@ -19,7 +19,7 @@ class VehicleCustoms {
         mp.events.add("customs:loadIndexes", VehicleCustoms.loadIndexesIntoBrowser);
         mp.events.add("vehicle:setAttachments", VehicleCustoms.setVehicleAttachments);
         mp.events.add("entityStreamIn", VehicleCustoms.handleStreamIn);
-        mp.events.addDataHandler(_SHARED_VEHICLE_DATA, VehicleCustoms.handleDataHandler);
+        mp.events.addDataHandler(_SHARED_VEHICLE_MODS_DATA, VehicleCustoms.handleDataHandler);
         mp.events.add("render", VehicleCustoms.handleRender);
     }
 
@@ -86,12 +86,12 @@ class VehicleCustoms {
         }
     }
 
-    public static handleDataHandler(entity: VehicleMp) {
-        if(entity.type != "vehicle") return;
+    public static handleDataHandler(entity: VehicleMp, data: VehicleMods) {
+        if(entity.type != "vehicle" || !data) return;
 
-        if(VehicleCustoms.LocalPlayer.vehicle == entity && VehicleCustoms.LocalPlayer.browserRouter == Browsers.ModsView) return;
+        mp.gui.chat.push(`Vehicle mod data triggered`);
 
-        VehicleCustoms.setVehicleAttachments(getVehicleData(entity)?.vehicle_mods, false, entity);
+        VehicleCustoms.setVehicleAttachments(data, false, entity);
     }
 
     public static handleStreamIn(entity: VehicleMp) {
