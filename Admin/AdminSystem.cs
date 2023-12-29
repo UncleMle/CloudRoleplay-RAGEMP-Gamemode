@@ -877,6 +877,8 @@ namespace CloudRP.Admin
 
                     vehicleData.closeAllDoors(player.Vehicle);
                     vehicleData.closeAllWindows(player.Vehicle);
+                    vehicleData.setDirtLevel(player.Vehicle, 0);
+
                     NAPI.Vehicle.RepairVehicle(player.Vehicle);
 
                     ChatUtils.formatConsolePrint($"{userData.admin_name} repaired a vehicle.");

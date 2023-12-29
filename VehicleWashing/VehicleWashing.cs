@@ -102,9 +102,8 @@ namespace CloudRP.VehicleWashing
                     }
 
                     characterData.money_amount -= vehicleWashData.washPrice;
-                    
-                    targetVehicleData.dirt_level = 0;
-                    VehicleSystem.setVehicleData(player.Vehicle, targetVehicleData, false, true);
+
+                    targetVehicleData.setDirtLevel(player.Vehicle, 0);
 
                     PlayersData.setPlayerCharacterData(player, characterData, false, true);
 

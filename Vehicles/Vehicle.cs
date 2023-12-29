@@ -79,6 +79,13 @@ namespace CloudRP.Vehicles
            VehicleSystem.saveVehicleData(vehicle, this);
         }
 
+        public void setDirtLevel(Vehicle vehicle, int number)
+        {
+            dirt_level = number;
+
+            VehicleSystem.setVehicleData(vehicle, this, false, true);
+        }
+
     }
     
 
