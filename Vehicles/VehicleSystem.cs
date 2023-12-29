@@ -489,18 +489,6 @@ namespace CloudRP.Vehicles
             return rangeVehicles;
         }
 
-        public static string getFixedVehicleDistance(Player player, Vehicle vehicle)
-        {
-            float dist = Vector3.Distance(player.Position, vehicle.Position);
-
-            return toFixed((int)dist, 0);
-        }
-
-        public static string toFixed(int number, uint decimals)
-        {
-            return number.ToString("N" + decimals);
-        }
-
         public static Vehicle getVehicleByPlate(string vehiclePlate)
         {
             Vehicle returnVeh = null;

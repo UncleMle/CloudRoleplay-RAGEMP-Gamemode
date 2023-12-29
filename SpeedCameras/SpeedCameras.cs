@@ -143,17 +143,18 @@ namespace CloudRP.SpeedCameras
             {
                 double speed = vehicleSpeed * 3.6;
 
-                if(speed > speedFines[0].speed && speed > cameraData.speedLimit)
+                if(speed > speedFines[0].speed && speed > cameraData.speedLimit && player.VehicleSeat == 0)
                 {
                     SpeedFine closest = speedFines.OrderBy(item => Math.Abs(speed - item.speed)).First();
 
                     if(closest != null)
                     {
-                        List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
-
-                        onlinePlayers.ForEach(p =>
+                        NAPI.Pools.GetAllPlayers().ForEach(p =>
                         {
-                            p.TriggerEvent("client:handleCameraFlash", player.Vehicle.Id, cameraData.camFlashPos.X, cameraData.camFlashPos.Y, cameraData.camFlashPos.Z);
+                            if(Vector3.Distance(p.Position, player.Position) < 120)
+                            {
+                                p.TriggerEvent("client:handleCameraFlash", player.Vehicle.Id, cameraData.camFlashPos.X, cameraData.camFlashPos.Y, cameraData.camFlashPos.Z);
+                            }
                         });
 
                         characterData.money_amount -= closest.finePrice;

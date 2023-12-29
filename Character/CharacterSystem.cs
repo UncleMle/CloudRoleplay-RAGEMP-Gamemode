@@ -174,7 +174,7 @@ namespace CloudRP.Character
         }
 
         [RemoteEvent("server:recieveCharacterModel")]
-        public async Task saveCharacterModelAsync(Player player, string data)
+        public void saveCharacterModelAsync(Player player, string data)
         {
             User userData = PlayersData.getPlayerAccountData(player);
             if (userData == null) return;
@@ -203,10 +203,10 @@ namespace CloudRP.Character
                 return;
             }
 
-            CharacterModel createdCharacterModel = JsonConvert.DeserializeObject<CharacterModel>(JsonConvert.SerializeObject(characterModel.model));
-
             using(DefaultDbContext dbContext = new DefaultDbContext())
             {
+                CharacterModel createdCharacterModel = JsonConvert.DeserializeObject<CharacterModel>(JsonConvert.SerializeObject(characterModel.model));
+
                 DbCharacter newCharacter = new DbCharacter
                 {
                     character_health = 100,
@@ -221,7 +221,7 @@ namespace CloudRP.Character
                 };
 
                 dbContext.characters.Add(newCharacter);
-                await dbContext.SaveChangesAsync();
+                dbContext.SaveChanges();
 
                 /* 
                 ** For some reason this is the only way I could get the outfit to work without the keys duplicating.
@@ -278,16 +278,15 @@ namespace CloudRP.Character
                     torso_texture = 0
                 });
 
-                await dbContext.SaveChangesAsync();
+                dbContext.SaveChanges();
                 
                 CharacterUtils.createCharModel(newCharacter.character_id, createdCharacterModel);
                 uiHandling.setLoadingState(player, false);
-            }
 
-            
-            player.TriggerEvent("client:setBackToSelection");
-            uiHandling.pushRouterToClient(player, Browsers.LoginPage);
-            fillCharacterSelectionTable(player, userData);
+                player.TriggerEvent("client:setBackToSelection");
+                uiHandling.pushRouterToClient(player, Browsers.LoginPage);
+                fillCharacterSelectionTable(player, userData);
+            }
         }
 
         [RemoteEvent("server:setUserToCharacterCreation")]

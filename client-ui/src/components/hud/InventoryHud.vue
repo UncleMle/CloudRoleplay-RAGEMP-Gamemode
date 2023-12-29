@@ -13,9 +13,9 @@
                                     <h2>Inventory Items ({{ playerData.inventory_items.length }} KG)</h2>
                                 </div>
 
-                                <div id="inventory" class="grid grid-cols-6 w-full">
-                                    <div v-for="i in 24" :key="i" class="border border-gray-500 h-32 w-full">
-                                        <div v-if="playerData.inventory_items[i - 1]" class="h-full w-full relative">
+                                <div class="grid grid-cols-6 w-full">
+                                    <div v-for="i in 24" :key="i" class="border h-32 w-full">
+                                        <div :id="'invenItem'+i" v-if="playerData.inventory_items[i - 1]" class="h-full w-full relative">
 
                                             <img :src="getItemImg(playerData.inventory_items[i - 1].name)" class="scale-[55%] absolute bottom-2" />
 
@@ -24,6 +24,9 @@
                                                     {{ playerData.inventory_items[i - 1].displayName }}
                                                 </p>
                                             </div>
+                                        </div>
+                                        <div v-else :id="'invenContainer'+i" class="bg-red-300 h-full">
+                                            None
                                         </div>
                                     </div>
                                 </div>
@@ -45,6 +48,7 @@ export default {
     /* eslint-disable */
     data() {
         return {
+            contextMenuState: false,
             inventoryItems: [
             ],
             clothingItems: [
@@ -82,21 +86,9 @@ export default {
     },
     mounted() {
 
-        dragular([document.getElementById("inventory"), document.getElementById("dontdrag")], {
-            moves: function (el, container, handle) {
-                if (handle.id == "dontdrag") {
-                    console.log("Cant drag");
-                } else {
-                    return true;
-                }
-            },
-            accepts: function () {
-                console.log("has been accepted.");
-                return true;
-            },
-        }).on("drag", () => {
-            console.log("being dragged");
-        });
+        for(let i = 0; i < 24; i++) {
+            dragular([document.getElementById(`invenItem${i}`), document.getElementById(`invenContainer${i}`)]);
+        }
     }
 }
 </script>

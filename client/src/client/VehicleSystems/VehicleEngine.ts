@@ -3,7 +3,6 @@ import { VehicleData } from "../@types";
 import { _SHARED_VEHICLE_DATA, _control_ids } from "../Constants/Constants";
 import getVehicleData from "../PlayerMethods/getVehicleData";
 import { Browsers } from "@/enums";
-import getTargetCharacterData from "@/PlayerMethods/getTargetCharacterData";
 import HandsUp from "@/Animation/HandsUpAnim";
 
 class VehicleEngine {

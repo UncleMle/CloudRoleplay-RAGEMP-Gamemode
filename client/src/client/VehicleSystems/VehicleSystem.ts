@@ -1,7 +1,6 @@
 import NotificationSystem from "@/NotificationSystem/NotificationSystem";
 import { CF_PED_FLAG_CAN_FLY_THRU_WINDSCREEN, _control_ids } from "../Constants/Constants";
 import isFlipped from "../PlayerMethods/getIfVehicleIsFlipped";
-import getTimeUnix from "@/PlayerMethods/getTimeUnix";
 
 class VehicleSystems {
 	public static LocalPlayer: PlayerMp;

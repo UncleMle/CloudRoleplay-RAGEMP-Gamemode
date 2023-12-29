@@ -52,7 +52,6 @@ namespace CloudRP.Utils
             List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
             Dictionary<Player, User> onlineStaff = new Dictionary<Player, User>();
 
-
             foreach(Player entry in onlinePlayers)
             {
                 User userData = PlayersData.getPlayerAccountData(entry);

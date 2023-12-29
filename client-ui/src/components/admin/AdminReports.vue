@@ -23,11 +23,14 @@
                             <tbody class="text-center">
                                 <tr v-for="item in reportData" :key="item" class="max-h-10">
                                     <td class="border-b-2 border-gray-500">Player [{{ item.playerId }}]</td>
-                                    <td class="border-b-2 border-gray-500">Report [{{item.reportId}}]</td>
-                                    <td class="border-b-2 border-gray-500 max-w-xs overflow-hidden text-ellipsis text-sm">{{ item.description }}</td>
+                                    <td class="border-b-2 border-gray-500">Report [{{ item.reportId }}]</td>
+                                    <td class="border-b-2 border-gray-500 max-w-xs overflow-hidden text-ellipsis text-sm">{{
+                                        item.description }}</td>
                                     <td class="border-b-2 border-gray-500 max-w-xs overflow-hidden text-ellipsis">
-                                        <button @click="accept(item.reportId)" class="p-2 mr-2"><i class="fa-solid fa-check text-green-400"></i></button>
-                                        <button @click="close(item.reportId)" class="p-2"><i class="fa-solid fa-xmark text-red-400"></i></button>
+                                        <button @click="accept(item.reportId)" class="p-2 mr-2"><i
+                                                class="fa-solid fa-check text-green-400"></i></button>
+                                        <button @click="close(item.reportId)" class="p-2"><i
+                                                class="fa-solid fa-xmark text-red-400"></i></button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -54,12 +57,12 @@ export default {
     },
     methods: {
         accept(reportId) {
-            if(window.mp) {
+            if (window.mp) {
                 window.mp.trigger("browser:sendString", "server:acceptReport", reportId);
             }
         },
         close(reportId) {
-            if(window.mp) {
+            if (window.mp) {
                 window.mp.trigger("browser:sendString", "server:closeReport", reportId);
             }
         }

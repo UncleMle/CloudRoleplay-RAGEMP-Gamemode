@@ -176,7 +176,7 @@ class VehicleCustoms {
 
         let vehicleData: VehicleData | undefined = getVehicleData(vehicle);
 
-        if(vehicleData) {
+        if(vehicleData && !parse) {
             vehicle.setDirtLevel(vehicleData.dirt_level);
         }
     }
