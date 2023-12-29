@@ -751,7 +751,7 @@ namespace CloudRP.Vehicles
             if(vehicleData != null)
             {
                 vehicleData.dirt_level = dirtLevel;
-                saveVehicleData(vehicle, vehicleData);
+                setVehicleData(vehicle, vehicleData, true);
             }
         }
 
