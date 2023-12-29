@@ -89,6 +89,12 @@ namespace CloudRP.VehicleWashing
 
                 if(targetVehicleData != null)
                 {
+                    if(targetVehicleData.dirt_level == 0)
+                    {
+                        CommandUtils.errorSay(player, "This vehicle is already sqeaky clean.");
+                        return;
+                    }
+
                     if ((characterData.money_amount - vehicleWashData.washPrice) < 0)
                     {
                         CommandUtils.errorSay(player, "You do not have enough money to pay for this vehicle wash.");
@@ -96,7 +102,9 @@ namespace CloudRP.VehicleWashing
                     }
 
                     characterData.money_amount -= vehicleWashData.washPrice;
-                    VehicleSystem.setVehicleDirtLevel(targetVehicle, 0);
+                    
+                    targetVehicleData.dirt_level = 0;
+                    VehicleSystem.setVehicleData(player.Vehicle, targetVehicleData, false, true);
 
                     PlayersData.setPlayerCharacterData(player, characterData, false, true);
 

@@ -229,7 +229,7 @@ import { mapGetters } from 'vuex';
 export default {
     data() {
         return {
-            browsingType: "other",
+            browsingType: "general",
             basketItems: [],
             vehicleData: null,
             vehicleDataOld: null,

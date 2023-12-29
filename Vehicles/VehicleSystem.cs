@@ -19,6 +19,7 @@ namespace CloudRP.Vehicles
         public static List<DbVehicle> vehicles;
         public static string _vehicleSharedDataIdentifier = "VehicleData";
         public static string _vehicleSharedModData = "VehicleModData";
+        public static string _vehicleDirtLevelIdentifier = "VehicleDirtLevel";
         public static string _seatBeltIdentifier = "playerIsWearingSeatBelt";
         private static int _timerInterval_seconds = 10;
         private static Timer saveVehicleTimer;
@@ -85,7 +86,7 @@ namespace CloudRP.Vehicles
             vehicle.vehicle_locked = true;
             vehicle.vehicle_key_holders = getVehicleKeyHoldersFromDb(vehicle);
 
-            setVehicleData(veh, vehicle, true);
+            setVehicleData(veh, vehicle, true, true);
             return veh;
         }
 
@@ -125,13 +126,19 @@ namespace CloudRP.Vehicles
             }
         }
 
-        public static void setVehicleData(Vehicle vehicle, DbVehicle vehicleData, bool resyncMods = false)
+        public static void setVehicleData(Vehicle vehicle, DbVehicle vehicleData, bool resyncMods = false, bool resyncDirtLevel = false)
         {
             if(resyncMods)
             {
                 vehicleData.vehicle_mods = getVehiclesMods(vehicleData.vehicle_id);
                 vehicle.SetSharedData(_vehicleSharedModData, vehicleData.vehicle_mods);
                 vehicle.SetData(_vehicleSharedDataIdentifier, vehicleData.vehicle_mods);
+            }
+
+            if(resyncDirtLevel)
+            {
+                vehicle.SetData(_vehicleDirtLevelIdentifier, vehicleData.dirt_level);
+                vehicle.SetSharedData(_vehicleDirtLevelIdentifier, vehicleData.dirt_level);
             }
 
             vehicle.SetSharedData(_vehicleSharedDataIdentifier, vehicleData);
@@ -243,7 +250,7 @@ namespace CloudRP.Vehicles
             }
         }
 
-        public static (Vehicle, DbVehicle) buildVehicle(string vehName, Vector3 position, float rotation, int ownerId, int colourOne, int colourTwo, string ownerName = "N/A", bool isAdmin = false)
+        public static (Vehicle, DbVehicle) buildVehicle(string vehName, Vector3 position, float rotation, int ownerId, int colourOne, int colourTwo, string ownerName = "N/A")
         {
             string vehiclePlate = "notset";
             uint vehicleHash = NAPI.Util.GetHashKey(vehName);
@@ -271,14 +278,7 @@ namespace CloudRP.Vehicles
                 dbContext.SaveChanges();
 
                 DbVehicle findJustInserted = dbContext.vehicles.Find(vehicleInsert.vehicle_id);
-
-                if(isAdmin)
-                {
-                    vehiclePlate = $"ADMIN_{vehicleInsert.vehicle_id}";
-                } else
-                {
-                    vehiclePlate = genUniquePlate(vehicleInsert.vehicle_id);
-                }
+                vehiclePlate = genUniquePlate(vehicleInsert.vehicle_id);
                 
                 findJustInserted.numberplate = vehiclePlate;
 
@@ -300,7 +300,7 @@ namespace CloudRP.Vehicles
             if (vehicleData == null) return (null, null);
 
             Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicleHash, position, rotation, 255, 255, vehiclePlate, 255, false, true, 0);
-            setVehicleData(veh, vehicleData, true);
+            setVehicleData(veh, vehicleData, true, true);
             return (veh, vehicleData);
         }
 
@@ -742,17 +742,6 @@ namespace CloudRP.Vehicles
                     }
                 }
             });
-        }
-
-        public static void setVehicleDirtLevel(Vehicle vehicle, int dirtLevel)
-        {
-            DbVehicle vehicleData = getVehicleData(vehicle);
-
-            if(vehicleData != null)
-            {
-                vehicleData.dirt_level = dirtLevel;
-                setVehicleData(vehicle, vehicleData, true);
-            }
         }
 
         public static string genUniquePlate(int vehicleId)
