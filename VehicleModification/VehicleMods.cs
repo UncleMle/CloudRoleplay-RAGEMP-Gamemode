@@ -56,5 +56,8 @@ namespace CloudRP.VehicleModification
         public int neon_colour_r { get; set; } = -1;
         public int neon_colour_b { get; set; } = -1;
         public int neon_colour_g { get; set; } = -1;
+        public int tyre_smoke_r { get; set; }
+        public int tyre_smoke_g { get; set; }
+        public int tyre_smoke_b { get; set; }
     }
 }

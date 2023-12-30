@@ -145,13 +145,20 @@ class VehicleCustoms {
 		vehicle.setColours(Number(modData.colour_1), Number(modData.colour_2));
 		vehicle.setExtraColours(Number(modData.pearleascent), Number(modData.wheel_colour));
 
-		if (Number(modData.neon_colour_r) != -1 || Number(modData.neon_colour_b) != -1 || Number(modData.neon_colour_g) != -1) {
+        vehicle.toggleMod(20, true);
+        vehicle.setTyreSmokeColor(Number(modData.tyre_smoke_r), Number(modData.tyre_smoke_g), Number(modData.tyre_smoke_b));
+
+        if (Number(modData.neon_colour_r) != -1 || Number(modData.neon_colour_b) != -1 || Number(modData.neon_colour_g) != -1) {
 			vehicle.setNeonLightsColour(Number(modData.neon_colour_r), Number(modData.neon_colour_g), Number(modData.neon_colour_b));
 
 			VehicleCustoms.toggleNeons(vehicle, true);
 		} else {
 			VehicleCustoms.toggleNeons(vehicle, false);
 		}
+
+        if(modData.wheel_type == 10) {
+            vehicle.setDriftTyresEnabled(true);
+        }
 
 		vehicle.setMod(0, Number(modData.spoilers));
 		vehicle.setMod(1, Number(modData.front_bumper));

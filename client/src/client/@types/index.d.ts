@@ -207,6 +207,9 @@ export interface VehicleMods {
 	neon_colour_r: number;
 	neon_colour_b: number;
 	neon_colour_g: number;
+	tyre_smoke_r: number;
+	tyre_smoke_g: number;
+	tyre_smoke_b: number;
 }
 
 export interface VehicleData {

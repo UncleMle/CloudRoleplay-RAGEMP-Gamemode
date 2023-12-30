@@ -260,6 +260,18 @@ export default {
                     dbName: "front_wheels",
                 },
                 {
+                    name: "Tyre Smoke Red",
+                    dbName: "tyre_smoke_r"
+                },
+                {
+                    name: "Tyre Smoke Green",
+                    dbName: "tyre_smoke_g"
+                },
+                {
+                    name: "Tyre Smoke Blue",
+                    dbName: "tyre_smoke_b"
+                },
+                {
                     name: "Frame",
                     dbName: "frame",
                 },
