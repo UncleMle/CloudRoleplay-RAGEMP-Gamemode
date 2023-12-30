@@ -1,7 +1,7 @@
 import { ModInfo, VehicleData, VehicleMods } from '@/@types';
 import BrowserSystem from '@/BrowserSystem/BrowserSystem';
 import GuiSystem from '@/BrowserSystem/GuiSystem';
-import { _SHARED_VEHICLE_DATA, _SHARED_VEHICLE_MODS_DATA } from '@/Constants/Constants';
+import { COLOURED_HEADLIGHT_NATIVE, _SHARED_VEHICLE_DATA, _SHARED_VEHICLE_MODS_DATA } from '@/Constants/Constants';
 import DeathSystem from '@/DeathSystem/DeathSystem';
 import getVehicleData from '@/PlayerMethods/getVehicleData';
 import { Browsers } from '@/enums';
@@ -97,16 +97,16 @@ class VehicleCustoms {
 	public static handleDataHandler_dirt_level(entity: VehicleMp, data: number) {
 		if (entity.type != 'vehicle' || data === undefined) return;
 
-        entity.setDirtLevel(data);
+		entity.setDirtLevel(data);
 	}
 
 	public static handleStreamIn(entity: VehicleMp) {
 		let vehicleData: VehicleData | undefined = getVehicleData(entity);
-        let dirtLevel: number = entity.getVariable(VehicleCustoms._vehicleDirtLevelIdentifier);
+		let dirtLevel: number = entity.getVariable(VehicleCustoms._vehicleDirtLevelIdentifier);
 		if (entity.type != 'vehicle' || !vehicleData || dirtLevel === undefined) return;
 
 		VehicleCustoms.setVehicleAttachments(vehicleData.vehicle_mods, false, entity);
-        entity.setDirtLevel(dirtLevel);
+		entity.setDirtLevel(dirtLevel);
 	}
 
 	public static handleRender() {
@@ -131,6 +131,13 @@ class VehicleCustoms {
 
 		if (parse) {
 			modData = JSON.parse(data);
+		}
+
+		if (modData.headlight_colour != -1) {
+			vehicle.toggleMod(22, true);
+			mp.game.invoke(COLOURED_HEADLIGHT_NATIVE, vehicle.handle, Number(modData.headlight_colour));
+		} else if (modData.xenon != -1) {
+			vehicle.setMod(22, Number(modData.xenon));
 		}
 
 		vehicle.setWheelType(Number(modData.wheel_type));
@@ -164,7 +171,6 @@ class VehicleCustoms {
 		vehicle.setMod(15, Number(modData.suspension));
 		vehicle.setMod(16, Number(modData.armor));
 		vehicle.setMod(18, Number(modData.turbo));
-		vehicle.setMod(22, Number(modData.xenon));
 		vehicle.setMod(23, Number(modData.front_wheels));
 		vehicle.setMod(24, Number(modData.back_wheels));
 		vehicle.setMod(25, Number(modData.plate_holders));

@@ -329,6 +329,11 @@ export default {
                     maxIdx: 0
                 },
                 {
+                    name: "Headlight Colour",
+                    dbName: "headlight_colour",
+                    maxIdx: 12
+                },
+                {
                     name: "Horns",
                     dbName: "horns",
                 },
