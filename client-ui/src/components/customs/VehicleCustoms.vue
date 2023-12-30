@@ -465,7 +465,7 @@ export default {
             if (!window.mp) return;
             window.mp.trigger("browser:resetRouter");
             window.mp.trigger("gui:toggleHudComplete", true);
-            window.mp.trigger("vehicle:setAttachments", JSON.stringify(this.vehicleDataOld), true);
+            window.mp.trigger("vehicle:setAttachments", JSON.stringify(this.playerData.vehicle_mod_data_old), true);
             window.mp.trigger("customs:toggleVehicleFreeze", false);
         },
         getMaxIdx(modName) {

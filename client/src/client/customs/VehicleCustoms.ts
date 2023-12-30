@@ -80,12 +80,16 @@ class VehicleCustoms {
 			{ name: 'Colour Two', modNumber: veh.getNumMods(67) }
 		];
 
-		if (BrowserSystem._browserInstance) {
-			BrowserSystem._browserInstance.execute(`appSys.commit("playerMutationSetter", {
-                _mutationKey: "vehicle_mod_indexes",
-                data: ${JSON.stringify(indexData)}
-            })`);
-		}
+        BrowserSystem._browserInstance.execute(`appSys.commit("playerMutationSetter", {
+            _mutationKey: "vehicle_mod_indexes",
+            data: ${JSON.stringify(indexData)}
+        })`);
+
+        BrowserSystem._browserInstance.execute(`appSys.commit("playerMutationSetter", {
+            _mutationKey: "vehicle_mod_data_old",
+            data: ${JSON.stringify(veh.getVariable(_SHARED_VEHICLE_MODS_DATA))}
+        })`);
+
 	}
 
 	public static handleDataHandler_mods_data(entity: VehicleMp, data: VehicleMods) {
@@ -158,6 +162,8 @@ class VehicleCustoms {
 
         if(modData.wheel_type == 10) {
             vehicle.setDriftTyresEnabled(true);
+        } else {
+            vehicle.setDriftTyresEnabled(false);
         }
 
 		vehicle.setMod(0, Number(modData.spoilers));
