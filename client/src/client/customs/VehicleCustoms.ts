@@ -104,13 +104,20 @@ class VehicleCustoms {
 		entity.setDirtLevel(data);
 	}
 
-	public static handleStreamIn(entity: VehicleMp) {
+	public static async handleStreamIn(entity: VehicleMp) {
+		if(entity.type != "vehicle") return;
+
+		for(let i = 0; entity === null || entity.handle === 0 && i < 15; i++) {
+			await mp.game.waitAsync(500);
+		}
+
 		let vehicleData: VehicleData | undefined = getVehicleData(entity);
 		let dirtLevel: number = entity.getVariable(VehicleCustoms._vehicleDirtLevelIdentifier);
-		if (entity.type != 'vehicle' || !vehicleData || dirtLevel === undefined) return;
 
-		VehicleCustoms.setVehicleAttachments(vehicleData.vehicle_mods, false, entity);
-		entity.setDirtLevel(dirtLevel);
+		if(vehicleData && dirtLevel !== undefined) {
+			VehicleCustoms.setVehicleAttachments(vehicleData.vehicle_mods, false, entity);
+			entity.setDirtLevel(dirtLevel);
+		}
 	}
 
 	public static handleRender() {
