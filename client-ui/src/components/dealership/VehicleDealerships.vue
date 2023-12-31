@@ -44,7 +44,8 @@
 
                                             </div>
 
-                                            <font class="absolute bottom-14 text-green-400">${{ item.price.toLocaleString('en-US') }}</font>
+                                            <font class="absolute bottom-14 text-green-400">${{
+                                                item.price.toLocaleString('en-US') }}</font>
 
                                             <button @click="viewVehicle(item.spawnName)"
                                                 class="absolute bottom-4 w-[40%] rounded-lg border border-gray-500 duration-300 hover:text-green-400">
@@ -61,25 +62,33 @@
             </div>
 
             <div class="absolute right-[1%] top-20">
-                <div v-if="playerData.vehicle_performance_data" class="bg-black/70 shadow-2xl shadow-black p-4 rounded-xl relative h-full w-[24vw]">
+                <div v-if="playerData.vehicle_performance_data"
+                    class="bg-black/70 shadow-2xl shadow-black p-4 rounded-xl relative h-full w-[24vw]">
                     <div class="w-full">
                         <div class=" w-full duration-300">
 
                             <div class="mt-2">Acceleration</div>
-                            <div class="p-3 duration-300 bg-purple-400/30 mt-2 text-center rounded-lg max-w-full" :style="{'width': playerData.vehicle_performance_data.maxTraction * 30+'%'}">{{(playerData.vehicle_performance_data.maxTraction * 30).toFixed(0)}}%</div>
+                            <div class="p-3 duration-300 bg-purple-400/30 mt-2 text-center rounded-lg max-w-full"
+                                :style="{ 'width': playerData.vehicle_performance_data.maxTraction * 30 + '%' }">
+                                {{ (playerData.vehicle_performance_data.maxTraction * 30).toFixed(0) }}%</div>
 
                             <div class="mt-2">Top Speed</div>
-                            <div class="p-3 duration-300 bg-purple-400/30 mt-2 text-center rounded-lg max-w-full" :style="{'width': playerData.vehicle_performance_data.estimatedMaxSpeed * 1.4+'%'}">{{(playerData.vehicle_performance_data.estimatedMaxSpeed * 1.4).toFixed(0)}}%</div>
+                            <div class="p-3 duration-300 bg-purple-400/30 mt-2 text-center rounded-lg max-w-full"
+                                :style="{ 'width': playerData.vehicle_performance_data.estimatedMaxSpeed * 1.4 + '%' }">
+                                {{ (playerData.vehicle_performance_data.estimatedMaxSpeed * 1.4).toFixed(0) }}%</div>
 
                             <div class="mt-2">Brakes</div>
-                            <div class="p-3 duration-300 bg-purple-400/30 mt-2 text-center rounded-lg max-w-full" :style="{'width': (playerData.vehicle_performance_data.maxBraking * 100).toFixed(0)+'%'}">{{(playerData.vehicle_performance_data.maxBraking * 100).toFixed(0)}}%</div>
+                            <div class="p-3 duration-300 bg-purple-400/30 mt-2 text-center rounded-lg max-w-full"
+                                :style="{ 'width': (playerData.vehicle_performance_data.maxBraking * 100).toFixed(0) + '%' }">
+                                {{ (playerData.vehicle_performance_data.maxBraking * 100).toFixed(0) }}%</div>
 
 
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-black/70 shadow-2xl shadow-black rounded-xl" :class="playerData.vehicle_performance_data ? 'mt-14' : ''">
+                <div class="bg-black/70 shadow-2xl shadow-black rounded-xl"
+                    :class="playerData.vehicle_performance_data ? 'mt-14' : ''">
                     <ui class="flex justify-center space-x-5 border-gray-500 p-4">
                         Choose your vehicle's colour
                     </ui>
@@ -115,8 +124,7 @@
                         class="w-[250px] duration-300 hover:text-red-400 shadow-black shadow-2xl p-2 rounded-lg bg-black/70 border-gray-500">
                         Close <i class="fa-solid fa-rotate-left text-red-400"></i>
                     </button>
-                    <button
-                     @click="purchaseVehicle"
+                    <button @click="purchaseVehicle"
                         class="w-[250px] duration-300 p-2 rounded-lg hover:text-green-400 shadow-black shadow-2xl bg-black/70 border-gray-500">
                         Purchase
                         <i class="fa-solid fa-dollar-sign text-green-400"></i>
@@ -206,7 +214,7 @@ export default {
             window.mp.trigger("dealers:changeSelectVeh", name, this.rotation, this.selectedColour);
         },
         purchaseVehicle() {
-            if(!this.selectedVehicle) return;
+            if (!this.selectedVehicle) return;
             this.$store.state.uiStates.serverLoading = true;
             window.mp.trigger("dealers:purchaseVehicle", this.selectedVehicle, this.selectedColour)
         }

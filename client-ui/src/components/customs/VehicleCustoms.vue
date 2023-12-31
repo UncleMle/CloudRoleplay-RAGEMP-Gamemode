@@ -43,76 +43,85 @@
 
                                 <div class="p-4">
 
-                                    <div v-if="browsingType == 'general'">
-                                        <div v-for="item in generalItems" :key="item">
-                                            <div v-if="getMaxIdx(item.name) > 0" class="pb-5 duration-300">
-                                                <label for="steps-range"
-                                                    class="block mb-2 text-sm font-medium  text-white">{{ item.name }} ({{
-                                                        formatMod(vehicleData[item.dbName]) }})</label>
-                                                <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
-                                                    :min="getMinIdx(item.name)" :max="getMaxIdx(item.name)"
-                                                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
-                                                <button @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
-                                                    v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
-                                                    class="border duration-300 w-[20%] mr-4 p-0.5 mt-2 rounded-lg border-gray-500 hover:text-red-500">
-                                                    Reset <i class="fa-solid fa-rotate-left text-red-500"></i>
-                                                </button>
-                                                <button @click="addToBasket(item.name, vehicleData[item.dbName])"
-                                                    v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
-                                                    class="border duration-300 w-[20%] p-0.5 mt-2 rounded-lg border-gray-500 hover:text-green-500">
-                                                    Add <i class="fa-solid fa-plus text-green-500"></i>
-                                                </button>
+                                    <Transition name="slide-fade">
+                                        <div v-if="browsingType == 'general'">
+                                            <div v-for="item in generalItems" :key="item">
+                                                <div v-if="getMaxIdx(item.name) > 0" class="pb-5 duration-300">
+                                                    <label for="steps-range"
+                                                        class="block mb-2 text-sm font-medium  text-white">{{ item.name }}
+                                                        ({{
+                                                            formatMod(vehicleData[item.dbName]) }})</label>
+                                                    <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
+                                                        :min="getMinIdx(item.name)" :max="getMaxIdx(item.name)"
+                                                        class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                                    <button @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
+                                                        v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
+                                                        class="border duration-300 w-[20%] mr-4 p-0.5 mt-2 rounded-lg border-gray-500 hover:text-red-500">
+                                                        Reset <i class="fa-solid fa-rotate-left text-red-500"></i>
+                                                    </button>
+                                                    <button @click="addToBasket(item.name, vehicleData[item.dbName])"
+                                                        v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
+                                                        class="border duration-300 w-[20%] p-0.5 mt-2 rounded-lg border-gray-500 hover:text-green-500">
+                                                        Add <i class="fa-solid fa-plus text-green-500"></i>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </Transition>
 
-                                    <div v-if="browsingType == 'performance'">
-                                        <div v-for="item in performanceItems" :key="item">
-                                            <div v-if="getMaxIdx(item.name) > 0" class="pb-5 duration-300">
-                                                <label for="steps-range"
-                                                    class="block mb-2 text-sm font-medium  text-white">{{ item.name }} ({{
-                                                        formatMod(vehicleData[item.dbName]) }})</label>
-                                                <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
-                                                    :min="getMinIdx(item.name)" :max="getMaxIdx(item.name)"
-                                                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
-                                                <button @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
-                                                    v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
-                                                    class="border duration-300 w-[20%] mr-4 p-0.5 mt-2 rounded-lg border-gray-500 hover:text-red-500">
-                                                    Reset <i class="fa-solid fa-rotate-left text-red-500"></i>
-                                                </button>
-                                                <button @click="addToBasket(item.name, vehicleData[item.dbName])"
-                                                    v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
-                                                    class="border duration-300 w-[20%] p-0.5 mt-2 rounded-lg border-gray-500 hover:text-green-500">
-                                                    Add <i class="fa-solid fa-plus text-green-500"></i>
-                                                </button>
+                                    <Transition name="slide-fade">
+                                        <div v-if="browsingType == 'performance'">
+                                            <div v-for="item in performanceItems" :key="item">
+                                                <div v-if="getMaxIdx(item.name) > 0" class="pb-5 duration-300">
+                                                    <label for="steps-range"
+                                                        class="block mb-2 text-sm font-medium  text-white">{{ item.name }}
+                                                        ({{
+                                                            formatMod(vehicleData[item.dbName]) }})</label>
+                                                    <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
+                                                        :min="getMinIdx(item.name)" :max="getMaxIdx(item.name)"
+                                                        class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                                    <button @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
+                                                        v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
+                                                        class="border duration-300 w-[20%] mr-4 p-0.5 mt-2 rounded-lg border-gray-500 hover:text-red-500">
+                                                        Reset <i class="fa-solid fa-rotate-left text-red-500"></i>
+                                                    </button>
+                                                    <button @click="addToBasket(item.name, vehicleData[item.dbName])"
+                                                        v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
+                                                        class="border duration-300 w-[20%] p-0.5 mt-2 rounded-lg border-gray-500 hover:text-green-500">
+                                                        Add <i class="fa-solid fa-plus text-green-500"></i>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </Transition>
 
-                                    <div v-if="browsingType == 'other'">
-                                        <div v-for="item in otherItems" :key="item">
-                                            <div v-if="getMaxIdx(item.name) > 0 || item.name == 'Xenon'" class="pb-5 duration-300">
-                                                <label for="steps-range"
-                                                    class="block mb-2 text-sm font-medium  text-white">{{ item.name }} ({{
-                                                        formatMod(vehicleData[item.dbName]) }})</label>
-                                                <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
-                                                    :min="item.name == 'Colour One' || item.name == 'Colour Two' ? 0 : getMinIdx(item.name)"
-                                                    :max="item.maxIdx ? item.maxIdx : getMaxIdx(item.name)"
-                                                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
-                                                <button @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
-                                                    v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
-                                                    class="border duration-300 w-[20%] mr-4 p-0.5 mt-2 rounded-lg border-gray-500 hover:text-red-500">
-                                                    Reset <i class="fa-solid fa-rotate-left text-red-500"></i>
-                                                </button>
-                                                <button @click="addToBasket(item.name, vehicleData[item.dbName])"
-                                                    v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
-                                                    class="border duration-300 w-[20%] p-0.5 mt-2 rounded-lg border-gray-500 hover:text-green-500">
-                                                    Add <i class="fa-solid fa-plus text-green-500"></i>
-                                                </button>
+                                    <Transition name="slide-fade">
+                                        <div v-if="browsingType == 'other'">
+                                            <div v-for="item in otherItems" :key="item">
+                                                <div v-if="getMaxIdx(item.name) > 0 || item.name == 'Xenon'"
+                                                    class="pb-5 duration-300">
+                                                    <label for="steps-range"
+                                                        class="block mb-2 text-sm font-medium  text-white">{{ item.name }}
+                                                        ({{
+                                                            formatMod(vehicleData[item.dbName]) }})</label>
+                                                    <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
+                                                        :min="item.name == 'Colour One' || item.name == 'Colour Two' ? 0 : getMinIdx(item.name)"
+                                                        :max="item.maxIdx ? item.maxIdx : getMaxIdx(item.name)"
+                                                        class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                                    <button @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
+                                                        v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
+                                                        class="border duration-300 w-[20%] mr-4 p-0.5 mt-2 rounded-lg border-gray-500 hover:text-red-500">
+                                                        Reset <i class="fa-solid fa-rotate-left text-red-500"></i>
+                                                    </button>
+                                                    <button @click="addToBasket(item.name, vehicleData[item.dbName])"
+                                                        v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
+                                                        class="border duration-300 w-[20%] p-0.5 mt-2 rounded-lg border-gray-500 hover:text-green-500">
+                                                        Add <i class="fa-solid fa-plus text-green-500"></i>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-
+                                    </Transition>
                                 </div>
                             </div>
                         </div>
@@ -496,7 +505,7 @@ export default {
                 foundIdx = 50;
             }
 
-            if(modName.substring(0, 5) == "Neons") {
+            if (modName.substring(0, 5) == "Neons") {
                 foundIdx = 256;
             }
 
@@ -529,5 +538,4 @@ export default {
 
 #numberplate {
     font-family: "UKNumberPlate";
-}
-</style>
+}</style>

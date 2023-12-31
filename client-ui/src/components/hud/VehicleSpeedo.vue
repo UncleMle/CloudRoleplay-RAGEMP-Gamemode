@@ -3,7 +3,9 @@
         <div v-if="uiStates.vehicleRadar" class="absolute left-[1%] bottom-[28.5%]">
             <div class="rounded-xl w-[20rem] bg-black/40">
                 <div class="text-xl border-b-2 border-gray-500 p-2">
-                    <i class="fa-solid fa-satellite-dish text-gray-400"></i> Police Radar <font class="text-sm text-red-400">{{Object.entries(uiStates.vehicleRadarData).length > 0 && uiStates.vehRadarLastTracked ? "- Last locked on" :"" }}</font>
+                    <i class="fa-solid fa-satellite-dish text-gray-400"></i> Police Radar <font
+                        class="text-sm text-red-400">{{ Object.entries(uiStates.vehicleRadarData).length > 0 &&
+                            uiStates.vehRadarLastTracked ? "- Last locked on" : "" }}</font>
                 </div>
 
                 <div class="p-3">
@@ -11,7 +13,8 @@
                         <h1>Speed</h1>
                         <div class="mt-2 text-center p-2 bg-black/50 rounded-lg">
                             <font>
-                                {{ uiStates.vehicleRadarData.speed != null ? (uiStates.vehicleRadarData.speed * 3.6).toFixed(0) : "..." }} {{ uiStates.vehicleRadarData.speed != null ? 'KM/H' : '' }}
+                                {{ uiStates.vehicleRadarData.speed != null ? (uiStates.vehicleRadarData.speed *
+                                    3.6).toFixed(0) : "..." }} {{ uiStates.vehicleRadarData.speed != null ? 'KM/H' : '' }}
                             </font>
                         </div>
                     </div>
@@ -23,7 +26,8 @@
                             </font>
                         </div>
                     </div>
-                    <div v-if="uiStates.vehicleRadarData.vehicleName && uiStates.vehicleRadarData.vehicleName != 'NULL'" class="mt-2">
+                    <div v-if="uiStates.vehicleRadarData.vehicleName && uiStates.vehicleRadarData.vehicleName != 'NULL'"
+                        class="mt-2">
                         <h1>Vehicle Name</h1>
                         <div class="mt-2 text-center p-2 bg-black/50 rounded-lg">
                             <font>
@@ -108,7 +112,8 @@
 
                 <div class="bg-black/50 rounded-lg">
                     <div :class="uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) < 20 ? uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) < 10 ? 'bg-red-400' : 'bg-orange-400' : 'bg-green-500'"
-                        class="rounded-lg h-2 duration-300" :style="{ 'width': uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) + '%' }">
+                        class="rounded-lg h-2 duration-300"
+                        :style="{ 'width': uiStates.vehicleSpeedoData.fuelLevel.toFixed(0) + '%' }">
                     </div>
                 </div>
                 <i class="fa-solid fa-gas-pump mt-3 text-red-400"></i> {{
@@ -189,5 +194,4 @@ export default {
 
 #digitext {
     font-family: "DS-DIGI";
-}
-</style>
+}</style>

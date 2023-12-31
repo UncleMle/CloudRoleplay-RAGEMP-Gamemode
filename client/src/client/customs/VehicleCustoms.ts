@@ -129,7 +129,7 @@ class VehicleCustoms {
 	}
 
 	public static setVehicleAttachments(data: any, parse: boolean = false, vehicle: VehicleMp = VehicleCustoms.LocalPlayer.vehicle) {
-		if (!data || !vehicle) return;
+		if (!data || !vehicle || vehicle.handle == 0 || !mp.vehicles.atHandle(vehicle.handle)) return;
 
 		let modData: VehicleMods = data;
 

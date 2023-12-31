@@ -61,16 +61,11 @@ export default {
 }
 
 .slide-fade-enter-active {
-    transition: all 0.4s ease-out;
+	transition: opacity 0.55s;
 }
 
+.slide-fade-enter,
 .slide-fade-leave-active {
-    transition: all 0.4s cubic-bezier(1, 0.5, 0.8, 1);
-}
-
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-    transform: translateY(10020px);
-    opacity: 0;
+	opacity: 0;
 }
 </style>
