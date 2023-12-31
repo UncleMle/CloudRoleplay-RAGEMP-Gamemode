@@ -4,6 +4,7 @@ import { _SHARED_VEHICLE_DATA, _control_ids } from "../Constants/Constants";
 import getVehicleData from "../PlayerMethods/getVehicleData";
 import { Browsers } from "@/enums";
 import HandsUp from "@/Animation/HandsUpAnim";
+import VehicleSpeedo from "./VehicleSpeedo";
 
 class VehicleEngine {
 	public static LocalPlayer: PlayerMp;
@@ -57,7 +58,7 @@ class VehicleEngine {
 				return;
 			}
 
-			mp.events.callRemote(VehicleEngine.engineToggleEvent);
+			mp.events.callRemote(VehicleEngine.engineToggleEvent, VehicleSpeedo.getVehDispName(VehicleEngine.LocalPlayer.vehicle.model));
 		}
 	}
 }

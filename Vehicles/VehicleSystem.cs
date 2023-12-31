@@ -6,6 +6,7 @@ using CloudRP.Utils;
 using CloudRP.VehicleInsurance;
 using CloudRP.VehicleModification;
 using GTANetworkAPI;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -783,7 +784,7 @@ namespace CloudRP.Vehicles
         }
 
         [RemoteEvent("server:toggleEngine")]
-        public void handleToggleEngine(Player player)
+        public void handleToggleEngine(Player player,  string vehName)
         {
             if (!player.IsInVehicle) return;
 
@@ -795,7 +796,9 @@ namespace CloudRP.Vehicles
 
             vehicleData.engine_status = !vehicleData.engine_status;
 
-            uiHandling.sendNotification(player, "You " + (vehicleData.engine_status ? "started" : "turned off") + " this vehicle's engine.", true, true, (vehicleData.engine_status ? "Started" : "Turned off") + " the vehicle's engine.");
+            string vehicleName = $"{(vehName != null && vehName != "NULL" ? vehName : "vehicle")}";
+
+            uiHandling.sendNotification(player, "You " + (vehicleData.engine_status ? "started" : "turned off") + $" the {vehicleName}'s engine.", true, true, (vehicleData.engine_status ? "Started" : "Turned off") + $" the {vehicleName}'s engine.");
 
             saveVehicleData(player.Vehicle, vehicleData);
         }
