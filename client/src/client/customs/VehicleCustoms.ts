@@ -106,11 +106,6 @@ class VehicleCustoms {
 
 	public static async handleStreamIn(entity: VehicleMp) {
 		if(entity.type != "vehicle") return;
-
-		for(let i = 0; entity === null || entity.handle === 0 && i < 15; i++) {
-			await mp.game.waitAsync(500);
-		}
-
 		let vehicleData: VehicleData | undefined = getVehicleData(entity);
 		let dirtLevel: number = entity.getVariable(VehicleCustoms._vehicleDirtLevelIdentifier);
 
@@ -136,7 +131,7 @@ class VehicleCustoms {
 	}
 
 	public static setVehicleAttachments(data: any, parse: boolean = false, vehicle: VehicleMp = VehicleCustoms.LocalPlayer.vehicle) {
-		if (!data || !vehicle || vehicle.handle == 0 || !mp.vehicles.atHandle(vehicle.handle)) return;
+		if (!data || !vehicle || vehicle.handle === 0) return;
 
 		let modData: VehicleMods = data;
 

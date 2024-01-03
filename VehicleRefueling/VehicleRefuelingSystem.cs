@@ -14,8 +14,7 @@ namespace CloudRP.VehicleRefueling
         public static string _refuelPumpIdenfitier = "refuelingPumpData";
         public static string _refuelDataIdentifier = "playerRefuelData";
 
-        [ServerEvent(Event.ResourceStart)]
-        public void loadAllFuelStations()
+        public VehicleRefuelingSystem()
         {
             VehicleRefuelStations.refuelingStations.ForEach(refuelStation =>
             {
@@ -27,32 +26,30 @@ namespace CloudRP.VehicleRefueling
                     MarkersAndLabels.setTextLabel(pump.position, "Fuel Pump \nUse ~y~Y~w~ to interact", 5f);
 
                     pumpCol.SetData(_refuelPumpIdenfitier, refuelStation);
+
+                    pumpCol.OnEntityEnterColShape += ((shape, player) =>
+                    {
+                        RefuelStation refuelStationData = shape.GetData<RefuelStation>(_refuelPumpIdenfitier);
+
+                        if (refuelStationData != null)
+                        {
+                            player.SetData(_refuelPumpIdenfitier, refuelStationData);
+                            player.SetSharedData(_refuelPumpIdenfitier, refuelStationData);
+                        }
+                    });
+
+                    pumpCol.OnEntityExitColShape += ((shape, player) =>
+                    {
+                        RefuelStation refuelStationData = shape.GetData<RefuelStation>(_refuelPumpIdenfitier);
+
+                        if (refuelStationData != null)
+                        {
+                            player.ResetData(_refuelPumpIdenfitier);
+                            player.ResetSharedData(_refuelPumpIdenfitier);
+                        }
+                    });
                 });
             });
-        }
-
-        [ServerEvent(Event.PlayerEnterColshape)]
-        public void setPumpData(ColShape colshape, Player player)
-        {
-            RefuelStation refuelStationData = colshape.GetData<RefuelStation>(_refuelPumpIdenfitier);
-
-            if(refuelStationData != null)
-            {
-                player.SetData(_refuelPumpIdenfitier, refuelStationData);
-                player.SetSharedData(_refuelPumpIdenfitier, refuelStationData);
-            }
-        }
-
-        [ServerEvent(Event.PlayerExitColshape)]
-        public void removePumpData(ColShape colshape, Player player)
-        {
-            RefuelStation refuelStationData = colshape.GetData<RefuelStation>(_refuelPumpIdenfitier);
-
-            if(refuelStationData != null)
-            {
-                player.ResetData(_refuelPumpIdenfitier);
-                player.ResetSharedData(_refuelPumpIdenfitier);
-            }
         }
 
         [ServerEvent(Event.PlayerDisconnected)]
@@ -76,7 +73,7 @@ namespace CloudRP.VehicleRefueling
                 return;
             }
             
-            DbVehicle closeVehicleData = VehicleSystem.getVehicleData(findClosestVehicle);
+            DbVehicle closeVehicleData = findClosestVehicle.getData();
             
             if(closeVehicleData != null)
             {
@@ -101,7 +98,8 @@ namespace CloudRP.VehicleRefueling
 
                 closeVehicleData.player_refuelling_char_id = charData.character_id;
                 closeVehicleData.vehicle_fuel_purchase_price = -1;
-                VehicleSystem.saveVehicleData(findClosestVehicle, closeVehicleData);
+
+                findClosestVehicle.saveVehicleData(closeVehicleData);
 
                 RefuelingData playerRefuelData = new RefuelingData
                 {
@@ -133,7 +131,7 @@ namespace CloudRP.VehicleRefueling
 
                 closeVehicles.ForEach(veh =>
                 {
-                    DbVehicle vehData = VehicleSystem.getVehicleData(veh);
+                    DbVehicle vehData = veh.getData();
 
                     if (vehData != null && vehData.vehicle_id == refuelData.vehicleId)
                     {
@@ -163,7 +161,7 @@ namespace CloudRP.VehicleRefueling
                     {
                         endPlayerRefuellingCycle(player, "~g~This vehicle's fuel tank is full!");
                         foundVehData.vehicle_fuel = 100;
-                        VehicleSystem.saveVehicleData(findVeh, foundVehData, true);
+                        findVeh.saveVehicleData(foundVehData, true);
                         return;
                     }
                     
@@ -172,7 +170,8 @@ namespace CloudRP.VehicleRefueling
 
                     foundVehData.vehicle_fuel_purchase_price += fuelPrice;
 
-                    VehicleSystem.saveVehicleData(findVeh, foundVehData, true);
+                    findVeh.setVehicleData(foundVehData, true);
+
                     PlayersData.setPlayerCharacterData(player, characterData, false, true);
 
                     uiHandling.handleObjectUiMutation(player, MutationKeys.VehicleFuelData, new UiFuelData
@@ -186,7 +185,6 @@ namespace CloudRP.VehicleRefueling
                 {
                     endPlayerRefuellingCycle(player);
                 }
-
             } else
             {
                 endPlayerRefuellingCycle(player);
@@ -213,12 +211,12 @@ namespace CloudRP.VehicleRefueling
 
                 foreach (Vehicle vehicle in onlineVehicles)
                 {
-                    DbVehicle vehicleData = VehicleSystem.getVehicleData(vehicle);
+                    DbVehicle vehicleData = vehicle.getData();
 
                     if (vehicleData.player_refuelling_char_id == charData.character_id)
                     {
                         vehicleData.player_refuelling_char_id = -1;
-                        VehicleSystem.saveVehicleData(vehicle, vehicleData);
+                        vehicle.saveVehicleData(vehicleData);
                     }
                 }
             }

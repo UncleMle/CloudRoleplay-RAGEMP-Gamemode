@@ -79,7 +79,7 @@ namespace CloudRP.VehicleModification
             }
 
             Vehicle viewModsVehicle = player.Vehicle;
-            DbVehicle vehicleData = VehicleSystem.getVehicleData(viewModsVehicle);
+            DbVehicle vehicleData = viewModsVehicle.getData();
 
             if (vehicleData != null)
             {
@@ -108,7 +108,7 @@ namespace CloudRP.VehicleModification
             player.TriggerEvent("customs:toggleVehicleFreeze", false);
 
             Vehicle pVeh = player.Vehicle;
-            DbVehicle pVehData = VehicleSystem.getVehicleData(pVeh);
+            DbVehicle pVehData = pVeh.getData();
             if (pVehData != null)
             {
                 if(pVehData.owner_id != characterData.character_id)
@@ -139,7 +139,7 @@ namespace CloudRP.VehicleModification
 
                         pVehData.vehicle_mods = newModData;
                         dbContext.SaveChanges();
-                        VehicleSystem.setVehicleData(pVeh, pVehData, true);
+                        pVeh.setVehicleData(pVehData, true);
                     }
                 }
             }

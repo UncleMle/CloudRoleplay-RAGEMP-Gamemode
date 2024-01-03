@@ -37,7 +37,7 @@ namespace CloudRP.Authentication
             UserCredentials userCredentials = JsonConvert.DeserializeObject<UserCredentials>(data);
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if (userData != null || AdminUtils.checkPlayerIsBanned(player) != null) return;
+            if (userData != null || player.checkPlayerIsBanned() != null) return;
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
@@ -71,7 +71,8 @@ namespace CloudRP.Authentication
                                 issue_unix_date = CommandUtils.generateUnix(),
                             };
 
-                            AdminUtils.saveBan(ban);
+                            dbContext.bans.Add(ban);
+
                             AuthUtils.sendEmail(findAccount.email_address, "Authentication Warning", $"Our systems detected a third party attempting to gain access to your account (<b>{findAccount.username}</b>). We have blocked the login attempt. Please reset all related passwords immediately.");
                             NAPI.Chat.SendChatMessageToPlayer(findIsOnline, ChatUtils.red + "~h~[AUTHENTICATION WARNING] " + ChatUtils.White + "A third party attempted to login into your account. Please reset your account password immediately.");
                             player.KickSilent();
@@ -94,7 +95,7 @@ namespace CloudRP.Authentication
                                 admin_name = "System"
                             };
 
-                            AdminUtils.banAPlayer(-1, user, user, player, "Logging into banned accounts");
+                            player.banPlayer(-1, user, user, "Logging into banned accounts.");
                             return;
                         }
 
@@ -176,7 +177,7 @@ namespace CloudRP.Authentication
         [RemoteEvent("server:resetPasswordAuth")]
         public void resetPasswordAuth(Player player, string emailAddress)
         {
-            Ban ban = AdminUtils.checkPlayerIsBanned(player);
+            Ban ban = player.checkPlayerIsBanned();
             if (ban != null) return;
 
             if(!AuthUtils.isEmailValid(emailAddress))
@@ -349,7 +350,7 @@ namespace CloudRP.Authentication
         {
             User userData = PlayersData.getPlayerAccountData(player);
 
-            if(userData != null && AdminUtils.checkPlayerIsBanned(player) == null)
+            if(userData != null && player.checkPlayerIsBanned() == null)
             {
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
@@ -458,7 +459,7 @@ namespace CloudRP.Authentication
 
         public static void setUserToCharacterSelection(Player player, User userData)
         {
-            if (AdminUtils.checkPlayerIsBanned(player) != null) return;
+            if (player.checkPlayerIsBanned() != null) return;
 
             PlayersData.setPlayerAccountData(player, userData);
 

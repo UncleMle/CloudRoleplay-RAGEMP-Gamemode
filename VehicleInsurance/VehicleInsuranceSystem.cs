@@ -37,42 +37,43 @@ namespace CloudRP.VehicleInsurance
             },
         };
 
-        [ServerEvent(Event.ResourceStart)]
-        public void loadInsuranceAreas()
+        public VehicleInsuranceSystem()
         {
-            insuranceAreas.ForEach(area =>
+            NAPI.Task.Run(() =>
             {
-                NAPI.Blip.CreateBlip(380, area.retrievePosition, 1.0f, 49, area.insuranceName, 255, 1.0f, true, 0, 0);
-                MarkersAndLabels.setPlaceMarker(area.retrievePosition);
-                MarkersAndLabels.setTextLabel(area.retrievePosition, area.insuranceName + "\nUse ~y~Y~w~ to interact", 5f);
+                insuranceAreas.ForEach(area =>
+                {
+                    NAPI.Blip.CreateBlip(380, area.retrievePosition, 1.0f, 49, area.insuranceName, 255, 1.0f, true, 0, 0);
+                    MarkersAndLabels.setPlaceMarker(area.retrievePosition);
+                    MarkersAndLabels.setTextLabel(area.retrievePosition, area.insuranceName + "\nUse ~y~Y~w~ to interact", 5f);
 
-                ColShape insuranceCol = NAPI.ColShape.CreateSphereColShape(area.retrievePosition, 2.0f, 0);
-                insuranceCol.SetData(_insuranceDataIdentifier, area);
+                    ColShape insuranceCol = NAPI.ColShape.CreateSphereColShape(area.retrievePosition, 2.0f, 0);
+                    insuranceCol.SetData(_insuranceDataIdentifier, area);
+
+                    insuranceCol.OnEntityEnterColShape += (shape, player) =>
+                    {
+                        InsuranceArea insuranceColData = shape.GetData<InsuranceArea>(_insuranceDataIdentifier);
+
+                        if (insuranceColData != null && PlayersData.getPlayerCharacterData(player) != null)
+                        {
+                            player.SetData(_insuranceDataIdentifier, insuranceColData);
+                            player.SetSharedData(_insuranceDataIdentifier, insuranceColData);
+                        }
+                    };
+
+                    insuranceCol.OnEntityExitColShape += (shape, player) =>
+                    {
+                        InsuranceArea insuranceColData = shape.GetData<InsuranceArea>(_insuranceDataIdentifier);
+
+                        if (insuranceColData != null)
+                        {
+                            player.ResetData(_insuranceDataIdentifier);
+                            player.ResetSharedData(_insuranceDataIdentifier);
+                        }
+                    };
+                    
+                });
             });
-        }
-
-        [ServerEvent(Event.PlayerEnterColshape)]
-        public void applyInsuranceData(ColShape colshape, Player player)
-        {
-            InsuranceArea insuranceColData = colshape.GetData<InsuranceArea>(_insuranceDataIdentifier);
-
-            if (insuranceColData != null && PlayersData.getPlayerCharacterData(player) != null)
-            {
-                player.SetData(_insuranceDataIdentifier, insuranceColData);
-                player.SetSharedData(_insuranceDataIdentifier, insuranceColData);
-            }
-        }
-
-        [ServerEvent(Event.PlayerExitColshape)]
-        public void removeInsuranceData(ColShape colshape, Player player)
-        {
-            InsuranceArea insuranceColData = colshape.GetData<InsuranceArea>(_insuranceDataIdentifier);
-
-            if (insuranceColData != null)
-            {
-                player.ResetData(_insuranceDataIdentifier);
-                player.ResetSharedData(_insuranceDataIdentifier);
-            }
         }
 
         [RemoteEvent("server:viewInsuranceVehicles")]

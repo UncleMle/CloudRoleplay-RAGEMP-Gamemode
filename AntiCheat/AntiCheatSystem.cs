@@ -95,7 +95,7 @@ namespace CloudRP.AntiCheat
             {
                 User antiCheat = AdminUtils.getAcBanAdmin();
 
-                AdminUtils.banAPlayer(-1, antiCheat, userData, player, "Disallowed weapon");
+                player.banPlayer(-1, antiCheat, userData, "Disallowed weapon");
 
                 foreach (KeyValuePair<Player, User> entry in onlineStaff)
                 {

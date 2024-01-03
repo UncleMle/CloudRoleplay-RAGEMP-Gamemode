@@ -85,7 +85,7 @@ namespace CloudRP.VehicleWashing
                 }
 
                 Vehicle targetVehicle = player.Vehicle;
-                DbVehicle targetVehicleData = VehicleSystem.getVehicleData(targetVehicle);
+                DbVehicle targetVehicleData = targetVehicle.getData();
 
                 if(targetVehicleData != null)
                 {
@@ -103,7 +103,7 @@ namespace CloudRP.VehicleWashing
 
                     characterData.money_amount -= vehicleWashData.washPrice;
 
-                    targetVehicleData.setDirtLevel(player.Vehicle, 0);
+                    player.Vehicle.setDirtLevel(0);
 
                     PlayersData.setPlayerCharacterData(player, characterData, false, true);
 

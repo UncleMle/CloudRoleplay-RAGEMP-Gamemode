@@ -101,32 +101,38 @@ namespace CloudRP.VehicleParking
             },
         };
 
-        [ServerEvent(Event.ResourceStart)]
-        public void populateParkingAreas()
+        public VehicleParking()
         {
-            for(int i = 0; i < parkingLots.Count; i++)
+            NAPI.Task.Run(() =>
             {
-                ParkingLot pLot = parkingLots[i];
+                for (int i = 0; i < parkingLots.Count; i++)
+                {
+                    ParkingLot pLot = parkingLots[i];
 
-                ColShape parkCol = NAPI.ColShape.CreateSphereColShape(pLot.park.position, pLot.parkPosRange, 0);
-                ColShape retrieveCol = NAPI.ColShape.CreateSphereColShape(pLot.retrieve.position, pLot.retrievePosRange, 0);
+                    ColShape parkCol = NAPI.ColShape.CreateSphereColShape(pLot.park.position, pLot.parkPosRange, 0);
+                    ColShape retrieveCol = NAPI.ColShape.CreateSphereColShape(pLot.retrieve.position, pLot.retrievePosRange, 0);
 
-                parkCol.SetData(_parkingLotIdentifier, pLot.park);
-                retrieveCol.SetData(_retrievalIdentifier, pLot.retrieve);
+                    parkCol.SetData(_parkingLotIdentifier, pLot.park);
+                    retrieveCol.SetData(_retrievalIdentifier, pLot.retrieve);
 
-                NAPI.TextLabel.CreateTextLabel($"{pLot.name} ~y~Y~w~ to interact", pLot.retrieve.position, 10f, 1.0f, 4, new Color(255, 255, 255, 255), true);
-                NAPI.Blip.CreateBlip(831, pLot.park.position, 1.0f, 39, pLot.name, 255, 1.0f, true, 0, 0);
-                NAPI.Marker.CreateMarker(27, new Vector3(pLot.retrieve.position.X, pLot.retrieve.position.Y, pLot.retrieve.position.Z - 0.9), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
-                NAPI.Marker.CreateMarker(36, new Vector3(pLot.park.position.X, pLot.park.position.Y, pLot.park.position.Z), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
-            }
+                    NAPI.TextLabel.CreateTextLabel($"{pLot.name} ~y~Y~w~ to interact", pLot.retrieve.position, 10f, 1.0f, 4, new Color(255, 255, 255, 255), true);
+                    NAPI.Blip.CreateBlip(831, pLot.park.position, 1.0f, 39, pLot.name, 255, 1.0f, true, 0, 0);
+                    NAPI.Marker.CreateMarker(27, new Vector3(pLot.retrieve.position.X, pLot.retrieve.position.Y, pLot.retrieve.position.Z - 0.9), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
+                    NAPI.Marker.CreateMarker(36, new Vector3(pLot.park.position.X, pLot.park.position.Y, pLot.park.position.Z), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
+
+                    parkCol.OnEntityEnterColShape += setParkingData;
+                    parkCol.OnEntityExitColShape += removeParkingData;
+
+                    retrieveCol.OnEntityEnterColShape += setParkingData;
+                    retrieveCol.OnEntityExitColShape += removeParkingData;
+                }
+            });
         }
 
-        [ServerEvent(Event.PlayerEnterColshape)]
         public void setParkingData(ColShape colshape, Player player)
         {
             ParkCol parkCol = colshape.GetData<ParkCol>(_parkingLotIdentifier);
             RetrieveCol retrievalCol = colshape.GetData<RetrieveCol>(_retrievalIdentifier);
-
 
             if (retrievalCol != null)
             {
@@ -149,12 +155,10 @@ namespace CloudRP.VehicleParking
             }
         }        
         
-        [ServerEvent(Event.PlayerExitColshape)]
         public void removeParkingData(ColShape colshape, Player player)
         {
             ParkCol parkCol = colshape.GetData<ParkCol>(_parkingLotIdentifier);
             RetrieveCol retrievalCol = colshape.GetData<RetrieveCol>(_retrievalIdentifier);
-
 
             if (retrievalCol != null || parkCol != null)
             {
@@ -165,6 +169,7 @@ namespace CloudRP.VehicleParking
             }
         }
 
+        #region Commands
         [Command("park", "~y~Use: ~w~/park")]
         public void parkVehicle(Player player)
         {
@@ -179,7 +184,7 @@ namespace CloudRP.VehicleParking
                     return;
                 }
                 Vehicle pVeh = player.Vehicle;
-                DbVehicle pVehData = VehicleSystem.getVehicleData(pVeh);
+                DbVehicle pVehData = pVeh.getData();
 
                 if(pVehData.owner_id != charData.character_id)
                 {
@@ -252,7 +257,6 @@ namespace CloudRP.VehicleParking
 
             if (characterData != null && parkingLot != null && Vector3.Distance(player.Position, retrievalCol.position) < 2)
             {
-
                 if(VehicleParkingUtils.checkIfVehicleInVector(parkingLot.spawnVehiclesAt))
                 {
                     uiHandling.sendPushNotifError(player, "There is a vehicle blocking the spawn point!", 5500);
@@ -277,6 +281,6 @@ namespace CloudRP.VehicleParking
                 }
             }
         }
-
+        #endregion
     }
 }

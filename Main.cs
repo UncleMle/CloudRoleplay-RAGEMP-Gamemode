@@ -6,6 +6,7 @@ using CloudRP.World;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace CloudRP
 {

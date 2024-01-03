@@ -538,4 +538,5 @@ export default {
 
 #numberplate {
     font-family: "UKNumberPlate";
-}</style>
+}
+</style>

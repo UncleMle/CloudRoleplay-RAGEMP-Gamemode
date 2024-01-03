@@ -6,6 +6,7 @@ using CloudRP.Utils;
 using CloudRP.VehicleInsurance;
 using CloudRP.VehicleModification;
 using GTANetworkAPI;
+using CloudRP.Vehicles;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System;
@@ -28,29 +29,31 @@ namespace CloudRP.Vehicles
         public static readonly string[] names = { "door", "door", "door", "door", "hood", "trunk", "trunk" };
 	
 
-        [ServerEvent(Event.ResourceStart)]
-        public void spawnAllVehicles()
+        public VehicleSystem()
         {
-            using (DefaultDbContext dbContext = new DefaultDbContext())
+            NAPI.Task.Run(() =>
             {
-                vehicles = dbContext.vehicles.ToList();
-            }
-
-            ChatUtils.formatConsolePrint($"A total of {vehicles.Count} vehicles where loaded in.", ConsoleColor.Cyan);
-
-            if (vehicles.Count > 0)
-            {
-
-                foreach (var item in vehicles)
+                using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
-                    if(item.vehicle_dimension == VehicleDimensions.World)
-                    {
-                        spawnVehicle(item);
-                    }
+                    vehicles = dbContext.vehicles.ToList();
                 }
-            };
 
-            beginSaveInterval();
+                ChatUtils.formatConsolePrint($"A total of {vehicles.Count} vehicles where loaded in.", ConsoleColor.Cyan);
+
+                if (vehicles.Count > 0)
+                {
+
+                    foreach (var item in vehicles)
+                    {
+                        if (item.vehicle_dimension == VehicleDimensions.World)
+                        {
+                            spawnVehicle(item);
+                        }
+                    }
+                };
+
+                beginSaveInterval();
+            });
         }
 
         void beginSaveInterval()
@@ -87,63 +90,8 @@ namespace CloudRP.Vehicles
             vehicle.vehicle_locked = true;
             vehicle.vehicle_key_holders = getVehicleKeyHoldersFromDb(vehicle);
 
-            setVehicleData(veh, vehicle, true, true);
+            veh.setVehicleData(vehicle, true, true);
             return veh;
-        }
-
-        public static List<VehicleKey> getVehicleKeyHoldersFromDb(DbVehicle vehicle)
-        {
-            List<VehicleKey> keyHolders = null;
-
-            using (DefaultDbContext dbContext = new DefaultDbContext())
-            {
-                keyHolders = dbContext.vehicle_keys.Where(vKey => vKey.vehicle_id == vehicle.vehicle_id).ToList();
-            }
-
-            return keyHolders;
-        }
-
-        public static void sendVehicleToInsurance(Vehicle vehicle)
-        {
-            DbVehicle vehicleData = getVehicleData(vehicle);
-
-            if(vehicleData != null)
-            {
-                vehicleData.vehicle_dimension = VehicleDimensions.Insurance;
-                vehicleData.UpdatedDate = DateTime.Now;
-                vehicleData.vehicle_health = 1000;
-                vehicleData.vehicle_fuel = 100;
-
-                using(DefaultDbContext dbContext = new DefaultDbContext())
-                {
-                    dbContext.vehicles.Update(vehicleData);
-
-                    dbContext.SaveChanges();
-                }
-
-                vehicle.Delete();
-
-                return;
-            }
-        }
-
-        public static void setVehicleData(Vehicle vehicle, DbVehicle vehicleData, bool resyncMods = false, bool resyncDirtLevel = false)
-        {
-            if(resyncMods)
-            {
-                vehicleData.vehicle_mods = getVehiclesMods(vehicleData.vehicle_id);
-                vehicle.SetSharedData(_vehicleSharedModData, vehicleData.vehicle_mods);
-                vehicle.SetData(_vehicleSharedDataIdentifier, vehicleData.vehicle_mods);
-            }
-
-            if(resyncDirtLevel)
-            {
-                vehicle.SetData(_vehicleDirtLevelIdentifier, vehicleData.dirt_level);
-                vehicle.SetSharedData(_vehicleDirtLevelIdentifier, vehicleData.dirt_level);
-            }
-
-            vehicle.SetSharedData(_vehicleSharedDataIdentifier, vehicleData);
-            vehicle.SetData(_vehicleSharedDataIdentifier, vehicleData);
         }
 
         public static Vehicle getClosestVehicleToPlayer(Player player, float maxDist = 10)
@@ -194,18 +142,18 @@ namespace CloudRP.Vehicles
                 {
                     try
                     {
-                        if (getVehicleData(vehicle) == null)
+                        if (vehicle.getData() == null)
                         {
                             vehicle.Delete();
                             ChatUtils.formatConsolePrint("Possible vehicle spawn cheat. Vehicle with no data found!");
                         }
                         else
                         {
-                            DbVehicle vehicleData = getVehicleData(vehicle);
+                            DbVehicle vehicleData = vehicle.getData();
 
                             if (vehicleData != null)
                             {
-                                saveVehicleData(vehicle, vehicleData, true);
+                                vehicle.saveVehicleData(vehicleData, true);
                             }
                         }
                     }
@@ -217,37 +165,14 @@ namespace CloudRP.Vehicles
             }
         }
 
-
-        public static void saveVehicleData(Vehicle vehicle, DbVehicle vehicleData, bool updateDb = false)
-        {
-            setVehicleData(vehicle, vehicleData);
-
-            if(updateDb)
-            {
-                using(DefaultDbContext dbContext = new DefaultDbContext())
-                {
-                    vehicleData.position_x = vehicle.Position.X;
-                    vehicleData.position_y = vehicle.Position.Y;
-                    vehicleData.position_z = vehicle.Position.Z;
-                    vehicleData.rotation = vehicle.Rotation.Z;
-                    vehicleData.vehicle_health = NAPI.Vehicle.GetVehicleBodyHealth(vehicle);
-
-                    dbContext.vehicles.Update(vehicleData);
-                    dbContext.SaveChanges();
-                }
-            }
-
-        }
-
         public static void bringVehicleToPlayer(Player player, Vehicle vehicle, bool putInVehicle)
         {
             vehicle.Position = player.Position;
-
-            DbVehicle vehicleData = getVehicleData(vehicle);
+            DbVehicle vehicleData = vehicle.getData();
 
             if(vehicleData != null)
             {
-                saveVehicleData(vehicle , vehicleData, true);
+                vehicle.saveVehicleData(vehicleData, true);
             }
         }
 
@@ -301,7 +226,8 @@ namespace CloudRP.Vehicles
             if (vehicleData == null) return (null, null);
 
             Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicleHash, position, rotation, 255, 255, vehiclePlate, 255, false, true, 0);
-            setVehicleData(veh, vehicleData, true, true);
+
+            veh.setVehicleData(vehicleData, true, true);
             return (veh, vehicleData);
         }
 
@@ -337,25 +263,13 @@ namespace CloudRP.Vehicles
             return mods;
         }
 
-        public static DbVehicle getVehicleData(Vehicle vehicle)
-        {
-            DbVehicle getData = null;
-
-            if(vehicle != null)
-            {
-                getData = vehicle.GetData<DbVehicle>(_vehicleSharedDataIdentifier);
-            }
-
-            return getData;
-        }
-
         public static DbVehicle getVehicleDataById(int vehicleId)
         {
             Vehicle vehicle = findVehicleById(vehicleId);
             
             if(vehicle == null ) return null;
 
-            DbVehicle findData = getVehicleData(vehicle);
+            DbVehicle findData = vehicle.getData();
 
             return findData;
         }
@@ -431,7 +345,7 @@ namespace CloudRP.Vehicles
             if (vehicle == null) return;
             try
             {
-                DbVehicle vehicleData = getVehicleData(vehicle);
+                DbVehicle vehicleData = vehicle.getData();
 
                 if (vehicleData == null) return;
 
@@ -541,7 +455,7 @@ namespace CloudRP.Vehicles
 
                 foreach (Vehicle vehicle in onlineVehicles)
                 {
-                    DbVehicle vehicleData = getVehicleData(vehicle);
+                    DbVehicle vehicleData = vehicle.getData();
 
                     if (vehicleData.vehicle_id == vehicleId)
                     {
@@ -553,36 +467,52 @@ namespace CloudRP.Vehicles
             return returnVeh;
         }
 
+        public static List<VehicleKey> getVehicleKeyHoldersFromDb(DbVehicle vehicle)
+        {
+            List<VehicleKey> keyHolders = null;
+
+            if (vehicle != null)
+            {
+                using (DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    keyHolders = dbContext.vehicle_keys.Where(vKey => vKey.vehicle_id == vehicle.vehicle_id).ToList();
+                }
+            }
+
+            return keyHolders;
+        }
+
         [RemoteEvent("vehicle:toggleLock")]
         public static void toggleVehiclesLock(Player player, Vehicle vehicle)
         {
-            DbVehicle vehicleData = getVehicleData(vehicle);
             User playerData = PlayersData.getPlayerAccountData(player);
             DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+            if (vehicle == null) return;
+
+            DbVehicle vehicleData = vehicle.getData();
 
             if (vehicleData == null || charData == null) return;
 
-            VehicleKey vehicleKey = vehicleData.vehicle_key_holders
-                .Where(holder => holder.target_character_id == charData.character_id && holder.vehicle_id == vehicleData.vehicle_id)
-                .FirstOrDefault();
-
-            if (charData.character_id == vehicleData.owner_id || vehicleKey != null || playerData.adminDuty)
+            if(charData.character_id == vehicleData.owner_id || playerData.adminDuty)
             {
-                vehicleData.vehicle_locked = !vehicleData.vehicle_locked;
-
-                vehicle.Locked = vehicleData.vehicle_locked;
-
-                if (vehicle.Locked)
-                {
-                    vehicleData.closeAllDoors(vehicle);
-                    vehicleData.closeAllWindows(vehicle);
-                }
-
-                saveVehicleData(vehicle, vehicleData);
+                vehicle.toggleLock(!vehicleData.vehicle_locked);
 
                 string lockUnlockText = $"{(playerData.adminDuty ? "~r~[Staff]" : "")} You {(vehicleData.vehicle_locked ? "locked" : "unlocked")} vehicle.";
-
                 uiHandling.sendNotification(player, lockUnlockText, !playerData.adminDuty, !playerData.adminDuty, (vehicleData.vehicle_locked ? "Locks" : "Unlocks") + " vehicle.");
+            }
+            else
+            {
+                VehicleKey vehicleKey = vehicleData.vehicle_key_holders
+                    .Where(holder => holder.target_character_id == charData.character_id && holder.vehicle_id == vehicleData.vehicle_id)
+                    .FirstOrDefault();
+            
+                if(vehicleKey != null)
+                {
+                    vehicle.toggleLock(!vehicleData.vehicle_locked);
+
+                    string lockUnlockText = $"{(playerData.adminDuty ? "~r~[Staff]" : "")} You {(vehicleData.vehicle_locked ? "locked" : "unlocked")} vehicle.";
+                    uiHandling.sendNotification(player, lockUnlockText, !playerData.adminDuty, !playerData.adminDuty, (vehicleData.vehicle_locked ? "Locks" : "Unlocks") + " vehicle.");
+                }
             }
         }
 
@@ -643,9 +573,9 @@ namespace CloudRP.Vehicles
                 }
 
                 Vehicle targetVeh = player.Vehicle;
-                DbVehicle targetVehData = getVehicleData(targetVeh);
+                DbVehicle targetVehData = targetVeh.getData();
 
-                if(targetVehData.vehicle_id != keyData.vehicleId)
+                if (targetVehData.vehicle_id != keyData.vehicleId)
                 {
                     uiHandling.sendPushNotifError(player, "You and the target must both be in the same vehicle.", 6600);
                     return;
@@ -681,7 +611,7 @@ namespace CloudRP.Vehicles
                         dbContext.SaveChanges();
                     }
 
-                    saveVehicleData(targetVeh, targetVehData);
+                    targetVeh.saveVehicleData(targetVehData, true);
 
                     uiHandling.sendPushNotif(player, "You gave a vehicle key.", 6600, true, true, true);
                 }
@@ -729,7 +659,7 @@ namespace CloudRP.Vehicles
         {
             NAPI.Pools.GetAllVehicles().ForEach(veh =>
             {
-                DbVehicle vehData = getVehicleData(veh);
+                DbVehicle vehData = veh.getData();
 
                 if(vehData != null && vehData.vehicle_id == vehicleId)
                 {
@@ -774,13 +704,12 @@ namespace CloudRP.Vehicles
         {
             if (vehicle == null || Vector3.Distance(player.Position, vehicle.Position) > 4) return;
 
-            DbVehicle vehicleData = getVehicleData(vehicle);
+            DbVehicle vehicleData = vehicle.getData();
 
             if(vehicleData == null || vehicle.Locked) return;
 
             vehicleData.vehicle_doors[boneTargetId] = !vehicleData.vehicle_doors[boneTargetId];
-
-            saveVehicleData(vehicle, vehicleData);
+            vehicle.saveVehicleData(vehicleData);
         }
 
         [RemoteEvent("server:toggleEngine")]
@@ -790,7 +719,7 @@ namespace CloudRP.Vehicles
 
             if (player.VehicleSeat != 0 || NAPI.Vehicle.GetVehicleBodyHealth(player.Vehicle) <= 0) return;
 
-            DbVehicle vehicleData = getVehicleData(player.Vehicle);
+            DbVehicle vehicleData = player.Vehicle.getData();
 
             if(vehicleData == null) return;
 
@@ -800,7 +729,7 @@ namespace CloudRP.Vehicles
 
             uiHandling.sendNotification(player, "You " + (vehicleData.engine_status ? "started" : "turned off") + $" the {vehicleName}'s engine.", true, true, (vehicleData.engine_status ? "Started" : "Turned off") + $" the {vehicleName}'s engine.");
 
-            saveVehicleData(player.Vehicle, vehicleData);
+            player.Vehicle.saveVehicleData(vehicleData);
         }
 
         [RemoteEvent("server:toggleIndication")]
@@ -808,12 +737,13 @@ namespace CloudRP.Vehicles
         {
             if (!player.IsInVehicle) return;
 
-            DbVehicle vehicleData = getVehicleData(player.Vehicle);
+            DbVehicle vehicleData = player.Vehicle.getData();
 
             if (vehicleData == null || player.VehicleSeat != 0) return;
 
             vehicleData.indicator_status = indicationId;
-            saveVehicleData(player.Vehicle, vehicleData);
+
+            player.Vehicle.saveVehicleData(vehicleData);
         }
 
         [RemoteEvent("server:toggleSiren")]
@@ -821,13 +751,13 @@ namespace CloudRP.Vehicles
         {
             if (!player.IsInVehicle) return;
 
-            DbVehicle vehicleData = getVehicleData(player.Vehicle);
+            DbVehicle vehicleData = player.Vehicle.getData();
 
             if (vehicleData == null || player.VehicleSeat != 0) return;
 
             vehicleData.vehicle_siren = !vehicleData.vehicle_siren;
 
-            saveVehicleData(player.Vehicle, vehicleData);
+            player.Vehicle.saveVehicleData(vehicleData);
         }
 
         [RemoteEvent("server:saveVehicleDamage")]
@@ -835,7 +765,7 @@ namespace CloudRP.Vehicles
         {
             if(player.IsInVehicle)
             {
-                DbVehicle vehicleData = getVehicleData(player.Vehicle);
+                DbVehicle vehicleData = player.Vehicle.getData();
 
                 if(vehicleData != null)
                 {
@@ -846,8 +776,7 @@ namespace CloudRP.Vehicles
                         vehicleData.engine_status = false;
                         return;
                     }
-
-                    saveVehicleData(player.Vehicle, vehicleData, true);
+                    player.Vehicle.saveVehicleData(vehicleData, true);
                 }
             }
         }
@@ -861,7 +790,7 @@ namespace CloudRP.Vehicles
                 return;
             }
 
-            DbVehicle vehicleData = getVehicleData(player.Vehicle);
+            DbVehicle vehicleData = player.Vehicle.getData();
 
             if(vehicleData == null) return;
 
@@ -883,13 +812,13 @@ namespace CloudRP.Vehicles
 
             uiHandling.sendNotification(player, openCloseTextNotif, true, true, "Rolled " + (vehicleData.vehicle_windows[vehicleIndex] ? "down" : "up") + " a vehicle window.");
 
-            saveVehicleData(player.Vehicle, vehicleData);
+            player.Vehicle.saveVehicleData(vehicleData);
         }
 
         [ServerEvent(Event.PlayerEnterVehicle)]
         public void onPlayerEnterVehicle(Player player, Vehicle vehicle, sbyte seatId)
         {
-            DbVehicle vehicleData = getVehicleData(vehicle);
+            DbVehicle vehicleData = vehicle.getData();
             User userData = PlayersData.getPlayerAccountData(player);
 
             if(userData == null || vehicleData == null || vehicleData.vehicle_locked && !(userData.admin_status > (int)AdminRanks.Admin_HeadAdmin || userData.adminDuty))
@@ -910,7 +839,7 @@ namespace CloudRP.Vehicles
             if (!player.IsInVehicle || getOldDist == null) return;
 
             Vehicle playerVehicle = player.Vehicle;
-            DbVehicle playerVehicleData = getVehicleData(playerVehicle);
+            DbVehicle playerVehicleData = playerVehicle.getData();
             if (playerVehicleData == null) return;
 
             Vector3 oldDist = JsonConvert.DeserializeObject<Vector3>(getOldDist);
@@ -920,7 +849,7 @@ namespace CloudRP.Vehicles
 
             playerVehicleData.vehicle_distance += (ulong)dist;
 
-            saveVehicleData(playerVehicle, playerVehicleData);
+            playerVehicle.saveVehicleData(playerVehicleData);
         }
 
         [RemoteEvent("server:updateVehicleFuel")]
@@ -932,7 +861,7 @@ namespace CloudRP.Vehicles
             User userData = PlayersData.getPlayerAccountData(player);
             if (userData != null && userData.adminDuty) return;
 
-            DbVehicle vehicleData = getVehicleData(player.Vehicle);
+            DbVehicle vehicleData = player.Vehicle.getData();
 
             if (!vehicleData.engine_status) return;
 
@@ -957,7 +886,7 @@ namespace CloudRP.Vehicles
 
             if(completedRemoval)
             {
-                saveVehicleData(vehicle, vehicleData);
+                vehicle.saveVehicleData(vehicleData);
             }
         }
     }

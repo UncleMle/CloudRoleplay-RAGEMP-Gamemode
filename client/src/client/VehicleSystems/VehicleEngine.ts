@@ -14,6 +14,7 @@ class VehicleEngine {
 		VehicleEngine.LocalPlayer = mp.players.local;
 
 		mp.events.add("playerReady", VehicleEngine.handleStartUp);
+		mp.events.add("playerEnterVehicle", VehicleEngine.handleEnter);
 		mp.events.add("entityStreamIn", VehicleEngine.handleStreamIn);
 		mp.events.addDataHandler(_SHARED_VEHICLE_DATA, VehicleEngine.handleDataHandler);
 		mp.keys.bind(_control_ids.Y, false, VehicleEngine.toggleEngine);
@@ -31,6 +32,12 @@ class VehicleEngine {
 				await mp.game.waitAsync(100);
 			}
 
+			entity.setEngineOn(true, true, true);
+		}
+	}
+
+	public static handleEnter(entity: VehicleMp) {
+		if(getVehicleData(entity)?.engine_status) {
 			entity.setEngineOn(true, true, true);
 		}
 	}

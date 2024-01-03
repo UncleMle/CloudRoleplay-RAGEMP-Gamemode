@@ -35,6 +35,31 @@ namespace CloudRP.Utils
             }
         }
 
+        public static bool unbanViaUsername(string username)
+        {
+            using (DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                Account account = dbContext.accounts
+                    .Where(acc => acc.username == username)
+                    .FirstOrDefault();
+
+                Ban ban = dbContext.bans
+                    .Where(findBan => findBan.username == username)
+                    .FirstOrDefault();
+
+                if (account != null && ban != null)
+                {
+                    dbContext.bans.Remove(ban);
+                    account.ban_status = 0;
+
+                    dbContext.SaveChanges();
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public static User getAcBanAdmin()
         {
             User user = new User
@@ -84,156 +109,10 @@ namespace CloudRP.Utils
             NAPI.Chat.SendChatMessageToPlayer(player, staffPrefix + "Player was not found.");
         }
 
-        public static bool checkUserData(Player player, User userData)
-        {
-            if(userData.admin_status > (int)AdminRanks.Admin_SeniorSupport && userData.adminDuty || userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
-            {
-                return true;
-            } else
-            {
-                sendNoAuth(player);
-                return false;
-            }
-        }
-
-        public static bool isImmune(Player player, User userData)
-        {
-            if (PlayersData.getPlayerAccountData(player)?.account_id == userData.account_id) return false;
-
-            if (userData.admin_status > (int)AdminRanks.Admin_Founder)
-            {
-                CommandUtils.errorSay(player, "Specified player is immune to this command");
-                return true;
-            }
-            else return false;
-        }
-
         public static void setPed(Player player, string pedName)
         {
             uint hash = NAPI.Util.GetHashKey(pedName);
             NAPI.Player.SetPlayerSkin(player, hash);
-        }
-
-        public static Ban checkPlayerIsBanned(Player player)
-        {
-            Ban returnBanData = null;
-         
-            try
-            {
-                using (DefaultDbContext dbContext = new DefaultDbContext())
-                {
-                    returnBanData = dbContext.bans.Where(ban => 
-                            ban.client_serial == player.Serial || 
-                            ban.social_club_name == player.SocialClubName || 
-                            ban.social_club_id == player.SocialClubId || 
-                            ban.ip_address == player.Address)
-                        .FirstOrDefault();
-
-                    if (returnBanData != null && returnBanData.lift_unix_time < CommandUtils.generateUnix() && returnBanData.lift_unix_time != -1)
-                    {
-                        Account findUserAccount = dbContext.accounts.Find(returnBanData.account_id);
-                        
-                        if (findUserAccount != null)
-                        {
-                            findUserAccount.ban_status = 0;
-                            dbContext.accounts.Update(findUserAccount);
-                        }
-
-                        dbContext.bans.Remove(returnBanData);
-                        dbContext.SaveChanges();
-                        returnBanData = null;
-                    }
-                }
-            } catch
-            {
-
-            }
-            
-            return returnBanData;
-        }
-
-        public static void setPlayerToBanScreen(Player player, Ban banData)
-        {
-            player.Dimension = Auth._startDimension;
-            PlayersData.flushUserAndCharacterData(player);
-            player.TriggerEvent("client:loginCameraStart");
-            uiHandling.pushRouterToClient(player, Browsers.BanPage);
-
-            uiHandling.handleObjectUiMutation(player, MutationKeys.BanData, banData);
-        }
-
-        public static void banAPlayer(int time, User adminUserData, User banPlayerUserData, Player banPlayer, string reason)
-        {
-            long minuteSeconds = time * 60;
-            long issueDateUnix = CommandUtils.generateUnix();
-            long lift_unix_time = time == -1 ? -1 : CommandUtils.generateUnix() + minuteSeconds;
-
-            Ban ban = new Ban
-            {
-                account_id = banPlayerUserData.account_id,
-                admin = adminUserData.admin_name,
-                ban_reason = reason,
-                ip_address = banPlayer.Address,
-                lift_unix_time = lift_unix_time,
-                social_club_id = banPlayer.SocialClubId,
-                social_club_name = banPlayer.SocialClubName,
-                client_serial = banPlayer.Serial,
-                CreatedDate = DateTime.Now,
-                UpdatedDate = DateTime.Now,
-                issue_unix_date = issueDateUnix,
-                username = banPlayerUserData.username
-            };
-
-            using (DefaultDbContext dbContext = new DefaultDbContext())
-            {
-                Account findAccount = dbContext.accounts.Find(banPlayerUserData.account_id);
-
-                if (findAccount != null)
-                {
-                    findAccount.ban_status = 1;
-                    findAccount.auto_login = 0;
-                    dbContext.Update(findAccount);
-                }
-
-                dbContext.Add(ban);
-                dbContext.SaveChanges();
-            }
-
-            setPlayerToBanScreen(banPlayer, ban);
-        }
-
-        public static void saveBan(Ban ban)
-        {
-            using(DefaultDbContext dbContext = new DefaultDbContext())
-            {
-                dbContext.bans.Add(ban);
-                dbContext.SaveChanges();
-            }
-        }
-
-        public static bool unbanViaUsername(string username)
-        {
-            using(DefaultDbContext dbContext = new DefaultDbContext())
-            {
-                Account account = dbContext.accounts
-                    .Where(acc => acc.username == username)
-                    .FirstOrDefault();   
-
-                Ban ban = dbContext.bans
-                    .Where(findBan => findBan.username == username)
-                    .FirstOrDefault();
-
-                if (account != null && ban != null)
-                {
-                    dbContext.bans.Remove(ban);
-                    account.ban_status = 0;
-
-                    dbContext.SaveChanges();
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         public static void sendToAdminsHandlingReport(Report report, string message, Player excludePlayer)

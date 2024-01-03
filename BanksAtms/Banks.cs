@@ -45,21 +45,44 @@ namespace CloudRP.BanksAtms
                     new Vector3(-112.7, 6468.6, 31.6),
                     new Vector3(-111.6, 6467.5, 31.6)
                 }
-            },
+            }
         };
 
         public Banks()
         {
-            banks.ForEach(bank =>
+            NAPI.Task.Run(() =>
             {
-                NAPI.Blip.CreateBlip(374, bank.blipPos, 1.0f, 5, "Bank", 255, 1.0f, true, 0, 0);
-                
-                bank.tellers.ForEach(teller =>
+                banks.ForEach(bank =>
                 {
-                    ColShape tellerCol = NAPI.ColShape.CreateSphereColShape(teller, 1.0f, 0);
-                    tellerCol.SetData(_tellerColshapeDataIdentifier, bank);
-                    MarkersAndLabels.setTextLabel(teller, "Use ~y~Y~w~ to interact with bank.", 5f);
-                    MarkersAndLabels.setPlaceMarker(teller);
+                    NAPI.Blip.CreateBlip(374, bank.blipPos, 1.0f, 5, "Bank", 255, 1.0f, true, 0, 0);
+
+                    bank.tellers.ForEach(teller =>
+                    {
+                        ColShape tellerCol = NAPI.ColShape.CreateSphereColShape(teller, 1.0f, 0);
+                        tellerCol.SetData(_tellerColshapeDataIdentifier, bank);
+                        MarkersAndLabels.setTextLabel(teller, "Use ~y~Y~w~ to interact with bank.", 5f);
+                        MarkersAndLabels.setPlaceMarker(teller);
+
+                        Bank bankData = tellerCol.GetData<Bank>(_tellerColshapeDataIdentifier);
+
+                        tellerCol.OnEntityEnterColShape += ((shape, player) =>
+                        {
+                            if (bankData != null)
+                            {
+                                player.SetData(_tellerColshapeDataIdentifier, bankData);
+                                player.SetSharedData(_tellerColshapeDataIdentifier, bankData);
+                            }
+                        });
+                        
+                        tellerCol.OnEntityExitColShape += ((shape, player) =>
+                        {
+                            if (shape.GetData<Bank>(_tellerColshapeDataIdentifier) != null)
+                            {
+                                player.ResetData(_tellerColshapeDataIdentifier);
+                                player.ResetSharedData(_tellerColshapeDataIdentifier);
+                            }
+                        });
+                    });
                 });
             });
         }
@@ -198,28 +221,6 @@ namespace CloudRP.BanksAtms
                 }
             }
 
-        }
-
-        [ServerEvent(Event.PlayerEnterColshape)]
-        public void addBankData(ColShape colshape, Player player)
-        {
-            Bank bankData = colshape.GetData<Bank>(_tellerColshapeDataIdentifier);
-
-            if (bankData != null)
-            {
-                player.SetData(_tellerColshapeDataIdentifier, bankData);
-                player.SetSharedData(_tellerColshapeDataIdentifier, bankData);
-            }
-        }
-        
-        [ServerEvent(Event.PlayerExitColshape)]
-        public void removeBankData(ColShape colshape, Player player)
-        {
-            if(colshape.GetData<Bank>(_tellerColshapeDataIdentifier) != null)
-            {
-                player.ResetData(_tellerColshapeDataIdentifier);
-                player.ResetSharedData(_tellerColshapeDataIdentifier);
-            }
         }
     }
 }
