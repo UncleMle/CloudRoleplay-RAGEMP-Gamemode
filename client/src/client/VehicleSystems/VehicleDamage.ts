@@ -19,6 +19,7 @@ class VehicleDamage {
 
         if(vehicleData) {
             vehicle.setHealth(vehicleData.vehicle_health);
+            vehicle.setBodyHealth(vehicleData.vehicle_health);
             vehicle.setEngineHealth(vehicleData.vehicle_health);
         }
 
