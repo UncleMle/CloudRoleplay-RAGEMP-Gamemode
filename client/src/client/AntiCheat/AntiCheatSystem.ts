@@ -120,7 +120,7 @@ class AntiCheat {
 	}
 
 	public static alertAdmins(exception: AcExceptions, message: string) {
-		mp.events.callRemote(AntiCheat.detectionEvent, exception, message);
+		//mp.events.callRemote(AntiCheat.detectionEvent, exception, message);
 	}
 
 	public static secs(): number {

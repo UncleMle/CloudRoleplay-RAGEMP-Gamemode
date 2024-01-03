@@ -1,4 +1,7 @@
+import { UserData } from "@/@types";
 import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
+import getUserData from "@/PlayerMethods/getUserData";
+import { AdminRanks } from "@/enums";
 
 export class Afk {
     public static LocalPlayer: PlayerMp;
@@ -20,6 +23,10 @@ export class Afk {
 
         Afk._updateInterval = setInterval(() => {
             if(!getUserCharacterData()) return;
+
+            let userData: UserData | undefined = getUserData();
+
+            if(userData && (userData.adminDuty || userData.admin_status > AdminRanks.Admin_HeadAdmin)) return;
 
             if(Afk.LocalPlayer.position.equals(Afk.oldPlayerPos)) {
                 mp.events.callRemote(Afk.serverEvent);
