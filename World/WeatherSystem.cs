@@ -40,24 +40,27 @@ namespace CloudRP.World
             }, interval_delay_seconds * 1000);
         }
 
-        public static async void resyncWeather(object source = null, ElapsedEventArgs e = null)
+        public static void resyncWeather(object source = null, ElapsedEventArgs e = null)
         {
-            if (!weatherSyncOn) return;
-            try
+            NAPI.Task.Run(async () =>
             {
-                string uri = "https://api.weatherapi.com/v1/current.json?key=";
+                if (!weatherSyncOn) return;
+                try
+                {
+                    string uri = "https://api.weatherapi.com/v1/current.json?key=";
 
-                HttpClient client = new HttpClient();
+                    HttpClient client = new HttpClient();
 
-                string response = await client.GetStringAsync(uri + weatherApiKey + "&q=" + weatherSyncTo);
+                    string response = await client.GetStringAsync(uri + weatherApiKey + "&q=" + weatherSyncTo);
 
-                WeatherData data = JsonConvert.DeserializeObject<WeatherData>(response);
+                    WeatherData data = JsonConvert.DeserializeObject<WeatherData>(response);
 
-                setWeather(data.Current.Condition.Code);
-            }
-            catch
-            {
-            }
+                    setWeather(data.Current.Condition.Code);
+                }
+                catch
+                {
+                }
+            });
         }
 
         public static void setWeather(int code)

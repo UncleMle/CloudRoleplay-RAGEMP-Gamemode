@@ -61,6 +61,8 @@ namespace CloudRP.Vehicles
         public long vehicle_fuel_purchase_price { get; set; }
         [NotMapped]
         public int player_refuelling_char_id { get; set; } = -1;
+        [NotMapped]
+        public double speed_limit { get; set; } = -1;
     }
     
 

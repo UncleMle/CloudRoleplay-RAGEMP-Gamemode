@@ -495,8 +495,6 @@ namespace CloudRP.Vehicles
 
             if (vehicleData == null || charData == null) return;
 
-            Console.WriteLine(JsonConvert.SerializeObject(vehicleData.vehicle_key_holders));
-
             if(charData.character_id == vehicleData.owner_id || playerData.adminDuty)
             {
                 vehicle.toggleLock(!vehicleData.vehicle_locked);
@@ -818,6 +816,53 @@ namespace CloudRP.Vehicles
 
             player.Vehicle.saveVehicleData(vehicleData);
         }
+
+        [Command("cruisec", "~y~Use: ~w~ /cruisecontrol [limit | none]", Alias = "cruisecontrol")]
+        public void speedLimitCommand(Player player, string limit)
+        {
+            if(!player.IsInVehicle)
+            {
+                CommandUtils.errorSay(player, "You must be in a vehicle to use this command.");
+                return;
+            }
+
+            DbVehicle vehicleData = player.Vehicle.getData();
+
+            if(vehicleData != null)
+            {
+                if (limit == "none")
+                {
+                    vehicleData.speed_limit = -1;
+
+                    player.Vehicle.setVehicleData(vehicleData);
+
+                    CommandUtils.successSay(player, "You toggled off cruise control.");
+                    return;
+                }
+
+                try
+                {
+                    int speedLimit = int.Parse(limit);
+
+                    if (speedLimit < 50 || speedLimit > 300)
+                    {
+                        CommandUtils.errorSay(player, "Enter a speed limit between 50 and 300");
+                        return;
+                    }
+
+                    vehicleData.speed_limit = speedLimit * 0.2764976958525346;
+
+                    player.Vehicle.setVehicleData(vehicleData);
+
+                    CommandUtils.successSay(player, $"You set your vehicle's speed limit to {speedLimit}");
+                }
+                catch
+                {
+                    CommandUtils.errorSay(player, "Enter a valid speed limit.");
+                }
+            }
+        }
+
 
         [ServerEvent(Event.PlayerEnterVehicle)]
         public void onPlayerEnterVehicle(Player player, Vehicle vehicle, sbyte seatId)

@@ -23,7 +23,7 @@ class VehicleDamage {
             vehicle.setEngineHealth(vehicleData.vehicle_health);
         }
 
-        await mp.game.waitAsync(500);
+        await mp.game.waitAsync(2500);
 
         isEnterEvent ? VehicleDamage.startInterval() : VehicleDamage.closeInterval();
     }

@@ -44,6 +44,7 @@ import SpeedCameras from "./SpeedCameras/SpeedCameras";
 import InventorySystem from "./InventorySystem/InventorySystem";
 import BanksAtms from "./BanksAtms/BanksAtmSystem";
 import ConvienceStores from "./ConvienceStores/ConvIenceStores";
+import CruiseControl from "./VehicleSystems/VehicleCruiseControl";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -92,3 +93,4 @@ new SpeedCameras();
 new BanksAtms();
 new InventorySystem();
 new ConvienceStores();
+new CruiseControl();

@@ -234,6 +234,7 @@ export interface VehicleData {
 	dirt_level: number;
 	emergency_lights: boolean;
 	vehicle_health: number;
+	speed_limit: number;
 }
 
 export interface RenderKeys {
