@@ -495,6 +495,8 @@ namespace CloudRP.Vehicles
 
             if (vehicleData == null || charData == null) return;
 
+            Console.WriteLine(JsonConvert.SerializeObject(vehicleData.vehicle_key_holders));
+
             if(charData.character_id == vehicleData.owner_id || playerData.adminDuty)
             {
                 vehicle.toggleLock(!vehicleData.vehicle_locked);
@@ -502,7 +504,7 @@ namespace CloudRP.Vehicles
                 string lockUnlockText = $"{(playerData.adminDuty ? "~r~[Staff]" : "")} You {(vehicleData.vehicle_locked ? "locked" : "unlocked")} vehicle.";
                 uiHandling.sendNotification(player, lockUnlockText, !playerData.adminDuty, !playerData.adminDuty, (vehicleData.vehicle_locked ? "Locks" : "Unlocks") + " vehicle.");
             }
-            else
+            else if(vehicleData.vehicle_key_holders.Count > 0)
             {
                 VehicleKey vehicleKey = vehicleData.vehicle_key_holders
                     .Where(holder => holder.target_character_id == charData.character_id && holder.vehicle_id == vehicleData.vehicle_id)
