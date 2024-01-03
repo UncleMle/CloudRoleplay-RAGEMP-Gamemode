@@ -26,6 +26,9 @@ namespace CloudRP.Vehicles
         public float position_x { get; set; }
         public float position_y { get; set; }
         public float position_z { get; set; }
+        public float rotation_x { get; set; }
+        public float rotation_y { get; set; }
+        public float rotation_z { get; set; }
         public float rotation { get; set;}
         public string vehicle_dimension { get; set; }
         public int vehicle_insurance_id { get; set; }

@@ -1,6 +1,7 @@
 ﻿using CloudRP.Database;
 using CloudRP.PlayerData;
 using GTANetworkAPI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +45,10 @@ namespace CloudRP.Vehicles
                     vehicleData.position_x = vehicle.Position.X;
                     vehicleData.position_y = vehicle.Position.Y;
                     vehicleData.position_z = vehicle.Position.Z;
-                    vehicleData.rotation = vehicle.Rotation.Z;
+                    vehicleData.rotation_x = vehicle.Rotation.X;
+                    vehicleData.rotation_y = vehicle.Rotation.Y;
+                    vehicleData.rotation_z = vehicle.Rotation.Z;
+
                     vehicleData.vehicle_health = NAPI.Vehicle.GetVehicleBodyHealth(vehicle);
 
                     dbContext.vehicles.Update(vehicleData);

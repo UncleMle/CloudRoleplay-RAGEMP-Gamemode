@@ -72,6 +72,7 @@ namespace CloudRP.Vehicles
         public static Vehicle spawnVehicle(DbVehicle vehicle, Vector3 spawnCoords = null)
         {
             Vector3 spawnPosition = new Vector3(vehicle.position_x, vehicle.position_y, vehicle.position_z);
+            Vector3 spawnRotation = new Vector3(vehicle.rotation_x, vehicle.rotation_y, vehicle.rotation_z);
             float rotation = vehicle.rotation;
 
             Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicle.vehicle_spawn_hash, spawnCoords ?? spawnPosition, rotation, 255, 255, vehicle.numberplate, 255, false, true, 0);
@@ -85,7 +86,8 @@ namespace CloudRP.Vehicles
             }
 
             veh.Locked = true;
-            veh.Rotation = new Vector3(0, 0, rotation);
+            veh.Rotation = spawnRotation;
+
 
             vehicle.vehicle_locked = true;
             vehicle.vehicle_key_holders = getVehicleKeyHoldersFromDb(vehicle);

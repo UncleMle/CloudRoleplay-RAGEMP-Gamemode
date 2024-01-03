@@ -635,6 +635,8 @@ namespace CloudRP.Admin
                 }
                 else
                 {
+                    uiHandling.sendNotification(player, "~r~Teleporting vehicle...", false);
+
                     NAPI.Pools.GetAllPlayers().ForEach(p =>
                     {
                         if(p.IsInVehicle && p.Vehicle.Id == findVehicle.Id)
@@ -659,6 +661,8 @@ namespace CloudRP.Admin
                             {
                                 player.SetIntoVehicle(findVehicle, 0);
                             }
+
+                            uiHandling.sendNotification(player, $"~r~Teleported vehicle [{findVehicle.NumberPlate}]", false);
                         }
                     }, 1500);
                 }
