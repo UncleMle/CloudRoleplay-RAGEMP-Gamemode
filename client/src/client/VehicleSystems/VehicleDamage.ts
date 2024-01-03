@@ -33,7 +33,7 @@ class VehicleDamage {
             if(VehicleDamage.LocalPlayer.vehicle) {
                 let vehicleData: VehicleData | undefined = getVehicleData(VehicleDamage.LocalPlayer.vehicle);
 
-                if(vehicleData && vehicleData.vehicle_health != VehicleDamage.LocalPlayer.vehicle.getHealth()) {
+                if(vehicleData && vehicleData.vehicle_health != Math.round(VehicleDamage.LocalPlayer.vehicle.getBodyHealth())) {
                     mp.events.callRemote(VehicleDamage.saveDamageEvent);
                     await mp.game.waitAsync(500);
 
