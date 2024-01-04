@@ -1,10 +1,14 @@
-﻿using CloudRP.Database;
+﻿using CloudRP.Admin;
+using CloudRP.Character;
+using CloudRP.Database;
 using CloudRP.PlayerData;
+using CloudRP.Utils;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace CloudRP.Vehicles
@@ -138,6 +142,29 @@ namespace CloudRP.Vehicles
         public static DbVehicle getData(this Vehicle vehicle)
         {
             return vehicle.GetData<DbVehicle>(VehicleSystem._vehicleSharedDataIdentifier);
+        }
+
+        public static void sayInfoAboutVehicle(this Vehicle vehicle, Player player)
+        {
+            User userData = PlayersData.getPlayerAccountData(player);
+            DbVehicle vehicleData = vehicle.getData();
+
+            if(userData != null && vehicleData != null)
+            {
+                player.SendChatMessage(ChatUtils.yellow + "-----------------------------------------------------------");
+                AdminUtils.staffSay(player, "Vehicle id: " + ChatUtils.red + vehicleData.vehicle_id + AdminUtils.staffSuffixColour + " VehName: " + ChatUtils.red + vehicleData.vehicle_name);
+                AdminUtils.staffSay(player, "Owner id: " + ChatUtils.red + vehicleData.owner_id + AdminUtils.staffSuffixColour + " Numberplate: " + ChatUtils.red + vehicleData.numberplate);
+                AdminUtils.staffSay(player, "Vehicle Dimension: " + ChatUtils.red + vehicleData.vehicle_dimension + AdminUtils.staffSuffixColour + " Lock Status: " + ChatUtils.red + vehicleData.vehicle_locked);
+                AdminUtils.staffSay(player, "Mileage: " + ChatUtils.red + (vehicleData.vehicle_distance / 1609).ToString("N0") + " Miles" + AdminUtils.staffSuffixColour + " Fuel Level: " + ChatUtils.red + vehicleData.vehicle_fuel.ToString("N1") + "%");
+
+                DbCharacter vehicleOwnerData = VehicleSystem.getOwnerOfVehicleById(vehicleData.owner_id);
+                if ((userData.adminDuty || userData.admin_status > (int)AdminRanks.Admin_HeadAdmin) && vehicleOwnerData != null)
+                {
+                    AdminUtils.staffSay(player, "Owner: " + ChatUtils.red + vehicleOwnerData.character_name + AdminUtils.staffSuffixColour + " Owner Last Login: " + ChatUtils.red + vehicleOwnerData.last_login);
+                }
+
+                player.SendChatMessage(ChatUtils.yellow + "-----------------------------------------------------------");
+            }
         }
 
         public static void toggleLock(this Vehicle vehicle, bool toggle)

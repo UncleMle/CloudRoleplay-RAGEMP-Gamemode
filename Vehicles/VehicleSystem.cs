@@ -324,23 +324,6 @@ namespace CloudRP.Vehicles
             return foundPlayer;
         }
 
-        public static void sayInfoAboutVehicle(Player player, User userdata, DbVehicle vehicle)
-        {
-            player.SendChatMessage(ChatUtils.yellow + "-----------------------------------------------------------");
-            AdminUtils.staffSay(player, "Vehicle id: " + ChatUtils.red + vehicle.vehicle_id + AdminUtils.staffSuffixColour + " VehName: " + ChatUtils.red + vehicle.vehicle_name);
-            AdminUtils.staffSay(player, "Owner id: " + ChatUtils.red + vehicle.owner_id + AdminUtils.staffSuffixColour + " Numberplate: " + ChatUtils.red + vehicle.numberplate);
-            AdminUtils.staffSay(player, "Vehicle Dimension: " + ChatUtils.red + vehicle.vehicle_dimension + AdminUtils.staffSuffixColour + " Lock Status: " + ChatUtils.red + vehicle.vehicle_locked);
-            AdminUtils.staffSay(player, "Mileage: " + ChatUtils.red + (vehicle.vehicle_distance / 1609).ToString("N0") + " Miles" + AdminUtils.staffSuffixColour + " Fuel Level: " + ChatUtils.red + vehicle.vehicle_fuel.ToString("N1")+"%");
-
-            DbCharacter vehicleOwnerData = getOwnerOfVehicleById(vehicle.owner_id);
-            if ((userdata.adminDuty || userdata.admin_status > (int)AdminRanks.Admin_HeadAdmin) && vehicleOwnerData != null)
-            {
-                AdminUtils.staffSay(player, "Owner: " + ChatUtils.red + vehicleOwnerData.character_name+ AdminUtils.staffSuffixColour + " Owner Last Login: " + ChatUtils.red + vehicleOwnerData.last_login);
-            }
-
-            player.SendChatMessage(ChatUtils.yellow + "-----------------------------------------------------------");
-        }
-
         [ServerEvent(Event.VehicleDeath)]
         public void onVehicleDeath(Vehicle vehicle)
         {

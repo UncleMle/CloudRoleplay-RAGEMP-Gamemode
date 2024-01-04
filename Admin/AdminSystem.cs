@@ -815,7 +815,7 @@ namespace CloudRP.Admin
 
                     if (currentVehicleData != null)
                     {
-                        VehicleSystem.sayInfoAboutVehicle(player, userData, currentVehicleData);
+                        findVeh.sayInfoAboutVehicle(player);
                     }
                 }
                 else

@@ -79,6 +79,14 @@
                             <i class="fa-solid fa-lock text-2xl"></i>
                         </div>
 
+                        <div v-if="uiStates.vehicleSpeedoData.vehicleCruise != -1"
+                            class="absolute left-20 mt-1">
+                            <i class="fa-solid fa-gauge text-2xl pr-2 text-orange-400"></i>
+                            <span class="font-bold absolute top-1 w-32">{{(uiStates.vehicleSpeedoData.vehicleCruise / 0.2764976958525346).toFixed(0)}} {{
+                                uiStates.vehicleSpeedoData.metric == 0 ? "KM/H" : "MPH"
+                            }}</span>
+                        </div>
+
                         <div :class="uiStates.vehicleSpeedoData.lightsStates.lightsOn || uiStates.vehicleSpeedoData.lightsStates.highbeamsOn ? 'text-green-300' : ''"
                             class="absolute right-12 mt-1">
                             <i class="fa-solid fa-lightbulb text-2xl"></i>

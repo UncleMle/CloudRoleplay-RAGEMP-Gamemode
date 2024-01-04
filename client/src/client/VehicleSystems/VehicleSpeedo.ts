@@ -51,7 +51,8 @@ class VehicleSpeedo {
                     numberPlate: vehicle.getNumberPlateText(),
                     displayName: VehicleSpeedo.getVehDispName(vehicle.model),
                     dbName: vehicleData.vehicle_name,
-                    vehHealth: vehicle.getHealth()
+                    vehHealth: vehicle.getHealth(),
+                    vehicleCruise: vehicleData.speed_limit
                 })}
             })`);
         }
