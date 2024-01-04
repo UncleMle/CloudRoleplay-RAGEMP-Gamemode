@@ -49,7 +49,7 @@ namespace CloudRP.VehicleWashing
 
             if(washData != null)
             {
-                player.SetData(_washStationIdentifier, washData);
+                player.SetCustomData(_washStationIdentifier, washData);
             }
         }
         

@@ -113,7 +113,7 @@ namespace CloudRP.VehicleParking
                     ColShape retrieveCol = NAPI.ColShape.CreateSphereColShape(pLot.retrieve.position, pLot.retrievePosRange, 0);
 
                     parkCol.SetData(_parkingLotIdentifier, pLot.park);
-                    retrieveCol.SetData(_retrievalIdentifier, pLot.retrieve);
+                    retrieveCol.SetSharedData(_retrievalIdentifier, pLot.retrieve);
 
                     NAPI.TextLabel.CreateTextLabel($"{pLot.name} ~y~Y~w~ to interact", pLot.retrieve.position, 10f, 1.0f, 4, new Color(255, 255, 255, 255), true);
                     NAPI.Blip.CreateBlip(831, pLot.park.position, 1.0f, 39, pLot.name, 255, 1.0f, true, 0, 0);
@@ -137,8 +137,8 @@ namespace CloudRP.VehicleParking
             if (retrievalCol != null)
             {
                 uiHandling.sendPushNotif(player, "Use Y to interact with the parking lot.", 6600);
-                player.SetData(_retrievalIdentifier, retrievalCol);
-                player.SetSharedData(_retrievalIdentifier, retrievalCol);
+                player.SetCustomData(_retrievalIdentifier, retrievalCol);
+                player.SetCustomSharedData(_retrievalIdentifier, retrievalCol);
                 return;
             }
             
@@ -149,8 +149,8 @@ namespace CloudRP.VehicleParking
                     uiHandling.sendPushNotif(player, "Use /park to park this vehicle.", 6600);
                 }
 
-                player.SetData(_parkingLotIdentifier, parkCol);
-                player.SetSharedData(_parkingLotIdentifier, parkCol);
+                player.SetCustomData(_parkingLotIdentifier, parkCol);
+                player.SetCustomSharedData(_parkingLotIdentifier, parkCol);
                 return;
             }
         }        

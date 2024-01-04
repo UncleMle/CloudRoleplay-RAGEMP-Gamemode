@@ -44,7 +44,7 @@ namespace CloudRP.Character
             foreach(TattooShop store in tattooStore)
             {
                 ColShape tattoCol = NAPI.ColShape.CreateSphereColShape(store.position, 2f, 0);
-                tattoCol.SetData(_tattoStoreIdentifier, store);
+                tattoCol.SetSharedData(_tattoStoreIdentifier, store);
 
                 NAPI.Blip.CreateBlip(75, store.position, 1, 1, store.name, 255, 50, true, 0, 0);
                 MarkersAndLabels.setTextLabel(store.position, $"{store.name} use ~y~Y~w~ to interact", 7f);
@@ -59,8 +59,8 @@ namespace CloudRP.Character
 
             if (tattooData != null)
             {
-                player.SetData(_tattoStoreIdentifier, tattooData);
-                player.SetSharedData(_tattoStoreIdentifier, tattooData);
+                player.SetCustomData(_tattoStoreIdentifier, tattooData);
+                player.SetCustomSharedData(_tattoStoreIdentifier, tattooData);
             }
         }
 

@@ -2,6 +2,7 @@
 using CloudRP.Authentication;
 using CloudRP.Character;
 using CloudRP.Database;
+using CloudRP.InventorySystem;
 using CloudRP.Utils;
 using GTANetworkAPI;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,8 @@ namespace CloudRP.PlayerData
 {
     public static class PlayerExtensions
     {
+        private static readonly string _playerKeysIdentifier = "AllPlayerKeys";
+        private static readonly string _isBanned = "playerIsBanned";
         private static readonly string _sharedAccountDataIdentifier = "PlayerAccountData";
         private static readonly string _sharedCharacterDataIdentifier = "PlayerCharacterData";
         private static string _characterFoodAndWaterKey = "characterWaterAndHunger";
@@ -27,13 +30,13 @@ namespace CloudRP.PlayerData
         {
             if (!PlayersData.checkIfAccountIsLogged(userData.account_id))
             {
-                player.SetData(_sharedAccountDataIdentifier, userData);
+                player.SetCustomData(_sharedAccountDataIdentifier, userData);
 
                 if (triggerShared)
                 {
                     SharedDataAccount sharedData = JsonConvert.DeserializeObject<SharedDataAccount>(JsonConvert.SerializeObject(userData));
 
-                    player.SetSharedData(_sharedAccountDataIdentifier, sharedData);
+                    player.SetCustomSharedData(_sharedAccountDataIdentifier, sharedData);
                 }
 
                 if (updateDb)
@@ -67,11 +70,11 @@ namespace CloudRP.PlayerData
         {
             if (!PlayersData.checkIfCharacterIsLogged(character.character_id))
             {
-                player.SetData(_sharedCharacterDataIdentifier, character);
+                player.SetCustomData(_sharedCharacterDataIdentifier, character);
 
                 SharedDataCharacter sharedData = JsonConvert.DeserializeObject<SharedDataCharacter>(JsonConvert.SerializeObject(character));
 
-                player.SetSharedData(_sharedCharacterDataIdentifier, sharedData);
+                player.SetCustomSharedData(_sharedCharacterDataIdentifier, sharedData);
                 setCharacterHungerAndThirst(player, character.character_hunger, character.character_water);
                 setPlayerVoiceStatus(player, character.voiceChatState);
 
@@ -94,12 +97,12 @@ namespace CloudRP.PlayerData
 
         public static void setPlayerVoiceStatus(this Player player, bool tog)
         {
-            player.SetSharedData(_voipStatusKey, tog);
+            player.SetCustomSharedData(_voipStatusKey, tog);
         }
 
         public static void setCharacterHungerAndThirst(this Player player, double hunger, double water)
         {
-            player.SetSharedData(_characterFoodAndWaterKey, new HungerThirst
+            player.SetCustomSharedData(_characterFoodAndWaterKey, new HungerThirst
             {
                 hunger = hunger,
                 water = water
@@ -108,12 +111,12 @@ namespace CloudRP.PlayerData
 
         public static void setCharacterClothes(this Player player, CharacterClothing clothes)
         {
-            player.SetSharedData(_characterClothesKey, clothes);
+            player.SetCustomSharedData(_characterClothesKey, clothes);
         }
 
         public static void setCharacterModel(this Player player, CharacterModel model)
         {
-            player.SetSharedData(_characterModelKey, model);
+            player.SetCustomSharedData(_characterModelKey, model);
         }
 
         public static User getPlayerAccountData(this Player player)
@@ -154,42 +157,52 @@ namespace CloudRP.PlayerData
 
         public static void banPlayer(this Player banPlayer, int time, User adminUserData, User banPlayerUserData, string reason)
         {
-            long minuteSeconds = time * 60;
-            long issueDateUnix = CommandUtils.generateUnix();
-            long lift_unix_time = time == -1 ? -1 : CommandUtils.generateUnix() + minuteSeconds;
-
-            Ban ban = new Ban
+            if(NAPI.Player.IsPlayerConnected(banPlayer))
             {
-                account_id = banPlayerUserData.account_id,
-                admin = adminUserData.admin_name,
-                ban_reason = reason,
-                ip_address = banPlayer.Address,
-                lift_unix_time = lift_unix_time,
-                social_club_id = banPlayer.SocialClubId,
-                social_club_name = banPlayer.SocialClubName,
-                client_serial = banPlayer.Serial,
-                CreatedDate = DateTime.Now,
-                UpdatedDate = DateTime.Now,
-                issue_unix_date = issueDateUnix,
-                username = banPlayerUserData.username
-            };
+                banPlayer.SetCustomData(_isBanned, true);
 
-            using (DefaultDbContext dbContext = new DefaultDbContext())
-            {
-                Account findAccount = dbContext.accounts.Find(banPlayerUserData.account_id);
-
-                if (findAccount != null)
+                using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
-                    findAccount.ban_status = 1;
-                    findAccount.auto_login = 0;
-                    dbContext.Update(findAccount);
+                    long minuteSeconds = time * 60;
+                    long issueDateUnix = CommandUtils.generateUnix();
+                    long lift_unix_time = time == -1 ? -1 : CommandUtils.generateUnix() + minuteSeconds;
+
+                    Ban ban = new Ban
+                    {
+                        account_id = banPlayerUserData.account_id,
+                        admin = adminUserData.admin_name,
+                        ban_reason = reason,
+                        ip_address = banPlayer.Address,
+                        lift_unix_time = lift_unix_time,
+                        social_club_id = banPlayer.SocialClubId,
+                        social_club_name = banPlayer.SocialClubName,
+                        client_serial = banPlayer.Serial,
+                        CreatedDate = DateTime.Now,
+                        UpdatedDate = DateTime.Now,
+                        issue_unix_date = issueDateUnix,
+                        username = banPlayerUserData.username
+                    };
+
+                    Account findAccount = dbContext.accounts.Find(banPlayerUserData.account_id);
+
+                    if (findAccount != null)
+                    {
+                        findAccount.ban_status = 1;
+                        findAccount.auto_login = 0;
+                        dbContext.Update(findAccount);
+                    }
+
+                    dbContext.Add(ban);
+                    dbContext.SaveChanges();
+
+                    banPlayer.setPlayerToBanScreen(ban);
                 }
-
-                dbContext.Add(ban);
-                dbContext.SaveChanges();
             }
+        }
 
-            banPlayer.setPlayerToBanScreen(ban);
+        public static bool isBanned(this Player player)
+        {
+            return player.GetData<bool>(_isBanned);
         }
 
         public static Ban checkPlayerIsBanned(this Player player)
@@ -227,6 +240,11 @@ namespace CloudRP.PlayerData
             {
             }
 
+            if(returnBanData != null)
+            {
+                player.SetData(_isBanned, true);
+            }
+
             return returnBanData;
         }
 
@@ -248,7 +266,7 @@ namespace CloudRP.PlayerData
         public static void setPlayerToBanScreen(this Player player, Ban banData)
         {
             player.Dimension = Auth._startDimension;
-            player.flushUserAndCharacterData();
+            //player.flushUserAndCharacterData();
             player.TriggerEvent("client:loginCameraStart");
             uiHandling.pushRouterToClient(player, Browsers.BanPage);
 
@@ -268,15 +286,39 @@ namespace CloudRP.PlayerData
             return false;
         }
 
+        public static void addPlayerKey(this Player player, string usedKey)
+        {
+            List<string> usedKeys = new List<string>();
+
+            if(player.GetData<List<string>>(_playerKeysIdentifier) == null)
+            {
+                usedKeys.Add(usedKey);
+                player.SetData(_playerKeysIdentifier, usedKeys);
+                return;
+            }
+
+            usedKeys = player.GetData<List<string>>(_playerKeysIdentifier); 
+
+            if(usedKeys.Contains(usedKey))
+            {
+                usedKeys.Remove(usedKey);
+            }
+
+            usedKeys.Add(usedKey);
+            player.SetData(_playerKeysIdentifier, usedKeys);
+        }
+
         public static void flushUserAndCharacterData(this Player player)
         {
-            player.SetData<User>(_sharedAccountDataIdentifier, null);
-            player.SetData<DbCharacter>(_sharedCharacterDataIdentifier, null);
-            player.SetData<CharacterModel>(_characterModelKey, null);
-            player.ResetData();
+            foreach(string item in player.GetData<List<string>>(_playerKeysIdentifier))
+            {
+                Console.WriteLine("Flush key " + item);
+                player.ResetData(item);
+                player.ResetOwnSharedData(item);
+                player.ResetSharedData(item);
+            }
 
-            player.ResetOwnSharedData(_sharedAccountDataIdentifier);
-            player.ResetOwnSharedData(_sharedCharacterDataIdentifier);
+            player.ResetData();
         }
     }
 }

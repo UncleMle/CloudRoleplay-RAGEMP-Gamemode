@@ -196,10 +196,10 @@ namespace CloudRP.BanksAtms
             NAPI.Blip.CreateBlip(434, Position, 1.0f, 43, "ATM", 255, 1.0f, true, 0, 0);
             MarkersAndLabels.setTextLabel(Position, "Use ~y~Y~w~ to interact with this ATM", 2f);
             MarkersAndLabels.setPlaceMarker(Position);
-            setData();
+            SetCustomData();
         }
 
-        public void setData()
+        public void SetCustomData()
         {
             ColShape atmColshape = NAPI.ColShape.CreateSphereColShape(Position, 0.5f, 0);
             atmColshape.SetData(_atmDataIdentifier, this);
@@ -213,7 +213,7 @@ namespace CloudRP.BanksAtms
 
             if(colshapeData != null)
             {
-                player.SetData(_atmDataIdentifier, colshapeData);
+                player.SetCustomData(_atmDataIdentifier, colshapeData);
                 player.SetSharedData(_atmDataIdentifier, colshapeData);
             }
         }

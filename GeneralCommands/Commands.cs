@@ -18,6 +18,16 @@ namespace CloudRP.GeneralCommands
         public static int nickNameMaxLength_M = 7;
         public static int maxFloatingDos = 10;
 
+        [Command("logout", "~y~Use: ~w~/logout")]
+        public void logoutCommand(Player player)
+        {
+            if(player.getPlayerCharacterData() != null)
+            {
+                player.flushUserAndCharacterData();
+                player.setPlayerToLoginScreen();
+            }
+        }
+
         [Command("b", "~y~Use:~w~ /b [message]", Alias = "ooc", GreedyArg = true)]
         public void oocCommand(Player player, string oocChat)
         {

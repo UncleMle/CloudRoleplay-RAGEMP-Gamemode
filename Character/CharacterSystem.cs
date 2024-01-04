@@ -1,9 +1,11 @@
-﻿using CloudRP.AntiCheat;
+﻿using CloudRP.Admin;
+using CloudRP.AntiCheat;
 using CloudRP.Authentication;
 using CloudRP.Database;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
 using CloudRP.VehicleDealerships;
+using Discord;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
@@ -69,28 +71,49 @@ namespace CloudRP.Character
 
         public static void saveCharacterData(Player player)
         {
-            User userData = player.getPlayerAccountData();
-            DbCharacter characterData = player.getPlayerCharacterData();
-            bool vehicleDealerActive = player.GetData<bool>(VehicleDealershipSystem._dealerActiveIdentifier);
-
-            // Not checking for null here can crash the server (GetData even casted to bool can return null).
-            if (vehicleDealerActive != null && vehicleDealerActive) return;
-
-            if (userData == null || characterData == null) return;
-
-            checkForDups(characterData.character_name);
-
             NAPI.Task.Run(() =>
             {
-                if(NAPI.Player.IsPlayerConnected(player))
+                Vector3 pos = player.Position;
+                Vector3 checkPos = PlayersData.defaultLoginPosition;
+
+                if(pos.X != checkPos.X && pos.Y != checkPos.Y && pos.Z != checkPos.Z && (player.getPlayerCharacterData() == null || player.getPlayerAccountData() == null))
+                {
+                    if(!player.isBanned())
+                    {
+                        player.banPlayer(-1, new User
+                        {
+                            admin_name = "[System]",
+                        }, new User
+                        {
+                            username = "N/A",
+                            account_id = -1,
+                        }, "Exploits / Cheats [System]");
+
+                        AdminUtils.sendMessageToAllStaff($"A player with ID {player.Id} was banned for evading login screen.", (int)AdminRanks.Admin_SeniorSupport, true);
+                        return;
+                    }
+                }
+
+                User userData = player.getPlayerAccountData();
+                DbCharacter characterData = player.getPlayerCharacterData();
+                bool vehicleDealerActive = player.GetData<bool>(VehicleDealershipSystem._dealerActiveIdentifier);
+
+                // Not checking for null here can crash the server (GetData even casted to bool can return null).
+                if (vehicleDealerActive != null && vehicleDealerActive) return;
+
+                if (userData == null || characterData == null) return;
+
+                checkForDups(characterData.character_name);
+
+                if (NAPI.Player.IsPlayerConnected(player))
                 {
                     try
                     {
                         using (DefaultDbContext dbContext = new DefaultDbContext())
                         {
-                            characterData.position_x = player.Position.X;
-                            characterData.position_y = player.Position.Y;
-                            characterData.position_z = player.Position.Z;
+                            characterData.position_x = pos.X;
+                            characterData.position_y = pos.Y;
+                            characterData.position_z = pos.Z;
                             characterData.character_health = player.Health;
                             characterData.play_time_seconds += 5;
                             characterData.player_exp += 1;

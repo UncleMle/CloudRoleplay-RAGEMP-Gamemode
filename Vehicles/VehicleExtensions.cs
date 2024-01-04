@@ -66,8 +66,8 @@ namespace CloudRP.Vehicles
             if(resyncMods)
             {
                 vehicleData.vehicle_mods = VehicleSystem.getVehiclesMods(vehicleData.vehicle_id);
-                vehicle.SetSharedData(VehicleSystem._vehicleSharedModData, vehicleData.vehicle_mods);
-                vehicle.SetData(VehicleSystem._vehicleSharedDataIdentifier, vehicleData.vehicle_mods);
+                vehicle.SetData(VehicleSystem._vehicleSharedModData, vehicleData.vehicle_mods);
+                vehicle.SetSharedData(VehicleSystem._vehicleSharedDataIdentifier, vehicleData.vehicle_mods);
             }
 
             if(resyncDirtLevel)

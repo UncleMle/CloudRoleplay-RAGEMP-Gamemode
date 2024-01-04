@@ -33,8 +33,8 @@ namespace CloudRP.VehicleRefueling
 
                         if (refuelStationData != null)
                         {
-                            player.SetData(_refuelPumpIdenfitier, refuelStationData);
-                            player.SetSharedData(_refuelPumpIdenfitier, refuelStationData);
+                            player.SetCustomData(_refuelPumpIdenfitier, refuelStationData);
+                            player.SetCustomSharedData(_refuelPumpIdenfitier, refuelStationData);
                         }
                     });
 
@@ -107,8 +107,8 @@ namespace CloudRP.VehicleRefueling
                     vehicleId = closeVehicleData.vehicle_id
                 };
 
-                player.SetData(_refuelDataIdentifier, playerRefuelData);
-                player.SetSharedData(_refuelDataIdentifier, playerRefuelData);
+                player.SetCustomData(_refuelDataIdentifier, playerRefuelData);
+                player.SetCustomSharedData(_refuelDataIdentifier, playerRefuelData);
 
                 uiHandling.sendNotification(player, "~w~Hold down ~y~Y~w~ to continue pumping fuel", false);
 

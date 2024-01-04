@@ -506,8 +506,8 @@ namespace CloudRP.Vehicles
         {
             if(player.IsInVehicle)
             {
-                player.SetData(_seatBeltIdentifier, toggle);
-                player.SetSharedData(_seatBeltIdentifier, toggle);
+                player.SetCustomData(_seatBeltIdentifier, toggle);
+                player.SetCustomSharedData(_seatBeltIdentifier, toggle);
             }
         }
 

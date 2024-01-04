@@ -118,7 +118,7 @@ namespace CloudRP.SpeedCameras
             if(camData != null && player.IsInVehicle)
             {
                 player.TriggerEvent("client:speedCameraTrigger");
-                player.SetData(_speedCameraDataIdentifier, camData);
+                player.SetCustomData(_speedCameraDataIdentifier, camData);
             }
         }
 

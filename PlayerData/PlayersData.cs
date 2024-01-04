@@ -16,9 +16,10 @@ using System.Xml.Schema;
 
 namespace CloudRP.PlayerData
 {
-    internal class PlayersData : Script
+    public static class PlayersData
     {
         public static readonly Vector3 defaultSpawnPosition = new Vector3(-1036.6, -2736.0, 13.8);
+        public static readonly Vector3 defaultLoginPosition = new Vector3(0, 0, 0);
 
         public static bool checkIfCharacterIsLogged(int charId)
         {
@@ -41,7 +42,22 @@ namespace CloudRP.PlayerData
 
             return wasFound;
         }
-        
+
+        public static void SetCustomData<T>(this Player player, string key, T val)
+        {
+            player.addPlayerKey(key);
+            Console.WriteLine("Server " + key);
+            player.SetData(key, val);
+        }
+
+        public static void SetCustomSharedData<T>(this Player player, string key, T val)
+        {
+            player.addPlayerKey(key);
+            Console.WriteLine("Shared " + key);
+            player.SetSharedData(key, val);
+        }
+
+
         public static bool checkIfAccountIsLogged(int accId)
         {
             bool wasFound = false;

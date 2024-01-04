@@ -154,8 +154,8 @@ namespace CloudRP.VehicleDealerships
 
             if (dealerData != null)
             {
-                player.SetSharedData(_dealershipIdentifer, dealerData);
-                player.SetData(_dealershipIdentifer, dealerData);
+                player.SetCustomSharedData(_dealershipIdentifer, dealerData);
+                player.SetCustomData(_dealershipIdentifer, dealerData);
             }
         }
 
@@ -180,7 +180,7 @@ namespace CloudRP.VehicleDealerships
 
             if (dealerData != null && !dealerActive)
             {
-                player.SetData(_dealerActiveIdentifier, true);
+                player.SetCustomData(_dealerActiveIdentifier, true);
                 player.TriggerEvent("dealers:initDealership");
                 player.Dimension = (uint)player.Id + 1;
             }
@@ -194,7 +194,7 @@ namespace CloudRP.VehicleDealerships
 
             if(playerDealerData != null && dealerActive)
             {
-                player.SetData(_dealerActiveIdentifier, false);
+                player.SetCustomData(_dealerActiveIdentifier, false);
                 player.Position = playerDealerData.viewPosition;
                 player.Dimension = 0;
             }

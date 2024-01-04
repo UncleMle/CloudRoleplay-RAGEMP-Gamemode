@@ -160,8 +160,8 @@ namespace CloudRP.ClothingStores
         
         public static void setClothingStoreData(Player player, ClothingStore store)
         {
-            player.SetData(_clothingStoreIdentifier, store);
-            player.SetSharedData(_clothingStoreIdentifier, store);
+            player.SetCustomData(_clothingStoreIdentifier, store);
+            player.SetCustomSharedData(_clothingStoreIdentifier, store);
         }
 
         public static void setColShapeData(ColShape colShape, ClothingStore store)

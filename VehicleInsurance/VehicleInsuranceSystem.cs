@@ -56,8 +56,8 @@ namespace CloudRP.VehicleInsurance
 
                         if (insuranceColData != null && player.getPlayerCharacterData() != null)
                         {
-                            player.SetData(_insuranceDataIdentifier, insuranceColData);
-                            player.SetSharedData(_insuranceDataIdentifier, insuranceColData);
+                            player.SetCustomData(_insuranceDataIdentifier, insuranceColData);
+                            player.SetCustomSharedData(_insuranceDataIdentifier, insuranceColData);
                         }
                     };
 

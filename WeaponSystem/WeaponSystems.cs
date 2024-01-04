@@ -17,7 +17,7 @@ namespace CloudRP.WeaponSystem
             {
                 if (characterData.injured_timer > 0) return;
 
-                player.SetSharedData(_switchAnimIdentifer, true);
+                player.SetCustomSharedData(_switchAnimIdentifer, true);
 
                 NAPI.Task.Run(() =>
                 {

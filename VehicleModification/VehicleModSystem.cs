@@ -157,8 +157,8 @@ namespace CloudRP.VehicleModification
 
         public static void setPlayerColData(Player player, CustomArea customAreaData)
         {
-            player.SetData(_colShapeIdentifer, customAreaData);
-            player.SetSharedData(_colShapeIdentifer, customAreaData);
+            player.SetCustomData(_colShapeIdentifer, customAreaData);
+            player.SetCustomSharedData(_colShapeIdentifer, customAreaData);
         }
 
         public static void flushPlayerColData(Player player)

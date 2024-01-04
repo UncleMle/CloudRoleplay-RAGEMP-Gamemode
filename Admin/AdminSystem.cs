@@ -940,6 +940,12 @@ namespace CloudRP.Admin
                     return;
                 }
 
+                if(player.isBanned())
+                {
+                    AdminUtils.staffSay(player, "This player is already in the server banned.");
+                    return;
+                }
+
                 User banPlayerUserData = banPlayer.getPlayerAccountData();
                 DbCharacter characterData = banPlayer.getPlayerCharacterData();
 

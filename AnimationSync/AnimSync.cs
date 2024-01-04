@@ -18,8 +18,8 @@ namespace CloudRP.AnimationSync
 
             if(charData != null && charData.injured_timer <= 0)
             {
-                player.SetData(_handsUpAnimIdentifer, animState);
-                player.SetSharedData(_handsUpAnimIdentifer, animState);
+                player.SetCustomData(_handsUpAnimIdentifer, animState);
+                player.SetCustomSharedData(_handsUpAnimIdentifer, animState);
             }
         }
 

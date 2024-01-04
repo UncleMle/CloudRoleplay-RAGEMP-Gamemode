@@ -161,7 +161,7 @@ namespace CloudRP.Authentication
 
             string otp = AuthUtils.generateString(4, true);
 
-            player.SetData(_otpStoreKey, new OtpStore
+            player.SetCustomData(_otpStoreKey, new OtpStore
             {
                 otp = otp,
                 otpTries = 0,
@@ -278,7 +278,7 @@ namespace CloudRP.Authentication
 
             playerOtpStore.otpTries++;
 
-            player.SetData(_otpStoreKey, playerOtpStore);
+            player.SetCustomData(_otpStoreKey, playerOtpStore);
 
             if(playerOtpStore.otpTries > 15)
             {
@@ -340,9 +340,7 @@ namespace CloudRP.Authentication
         [ServerEvent(Event.PlayerConnected)]
         public void onPlayerConnected(Player player)
         {
-            player.Dimension = _startDimension;
-            player.TriggerEvent("client:loginStart");
-            uiHandling.pushRouterToClient(player, Browsers.LoginPage);
+            player.setPlayerToLoginScreen();
         }
 
         [RemoteEvent("server:recieveCharacterName")]

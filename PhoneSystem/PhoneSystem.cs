@@ -47,8 +47,8 @@ namespace CloudRP.PhoneSystem
         {
             if(!player.GetData<bool>(_phoneStatusIdentifer))
             {
-                player.SetSharedData(_phoneStatusIdentifer, true);
-                player.SetData(_phoneStatusIdentifer, true);
+                player.SetCustomSharedData(_phoneStatusIdentifer, true);
+                player.SetCustomData(_phoneStatusIdentifer, true);
             } else
             {
                 player.ResetData(_phoneStatusIdentifer);
