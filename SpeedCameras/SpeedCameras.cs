@@ -137,7 +137,7 @@ namespace CloudRP.SpeedCameras
         public void handleSpeedCamera(Player player, int vehicleSpeed)
         {
             SpeedCamera cameraData = player.GetData<SpeedCamera>(_speedCameraDataIdentifier);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if(cameraData != null && characterData != null && player.IsInVehicle)
             {
@@ -158,7 +158,8 @@ namespace CloudRP.SpeedCameras
                         });
 
                         characterData.money_amount -= closest.finePrice;
-                        PlayersData.setPlayerCharacterData(player, characterData, false, true);
+
+                        player.setPlayerCharacterData(characterData, false, true);
                         
                         player.SendChatMessage(ChatUtils.info + $"You have been fined in excess of {closest.finePrice.ToString("C")} for speeding ({speed.ToString("N0")}KMH in a {cameraData.speedLimit}KMH Zone). " +
                             $"Please go to a police station and pay your fine or it will end in further legal action being taken.");

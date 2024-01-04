@@ -19,8 +19,8 @@ namespace CloudRP.GeneralCommands
         [RemoteEvent("server:beginAfk")]
         public static void beginAfk(Player player)
         {
-            User user = PlayersData.getPlayerAccountData(player);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            User user = player.getPlayerAccountData();
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if (user != null && characterData != null && !user.adminDuty && user.admin_status < (int)AdminRanks.Admin_Founder && characterData.injured_timer == 0)
             {
@@ -49,7 +49,7 @@ namespace CloudRP.GeneralCommands
         [RemoteEvent("server:createAmeText")]
         public static void createAmeText(Player player, string text)
         {
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
             if (characterData == null) return;
 
             if(text == null)

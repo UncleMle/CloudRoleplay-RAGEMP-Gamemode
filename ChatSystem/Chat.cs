@@ -27,8 +27,8 @@ namespace CloudRP.ChatSystem
         [ServerEvent(Event.ChatMessage)]
         public void onChatMessage(Player player, string message)
         {
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
-            User userData = PlayersData.getPlayerAccountData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
+            User userData = player.getPlayerAccountData();
 
             if (characterData == null || userData == null || message.Length == 0) return;
 
@@ -61,10 +61,10 @@ namespace CloudRP.ChatSystem
 
         public static void welcomePlayerOnSpawn(Player player)
         {
-            User user = PlayersData.getPlayerAccountData(player);
+            User user = player.getPlayerAccountData();
             if (user == null) return;
 
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
             if (characterData == null) return;
 
             player.SendChatMessage(ChatUtils.CloudRP + $"Welcome back to Cloud RP {ChatUtils.CloudBlueLight}{user.username}{ChatUtils.White}.");
@@ -91,7 +91,7 @@ namespace CloudRP.ChatSystem
         [RemoteEvent("server:togglePlayerTyping")]
         public static void toggleTypingState(Player player, bool state)
         {
-            DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter charData = player.getPlayerCharacterData();
 
             if(charData != null)
             {

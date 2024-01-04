@@ -62,8 +62,8 @@ namespace CloudRP.AntiCheat
         [ServerEvent(Event.PlayerWeaponSwitch)]
         public void OnPlayerWeaponSwitch(Player player, WeaponHash oldWeapon, WeaponHash newWeapon)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            User userData = player.getPlayerAccountData();
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if (userData == null || characterData == null) return;
 
@@ -75,7 +75,7 @@ namespace CloudRP.AntiCheat
         {
             Dictionary<Player, User> onlineStaff = AdminUtils.gatherStaff();
 
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (userData != null && (userData.adminDuty || userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)) return;
 
@@ -107,7 +107,7 @@ namespace CloudRP.AntiCheat
                 return;
             }
 
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             string suffix = (characterData != null ? " from " + characterData.character_name : $" Player") + $" [{player.Id}]" ;
 

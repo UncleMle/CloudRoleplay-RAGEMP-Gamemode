@@ -12,7 +12,7 @@ namespace CloudRP.WeaponSystem
         [ServerEvent(Event.PlayerWeaponSwitch)]
         public void OnPlayerWeaponSwitch(Player player, WeaponHash oldWeapon, WeaponHash newWeapon)
         {
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
             if (characterData != null)
             {
                 if (characterData.injured_timer > 0) return;

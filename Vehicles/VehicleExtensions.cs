@@ -146,7 +146,7 @@ namespace CloudRP.Vehicles
 
         public static void sayInfoAboutVehicle(this Vehicle vehicle, Player player)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
             DbVehicle vehicleData = vehicle.getData();
 
             if(userData != null && vehicleData != null)

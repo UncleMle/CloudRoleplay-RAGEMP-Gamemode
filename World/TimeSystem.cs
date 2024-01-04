@@ -56,7 +56,7 @@ namespace CloudRP.World
         [Command("tsync", "~r~/tsync")]
         public void toggleTimeSync(Player player)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
@@ -69,7 +69,7 @@ namespace CloudRP.World
         [Command("settime", "~r~/settime [h] [m] [s]")]
         public void setTimeCommand(Player player, int h, int m, int s)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {

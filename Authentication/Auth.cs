@@ -35,7 +35,7 @@ namespace CloudRP.Authentication
         public void recieveAuthInfo(Player player, string data)
         {
             UserCredentials userCredentials = JsonConvert.DeserializeObject<UserCredentials>(data);
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (userData != null || player.checkPlayerIsBanned() != null) return;
 
@@ -124,7 +124,7 @@ namespace CloudRP.Authentication
         {
             Register registeringData = JsonConvert.DeserializeObject<Register>(data);
 
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
             if (userData != null) return;
 
             if(AuthUtils.registerDetailsValid(player, registeringData))
@@ -141,7 +141,7 @@ namespace CloudRP.Authentication
 
             foreach(Player p in onlinePlayers)
             {
-                User pData = PlayersData.getPlayerAccountData(p);
+                User pData = p.getPlayerAccountData();
 
                 if(pData != null)
                 {
@@ -348,7 +348,7 @@ namespace CloudRP.Authentication
         [RemoteEvent("server:recieveCharacterName")]
         public void onEnterCharacterName(Player player, string name)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if(userData != null && player.checkPlayerIsBanned() == null)
             {
@@ -383,7 +383,7 @@ namespace CloudRP.Authentication
                     player.Health = character.character_health;
 
                     ChatUtils.formatConsolePrint($"Character {character.character_name} has logged in (#{character.character_id})", ConsoleColor.Yellow);
-                    PlayersData.setPlayerCharacterData(player, character, true);
+                    player.setPlayerCharacterData(character, true);
                     DiscordUtils.creationConnection(player, character, LogCreation.Join);
 
                     Chat.welcomePlayerOnSpawn(player);
@@ -401,7 +401,7 @@ namespace CloudRP.Authentication
         [RemoteEvent("server:handlePlayerJoining")]
         public void onPlayerJoin(Player player, string autoLoginKey)
         {
-            if(autoLoginKey != null && PlayersData.getPlayerAccountData(player) == null)
+            if(autoLoginKey != null && player.getPlayerAccountData() == null)
             {
                 Account findAccount = null;
 
@@ -461,7 +461,7 @@ namespace CloudRP.Authentication
         {
             if (player.checkPlayerIsBanned() != null) return;
 
-            PlayersData.setPlayerAccountData(player, userData);
+            player.setPlayerAccountData(userData);
 
             ChatUtils.formatConsolePrint($"{userData.username} (#{userData.account_id}) has entered character selection process.", ConsoleColor.Yellow);
 

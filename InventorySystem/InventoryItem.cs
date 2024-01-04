@@ -29,7 +29,7 @@ namespace CloudRP.InventorySystem
             {
                 if(item.item_id == itemId)
                 {
-                    DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+                    DbCharacter characterData = player.getPlayerCharacterData();
 
                     if (characterData != null)
                     {
@@ -71,7 +71,7 @@ namespace CloudRP.InventorySystem
 
         public static void resyncInventoryItems(Player target)
         {
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(target);
+            DbCharacter characterData = target.getPlayerCharacterData();
 
             if(characterData != null)
             {
@@ -86,7 +86,7 @@ namespace CloudRP.InventorySystem
 
         public static List<InventoryItem> getAllInventoryItems(Player player)
         {
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             List<InventoryItem> inventoryItems = new List<InventoryItem>();
 

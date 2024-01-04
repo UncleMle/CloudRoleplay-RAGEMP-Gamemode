@@ -91,7 +91,7 @@ namespace CloudRP.BanksAtms
         public void openBankEvent(Player player)
         {
             Bank bankData = player.GetData<Bank>(_tellerColshapeDataIdentifier);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if(bankData != null && characterData != null)
             {
@@ -110,7 +110,7 @@ namespace CloudRP.BanksAtms
         public void bankDepositEvent(Player player, string amount)
         {
             Bank bankData = player.GetData<Bank>(_tellerColshapeDataIdentifier);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if(bankData != null && characterData != null)
             {
@@ -138,7 +138,7 @@ namespace CloudRP.BanksAtms
                     characterData.cash_amount -= cashDepo;
                     characterData.money_amount += cashDepo;
 
-                    PlayersData.setPlayerCharacterData(player, characterData, false, true);
+                    player.setPlayerCharacterData(characterData, true, true);
                     CommandUtils.successSay(player, $"You deposited ${cashDepo} into your bank account.");
                     uiHandling.setLoadingState(player, false);
                     uiHandling.pushRouterToClient(player, Browsers.None);
@@ -158,7 +158,7 @@ namespace CloudRP.BanksAtms
         public void bankTransferEvent(Player player, string data)
         {
             Bank bankData = player.GetData<Bank>(_tellerColshapeDataIdentifier);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
             BankTransfer bankTransfer = JsonConvert.DeserializeObject<BankTransfer>(data);
 
             if(bankData != null && characterData != null && bankTransfer != null)
@@ -186,7 +186,7 @@ namespace CloudRP.BanksAtms
                     {
                         NAPI.Pools.GetAllPlayers().ForEach(p =>
                         {
-                            DbCharacter targetCharData = PlayersData.getPlayerCharacterData(p);
+                            DbCharacter targetCharData = p.getPlayerCharacterData();
 
                             if (targetCharData != null && targetCharData.character_name == bankTransfer.recieverName.Replace(" ", "_"))
                             {
@@ -201,8 +201,8 @@ namespace CloudRP.BanksAtms
                                 characterData.money_amount -= transferAmount;
                                 targetCharData.money_amount += transferAmount;
 
-                                PlayersData.setPlayerCharacterData(player, characterData, false, true);
-                                PlayersData.setPlayerCharacterData(p, targetCharData, false, true);
+                                player.setPlayerCharacterData(characterData, false, true);
+                                p.setPlayerCharacterData(targetCharData, false, true);
                                 p.SendChatMessage(ChatUtils.info + $"You have just been bank transferred {transferAmount.ToString("C")}.");
                                 CommandUtils.successSay(player, $"You successfully bank transferred {targetCharData.character_name} {transferAmount.ToString("C")}");
                                 uiHandling.setLoadingState(player, false);

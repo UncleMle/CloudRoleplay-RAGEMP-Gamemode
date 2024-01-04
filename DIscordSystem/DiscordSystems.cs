@@ -324,7 +324,7 @@ namespace CloudRP.DiscordSystem
         {
             Report findRep = AdminSystem.activeReports.Where(rep => rep.playerReporting.Equals(player)).FirstOrDefault();
             Report isHandling = AdminSystem.activeReports.Where(rep => rep.adminsHandling.ContainsKey(player)).FirstOrDefault();
-            User adminData = PlayersData.getPlayerAccountData(player);
+            User adminData = player.getPlayerAccountData();
 
             if(isHandling != null && adminData != null)
             {

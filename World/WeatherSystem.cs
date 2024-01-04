@@ -107,7 +107,7 @@ namespace CloudRP.World
         [Command("wsync", "~r~/wsync")]
         public void toggleWeatherSync(Player player)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if(userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
@@ -120,7 +120,7 @@ namespace CloudRP.World
         [Command("setw", "~r~/setw [weather]")]
         public void setweather(Player player, Weather weather)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {

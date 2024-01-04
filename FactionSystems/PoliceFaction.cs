@@ -16,7 +16,7 @@ namespace CloudRP.FactionSystems
         public void megaphoneCommand(Player player, string message)
         {
             Vehicle vehicle = VehicleSystem.getClosestVehicleToPlayer(player, 4);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
             if (characterData == null) return;
 
 

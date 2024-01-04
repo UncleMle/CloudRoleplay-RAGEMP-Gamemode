@@ -15,8 +15,8 @@ namespace CloudRP.HousingSystem
         [Command("addhouse", "~r~/addhouse [garageSize] [price] [interiorId] [houseName]", GreedyArg = true)]
         public void addHouseCommand(Player player, int garageSize, int housePrice, int interiorId, string houseName)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            User userData = player.getPlayerAccountData();
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if (userData == null || characterData == null) return;
 
@@ -59,7 +59,7 @@ namespace CloudRP.HousingSystem
         [Command("deletehouse", "~r~/deletehouse [houseId] [deleteFromDb(true/false)]")]
         public void deleteHouseCommand(Player player, int houseId, bool deleteFromDb)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {

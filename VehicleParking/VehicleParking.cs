@@ -173,7 +173,7 @@ namespace CloudRP.VehicleParking
         [Command("park", "~y~Use: ~w~/park")]
         public void parkVehicle(Player player)
         {
-            DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter charData = player.getPlayerCharacterData();
             ParkCol parkCol = player.GetData<ParkCol>(_parkingLotIdentifier);
 
             if(parkCol != null && charData != null)
@@ -216,7 +216,7 @@ namespace CloudRP.VehicleParking
         [RemoteEvent("server:viewParkedVehicles")]
         public void viewParkedVehicles(Player player)
         {
-            DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter charData = player.getPlayerCharacterData();
             RetrieveCol retrievalCol = player.GetData<RetrieveCol>(_retrievalIdentifier);
 
             if(retrievalCol != null && Vector3.Distance(player.Position, retrievalCol.position) < 2)
@@ -249,7 +249,7 @@ namespace CloudRP.VehicleParking
         [RemoteEvent("server:unparkVehicle")]
         public void unparkVehicle(Player player, int vehicleId)
         {
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
             RetrieveCol retrievalCol = player.GetData<RetrieveCol>(_retrievalIdentifier);
             if (retrievalCol == null) return;
             

@@ -17,7 +17,7 @@ namespace CloudRP.PhoneSystem
         [RemoteEvent("server:myCarsApp::fetchVehicles")]
         public void fetchPlayerVehicles(Player player)
         {
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if(characterData != null)
             {

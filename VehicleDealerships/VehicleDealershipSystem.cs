@@ -205,7 +205,7 @@ namespace CloudRP.VehicleDealerships
         {
             DealerShip playerDealerData = player.GetData<DealerShip>(_dealershipIdentifer);
             bool dealerActive = player.GetData<bool>(_dealerActiveIdentifier);
-            DbCharacter charData = PlayersData.getPlayerCharacterData(player); 
+            DbCharacter charData = player.getPlayerCharacterData(); 
             
             if (playerDealerData != null && dealerActive && charData != null)
             {
@@ -235,7 +235,7 @@ namespace CloudRP.VehicleDealerships
                 charData.money_amount -= findDealerVeh.price;
 
                 (Vehicle buildVeh, DbVehicle vehicleData) = VehicleSystem.buildVehicle(vehName, playerDealerData.spawnPosition, 0, charData.character_id, spawnColour, spawnColour, charData.character_name);
-                PlayersData.setPlayerCharacterData(player, charData, true, true);
+                player.setPlayerCharacterData(charData, true, true);
 
                 player.TriggerEvent("dealers:closeDealership");
                 CommandUtils.successSay(player, $"You purchased a new {dispName} for ${findDealerVeh.price}. Your vehicle ~y~has been marked on the map~w~.");

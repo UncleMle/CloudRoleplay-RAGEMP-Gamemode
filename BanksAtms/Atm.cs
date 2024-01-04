@@ -234,7 +234,7 @@ namespace CloudRP.BanksAtms
         public void openAtm(Player player)
         {
             Atm atmData = player.GetData<Atm>(_atmDataIdentifier);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if(atmData != null && characterData != null)
             {
@@ -253,7 +253,7 @@ namespace CloudRP.BanksAtms
         {
             Atm atmData = player.GetData<Atm>(_atmDataIdentifier);
             Bank bankData = player.GetData<Bank>(Banks._tellerColshapeDataIdentifier);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if((atmData != null || bankData != null) && characterData != null)
             {
@@ -278,7 +278,7 @@ namespace CloudRP.BanksAtms
                         characterData.money_amount -= withdrawAmount;
                         characterData.cash_amount += withdrawAmount;
 
-                        PlayersData.setPlayerCharacterData(player, characterData, false, true);
+                        player.setPlayerCharacterData(characterData, false, true);
                         CommandUtils.successSay(player, $"You withdrew {withdrawAmount.ToString("C")}.");
                         uiHandling.pushRouterToClient(player, Browsers.None);
                         uiHandling.setLoadingState(player, false);

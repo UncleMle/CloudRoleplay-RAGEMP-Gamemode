@@ -54,7 +54,7 @@ namespace CloudRP.VehicleInsurance
                     {
                         InsuranceArea insuranceColData = shape.GetData<InsuranceArea>(_insuranceDataIdentifier);
 
-                        if (insuranceColData != null && PlayersData.getPlayerCharacterData(player) != null)
+                        if (insuranceColData != null && player.getPlayerCharacterData() != null)
                         {
                             player.SetData(_insuranceDataIdentifier, insuranceColData);
                             player.SetSharedData(_insuranceDataIdentifier, insuranceColData);
@@ -80,7 +80,7 @@ namespace CloudRP.VehicleInsurance
         public void viewServerInsuranceVehicles(Player player)
         {
             InsuranceArea playerInsuranceData = player.GetData<InsuranceArea>(_insuranceDataIdentifier);
-            DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter charData = player.getPlayerCharacterData();
 
             if (playerInsuranceData != null && charData != null)
             {
@@ -106,7 +106,7 @@ namespace CloudRP.VehicleInsurance
         public void removeVehicleFromInsurance(Player player, int vehicleId)
         {
             InsuranceArea playerInsuranceData = player.GetData<InsuranceArea>(_insuranceDataIdentifier);
-            DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter charData = player.getPlayerCharacterData();
 
             if(playerInsuranceData != null && charData != null)
             {
@@ -134,7 +134,7 @@ namespace CloudRP.VehicleInsurance
 
                         charData.money_amount -= playerInsuranceData.retrieveFee;
 
-                        PlayersData.setPlayerCharacterData(player, charData, false, true);
+                        player.setPlayerCharacterData(charData, false, true);
                         ChatUtils.formatConsolePrint($"{charData.character_name} retrieved their vehicle [{findFromDb.numberplate}] from {playerInsuranceData.insuranceName} for {playerInsuranceData.retrieveFee.ToString("C")}");
                         CommandUtils.successSay(player, $"You retrieved your vehicle [{findFromDb.numberplate}] from {playerInsuranceData.insuranceName} for {playerInsuranceData.retrieveFee.ToString("C")}. The vehicle has ~y~been marked on the map~w~.");
 

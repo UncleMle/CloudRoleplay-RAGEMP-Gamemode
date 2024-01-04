@@ -79,8 +79,8 @@ namespace CloudRP.Utils
 
             foreach(Player entry in onlinePlayers)
             {
-                User userData = PlayersData.getPlayerAccountData(entry);
-                DbCharacter characterData = PlayersData.getPlayerCharacterData(entry);
+                User userData = entry.getPlayerAccountData();
+                DbCharacter characterData = entry.getPlayerCharacterData();
                 if (characterData != null && userData != null && userData.admin_status > (int)AdminRanks.Admin_None)
                 {
                     onlineStaff.Add(entry, userData);
@@ -135,8 +135,8 @@ namespace CloudRP.Utils
 
             foreach(Player player in onlinePlayers)
             {
-                User playerData = PlayersData.getPlayerAccountData(player);
-                DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+                User playerData = player.getPlayerAccountData();
+                DbCharacter characterData = player.getPlayerCharacterData();
 
                 if(playerData != null && characterData != null && playerData.admin_status > (int)adminRank)
                 {
@@ -171,7 +171,7 @@ namespace CloudRP.Utils
                         {
                             foreach (Player p in onlinePlayers)
                             {
-                                DbCharacter pCharData = PlayersData.getPlayerCharacterData(p);
+                                DbCharacter pCharData = p.getPlayerCharacterData();
 
                                 if (pCharData != null && pCharData.character_id == findCharacter.character_id)
                                 {

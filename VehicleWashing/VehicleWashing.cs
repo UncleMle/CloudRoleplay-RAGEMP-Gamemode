@@ -67,7 +67,7 @@ namespace CloudRP.VehicleWashing
         [Command("wash", "~y~Use: ~w~/wash")]
         public void washPlayersVehicle(Player player)
         {
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
             VehicleWash vehicleWashData = player.GetData<VehicleWash>(_washStationIdentifier);
 
             if(vehicleWashData == null)
@@ -105,7 +105,7 @@ namespace CloudRP.VehicleWashing
 
                     player.Vehicle.setDirtLevel(0);
 
-                    PlayersData.setPlayerCharacterData(player, characterData, false, true);
+                    player.setPlayerCharacterData(characterData, false, true);
 
                     CommandUtils.successSay(player, "You washed your vehicle [" + targetVehicleData.numberplate + "] for the price of $" + vehicleWashData.washPrice);
                 }

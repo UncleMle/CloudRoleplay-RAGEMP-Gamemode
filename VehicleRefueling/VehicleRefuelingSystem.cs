@@ -64,7 +64,7 @@ namespace CloudRP.VehicleRefueling
             Vehicle findClosestVehicle = VehicleSystem.getClosestVehicleToPlayer(player, 4);
             RefuelingData refuelData = player.GetData<RefuelingData>(_refuelDataIdentifier);
             RefuelStation refuelStationData = player.GetData<RefuelStation>(_refuelPumpIdenfitier);
-            DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter charData = player.getPlayerCharacterData();
             if (refuelData != null || refuelStationData == null || charData == null) return;
             
             if(findClosestVehicle == null)
@@ -121,7 +121,7 @@ namespace CloudRP.VehicleRefueling
         {
             RefuelingData refuelData = player.GetData<RefuelingData>(_refuelDataIdentifier);
             RefuelStation stationData = player.GetData<RefuelStation>(_refuelPumpIdenfitier);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
             if (characterData == null) return;
 
             if (refuelData != null && stationData != null)
@@ -172,7 +172,7 @@ namespace CloudRP.VehicleRefueling
 
                     findVeh.setVehicleData(foundVehData, true);
 
-                    PlayersData.setPlayerCharacterData(player, characterData, false, true);
+                    player.setPlayerCharacterData(characterData, false, true);
 
                     uiHandling.handleObjectUiMutation(player, MutationKeys.VehicleFuelData, new UiFuelData
                     {
@@ -204,7 +204,7 @@ namespace CloudRP.VehicleRefueling
 
         public static void removeRefuellingPlayerFromVehicle(Player player)
         {
-            DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter charData = player.getPlayerCharacterData();
             if(charData != null)
             {
                 List<Vehicle> onlineVehicles = NAPI.Pools.GetAllVehicles();

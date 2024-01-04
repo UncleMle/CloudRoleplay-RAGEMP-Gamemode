@@ -310,7 +310,7 @@ namespace CloudRP.Vehicles
 
             foreach(Player player in onlinePlayers)
             {
-                DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+                DbCharacter charData = player.getPlayerCharacterData();
 
                 if(charData != null)
                 {
@@ -470,8 +470,8 @@ namespace CloudRP.Vehicles
         [RemoteEvent("vehicle:toggleLock")]
         public static void toggleVehiclesLock(Player player, Vehicle vehicle)
         {
-            User playerData = PlayersData.getPlayerAccountData(player);
-            DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+            User playerData = player.getPlayerAccountData();
+            DbCharacter charData = player.getPlayerCharacterData();
             if (vehicle == null) return;
 
             DbVehicle vehicleData = vehicle.getData();
@@ -532,7 +532,7 @@ namespace CloudRP.Vehicles
                     return;
                 }
 
-                DbCharacter playerCharData = PlayersData.getPlayerCharacterData(player);
+                DbCharacter playerCharData = player.getPlayerCharacterData();
                 if (playerCharData == null) return;
                 Player playerFindPlayer = CommandUtils.getPlayerFromNameOrId(keyData.nameOrId);
 
@@ -548,7 +548,7 @@ namespace CloudRP.Vehicles
                     return;
                 }
 
-                DbCharacter playerFindData = PlayersData.getPlayerCharacterData(playerFindPlayer);
+                DbCharacter playerFindData = playerFindPlayer.getPlayerCharacterData();
                 if (playerFindData == null) return;
 
                 if (!playerFindPlayer.IsInVehicle || playerFindPlayer.IsInVehicle && !player.Vehicle.Equals(playerFindPlayer.Vehicle))
@@ -613,7 +613,7 @@ namespace CloudRP.Vehicles
             VehicleKeyRemoveData vehicleKeyRemoveData = JsonConvert.DeserializeObject<VehicleKeyRemoveData>(data);
             if (vehicleKeyRemoveData == null) return;
 
-            DbCharacter playerCharData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter playerCharData = player.getPlayerCharacterData();
             if (playerCharData == null) return;
 
 
@@ -851,7 +851,7 @@ namespace CloudRP.Vehicles
         public void onPlayerEnterVehicle(Player player, Vehicle vehicle, sbyte seatId)
         {
             DbVehicle vehicleData = vehicle.getData();
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if(userData == null || vehicleData == null || vehicleData.vehicle_locked && !(userData.admin_status > (int)AdminRanks.Admin_HeadAdmin || userData.adminDuty))
             {
@@ -890,7 +890,7 @@ namespace CloudRP.Vehicles
             Vehicle vehicle = player.Vehicle;
             if (vehicle == null) return;
 
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
             if (userData != null && userData.adminDuty) return;
 
             DbVehicle vehicleData = player.Vehicle.getData();

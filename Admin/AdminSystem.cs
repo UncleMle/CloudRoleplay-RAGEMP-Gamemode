@@ -28,7 +28,7 @@ namespace CloudRP.Admin
         [ServerEvent(Event.PlayerDisconnected)]
         public void OnPlayerDisconnect(Player player, DisconnectionType type, string reason)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if(userData != null)
             {
@@ -67,8 +67,8 @@ namespace CloudRP.Admin
         [Command("report", "~y~Use: ~w~/report [description]", GreedyArg = true)]
         public async Task onReport(Player player, string desc)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            User userData = player.getPlayerAccountData();
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if (userData == null || characterData == null) return;
 
@@ -115,7 +115,7 @@ namespace CloudRP.Admin
         [Command("ann", "~r~/ann [message]", Alias = "announce", GreedyArg = true)]
         public void announceCommand(Player player, string message)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if(userData.admin_status > (int)AdminRanks.Admin_SeniorModerator && userData.adminDuty || userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
@@ -132,14 +132,13 @@ namespace CloudRP.Admin
         [Command("aesp", "~r~/asep")]
         public void adminEspToggle(Player player)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if(player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
                 userData.admin_esp = !userData.admin_esp;
 
-                PlayersData.setPlayerAccountData(player, userData, true, true);
-
+                player.setPlayerAccountData(userData, true, true);
                 AdminUtils.staffSay(player, $"You have {(userData.admin_esp ? "disabled" : "enabled")} admin esp.");
                 uiHandling.sendNotification(player, $"~r~You {(userData.admin_esp ? "~r~disabled" : "~g~enabled")} admin esp", false);
                 ChatUtils.formatConsolePrint($"{userData.admin_name} toggled admin esp {(userData.admin_esp ? "on" : "off")}");
@@ -149,8 +148,8 @@ namespace CloudRP.Admin
         [Command("closereport", "~y~Use: ~w~/closereport")]
         public void closeReport(Player player)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            User userData = player.getPlayerAccountData();
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if (userData == null || characterData == null) return;
 
@@ -172,7 +171,7 @@ namespace CloudRP.Admin
         [Command("reports", "~r~/reports")]
         public void viewReports(Player player)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if(userData.admin_status > (int)AdminRanks.Admin_None)
             {
@@ -205,8 +204,8 @@ namespace CloudRP.Admin
         [RemoteEvent("server:acceptReport")]
         public void acceptReport(Player player, int reportId)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            User userData = player.getPlayerAccountData();
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if (userData == null || characterData == null || userData.admin_status < 1) return;
 
@@ -252,8 +251,8 @@ namespace CloudRP.Admin
         [RemoteEvent("server:closeReport")]
         public async Task closeReport(Player player, int reportId)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            User userData = player.getPlayerAccountData();
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if (userData == null || characterData == null || userData.admin_status < 1) return;
 
@@ -279,8 +278,8 @@ namespace CloudRP.Admin
         [Command("rr", "~r~Use: ~w~/rr [message]", GreedyArg = true, Alias = "reportrespond")]
         public async Task reportResponse(Player player, string message)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            User userData = player.getPlayerAccountData();
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if (userData == null || characterData == null) return;
 
@@ -324,7 +323,7 @@ namespace CloudRP.Admin
         [Command("goback", "~r~/goback")]
         public static void goAdminBack(Player player)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if(player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
@@ -346,8 +345,8 @@ namespace CloudRP.Admin
         [Command("aduty", "~r~/aduty", Alias = "ad")]
         public void onAduty(Player player)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            User userData = player.getPlayerAccountData();
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if (userData != null && characterData != null && userData.admin_status > (int)AdminRanks.Admin_SeniorSupport)
             {
@@ -360,7 +359,7 @@ namespace CloudRP.Admin
                 {
                     userData.showAdminPed = false;
                 }
-                PlayersData.setPlayerAccountData(player, userData);
+                player.setPlayerAccountData(userData);
 
                 string colourAdminRank = AdminUtils.getColouredAdminRank(userData);
 
@@ -375,12 +374,12 @@ namespace CloudRP.Admin
 
                     if(userData.admin_ped != "none")
                     {
-                        PlayersData.setCharacterModel(player, characterData.characterModel);
-                        PlayersData.setCharacterClothes(player, characterData.characterClothing);
+                        player.setCharacterModel(characterData.characterModel);
+                        player.setCharacterClothes(characterData.characterClothing);
                     }
                 }
 
-                PlayersData.setPlayerAccountData(player, userData);
+                player.setPlayerAccountData(userData);
                 uiHandling.sendNotification(player, $"Toggled admin duty {(userData.adminDuty ? "~g~on" : "~r~off")}", false);
                 AdminUtils.sendMessageToAllStaff($"{colourAdminRank} {AdminUtils.staffSuffixColour}{userData.admin_name} is {(userData.adminDuty ? $"{ChatUtils.moneyGreen}on" : $"{ChatUtils.red}off")} duty");
                 ChatUtils.formatConsolePrint($"{userData.admin_name} has toggled admin duty {(userData.adminDuty ? "on" : "off")}");
@@ -391,7 +390,7 @@ namespace CloudRP.Admin
         [Command("staff", "~r~/staff")]
         public void staff(Player player)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if(userData.admin_status > (int)AdminRanks.Admin_None)
             {
@@ -420,7 +419,7 @@ namespace CloudRP.Admin
         [Command("a", "~r~/adminchat [message]", GreedyArg = true, Alias = "adminchat")]
         public void adminChat(Player player, string message)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (userData.admin_status > (int)AdminRanks.Admin_None)
             {
@@ -439,7 +438,7 @@ namespace CloudRP.Admin
         [Command("tpto", "~r~/tpto [nameOrId]", Alias = "goto")]
         public void teleportToPlayer(Player player, string nameOrId)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
@@ -451,7 +450,7 @@ namespace CloudRP.Admin
                     return;
                 }
 
-                DbCharacter characterData = PlayersData.getPlayerCharacterData(findPlayer);
+                DbCharacter characterData = findPlayer.getPlayerCharacterData();
                 if (characterData == null) return;
 
                 if (findPlayer.Equals(player))
@@ -476,7 +475,7 @@ namespace CloudRP.Admin
         [Command("kick", "~r~/kick [nameOrId] [silent]")]
         public void kickPlayer(Player player, string nameOrId, bool isSilent = false)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if(player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
@@ -484,7 +483,7 @@ namespace CloudRP.Admin
 
                 if(findPlayer != null)
                 {
-                    DbCharacter characterData = PlayersData.getPlayerCharacterData(findPlayer);
+                    DbCharacter characterData = findPlayer.getPlayerCharacterData();
 
                     if (findPlayer.Equals(player))
                     {
@@ -512,7 +511,7 @@ namespace CloudRP.Admin
         [Command("revive", "~r~/revive [nameOrId]")]
         public void reviveCommand(Player player, string nameOrId)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if(player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
@@ -524,7 +523,7 @@ namespace CloudRP.Admin
                     return;
                 }
 
-                DbCharacter findCharacter = PlayersData.getPlayerCharacterData(findPlayer);
+                DbCharacter findCharacter = findPlayer.getPlayerCharacterData();
 
                 if(findCharacter.injured_timer <= 0)
                 {
@@ -549,7 +548,7 @@ namespace CloudRP.Admin
         [Command("bring", "~r~/bring [nameOrId]")]
         public void bringPlayer(Player player, string nameOrId)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
@@ -557,7 +556,7 @@ namespace CloudRP.Admin
 
                 if (findPlayer != null)
                 {
-                    DbCharacter findPlayerData = PlayersData.getPlayerCharacterData(findPlayer);
+                    DbCharacter findPlayerData = findPlayer.getPlayerCharacterData();
 
                     if (findPlayer.Equals(player))
                     {
@@ -585,8 +584,8 @@ namespace CloudRP.Admin
         [Command("veh", "~r~/veh [vehName] [colourOne] [colourTwo]")]
         public void spawnVehicle(Player player, string vehName, int colourOne = 111, int colourTwo = 111)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
-            DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+            User userData = player.getPlayerAccountData();
+            DbCharacter charData = player.getPlayerCharacterData();
 
             if (charData == null) return;
 
@@ -610,7 +609,7 @@ namespace CloudRP.Admin
         [Command("bringv", "~r~/bringv [vehicleIdOrPlate] [setIntoVeh(true | false)]", Alias = "vbring")]
         public void bringVehicle(Player player, string vehicleIdOrPlate, bool setIntoVeh = true)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
@@ -674,7 +673,7 @@ namespace CloudRP.Admin
         [Command("fly", "~r~/fly")]
         public void fly(Player player)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
@@ -693,14 +692,14 @@ namespace CloudRP.Admin
 
                 uiHandling.sendNotification(player, userData.isFlying ? "~g~Enabled fly" : "~r~Disabled fly", false);
 
-                PlayersData.setPlayerAccountData(player, userData);
+                player.setPlayerAccountData(userData);
             }
         }
 
         [Command("freeze", "~r~/freeze [nameOrId]")]
         public void freezePlayer(Player player, string nameOrId)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
@@ -708,8 +707,8 @@ namespace CloudRP.Admin
 
                 if (getPlayer != null)
                 {
-                    User targetPlayerData = PlayersData.getPlayerAccountData(getPlayer);
-                    DbCharacter targetCharData = PlayersData.getPlayerCharacterData(getPlayer);
+                    User targetPlayerData = getPlayer.getPlayerAccountData();
+                    DbCharacter targetCharData = getPlayer.getPlayerCharacterData();
 
                     if (targetPlayerData.isFlying || targetPlayerData.adminDuty)
                     {
@@ -722,8 +721,7 @@ namespace CloudRP.Admin
                     targetPlayerData.isFrozen = targetPlayerData.isFrozen = !targetPlayerData.isFrozen;
                     string isFrozen = targetPlayerData.isFrozen ? "froze" : "unfroze";
 
-                    PlayersData.setPlayerAccountData(getPlayer, targetPlayerData);
-
+                    player.setPlayerAccountData(targetPlayerData);
                     if (!targetPlayerData.isFrozen)
                     {
                         getPlayer.TriggerEvent("admin:events:stopFly");
@@ -747,7 +745,7 @@ namespace CloudRP.Admin
         [Command("tpm", "~r~/tpm", Alias = "telm")]
         public void onTeleportToWay(Player player)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
@@ -759,7 +757,7 @@ namespace CloudRP.Admin
         [Command("delv", "~r~/delv [yourVehicle Or vehicleId]")]
         public void delV(Player player, int vehicleId = -1)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
@@ -803,7 +801,7 @@ namespace CloudRP.Admin
         [Command("gcv", "~r~/gcv")]
         public void getVehicleInfo(Player player)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
             
             if(userData.admin_status > 0)
             {
@@ -828,12 +826,12 @@ namespace CloudRP.Admin
         [Command("setdimension", "~r~/setdimension [playerIdOrName] [dimension]", Alias = "setd")]
         public void setDimension(Player player, string playerIdOrName, uint dimension)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
                 Player getPlayer = CommandUtils.getPlayerFromNameOrId(playerIdOrName);
-                DbCharacter characterData = PlayersData.getPlayerCharacterData(getPlayer);
+                DbCharacter characterData = getPlayer.getPlayerCharacterData();
 
                 if (getPlayer == null || characterData == null)
                 {
@@ -870,7 +868,7 @@ namespace CloudRP.Admin
         [Command("fix")]
         public void onFixVehicle(Player player)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
@@ -897,7 +895,7 @@ namespace CloudRP.Admin
         [Command("setaped", "~r~/setaped [pedName | none]")]
         public void setAdminPed(Player player, string pedName)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if(userData.admin_status > (int)AdminRanks.Admin_SeniorSupport)
             {
@@ -915,7 +913,7 @@ namespace CloudRP.Admin
 
                     dbContext.Update(findAccount);
                     dbContext.SaveChanges();
-                    PlayersData.setPlayerAccountData(player, userData);
+                    player.setPlayerAccountData(userData);
 
                     AdminUtils.staffSay(player, $"You set your admin ped to {pedName}");
                 }
@@ -925,7 +923,7 @@ namespace CloudRP.Admin
         [Command("ban", "~r~/ban [playerIdOrName] [length minutes(-1 for permanent ban)] [reason]", GreedyArg = true)]
         public static void banPlayer(Player player, string playerNameOrId, int time, string reason)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
@@ -942,8 +940,9 @@ namespace CloudRP.Admin
                     return;
                 }
 
-                User banPlayerUserData = PlayersData.getPlayerAccountData(banPlayer);
-                DbCharacter characterData = PlayersData.getPlayerCharacterData(banPlayer);
+                User banPlayerUserData = banPlayer.getPlayerAccountData();
+                DbCharacter characterData = banPlayer.getPlayerCharacterData();
+
 
                 if (banPlayer.isImmuneTo(player)) return;
 
@@ -968,7 +967,7 @@ namespace CloudRP.Admin
         [Command("unban", "~r~/unban [username]", GreedyArg = true)]
         public void unbanAplayer(Player player, string accountName)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
@@ -988,7 +987,7 @@ namespace CloudRP.Admin
         [Command("spw", "~r~/spw [weaponName] [ammo]")]
         public void spawnWeapon(Player player, WeaponHash weaponName, int ammo = 999)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
             if (userData == null) return;
 
             if(userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
@@ -1007,7 +1006,7 @@ namespace CloudRP.Admin
         [Command("flip", "~r~/flip [Current Vehicle Or VehicleId]")]
         public void flipVehicle(Player player, int vehicleId = -1)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (userData == null) return;
 
@@ -1045,7 +1044,7 @@ namespace CloudRP.Admin
         [Command("stv", "~r~/stv [seatId]", Alias = "setintovehicle")]
         public void setIntoVehicle(Player player, int seatId = 0)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
@@ -1075,7 +1074,7 @@ namespace CloudRP.Admin
                     return;
                 }
 
-                DbCharacter findPlayerCharData = PlayersData.getPlayerCharacterData(findPlayer);
+                DbCharacter findPlayerCharData = findPlayer.getPlayerCharacterData();
 
                 uiHandling.pushRouterToClient(player, Browsers.StatsPage);
 
@@ -1089,13 +1088,13 @@ namespace CloudRP.Admin
         [Command("sethp", "~r~/sethp [nameOrId] [health]", Alias = "sethealth")]
         public void setHealth(Player player, string nameOrId, int health)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
                 Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
-                DbCharacter characterData = PlayersData.getPlayerCharacterData(findPlayer);
-                User targetUserData = PlayersData.getPlayerAccountData(findPlayer);
+                DbCharacter characterData = findPlayer.getPlayerCharacterData();
+                User targetUserData = findPlayer.getPlayerAccountData();
 
                 if(findPlayer == null)
                 {
@@ -1126,7 +1125,7 @@ namespace CloudRP.Admin
         [Command("setaname", "~r~/setaname [nameOrId] [adminName]", GreedyArg = true)]
         public void setAdminName(Player player, string nameOrId, string adminName)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if(userData.admin_status > (int)AdminRanks.Admin_Admin && userData.adminDuty || userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
@@ -1138,7 +1137,7 @@ namespace CloudRP.Admin
                     return;
                 }
 
-                User findPlayerData = PlayersData.getPlayerAccountData(findPlayer);
+                User findPlayerData = findPlayer.getPlayerAccountData();
 
                 if (findPlayer.isImmuneTo(player)) return;
 
@@ -1154,7 +1153,7 @@ namespace CloudRP.Admin
                     dbContext.SaveChanges();
                 }
 
-                PlayersData.setPlayerAccountData(findPlayer, findPlayerData);
+                findPlayer.setPlayerAccountData(userData);
                 AdminUtils.staffSay(player, $"Set Player [{findPlayer.Id}]'s admin name to {adminName}.");
                 AdminUtils.staffSay(findPlayer, $"Your admin name was set to {adminName} by {userData.admin_name}.");
 
@@ -1165,7 +1164,7 @@ namespace CloudRP.Admin
         [Command("setadmin", "~r~/setadmin [nameOrId] [adminLevel(0-8)]")]
         public void setAdmin(Player player, string nameOrId, int adminRankSet)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
 
@@ -1201,8 +1200,8 @@ namespace CloudRP.Admin
                     return;
                 }
 
-                User findPlayerData = PlayersData.getPlayerAccountData(findPlayer);
-                DbCharacter findPlayerCharData = PlayersData.getPlayerCharacterData(findPlayer);
+                User findPlayerData = findPlayer.getPlayerAccountData();
+                DbCharacter findPlayerCharData = findPlayer.getPlayerCharacterData();
 
                 if (findPlayer.isImmuneTo(player)) return;
 
@@ -1234,7 +1233,7 @@ namespace CloudRP.Admin
                 string setAdminRank = AdminUtils.getColouredAdminRank(findPlayerData);
 
                 ChatUtils.formatConsolePrint($"{userData.admin_name} set {findPlayerCharData.character_name}'s admin level to {RankList.adminRanksList[adminRankSet]}");
-                PlayersData.setPlayerAccountData(findPlayer, findPlayerData);
+                findPlayer.setPlayerAccountData(findPlayerData);
 ;               AdminUtils.staffSay(player, $"You set {findPlayerCharData.character_name}'s admin level to {setAdminRank}");
 ;               AdminUtils.staffSay(findPlayer, $"Your admin level was set to {setAdminRank}{AdminUtils.staffSuffixColour} by Admin {userData.admin_name}");
                 AdminUtils.sendMessageToAllStaff($"{userData.admin_name} set {findPlayerCharData.character_name}'s admin level to {setAdminRank}");
@@ -1245,7 +1244,7 @@ namespace CloudRP.Admin
         [Command("sendtoinsurance", "~r~/sendtoinsurance [plateOrId]", Alias = "sentov")]
         public void sendToInsurance(Player player, string plateOrId)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if(player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
@@ -1267,7 +1266,7 @@ namespace CloudRP.Admin
         [Command("gotov", "~r~/gotov [idOrPlate]")]
         public void goToVehicle(Player player, string idOrPlate)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
@@ -1291,7 +1290,7 @@ namespace CloudRP.Admin
         [Command("ha", "~r~/headadmin [message]", Alias = "headadmin", GreedyArg = true)]
         public void headAdminChat(Player player, string message)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (userData.admin_status > (int)AdminRanks.Admin_SeniorAdmin)
             {
@@ -1311,7 +1310,7 @@ namespace CloudRP.Admin
         [Command("arefuel", "~r~/arefuel [currentVehicle|id|plate]")]
         public void adminRefuelVehicle(Player player, string vehicleIdOrPlate = null)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
@@ -1365,7 +1364,7 @@ namespace CloudRP.Admin
         [Command("emptyfuel", "~r~/emptyfuel [currentVehicle|id|plate]")]
         public void adminEmptyVehicleFuel(Player player, string vehicleIdOrPlate = null)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if(userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
@@ -1420,7 +1419,7 @@ namespace CloudRP.Admin
         [Command("banchar", "~r~/banchar [characterName]", Alias = "bancharacter", GreedyArg = true)]
         public void banCharacter(Player player, string characterName)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if(player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
@@ -1440,7 +1439,7 @@ namespace CloudRP.Admin
         [Command("unbanchar", "~r~/unbanchar [characterName]", Alias = "unbancharacter", GreedyArg = true)]
         public void unbanCharacter(Player player, string characterName)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
@@ -1461,7 +1460,7 @@ namespace CloudRP.Admin
         [Command("setvplate", "~r~/setvplate [plate]")]
         public void setVPlate(Player player, string numberplate)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (player.checkUserData((int)AdminRanks.Admin_HeadAdmin))
             {
@@ -1519,7 +1518,7 @@ namespace CloudRP.Admin
         [Command("giveamoney", "~r~/giveamoney [nameOrId] [moneyAmount]")]
         public void giveAdminMoney(Player player, string nameOrId, long amount)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
@@ -1529,10 +1528,12 @@ namespace CloudRP.Admin
                     CommandUtils.notFound(player);
                     return;
                 }
-                DbCharacter charData = PlayersData.getPlayerCharacterData(findPlayer);
+
+                DbCharacter charData = findPlayer.getPlayerCharacterData();
 
                 charData.money_amount += amount;
-                PlayersData.setPlayerCharacterData(findPlayer, charData, false, true);
+
+                findPlayer.setPlayerCharacterData(charData, false, true);
 
                 ChatUtils.formatConsolePrint($"{userData.admin_name} gave {charData.character_name} {amount.ToString("C")}.");
                 AdminUtils.staffSay(player, $"You gave {charData.character_name} {ChatUtils.moneyGreen}{amount.ToString("C")}{AdminUtils.staffSuffixColour} their total money level is at {ChatUtils.moneyGreen}${charData.money_amount.ToString("C")}");
@@ -1544,7 +1545,7 @@ namespace CloudRP.Admin
         [Command("removeamoney", "~r~/removeamoney [nameOrId] [moneyAmount]")]
         public void removeAdminMoney(Player player, string nameOrId, long amount)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
@@ -1554,7 +1555,7 @@ namespace CloudRP.Admin
                     CommandUtils.notFound(player);
                     return;
                 }
-                DbCharacter charData = PlayersData.getPlayerCharacterData(findPlayer);
+                DbCharacter charData = findPlayer.getPlayerCharacterData();
 
                 if( (charData.money_amount - amount) < 0)
                 {
@@ -1563,7 +1564,7 @@ namespace CloudRP.Admin
                 }
 
                 charData.money_amount -= amount;
-                PlayersData.setPlayerCharacterData(findPlayer, charData, false, true);
+                findPlayer.setPlayerCharacterData(charData, false, true);
 
                 ChatUtils.formatConsolePrint($"{userData.admin_name} removed {amount.ToString("C")} from {charData.character_name}.");
                 AdminUtils.staffSay(player, $"You removed {ChatUtils.moneyGreen}${amount.ToString("C")}{AdminUtils.staffSuffixColour} from {charData.character_name} their total money level is at {ChatUtils.moneyGreen}{charData.money_amount.ToString("C")}");
@@ -1575,7 +1576,7 @@ namespace CloudRP.Admin
         [Command("slap", "~r~/slap [nameOrId] [units]")]
         public void slapPlayer(Player player, string nameOrId, int units)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (userData.admin_status > (int)AdminRanks.Admin_HeadAdmin || userData.adminDuty)
             {
@@ -1589,7 +1590,7 @@ namespace CloudRP.Admin
 
                 if(findP != null)
                 {
-                    User targetUserData = PlayersData.getPlayerAccountData(findP);
+                    User targetUserData = findP.getPlayerAccountData();
 
                     if(targetUserData.adminDuty)
                     {
@@ -1599,7 +1600,7 @@ namespace CloudRP.Admin
 
                     if (findP.isImmuneTo(player)) return;
 
-                    DbCharacter charData = PlayersData.getPlayerCharacterData(findP);
+                    DbCharacter charData = findP.getPlayerCharacterData();
 
                     if(charData != null)
                     {
@@ -1624,16 +1625,16 @@ namespace CloudRP.Admin
         [Command("slay", "~r~/slay [nameOrId]")]
         public void slayCommand(Player player, string nameOrId)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if(player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
                 Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
-                DbCharacter findPlayerCharData = PlayersData.getPlayerCharacterData(findPlayer);
+                DbCharacter findPlayerCharData = findPlayer.getPlayerCharacterData();
 
                 if(findPlayer != null && findPlayerCharData != null)
                 {
-                    User targetUserData = PlayersData.getPlayerAccountData(findPlayer);
+                    User targetUserData = findPlayer.getPlayerAccountData();
 
                     if(targetUserData.adminDuty)
                     {
@@ -1657,7 +1658,7 @@ namespace CloudRP.Admin
         [Command("delcorpse", "~r~/delcorpse [corpseId]")]
         public void deleteCorpse(Player player, int corpseId)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
@@ -1679,7 +1680,7 @@ namespace CloudRP.Admin
         [Command("amarker", "~r~/amarker [text]", GreedyArg = true)]
         public void adminMarker(Player player, string text)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
@@ -1703,7 +1704,7 @@ namespace CloudRP.Admin
         [Command("delfdo", "~r~/delfdo [fdoId]")]
         public void deleteFdo(Player player, int fdoId)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
@@ -1722,7 +1723,7 @@ namespace CloudRP.Admin
         [Command("rmamark", "~r~/rmamark [adminMarkId]")]
         public void rmarmar(Player player, int markId)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
@@ -1746,7 +1747,7 @@ namespace CloudRP.Admin
         [Command("rmamarks", "~r~/rmamarks")]
         public void rmarmars(Player player)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
@@ -1764,7 +1765,7 @@ namespace CloudRP.Admin
         [Command("makeped", "~r~/makeped [pedName]")]
         public void makePed(Player player, string pedName)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (userData.admin_status == (int)AdminRanks.Admin_Developer)
             {
@@ -1779,7 +1780,7 @@ namespace CloudRP.Admin
         [Command("makeobj", "~r~/makeobj [objName] [rot]")]
         public void makeObject(Player player, string objName, double rot = 0)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (userData.admin_status == (int)AdminRanks.Admin_Developer)
             {

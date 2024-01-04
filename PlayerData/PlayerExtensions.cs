@@ -1,24 +1,140 @@
 ﻿using CloudRP.Admin;
 using CloudRP.Authentication;
+using CloudRP.Character;
 using CloudRP.Database;
 using CloudRP.Utils;
 using GTANetworkAPI;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace CloudRP.PlayerData
 {
     public static class PlayerExtensions
     {
+        private static readonly string _sharedAccountDataIdentifier = "PlayerAccountData";
+        private static readonly string _sharedCharacterDataIdentifier = "PlayerCharacterData";
+        private static string _characterFoodAndWaterKey = "characterWaterAndHunger";
+        private static string _characterClothesKey = "characterClothing";
+        private static string _voipStatusKey = "voipIsTalking";
+        private static string _characterModelKey = "characterModel";
+
+        public static void setPlayerAccountData(this Player player, User userData, bool triggerShared = true, bool updateDb = false)
+        {
+            if (!PlayersData.checkIfAccountIsLogged(userData.account_id))
+            {
+                player.SetData(_sharedAccountDataIdentifier, userData);
+
+                if (triggerShared)
+                {
+                    SharedDataAccount sharedData = JsonConvert.DeserializeObject<SharedDataAccount>(JsonConvert.SerializeObject(userData));
+
+                    player.SetSharedData(_sharedAccountDataIdentifier, sharedData);
+                }
+
+                if (updateDb)
+                {
+                    using (DefaultDbContext dbContext = new DefaultDbContext())
+                    {
+                        Account targetAcc = JsonConvert.DeserializeObject<Account>(JsonConvert.SerializeObject(userData));
+
+                        dbContext.Attach(targetAcc);
+                        dbContext.Entry(targetAcc).State = EntityState.Modified;
+
+                        var entry = dbContext.Entry(targetAcc);
+
+                        Type type = typeof(Account);
+                        PropertyInfo[] properties = type.GetProperties();
+                        foreach (PropertyInfo property in properties)
+                        {
+                            if (property.GetValue(targetAcc, null) == null)
+                            {
+                                entry.Property(property.Name).IsModified = false;
+                            }
+                        }
+
+                        dbContext.SaveChanges();
+                    }
+                }
+            }
+        }
+
+        public static void setPlayerCharacterData(this Player player, DbCharacter character, bool resyncModel = true, bool updateDb = false)
+        {
+            if (!PlayersData.checkIfCharacterIsLogged(character.character_id))
+            {
+                player.SetData(_sharedCharacterDataIdentifier, character);
+
+                SharedDataCharacter sharedData = JsonConvert.DeserializeObject<SharedDataCharacter>(JsonConvert.SerializeObject(character));
+
+                player.SetSharedData(_sharedCharacterDataIdentifier, sharedData);
+                setCharacterHungerAndThirst(player, character.character_hunger, character.character_water);
+                setPlayerVoiceStatus(player, character.voiceChatState);
+
+                if (resyncModel)
+                {
+                    setCharacterClothes(player, character.characterClothing);
+                    setCharacterModel(player, character.characterModel);
+                }
+
+                if (updateDb)
+                {
+                    using (DefaultDbContext dbContext = new DefaultDbContext())
+                    {
+                        dbContext.Update(character);
+                        dbContext.SaveChanges();
+                    }
+                }
+            }
+        }
+
+        public static void setPlayerVoiceStatus(this Player player, bool tog)
+        {
+            player.SetSharedData(_voipStatusKey, tog);
+        }
+
+        public static void setCharacterHungerAndThirst(this Player player, double hunger, double water)
+        {
+            player.SetSharedData(_characterFoodAndWaterKey, new HungerThirst
+            {
+                hunger = hunger,
+                water = water
+            });
+        }
+
+        public static void setCharacterClothes(this Player player, CharacterClothing clothes)
+        {
+            player.SetSharedData(_characterClothesKey, clothes);
+        }
+
+        public static void setCharacterModel(this Player player, CharacterModel model)
+        {
+            player.SetSharedData(_characterModelKey, model);
+        }
+
+        public static User getPlayerAccountData(this Player player)
+        {
+            User playerData = player.GetData<User>(_sharedAccountDataIdentifier);
+            return playerData;
+        }
+
+        public static DbCharacter getPlayerCharacterData(this Player player)
+        {
+            DbCharacter character = player.GetData<DbCharacter>(_sharedCharacterDataIdentifier);
+            return character;
+        }
+
         public static int getId(this Player player)
         {
             int id = -1;
 
-            if(PlayersData.getPlayerAccountData(player) != null)
+            if(player.getPlayerAccountData() != null)
             {
-                id = PlayersData.getPlayerAccountData(player).account_id;
+                id = player.getPlayerAccountData().account_id;
             } 
 
             return id;
@@ -28,9 +144,9 @@ namespace CloudRP.PlayerData
         {
             int adminStatus = -1;
 
-            if(PlayersData.getPlayerAccountData(player) != null)
+            if(player.getPlayerAccountData() != null)
             {
-                adminStatus = PlayersData.getPlayerAccountData(player).admin_status;
+                adminStatus = player.getPlayerAccountData().admin_status;
             } 
 
             return adminStatus;
@@ -116,8 +232,8 @@ namespace CloudRP.PlayerData
 
         public static bool isImmuneTo(this Player target, Player player)
         {
-            User targetData = PlayersData.getPlayerAccountData(target);
-            User playerData = PlayersData.getPlayerAccountData(player);
+            User targetData = target.getPlayerAccountData();
+            User playerData = player.getPlayerAccountData();
 
             if (targetData != null && playerData != null && targetData.admin_status >= (int)AdminRanks.Admin_Developer && targetData.account_id != playerData.account_id)
             {
@@ -132,7 +248,7 @@ namespace CloudRP.PlayerData
         public static void setPlayerToBanScreen(this Player player, Ban banData)
         {
             player.Dimension = Auth._startDimension;
-            PlayersData.flushUserAndCharacterData(player);
+            player.flushUserAndCharacterData();
             player.TriggerEvent("client:loginCameraStart");
             uiHandling.pushRouterToClient(player, Browsers.BanPage);
 
@@ -141,7 +257,7 @@ namespace CloudRP.PlayerData
 
         public static bool checkUserData(this Player player, int adminRank, bool checkAduty = true)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if (userData != null && userData.admin_status >= adminRank || checkAduty && userData.adminDuty)
             {
@@ -150,6 +266,17 @@ namespace CloudRP.PlayerData
             
             AdminUtils.sendNoAuth(player);
             return false;
+        }
+
+        public static void flushUserAndCharacterData(this Player player)
+        {
+            player.SetData<User>(_sharedAccountDataIdentifier, null);
+            player.SetData<DbCharacter>(_sharedCharacterDataIdentifier, null);
+            player.SetData<CharacterModel>(_characterModelKey, null);
+            player.ResetData();
+
+            player.ResetOwnSharedData(_sharedAccountDataIdentifier);
+            player.ResetOwnSharedData(_sharedCharacterDataIdentifier);
         }
     }
 }

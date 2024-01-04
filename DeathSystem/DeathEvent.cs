@@ -48,7 +48,7 @@ namespace CloudRP.DeathSystem
         {
             NAPI.Task.Run(() =>
             {
-                User userData = PlayersData.getPlayerAccountData(player);
+                User userData = player.getPlayerAccountData();
 
                 if (userData != null && userData.adminDuty)
                 {
@@ -56,12 +56,12 @@ namespace CloudRP.DeathSystem
                     return;
                 }
 
-                DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+                DbCharacter characterData = player.getPlayerCharacterData();
                 DbCharacter killerData = null;
 
                 if (killer != null)
                 {
-                    killerData = PlayersData.getPlayerCharacterData(killer);
+                    killerData = killer.getPlayerCharacterData();
                 }
 
                 if (characterData != null)
@@ -84,14 +84,14 @@ namespace CloudRP.DeathSystem
 
         public static void respawnAtHospital(Player player)
         {
-            DbCharacter playerCharacterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter playerCharacterData = player.getPlayerCharacterData();
 
             if (playerCharacterData != null)
             {
                 player.Dimension = 0;
                 playerCharacterData.player_dimension = 0;
 
-                PlayersData.setPlayerCharacterData(player, playerCharacterData, false, true);
+                player.setPlayerCharacterData(playerCharacterData, false, true);
             }
 
             player.TriggerEvent("client:moveSkyCamera", "up", 1, false);
@@ -134,7 +134,7 @@ namespace CloudRP.DeathSystem
                 dbContext.SaveChanges();
             }
 
-            PlayersData.setPlayerCharacterData(player, characterData);
+            player.setPlayerCharacterData(characterData);
 
             player.TriggerEvent("injured:startInterval", time);
         }
@@ -142,7 +142,7 @@ namespace CloudRP.DeathSystem
         [RemoteEvent("server:saveInjuredTime")]
         public static void saveInjuredTime(Player player)
         {
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
             if (characterData == null) return;
 
             if(characterData.injured_timer - 10 <= 0)
@@ -152,7 +152,7 @@ namespace CloudRP.DeathSystem
             }
 
             characterData.injured_timer -= 10;
-            PlayersData.setPlayerCharacterData(player, characterData, false, true);
+            player.setPlayerCharacterData(characterData, false, true);
         }
 
         public static void removeInjuredStatus(Player player, DbCharacter character, bool respawn = true)
@@ -172,7 +172,7 @@ namespace CloudRP.DeathSystem
         public static void resetTimer(Player player, DbCharacter character)
         {
             character.injured_timer = 0;
-            PlayersData.setPlayerCharacterData(player, character, false, true);
+            player.setPlayerCharacterData(character, false, true);
             player.TriggerEvent("injured:removeStatus");
         }
 
@@ -225,7 +225,7 @@ namespace CloudRP.DeathSystem
 
         public static void handleCorpseSet(Player player)
         {
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if (characterData == null) return;
 

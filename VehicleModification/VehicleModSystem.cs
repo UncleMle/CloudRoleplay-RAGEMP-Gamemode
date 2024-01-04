@@ -68,7 +68,7 @@ namespace CloudRP.VehicleModification
                 return;
             }
 
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if (characterData == null) return;
 
@@ -101,7 +101,7 @@ namespace CloudRP.VehicleModification
         [RemoteEvent("server:vehicleModsSave")]
         public void saveVehiclesMods(Player player, string modData)
         {
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if (!player.IsInVehicle || characterData == null) return;
 

@@ -20,7 +20,7 @@ namespace CloudRP.InventorySystem
         [Command("giveitem", "~r~/giveitem [nameOrId] [itemId]")]
         public void giveInventoryItem(Player player, string nameOrId, int itemId)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if(userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
@@ -28,7 +28,7 @@ namespace CloudRP.InventorySystem
 
                 if(findPlayer != null)
                 {
-                    DbCharacter findPlayerCharacterData = PlayersData.getPlayerCharacterData(findPlayer);
+                    DbCharacter findPlayerCharacterData = findPlayer.getPlayerCharacterData();
                     if (findPlayerCharacterData == null) return;
 
                     InventoryItem newItem = InventoryItem.addItemForPlayer(findPlayer, itemId);

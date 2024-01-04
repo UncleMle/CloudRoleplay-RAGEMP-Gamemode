@@ -14,7 +14,7 @@ namespace CloudRP.AnimationSync
         [RemoteEvent("server:anim:startHandsUp")]
         public void startHandsUpAnim(Player player, bool animState)
         {
-            DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter charData = player.getPlayerCharacterData();
 
             if(charData != null && charData.injured_timer <= 0)
             {

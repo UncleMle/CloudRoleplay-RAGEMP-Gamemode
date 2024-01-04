@@ -21,7 +21,7 @@ namespace CloudRP.Utils
 
             foreach(Player findPlayer in allPlayers)
             {
-                DbCharacter characterData = PlayersData.getPlayerCharacterData(findPlayer);
+                DbCharacter characterData = findPlayer.getPlayerCharacterData();
 
                 if (characterData != null)
                 {

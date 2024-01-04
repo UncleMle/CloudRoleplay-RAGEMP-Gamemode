@@ -21,7 +21,7 @@ namespace CloudRP.GeneralCommands
         [Command("b", "~y~Use:~w~ /b [message]", Alias = "ooc", GreedyArg = true)]
         public void oocCommand(Player player, string oocChat)
         {
-            DbCharacter character = PlayersData.getPlayerCharacterData(player);
+            DbCharacter character = player.getPlayerCharacterData();
             if (character == null) return;
 
             string prefix = _oocColour + "((" + "!{white} ";
@@ -33,7 +33,7 @@ namespace CloudRP.GeneralCommands
         [Command("afk", "~y~Use: ~w~/afk [answer]")]
         public static void afkCommand(Player player, string afkAns)
         {
-            if (PlayersData.getPlayerCharacterData(player) == null) return;
+            if (player.getPlayerCharacterData() == null) return;
             AfkData afkData = player.GetData<AfkData>(Events._afkKeyIdentifier);
             if (afkData == null)
             {
@@ -54,7 +54,7 @@ namespace CloudRP.GeneralCommands
         [Command("whisper", "~y~Use:~w~ /whisper [nameOrId] [message]", Alias = "w", GreedyArg = true)]
         public void whisperCommmand(Player player, string nameOrId, string message)
         {
-            DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter charData = player.getPlayerCharacterData();
             if (charData == null) return;
             Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
 
@@ -101,7 +101,7 @@ namespace CloudRP.GeneralCommands
         [Command("me", "~y~Use:~w~ /me [message]", GreedyArg = true)]
         public void onMeCommand(Player player, string me)
         {
-            DbCharacter character = PlayersData.getPlayerCharacterData(player);
+            DbCharacter character = player.getPlayerCharacterData();
 
             if (character == null) return;
 
@@ -114,7 +114,7 @@ namespace CloudRP.GeneralCommands
         [Command("melow", "~y~Use:~w~ /melow [message]", GreedyArg = true)]
         public void onMeLowCommand(Player player, string me)
         {
-            DbCharacter character = PlayersData.getPlayerCharacterData(player);
+            DbCharacter character = player.getPlayerCharacterData();
 
             if (character == null) return;
 
@@ -127,7 +127,7 @@ namespace CloudRP.GeneralCommands
         [Command("shout", "~y~Use:~w~ /shout [message]", Alias = "s", GreedyArg = true)]
         public void onShoutCommand(Player player, string message)
         {
-            DbCharacter character = PlayersData.getPlayerCharacterData(player);
+            DbCharacter character = player.getPlayerCharacterData();
 
             if (character == null) return;
 
@@ -140,7 +140,7 @@ namespace CloudRP.GeneralCommands
         [Command("floatingdo", "~y~Use:~w~ /fdo [messsage]", Alias = "fdo", GreedyArg = true)]
         public void addFdoCommand(Player player, string message)
         {
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
             if(characterData == null) return;
 
             if(FloatingDo.getAllByPlayer(characterData) >= maxFloatingDos)
@@ -163,7 +163,7 @@ namespace CloudRP.GeneralCommands
         [Command("deletefdos", "~y~Use: ~w~/deletefdos", GreedyArg = true)]
         public void deleteFdos(Player player)
         {
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if(FloatingDo.getAllByPlayer(characterData) > 0)
             {
@@ -179,7 +179,7 @@ namespace CloudRP.GeneralCommands
         [Command("do", "~y~Use:~w~ /do [message]", GreedyArg = true)]
         public void onDoCommand(Player player, string docommand)
         {
-            DbCharacter character = PlayersData.getPlayerCharacterData(player);
+            DbCharacter character = player.getPlayerCharacterData();
 
             if (character == null) return;
 
@@ -192,7 +192,7 @@ namespace CloudRP.GeneralCommands
         [Command("dolow", "~y~Use:~w~ /dolow [message]", GreedyArg = true)]
         public void onDoLowCommand(Player player, string docommand)
         {
-            DbCharacter character = PlayersData.getPlayerCharacterData(player);
+            DbCharacter character = player.getPlayerCharacterData();
 
             if (character == null) return;
 
@@ -229,7 +229,7 @@ namespace CloudRP.GeneralCommands
         [Command("stats", "~y~Use:~w~ /stats")]
         public void onStatsCommand(Player player)
         {
-            DbCharacter character = PlayersData.getPlayerCharacterData(player);
+            DbCharacter character = player.getPlayerCharacterData();
 
             if (character == null) return;
 
@@ -245,7 +245,7 @@ namespace CloudRP.GeneralCommands
             int count = 0;
             NAPI.Pools.GetAllPlayers().ForEach(p =>
             {
-                if(PlayersData.getPlayerCharacterData(player) != null)
+                if(player.getPlayerCharacterData() != null)
                 {
                     count++;
                 }
@@ -257,8 +257,8 @@ namespace CloudRP.GeneralCommands
         [Command("pm", "~y~Use:~w~ /pm [playerNameOrId] [message]", GreedyArg = true, Alias = "privatemessage")]
         public void onPrivateMessage(Player player, string nameOrId, string message)
         {
-            DbCharacter character = PlayersData.getPlayerCharacterData(player);
-            User userData = PlayersData.getPlayerAccountData(player);
+            DbCharacter character = player.getPlayerCharacterData();
+            User userData = player.getPlayerAccountData();
 
             if (character == null || userData == null) return;
 
@@ -320,8 +320,8 @@ namespace CloudRP.GeneralCommands
         [Command("removenick", "~y~Use: ~w~/removenick [nameOrId]")]
         public void removeNickName(Player player, string nameOrId)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            User userData = player.getPlayerAccountData();
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if (userData == null || characterData == null) return;
 
@@ -333,7 +333,7 @@ namespace CloudRP.GeneralCommands
                 return;
             }
 
-            DbCharacter findPlayerData = PlayersData.getPlayerCharacterData(findPlayer);
+            DbCharacter findPlayerData = findPlayer.getPlayerCharacterData();
 
             if (Vector3.Distance(player.Position, findPlayer.Position) > 5 || findPlayerData == null)
             {
@@ -365,7 +365,7 @@ namespace CloudRP.GeneralCommands
         [Command("disableautologin", "~y~Use:~w~ /disableautologin")]
         public void disableAutoLogin(Player player)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
 
             if(userData != null)
             {
@@ -377,7 +377,7 @@ namespace CloudRP.GeneralCommands
                     userData.auto_login = 1;
                 }
 
-                PlayersData.setPlayerAccountData(player, userData, false, true);
+                player.setPlayerAccountData(userData, false, true);
                 CommandUtils.successSay(player, $"You {(userData.auto_login == 1 ? "enabled" : "disabled")}");
             }
         }
@@ -385,7 +385,7 @@ namespace CloudRP.GeneralCommands
         [Command("dice", "~y~Use:~w~ /dice [amount]")]
         public void diceCommand(Player player, int amount = 6)
         {
-            DbCharacter character = PlayersData.getPlayerCharacterData(player);
+            DbCharacter character = player.getPlayerCharacterData();
 
             if (character == null) return;
 
@@ -406,8 +406,8 @@ namespace CloudRP.GeneralCommands
         [Command("nick", "~y~Use: ~w~/nick [nameOrId] [nickname]", GreedyArg = true)]
         public void nicknameCommand(Player player, string playerOrId, string nickname)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            User userData = player.getPlayerAccountData();
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if (userData == null || characterData == null) return;
 
@@ -419,7 +419,7 @@ namespace CloudRP.GeneralCommands
                 return;
             }
 
-            DbCharacter findCharData = PlayersData.getPlayerCharacterData(findPlayer);
+            DbCharacter findCharData = findPlayer.getPlayerCharacterData();
 
             if (Vector3.Distance(player.Position, findPlayer.Position) > 5)
             {
@@ -477,8 +477,8 @@ namespace CloudRP.GeneralCommands
 
         public static string findNickNameForPlayer(Player player, Player target)
         {
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
-            DbCharacter targetCharData = PlayersData.getPlayerCharacterData(target);
+            DbCharacter characterData = player.getPlayerCharacterData();
+            DbCharacter targetCharData = target.getPlayerCharacterData();
 
             if (targetCharData != null && characterData != null)
             {

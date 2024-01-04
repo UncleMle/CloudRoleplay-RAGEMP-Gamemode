@@ -80,7 +80,7 @@ namespace CloudRP.Character
         public async Task purchaseTattoos(Player player, string tatLib, string tatData)
         {
             TattooShop shopData = player.GetData<TattooShop>(_tattoStoreIdentifier);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if(shopData != null && characterData != null)
             {
@@ -111,7 +111,7 @@ namespace CloudRP.Character
                 {
                     List<Tattoo> newTattoList = getAllPlayerTats(characterData.character_id);
                     characterData.characterModel.player_tattos = newTattoList;
-                    PlayersData.setPlayerCharacterData(player, characterData, true);
+                    player.setPlayerCharacterData(characterData, true);
                     uiHandling.sendPushNotif(player, "You purchased some tattoos", 6600, true, true, true);
                 });
             } else

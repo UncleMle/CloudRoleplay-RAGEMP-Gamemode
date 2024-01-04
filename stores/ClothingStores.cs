@@ -92,10 +92,10 @@ namespace CloudRP.ClothingStores
             {
                 flushClothingStoreData(player);
 
-                DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+                DbCharacter charData = player.getPlayerCharacterData();
                 if(charData != null)
                 {
-                    PlayersData.setCharacterClothes(player, charData.characterClothing);
+                    player.setCharacterClothes(charData.characterClothing);
                 }
             }
         }
@@ -103,7 +103,7 @@ namespace CloudRP.ClothingStores
         [RemoteEvent("server:handleClothesPurchase")]
         public void clothesPurchase(Player player, string clothes)
         {
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
             CharacterClothing clothingData = JsonConvert.DeserializeObject<CharacterClothing>(clothes);
 
             NAPI.Task.Run(() =>
@@ -144,7 +144,8 @@ namespace CloudRP.ClothingStores
                         uiHandling.sendPushNotif(player, "You successfully purchase a new item of clothing.", 6600, false, false);
 
                         characterData.money_amount -= 300;
-                        PlayersData.setPlayerCharacterData(player, characterData, true, true);
+
+                        player.setPlayerCharacterData(characterData, true, true);
                         CommandUtils.successSay(player, $"You purchased a new clothing item for {ChatUtils.moneyGreen}$300");
                     }
                 }

@@ -82,7 +82,7 @@ namespace CloudRP.HousingSystem
         public void loadHouseForPlayer(Player player)
         {
             House houseData = player.GetData<House>(_housingDataIdentifier);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
             Vector3 interiorData = player.GetData<Vector3>(_housingInteriorIdentifier);
 
             if(houseData.isLocked)
@@ -102,7 +102,7 @@ namespace CloudRP.HousingSystem
                     player.Position = houseInterior.interiorPosition;
 
                     setHouseDataForPlayer(player, houseData);
-                    PlayersData.setPlayerCharacterData(player, characterData, false, true);
+                    player.setPlayerCharacterData(characterData, false, true);
                 }
             }
         }
@@ -111,7 +111,7 @@ namespace CloudRP.HousingSystem
         public void exitHouseForPlayer(Player player)
         {
             Vector3 housePos = player.GetData<Vector3>(_housingInteriorIdentifier);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if (housePos != null && characterData != null)
             {
@@ -119,7 +119,7 @@ namespace CloudRP.HousingSystem
                 player.Dimension = 0;
                 characterData.player_dimension = 0;
 
-                PlayersData.setPlayerCharacterData(player, characterData, false, true);
+                player.setPlayerCharacterData(characterData, false, true);
                 NAPI.Task.Run(() =>
                 {
                     if(player != null)
@@ -135,7 +135,7 @@ namespace CloudRP.HousingSystem
         public void toggleHouseLock(Player player)
         {
             House houseData = player.GetData<House>(_housingDataIdentifier);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if(houseData != null && characterData != null && characterData.character_id == houseData.house_owner_id)
             {

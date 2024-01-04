@@ -58,7 +58,7 @@ namespace CloudRP.Character
         {
             saveCharacterData(player);
 
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter characterData = player.getPlayerCharacterData();
 
             if(characterData != null)
             {
@@ -69,8 +69,8 @@ namespace CloudRP.Character
 
         public static void saveCharacterData(Player player)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
-            DbCharacter characterData = PlayersData.getPlayerCharacterData(player);
+            User userData = player.getPlayerAccountData();
+            DbCharacter characterData = player.getPlayerCharacterData();
             bool vehicleDealerActive = player.GetData<bool>(VehicleDealershipSystem._dealerActiveIdentifier);
 
             // Not checking for null here can crash the server (GetData even casted to bool can return null).
@@ -108,7 +108,7 @@ namespace CloudRP.Character
                                     characterData.character_hunger -= _characterHungerRemover;
                                 }
 
-                                PlayersData.setCharacterHungerAndThirst(player, characterData.character_hunger, characterData.character_water);
+                                player.setCharacterHungerAndThirst(characterData.character_hunger, characterData.character_water);
                             }
 
                             dbContext.characters.Update(characterData);
@@ -128,7 +128,7 @@ namespace CloudRP.Character
 
             NAPI.Pools.GetAllPlayers().ForEach(p =>
             {
-                DbCharacter charData = PlayersData.getPlayerCharacterData(p);
+                DbCharacter charData = p.getPlayerCharacterData();
 
                 if(charData != null && charData.character_name == charName)
                 {
@@ -176,7 +176,7 @@ namespace CloudRP.Character
         [RemoteEvent("server:recieveCharacterModel")]
         public void saveCharacterModelAsync(Player player, string data)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
             if (userData == null) return;
 
             int currentCharacters = getUsersCharacter(userData);
@@ -292,7 +292,7 @@ namespace CloudRP.Character
         [RemoteEvent("server:setUserToCharacterCreation")]
         public static void setUserToCharacterCreation(Player player)
         {
-            User userData = PlayersData.getPlayerAccountData(player);
+            User userData = player.getPlayerAccountData();
             if(userData == null) return;
 
             int currentCharacters = getUsersCharacter(userData);
@@ -330,14 +330,17 @@ namespace CloudRP.Character
 
         public static void resetToCharacterModel(Player player)
         {
-            CharacterModel characterModelData = PlayersData.getPlayerCharacterData(player).characterModel;
-            if(characterModelData == null) return;
-            DbCharacter character = PlayersData.getPlayerCharacterData(player);
-            if(character == null) return;
+            if(player.getPlayerCharacterData() != null)
+            {
+                CharacterModel characterModelData = player.getPlayerCharacterData().characterModel;
+                if (characterModelData == null) return;
+                DbCharacter character = player.getPlayerCharacterData();
+                if (character == null) return;
 
-            character.characterModel = characterModelData;
+                character.characterModel = characterModelData;
 
-            PlayersData.setPlayerCharacterData(player, character);
+                player.setPlayerCharacterData(character);
+            }
         }
     }
 }

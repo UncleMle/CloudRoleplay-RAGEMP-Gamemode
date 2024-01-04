@@ -27,12 +27,12 @@ namespace CloudRP.VoiceSystem
         [RemoteEvent("server:togVoiceStatus")]
         public void toggleVoiceStatus(Player player, bool toggle)
         {
-            DbCharacter charData = PlayersData.getPlayerCharacterData(player);
+            DbCharacter charData = player.getPlayerCharacterData();
 
             if(charData != null)
             {
                 charData.voiceChatState = toggle;
-                PlayersData.setPlayerVoiceStatus(player, toggle);
+                player.setPlayerVoiceStatus(toggle);
             }
 
         }
