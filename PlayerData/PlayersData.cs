@@ -21,6 +21,15 @@ namespace CloudRP.PlayerData
         public static readonly Vector3 defaultSpawnPosition = new Vector3(-1036.6, -2736.0, 13.8);
         public static readonly Vector3 defaultLoginPosition = new Vector3(0, 0, 0);
 
+        public static readonly string _playerKeysIdentifier = "AllPlayerKeys";
+        public static readonly string _isBanned = "playerIsBanned";
+        public static readonly string _sharedAccountDataIdentifier = "PlayerAccountData";
+        public static readonly string _sharedCharacterDataIdentifier = "PlayerCharacterData";
+        public static string _characterFoodAndWaterKey = "characterWaterAndHunger";
+        public static string _characterClothesKey = "characterClothing";
+        public static string _voipStatusKey = "voipIsTalking";
+        public static string _characterModelKey = "characterModel";
+
         public static bool checkIfCharacterIsLogged(int charId)
         {
             bool wasFound = false;

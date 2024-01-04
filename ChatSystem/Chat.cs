@@ -95,8 +95,8 @@ namespace CloudRP.ChatSystem
 
             if(charData != null)
             {
-                player.SetData(_typingStateIdentifier, state);
-                player.SetSharedData(_typingStateIdentifier, state);
+                player.SetCustomData(_typingStateIdentifier, state);
+                player.SetCustomSharedData(_typingStateIdentifier, state);
             }
         }
     }

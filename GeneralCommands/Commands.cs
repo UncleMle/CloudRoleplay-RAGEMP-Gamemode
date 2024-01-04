@@ -23,7 +23,10 @@ namespace CloudRP.GeneralCommands
         {
             if(player.getPlayerCharacterData() != null)
             {
-                player.flushUserAndCharacterData();
+                player.flushUserAndCharacterData(new string[]{
+                    PlayersData._sharedAccountDataIdentifier
+                });
+
                 player.setPlayerToLoginScreen();
             }
         }

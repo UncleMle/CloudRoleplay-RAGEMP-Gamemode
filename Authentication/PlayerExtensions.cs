@@ -10,8 +10,10 @@ namespace CloudRP.Authentication
     {
         public static void setPlayerToLoginScreen(this Player player)
         {
+            player.Position = PlayersData.defaultLoginPosition;
+
             player.Dimension = Auth._startDimension;
-            player.TriggerEvent("client:loginStart");
+            player.TriggerEvent("client:loginCameraStart");
             uiHandling.pushRouterToClient(player, Browsers.LoginPage);
         }
 

@@ -63,7 +63,10 @@ class Camera {
     }
 
 	delete() {
-		this.camera?.destroy();
+        if(this.camera && mp.cameras.atHandle(this.camera.handle)) {
+            this.camera.destroy();
+        }
+
 		mp.game.cam.renderScriptCams(false, false, 0, false, false);
 		mp.game.invoke(CLEAR_FOCUS);
 		Camera.Current_Cam = null;

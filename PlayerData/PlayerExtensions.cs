@@ -6,6 +6,7 @@ using CloudRP.InventorySystem;
 using CloudRP.Utils;
 using GTANetworkAPI;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -17,26 +18,19 @@ namespace CloudRP.PlayerData
 {
     public static class PlayerExtensions
     {
-        private static readonly string _playerKeysIdentifier = "AllPlayerKeys";
-        private static readonly string _isBanned = "playerIsBanned";
-        private static readonly string _sharedAccountDataIdentifier = "PlayerAccountData";
-        private static readonly string _sharedCharacterDataIdentifier = "PlayerCharacterData";
-        private static string _characterFoodAndWaterKey = "characterWaterAndHunger";
-        private static string _characterClothesKey = "characterClothing";
-        private static string _voipStatusKey = "voipIsTalking";
-        private static string _characterModelKey = "characterModel";
-
         public static void setPlayerAccountData(this Player player, User userData, bool triggerShared = true, bool updateDb = false)
         {
+            Console.WriteLine("Set acc data " + JsonConvert.SerializeObject(userData));
+
             if (!PlayersData.checkIfAccountIsLogged(userData.account_id))
             {
-                player.SetCustomData(_sharedAccountDataIdentifier, userData);
+                player.SetCustomData(PlayersData._sharedAccountDataIdentifier, userData);
 
                 if (triggerShared)
                 {
                     SharedDataAccount sharedData = JsonConvert.DeserializeObject<SharedDataAccount>(JsonConvert.SerializeObject(userData));
 
-                    player.SetCustomSharedData(_sharedAccountDataIdentifier, sharedData);
+                    player.SetCustomSharedData(PlayersData._sharedAccountDataIdentifier, sharedData);
                 }
 
                 if (updateDb)
@@ -70,11 +64,11 @@ namespace CloudRP.PlayerData
         {
             if (!PlayersData.checkIfCharacterIsLogged(character.character_id))
             {
-                player.SetCustomData(_sharedCharacterDataIdentifier, character);
+                player.SetCustomData(PlayersData._sharedCharacterDataIdentifier, character);
 
                 SharedDataCharacter sharedData = JsonConvert.DeserializeObject<SharedDataCharacter>(JsonConvert.SerializeObject(character));
 
-                player.SetCustomSharedData(_sharedCharacterDataIdentifier, sharedData);
+                player.SetCustomSharedData(PlayersData._sharedCharacterDataIdentifier, sharedData);
                 setCharacterHungerAndThirst(player, character.character_hunger, character.character_water);
                 setPlayerVoiceStatus(player, character.voiceChatState);
 
@@ -97,12 +91,12 @@ namespace CloudRP.PlayerData
 
         public static void setPlayerVoiceStatus(this Player player, bool tog)
         {
-            player.SetCustomSharedData(_voipStatusKey, tog);
+            player.SetCustomSharedData(PlayersData._voipStatusKey, tog);
         }
 
         public static void setCharacterHungerAndThirst(this Player player, double hunger, double water)
         {
-            player.SetCustomSharedData(_characterFoodAndWaterKey, new HungerThirst
+            player.SetCustomSharedData(PlayersData._characterFoodAndWaterKey, new HungerThirst
             {
                 hunger = hunger,
                 water = water
@@ -111,23 +105,23 @@ namespace CloudRP.PlayerData
 
         public static void setCharacterClothes(this Player player, CharacterClothing clothes)
         {
-            player.SetCustomSharedData(_characterClothesKey, clothes);
+            player.SetCustomSharedData(PlayersData._characterClothesKey, clothes);
         }
 
         public static void setCharacterModel(this Player player, CharacterModel model)
         {
-            player.SetCustomSharedData(_characterModelKey, model);
+            player.SetCustomSharedData(PlayersData._characterModelKey, model);
         }
 
         public static User getPlayerAccountData(this Player player)
         {
-            User playerData = player.GetData<User>(_sharedAccountDataIdentifier);
+            User playerData = player.GetData<User>(PlayersData._sharedAccountDataIdentifier);
             return playerData;
         }
 
         public static DbCharacter getPlayerCharacterData(this Player player)
         {
-            DbCharacter character = player.GetData<DbCharacter>(_sharedCharacterDataIdentifier);
+            DbCharacter character = player.GetData<DbCharacter>(PlayersData._sharedCharacterDataIdentifier);
             return character;
         }
 
@@ -159,7 +153,7 @@ namespace CloudRP.PlayerData
         {
             if(NAPI.Player.IsPlayerConnected(banPlayer))
             {
-                banPlayer.SetCustomData(_isBanned, true);
+                banPlayer.SetCustomData(PlayersData._isBanned, true);
 
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
@@ -202,7 +196,7 @@ namespace CloudRP.PlayerData
 
         public static bool isBanned(this Player player)
         {
-            return player.GetData<bool>(_isBanned);
+            return player.GetData<bool>(PlayersData._isBanned);
         }
 
         public static Ban checkPlayerIsBanned(this Player player)
@@ -242,7 +236,7 @@ namespace CloudRP.PlayerData
 
             if(returnBanData != null)
             {
-                player.SetData(_isBanned, true);
+                player.SetData(PlayersData._isBanned, true);
             }
 
             return returnBanData;
@@ -290,14 +284,14 @@ namespace CloudRP.PlayerData
         {
             List<string> usedKeys = new List<string>();
 
-            if(player.GetData<List<string>>(_playerKeysIdentifier) == null)
+            if(player.GetData<List<string>>(PlayersData._playerKeysIdentifier) == null)
             {
                 usedKeys.Add(usedKey);
-                player.SetData(_playerKeysIdentifier, usedKeys);
+                player.SetData(PlayersData._playerKeysIdentifier, usedKeys);
                 return;
             }
 
-            usedKeys = player.GetData<List<string>>(_playerKeysIdentifier); 
+            usedKeys = player.GetData<List<string>>(PlayersData._playerKeysIdentifier); 
 
             if(usedKeys.Contains(usedKey))
             {
@@ -305,20 +299,31 @@ namespace CloudRP.PlayerData
             }
 
             usedKeys.Add(usedKey);
-            player.SetData(_playerKeysIdentifier, usedKeys);
+            player.SetData(PlayersData._playerKeysIdentifier, usedKeys);
         }
 
-        public static void flushUserAndCharacterData(this Player player)
+        public static void flushUserAndCharacterData(this Player player, string[] excludes)
         {
-            foreach(string item in player.GetData<List<string>>(_playerKeysIdentifier))
+            Console.WriteLine("Flush triggered exclude " + JsonConvert.SerializeObject(excludes));
+
+            for (int i = 0; i < player.GetData<List<string>>(PlayersData._playerKeysIdentifier).Count; i++)
             {
-                Console.WriteLine("Flush key " + item);
-                player.ResetData(item);
-                player.ResetOwnSharedData(item);
-                player.ResetSharedData(item);
+                string item = player.GetData<List<string>>(PlayersData._playerKeysIdentifier)[i];
+                
+                if (!excludes.Contains(item))
+                {
+                    Console.WriteLine("Flush key " + item);
+                    player.ResetData(item);
+                    player.ResetOwnSharedData(item);
+                    player.ResetSharedData(item);
+                }
+                
             }
 
-            player.ResetData();
+            if(excludes.Length == 0)
+            {
+                player.ResetData();
+            }
         }
     }
 }

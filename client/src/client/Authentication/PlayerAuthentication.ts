@@ -48,6 +48,9 @@ class PlayerAuthentication {
 
 	public static handleUnauthed() {
 		if (!getUserCharacterData()) {
+
+			mp.console.logInfo("Ped frozend");
+
 			PlayerAuthentication.LocalPlayer.freezePosition(true);
 			toggleChat(false);
 			setGuiState(false);
@@ -57,10 +60,7 @@ class PlayerAuthentication {
 
 	public static consoleCommand(command: string) {
 		if (command == PlayerAuthentication._switchCamCmd && !getUserCharacterData()) {
-
-			if (PlayerAuthentication.LoginCamera.isMoving && Camera.Current_Cam) {
-				PlayerAuthentication.LoginCamera.delete();
-			}
+			PlayerAuthentication.LoginCamera?.delete();
 
 			PlayerAuthentication._currentCam >= PlayerAuthentication.cameraPositions.length - 1 ? PlayerAuthentication._currentCam = 0 : PlayerAuthentication._currentCam++;
 
@@ -88,9 +88,8 @@ class PlayerAuthentication {
 	}
 
 	public static setBackToCharacterSelection() {
-		if (PlayerAuthentication.creationCam) {
-			PlayerAuthentication.creationCam.delete();
-		}
+		PlayerAuthentication.LoginCamera?.delete();
+
 
 		PlayerAuthentication.freezeAndBlurClient();
 		PlayerAuthentication.handleCameraStart();
@@ -104,6 +103,8 @@ class PlayerAuthentication {
 	}
 
 	public static handleCameraStart() {
+		PlayerAuthentication.LoginCamera?.delete();
+
 		let randomSelect: number = Math.floor(Math.random() * PlayerAuthentication.cameraPositions.length);
 		PlayerAuthentication.LoginCamera = new Camera('loginCam', PlayerAuthentication.cameraPositions[randomSelect], PlayerAuthentication.cameraPointAtPositions[randomSelect]);
 
@@ -129,7 +130,11 @@ class PlayerAuthentication {
 		mp.gui.cursor.show(false, false);
 		BrowserSystem.pushRouter("/");
 
-		PlayerAuthentication.LoginCamera.delete();
+		PlayerAuthentication.LoginCamera?.delete();
+
+		PlayerAuthentication.LocalPlayer.freezePosition(false);
+
+		mp.console.logInfo("Un Ped frozend");
 	}
 
 }
