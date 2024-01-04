@@ -8,6 +8,7 @@ import VoiceSystem from '@/VoiceChat/VoiceSystem';
 import DeathSystem from '@/DeathSystem/DeathSystem';
 import NotificationSystem from '@/NotificationSystem/NotificationSystem';
 import VehicleSystems from '@/VehicleSystems/VehicleSystem';
+import PlayerAuthentication from '@/Authentication/PlayerAuthentication';
 
 class NameTags {
 	public static userData: UserData | undefined;
@@ -82,6 +83,10 @@ class NameTags {
 			DeathSystem.disableControls();
 		}
 
+		if(getUserCharacterData()?.loggingOut) {
+			PlayerAuthentication.LocalPlayer.freezePosition(true);
+		}
+
 		mp.players.forEachInRange(NameTags.LocalPlayer.position, 20, (target: PlayerMp) => {
 			const targetUserData: UserData | undefined = gettargetData(target);
 			const targetCharacterData: CharacterData | undefined = gettargetCharacterData(target);
@@ -124,8 +129,6 @@ class NameTags {
 				target.getVariable(NameTags.playerIsTypingState) ? (defaultTagContent += '\n ~m~(( Typing... ))~w~') : '';
 
 				if (NameTags.LocalPlayer.guiState || targetUserData.adminDuty) {
-
-
 					if (target.getVariable(VehicleSystems._seatBeltIdentifier) && target.vehicle && distance < 5) {
 						if (!mp.game.graphics.hasStreamedTextureDictLoaded('3dtextures')) {
 							mp.game.graphics.requestStreamedTextureDict('3dtextures', true);
@@ -148,6 +151,19 @@ class NameTags {
 						mp.game.graphics.drawText(
 							target.getVariable(NotificationSystem._ameTextIdentifier),
 							[x, y - (target.getVariable(NameTags.playerIsTypingState) ? 0.062 : 0.032)],
+							{
+								font: 4,
+								color: [220, 125, 225, 255],
+								scale: [0.325, 0.325],
+								outline: false
+							}
+						);
+					}
+
+					if(targetCharacterData.loggingOut) {
+						mp.game.graphics.drawText(
+							"~y~Logging out...~w~",
+							[x, y + 0.032],
 							{
 								font: 4,
 								color: [220, 125, 225, 255],

@@ -447,6 +447,8 @@ namespace CloudRP.Authentication
 
         void welcomeAndSpawnPlayer(Player player)
         {
+            NAPI.Native.SendNativeToPlayer(player, Hash.SET_PLAYER_INVINCIBLE, false);
+
             AntiCheatSystem.sleepClient(player);
             player.TriggerEvent("client:loginEnd");
             player.TriggerEvent("client:moveSkyCamera", "up", 1);

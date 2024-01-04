@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <ChatBox class="absolute" />
+        <ChatBox class="absolute" ref="chatsys" />
         <InventoryHud v-if="uiStates.inventory && uiStates.guiEnabled" />
         <PlayerPhone class="absolute" v-if="uiStates.guiEnabled" />
         <RefuelMeter class="absolute" v-if="uiStates.refuelUi" />
@@ -41,6 +41,7 @@ export default {
         })
     },
     mounted() {
+        global.gui.chat = this.$refs.chatsys;
         global.gui.notify = this.$refs.notification;
     }
 }
@@ -61,11 +62,11 @@ export default {
 }
 
 .slide-fade-enter-active {
-	transition: opacity 0.55s;
+    transition: opacity 0.55s;
 }
 
 .slide-fade-enter,
 .slide-fade-leave-active {
-	opacity: 0;
+    opacity: 0;
 }
 </style>

@@ -54,18 +54,35 @@ namespace CloudRP.PlayerData
 
         public static void SetCustomData<T>(this Player player, string key, T val)
         {
-            player.addPlayerKey(key);
-            Console.WriteLine("Server " + key);
-            player.SetData(key, val);
+            if (player.checkDataSetIsValid())
+            {
+                player.addPlayerKey(key);
+                player.SetData(key, val);
+            }
         }
 
         public static void SetCustomSharedData<T>(this Player player, string key, T val)
         {
-            player.addPlayerKey(key);
-            Console.WriteLine("Shared " + key);
-            player.SetSharedData(key, val);
+            if (player.checkDataSetIsValid())
+            {
+                player.addPlayerKey(key);
+                player.SetSharedData(key, val);
+            }
         }
 
+        public static bool checkDataSetIsValid(this Player player)
+        {
+            bool isValid = true;
+
+            DbCharacter characterData = player.getPlayerCharacterData();
+
+            if(characterData != null && characterData.loggingOut)
+            {
+                isValid = false;
+            }
+
+            return isValid;
+        }
 
         public static bool checkIfAccountIsLogged(int accId)
         {

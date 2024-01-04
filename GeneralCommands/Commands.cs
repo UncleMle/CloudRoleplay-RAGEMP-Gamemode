@@ -3,7 +3,6 @@ using CloudRP.Character;
 using CloudRP.Database;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
-using CloudRP.Vehicles;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
@@ -13,6 +12,7 @@ namespace CloudRP.GeneralCommands
 {
     internal class Commands : Script
     {
+        public static int _logoutTimeout_seconds = 15;
         public static string _oocColour = "!{#78acff}";
         public static string _meColour = "!{#d2bae9}";
         public static int nickNameMaxLength_M = 7;
@@ -21,13 +21,38 @@ namespace CloudRP.GeneralCommands
         [Command("logout", "~y~Use: ~w~/logout")]
         public void logoutCommand(Player player)
         {
-            if(player.getPlayerCharacterData() != null)
-            {
-                player.flushUserAndCharacterData(new string[]{
-                    PlayersData._sharedAccountDataIdentifier
-                });
+            DbCharacter characterData = player.getPlayerCharacterData();
 
-                player.setPlayerToLoginScreen();
+            if(characterData != null)
+            {
+                if(player.IsInVehicle)
+                {
+                    player.WarpOutOfVehicle();
+                }
+
+                characterData.loggingOut = true;
+
+                uiHandling.sendNotification(player, "~y~Logging out...", false);
+
+                CommandUtils.successSay(player, $"You will be logged out in {_logoutTimeout_seconds} seconds.");
+
+                player.setPlayerCharacterData(characterData, false);
+                NAPI.Native.SendNativeToPlayer(player, Hash.SET_PLAYER_INVINCIBLE, true);
+
+                NAPI.Task.Run(() =>
+                {
+                    if(NAPI.Player.IsPlayerConnected(player))
+                    {
+                        uiHandling.sendNotification(player, "~r~Logged out", false);
+
+                        player.flushUserAndCharacterData(new string[]{
+                            PlayersData._sharedAccountDataIdentifier
+                        });
+
+                        player.clearChat();
+                        player.setPlayerToLoginScreen();
+                    }
+                }, _logoutTimeout_seconds * 1000);
             }
         }
 

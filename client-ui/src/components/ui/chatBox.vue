@@ -111,6 +111,9 @@ export default {
 
             }
         },
+        clearChat() {
+            this.chatMessages = [];
+        },
         typingState(toggle) {
             if (window.mp) {
                 window.mp.invoke("focus", toggle);

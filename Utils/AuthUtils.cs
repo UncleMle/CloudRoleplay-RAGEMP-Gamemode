@@ -268,6 +268,7 @@ namespace CloudRP.Utils
         public CharacterModel characterModel { get; set; }
         public CharacterClothing characterClothing { get; set; }
         public bool voiceChatState { get; set; }
+        public bool loggingOut {  get; set; }
     }
 
     class Register

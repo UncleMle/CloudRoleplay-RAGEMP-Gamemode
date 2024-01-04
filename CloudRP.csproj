@@ -31,7 +31,6 @@
     <Folder Include="client\src\client\Nametags\" />
     <Folder Include="client\src\client\Character\" />
     <Folder Include="client\src\client\AntiCheat\" />
-    <Folder Include="cloudrp-ui\src\components\Auth\" />
   </ItemGroup>
 
   <ItemGroup>

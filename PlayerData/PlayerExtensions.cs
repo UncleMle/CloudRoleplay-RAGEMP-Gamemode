@@ -260,7 +260,7 @@ namespace CloudRP.PlayerData
         public static void setPlayerToBanScreen(this Player player, Ban banData)
         {
             player.Dimension = Auth._startDimension;
-            //player.flushUserAndCharacterData();
+            player.flushUserAndCharacterData();
             player.TriggerEvent("client:loginCameraStart");
             uiHandling.pushRouterToClient(player, Browsers.BanPage);
 
@@ -302,7 +302,7 @@ namespace CloudRP.PlayerData
             player.SetData(PlayersData._playerKeysIdentifier, usedKeys);
         }
 
-        public static void flushUserAndCharacterData(this Player player, string[] excludes)
+        public static void flushUserAndCharacterData(this Player player, string[] excludes = null)
         {
             Console.WriteLine("Flush triggered exclude " + JsonConvert.SerializeObject(excludes));
 
@@ -310,7 +310,7 @@ namespace CloudRP.PlayerData
             {
                 string item = player.GetData<List<string>>(PlayersData._playerKeysIdentifier)[i];
                 
-                if (!excludes.Contains(item))
+                if (!(excludes != null && excludes.Contains(item)))
                 {
                     Console.WriteLine("Flush key " + item);
                     player.ResetData(item);

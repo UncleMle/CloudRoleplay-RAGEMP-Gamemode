@@ -30,6 +30,7 @@ class BrowserSystem {
 		mp.events.add('browser:sendErrorPushNotif', BrowserSystem.sendErrorPushNotif);
 		mp.events.add('browser:sendNotif', BrowserSystem.sendNotif);
 		mp.events.add('browser:setAuthState', BrowserSystem.setAuthState);
+		mp.events.add('browser:clearChat', BrowserSystem.clearChat);
 
 		mp.keys.bind(F2, false, function () {
 			isFunctionPressed = !isFunctionPressed;
@@ -39,6 +40,10 @@ class BrowserSystem {
 				mp.gui.cursor.show(false, false);
 			}
 		});
+	}
+
+	public static clearChat() {
+		BrowserSystem._browserInstance?.execute("gui.chat.clearChat();");
 	}
 
 	public static onGuiReady() {

@@ -55,10 +55,14 @@ export interface Hunger {
 
 export interface CharacterData {
 	character_id: number;
+	character_water: number;
+	character_hunger: number;
 	character_name: string;
-	characterModel: CharacterModel;
-	injured_timer: number,
-	characterClothing: ClothingData;
+	injured_timer: number;
+	characterModel: CharacterModel
+	characterClothing: ClothingData,
+	voiceChatState: boolean,
+	loggingOut: boolean
 }
 
 export interface DbCharacter {

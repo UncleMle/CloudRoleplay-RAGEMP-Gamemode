@@ -23,6 +23,7 @@ const app = new Vue({
 	},
 }).$mount('#app')
 
+global.chat = app.$chat
 global.appSys = app.$store;
 global.router = app.$router;
 

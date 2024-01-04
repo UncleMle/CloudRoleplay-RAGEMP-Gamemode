@@ -35,6 +35,8 @@ namespace CloudRP.Character
         public CharacterModel characterModel { get; set; }
         [NotMapped]
         public CharacterClothing characterClothing { get; set; }
+        [NotMapped]
+        public bool loggingOut { get; set; }
     }
 
 }
