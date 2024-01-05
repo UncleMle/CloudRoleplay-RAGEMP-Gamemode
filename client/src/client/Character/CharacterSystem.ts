@@ -5,7 +5,7 @@ import getTargetData from "../PlayerMethods/getTargetData";
 import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
 import Tattoos from "./Tattoos";
 
-class CharacterSystem {
+export default class CharacterSystem {
 	public static LocalPlayer: PlayerMp;
 	public static serverName: string = "Cloud Roleplay";
 	public static discordStatusUpdate_seconds: number = 15;
@@ -130,5 +130,3 @@ class CharacterSystem {
 	}
 
 }
-
-export default CharacterSystem;

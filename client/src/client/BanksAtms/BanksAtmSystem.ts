@@ -4,7 +4,7 @@ import { _control_ids } from "@/Constants/Constants";
 import validateKeyPress from "@/PlayerMethods/validateKeyPress";
 import { Browsers } from "@/enums";
 
-class BanksAtms {
+export default class BanksAtms {
     public static LocalPlayer: PlayerMp;
     public static readonly _atmDataIdentifier: string = "atmColshapeData";
     public static readonly _tellerColshapeDataIdentifier: string = "bankTellerColshapeData";
@@ -48,5 +48,3 @@ class BanksAtms {
         }
     }
 }
-
-export default BanksAtms;

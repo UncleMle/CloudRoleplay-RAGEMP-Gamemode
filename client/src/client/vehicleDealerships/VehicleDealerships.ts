@@ -8,7 +8,7 @@ import VehicleSpeedo from '@/VehicleSystems/VehicleSpeedo';
 import { Browsers } from '@/enums';
 import vehicleData from './VehicleData.json';
 
-class VehicleDealerShips {
+export default class VehicleDealerShips {
 	public static LocalPlayer: PlayerMp;
 	public static _dealershipIdentifer: string = 'vehicleDealership';
 	public static _viewDealerEvent: string = 'server:viewDealerVehicles';
@@ -167,5 +167,3 @@ class VehicleDealerShips {
 		mp.events.callRemote(VehicleDealerShips._dealerPurchaseEvent, vehName, Number(spawnColour), dispName == 'NULL' ? 'Vehicle' : dispName);
 	}
 }
-
-export default VehicleDealerShips;

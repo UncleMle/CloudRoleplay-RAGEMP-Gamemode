@@ -1,7 +1,7 @@
 import BrowserSystem from "@/BrowserSystem/BrowserSystem";
 import NotificationSystem from "@/NotificationSystem/NotificationSystem";
 
-class PhoneSystem {
+export default class PhoneSystem {
     public static LocalPlayer: PlayerMp;
     public static trackVehicleBlipDespawn_seconds: number = 40;
     public static trackerBlip: BlipMp | null;
@@ -106,5 +106,3 @@ class PhoneSystem {
         }, PhoneSystem.trackVehicleBlipDespawn_seconds * 1000);
     }
 }
-
-export default PhoneSystem;

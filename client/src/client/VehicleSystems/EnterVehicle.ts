@@ -4,7 +4,7 @@ import calcDist from '../PlayerMethods/calcDist';
 import getVehicleData from '../PlayerMethods/getVehicleData';
 import getClosestVehicleInRange from '../PlayerMethods/getVehicleInRange';
 
-class EnterVehicle {
+export default class EnterVehicle {
 	public static LocalPlayer: PlayerMp;
 
 	constructor() {
@@ -235,5 +235,3 @@ class EnterVehicle {
 		}
 	}
 }
-
-export default EnterVehicle;

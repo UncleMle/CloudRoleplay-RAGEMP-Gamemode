@@ -1,4 +1,4 @@
-class NotificationSystem {
+export default class NotificationSystem {
 	public static x_pos: number = 0.5;
 	public static y_pos: number = 0.5;
 	public static ameDuration_seconds: number = 6;
@@ -74,5 +74,3 @@ class NotificationSystem {
 		}
 	}
 }
-
-export default NotificationSystem;

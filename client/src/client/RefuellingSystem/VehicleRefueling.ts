@@ -3,7 +3,7 @@ import BrowserSystem from '@/BrowserSystem/BrowserSystem';
 import { _control_ids } from '@/Constants/Constants';
 import validateKeyPress from '@/PlayerMethods/validateKeyPress';
 
-class VehicleRefueling {
+export default class VehicleRefueling {
 	public static LocalPlayer: PlayerMp;
 	public static _refuelPumpIdenfitier: string = 'refuelingPumpData';
 	public static _refuelServerEvent: string = 'server:refuelVehicleCycle';
@@ -130,5 +130,3 @@ class VehicleRefueling {
         }
     }
 }
-
-export default VehicleRefueling;

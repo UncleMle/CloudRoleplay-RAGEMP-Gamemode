@@ -11,7 +11,7 @@ import mpvinewood_overlays from './mpvinewood_overlays';
 import mpbusiness_overlays from './mpbusiness_overlays';
 import DeathSystem from '@/DeathSystem/DeathSystem';
 
-class Tattoos {
+export default class Tattoos {
 	public static LocalPlayer: PlayerMp;
 	public static _tattoStoreIdentifier: string = 'tattoStoreData';
 	public static _tatPurchaseEvent: string = "server:purchaseTattoos";
@@ -112,5 +112,3 @@ class Tattoos {
 		mp.events.callRemote(Tattoos._tatPurchaseEvent, Tattoos.currentTattooLibView, JSON.stringify(tats));
 	}
 }
-
-export default Tattoos;

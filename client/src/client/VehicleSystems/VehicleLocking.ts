@@ -2,7 +2,7 @@ import { _control_ids } from 'Constants/Constants';
 import getClosestVehicleInRange from '../PlayerMethods/getVehicleInRange';
 import validateKeyPress from '@/PlayerMethods/validateKeyPress';
 
-class VehicleLocking {
+export default class VehicleLocking {
 	public static LocalPlayer: PlayerMp;
 	public static _lockVehicleRange: number = 5;
 	public static _lockVehicleEvent: string = "vehicle:toggleLock";
@@ -23,5 +23,3 @@ class VehicleLocking {
 		mp.events.callRemote(VehicleLocking._lockVehicleEvent, lockVehicle);
 	}
 }
-
-export default VehicleLocking;

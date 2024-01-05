@@ -6,7 +6,7 @@ import getTargetData from "../PlayerMethods/getTargetData";
 import getUserData from "../PlayerMethods/getUserData";
 import getVehicleData from "../PlayerMethods/getVehicleData";
 
-class AdminEsp {
+export default class AdminEsp {
 	public static LocalPlayer: PlayerMp;
 	public static _min: Vector3;
 	public static _max: Vector3;
@@ -191,5 +191,3 @@ class AdminEsp {
 	}
 
 }
-
-export default AdminEsp;

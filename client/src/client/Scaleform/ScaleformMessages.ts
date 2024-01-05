@@ -1,4 +1,4 @@
-class ScaleForm {
+export default class ScaleForm {
     public static LocalPlayer: PlayerMp
     public static midsizedMessageScaleform: BasicScaleform | null = null;
     public static msgInit: number = 0;
@@ -149,5 +149,3 @@ class BasicScaleform {
         mp.game.graphics.setScaleformMovieAsNoLongerNeeded(BasicScaleform.handle);
     }
 }
-
-export default ScaleForm;

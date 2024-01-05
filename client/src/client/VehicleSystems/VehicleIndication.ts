@@ -4,7 +4,7 @@ import { _control_ids } from "../Constants/Constants";
 import getVehicleData from "../PlayerMethods/getVehicleData";
 import { _SHARED_VEHICLE_DATA } from 'Constants/Constants';
 
-class VehicleIndicators {
+export default class VehicleIndicators {
 	private static eventName: string = "server:toggleIndication";
 	public static LocalPlayer: PlayerMp;
 
@@ -55,5 +55,3 @@ class VehicleIndicators {
 		}
 	}
 }
-
-export default VehicleIndicators;

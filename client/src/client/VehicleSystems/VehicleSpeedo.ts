@@ -1,8 +1,8 @@
-import { SpeedoData, VehicleData } from "@/@types";
+import { VehicleData } from "@/@types";
 import BrowserSystem from "@/BrowserSystem/BrowserSystem";
 import getVehicleData from "@/PlayerMethods/getVehicleData";
 
-class VehicleSpeedo {
+export default class VehicleSpeedo {
     public static LocalPlayer: PlayerMp;
 
     constructor() {
@@ -63,5 +63,3 @@ class VehicleSpeedo {
         return dispName;
     }
 }
-
-export default VehicleSpeedo;

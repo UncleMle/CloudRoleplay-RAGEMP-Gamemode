@@ -3,7 +3,7 @@ import { VehicleData } from "../@types";
 import { _SHARED_VEHICLE_DATA, _control_ids } from "../Constants/Constants";
 import getVehicleData from "../PlayerMethods/getVehicleData";
 
-class VehicleSiren {
+export default class VehicleSiren {
 	public static LocalPlayer: PlayerMp;
 	public static readonly eventName: string = "server:toggleSiren";
 	public static _emergencyClass: number = 18;
@@ -54,5 +54,3 @@ class VehicleSiren {
 		}
 	}
 }
-
-export default VehicleSiren;

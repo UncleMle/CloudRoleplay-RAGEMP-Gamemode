@@ -1,7 +1,7 @@
 import { VehicleData } from "../@types";
 import getVehicleData from "../PlayerMethods/getVehicleData";
 
-class VehicleWindows {
+export default class VehicleWindows {
 	public static LocalPlayer: PlayerMp;
 
 	constructor() {
@@ -32,5 +32,3 @@ class VehicleWindows {
 	}
 
 }
-
-export default VehicleWindows;

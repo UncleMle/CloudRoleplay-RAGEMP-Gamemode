@@ -2,7 +2,7 @@ import { VehicleData } from "@/@types";
 import { _SHARED_VEHICLE_DATA } from "@/Constants/Constants";
 import getVehicleData from "@/PlayerMethods/getVehicleData";
 
-class CruiseControl {
+export default class CruiseControl {
     public static localPlayer: PlayerMp;
 
     constructor() {
@@ -28,5 +28,3 @@ class CruiseControl {
         }
     }
 }
-
-export default CruiseControl;

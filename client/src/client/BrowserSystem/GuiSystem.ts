@@ -10,7 +10,7 @@ import ScaleForm from '@/Scaleform/ScaleformMessages';
 import toggleChat from '@/PlayerMethods/ToggleChat';
 import validateKeyPress from '@/PlayerMethods/validateKeyPress';
 
-class GuiSystem {
+export default class GuiSystem {
 	public static LocalPlayer: PlayerMp;
 	public static hudToggle: boolean = true;
 
@@ -122,5 +122,3 @@ class GuiSystem {
 	}
 
 }
-
-export default GuiSystem;

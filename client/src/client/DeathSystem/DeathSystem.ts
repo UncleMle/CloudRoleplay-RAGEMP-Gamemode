@@ -7,7 +7,7 @@ import GuiSystem from "@/BrowserSystem/GuiSystem";
 import VehicleSystems from "@/VehicleSystems/VehicleSystem";
 import WeaponSystem from "@/WeaponSystem/WeaponSystem";
 
-class DeathSystem {
+export default class DeathSystem {
     public static LocalPlayer: PlayerMp;
     public static _injuredIntervalUpdate_seconds: number = 10;
     public static _animCheck_seconds: number = 5;
@@ -164,5 +164,3 @@ class DeathSystem {
     }
 
 }
-
-export default DeathSystem;

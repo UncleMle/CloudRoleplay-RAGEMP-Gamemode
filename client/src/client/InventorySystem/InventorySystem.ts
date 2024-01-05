@@ -3,7 +3,7 @@ import { _control_ids } from "@/Constants/Constants";
 import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
 import validateKeyPress from "@/PlayerMethods/validateKeyPress";
 
-class InventorySystem {
+export default class InventorySystem {
     public static LocalPlayer: PlayerMp;
     public static _inventoryResyncEvent: string = "server:inventory:resyncItems";
 
@@ -26,5 +26,3 @@ class InventorySystem {
         }
     }
 }
-
-export default InventorySystem;

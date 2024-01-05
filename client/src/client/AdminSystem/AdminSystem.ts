@@ -6,7 +6,7 @@ import getUserData from "../PlayerMethods/getUserData";
 import validateKeyPress from "@/PlayerMethods/validateKeyPress";
 import AdminRank from "./AdminRank";
 
-class AdminSystem {
+export default class AdminSystem {
 	public static LocalPlayer: PlayerMp;
 	public static userData: UserData | undefined;
 	public static viewReportsEvent: string = "server:viewReports";
@@ -82,5 +82,3 @@ class AdminSystem {
 	}
 
 }
-
-export default AdminSystem;

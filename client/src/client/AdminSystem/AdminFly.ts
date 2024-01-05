@@ -5,7 +5,7 @@ import { AdminRanks } from '../enums';
 import getTargetData from '@/PlayerMethods/getTargetData';
 import validateKeyPress from '@/PlayerMethods/validateKeyPress';
 
-class AdminFly {
+export default class AdminFly {
 	public static LocalPlayer: PlayerMp;
 	public static direction: Vector3;
 	public static gameplayCam: CameraMp;
@@ -167,5 +167,3 @@ class AdminFly {
 	}
 
 }
-
-export default AdminFly;

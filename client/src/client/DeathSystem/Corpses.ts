@@ -3,7 +3,7 @@ import CharacterSystem from '@/Character/CharacterSystem';
 import Clothing from '@/Character/Clothing';
 import getTimeUnix from '@/PlayerMethods/getTimeUnix';
 
-class Corpses {
+export default class Corpses {
 	public static LocalPlayer: PlayerMp;
 	public static corpseKey: string = 'sync:corpsePed';
 	public static corpseValEvent: string = 'sync:corpseValidation';
@@ -122,5 +122,3 @@ class Corpses {
 		CharacterSystem.setCharacterCustomization(corpseData.model, false, ped);
 	}
 }
-
-export default Corpses;

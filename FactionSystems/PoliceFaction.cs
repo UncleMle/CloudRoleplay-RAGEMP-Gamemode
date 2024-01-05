@@ -22,8 +22,6 @@ namespace CloudRP.FactionSystems
 
             if (vehicle != null && vehicle.Class == 0 || player.IsInVehicle && player.Vehicle.Class == 0)
             {
-                Console.WriteLine(NAPI.Vehicle.GetVehicleClass(player.Vehicle.Model) + player.Vehicle.Class);
-
                 DbVehicle vehicleData = vehicle.getData();
                 
                 if (vehicleData != null)

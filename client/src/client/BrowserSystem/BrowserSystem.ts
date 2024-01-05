@@ -4,7 +4,7 @@ import { _REMOVE_TIMER_NATIVE } from '../Constants/Constants';
 
 let isFunctionPressed: boolean;
 
-class BrowserSystem {
+export default class BrowserSystem {
 	public _browserBaseUrl: string = BrowserEnv.development;
 	public static _browserInstance: BrowserMp;
 	public static IdleDate: Date = new Date();
@@ -150,5 +150,3 @@ class BrowserSystem {
 		mp.game.player.setHealthRechargeMultiplier(0.0);
 	}
 }
-
-export default BrowserSystem;

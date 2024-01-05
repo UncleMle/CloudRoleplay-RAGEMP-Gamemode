@@ -348,8 +348,6 @@ namespace CloudRP.Authentication
         {
             User userData = player.getPlayerAccountData();
 
-            Console.WriteLine(JsonConvert.SerializeObject(userData));
-
             if(userData != null && player.checkPlayerIsBanned() == null)
             {
                 using (DefaultDbContext dbContext = new DefaultDbContext())

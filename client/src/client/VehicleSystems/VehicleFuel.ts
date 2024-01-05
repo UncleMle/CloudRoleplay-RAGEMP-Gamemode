@@ -1,7 +1,7 @@
 import { VehicleData } from "@/@types";
 import getVehicleData from "@/PlayerMethods/getVehicleData";
 
-class VehicleFuel {
+export default class VehicleFuel {
     public static LocalPlayer: PlayerMp;
     public static _updateInterval: ReturnType<typeof setInterval> | undefined;
     public static interval_seconds: number = 5;
@@ -67,5 +67,3 @@ class VehicleFuel {
         }
     }
 }
-
-export default VehicleFuel;

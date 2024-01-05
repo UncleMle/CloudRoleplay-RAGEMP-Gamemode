@@ -1,4 +1,4 @@
-class WeaponSystem {
+export default class WeaponSystem {
     public static LocalPlayer: PlayerMp;
     public static _switchAnimIdentifer: string = "weaponSwitchAnim";
 
@@ -57,5 +57,3 @@ class WeaponSystem {
         mp.game.controls.disableControlAction(0, 70, true);
     }
 }
-
-export default WeaponSystem;

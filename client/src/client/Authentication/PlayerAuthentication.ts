@@ -10,7 +10,7 @@ import setUiStateChange from "../PlayerMethods/setUiStateChange";
 
 const _storage_key: string = "AutoLoginToken";
 
-class PlayerAuthentication {
+export default class PlayerAuthentication {
 	public static LoginCamera: Camera;
 	public static creationCam: Camera;
 	public static LocalPlayer: PlayerMp
@@ -138,5 +138,3 @@ class PlayerAuthentication {
 	}
 
 }
-
-export default PlayerAuthentication;

@@ -10,7 +10,7 @@ import NotificationSystem from '@/NotificationSystem/NotificationSystem';
 import VehicleSystems from '@/VehicleSystems/VehicleSystem';
 import PlayerAuthentication from '@/Authentication/PlayerAuthentication';
 
-class NameTags {
+export default class NameTags {
 	public static userData: UserData | undefined;
 	public static LocalPlayer: PlayerMp;
 	public static ScreenRes: GetScreenResolutionResult;
@@ -189,5 +189,3 @@ class NameTags {
 		return nick;
 	}
 }
-
-export default NameTags;

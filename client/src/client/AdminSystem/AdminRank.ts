@@ -1,4 +1,4 @@
-class AdminRank {
+export default class AdminRank {
     public static readonly adminRanksList: string[] = ["None", "Support", "Senior Support", "Moderator", "Senior Moderator", "Administrator", "Senior Administrator", "Head Administrator", "Founder", "Developer"];
     public static readonly adminRanksColours: string[] = ["", "#ff00fa", "#9666ff", "#37db63", "#018a35", "#ff6363", "#ff0000", "#00bbff", "#c096ff", "#c096ff"];
 
@@ -8,5 +8,3 @@ class AdminRank {
         }
     }
 }
-
-export default AdminRank;

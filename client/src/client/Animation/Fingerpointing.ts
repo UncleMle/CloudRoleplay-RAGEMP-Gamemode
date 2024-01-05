@@ -1,6 +1,6 @@
 import { _control_ids } from "@/Constants/Constants";
 
-class Fingerpointing {
+export default class Fingerpointing {
     public static LocalPlayer: PlayerMp;
     public static active: boolean;
     public static lastSent: number = 0;
@@ -165,5 +165,3 @@ class Fingerpointing {
         return pla;
     }
 }
-
-export default Fingerpointing;

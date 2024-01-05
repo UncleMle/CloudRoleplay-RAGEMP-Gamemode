@@ -3,7 +3,7 @@ import BrowserSystem from '@/BrowserSystem/BrowserSystem';
 import getVehicleData from '@/PlayerMethods/getVehicleData';
 import VehicleSpeedo from '@/VehicleSystems/VehicleSpeedo';
 
-class VehicleRadar {
+export default class VehicleRadar {
 	public static LocalPlayer: PlayerMp;
 	public static drawBoneStart: string = 'chassis';
 	public static maxFindDist: number = 45;
@@ -118,5 +118,3 @@ class VehicleRadar {
         })`);
     }
 }
-
-export default VehicleRadar;

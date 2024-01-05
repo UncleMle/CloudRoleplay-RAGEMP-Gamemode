@@ -3,7 +3,7 @@ import getVehicleData from '../PlayerMethods/getVehicleData';
 import distBetweenCoords from '../PlayerMethods/distanceBetweenCoords';
 import { _config_flags, _control_ids } from '../Constants/Constants';
 
-class VehicleInteraction {
+export default class VehicleInteraction {
 	public static LocalPlayer: PlayerMp;
 	public static bones: string[] = ['door_dside_f', 'door_pside_f', 'door_dside_r', 'door_pside_r', 'bonnet', 'boot'];
 	public static names: string[] = ['door', 'door', 'door', 'door', 'hood', 'trunk', 'trunk'];
@@ -179,5 +179,3 @@ class VehicleInteraction {
 		mp.game.graphics.drawSprite(textureDict, textureName, position.x, position.y, scaleX, scaleY, 0, 0, 0, 0, 200, false);
 	}
 }
-
-export default VehicleInteraction;

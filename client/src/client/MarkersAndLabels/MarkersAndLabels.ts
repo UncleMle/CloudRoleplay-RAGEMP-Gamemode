@@ -1,4 +1,4 @@
-class MarkersAndLabels {
+export default class MarkersAndLabels {
     public static LocalPlayer: PlayerMp;
     public static readonly defaultBlipTimeout_seconds: number = 30;
 
@@ -28,5 +28,3 @@ class MarkersAndLabels {
         }, timeout * 1000)
     }
 }
-
-export default MarkersAndLabels;

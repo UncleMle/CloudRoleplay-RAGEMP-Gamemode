@@ -3,7 +3,7 @@ import { CharacterData } from '../@types';
 import { _control_ids, _sharedCharacterDataIdentifier } from '../Constants/Constants';
 import validateKeyPress from '@/PlayerMethods/validateKeyPress';
 
-class VoiceSystem {
+export default class VoiceSystem {
 	public static Localplayer: PlayerMp;
 	public static Use3d: boolean = true;
 	public static UseAutoVolume: boolean = false;
@@ -145,5 +145,3 @@ class VoiceSystem {
 		}
 	}
 }
-
-export default VoiceSystem;

@@ -2,7 +2,7 @@ import NotificationSystem from "@/NotificationSystem/NotificationSystem";
 import { UserData } from "../@types";
 import getUserData from "../PlayerMethods/getUserData";
 
-class AdminEvents {
+export default class AdminEvents {
 	public static LocalPlayer: PlayerMp;
 
 	constructor() {
@@ -47,5 +47,3 @@ class AdminEvents {
 	}
 
 }
-
-export default AdminEvents;

@@ -1,7 +1,7 @@
 import { VehicleData } from "@/@types";
 import getVehicleData from "@/PlayerMethods/getVehicleData";
 
-class VehicleDamage {
+export default class VehicleDamage {
     public static LocalPlayer: PlayerMp;
     public static readonly saveDamageEvent: string = "server:saveVehicleDamage";
     public static _updateInterval: ReturnType<typeof setInterval> | undefined;
@@ -54,5 +54,3 @@ class VehicleDamage {
         }
     }
 }
-
-export default VehicleDamage;

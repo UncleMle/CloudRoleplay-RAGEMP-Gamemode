@@ -3,9 +3,8 @@ import NotificationSystem from "@/NotificationSystem/NotificationSystem";
 import validateKeyPress from "@/PlayerMethods/validateKeyPress";
 import VehicleSystems from "@/VehicleSystems/VehicleSystem";
 import WeaponSystem from "@/WeaponSystem/WeaponSystem";
-import { Browsers } from "@/enums";
 
-class HandsUp {
+export default class HandsUp {
     public static LocalPlayer: PlayerMp;
     public static hasHandsUp: boolean;
     public static syncEvent: string = "server:anim:startHandsUp";
@@ -81,5 +80,3 @@ class HandsUp {
         }
     }
 }
-
-export default HandsUp;

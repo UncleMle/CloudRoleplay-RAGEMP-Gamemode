@@ -3,7 +3,7 @@ import { SubtractVector, UserData } from "../@types";
 import { _control_ids } from "../Constants/Constants";
 import { AdminRanks } from "@/enums";
 
-class AntiCheat {
+export default class AntiCheat {
 	public static LocalPlayer: PlayerMp;
 	public static active: boolean;
 	public static flags: number;
@@ -224,5 +224,3 @@ enum AcExceptions {
 	healthKey = 5
 }
 
-
-export default AntiCheat;

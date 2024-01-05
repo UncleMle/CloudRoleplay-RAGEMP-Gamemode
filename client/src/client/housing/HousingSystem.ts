@@ -6,7 +6,7 @@ import getUserCharacterData from '@/PlayerMethods/getUserCharacterData';
 import validateKeyPress from '@/PlayerMethods/validateKeyPress';
 import { CharacterData } from '@/@types';
 
-class HousingSystem {
+export default class HousingSystem {
 	public static _housingDataIdentifier: string = 'houseData';
 	public static _interiorDataIdentifier: string = 'houseInteriorData';
 	public static _houseLoadEvent: string = 'server:loadHouseForPlayer';
@@ -76,5 +76,3 @@ class HousingSystem {
 		});
 	}
 }
-
-export default HousingSystem;

@@ -1,4 +1,4 @@
-class ConvienceStores {
+export default class ConvienceStores {
     public static LocalPlayer: PlayerMp;
     public static readonly _convienceStoreDataIdentifier: string = "storePedAndColshapeData";
 
@@ -21,5 +21,3 @@ class ConvienceStores {
         ped.setProofs(false, false, false, false, false, false, false, false);
     }
 }
-
-export default ConvienceStores;

@@ -1,4 +1,4 @@
-class SpeedCameras {
+export default class SpeedCameras {
 	public static LocalPlayer: PlayerMp;
 	public static serverCameraTrigger: string = 'server:handleSpeedCamera';
     public static flashDuration: number = 200;
@@ -41,5 +41,3 @@ class SpeedCameras {
 		}
 	}
 }
-
-export default SpeedCameras;

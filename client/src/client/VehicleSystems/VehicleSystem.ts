@@ -2,7 +2,7 @@ import NotificationSystem from "@/NotificationSystem/NotificationSystem";
 import { CF_PED_FLAG_CAN_FLY_THRU_WINDSCREEN, _control_ids } from "../Constants/Constants";
 import isFlipped from "../PlayerMethods/getIfVehicleIsFlipped";
 
-class VehicleSystems {
+export default class VehicleSystems {
 	public static LocalPlayer: PlayerMp;
 	public static GameControls: GamePadMp;
 	public static beltToggle: boolean;
@@ -135,5 +135,3 @@ class VehicleSystems {
 		mp.game.audio.setUserRadioControlEnabled(false);
 	}
 }
-
-export default VehicleSystems;

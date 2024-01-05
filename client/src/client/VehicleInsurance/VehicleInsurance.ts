@@ -4,7 +4,7 @@ import DeathSystem from "@/DeathSystem/DeathSystem";
 import validateKeyPress from "@/PlayerMethods/validateKeyPress";
 import { Browsers } from "@/enums";
 
-class VehicleInsurance {
+export default class VehicleInsurance {
     public static LocalPlayer: PlayerMp;
     public static _insuranceDataIdentifier: string = "vehicleInsuranceData";
     public static _viewInsuranceVehiclesEvent: string = "server:viewInsuranceVehicles";
@@ -31,7 +31,4 @@ class VehicleInsurance {
             mp.events.callRemote(VehicleInsurance._viewInsuranceVehiclesEvent);
         }
     }
-
 }
-
-export default VehicleInsurance;

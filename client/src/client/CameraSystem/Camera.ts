@@ -1,6 +1,6 @@
 import { CLEAR_FOCUS } from "@/Constants/Constants";
 
-class Camera {
+export default class Camera {
 	static Current_Cam: any;
 	public identifier: string;
 	public position: Vector3;
@@ -72,5 +72,3 @@ class Camera {
 		Camera.Current_Cam = null;
     }
 }
-
-export default Camera;

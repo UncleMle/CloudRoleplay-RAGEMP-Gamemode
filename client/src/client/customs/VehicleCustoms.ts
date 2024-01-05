@@ -6,7 +6,7 @@ import DeathSystem from '@/DeathSystem/DeathSystem';
 import getVehicleData from '@/PlayerMethods/getVehicleData';
 import { Browsers } from '@/enums';
 
-class VehicleCustoms {
+export default class VehicleCustoms {
 	public static LocalPlayer: PlayerMp;
 	public static _colshapeDataIdentifier: string = 'customsAreaColshapeData';
 	public static readonly _vehicleDirtLevelIdentifier: string = 'VehicleDirtLevel';
@@ -210,5 +210,3 @@ class VehicleCustoms {
 		}
 	}
 }
-
-export default VehicleCustoms;

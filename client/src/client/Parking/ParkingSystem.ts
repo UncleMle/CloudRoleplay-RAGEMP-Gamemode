@@ -3,7 +3,7 @@ import DeathSystem from "@/DeathSystem/DeathSystem";
 import validateKeyPress from "@/PlayerMethods/validateKeyPress";
 import { Browsers } from "@/enums";
 
-class ParkingSystem {
+export default class ParkingSystem {
     public static LocalPlayer: PlayerMp;
     public static _parkingLotIdentifier: string = "parkingLotData";
     public static _retrievalIdentifier: string = "retreivalParkingData";
@@ -31,5 +31,3 @@ class ParkingSystem {
         }
     }
 }
-
-export default ParkingSystem;

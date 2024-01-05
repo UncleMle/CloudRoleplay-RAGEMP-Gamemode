@@ -20,8 +20,6 @@ namespace CloudRP.PlayerData
     {
         public static void setPlayerAccountData(this Player player, User userData, bool triggerShared = true, bool updateDb = false)
         {
-            Console.WriteLine("Set acc data " + JsonConvert.SerializeObject(userData));
-
             if (!PlayersData.checkIfAccountIsLogged(userData.account_id))
             {
                 player.SetCustomData(PlayersData._sharedAccountDataIdentifier, userData);
@@ -304,15 +302,12 @@ namespace CloudRP.PlayerData
 
         public static void flushUserAndCharacterData(this Player player, string[] excludes = null)
         {
-            Console.WriteLine("Flush triggered exclude " + JsonConvert.SerializeObject(excludes));
-
             for (int i = 0; i < player.GetData<List<string>>(PlayersData._playerKeysIdentifier).Count; i++)
             {
                 string item = player.GetData<List<string>>(PlayersData._playerKeysIdentifier)[i];
                 
                 if (!(excludes != null && excludes.Contains(item)))
                 {
-                    Console.WriteLine("Flush key " + item);
                     player.ResetData(item);
                     player.ResetOwnSharedData(item);
                     player.ResetSharedData(item);

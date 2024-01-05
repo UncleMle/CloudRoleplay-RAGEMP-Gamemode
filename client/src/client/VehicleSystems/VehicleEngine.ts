@@ -6,7 +6,7 @@ import { Browsers } from "@/enums";
 import HandsUp from "@/Animation/HandsUpAnim";
 import VehicleSpeedo from "./VehicleSpeedo";
 
-class VehicleEngine {
+export default class VehicleEngine {
 	public static LocalPlayer: PlayerMp;
 	public static engineToggleEvent: string = "server:toggleEngine";
 
@@ -69,5 +69,3 @@ class VehicleEngine {
 		}
 	}
 }
-
-export default VehicleEngine;

@@ -3,7 +3,7 @@ import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
 import getUserData from "@/PlayerMethods/getUserData";
 import { AdminRanks } from "@/enums";
 
-export class Afk {
+export default class Afk {
     public static LocalPlayer: PlayerMp;
     public static _updateInterval: ReturnType<typeof setInterval> | undefined;
     public static updateIntervalTime_seconds: number = 200;
@@ -43,5 +43,3 @@ export class Afk {
         }
     }
 }
-
-export default Afk;

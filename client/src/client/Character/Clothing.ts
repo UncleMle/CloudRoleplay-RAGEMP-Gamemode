@@ -6,10 +6,9 @@ import getClothingData from "@/PlayerMethods/getClothingData";
 import getTargetCharacterData from "@/PlayerMethods/getTargetCharacterData";
 import getTargetData from "@/PlayerMethods/getTargetData";
 import { Browsers } from "@/enums";
-import torsoDataFemale from './torsoDataF.json'
 import torsoDataMale from './torsoDataM.json'
 
-class Clothing {
+export default class Clothing {
     public static LocalPlayer: PlayerMp;
     public static _clothingStoreIdentifier: string = "clothingStoreData";
 
@@ -137,5 +136,3 @@ class Clothing {
         }
     }
 }
-
-export default Clothing;
