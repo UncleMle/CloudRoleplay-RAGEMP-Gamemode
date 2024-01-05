@@ -258,7 +258,6 @@ namespace CloudRP.PlayerData
         public static void setPlayerToBanScreen(this Player player, Ban banData)
         {
             player.Dimension = Auth._startDimension;
-            player.flushUserAndCharacterData();
             player.TriggerEvent("client:loginCameraStart");
             uiHandling.pushRouterToClient(player, Browsers.BanPage);
 
