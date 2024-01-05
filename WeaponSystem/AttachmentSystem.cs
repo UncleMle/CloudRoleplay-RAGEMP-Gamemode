@@ -1,13 +1,19 @@
-﻿using GTANetworkAPI;
+﻿using CloudRP.InventorySystem;
+using CloudRP.PlayerData;
+using GTANetworkAPI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 
 
 namespace CloudRP.WeaponSystem
 {
     public class AttachmentSystem: Script
     {
+        public static readonly string _attachmentDataIdentifier = "playerGunAttachmentData";
         public static readonly string directory = Directory.GetCurrentDirectory() + "/json/";
 
         public static readonly Vector3 meleeAttachmentPos = new Vector3(-0.07, 0.07, 0.110);
@@ -92,11 +98,73 @@ namespace CloudRP.WeaponSystem
         {
             using (StreamReader sr = new StreamReader(directory + "weaponData.json"))
             {
-                string wep;
-                while ((wep = sr.ReadLine()) != null)
+                Dictionary<string, dynamic> weaponData = JsonConvert.DeserializeObject<Dictionary<string, object>>(sr.ReadToEnd());
+
+                foreach (KeyValuePair<string, WeaponAttachmentData> item in weaponAttachmentData)
                 {
-                    uint hash = NAPI.Util.GetHashKey(wep);
-                    Console.WriteLine(wep);
+                    KeyValuePair<string, dynamic> data = weaponData
+                        .Where(dat => dat.Key == item.Key)
+                        .FirstOrDefault();
+
+                    if(data.Value != null && data.Value.HashKey != null && data.Value.ModelHashKey != null)
+                    {
+                        item.Value.AttachName = $"WDSP_{data.Value.HashKey}";
+                        item.Value.AttachModel = data.Value.ModelHashKey;
+                    }
+                }
+            }
+        }
+
+        [ServerEvent(Event.PlayerConnected)]
+        public void setBodyWeaponData(Player player)
+        {
+            player.SetCustomData(_attachmentDataIdentifier, new string[] { });
+            player.TriggerEvent("registerWeaponAttachments", JsonConvert.SerializeObject(weaponAttachmentData));
+        }
+
+        [ServerEvent(Event.PlayerWeaponSwitch)]
+        public void OnPlayerWeaponSwitch(Player player, uint oldWeapon, uint newWeapon)
+        {
+            Dictionary<string, dynamic> weaponData = JsonConvert.DeserializeObject<Dictionary<string, object>>(sr.ReadToEnd());
+
+            KeyValuePair<string, dynamic> data = weaponData
+                .Where(dat => uint.Parse(dat.Key) == oldWeapon)
+                .FirstOrDefault();
+
+            if (data.Value != null)
+            {
+                uint oldWeaponKey = data.Value.HashKey;
+                KeyValuePair<string, WeaponAttachmentData> wepData = weaponAttachmentData
+                    .Where(data => data.Key == oldWeaponKey.ToString())
+                    .FirstOrDefault();
+
+                if (wepData.Value != null)
+                {
+                    // Remove the attached weapon that is occupying the slot
+                    string slot = wepData.Value.Slot;
+                    if (player._bodyWeapons[slot] && player.hasAttachment(player._bodyWeapons[slot])) player.addAttachment(player._bodyWeapons[slot], true);
+
+                    // Attach the updated old weapon
+                    let attachName = weaponAttachmentData[oldWeaponKey].AttachName;
+                    player.addAttachment(attachName, false);
+                    player._bodyWeapons[slot] = attachName;
+                }
+            }
+
+            if (weaponData[newWeapon])
+            {
+                let newWeaponKey = weaponData[newWeapon].HashKey;
+                if (weaponAttachmentData[newWeaponKey])
+                {
+                    // De-attach the new/current weapon (if attached)
+                    let slot = weaponAttachmentData[newWeaponKey].Slot;
+                    let attachName = weaponAttachmentData[newWeaponKey].AttachName;
+
+                    if (player._bodyWeapons[slot] === attachName)
+                    {
+                        if (player.hasAttachment(attachName)) player.addAttachment(attachName, true);
+                        delete player._bodyWeapons[slot];
+                    }
                 }
             }
         }
