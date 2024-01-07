@@ -75,9 +75,9 @@ namespace CloudRP.GeneralCommands
             DateTime utcDateTime = DateTime.UtcNow;
 
             player.SendChatMessage(ChatUtils.yellow + "-----------------------------------------------------------");
-            player.SendChatMessage($"UTC Date time: {utcDateTime}");
-            player.SendChatMessage($"Unix time: {CommandUtils.generateUnix()}");
-            player.SendChatMessage($"Server time: {TimeSystem.hour}:{TimeSystem.min}");
+            player.SendChatMessage($" UTC Date time: {ChatUtils.yellow}{utcDateTime}");
+            player.SendChatMessage($" Unix time: {ChatUtils.yellow}{CommandUtils.generateUnix()}");
+            player.SendChatMessage($" Server time: {ChatUtils.yellow}{TimeSystem.getFormattedServerTime()}");
             player.SendChatMessage(ChatUtils.yellow + "-----------------------------------------------------------");
         }
 

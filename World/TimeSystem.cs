@@ -13,7 +13,7 @@ namespace CloudRP.World
     {
         private static Timer syncTime;
         private static int timerInterval_seconds = 20;
-        public static int hour = 0;
+        public static int hour = 7;
         public static int min = 0;
         public static bool timeSyncOn = true;
 
@@ -54,11 +54,14 @@ namespace CloudRP.World
 
                     min++;
 
-                    Console.WriteLine($"{hour}:{min}");
-
                     NAPI.World.SetTime(hour, min, 0);
                 }
             });
+        }
+
+        public static string getFormattedServerTime()
+        {
+            return $"{(hour < 10 ? "0": "")}{hour}:{(min < 10 ? "0" : "")}{min}";
         }
 
         [Command("tsync", "~r~/tsync")]
