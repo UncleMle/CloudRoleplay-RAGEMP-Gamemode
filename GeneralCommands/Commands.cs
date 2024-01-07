@@ -3,6 +3,7 @@ using CloudRP.Character;
 using CloudRP.Database;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
+using CloudRP.World;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
@@ -66,6 +67,18 @@ namespace CloudRP.GeneralCommands
             string suffix = " !{grey}says:!{white} " + oocChat + " !{white}" + _oocColour + "))";
 
             CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_commands_radius);
+        }
+
+        [Command("time", "~y~Use:~w~ /time")]
+        public void viewTimeCommand(Player player)
+        {
+            DateTime utcDateTime = DateTime.UtcNow;
+
+            player.SendChatMessage(ChatUtils.yellow + "-----------------------------------------------------------");
+            player.SendChatMessage($"UTC Date time: {utcDateTime}");
+            player.SendChatMessage($"Unix time: {CommandUtils.generateUnix()}");
+            player.SendChatMessage($"Server time: {TimeSystem.hour}:{TimeSystem.min}");
+            player.SendChatMessage(ChatUtils.yellow + "-----------------------------------------------------------");
         }
 
         [Command("afk", "~y~Use: ~w~/afk [answer]")]

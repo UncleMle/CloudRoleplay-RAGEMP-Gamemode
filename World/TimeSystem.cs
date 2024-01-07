@@ -12,10 +12,9 @@ namespace CloudRP.World
     class TimeSystem : Script
     {
         private static Timer syncTime;
-        private static int timerInterval_seconds = 60;
+        private static int timerInterval_seconds = 20;
         public static int hour = 0;
         public static int min = 0;
-        public static int sec = 0;
         public static bool timeSyncOn = true;
 
         [ServerEvent(Event.ResourceStart)]
@@ -37,19 +36,28 @@ namespace CloudRP.World
         {
             NAPI.Task.Run(() =>
             {
-                if (!timeSyncOn) return;
+                if (timeSyncOn)
+                {
+                    if (min == 59)
+                    {
+                        min = 0;
 
-                DateTime date = DateTime.Now;
-                float hourOne = date.Hour;
-                float minuteOne = date.Minute;
-                float secondsOne = date.Second;
-                float miliSeconds = date.Millisecond;
+                        if (hour == 23)
+                        {
+                            hour = 0;
+                        }
+                        else
+                        {
+                            hour++;
+                        }
+                    }
 
-                hour = (int)((Math.Floor(minuteOne / 2) + hourOne * 6) % 24);
-                min = (int)(Math.Floor(secondsOne / 2) + minuteOne * 30) % 60;
-                sec = (int)(Math.Floor(miliSeconds * 0.03) + secondsOne * 30) % 60;
+                    min++;
 
-                NAPI.World.SetTime(hour, min, sec);
+                    Console.WriteLine($"{hour}:{min}");
+
+                    NAPI.World.SetTime(hour, min, 0);
+                }
             });
         }
 
