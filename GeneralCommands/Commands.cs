@@ -416,7 +416,7 @@ namespace CloudRP.GeneralCommands
                 }
 
                 player.setPlayerAccountData(userData, false, true);
-                CommandUtils.successSay(player, $"You {(userData.auto_login == 1 ? "enabled" : "disabled")}");
+                CommandUtils.successSay(player, $"You {(userData.auto_login == 1 ? "enabled" : "disabled")} autologin.");
             }
         }
 
