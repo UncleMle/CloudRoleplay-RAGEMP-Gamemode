@@ -48,9 +48,6 @@ export default class PlayerAuthentication {
 
 	public static handleUnauthed() {
 		if (!getUserCharacterData()) {
-
-			mp.console.logInfo("Ped frozend");
-
 			PlayerAuthentication.LocalPlayer.freezePosition(true);
 			toggleChat(false);
 			setGuiState(false);
@@ -133,8 +130,6 @@ export default class PlayerAuthentication {
 		PlayerAuthentication.LoginCamera?.delete();
 
 		PlayerAuthentication.LocalPlayer.freezePosition(false);
-
-		mp.console.logInfo("Un Ped frozend");
 	}
 
 }

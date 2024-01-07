@@ -66,7 +66,6 @@ export default class Corpses {
 	}
 
 	public static addCorpsePed(corpse: Corpse) {
-		mp.console.logInfo("Corpse " + JSON.stringify(corpse));
 		let corpseData: Corpse = corpse;
 		let ped: PedMp = mp.peds.new(
 			mp.game.joaat(corpse.model.sex ? 'mp_m_freemode_01' : 'mp_f_freemode_01'),
