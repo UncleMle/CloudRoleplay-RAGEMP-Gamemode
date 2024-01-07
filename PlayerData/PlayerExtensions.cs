@@ -317,7 +317,7 @@ namespace CloudRP.PlayerData
                 }
             }
 
-            if(excludes.Length == 0)
+            if(excludes == null || excludes != null && excludes.Length == 0)
             {
                 player.ResetData();
             }
