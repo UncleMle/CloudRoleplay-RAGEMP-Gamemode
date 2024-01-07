@@ -350,36 +350,10 @@ namespace CloudRP.Admin
 
             if (userData != null && characterData != null && userData.admin_status > (int)AdminRanks.Admin_SeniorSupport)
             {
-                userData.adminDuty = !userData.adminDuty;
-
-                if (userData.admin_ped != "none")
-                {
-                    userData.showAdminPed = userData.adminDuty;
-                } else
-                {
-                    userData.showAdminPed = false;
-                }
-                player.setPlayerAccountData(userData);
-
                 string colourAdminRank = AdminUtils.getColouredAdminRank(userData);
 
-                if (userData.adminDuty)
-                {
-                    saveAdutyPosition(userData, player.Position);
-                }
-                else  
-                {
-                    userData.isFlying = false;
-                    player.TriggerEvent("admin:endFly");
+                player.setAdminDuty(!userData.adminDuty);
 
-                    if(userData.admin_ped != "none")
-                    {
-                        player.setCharacterModel(characterData.characterModel);
-                        player.setCharacterClothes(characterData.characterClothing);
-                    }
-                }
-
-                player.setPlayerAccountData(userData);
                 uiHandling.sendNotification(player, $"Toggled admin duty {(userData.adminDuty ? "~g~on" : "~r~off")}", false);
                 AdminUtils.sendMessageToAllStaff($"{colourAdminRank} {AdminUtils.staffSuffixColour}{userData.admin_name} is {(userData.adminDuty ? $"{ChatUtils.moneyGreen}on" : $"{ChatUtils.red}off")} duty");
                 ChatUtils.formatConsolePrint($"{userData.admin_name} has toggled admin duty {(userData.adminDuty ? "on" : "off")}");

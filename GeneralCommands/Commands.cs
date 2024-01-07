@@ -44,14 +44,10 @@ namespace CloudRP.GeneralCommands
                 {
                     if(NAPI.Player.IsPlayerConnected(player))
                     {
-                        uiHandling.sendNotification(player, "~r~Logged out", false);
-
-                        player.flushUserAndCharacterData(new string[]{
-                            PlayersData._sharedAccountDataIdentifier
-                        });
-
-                        player.clearChat();
                         player.setPlayerToLoginScreen();
+
+                        uiHandling.sendNotification(player, "~r~Logged out", false);
+                        player.clearChat();
                     }
                 }, _logoutTimeout_seconds * 1000);
             }

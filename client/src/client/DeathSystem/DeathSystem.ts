@@ -131,6 +131,8 @@ export default class DeathSystem {
 
         await mp.game.waitAsync(50);
 
+        if(!player || !mp.players.atRemoteId(player.remoteId)) return;
+
         player.taskPlayAnim(DeathSystem.injuredAnim, DeathSystem._lib_injuredAnim, 8.0, 1.0, -1, 1, 1.0, false, false, false);
     }
 
