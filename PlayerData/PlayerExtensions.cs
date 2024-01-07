@@ -301,17 +301,20 @@ namespace CloudRP.PlayerData
 
         public static void flushUserAndCharacterData(this Player player, string[] excludes = null)
         {
-            for (int i = 0; i < player.GetData<List<string>>(PlayersData._playerKeysIdentifier).Count; i++)
+            if(player.GetData<List<string>>(PlayersData._playerKeysIdentifier) != null)
             {
-                string item = player.GetData<List<string>>(PlayersData._playerKeysIdentifier)[i];
-                
-                if (!(excludes != null && excludes.Contains(item)))
+                for (int i = 0; i < player.GetData<List<string>>(PlayersData._playerKeysIdentifier).Count; i++)
                 {
-                    player.ResetData(item);
-                    player.ResetOwnSharedData(item);
-                    player.ResetSharedData(item);
+                    string item = player.GetData<List<string>>(PlayersData._playerKeysIdentifier)[i];
+
+                    if (!(excludes != null && excludes.Contains(item)))
+                    {
+                        player.ResetData(item);
+                        player.ResetOwnSharedData(item);
+                        player.ResetSharedData(item);
+                    }
+
                 }
-                
             }
 
             if(excludes.Length == 0)
