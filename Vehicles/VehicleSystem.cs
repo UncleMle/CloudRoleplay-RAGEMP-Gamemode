@@ -16,7 +16,7 @@ using System.Timers;
 
 namespace CloudRP.Vehicles
 {
-    internal class VehicleSystem : Script
+    public class VehicleSystem : Script
     {
         public static List<DbVehicle> vehicles;
         public static string _vehicleSharedDataIdentifier = "VehicleData";

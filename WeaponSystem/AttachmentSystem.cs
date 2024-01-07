@@ -13,6 +13,7 @@ namespace CloudRP.WeaponSystem
 {
     public class AttachmentSystem: Script
     {
+        Dictionary<string, Root> weaponData = new Dictionary<string, Root>();
         public static readonly string _attachmentDataIdentifier = "playerGunAttachmentData";
         public static readonly string directory = Directory.GetCurrentDirectory() + "/json/";
 
@@ -48,7 +49,7 @@ namespace CloudRP.WeaponSystem
         // Melee
         { "WEAPON_NIGHTSTICK", new WeaponAttachmentData { Slot = "SKEL_R_Thigh", AttachBone = 51826, AttachPosition = meleeAttachmentPos, AttachRotation = meleeAttachmentRot } },
 
-        // Pistols
+            // Pistols
         { "WEAPON_PISTOL", new WeaponAttachmentData { Slot = "RIGHT_THIGH", AttachBone = 11816, AttachPosition = PistolAttachmentPos, AttachRotation = PistolAttachmentRot } },
         { "WEAPON_PISTOL_MK2", new WeaponAttachmentData { Slot = "RIGHT_THIGH", AttachBone = 11816, AttachPosition = PistolAttachmentPos, AttachRotation = PistolAttachmentRot } },
         { "WEAPON_COMBATPISTOL", new WeaponAttachmentData { Slot = "RIGHT_THIGH", AttachBone = 11816, AttachPosition = PistolAttachmentPos, AttachRotation = PistolAttachmentRot } },
@@ -98,11 +99,11 @@ namespace CloudRP.WeaponSystem
         {
             using (StreamReader sr = new StreamReader(directory + "weaponData.json"))
             {
-                Dictionary<string, dynamic> weaponData = JsonConvert.DeserializeObject<Dictionary<string, object>>(sr.ReadToEnd());
+                weaponData = JsonConvert.DeserializeObject<Dictionary<string, Root>>(sr.ReadToEnd());
 
                 foreach (KeyValuePair<string, WeaponAttachmentData> item in weaponAttachmentData)
                 {
-                    KeyValuePair<string, dynamic> data = weaponData
+                    KeyValuePair<string, Root> data = weaponData
                         .Where(dat => dat.Key == item.Key)
                         .FirstOrDefault();
 
@@ -119,29 +120,29 @@ namespace CloudRP.WeaponSystem
         public void setBodyWeaponData(Player player)
         {
             player.SetCustomData(_attachmentDataIdentifier, new string[] { });
-            player.TriggerEvent("registerWeaponAttachments", JsonConvert.SerializeObject(weaponAttachmentData));
+            //player.TriggerEvent("registerWeaponAttachments", JsonConvert.SerializeObject(weaponAttachmentData));
         }
 
         [ServerEvent(Event.PlayerWeaponSwitch)]
         public void OnPlayerWeaponSwitch(Player player, uint oldWeapon, uint newWeapon)
         {
-            Dictionary<string, dynamic> weaponData = JsonConvert.DeserializeObject<Dictionary<string, object>>(sr.ReadToEnd());
-
-            KeyValuePair<string, dynamic> data = weaponData
-                .Where(dat => uint.Parse(dat.Key) == oldWeapon)
+            /*
+            KeyValuePair<string, Root> wepData = weaponData
+                .Where(wep => wep.Key == oldWeapon.ToString())
                 .FirstOrDefault();
 
-            if (data.Value != null)
+            if(wepData.Value != null)
             {
-                uint oldWeaponKey = data.Value.HashKey;
-                KeyValuePair<string, WeaponAttachmentData> wepData = weaponAttachmentData
-                    .Where(data => data.Key == oldWeaponKey.ToString())
+                string oldWeaponKey = wepData.Value.HashKey;
+
+                KeyValuePair<string, WeaponAttachmentData> wepAttach = weaponAttachmentData
+                    .Where(wep => wep.Key == oldWeaponKey)
                     .FirstOrDefault();
 
-                if (wepData.Value != null)
+                if (wepAttach.Value != null)
                 {
                     // Remove the attached weapon that is occupying the slot
-                    string slot = wepData.Value.Slot;
+                    string slot = weaponAttachmentData[oldWeaponKey].Slot;
                     if (player._bodyWeapons[slot] && player.hasAttachment(player._bodyWeapons[slot])) player.addAttachment(player._bodyWeapons[slot], true);
 
                     // Attach the updated old weapon
@@ -150,23 +151,7 @@ namespace CloudRP.WeaponSystem
                     player._bodyWeapons[slot] = attachName;
                 }
             }
-
-            if (weaponData[newWeapon])
-            {
-                let newWeaponKey = weaponData[newWeapon].HashKey;
-                if (weaponAttachmentData[newWeaponKey])
-                {
-                    // De-attach the new/current weapon (if attached)
-                    let slot = weaponAttachmentData[newWeaponKey].Slot;
-                    let attachName = weaponAttachmentData[newWeaponKey].AttachName;
-
-                    if (player._bodyWeapons[slot] === attachName)
-                    {
-                        if (player.hasAttachment(attachName)) player.addAttachment(attachName, true);
-                        delete player._bodyWeapons[slot];
-                    }
-                }
-            }
+            */
         }
 
     }
