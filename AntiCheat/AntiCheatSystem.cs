@@ -24,8 +24,6 @@ namespace CloudRP.AntiCheat
 
             string str = player.Address[..7];
 
-            Console.WriteLine(str);
-
             if (str == "192.168" || player.Address == "127.0.0.1") return;
 
             try

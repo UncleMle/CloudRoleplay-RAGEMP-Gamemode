@@ -16,8 +16,6 @@ namespace CloudRP.Admin
 
             if(userData != null && characterData != null && userData.admin_status > (int)AdminRanks.Admin_SeniorSupport)
             {
-                Console.WriteLine(JsonConvert.SerializeObject(userData));
-
                 userData.adminDuty = toggle;
 
                 if (userData.admin_ped != "none")
