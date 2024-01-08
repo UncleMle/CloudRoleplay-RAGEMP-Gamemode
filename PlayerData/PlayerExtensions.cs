@@ -247,11 +247,10 @@ namespace CloudRP.PlayerData
 
             if (targetData != null && playerData != null && targetData.admin_status >= (int)AdminRanks.Admin_Developer && targetData.account_id != playerData.account_id)
             {
-                return true;
-            } else if(targetData.account_id != playerData.account_id)
-            {
                 CommandUtils.errorSay(player, "This player is immune to this command!");
-            }
+                return true;
+            } 
+
             return false;
         }
 

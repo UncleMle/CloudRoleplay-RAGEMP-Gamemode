@@ -91,6 +91,7 @@ namespace CloudRP.DeathSystem
             {
                 player.Dimension = 0;
                 playerCharacterData.player_dimension = 0;
+                playerCharacterData.injured_timer = 0;
 
                 player.setPlayerCharacterData(playerCharacterData, false, true);
             }
@@ -120,6 +121,7 @@ namespace CloudRP.DeathSystem
 
             NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.hospital + "You recieved medial treatment at " + closestHospital.name);
             player.TriggerEvent("client:moveSkyCamera", "down");
+            player.TriggerEvent("injured:removeStatus");
         }
 
         public static void updateAndSetInjuredState(Player player, DbCharacter characterData, int time = _deathTimer_seconds)

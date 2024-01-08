@@ -163,7 +163,7 @@ export default class NameTags {
 					if(target.getVariable(PlayerAuthentication._logoutIdentifier)) {
 						mp.game.graphics.drawText(
 							"~y~Logging out...~w~",
-							[x, y + 0.032],
+							[x, y - 0.042],
 							{
 								font: 4,
 								color: [220, 125, 225, 255],
