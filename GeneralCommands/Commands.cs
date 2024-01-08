@@ -433,7 +433,7 @@ namespace CloudRP.GeneralCommands
 
             if(userData != null)
             {
-                if(userData.auto_login == 1)
+                if (userData.auto_login == 1)
                 {
                     userData.auto_login = 0;
                 } else

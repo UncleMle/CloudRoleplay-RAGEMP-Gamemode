@@ -146,7 +146,7 @@ namespace CloudRP.DeathSystem
         public static void saveInjuredTime(Player player)
         {
             DbCharacter characterData = player.getPlayerCharacterData();
-            if (characterData == null) return;
+            if (characterData == null || characterData != null && characterData.injured_timer == 0) return;
 
             if(characterData.injured_timer - 10 <= 0)
             {

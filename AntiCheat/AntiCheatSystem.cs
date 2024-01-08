@@ -22,7 +22,9 @@ namespace CloudRP.AntiCheat
         {
             if (player.Address == null) return;
 
-            string str = player.Address.Substring(0, 7);
+            string str = player.Address[..7];
+
+            Console.WriteLine(str);
 
             if (str == "192.168" || player.Address == "127.0.0.1") return;
 

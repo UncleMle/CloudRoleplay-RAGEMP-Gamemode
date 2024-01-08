@@ -6,6 +6,7 @@ import ScaleForm from "@/Scaleform/ScaleformMessages";
 import GuiSystem from "@/BrowserSystem/GuiSystem";
 import VehicleSystems from "@/VehicleSystems/VehicleSystem";
 import WeaponSystem from "@/WeaponSystem/WeaponSystem";
+import PlayerAuthentication from "@/Authentication/PlayerAuthentication";
 
 export default class DeathSystem {
     public static LocalPlayer: PlayerMp;
@@ -21,11 +22,16 @@ export default class DeathSystem {
     constructor() {
         DeathSystem.LocalPlayer = mp.players.local;
 
-        mp.events.add("render", DeathSystem.handleRender);
-        mp.events.add("entityStreamIn", DeathSystem.handleStreamIn);
+        mp.events.add({
+            "render": DeathSystem.handleRender,
+            "entityStreamIn": DeathSystem.handleStreamIn,
+            "injured:startInterval": DeathSystem.handleIntervalStart,
+            "injured:removeStatus": DeathSystem.removeIntervalStatus,
+        });
+
         mp.events.addDataHandler(_sharedCharacterDataIdentifier, DeathSystem.handleDataHandler);
-        mp.events.add("injured:startInterval", DeathSystem.handleIntervalStart);
-        mp.events.add("injured:removeStatus", DeathSystem.removeIntervalStatus);
+
+        mp.events.addDataHandler(PlayerAuthentication._logoutIdentifier, DeathSystem.handleLogoutDataHandler);
 
         setInterval(() => {
             mp.players.forEach(player => {
@@ -38,8 +44,17 @@ export default class DeathSystem {
         }, DeathSystem._animCheck_seconds * 1000);
     }
 
+    private static handleLogoutDataHandler(entity: PlayerMp, logout: boolean) {
+        if(entity.type === "player" && logout) {
+            DeathSystem.removeIntervalStatus();
+        }
+    }
+
     public static removeIntervalStatus() {
         if(DeathSystem._injuredInterval) {
+
+            mp.console.logInfo("Triggered clear interval");
+
             clearInterval(DeathSystem._injuredInterval);
             DeathSystem._injuredInterval = undefined;
         }
@@ -47,7 +62,7 @@ export default class DeathSystem {
         DeathSystem.LocalPlayer.freezePosition(false);
     }
 
-    public static handleIntervalStart(time: number) {
+    private static handleIntervalStart(time: number) {
         DeathSystem.playInjuredEffects();
         DeathSystem.turnGuiOnAfterScaleform();
         DeathSystem.LocalPlayer.freezePosition(true);
@@ -58,6 +73,8 @@ export default class DeathSystem {
             if(!characterData) return;
 
             characterData.injured_timer <= 0 && DeathSystem._saveInterval ? (clearInterval(DeathSystem._saveInterval), DeathSystem._saveInterval = undefined) : DeathSystem.injuredTimer--;
+
+            mp.console.logInfo("Death interval " + DeathSystem.injuredTimer);
         }, 1000);
 
         DeathSystem._injuredInterval = setInterval(() => {
@@ -65,7 +82,7 @@ export default class DeathSystem {
         }, DeathSystem._injuredIntervalUpdate_seconds * 1000);
     }
 
-    public static handleRender() {
+    private static handleRender() {
         mp.game.gameplay.setFadeOutAfterDeath(false);
 
         let characterData: CharacterData | undefined = getUserCharacterData();
@@ -83,14 +100,14 @@ export default class DeathSystem {
         }
     }
 
-    public static async playInjuredEffects() {
+    private static async playInjuredEffects() {
         mp.game.cam.setCamEffect(1);
         ScaleForm.showShardMessage("~r~INJURED~w~", "You were injured", "", 0);
         mp.game.graphics.startScreenEffect('DeathFailMichaelIn', 60000, true);
         mp.game.audio.playSoundFrontend(-1, "Bed", "WastedSounds", true);
     }
 
-    public static async turnGuiOnAfterScaleform() {
+    private static async turnGuiOnAfterScaleform() {
         await mp.game.waitAsync(2500);
 
         if(ScaleForm.isActive()) {
@@ -100,7 +117,7 @@ export default class DeathSystem {
         }
     }
 
-    public static handleStreamIn(entity: EntityMp) {
+    private static handleStreamIn(entity: EntityMp) {
         let characterData: CharacterData | undefined = getUserCharacterData();
         if(entity.type != "player" || !characterData) return;
 
@@ -109,7 +126,7 @@ export default class DeathSystem {
         }
     }
 
-    public static handleDataHandler(entity: PlayerMp, data: CharacterData) {
+    private static handleDataHandler(entity: PlayerMp, data: CharacterData) {
         if(entity.type != "player" || !data) return;
 
         if(entity.remoteId != DeathSystem.LocalPlayer.remoteId) return;
@@ -122,7 +139,7 @@ export default class DeathSystem {
         }
     }
 
-    public static async playDeathAnim(player: PlayerMp) {
+    private static async playDeathAnim(player: PlayerMp) {
 		for (let i = 0; player.handle === 0 && i < 15; ++i) {
 			await mp.game.waitAsync(100);
 		}
@@ -148,7 +165,7 @@ export default class DeathSystem {
         mp.game.controls.disableControlAction(0, 31, true) //Move UD
     }
 
-    public static renderInjuredText() {
+    private static renderInjuredText() {
         if(!ScaleForm.isActive()) {
             mp.game.graphics.drawText(`~r~INJURED`, [0.5, 0.81], {
                 font: 4,

@@ -203,6 +203,11 @@ export default {
                     name: "deletefdos",
                     arguments: [],
                     info: "Deletes your created Floating Do statements."
+                },
+                {
+                    name: "logout",
+                    arguments: [],
+                    info: "Logs you out."
                 }
             ]
         }
