@@ -309,8 +309,6 @@ namespace CloudRP.PlayerData
 
                     if (!(excludes != null && excludes.Contains(item)))
                     {
-                        Console.WriteLine(item);
-
                         player.ResetData(item);
                         player.ResetOwnSharedData(item);
                         player.ResetSharedData(item);

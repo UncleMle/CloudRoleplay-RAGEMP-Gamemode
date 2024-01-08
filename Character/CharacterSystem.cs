@@ -76,7 +76,7 @@ namespace CloudRP.Character
                 Vector3 pos = player.Position;
                 Vector3 checkPos = PlayersData.defaultLoginPosition;
 
-                if(pos.X != checkPos.X && pos.Y != checkPos.Y && pos.Z != checkPos.Z && (player.getPlayerCharacterData() == null || player.getPlayerAccountData() == null))
+                if(player.checkForLoginCheat())
                 {
                     if(!player.isBanned())
                     {

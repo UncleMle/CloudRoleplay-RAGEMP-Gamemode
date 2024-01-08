@@ -63,11 +63,8 @@ namespace CloudRP.PlayerData
 
         public static void SetCustomSharedData<T>(this Player player, string key, T val)
         {
-            if (player.checkDataSetIsValid())
-            {
-                player.addPlayerKey(key);
-                player.SetSharedData(key, val);
-            }
+            player.addPlayerKey(key);
+            player.SetSharedData(key, val);
         }
 
         public static bool checkDataSetIsValid(this Player player)

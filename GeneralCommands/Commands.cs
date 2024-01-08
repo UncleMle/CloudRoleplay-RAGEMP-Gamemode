@@ -1,5 +1,6 @@
 ﻿using CloudRP.Authentication;
 using CloudRP.Character;
+using CloudRP.ChatSystem;
 using CloudRP.Database;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
@@ -18,6 +19,7 @@ namespace CloudRP.GeneralCommands
         public static string _meColour = "!{#d2bae9}";
         public static int nickNameMaxLength_M = 7;
         public static int maxFloatingDos = 10;
+        public static int logoutPrintRange = 50;
 
         [Command("logout", "~y~Use: ~w~/logout")]
         public void logoutCommand(Player player)
@@ -33,17 +35,29 @@ namespace CloudRP.GeneralCommands
 
                 characterData.loggingOut = true;
 
+                player.SetCustomData(Chat._typingStateIdentifier, false);
+                player.SetCustomSharedData(Chat._typingStateIdentifier, false);
+
                 uiHandling.sendNotification(player, "~y~Logging out...", false);
 
                 CommandUtils.successSay(player, $"You will be logged out in {_logoutTimeout_seconds} seconds.");
 
-                player.setPlayerCharacterData(characterData, false);
+                player.setPlayerCharacterData(characterData);
                 NAPI.Native.SendNativeToPlayer(player, Hash.SET_PLAYER_INVINCIBLE, true);
 
                 NAPI.Task.Run(() =>
                 {
                     if(NAPI.Player.IsPlayerConnected(player))
                     {
+                        NAPI.Pools.GetAllPlayers().ForEach(p =>
+                        {
+                            if(Vector3.Distance(p.Position, player.Position) < 50)
+                            {
+                                ChatUtils.sendWithNickName(p, player, ChatUtils.yellow + "[Logout] " + ChatUtils.White, " has logged out of the server.");
+                            }
+
+                        });
+
                         player.setPlayerToLoginScreen();
 
                         uiHandling.sendNotification(player, "~r~Logged out", false);
