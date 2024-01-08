@@ -40,14 +40,14 @@ namespace CloudRP.DiscordSystem
         [ServerEvent(Event.ResourceStart)]
         public async Task OnResourceStart()
         {
-            string token = Env._discordToken;
+            string token = Main._discordToken;
 
             try
             {
-                staffChannel = ulong.Parse(Env._discordStaffChannel);
-                reportAlertChannel = ulong.Parse(Env._discordReportAlertChannel);
-                guildId = ulong.Parse(Env._discordGuildId);
-                reportCategory = ulong.Parse(Env._discordReportCategory);
+                staffChannel = ulong.Parse(Main._discordStaffChannel);
+                reportAlertChannel = ulong.Parse(Main._discordReportChannel);
+                guildId = ulong.Parse(Main._discordGuild);
+                reportCategory = ulong.Parse(Main._discordReportCat);
             }
             catch
             {

@@ -8,19 +8,18 @@ using CloudRP.HousingSystem;
 using CloudRP.InventorySystem;
 using CloudRP.VehicleModification;
 using CloudRP.Vehicles;
+using GTANetworkAPI;
 using Microsoft.EntityFrameworkCore;
 
 namespace CloudRP.Database
 {
     public class DefaultDbContext : DbContext
     {
-        public static readonly string connectionStringKey = "DatabaseConnectionString";
-
-        private string connectionString = Env._databaseConnectionString;
-
+        public static readonly string _databaseConnectionString = $"Server={Main._dbHost};Database={Main._dbDatabase};Uid={Main._dbUser};Pwd={Main._dbPassword}";
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySql(connectionString);
+            optionsBuilder.UseMySql(_databaseConnectionString);
         }
 
         public DbSet<Account> accounts { get; set; }

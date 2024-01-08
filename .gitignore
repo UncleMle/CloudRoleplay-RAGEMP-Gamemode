@@ -60,8 +60,8 @@ cloudrp-ui/dist
 cloudrp-ui/.env
 cloudrp-ui/node_modules
 
-# Remove ENVs
-Authentication/Env.cs
+# Remove meta
+meta.xml
 
 # Build Results of an ATL Project
 [Dd]ebugPS/

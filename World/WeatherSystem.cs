@@ -27,7 +27,7 @@ namespace CloudRP.World
         {
             NAPI.Task.Run(() =>
             {
-                weatherApiKey = Env._weatherApiKey;
+                weatherApiKey = Main._weatherApiKey;
 
                 syncWeatherTimer = new Timer();
                 syncWeatherTimer.Interval = timerInterval_seconds * 1000;

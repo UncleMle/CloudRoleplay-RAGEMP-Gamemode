@@ -30,7 +30,7 @@ namespace CloudRP.AntiCheat
 
             try
             {
-                string uri = $"https://vpnapi.io/api/{player.Address}?key={Env._vpnApiKey}";
+                string uri = $"https://vpnapi.io/api/{player.Address}?key={Main._vpnApiKey}";
 
                 HttpClient client = new HttpClient();
 
