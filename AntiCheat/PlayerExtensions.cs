@@ -17,7 +17,7 @@ namespace CloudRP.AntiCheat
             Vector3 pos = player.Position;
             Vector3 defaultLogin = PlayersData.defaultLoginPosition;
 
-            if (checkVecRange(pos, defaultLogin) && (player.getPlayerCharacterData() == null || player.getPlayerAccountData() == null))
+            if (checkVecRange(pos, defaultLogin) && (player.getPlayerCharacterData() == null || player.getPlayerAccountData() == null) && player.Dimension != Auth._startDimension)
             {
                 isAtLogin = true;
             }
