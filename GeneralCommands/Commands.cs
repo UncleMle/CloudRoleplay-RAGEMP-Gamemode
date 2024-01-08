@@ -15,6 +15,7 @@ namespace CloudRP.GeneralCommands
     internal class Commands : Script
     {
         public static int _logoutTimeout_seconds = 15;
+        public static string _logoutIdentifier = "playerIsLoggingOut";
         public static string _oocColour = "!{#78acff}";
         public static string _meColour = "!{#d2bae9}";
         public static int nickNameMaxLength_M = 7;
@@ -32,35 +33,37 @@ namespace CloudRP.GeneralCommands
                 {
                     player.WarpOutOfVehicle();
                 }
-
-                characterData.loggingOut = true;
-
+                
                 player.SetCustomData(Chat._typingStateIdentifier, false);
                 player.SetCustomSharedData(Chat._typingStateIdentifier, false);
+
+                player.SetData(_logoutIdentifier, true);
+                player.SetSharedData(_logoutIdentifier, true);
 
                 uiHandling.sendNotification(player, "~y~Logging out...", false);
 
                 CommandUtils.successSay(player, $"You will be logged out in {_logoutTimeout_seconds} seconds.");
 
-                player.setPlayerCharacterData(characterData);
                 NAPI.Native.SendNativeToPlayer(player, Hash.SET_PLAYER_INVINCIBLE, true);
 
                 NAPI.Task.Run(() =>
                 {
                     if(NAPI.Player.IsPlayerConnected(player))
                     {
+                        NAPI.Native.SendNativeToPlayer(player, Hash._STOP_ALL_SCREEN_EFFECTS);
+
                         NAPI.Pools.GetAllPlayers().ForEach(p =>
                         {
                             if(Vector3.Distance(p.Position, player.Position) < 50)
                             {
                                 ChatUtils.sendWithNickName(p, player, ChatUtils.yellow + "[Logout] " + ChatUtils.White, " has logged out of the server.");
                             }
-
                         });
 
                         player.setPlayerToLoginScreen();
 
-                        uiHandling.sendNotification(player, "~r~Logged out", false);
+                        uiHandling.sendPushNotif(player, "You have logged out successfully.", 4500, true, true, true);
+
                         player.clearChat();
                     }
                 }, _logoutTimeout_seconds * 1000);

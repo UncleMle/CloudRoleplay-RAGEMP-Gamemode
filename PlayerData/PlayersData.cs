@@ -1,6 +1,7 @@
 ﻿using CloudRP.Authentication;
 using CloudRP.Character;
 using CloudRP.Database;
+using CloudRP.GeneralCommands;
 using CloudRP.Utils;
 using Discord;
 using GTANetworkAPI;
@@ -63,17 +64,18 @@ namespace CloudRP.PlayerData
 
         public static void SetCustomSharedData<T>(this Player player, string key, T val)
         {
-            player.addPlayerKey(key);
-            player.SetSharedData(key, val);
+            if(player.checkDataSetIsValid())
+            {
+                player.addPlayerKey(key);
+                player.SetSharedData(key, val);
+            }
         }
 
         public static bool checkDataSetIsValid(this Player player)
         {
             bool isValid = true;
 
-            DbCharacter characterData = player.getPlayerCharacterData();
-
-            if(characterData != null && characterData.loggingOut)
+            if(player.GetData<bool>(Commands._logoutIdentifier))
             {
                 isValid = false;
             }

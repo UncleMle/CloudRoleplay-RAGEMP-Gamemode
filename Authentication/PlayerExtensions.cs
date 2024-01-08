@@ -1,4 +1,5 @@
 ﻿using CloudRP.Admin;
+using CloudRP.GeneralCommands;
 using CloudRP.PlayerData;
 using CloudRP.Utils;
 using GTANetworkAPI;
@@ -28,6 +29,20 @@ namespace CloudRP.Authentication
             player.flushUserAndCharacterData(new string[]{
                 PlayersData._sharedAccountDataIdentifier
             });
+
+            player.ResetData(Commands._logoutIdentifier);
+            player.ResetSharedData(Commands._logoutIdentifier);
+        }
+
+        public static bool isLoggingOut(this Player player)
+        {
+            bool isLogging = false;
+
+            if(player.GetData<bool>(Commands._logoutIdentifier)) {
+                isLogging = true;
+            }
+
+            return isLogging;
         }
 
     }

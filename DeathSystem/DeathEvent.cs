@@ -1,5 +1,6 @@
 ﻿using CloudRP.Admin;
 using CloudRP.AntiCheat;
+using CloudRP.Authentication;
 using CloudRP.Character;
 using CloudRP.Database;
 using CloudRP.PlayerData;
@@ -50,7 +51,7 @@ namespace CloudRP.DeathSystem
             {
                 User userData = player.getPlayerAccountData();
 
-                if (userData != null && userData.adminDuty)
+                if (userData != null && userData.adminDuty || player.isLoggingOut())
                 {
                     NAPI.Player.SpawnPlayer(player, player.Position);
                     return;

@@ -18,6 +18,7 @@ export default class PlayerAuthentication {
 	public static characterCreationPosition: Vector3 = new mp.Vector3(-38.6, -590.5, 78.8);
 	public static _cameraSwitchInterval: number = 500;
 	public static _switchCamCmd: string = "swcm";
+	public static readonly _logoutIdentifier = "playerIsLoggingOut";
 	public static _currentCam: number = 0;
 	public static cameraPositions: Vector3[] = [
 		new mp.Vector3(-79.9, -1079.5, 310.2),
@@ -44,6 +45,16 @@ export default class PlayerAuthentication {
 		mp.events.add("client:loginCameraStart", PlayerAuthentication.handleCameraStart);
 		mp.events.add("client:setAuthKey", PlayerAuthentication.setAuthenticationKey);
 		mp.events.add("consoleCommand", PlayerAuthentication.consoleCommand);
+
+		mp.events.addDataHandler(PlayerAuthentication._logoutIdentifier, PlayerAuthentication.handleLogoutHandler);
+	}
+
+	public static handleLogoutHandler(entity: PlayerMp, val: boolean) {
+		if(entity.type == "player" && val) {
+			entity.freezePosition(true);
+		} else {
+			entity.freezePosition(false);
+		}
 	}
 
 	public static handleUnauthed() {
