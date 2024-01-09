@@ -1,6 +1,7 @@
 ﻿using CloudRP.GeneralSystems.WeaponSystem;
 using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.ServerSystems.Admin;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
@@ -106,7 +107,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
 
                 if(dealer.vehiclePositions?.Count > 0 && targetVehicleData != null && characterData != null)
                 {
-                    if(characterData.character_id != targetVehicleData.owner_id)
+                    if(characterData.character_id != targetVehicleData.owner_id && player.getAdmin() < (int)AdminRanks.Admin_Developer)
                     {
                         CommandUtils.errorSay(player, "You must be the owner of this vehicle to sell it.");
                         return;
@@ -145,6 +146,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                             targetVehicle.Rotation = new Vector3(0, 0, vehPosition.vehRot);
                             targetVehicle.Locked = false;
 
+                            targetVehicleData.rotation = (float)vehPosition.vehRot;
                             targetVehicleData.dealership_id = dealer.dealerId;
                             targetVehicleData.dealership_price = price;
                             targetVehicleData.dealership_description = desc;

@@ -86,8 +86,6 @@ namespace CloudRP.VehicleSystems.Vehicles
             }
 
             veh.Locked = true;
-            veh.Rotation = spawnRotation;
-
 
             vehicle.vehicle_locked = true;
             vehicle.vehicle_key_holders = getVehicleKeyHoldersFromDb(vehicle);
@@ -106,7 +104,10 @@ namespace CloudRP.VehicleSystems.Vehicles
                     {
                         Console.WriteLine("Spawned vehicle in spot " + dealerVehPos.spotId);
                         dealerVehPos.vehInSpot = vehicle;
+
                         vehicle.dynamic_dealer_spot_id = dealerVehPos.spotId;
+
+                        Console.WriteLine(dealerVehPos.vehRot + " rot");
 
 
                         veh.Position = dealerVehPos.vehPos;
@@ -114,6 +115,9 @@ namespace CloudRP.VehicleSystems.Vehicles
                         break;
                     }
                 }
+            } else
+            {
+                veh.Rotation = spawnRotation;
             }
 
             veh.setVehicleData(vehicle, true, true);
@@ -388,6 +392,21 @@ namespace CloudRP.VehicleSystems.Vehicles
 
                 List<float> dists = new List<float>(iDists.Keys);
                 dists.Sort();
+
+                if (vehicleData.dealership_id != -1)
+                {
+                    vehicle.Delete();
+
+                    NAPI.Task.Run(() =>
+                    {
+                        if(vehicleData != null)
+                        {
+                            spawnVehicle(vehicleData);
+                        }
+                    }, 1500);
+                    
+                    return;
+                }
 
                 if (dists.Count > 0)
                 {
