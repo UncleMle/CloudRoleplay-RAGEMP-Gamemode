@@ -33,7 +33,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
             foreach (KeyValuePair<string, Dealer> item in playerDealerships)
             {
                 MarkersAndLabels.setTextLabel(item.Value.sellVehPos, "Use /sellveh to sell vehicle.", 15f);
-                NAPI.Blip.CreateBlip(523, item.Value.sellVehPos, 5f, 1, item.Key, 255, 1f, true);
+                NAPI.Blip.CreateBlip(523, item.Value.sellVehPos, 1f, 1, item.Key, 255, 1f, true);
 
                 ColShape dealer = NAPI.ColShape.CreateSphereColShape(item.Value.sellVehPos, 1f);
 
