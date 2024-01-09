@@ -225,11 +225,17 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                             return;
                         }
 
+                        PlayerDealerVehPositions.dealerVehPositions
+                            .Where(dealerPos => dealerPos.spotId == vehicleData.dynamic_dealer_spot_id)
+                            .FirstOrDefault()
+                            .vehInSpot = null;
+
 
                         characterData.money_amount -= vehicleData.dealership_price;
                         vehicleData.dynamic_dealer_spot_id = -1;
                         vehicleData.dealership_spot_id = -1;
                         vehicleData.dealership_id = -1;
+                        vehicleData.owner_name = characterData.character_name;
                         vehicleData.owner_id = characterData.character_id;
 
                         player.setPlayerCharacterData(characterData, false, true);
@@ -237,6 +243,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                         targetVehicle.ResetSharedData(_playerVehicleDealerDataIdentifier);
                         targetVehicle.ResetData(_playerVehicleDealerDataIdentifier);
 
+                        uiHandling.setLoadingState(player, false, true);
                         CommandUtils.successSay(player, $"You purchased a vehicle [{targetVehicle.NumberPlate}] for ${vehicleData.dealership_price}");
                     }
                 }

@@ -241,6 +241,7 @@ export interface VehicleData {
 	speed_limit: number;
 	dealership_id: number;
     dealership_spot_id: number;
+	dealership_price: number;
 }
 
 export interface RenderKeys {
