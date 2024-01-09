@@ -6,14 +6,14 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using VisualStudioConfiguration;
-using CloudRP.Authentication;
-using CloudRP.Database;
-using CloudRP.PlayerData;
 using System.Linq;
 using GTANetworkAPI;
-using CloudRP.Character;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Runtime.InteropServices;
+using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.PlayerSystems.Character;
+using CloudRP.ServerSystems.Authentication;
+using CloudRP.ServerSystems.Database;
 
 namespace CloudRP.Utils
 {

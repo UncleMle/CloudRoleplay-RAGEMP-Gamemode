@@ -1,5 +1,5 @@
-﻿using CloudRP.Character;
-using CloudRP.PlayerData;
+﻿using CloudRP.PlayerSystems.Character;
+using CloudRP.PlayerSystems.PlayerData;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;

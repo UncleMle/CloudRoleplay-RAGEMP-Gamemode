@@ -1,10 +1,9 @@
-﻿using CloudRP.AntiCheat;
-using CloudRP.Character;
-using CloudRP.Database;
-using CloudRP.DiscordSystem;
+﻿using CloudRP.PlayerSystems.Character;
+using CloudRP.ServerSystems.AntiCheat;
+using CloudRP.ServerSystems.Database;
+using CloudRP.ServerSystems.DiscordSystem;
 using Discord;
 using GTANetworkAPI;
-using Integration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,12 +87,12 @@ namespace CloudRP.Utils
                 Title = $" Missing potential arguments in command {commandName} :("
             };
 
-            await DiscordIntegration.SendEmbed(DiscordSystem.DiscordSystems.staffChannel, builder);
+            await DiscordIntegration.SendEmbed(DiscordSystems.staffChannel, builder);
         }
 
         public static async Task mentionUser(ulong userId)
         {
-            await DiscordIntegration.SendMessage(DiscordSystem.DiscordSystems.staffChannel, Discord.MentionUtils.MentionUser(userId), false);
+            await DiscordIntegration.SendMessage(DiscordSystems.staffChannel, Discord.MentionUtils.MentionUser(userId), false);
         }
 
         public static string getRedirectUri(ulong channelId)
