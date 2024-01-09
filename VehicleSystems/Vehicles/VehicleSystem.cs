@@ -1,5 +1,6 @@
 ﻿using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.PlayerSystems.PlayerDealerships;
 using CloudRP.ServerSystems.Admin;
 using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
@@ -154,7 +155,25 @@ namespace CloudRP.VehicleSystems.Vehicles
 
                             if (vehicleData != null)
                             {
-                                vehicle.saveVehicleData(vehicleData, true);
+                                if(vehicleData.dealership_id != -1 && vehicleData.dealership_spot_id != -1)
+                                {
+                                    KeyValuePair<string, Dealer> dealer = PlayerDealerships.playerDealerships
+                                    .Where(deal => deal.Value.dealerId == vehicleData.dealership_id)
+                                    .FirstOrDefault();
+
+                                    DealerVehPos dealerSlot = PlayerDealerVehPositions.dealerVehPositions
+                                    .Where(vehSlot => vehSlot.ownerId == vehicleData.dealership_id) 
+                                    .FirstOrDefault();
+
+                                    if(dealer.Value != null && dealerSlot != null)
+                                    {
+                                        vehicle.Position = dealerSlot.vehPos;
+                                        vehicle.Rotation = new Vector3(0, 0, dealerSlot.vehRot);
+                                    }
+                                } else
+                                {
+                                    vehicle.saveVehicleData(vehicleData, true);
+                                }
                             }
                         }
                     }

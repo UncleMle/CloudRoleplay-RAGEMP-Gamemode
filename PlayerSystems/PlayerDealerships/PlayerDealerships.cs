@@ -14,8 +14,9 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
 {
     public class PlayerDealerships : Script
     {
-        public static readonly string dealerColDataIdentifier = "PlayerVehicleDealerColshapeData";
-        public Dictionary<string, Dealer> playerDealerships = new Dictionary<string, Dealer>
+        public static readonly string _playerVehicleDealerDataIdentifier = "playerVehicleDealershipData";
+        public static readonly string _dealerColDataIdentifier = "PlayerVehicleDealerColshapeData";
+        public static Dictionary<string, Dealer> playerDealerships = new Dictionary<string, Dealer>
         {
             { "Low End Dealer", new Dealer 
             { 
@@ -48,7 +49,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                 {
                     if(col.Equals(dealer))
                     {
-                        player.SetCustomData(dealerColDataIdentifier, item);
+                        player.SetCustomData(_dealerColDataIdentifier, item);
                     }
                 };
                 
@@ -56,16 +57,37 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                 {
                     if(col.Equals(dealer))
                     {
-                        player.ResetData(dealerColDataIdentifier);
+                        player.ResetData(_dealerColDataIdentifier);
                     }
                 };
+
+                item.Value.vehiclePositions.ForEach(vehPos =>
+                {
+                    ColShape vehPosCol = NAPI.ColShape.CreateSphereColShape(vehPos.vehPos, 5f);
+
+                    vehPosCol.OnEntityExitColShape += (col, player) =>
+                    {
+                        if(col.Equals(vehPosCol) && player.IsInVehicle)
+                        {
+                            Vehicle targetVeh = player.Vehicle;
+                            DbVehicle vehicleData = player.Vehicle.getData();
+
+                            if(vehicleData != null && vehicleData.dealership_id != -1 && vehicleData.dealership_spot_id != -1)
+                            {
+                                player.WarpOutOfVehicle();
+                                targetVeh.Position = vehPos.vehPos;
+                                targetVeh.Rotation = new Vector3(0, 0, vehPos.vehRot);
+                            }
+                        }
+                    };
+                });
             }
         }
 
         [Command("sellveh")]
         public void sellVehicleCommand(Player player, string desc, long price)
         {
-            KeyValuePair<string, Dealer> dealerData = player.GetData<KeyValuePair<string, Dealer>>(dealerColDataIdentifier);
+            KeyValuePair<string, Dealer> dealerData = player.GetData<KeyValuePair<string, Dealer>>(_dealerColDataIdentifier);
 
             if (dealerData.Value != null)
             {
@@ -88,10 +110,15 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                             player.WarpOutOfVehicle();
                             CommandUtils.successSay(player, $"You have sold your vehicle for {ChatUtils.moneyGreen}${price}{ChatUtils.White}!");
 
-
                             targetVehicle.Position = vehPositions.vehPos;
                             targetVehicle.Rotation = new Vector3(0, 0, vehPositions.vehRot);
+                            targetVehicleData.dealership_id = dealer.dealerId;
+                            targetVehicleData.dealership_spot_id = vehPositions.spotId;
 
+                            targetVehicle.saveVehicleData(targetVehicleData, true);
+
+                            targetVehicle.SetSharedData(_playerVehicleDealerDataIdentifier, true);
+                            targetVehicle.SetData(_playerVehicleDealerDataIdentifier, true);
                             break;
                         }
                     }
