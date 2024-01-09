@@ -9,12 +9,23 @@ using CloudRP.ServerSystems.Authentication;
 using CloudRP.VehicleSystems.VehicleModification;
 using CloudRP.VehicleSystems.Vehicles;
 using GTANetworkAPI;
+using GTANetworkInternals;
 using Microsoft.EntityFrameworkCore;
 
 namespace CloudRP.ServerSystems.Database
 {
+
     public class DefaultDbContext : DbContext
-    {
+    {     
+        /*
+		<setting name = "host" value="localhost"/>
+		<setting name = "username" value="username"/>
+		<setting name = "password" value="userpassword"/>
+		<setting name = "database" value="cloud_rp"/>
+
+        meta.xml
+        */
+
         public static readonly string _databaseConnectionString = $"Server={Main._dbHost};Database={Main._dbDatabase};Uid={Main._dbUser};Pwd={Main._dbPassword}";
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

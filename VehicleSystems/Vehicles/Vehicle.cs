@@ -36,6 +36,8 @@ namespace CloudRP.VehicleSystems.Vehicles
         public double vehicle_fuel { get; set; } = 100;
         public ulong vehicle_distance { get; set; }
         public float vehicle_health { get; set; } = 1000;
+        public int dealership_id { get; set; } = -1;
+        public int dealership_spot_id { get; set; } = -1;
 
         [NotMapped]
         public bool[] vehicle_doors { get; set; } = new bool[] { false, false, false, false, false, false };

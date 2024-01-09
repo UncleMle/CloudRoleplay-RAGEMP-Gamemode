@@ -18,6 +18,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
         public Vector3 vehPos { get; set;}
         public double vehRot { get; set;}
         public int ownerId { get; set;}
+        public int spotId { get; set;}
         public DbVehicle vehInSpot { get; set; }
     }
 }

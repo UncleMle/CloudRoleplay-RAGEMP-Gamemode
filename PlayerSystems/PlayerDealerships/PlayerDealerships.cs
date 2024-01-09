@@ -42,7 +42,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                 NAPI.Blip.CreateBlip(523, item.Value.sellVehPos, 1f, 1, item.Key, 255, 1f, true);
                 NAPI.Marker.CreateMarker(36, new Vector3(item.Value.sellVehPos.X, item.Value.sellVehPos.Y, item.Value.sellVehPos.Z + 0.09), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(255, 0, 0, 250), false, 0);
 
-                ColShape dealer = NAPI.ColShape.CreateSphereColShape(item.Value.sellVehPos, 1f);
+                ColShape dealer = NAPI.ColShape.CreateSphereColShape(item.Value.sellVehPos, 5f);
 
                 dealer.OnEntityEnterColShape += (col, player) =>
                 {
@@ -63,7 +63,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
         }
 
         [Command("sellveh")]
-        public void sellVehicleCommand(Player player)
+        public void sellVehicleCommand(Player player, string desc, long price)
         {
             KeyValuePair<string, Dealer> dealerData = player.GetData<KeyValuePair<string, Dealer>>(dealerColDataIdentifier);
 
@@ -85,8 +85,13 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                     {
                         if(vehPositions.vehInSpot == null)
                         {
+                            player.WarpOutOfVehicle();
+                            CommandUtils.successSay(player, $"You have sold your vehicle for {ChatUtils.moneyGreen}${price}{ChatUtils.White}!");
+
+
                             targetVehicle.Position = vehPositions.vehPos;
                             targetVehicle.Rotation = new Vector3(0, 0, vehPositions.vehRot);
+
                             break;
                         }
                     }
