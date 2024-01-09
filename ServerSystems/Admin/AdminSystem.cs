@@ -630,36 +630,47 @@ namespace CloudRP.ServerSystems.Admin
                 }
                 else
                 {
-                    uiHandling.sendNotification(player, "~r~Teleporting vehicle...", false);
+                    DbVehicle vehicleData = findVehicle.getData();
 
-                    NAPI.Pools.GetAllPlayers().ForEach(p =>
+                    if(vehicleData != null)
                     {
-                        if (p.IsInVehicle && p.Vehicle.Id == findVehicle.Id)
+                        if(vehicleData.dealership_id == -1)
                         {
-                            p.WarpOutOfVehicle();
-                            p.Position = player.Position;
-                            AdminUtils.staffSay(p, $"Admin {userData.admin_name} teleported your vehicle.");
+                            CommandUtils.errorSay(player, "You cannot teleport vehicles from a dealership.");
+                            return;
                         }
-                    });
 
-                    findVehicle.Position = player.Position.Around(5);
+                        uiHandling.sendNotification(player, "~r~Teleporting vehicle...", false);
 
-                    NAPI.Task.Run(() =>
-                    {
-                        if (findVehicle != null && player != null)
+                        NAPI.Pools.GetAllPlayers().ForEach(p =>
                         {
-                            ChatUtils.formatConsolePrint($"{userData.admin_name} v brought {findVehicle.NumberPlate} to them.");
-                            findVehicle.Position = player.Position.Around(5);
-                            AdminUtils.staffSay(player, $"Vehicle was brought to you.");
-
-                            if (setIntoVeh)
+                            if (p.IsInVehicle && p.Vehicle.Id == findVehicle.Id)
                             {
-                                player.SetIntoVehicle(findVehicle, 0);
+                                p.WarpOutOfVehicle();
+                                p.Position = player.Position;
+                                AdminUtils.staffSay(p, $"Admin {userData.admin_name} teleported your vehicle.");
                             }
+                        });
 
-                            uiHandling.sendNotification(player, $"~r~Teleported vehicle [{findVehicle.NumberPlate}]", false);
-                        }
-                    }, 1500);
+                        findVehicle.Position = player.Position.Around(5);
+
+                        NAPI.Task.Run(() =>
+                        {
+                            if (findVehicle != null && player != null)
+                            {
+                                ChatUtils.formatConsolePrint($"{userData.admin_name} v brought {findVehicle.NumberPlate} to them.");
+                                findVehicle.Position = player.Position.Around(5);
+                                AdminUtils.staffSay(player, $"Vehicle was brought to you.");
+
+                                if (setIntoVeh)
+                                {
+                                    player.SetIntoVehicle(findVehicle, 0);
+                                }
+
+                                uiHandling.sendNotification(player, $"~r~Teleported vehicle [{findVehicle.NumberPlate}]", false);
+                            }
+                        }, 1500);
+                    }
                 }
             }
             else AdminUtils.sendNoAuth(player);
