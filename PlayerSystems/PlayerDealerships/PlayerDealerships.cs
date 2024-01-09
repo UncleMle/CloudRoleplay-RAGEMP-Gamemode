@@ -61,7 +61,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                     }
                 };
 
-                item.Value.vehiclePositions.ForEach(vehPos =>
+                item.Value.vehiclePositions?.ForEach(vehPos =>
                 {
                     ColShape vehPosCol = NAPI.ColShape.CreateSphereColShape(vehPos.vehPos, 5f);
 

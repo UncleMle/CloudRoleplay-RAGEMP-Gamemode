@@ -22,7 +22,7 @@ import VoiceSystem from "./VoiceChat/VoiceSystem";
 import DeathSystem from "./DeathSystem/DeathSystem";
 import VehicleSpeedo from "./VehicleSystems/VehicleSpeedo";
 import VehicleFuel from "./VehicleSystems/VehicleFuel";
-import WeaponSystem from "./WeaponSystem/WeaponSystem";
+import WeaponSystem from "./WeaponSystems/weaponSystem";
 import Corpses from "./DeathSystem/Corpses";
 import Afk from "./AntiCheat/Afk";
 import Clothing from "./Character/Clothing";
@@ -45,6 +45,7 @@ import InventorySystem from "./InventorySystem/InventorySystem";
 import BanksAtms from "./BanksAtms/BanksAtmSystem";
 import ConvienceStores from "./ConvienceStores/ConvIenceStores";
 import CruiseControl from "./VehicleSystems/VehicleCruiseControl";
+import PlayerDealership from "./PlayerDealership/PlayerDealership";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -94,3 +95,4 @@ new BanksAtms();
 new InventorySystem();
 new ConvienceStores();
 new CruiseControl();
+new PlayerDealership();

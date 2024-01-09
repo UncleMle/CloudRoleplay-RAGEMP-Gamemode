@@ -239,6 +239,8 @@ export interface VehicleData {
 	emergency_lights: boolean;
 	vehicle_health: number;
 	speed_limit: number;
+	dealership_id: number;
+    dealership_spot_id: number;
 }
 
 export interface RenderKeys {

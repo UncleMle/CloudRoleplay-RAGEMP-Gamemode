@@ -5,8 +5,8 @@ import getTargetCharacterData from "@/PlayerMethods/getTargetCharacterData";
 import ScaleForm from "@/Scaleform/ScaleformMessages";
 import GuiSystem from "@/BrowserSystem/GuiSystem";
 import VehicleSystems from "@/VehicleSystems/VehicleSystem";
-import WeaponSystem from "@/WeaponSystem/WeaponSystem";
 import PlayerAuthentication from "@/Authentication/PlayerAuthentication";
+import WeaponSystem from "@/WeaponSystems/weaponSystem";
 
 export default class DeathSystem {
     public static LocalPlayer: PlayerMp;
