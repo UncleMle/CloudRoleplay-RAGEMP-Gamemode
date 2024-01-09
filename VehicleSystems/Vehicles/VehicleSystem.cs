@@ -92,13 +92,28 @@ namespace CloudRP.VehicleSystems.Vehicles
             vehicle.vehicle_locked = true;
             vehicle.vehicle_key_holders = getVehicleKeyHoldersFromDb(vehicle);
 
-            if(vehicle.dealership_id != -1)
+            if(vehicle.dealership_id != -1 && vehicle.dealership_spot_id != -1)
             {
                 vehicle.vehicle_locked = false;
                 veh.Locked = false;
 
                 veh.SetSharedData(PlayerDealerships._playerVehicleDealerDataIdentifier, true);
                 veh.SetData(PlayerDealerships._playerVehicleDealerDataIdentifier, true);
+
+                foreach(DealerVehPos dealerVehPos in PlayerDealerVehPositions.dealerVehPositions)
+                {
+                    if(dealerVehPos.ownerId == vehicle.dealership_id && dealerVehPos.vehInSpot == null)
+                    {
+                        Console.WriteLine("Spawned vehicle in spot " + dealerVehPos.spotId);
+                        dealerVehPos.vehInSpot = vehicle;
+                        vehicle.dynamic_dealer_spot_id = dealerVehPos.spotId;
+
+
+                        veh.Position = dealerVehPos.vehPos;
+                        veh.Rotation = new Vector3(0, 0, dealerVehPos.vehRot);
+                        break;
+                    }
+                }
             }
 
             veh.setVehicleData(vehicle, true, true);
@@ -165,14 +180,14 @@ namespace CloudRP.VehicleSystems.Vehicles
 
                             if (vehicleData != null)
                             {
-                                if(vehicleData.dealership_id != -1 && vehicleData.dealership_spot_id != -1)
+                                if(vehicleData.dealership_id != -1 && vehicleData.dealership_spot_id != -1 && vehicleData.dynamic_dealer_spot_id != -1)
                                 {
                                     KeyValuePair<string, Dealer> dealer = PlayerDealerships.playerDealerships
                                     .Where(deal => deal.Value.dealerId == vehicleData.dealership_id)
                                     .FirstOrDefault();
 
                                     DealerVehPos dealerSlot = PlayerDealerVehPositions.dealerVehPositions
-                                    .Where(vehSlot => vehSlot.ownerId == vehicleData.dealership_id) 
+                                    .Where(vehSlot => vehSlot.ownerId == vehicleData.dynamic_dealer_spot_id) 
                                     .FirstOrDefault();
 
                                     if(dealer.Value != null && dealerSlot != null)

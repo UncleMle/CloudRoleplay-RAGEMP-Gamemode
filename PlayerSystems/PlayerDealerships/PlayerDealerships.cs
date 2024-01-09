@@ -84,7 +84,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
             }
         }
 
-        [Command("sellveh")]
+        [Command("sellveh", "~y~Use: ~w~/sellveh [description] [price]")]
         public void sellVehicleCommand(Player player, string desc, long price)
         {
             KeyValuePair<string, Dealer> dealerData = player.GetData<KeyValuePair<string, Dealer>>(_dealerColDataIdentifier);
@@ -103,17 +103,22 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
 
                 if(dealer.vehiclePositions.Count > 0 && targetVehicleData != null)
                 {
-                    foreach (DealerVehPos vehPositions in dealer.vehiclePositions)
+                    foreach (DealerVehPos vehPosition in dealer.vehiclePositions)
                     {
-                        if(vehPositions.vehInSpot == null)
+                        Console.WriteLine(vehPosition.vehInSpot == null ? "Free spot " + vehPosition.spotId : "");
+
+                        if(vehPosition.vehInSpot == null)
                         {
                             player.WarpOutOfVehicle();
                             CommandUtils.successSay(player, $"You have sold your vehicle for {ChatUtils.moneyGreen}${price}{ChatUtils.White}!");
 
-                            targetVehicle.Position = vehPositions.vehPos;
-                            targetVehicle.Rotation = new Vector3(0, 0, vehPositions.vehRot);
+                            targetVehicle.Position = vehPosition.vehPos;
+                            targetVehicle.Rotation = new Vector3(0, 0, vehPosition.vehRot);
                             targetVehicleData.dealership_id = dealer.dealerId;
-                            targetVehicleData.dealership_spot_id = vehPositions.spotId;
+                            targetVehicleData.dealership_spot_id = vehPosition.spotId;
+                            targetVehicleData.dynamic_dealer_spot_id = vehPosition.spotId;
+
+                            vehPosition.vehInSpot = targetVehicleData;
 
                             targetVehicle.saveVehicleData(targetVehicleData, true);
 

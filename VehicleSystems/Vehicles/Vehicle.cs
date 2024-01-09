@@ -65,6 +65,8 @@ namespace CloudRP.VehicleSystems.Vehicles
         public int player_refuelling_char_id { get; set; } = -1;
         [NotMapped]
         public double speed_limit { get; set; } = -1;
+        [NotMapped]
+        public int dynamic_dealer_spot_id { get; set; } = -1;
     }
 
 
