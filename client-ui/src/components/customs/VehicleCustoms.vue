@@ -1,7 +1,7 @@
 <template>
     <body class="w-full text-white font-medium">
         <div v-if="!loadingState" class="flex justify-center mt-6">
-            <div class="p-2 text-center w-[40%] relative">
+            <div v-if="!playerData.is_in_player_dealer" class="p-2 text-center w-[40%] relative">
                 <div class="absolute w-full rounded-xl shadow-2xl shadow-black bg-black/70 p-2">
                     <font class="text-3xl font-bold">
                         <i class="fa-solid fa-car text-gray-400"></i>
@@ -131,7 +131,7 @@
 
             <div class="absolute right-[3%] top-20">
 
-                <div class="bg-black/70 shadow-2xl shadow-black p-4 rounded-xl relative">
+                <div class="bg-black/70 shadow-2xl shadow-black p-4 rounded-xl relative w-[24vw]">
                     <div v-if="getCarImagePath" class="h-20">
                         <div class="float-left">
                             <font class="font-bold text-xl">
@@ -152,7 +152,7 @@
                     </div>
                 </div>
 
-                <div class="container flex items-center w-[24vw] mx-auto mt-14">
+                <div v-if="!playerData.is_in_player_dealer" class="container flex items-center w-[24vw] mx-auto mt-14">
                     <div class="flex justify-center w-full">
                         <div
                             class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none max-h-[34vw]">
@@ -208,7 +208,14 @@
                     </button>
                     <button @click="purchase"
                         class="w-[250px] duration-300 p-2 rounded-lg hover:text-green-400 shadow-black shadow-2xl bg-black/70 border-gray-500">
-                        Purchase
+
+                        <span v-if="playerData.is_in_player_dealer">
+                            Purchase Vehicle
+                        </span>
+                        <span v-else>
+                            Purchase
+                        </span>
+
                         <i class="fa-solid fa-dollar-sign text-green-400"></i>
                     </button>
                 </div>
@@ -459,8 +466,13 @@ export default {
         },
         purchase() {
             this.$store.state.uiStates.serverLoading = true;
+
             if (window.mp) {
-                window.mp.trigger("browser:sendObject", "server:vehicleModsSave", JSON.stringify(this.vehicleData));
+                if(!this.playerData.is_in_player_dealer) {
+                    window.mp.trigger("browser:sendObject", "server:vehicleModsSave", JSON.stringify(this.vehicleData));
+                } else {
+                    window.mp.trigger("browser:sendObject", "server:purchasePlayerDealerVehicle");
+                }                
             }
         },
         saveBasket() {
@@ -475,7 +487,10 @@ export default {
             window.mp.trigger("browser:resetRouter");
             window.mp.trigger("gui:toggleHudComplete", true);
             window.mp.trigger("vehicle:setAttachments", JSON.stringify(this.playerData.vehicle_mod_data_old), true);
-            window.mp.trigger("customs:toggleVehicleFreeze", false);
+            
+            if(!this.playerData.is_in_player_dealer) {
+                window.mp.trigger("customs:toggleVehicleFreeze", false);
+            }
         },
         getMaxIdx(modName) {
             let getMaxIdx = this.playerData.vehicle_mod_indexes;

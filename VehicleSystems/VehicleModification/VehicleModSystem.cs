@@ -62,9 +62,28 @@ namespace CloudRP.VehicleSystems.VehicleModification
         [Command("mods", "~y~Use: ~w~/mods")]
         public void modsCommand(Player player)
         {
+            if(player.IsInVehicle && player.Vehicle.getData()?.dealership_id != -1)
+            {
+                DbVehicle playerDealerVehData = player.Vehicle.getData();
+
+                if(playerDealerVehData != null)
+                {
+                    player.TriggerEvent("customs:loadIndexes");
+
+                    uiHandling.handleObjectUiMutation(player, MutationKeys.PlayerVehDealer, true);
+                    uiHandling.handleObjectUiMutation(player, MutationKeys.VehicleMods, playerDealerVehData.vehicle_mods);
+                    uiHandling.handleObjectUiMutation(player, MutationKeys.VehicleModsOld, playerDealerVehData.vehicle_mods);
+
+                    uiHandling.pushRouterToClient(player, Browsers.ModsView);
+
+                    return;
+                } 
+            }
+
+
             if (player.GetData<CustomArea>(_colShapeIdentifer) == null)
             {
-                CommandUtils.errorSay(player, "You must be within one of the customs areas to use this command.");
+                CommandUtils.errorSay(player, "You must be within one of the customs areas or viewing a dealer vehicle to use this command.");
                 return;
             }
 

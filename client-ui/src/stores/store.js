@@ -31,7 +31,8 @@ const store = new Vuex.Store({
 			insurance_vehicle_data: {},
 			atm_data: {},
 			phone_data_player_vehicles: [],
-			inventory_items: []
+			inventory_items: [],
+			is_in_player_dealer: false
 		},
 		uiStates: {
 			characterSelection: false,

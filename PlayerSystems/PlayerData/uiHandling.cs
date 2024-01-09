@@ -103,9 +103,14 @@ namespace CloudRP.PlayerSystems.PlayerData
             player.TriggerEvent("browser:resetRouter");
         }
 
-        public static void setLoadingState(Player player, bool state)
+        public static void setLoadingState(Player player, bool state, bool resetRoute = false)
         {
             player.TriggerEvent("client:recieveUiMutation", "setLoadingState", "serverLoading", state);
+        
+            if(resetRoute)
+            {
+                resetRouter(player);
+            }
         }
     }
 
@@ -151,5 +156,6 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string PhoneDataVehicles = "phone_data_player_vehicles";
         public static readonly string AtmData = "atm_data";
         public static readonly string Inventory = "inventory_items";
+        public static readonly string PlayerVehDealer = "is_in_player_dealer";
     }
 }

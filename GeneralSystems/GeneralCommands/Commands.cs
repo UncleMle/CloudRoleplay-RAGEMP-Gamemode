@@ -94,6 +94,12 @@ namespace CloudRP.GeneralSystems.GeneralCommands
             player.SendChatMessage(ChatUtils.yellow + "-----------------------------------------------------------");
         }
 
+        [Command("clear", "~y~Use: /clear")]
+        public void clearChatCommand(Player player)
+        {
+            player.clearChat();
+        }
+
         [Command("afk", "~y~Use: ~w~/afk [answer]")]
         public static void afkCommand(Player player, string afkAns)
         {

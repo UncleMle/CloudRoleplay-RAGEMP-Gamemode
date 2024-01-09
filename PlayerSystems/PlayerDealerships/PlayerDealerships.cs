@@ -1,4 +1,5 @@
 ﻿using CloudRP.GeneralSystems.WeaponSystem;
+using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
@@ -14,6 +15,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
 {
     public class PlayerDealerships : Script
     {
+        public static readonly long maxSellPrice = 200000000;
         public static readonly string _playerVehicleDealerDataIdentifier = "playerVehicleDealershipData";
         public static readonly string _dealerColDataIdentifier = "PlayerVehicleDealerColshapeData";
         public static Dictionary<string, Dealer> playerDealerships = new Dictionary<string, Dealer>
@@ -84,8 +86,8 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
             }
         }
 
-        [Command("sellveh", "~y~Use: ~w~/sellveh [description] [price]")]
-        public void sellVehicleCommand(Player player, string desc, long price)
+        [Command("sellveh", "~y~Use: ~w~/sellveh [price] [description]", GreedyArg = true)]
+        public void sellVehicleCommand(Player player, long price, string desc)
         {
             KeyValuePair<string, Dealer> dealerData = player.GetData<KeyValuePair<string, Dealer>>(_dealerColDataIdentifier);
 
@@ -110,6 +112,12 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                         if(vehPosition.vehInSpot == null)
                         {
                             foundSpot = true;
+
+                            if(price > maxSellPrice || price < 1)
+                            {
+                                CommandUtils.errorSay(player, $"Sell price must be between $1 and ${maxSellPrice}");
+                                return;
+                            }
 
                             player.WarpOutOfVehicle();
                             CommandUtils.successSay(player, $"You have sold your vehicle for {ChatUtils.moneyGreen}${price}{ChatUtils.White}!");
@@ -169,7 +177,50 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                     CommandUtils.errorSay(player, "This vehicle is either not in a dealership or you don't own it.");
                 }
             }
+        }
 
+        [ServerEvent(Event.PlayerEnterVehicle)]
+        public void openDealershipMenu(Player player, Vehicle vehicle, sbyte seatId)
+        {
+            DbVehicle vehicleData = vehicle.getData();
+            DbCharacter characterData = player.getPlayerCharacterData();
+
+            if(characterData != null && vehicleData != null && vehicleData.dealership_id != -1)
+            {
+                if(characterData.character_id == vehicleData.owner_id)
+                {
+                    player.SendChatMessage(ChatUtils.info + "You own this vehicle. Use /getbackveh to retrieve it.");
+                    player.SendChatMessage(ChatUtils.info + "To view this vehicle's mods or purchase this vehicle use /mods.");
+                }
+            }
+        }
+
+        [RemoteEvent("server:purchasePlayerDealerVehicle")]
+        public void purchasePlayerDealerVehicle(Player player)
+        {
+            if(player.IsInVehicle)
+            {
+                DbCharacter characterData = player.getPlayerCharacterData();
+
+                if(characterData != null)
+                {
+                    Vehicle targetVehicle = player.Vehicle;
+                    DbVehicle vehicleData = targetVehicle.getData();
+
+                    if (vehicleData != null && vehicleData.dealership_id != -1 && vehicleData.dealership_spot_id != -1)
+                    {
+                        if (vehicleData.owner_id == characterData.character_id)
+                        {
+                            uiHandling.setLoadingState(player, false, true);
+                            CommandUtils.errorSay(player, "You cannot purchase back your own vehicle. Use /getbackveh.");
+                            return;
+                        }
+
+
+
+                    }
+                }
+            }
         }
     }
 }
