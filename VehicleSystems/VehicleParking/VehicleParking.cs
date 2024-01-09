@@ -112,6 +112,8 @@ namespace CloudRP.VehicleSystems.VehicleParking
                     ColShape retrieveCol = NAPI.ColShape.CreateSphereColShape(pLot.retrieve.position, pLot.retrievePosRange, 0);
 
                     parkCol.SetData(_parkingLotIdentifier, pLot.park);
+                    
+                    retrieveCol.SetData(_parkingLotIdentifier, pLot.retrieve);
                     retrieveCol.SetSharedData(_retrievalIdentifier, pLot.retrieve);
 
                     NAPI.TextLabel.CreateTextLabel($"{pLot.name} ~y~Y~w~ to interact", pLot.retrieve.position, 10f, 1.0f, 4, new Color(255, 255, 255, 255), true);
