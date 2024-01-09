@@ -5,6 +5,7 @@ using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace CloudRP.PlayerSystems.PlayerDealerships
@@ -18,6 +19,9 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
             { 
                 dealerId = 0,
                 sellVehPos = new Vector3(-37.2, -2108.0, 16.7),
+                vehiclePositions = PlayerDealerVehPositions.dealerVehPositions
+                .Where(dealerV => dealerV.ownerId == 0)
+                .ToList()
             } 
             },
             { "High End Dealer", new Dealer 
@@ -38,21 +42,21 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
 
                 ColShape dealer = NAPI.ColShape.CreateSphereColShape(item.Value.sellVehPos, 1f);
 
-                dealer.OnEntityEnterColShape += ((col, player) =>
+                dealer.OnEntityEnterColShape += (col, player) =>
                 {
                     if(col.Equals(dealer))
                     {
                         player.SetCustomData(dealerColDataIdentifier, item);
                     }
-                });
+                };
                 
-                dealer.OnEntityExitColShape += ((col, player) =>
+                dealer.OnEntityExitColShape += (col, player) =>
                 {
                     if(col.Equals(dealer))
                     {
                         player.ResetData(dealerColDataIdentifier);
                     }
-                });
+                };
             }
         }
 

@@ -345,7 +345,9 @@ namespace CloudRP.ServerSystems.Admin
 
             if (player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
-                KeyValuePair<int, Vector3> savedAdminPosition = adminAdutyPositions.Where(savePos => savePos.Key == userData.account_id).FirstOrDefault();
+                KeyValuePair<int, Vector3> savedAdminPosition = adminAdutyPositions
+                    .Where(savePos => savePos.Key == userData.account_id)
+                    .FirstOrDefault();
 
                 if (savedAdminPosition.Value == null)
                 {

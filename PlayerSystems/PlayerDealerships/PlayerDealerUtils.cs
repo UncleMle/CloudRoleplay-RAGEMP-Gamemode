@@ -1,4 +1,5 @@
-﻿using GTANetworkAPI;
+﻿using CloudRP.VehicleSystems.Vehicles;
+using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,6 +10,14 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
     {
         public Vector3 sellVehPos {  get; set; }
         public int dealerId { get; set; }
-        public List<Vector3> vehiclePositions { get; set; }
+        public List<DealerVehPos> vehiclePositions { get; set; }
+    }
+
+    public class DealerVehPos
+    {
+        public Vector3 vehPos { get; set;}
+        public double vehRot { get; set;}
+        public int ownerId { get; set;}
+        public DbVehicle vehInSpot { get; set; }
     }
 }
