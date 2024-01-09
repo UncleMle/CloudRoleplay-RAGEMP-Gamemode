@@ -1,5 +1,7 @@
 ﻿using CloudRP.GeneralSystems.WeaponSystem;
 using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.ServerSystems.Utils;
+using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
 using Newtonsoft.Json;
@@ -67,7 +69,28 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
 
             if (dealerData.Value != null)
             {
-                player.SendChatMessage("Dealer data " + JsonConvert.SerializeObject(dealerData));
+                if(!player.IsInVehicle)
+                {
+                    CommandUtils.errorSay(player, "You must be in a vehicle to use this command.");
+                    return;
+                }
+
+                Dealer dealer = dealerData.Value;
+                Vehicle targetVehicle = player.Vehicle;
+                DbVehicle targetVehicleData = player.Vehicle.getData();
+
+                if(dealer.vehiclePositions.Count > 0 && targetVehicleData != null)
+                {
+                    foreach (DealerVehPos vehPositions in dealer.vehiclePositions)
+                    {
+                        if(vehPositions.vehInSpot == null)
+                        {
+                            targetVehicle.Position = vehPositions.vehPos;
+                            targetVehicle.Rotation = new Vector3(0, 0, vehPositions.vehRot);
+                            break;
+                        }
+                    }
+                }
             }
         }
     }
