@@ -84,6 +84,9 @@ namespace CloudRP.World.TimeWeather
 
             if (userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
+                hour = h;
+                min = m;
+
                 AdminUtils.staffSay(player, $"You set time to {h}:{m}:{s}");
                 NAPI.World.SetTime(h, m, s);
             }

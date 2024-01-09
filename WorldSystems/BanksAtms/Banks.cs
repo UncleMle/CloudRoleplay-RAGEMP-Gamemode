@@ -234,7 +234,7 @@ namespace CloudRP.World.BanksAtms
 
             if (TimeSystem.hour > bankCloseHour - 1 || TimeSystem.hour < bankOpenHour)
             {
-                uiHandling.sendPushNotifError(player, $"The bank is currently closed. Come back at {bankOpenHour}{(bankOpenHour > 12 ? "AM" : "PM")}", 5500);
+                uiHandling.sendPushNotifError(player, $"The bank is currently closed. Come back at {bankOpenHour}{(bankOpenHour > 12 ? "PM" : "AM")}", 5500);
                 isOpen = false;
             } else
             {
