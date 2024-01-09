@@ -3,12 +3,21 @@ import getVehicleData from "@/PlayerMethods/getVehicleData";
 
 export default class PlayerDealership {
     public static LocalPlayer: PlayerMp = mp.players.local;
-    
+    public static readonly _playerVehicleDealerDataIdentifier: string = "playerVehicleDealershipData";
+
     constructor() {
         mp.events.add({
             "playerEnterVehicle": PlayerDealership.handleVehEnter,
             "entityStreamIn": PlayerDealership.handleEntityStreamIn
         });
+
+        mp.events.addDataHandler(PlayerDealership._playerVehicleDealerDataIdentifier, PlayerDealership.handleDataHandler);
+    }
+
+    private static handleDataHandler(vehicle: VehicleMp, value: boolean) {
+        if(vehicle.type === "vehicle" && !value) {
+            vehicle.freezePosition(false);
+        }
     }
 
     private static handleVehEnter(vehicle: VehicleMp) {

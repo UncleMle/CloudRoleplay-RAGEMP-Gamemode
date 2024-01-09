@@ -101,14 +101,16 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                 Vehicle targetVehicle = player.Vehicle;
                 DbVehicle targetVehicleData = player.Vehicle.getData();
 
-                if(dealer.vehiclePositions.Count > 0 && targetVehicleData != null)
+                if(dealer.vehiclePositions?.Count > 0 && targetVehicleData != null)
                 {
+                    bool foundSpot = false;
+
                     foreach (DealerVehPos vehPosition in dealer.vehiclePositions)
                     {
-                        Console.WriteLine(vehPosition.vehInSpot == null ? "Free spot " + vehPosition.spotId : "");
-
                         if(vehPosition.vehInSpot == null)
                         {
+                            foundSpot = true;
+
                             player.WarpOutOfVehicle();
                             CommandUtils.successSay(player, $"You have sold your vehicle for {ChatUtils.moneyGreen}${price}{ChatUtils.White}!");
 
@@ -117,6 +119,8 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                             targetVehicleData.dealership_id = dealer.dealerId;
                             targetVehicleData.dealership_spot_id = vehPosition.spotId;
                             targetVehicleData.dynamic_dealer_spot_id = vehPosition.spotId;
+                            targetVehicleData.vehicle_locked = false;
+                            targetVehicle.Locked = false;
 
                             vehPosition.vehInSpot = targetVehicleData;
 
@@ -127,8 +131,45 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                             break;
                         }
                     }
+
+                    if(!foundSpot)
+                    {
+                        CommandUtils.errorSay(player, "There are no free spots left in this player dealership.");
+                    }
                 }
             }
+        }
+
+        [Command("getbackveh", "~y~Use: ~w~/getbackveh")]
+        public void getBackVeh(Player player)
+        {
+            if(player.IsInVehicle && player.Vehicle.getData() != null)
+            {
+                Vehicle targetVehicle = player.Vehicle;
+                DbVehicle vehicleData = targetVehicle.getData();
+                
+                if(vehicleData.dynamic_dealer_spot_id != -1 && vehicleData.dealership_id != -1 && vehicleData.owner_id == player.getPlayerCharacterData()?.character_id)
+                {
+                    PlayerDealerVehPositions.dealerVehPositions
+                        .Where(dealerPos => dealerPos.spotId == vehicleData.dynamic_dealer_spot_id)
+                        .FirstOrDefault()
+                        .vehInSpot = null;
+
+                    vehicleData.dynamic_dealer_spot_id = -1;
+                    vehicleData.dealership_spot_id = -1;
+                    vehicleData.dealership_id = -1;
+
+                    targetVehicle.saveVehicleData(vehicleData, true);
+                    targetVehicle.ResetSharedData(_playerVehicleDealerDataIdentifier);
+                    targetVehicle.ResetData(_playerVehicleDealerDataIdentifier);
+
+                    CommandUtils.successSay(player, $"You got your vehicle [{targetVehicle.NumberPlate}] back from the dealership.");
+                } else
+                {
+                    CommandUtils.errorSay(player, "This vehicle is either not in a dealership or you don't own it.");
+                }
+            }
+
         }
     }
 }

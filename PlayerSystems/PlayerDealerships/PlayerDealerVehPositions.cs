@@ -22,6 +22,13 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                 spotId = 1,
                 vehPos = new Vector3(-44.1, -2102.4, 16.7),
                 vehRot = -160.5
+            },
+            new DealerVehPos
+            {
+                ownerId = 0,
+                spotId = 2,
+                vehPos = new Vector3(-47.4, -2103.7, 16.7),
+                vehRot = -156.8
             }
         };
 
