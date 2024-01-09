@@ -54,16 +54,19 @@
                                                     <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
                                                         :min="getMinIdx(item.name)" :max="getMaxIdx(item.name)"
                                                         class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
-                                                    <button @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
-                                                        v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
-                                                        class="border duration-300 w-[20%] mr-4 p-0.5 mt-2 rounded-lg border-gray-500 hover:text-red-500">
-                                                        Reset <i class="fa-solid fa-rotate-left text-red-500"></i>
-                                                    </button>
-                                                    <button @click="addToBasket(item.name, vehicleData[item.dbName])"
-                                                        v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
-                                                        class="border duration-300 w-[20%] p-0.5 mt-2 rounded-lg border-gray-500 hover:text-green-500">
-                                                        Add <i class="fa-solid fa-plus text-green-500"></i>
-                                                    </button>
+                                                    <div v-if="!playerData.is_in_player_dealer">
+                                                        <button
+                                                            @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
+                                                            v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
+                                                            class="border duration-300 w-[20%] mr-4 p-0.5 mt-2 rounded-lg border-gray-500 hover:text-red-500">
+                                                            Reset <i class="fa-solid fa-rotate-left text-red-500"></i>
+                                                        </button>
+                                                        <button @click="addToBasket(item.name, vehicleData[item.dbName])"
+                                                            v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
+                                                            class="border duration-300 w-[20%] p-0.5 mt-2 rounded-lg border-gray-500 hover:text-green-500">
+                                                            Add <i class="fa-solid fa-plus text-green-500"></i>
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -80,16 +83,19 @@
                                                     <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
                                                         :min="getMinIdx(item.name)" :max="getMaxIdx(item.name)"
                                                         class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
-                                                    <button @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
-                                                        v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
-                                                        class="border duration-300 w-[20%] mr-4 p-0.5 mt-2 rounded-lg border-gray-500 hover:text-red-500">
-                                                        Reset <i class="fa-solid fa-rotate-left text-red-500"></i>
-                                                    </button>
-                                                    <button @click="addToBasket(item.name, vehicleData[item.dbName])"
-                                                        v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
-                                                        class="border duration-300 w-[20%] p-0.5 mt-2 rounded-lg border-gray-500 hover:text-green-500">
-                                                        Add <i class="fa-solid fa-plus text-green-500"></i>
-                                                    </button>
+                                                    <div v-if="!playerData.is_in_player_dealer">
+                                                        <button
+                                                            @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
+                                                            v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
+                                                            class="border duration-300 w-[20%] mr-4 p-0.5 mt-2 rounded-lg border-gray-500 hover:text-red-500">
+                                                            Reset <i class="fa-solid fa-rotate-left text-red-500"></i>
+                                                        </button>
+                                                        <button @click="addToBasket(item.name, vehicleData[item.dbName])"
+                                                            v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
+                                                            class="border duration-300 w-[20%] p-0.5 mt-2 rounded-lg border-gray-500 hover:text-green-500">
+                                                            Add <i class="fa-solid fa-plus text-green-500"></i>
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -108,16 +114,19 @@
                                                         :min="item.name == 'Colour One' || item.name == 'Colour Two' ? 0 : getMinIdx(item.name)"
                                                         :max="item.maxIdx ? item.maxIdx : getMaxIdx(item.name)"
                                                         class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
-                                                    <button @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
-                                                        v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
-                                                        class="border duration-300 w-[20%] mr-4 p-0.5 mt-2 rounded-lg border-gray-500 hover:text-red-500">
-                                                        Reset <i class="fa-solid fa-rotate-left text-red-500"></i>
-                                                    </button>
-                                                    <button @click="addToBasket(item.name, vehicleData[item.dbName])"
-                                                        v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
-                                                        class="border duration-300 w-[20%] p-0.5 mt-2 rounded-lg border-gray-500 hover:text-green-500">
-                                                        Add <i class="fa-solid fa-plus text-green-500"></i>
-                                                    </button>
+                                                    <div v-if="!playerData.is_in_player_dealer">
+                                                        <button
+                                                            @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
+                                                            v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
+                                                            class="border duration-300 w-[20%] mr-4 p-0.5 mt-2 rounded-lg border-gray-500 hover:text-red-500">
+                                                            Reset <i class="fa-solid fa-rotate-left text-red-500"></i>
+                                                        </button>
+                                                        <button @click="addToBasket(item.name, vehicleData[item.dbName])"
+                                                            v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
+                                                            class="border duration-300 w-[20%] p-0.5 mt-2 rounded-lg border-gray-500 hover:text-green-500">
+                                                            Add <i class="fa-solid fa-plus text-green-500"></i>
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -468,11 +477,11 @@ export default {
             this.$store.state.uiStates.serverLoading = true;
 
             if (window.mp) {
-                if(!this.playerData.is_in_player_dealer) {
+                if (!this.playerData.is_in_player_dealer) {
                     window.mp.trigger("browser:sendObject", "server:vehicleModsSave", JSON.stringify(this.vehicleData));
                 } else {
                     window.mp.trigger("browser:sendObject", "server:purchasePlayerDealerVehicle");
-                }                
+                }
             }
         },
         saveBasket() {
@@ -487,8 +496,8 @@ export default {
             window.mp.trigger("browser:resetRouter");
             window.mp.trigger("gui:toggleHudComplete", true);
             window.mp.trigger("vehicle:setAttachments", JSON.stringify(this.playerData.vehicle_mod_data_old), true);
-            
-            if(!this.playerData.is_in_player_dealer) {
+
+            if (!this.playerData.is_in_player_dealer) {
                 window.mp.trigger("customs:toggleVehicleFreeze", false);
             }
         },

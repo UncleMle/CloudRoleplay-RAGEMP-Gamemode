@@ -99,12 +99,19 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                     return;
                 }
 
+                DbCharacter characterData = player.getPlayerCharacterData();
                 Dealer dealer = dealerData.Value;
                 Vehicle targetVehicle = player.Vehicle;
                 DbVehicle targetVehicleData = player.Vehicle.getData();
 
-                if(dealer.vehiclePositions?.Count > 0 && targetVehicleData != null)
+                if(dealer.vehiclePositions?.Count > 0 && targetVehicleData != null && characterData != null)
                 {
+                    if(characterData.character_id != targetVehicleData.owner_id)
+                    {
+                        CommandUtils.errorSay(player, "You must be the owner of this vehicle to sell it.");
+                        return;
+                    }
+
                     bool foundSpot = false;
 
                     foreach (DealerVehPos vehPosition in dealer.vehiclePositions)
