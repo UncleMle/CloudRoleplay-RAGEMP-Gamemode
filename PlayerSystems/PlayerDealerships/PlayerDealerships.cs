@@ -2,6 +2,7 @@
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -51,6 +52,17 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                         player.ResetData(dealerColDataIdentifier);
                     }
                 });
+            }
+        }
+
+        [Command("sellveh")]
+        public void sellVehicleCommand(Player player)
+        {
+            KeyValuePair<string, Dealer> dealerData = player.GetData<KeyValuePair<string, Dealer>>(dealerColDataIdentifier);
+
+            if (dealerData.Value != null)
+            {
+                player.SendChatMessage("Dealer data " + JsonConvert.SerializeObject(dealerData));
             }
         }
     }
