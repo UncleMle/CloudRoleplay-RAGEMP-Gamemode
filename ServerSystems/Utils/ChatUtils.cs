@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CloudRP.Utils
+namespace CloudRP.ServerSystems.Utils
 {
     internal class ChatUtils : Script
     {
@@ -34,13 +34,13 @@ namespace CloudRP.Utils
 
         public static void sendWithNickName(Player player, Player target, string prefix, string suffix, bool checkDims = true)
         {
-            if(!checkDims)
+            if (!checkDims)
             {
                 player.TriggerEvent("sendWithNickName", target, prefix, suffix);
                 return;
             }
 
-            if ((player.Dimension == target.Dimension) && checkDims)
+            if (player.Dimension == target.Dimension && checkDims)
             {
                 player.TriggerEvent("sendWithNickName", target, prefix, suffix);
             }
@@ -53,7 +53,7 @@ namespace CloudRP.Utils
             Console.ForegroundColor = colour;
             Console.Write(_c_Server + message);
             Console.ForegroundColor = ConsoleColor.White;
-            
+
             Console.WriteLine();
         }
 

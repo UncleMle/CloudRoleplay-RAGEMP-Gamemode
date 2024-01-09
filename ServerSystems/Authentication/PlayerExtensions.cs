@@ -1,7 +1,7 @@
 ﻿using CloudRP.GeneralSystems.GeneralCommands;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Admin;
-using CloudRP.Utils;
+using CloudRP.ServerSystems.Utils;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;

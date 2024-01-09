@@ -6,7 +6,7 @@ using CloudRP.ServerSystems.AntiCheat;
 using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.DiscordSystem;
-using CloudRP.Utils;
+using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using Discord;
 using GTANetworkAPI;

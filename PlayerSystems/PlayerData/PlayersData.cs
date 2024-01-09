@@ -1,6 +1,6 @@
 ﻿using CloudRP.GeneralSystems.GeneralCommands;
 using CloudRP.PlayerSystems.Character;
-using CloudRP.Utils;
+using CloudRP.ServerSystems.Utils;
 using Discord;
 using GTANetworkAPI;
 using Microsoft.EntityFrameworkCore;

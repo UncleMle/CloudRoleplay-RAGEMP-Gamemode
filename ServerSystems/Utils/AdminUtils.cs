@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CloudRP.Utils
+namespace CloudRP.ServerSystems.Utils
 {
     internal class AdminUtils : Script
     {
@@ -27,14 +27,14 @@ namespace CloudRP.Utils
 
             foreach (KeyValuePair<Player, User> entry in onlineStaff)
             {
-                if(entry.Value.admin_status > rank)
+                if (entry.Value.admin_status > rank)
                 {
                     Player recievingStaff = entry.Key;
                     staffSay(recievingStaff, message);
                 }
             }
 
-            if(sendConsole)
+            if (sendConsole)
             {
                 ChatUtils.formatConsolePrint(message);
             }
@@ -82,7 +82,7 @@ namespace CloudRP.Utils
             List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
             Dictionary<Player, User> onlineStaff = new Dictionary<Player, User>();
 
-            foreach(Player entry in onlinePlayers)
+            foreach (Player entry in onlinePlayers)
             {
                 User userData = entry.getPlayerAccountData();
                 DbCharacter characterData = entry.getPlayerCharacterData();
@@ -124,9 +124,9 @@ namespace CloudRP.Utils
         {
             Dictionary<Player, User> adminsHandling = report.adminsHandling;
 
-            foreach(KeyValuePair<Player, User> entry in adminsHandling)
+            foreach (KeyValuePair<Player, User> entry in adminsHandling)
             {
-                if(entry.Key != null && !entry.Key.Equals(excludePlayer))
+                if (entry.Key != null && !entry.Key.Equals(excludePlayer))
                 {
                     NAPI.Chat.SendChatMessageToPlayer(entry.Key, message);
                 }
@@ -138,12 +138,12 @@ namespace CloudRP.Utils
             List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
             Dictionary<Player, User> adminGroup = new Dictionary<Player, User>();
 
-            foreach(Player player in onlinePlayers)
+            foreach (Player player in onlinePlayers)
             {
                 User playerData = player.getPlayerAccountData();
                 DbCharacter characterData = player.getPlayerCharacterData();
 
-                if(playerData != null && characterData != null && playerData.admin_status > (int)adminRank)
+                if (playerData != null && characterData != null && playerData.admin_status > (int)adminRank)
                 {
                     adminGroup.Add(player, playerData);
                 }
@@ -160,9 +160,9 @@ namespace CloudRP.Utils
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
-                DbCharacter findCharacter = dbContext.characters.Where(character => characterName.ToLower() == charName.ToLower()).FirstOrDefault(); 
+                DbCharacter findCharacter = dbContext.characters.Where(character => characterName.ToLower() == charName.ToLower()).FirstOrDefault();
 
-                if(findCharacter != null)
+                if (findCharacter != null)
                 {
                     List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
 
@@ -170,9 +170,9 @@ namespace CloudRP.Utils
                         .Where(acc => acc.account_id == findCharacter.owner_id)
                         .FirstOrDefault();
 
-                    if(findAccount != null)
+                    if (findAccount != null)
                     {
-                        if(findAccount.admin_status < (int)AdminRanks.Admin_Developer)
+                        if (findAccount.admin_status < (int)AdminRanks.Admin_Developer)
                         {
                             foreach (Player p in onlinePlayers)
                             {
@@ -193,29 +193,30 @@ namespace CloudRP.Utils
                             wasBanned = true;
                         }
                     }
-                } 
+                }
             }
 
             return wasBanned;
-        }       
-        
+        }
+
         public static bool unBanCharacter(string characterName)
         {
             string charName = CommandUtils.getCharName(characterName);
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
-                DbCharacter findCharacter = dbContext.characters.Where(character => characterName.ToLower() == charName).FirstOrDefault(); 
+                DbCharacter findCharacter = dbContext.characters.Where(character => characterName.ToLower() == charName).FirstOrDefault();
 
-                if(findCharacter != null)
+                if (findCharacter != null)
                 {
                     findCharacter.character_isbanned = 0;
-                    
+
                     dbContext.Update(findCharacter);
                     dbContext.SaveChanges();
 
                     return true;
-                } else
+                }
+                else
                 {
                     return false;
                 }
@@ -235,8 +236,8 @@ namespace CloudRP.Utils
         public long timeCreated { get; set; } = CommandUtils.generateUnix();
         public bool closed { get; set; }
         public ulong discordRefId { get; set; }
-    }    
-    
+    }
+
     public class SharedReport
     {
         public int playerId { get; set; }

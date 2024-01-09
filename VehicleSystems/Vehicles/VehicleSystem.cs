@@ -2,7 +2,7 @@
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Admin;
 using CloudRP.ServerSystems.Database;
-using CloudRP.Utils;
+using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.VehicleInsurance;
 using CloudRP.VehicleSystems.VehicleModification;
 using GTANetworkAPI;

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Text;
 
-namespace CloudRP.Utils
+namespace CloudRP.ServerSystems.Utils
 {
     internal class CommandUtils : Script
     {
@@ -19,7 +19,7 @@ namespace CloudRP.Utils
             List<Player> allPlayers = NAPI.Pools.GetAllPlayers();
             Player returnPlayer = null;
 
-            foreach(Player findPlayer in allPlayers)
+            foreach (Player findPlayer in allPlayers)
             {
                 DbCharacter characterData = findPlayer.getPlayerCharacterData();
 
@@ -33,7 +33,7 @@ namespace CloudRP.Utils
                         returnPlayer = findPlayer;
                     }
 
-                    if(returnPlayer == null)
+                    if (returnPlayer == null)
                     {
                         string nameFind = nameOrId.ToLower();
 
@@ -68,7 +68,8 @@ namespace CloudRP.Utils
             {
                 int parsedInt = int.Parse(name);
                 return parsedInt;
-            } catch 
+            }
+            catch
             {
                 return null;
             }
@@ -77,8 +78,8 @@ namespace CloudRP.Utils
         public static void errorSay(Player player, string message)
         {
             NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.error + message);
-        } 
-        
+        }
+
         public static void successSay(Player player, string message)
         {
             NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.Success + message);
@@ -92,8 +93,8 @@ namespace CloudRP.Utils
         public static void sendMessageToPlayersInRadius(Player player, string prefix, string suffix, double radius)
         {
             List<Player> closePlayers = getPlayersInRadius(player, radius);
-            
-            foreach(Player closePlayer in closePlayers)
+
+            foreach (Player closePlayer in closePlayers)
             {
                 ChatUtils.sendWithNickName(closePlayer, player, prefix, suffix);
             }
@@ -110,7 +111,7 @@ namespace CloudRP.Utils
 
             for (int i = 0; i < subs.Length; i++)
             {
-                subs[i] = Char.ToUpper(subs[i][0]) + subs[i].Substring(1);
+                subs[i] = char.ToUpper(subs[i][0]) + subs[i].Substring(1);
             }
 
             string name = string.Join("_", subs);

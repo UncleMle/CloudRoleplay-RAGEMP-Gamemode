@@ -3,7 +3,7 @@ using CloudRP.PlayerSystems.ChatSystem;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.Database;
-using CloudRP.Utils;
+using CloudRP.ServerSystems.Utils;
 using CloudRP.World.TimeWeather;
 using GTANetworkAPI;
 using System;

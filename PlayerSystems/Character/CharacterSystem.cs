@@ -3,7 +3,7 @@ using CloudRP.ServerSystems.Admin;
 using CloudRP.ServerSystems.AntiCheat;
 using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.Database;
-using CloudRP.Utils;
+using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.VehicleDealerships;
 using Discord;
 using GTANetworkAPI;

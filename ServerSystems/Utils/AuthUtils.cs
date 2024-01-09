@@ -15,7 +15,7 @@ using CloudRP.PlayerSystems.Character;
 using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.Database;
 
-namespace CloudRP.Utils
+namespace CloudRP.ServerSystems.Utils
 {
     internal class AuthUtils : Script
     {
@@ -98,7 +98,8 @@ namespace CloudRP.Utils
                 };
 
                 smtpClient.Send(msg);
-            } catch
+            }
+            catch
             {
 
             }
@@ -106,11 +107,11 @@ namespace CloudRP.Utils
 
         public static bool checkCharacterName(string name)
         {
-            using(DefaultDbContext dbContext = new DefaultDbContext())
+            using (DefaultDbContext dbContext = new DefaultDbContext())
             {
                 DbCharacter findChar = dbContext.characters.Where(charac => charac.character_name == name).FirstOrDefault();
 
-                if(findChar != null)
+                if (findChar != null)
                 {
                     return false;
                 }
@@ -143,8 +144,8 @@ namespace CloudRP.Utils
             }
 
             return true;
-        }       
-        
+        }
+
         public static bool validateNick(string input)
         {
             string specialChar = @"\|!#$%&/()=?»«@£§€{}~;<>_";
@@ -228,7 +229,7 @@ namespace CloudRP.Utils
     public class User
     {
         public int account_id { get; set; }
-        public int auto_login {  get; set; }
+        public int auto_login { get; set; }
         public string username { get; set; }
         public int admin_status { get; set; }
         public bool adminDuty { get; set; } = false;
@@ -252,7 +253,7 @@ namespace CloudRP.Utils
         public string admin_ped { get; set; }
         public string admin_name { get; set; }
         public bool isFlying { get; set; }
-        public bool isFrozen {get; set;}
+        public bool isFrozen { get; set; }
         public bool isOnCharacterCreation { get; set; }
         public bool admin_esp { get; set; }
         public bool showAdminPed { get; set; }
@@ -268,7 +269,7 @@ namespace CloudRP.Utils
         public CharacterModel characterModel { get; set; }
         public CharacterClothing characterClothing { get; set; }
         public bool voiceChatState { get; set; }
-        public bool loggingOut {  get; set; }
+        public bool loggingOut { get; set; }
     }
 
     class Register
@@ -282,8 +283,8 @@ namespace CloudRP.Utils
     class OtpStore
     {
         public string otp { get; set; }
-        public int otpTries { get; set; }  
-        public Register registeringData { get; set; }   
+        public int otpTries { get; set; }
+        public Register registeringData { get; set; }
         public long unixMade { get; set; }
     }
 

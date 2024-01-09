@@ -1,7 +1,8 @@
 ﻿using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
-using CloudRP.Utils;
+using CloudRP.ServerSystems.Utils;
 using CloudRP.World.MarkersLabels;
+using CloudRP.World.TimeWeather;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
@@ -14,6 +15,8 @@ namespace CloudRP.World.BanksAtms
     public class Banks : Script
     {
         public static string _tellerColshapeDataIdentifier = "bankTellerColshapeData";
+        public static int bankCloseHour = 22;
+        public static int bankOpenHour = 8;
         public static List<Bank> banks = new List<Bank>
         {
             new Bank
@@ -59,7 +62,7 @@ namespace CloudRP.World.BanksAtms
                     {
                         ColShape tellerCol = NAPI.ColShape.CreateSphereColShape(teller, 1.0f, 0);
                         tellerCol.SetData(_tellerColshapeDataIdentifier, bank);
-                        MarkersAndLabels.setTextLabel(teller, "Use ~y~Y~w~ to interact with bank.", 5f);
+                        MarkersAndLabels.setTextLabel(teller, $"Use ~y~Y~w~ to interact with bank. (Open - {bankOpenHour}:00 to {bankCloseHour}:00)", 5f);
                         MarkersAndLabels.setPlaceMarker(teller);
 
                         Bank bankData = tellerCol.GetData<Bank>(_tellerColshapeDataIdentifier);
@@ -94,14 +97,17 @@ namespace CloudRP.World.BanksAtms
 
             if (bankData != null && characterData != null)
             {
-                uiHandling.handleObjectUiMutation(player, MutationKeys.AtmData, new AtmUiData
+                if(isBankOpen(player))
                 {
-                    isBank = true,
-                    balanceMoney = characterData.money_amount,
-                    balanceCash = characterData.cash_amount,
-                });
+                    uiHandling.handleObjectUiMutation(player, MutationKeys.AtmData, new AtmUiData
+                    {
+                        isBank = true,
+                        balanceMoney = characterData.money_amount,
+                        balanceCash = characterData.cash_amount,
+                    });
 
-                uiHandling.pushRouterToClient(player, Browsers.Atm);
+                    uiHandling.pushRouterToClient(player, Browsers.Atm);
+                }
             }
         }
 
@@ -111,7 +117,7 @@ namespace CloudRP.World.BanksAtms
             Bank bankData = player.GetData<Bank>(_tellerColshapeDataIdentifier);
             DbCharacter characterData = player.getPlayerCharacterData();
 
-            if (bankData != null && characterData != null)
+            if (bankData != null && characterData != null && isBankOpen(player))
             {
                 if (amount == null || string.IsNullOrEmpty(amount))
                 {
@@ -146,7 +152,6 @@ namespace CloudRP.World.BanksAtms
                 {
                     uiHandling.sendPushNotifError(player, "Enter a valid money amount", 6600, true);
                 }
-
             }
             else
             {
@@ -161,7 +166,7 @@ namespace CloudRP.World.BanksAtms
             DbCharacter characterData = player.getPlayerCharacterData();
             BankTransfer bankTransfer = JsonConvert.DeserializeObject<BankTransfer>(data);
 
-            if (bankData != null && characterData != null && bankTransfer != null)
+            if (bankData != null && characterData != null && bankTransfer != null && isBankOpen(player))
             {
                 try
                 {
@@ -221,6 +226,22 @@ namespace CloudRP.World.BanksAtms
                 }
             }
 
+        }
+
+        public static bool isBankOpen(Player player)
+        {
+            bool isOpen = false;
+
+            if (TimeSystem.hour > bankCloseHour - 1 || TimeSystem.hour < bankOpenHour)
+            {
+                uiHandling.sendPushNotifError(player, $"The bank is currently closed. Come back at {bankOpenHour}{(bankOpenHour > 12 ? "AM" : "PM")}", 5500);
+                isOpen = false;
+            } else
+            {
+                isOpen = true;
+            }
+
+            return isOpen;
         }
     }
 }

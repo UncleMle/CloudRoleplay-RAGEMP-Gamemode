@@ -5,9 +5,9 @@ using GTANetworkAPI;
 using System.Threading.Tasks;
 using Discord.Rest;
 using System.Collections.Generic;
-using CloudRP.Utils;
 using System.Linq;
 using CloudRP.ServerSystems.Admin;
+using CloudRP.ServerSystems.Utils;
 
 namespace CloudRP.ServerSystems.DiscordSystem
 {

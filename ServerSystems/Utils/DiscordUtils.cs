@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CloudRP.Utils
+namespace CloudRP.ServerSystems.Utils
 {
     public class DiscordUtils : Script
     {
@@ -51,7 +51,7 @@ namespace CloudRP.Utils
 
         public static void creationConnection(Player player, DbCharacter character, LogCreation creationType)
         {
-            using(DefaultDbContext dbContext = new DefaultDbContext())
+            using (DefaultDbContext dbContext = new DefaultDbContext())
             {
                 CharacterConnection joinLog = new CharacterConnection
                 {
@@ -92,7 +92,7 @@ namespace CloudRP.Utils
 
         public static async Task mentionUser(ulong userId)
         {
-            await DiscordIntegration.SendMessage(DiscordSystems.staffChannel, Discord.MentionUtils.MentionUser(userId), false);
+            await DiscordIntegration.SendMessage(DiscordSystems.staffChannel, MentionUtils.MentionUser(userId), false);
         }
 
         public static string getRedirectUri(ulong channelId)

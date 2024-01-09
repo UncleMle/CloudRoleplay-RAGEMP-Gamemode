@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.Linq;
-using CloudRP.Utils;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.ChatSystem;
@@ -11,6 +10,7 @@ using CloudRP.PlayerSystems.DeathSystem;
 using CloudRP.ServerSystems.Admin;
 using CloudRP.ServerSystems.AntiCheat;
 using CloudRP.ServerSystems.Database;
+using CloudRP.ServerSystems.Utils;
 
 namespace CloudRP.ServerSystems.Authentication
 {
