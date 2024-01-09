@@ -124,11 +124,13 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
 
                             targetVehicle.Position = vehPosition.vehPos;
                             targetVehicle.Rotation = new Vector3(0, 0, vehPosition.vehRot);
+                            targetVehicle.Locked = false;
+
                             targetVehicleData.dealership_id = dealer.dealerId;
+                            targetVehicleData.dealership_price = price;
                             targetVehicleData.dealership_spot_id = vehPosition.spotId;
                             targetVehicleData.dynamic_dealer_spot_id = vehPosition.spotId;
                             targetVehicleData.vehicle_locked = false;
-                            targetVehicle.Locked = false;
 
                             vehPosition.vehInSpot = targetVehicleData;
 
@@ -216,8 +218,26 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                             return;
                         }
 
+                        if((characterData.money_amount - vehicleData.dealership_price) < 0)
+                        {
+                            uiHandling.setLoadingState(player, false, true);
+                            CommandUtils.errorSay(player, "You don't have enough money to cover the purchase of this vehicle.");
+                            return;
+                        }
 
 
+                        characterData.money_amount -= vehicleData.dealership_price;
+                        vehicleData.dynamic_dealer_spot_id = -1;
+                        vehicleData.dealership_spot_id = -1;
+                        vehicleData.dealership_id = -1;
+                        vehicleData.owner_id = characterData.character_id;
+
+                        player.setPlayerCharacterData(characterData, false, true);
+                        targetVehicle.saveVehicleData(vehicleData, true);
+                        targetVehicle.ResetSharedData(_playerVehicleDealerDataIdentifier);
+                        targetVehicle.ResetData(_playerVehicleDealerDataIdentifier);
+
+                        CommandUtils.successSay(player, $"You purchased a vehicle [{targetVehicle.NumberPlate}] for ${vehicleData.dealership_price}");
                     }
                 }
             }
