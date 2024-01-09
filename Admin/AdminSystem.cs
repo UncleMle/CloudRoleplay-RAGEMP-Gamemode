@@ -11,6 +11,7 @@ using CloudRP.Vehicles;
 using Discord;
 using GTANetworkAPI;
 using Integration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -62,6 +63,18 @@ namespace CloudRP.Admin
                 player.setPlayerToBanScreen(checkIsBanned);
             }
 
+        }
+
+        [Command("ahelp", "~r~/ahelp")]
+        public void adminHelpCommand(Player player)
+        {
+            if (player.checkUserData((int)AdminRanks.Admin_Support))
+            {
+                for (int i = 0; i < NAPI.Resource.GetResourceCommands("CloudRP").Length; i++)
+                {
+                    AdminUtils.staffSay(player, " /" + NAPI.Resource.GetResourceCommands("CloudRP")[i]);
+                }
+            }
         }
 
         [Command("report", "~y~Use: ~w~/report [description]", GreedyArg = true)]
