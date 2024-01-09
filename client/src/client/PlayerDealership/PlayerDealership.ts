@@ -34,6 +34,13 @@ export default class PlayerDealership {
                         scale: [0.4, 0.4],
                         outline: false
                     });
+                    
+                    mp.game.graphics.drawText(`"${vehicleData.dealership_description}"`, [drawCoordsChassis.x, drawCoordsChassis.y + 0.02], {
+                        font: 4,
+                        color: [255, 255, 255, 255],
+                        scale: [0.2, 0.2],
+                        outline: false
+                    });
                 }
             }
         });
@@ -50,8 +57,6 @@ export default class PlayerDealership {
 
         if (vehicleData && vehicleData.dealership_id != -1 && vehicleData.dealership_spot_id != -1) {
             vehicle.freezePosition(true);
-
-            mp.gui.chat.push("Frozen");
         }
     }
 

@@ -119,6 +119,18 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                                 return;
                             }
 
+                            if(!AuthUtils.validateNick(desc))
+                            {
+                                CommandUtils.errorSay(player, "Dealer descriptions cannot have certain special characters.");
+                                return;
+                            }
+
+                            if(desc.Length > 256)
+                            {
+                                CommandUtils.errorSay(player, "Dealer descriptions cannot be longer than 256 characters.");
+                                return;
+                            }
+
                             player.WarpOutOfVehicle();
                             CommandUtils.successSay(player, $"You have sold your vehicle for {ChatUtils.moneyGreen}${price}{ChatUtils.White}!");
 
@@ -128,6 +140,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
 
                             targetVehicleData.dealership_id = dealer.dealerId;
                             targetVehicleData.dealership_price = price;
+                            targetVehicleData.dealership_description = desc;
                             targetVehicleData.dealership_spot_id = vehPosition.spotId;
                             targetVehicleData.dynamic_dealer_spot_id = vehPosition.spotId;
                             targetVehicleData.vehicle_locked = false;
