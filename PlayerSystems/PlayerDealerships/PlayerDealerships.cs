@@ -34,6 +34,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
             {
                 MarkersAndLabels.setTextLabel(item.Value.sellVehPos, "Use /sellveh to sell vehicle.", 15f);
                 NAPI.Blip.CreateBlip(523, item.Value.sellVehPos, 1f, 1, item.Key, 255, 1f, true);
+                NAPI.Marker.CreateMarker(36, new Vector3(item.Value.sellVehPos.X, item.Value.sellVehPos.Y, item.Value.sellVehPos.Z + 0.09), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(255, 0, 0, 250), false, 0);
 
                 ColShape dealer = NAPI.ColShape.CreateSphereColShape(item.Value.sellVehPos, 1f);
 

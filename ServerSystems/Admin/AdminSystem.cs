@@ -44,12 +44,15 @@ namespace CloudRP.ServerSystems.Admin
 
         public static void saveAdutyPosition(User userData, Vector3 pos)
         {
-            if (adminAdutyPositions.ContainsKey(userData.account_id))
+            if(userData != null)
             {
-                adminAdutyPositions.Remove(userData.account_id);
-            }
+                if (adminAdutyPositions.ContainsKey(userData.account_id))
+                {
+                    adminAdutyPositions.Remove(userData.account_id);
+                }
 
-            adminAdutyPositions.Add(userData.account_id, pos);
+                adminAdutyPositions.Add(userData.account_id, pos);
+            }
         }
 
         [ServerEvent(Event.PlayerConnected)]
@@ -740,6 +743,7 @@ namespace CloudRP.ServerSystems.Admin
 
             if (player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
+                saveAdutyPosition(userData, player.Position);
                 ChatUtils.formatConsolePrint($"{userData.admin_name} teleported to way point.");
                 player.TriggerEvent("admin:events:teleportWay");
             }
