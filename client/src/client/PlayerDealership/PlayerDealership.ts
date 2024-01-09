@@ -16,6 +16,8 @@ export default class PlayerDealership {
 
         if(vehicleData && vehicleData.dealership_id != -1 && vehicleData.dealership_spot_id != -1) {
             vehicle.freezePosition(true);
+
+            mp.gui.chat.push("Frozen");
         }   
     } 
     

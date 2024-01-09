@@ -92,7 +92,14 @@ namespace CloudRP.VehicleSystems.Vehicles
             vehicle.vehicle_locked = true;
             vehicle.vehicle_key_holders = getVehicleKeyHoldersFromDb(vehicle);
 
+            if(vehicle.dealership_id != -1)
+            {
+                veh.SetSharedData(PlayerDealerships._playerVehicleDealerDataIdentifier, true);
+                veh.SetData(PlayerDealerships._playerVehicleDealerDataIdentifier, true);
+            }
+
             veh.setVehicleData(vehicle, true, true);
+
             return veh;
         }
 
@@ -169,6 +176,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                                     {
                                         vehicle.Position = dealerSlot.vehPos;
                                         vehicle.Rotation = new Vector3(0, 0, dealerSlot.vehRot);
+                                        vehicle.saveVehicleData(vehicleData, true);
                                     }
                                 } else
                                 {

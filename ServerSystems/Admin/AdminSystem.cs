@@ -634,7 +634,7 @@ namespace CloudRP.ServerSystems.Admin
 
                     if(vehicleData != null)
                     {
-                        if(vehicleData.dealership_id == -1)
+                        if(vehicleData.dealership_id != -1)
                         {
                             CommandUtils.errorSay(player, "You cannot teleport vehicles from a dealership.");
                             return;

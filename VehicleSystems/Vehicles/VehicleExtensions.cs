@@ -40,6 +40,8 @@ namespace CloudRP.VehicleSystems.Vehicles
 
         public static void saveVehicleData(this Vehicle vehicle, DbVehicle vehicleData, bool updateDb = false)
         {
+            vehicle.setVehicleData(vehicleData);
+
             if (updateDb)
             {
                 using (DefaultDbContext dbContext = new DefaultDbContext())
