@@ -248,8 +248,30 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                     player.SendChatMessage(ChatUtils.info + "You own this vehicle. Use /getbackveh to retrieve it.");
                 }
 
+                NAPI.Native.SendNativeToPlayer(player, Hash.FREEZE_ENTITY_POSITION, vehicle, true);
+
                 player.SendChatMessage(ChatUtils.info + "To view this vehicle's mods or purchase this vehicle use /mods.");
             }
+        }
+
+        [ServerEvent(Event.PlayerExitVehicle)]
+        public void onPlayerExitVehicle(Player player, Vehicle vehicle)
+        {
+            DbVehicle vehicleData = vehicle.getData();
+
+            if(vehicleData != null && vehicleData.dealership_id != -1)
+            {
+                DealerVehPos vehSpot = PlayerDealerVehPositions.dealerVehPositions
+                    .Where(spot => spot.spotId == vehicleData.dealership_spot_id)
+                    .FirstOrDefault();
+
+                if(vehSpot != null)
+                {
+                    vehicle.Position = vehSpot.vehPos;
+                    vehicle.Rotation = new Vector3(0, 0, vehSpot.vehRot);
+                }
+            }
+
         }
 
         [Command("d")]

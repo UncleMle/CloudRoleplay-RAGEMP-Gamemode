@@ -1,7 +1,6 @@
 import { VehicleData } from "@/@types";
 import getVehicleData from "@/PlayerMethods/getVehicleData";
 import VehicleSpeedo from "@/VehicleSystems/VehicleSpeedo";
-import VehicleSystems from "@/VehicleSystems/VehicleSystem";
 
 export default class PlayerDealership {
     public static LocalPlayer: PlayerMp = mp.players.local;
