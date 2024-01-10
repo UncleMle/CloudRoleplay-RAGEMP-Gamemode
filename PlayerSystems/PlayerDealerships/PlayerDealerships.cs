@@ -36,7 +36,19 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
             { 
                 dealerId = 1,
                 sellVehPos = new Vector3(-1650.1, -827.3, 10.0),
-            } 
+                vehiclePositions = PlayerDealerVehPositions.dealerVehPositions
+                .Where(dealerV => dealerV.ownerId == 1)
+                .ToList()
+            }
+            },
+            { "High End Dealer", new Dealer 
+            { 
+                dealerId = 2,
+                sellVehPos = new Vector3(-89.8, 6375.7, 31.2),
+                vehiclePositions = PlayerDealerVehPositions.dealerVehPositions
+                .Where(dealerV => dealerV.ownerId == 1)
+                .ToList()
+            }
             },
         };
 
@@ -238,14 +250,12 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
 
                     if (vehicleData != null && vehicleData.dealership_id != -1 && vehicleData.dealership_spot_id != -1)
                     {
-                        /*
                         if (vehicleData.owner_id == characterData.character_id)
                         {
                             uiHandling.setLoadingState(player, false, true);
                             CommandUtils.errorSay(player, "You cannot purchase back your own vehicle. Use /getbackveh.");
                             return;
                         }
-                        */
 
                         if((characterData.money_amount - vehicleData.dealership_price) < 0)
                         {
