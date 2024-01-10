@@ -102,13 +102,9 @@ namespace CloudRP.VehicleSystems.Vehicles
                 {
                     if(dealerVehPos.ownerId == vehicle.dealership_id && dealerVehPos.vehInSpot == null)
                     {
-                        Console.WriteLine("Spawned vehicle in spot " + dealerVehPos.spotId);
                         dealerVehPos.vehInSpot = vehicle;
 
                         vehicle.dynamic_dealer_spot_id = dealerVehPos.spotId;
-
-                        Console.WriteLine(dealerVehPos.vehRot + " rot");
-
 
                         veh.Position = dealerVehPos.vehPos;
                         veh.Rotation = new Vector3(0, 0, dealerVehPos.vehRot);

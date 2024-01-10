@@ -65,7 +65,6 @@ namespace CloudRP.VehicleSystems.Vehicles
         {
             if (resyncMods)
             {
-                Console.WriteLine("Resynced mods");
                 vehicleData.vehicle_mods = VehicleSystem.getVehiclesMods(vehicleData.vehicle_id);
                 vehicle.SetData(VehicleSystem._vehicleSharedModData, vehicleData.vehicle_mods);
                 vehicle.SetSharedData(VehicleSystem._vehicleSharedDataIdentifier, vehicleData.vehicle_mods);

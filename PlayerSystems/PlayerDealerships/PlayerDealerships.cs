@@ -22,10 +22,11 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
         public static readonly string _dealerColDataIdentifier = "PlayerVehicleDealerColshapeData";
         public static Dictionary<string, Dealer> playerDealerships = new Dictionary<string, Dealer>
         {
-            { "Low End Dealer", new Dealer 
-            { 
+            { "Low End Dealer", new Dealer
+            {
                 dealerId = 0,
                 sellVehPos = new Vector3(-37.2, -2108.0, 16.7),
+                taxRate = 4.7f,
                 vehiclePositions = PlayerDealerVehPositions.dealerVehPositions
                 .Where(dealerV => dealerV.ownerId == 0)
                 .ToList()
@@ -34,6 +35,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
             { "High End Dealer", new Dealer 
             { 
                 dealerId = 1,
+                taxRate = 2.4f,
                 sellVehPos = new Vector3(-1650.1, -827.3, 10.0),
             } 
             },
@@ -43,7 +45,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
         {
             foreach (KeyValuePair<string, Dealer> item in playerDealerships)
             {
-                MarkersAndLabels.setTextLabel(item.Value.sellVehPos, "Use /sellveh to sell vehicle.", 15f);
+                MarkersAndLabels.setTextLabel(item.Value.sellVehPos, $"Use /sellveh to sell vehicle.\nRate - ~r~{item.Value.taxRate}%", 15f);
                 NAPI.Blip.CreateBlip(523, item.Value.sellVehPos, 1f, 1, item.Key, 255, 1f, true);
                 NAPI.Marker.CreateMarker(36, new Vector3(item.Value.sellVehPos.X, item.Value.sellVehPos.Y, item.Value.sellVehPos.Z + 0.09), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(255, 0, 0, 250), false, 0);
 
@@ -215,8 +217,9 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
             if(player.IsInVehicle)
             {
                 DbCharacter characterData = player.getPlayerCharacterData();
+                KeyValuePair<string, Dealer> dealerData = player.GetData<KeyValuePair<string, Dealer>>(_dealerColDataIdentifier);
 
-                if(characterData != null)
+                if(characterData != null && dealerData.Value != null)
                 {
                     Vehicle targetVehicle = player.Vehicle;
                     DbVehicle vehicleData = targetVehicle.getData();
@@ -236,6 +239,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                             CommandUtils.errorSay(player, "You don't have enough money to cover the purchase of this vehicle.");
                             return;
                         }
+
                         characterData.money_amount -= vehicleData.dealership_price;
                         
                         using(DefaultDbContext dbContext = new DefaultDbContext())
@@ -246,7 +250,9 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
 
                             if(findCharacter != null)
                             {
-                                findCharacter.money_amount += vehicleData.dealership_price;
+                                long taxedPrice = vehicleData.dealership_price -= vehicleData.dealership_price * (long)dealerData.Value.taxRate;
+
+                                findCharacter.money_amount += taxedPrice;
                                 dbContext.Update(findCharacter);
                                 dbContext.SaveChanges();
 

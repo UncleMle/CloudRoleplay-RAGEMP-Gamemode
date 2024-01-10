@@ -9,6 +9,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
     public class Dealer
     {
         public Vector3 sellVehPos {  get; set; }
+        public float taxRate { get; set; }
         public int dealerId { get; set; }
         public List<DealerVehPos> vehiclePositions { get; set; }
     }
