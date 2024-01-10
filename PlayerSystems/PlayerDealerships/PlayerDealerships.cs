@@ -336,8 +336,6 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                     .Where(dealerPos => dealerPos.spotId == spotId)
                     .FirstOrDefault()
                     .vehInSpot = vehicleData;
-
-            Console.WriteLine("Set spot active " + spotId + " vehicle " + vehicleData.numberplate);
         }
     }
 }

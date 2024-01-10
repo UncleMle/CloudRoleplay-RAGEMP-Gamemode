@@ -99,15 +99,10 @@ namespace CloudRP.VehicleSystems.Vehicles
                 veh.SetSharedData(PlayerDealerships._playerVehicleDealerDataIdentifier, true);
                 veh.SetData(PlayerDealerships._playerVehicleDealerDataIdentifier, true);
 
-                bool foundSpot = false;
-
                 foreach(DealerVehPos dealerVehPos in PlayerDealerVehPositions.dealerVehPositions)
                 {
                     if(dealerVehPos.ownerId == vehicle.dealership_id && dealerVehPos.vehInSpot == null)
                     {
-                        Console.WriteLine("Dealer id " + vehicle.dealership_id);
-
-                        foundSpot = true;
                         dealerVehPos.vehInSpot = vehicle;
                         vehicle.dynamic_dealer_spot_id = dealerVehPos.spotId;
 
@@ -117,11 +112,6 @@ namespace CloudRP.VehicleSystems.Vehicles
                         PlayerDealerships.setSpotActiveWithVehicle(vehicle, vehicle.dynamic_dealer_spot_id);
                         break;
                     }
-                }
-
-                if(!foundSpot)
-                {
-                    Console.WriteLine("Spot not found for vehicle " + vehicle.numberplate);
                 }
             } else
             {
