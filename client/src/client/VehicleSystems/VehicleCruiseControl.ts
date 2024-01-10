@@ -15,7 +15,7 @@ export default class CruiseControl {
     public static handleDataHandler(entity: VehicleMp, data: VehicleData) {
         if(entity.type != "vehicle" || !data) return;
 
-        if(CruiseControl.localPlayer.vehicle && CruiseControl.localPlayer.vehicle.handle === entity.handle && CruiseControl.localPlayer.vehicle.getPedInSeat(-1) === CruiseControl.localPlayer.handle) {
+        if(CruiseControl.localPlayer.vehicle && typeof data.speed_limit === "number" && CruiseControl.localPlayer.vehicle.handle === entity.handle && CruiseControl.localPlayer.vehicle.getPedInSeat(-1) === CruiseControl.localPlayer.handle) {
             entity.setMaxSpeed(data.speed_limit);
         }
     }
@@ -23,7 +23,7 @@ export default class CruiseControl {
     public static handleVehicleEnter(vehicle: VehicleMp, seat: number) {
         let vehicleData: VehicleData | undefined = getVehicleData(vehicle);
 
-        if(vehicleData && vehicleData.speed_limit !== -1 && seat === -1) {
+        if(vehicleData && typeof vehicleData.speed_limit === "number" && vehicleData.speed_limit !== -1 && seat === -1) {
             vehicle.setMaxSpeed(vehicleData.speed_limit);
         }
     }

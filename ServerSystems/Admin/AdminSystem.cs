@@ -676,6 +676,33 @@ namespace CloudRP.ServerSystems.Admin
             else AdminUtils.sendNoAuth(player);
         }
 
+        [Command("vbringall", "~r~/vbringall")]
+        public void vbringAllCommand(Player player)
+        {
+            if(player.checkUserData((int)AdminRanks.Admin_Developer))
+            {
+                int count = 0;
+                NAPI.Pools.GetAllVehicles().ForEach(veh =>
+                {
+                    DbVehicle vehicleData = veh.getData();
+
+                    if (veh.getData() != null)
+                    {
+                        if(vehicleData.dealership_id != -1)
+                        {
+                            veh.removePlayerDealerStatus();
+                        }
+
+                        veh.Dimension = player.Dimension;
+                        veh.Position = player.Position;
+                        count++;
+                    }
+                });
+
+                AdminUtils.staffSay(player, $"You teleported all {count} vehicles in the world to your position.");
+            }
+        }
+
         [RemoteEvent("admin:fly")]
         [Command("fly", "~r~/fly")]
         public void fly(Player player)

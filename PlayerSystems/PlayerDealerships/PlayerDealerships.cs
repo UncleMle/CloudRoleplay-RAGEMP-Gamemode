@@ -187,6 +187,8 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
 
                             targetVehicle.SetSharedData(_playerVehicleDealerDataIdentifier, true);
                             targetVehicle.SetData(_playerVehicleDealerDataIdentifier, true);
+                            
+                            PlayerDealerships.setSpotActiveWithVehicle(targetVehicleData, vehPosition.spotId);
                             break;
                         }
                     }
@@ -232,6 +234,16 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                 }
 
                 player.SendChatMessage(ChatUtils.info + "To view this vehicle's mods or purchase this vehicle use /mods.");
+            }
+        }
+
+        [Command("d")]
+        public void dealeraddcomd(Player player)
+        {
+            if(player.getAdmin() > 7)
+            {
+                Console.WriteLine(",\r\n            new DealerVehPos\r\n            {\r\n                ownerId = 0,\r\n                spotId = 29,\r\n                vehPos = new Vector3("+player.Position.X+","+player.Position.Y+" ,"+ player.Position.Z+"),\r\n                vehRot = "+player.Rotation.Z+"\r\n            } ");
+
             }
         }
 
@@ -301,6 +313,15 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                     }
                 }
             }
+        }
+
+        public static void setSpotActiveWithVehicle(DbVehicle vehicleData, int spotId)
+        {
+            PlayerDealerVehPositions.dealerVehPositions
+                    .Where(dealerPos => dealerPos.spotId == spotId)
+                    .FirstOrDefault()
+                    .vehInSpot = vehicleData;
+
         }
     }
 }

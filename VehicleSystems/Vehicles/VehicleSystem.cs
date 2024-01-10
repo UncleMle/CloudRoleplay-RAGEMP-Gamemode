@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Authentication;
 using System.Timers;
 
 namespace CloudRP.VehicleSystems.Vehicles
@@ -102,10 +103,12 @@ namespace CloudRP.VehicleSystems.Vehicles
                 {
                     if(dealerVehPos.ownerId == vehicle.dealership_id && dealerVehPos.vehInSpot == null)
                     {
-                        dealerVehPos.vehInSpot = vehicle;
+                        PlayerDealerships.setSpotActiveWithVehicle(vehicle, vehicle.dealership_spot_id);
 
+                        dealerVehPos.vehInSpot = vehicle;
                         vehicle.dynamic_dealer_spot_id = dealerVehPos.spotId;
 
+                        Console.WriteLine($"{vehicle.numberplate} POS::" + JsonConvert.SerializeObject(dealerVehPos.vehPos));
                         veh.Position = dealerVehPos.vehPos;
                         veh.Rotation = new Vector3(0, 0, dealerVehPos.vehRot);
                         break;

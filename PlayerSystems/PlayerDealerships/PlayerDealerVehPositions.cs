@@ -209,7 +209,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
             {
                 ownerId = 0,
                 spotId = 28,
-                vehPos = new Vector3(149.2, -2139.7, 16.7),
+                vehPos = new Vector3(-149.2, -2139.7, 16.7),
                 vehRot = -161.7
             },
             new DealerVehPos
@@ -218,6 +218,38 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                 spotId = 29,
                 vehPos = new Vector3(-152.5, -2141.2, 16.7),
                 vehRot = -156.7
+            },
+
+            /* 
+             * Owner 1 (High End LS)
+            */
+            new DealerVehPos
+            {
+                ownerId = 1,
+                spotId = 30,
+                vehPos = new Vector3(-1642.9216,-833.8997 ,10.014969),
+                vehRot = 140.86209
+            },
+            new DealerVehPos
+            {
+                ownerId = 1,
+                spotId = 31,
+                vehPos = new Vector3(-1640.5221,-835.9855 ,10.0099),
+                vehRot = 141.55534
+            },
+            new DealerVehPos
+            {
+                ownerId = 1,
+                spotId = 32,
+                vehPos = new Vector3(-1638.086,-837.78186 ,10.019208),
+                vehRot = 139.61304
+            },
+            new DealerVehPos
+            {
+                ownerId = 1,
+                spotId = 33,
+                vehPos = new Vector3(-1635.8938,-839.8978 ,9.997691),
+                vehRot = 139.99118
             }
         };
 
