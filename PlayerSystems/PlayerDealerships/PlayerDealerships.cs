@@ -18,6 +18,8 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
     public class PlayerDealerships : Script
     {
         public static readonly long maxSellPrice = 200000000;
+        public static readonly long highEndMinSellPrice = 50000;
+        public static readonly long lowEndMinSellPrice = 5000;
         public static readonly string _playerVehicleDealerDataIdentifier = "playerVehicleDealershipData";
         public static readonly string _playerDealerPurchaseData = "playerVehiclePurchaseVehicleData";
         public static readonly string _dealerColDataIdentifier = "PlayerVehicleDealerColshapeData";
@@ -26,6 +28,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
             { "Low End Dealer - LS", new Dealer
             {
                 dealerId = 0,
+                type = DealershipType.lowEnd,
                 sellVehPos = new Vector3(-37.2, -2108.0, 16.7),
                 vehiclePositions = PlayerDealerVehPositions.dealerVehPositions
                 .Where(dealerV => dealerV.ownerId == 0)
@@ -36,6 +39,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
             { 
                 dealerId = 1,
                 sellVehPos = new Vector3(-1650.1, -827.3, 10.0),
+                type = DealershipType.highEnd,
                 vehiclePositions = PlayerDealerVehPositions.dealerVehPositions
                 .Where(dealerV => dealerV.ownerId == 1)
                 .ToList()
@@ -44,6 +48,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
             { "High End Dealer - Paleto", new Dealer 
             { 
                 dealerId = 2,
+                type = DealershipType.highEnd,
                 sellVehPos = new Vector3(89.8, 6375.7, 31.2),
                 vehiclePositions = PlayerDealerVehPositions.dealerVehPositions
                 .Where(dealerV => dealerV.ownerId == 2)
@@ -140,6 +145,16 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                         return;
                     }
 
+                    long dealerMinSellPrice = 0;
+
+                    if(dealer.type == DealershipType.highEnd)
+                    {
+                        dealerMinSellPrice = highEndMinSellPrice;
+                    } else if(dealer.type == DealershipType.lowEnd)
+                    {
+                        dealerMinSellPrice = lowEndMinSellPrice;
+                    }
+
                     bool foundSpot = false;
 
                     foreach (DealerVehPos vehPosition in dealer.vehiclePositions)
@@ -148,9 +163,9 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                         {
                             foundSpot = true;
 
-                            if(price > maxSellPrice || price < 1)
+                            if(price > maxSellPrice || price < dealerMinSellPrice)
                             {
-                                CommandUtils.errorSay(player, $"Sell price must be between $1 and ${maxSellPrice}");
+                                CommandUtils.errorSay(player, $"Sell price must be between ${dealerMinSellPrice} and ${maxSellPrice}");
                                 return;
                             }
 

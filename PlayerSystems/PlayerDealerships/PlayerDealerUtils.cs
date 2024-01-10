@@ -10,6 +10,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
     {
         public Vector3 sellVehPos {  get; set; }
         public int dealerId { get; set; }
+        public DealershipType type { get; set; }
         public List<DealerVehPos> vehiclePositions { get; set; }
     }
 
@@ -20,5 +21,11 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
         public int ownerId { get; set;}
         public int spotId { get; set;}
         public DbVehicle vehInSpot { get; set; }
+    }
+
+    public enum DealershipType
+    {
+        lowEnd,
+        highEnd
     }
 }

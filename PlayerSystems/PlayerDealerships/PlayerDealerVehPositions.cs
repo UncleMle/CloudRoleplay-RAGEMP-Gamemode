@@ -250,7 +250,12 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                 spotId = 33,
                 vehPos = new Vector3(-1635.8938,-839.8978 ,9.997691),
                 vehRot = 139.99118
-            }
+            },
+
+            /*
+             * Owner 2 (High End Paleto) 
+            */
+
         };
 
     }
