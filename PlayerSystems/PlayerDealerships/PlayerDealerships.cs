@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CloudRP.PlayerSystems.PlayerDealerships
 {
@@ -85,7 +86,11 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
 
                 item.Value.vehiclePositions?.ForEach(vehPos =>
                 {
-                    ColShape vehPosCol = NAPI.ColShape.CreateSphereColShape(vehPos.vehPos, 5f);
+                    Vector3 pos = vehPos.vehPos;
+
+                    NAPI.TextLabel.CreateTextLabel("~r~No Park Zone.", new Vector3(pos.X, pos.Y, pos.Z - 0.08), 15f, 0.5f, 4, new Color(255, 255, 255, 255), true, 0);
+
+                    ColShape vehPosCol = NAPI.ColShape.CreateSphereColShape(pos, 5f);
 
                     vehPosCol.OnEntityEnterColShape += (col, player) =>
                     {
