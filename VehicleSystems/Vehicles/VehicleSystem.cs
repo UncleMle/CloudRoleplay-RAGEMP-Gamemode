@@ -397,6 +397,11 @@ namespace CloudRP.VehicleSystems.Vehicles
                 {
                     vehicle.Delete();
 
+                    PlayerDealerVehPositions.dealerVehPositions
+                        .Where(dealerPos => dealerPos.spotId == vehicleData.dynamic_dealer_spot_id)
+                        .FirstOrDefault()
+                        .vehInSpot = null;
+
                     NAPI.Task.Run(() =>
                     {
                         if(vehicleData != null)
