@@ -1,5 +1,7 @@
 import { VehicleData } from "@/@types";
 import getVehicleData from "@/PlayerMethods/getVehicleData";
+import VehicleSpeedo from "@/VehicleSystems/VehicleSpeedo";
+import VehicleSystems from "@/VehicleSystems/VehicleSystem";
 
 export default class PlayerDealership {
     public static LocalPlayer: PlayerMp = mp.players.local;
@@ -27,10 +29,19 @@ export default class PlayerDealership {
                     .length();
 
                 if (drawCoordsChassis && distance < 10) {
+                    if(VehicleSpeedo.getVehDispName(veh.model) !== "NULL") {
+                        mp.game.graphics.drawText(`~y~${VehicleSpeedo.getVehDispName(veh.model)}`, [drawCoordsChassis.x, drawCoordsChassis.y - 0.02], {
+                            font: 4,
+                            color: [255, 255, 255, 255],
+                            scale: [0.3, 0.3],
+                            outline: false
+                        });
+                    }
+                    
                     mp.game.graphics.drawText(`Being sold for ~g~$${vehicleData.dealership_price.toLocaleString('en-US')}`, [drawCoordsChassis.x, drawCoordsChassis.y], {
                         font: 4,
                         color: [255, 255, 255, 255],
-                        scale: [0.4, 0.4],
+                        scale: [0.3, 0.3],
                         outline: false
                     });
 
@@ -51,11 +62,6 @@ export default class PlayerDealership {
                 vehicle.freezePosition(false);
                 return;
             }
-
-            //let targetVector: Vector3 = vehicle.position;
-            //let vehGroundPosZ: number = mp.game.gameplay.getGroundZFor3dCoord(targetVector.x, targetVector.y, 1000, false, false);
-
-            //vehicle.position = new mp.Vector3(targetVector.x, targetVector.y, vehGroundPosZ);
 
             await mp.game.waitAsync(2500);
 

@@ -23,7 +23,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
         public static readonly string _dealerColDataIdentifier = "PlayerVehicleDealerColshapeData";
         public static Dictionary<string, Dealer> playerDealerships = new Dictionary<string, Dealer>
         {
-            { "Low End Dealer", new Dealer
+            { "Low End Dealer - LS", new Dealer
             {
                 dealerId = 0,
                 sellVehPos = new Vector3(-37.2, -2108.0, 16.7),
@@ -32,7 +32,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                 .ToList()
             } 
             },
-            { "High End Dealer", new Dealer 
+            { "High End Dealer - LS", new Dealer 
             { 
                 dealerId = 1,
                 sellVehPos = new Vector3(-1650.1, -827.3, 10.0),
@@ -41,12 +41,12 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                 .ToList()
             }
             },
-            { "High End Dealer", new Dealer 
+            { "High End Dealer - Paleto", new Dealer 
             { 
                 dealerId = 2,
-                sellVehPos = new Vector3(-89.8, 6375.7, 31.2),
+                sellVehPos = new Vector3(89.8, 6375.7, 31.2),
                 vehiclePositions = PlayerDealerVehPositions.dealerVehPositions
-                .Where(dealerV => dealerV.ownerId == 1)
+                .Where(dealerV => dealerV.ownerId == 2)
                 .ToList()
             }
             },
