@@ -195,5 +195,10 @@ namespace CloudRP.VehicleSystems.Vehicles
             }
         }
 
+        public static bool isBlockingSpotInRange(this Vehicle vehicle, Vector3 spot)
+        {
+            return vehicle.Position.DistanceToSquared(spot) < 10;
+        }
+
     }
 }

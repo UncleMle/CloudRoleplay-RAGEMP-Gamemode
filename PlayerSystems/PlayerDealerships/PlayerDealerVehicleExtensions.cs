@@ -29,7 +29,6 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                 vehicle.ResetSharedData(PlayerDealerships._playerVehicleDealerDataIdentifier);
                 vehicle.ResetData(PlayerDealerships._playerVehicleDealerDataIdentifier);
             }
-
         }
 
     }

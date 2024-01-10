@@ -159,7 +159,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
 
                     foreach (DealerVehPos vehPosition in dealer.vehiclePositions)
                     {
-                        if(vehPosition.vehInSpot == null)
+                        if(vehPosition.vehInSpot == null && VehicleSystem.checkVehInSpot(vehPosition.vehPos, 8) == null)
                         {
                             foundSpot = true;
 

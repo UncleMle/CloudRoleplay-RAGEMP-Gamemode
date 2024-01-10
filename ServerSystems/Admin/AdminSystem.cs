@@ -578,6 +578,12 @@ namespace CloudRP.ServerSystems.Admin
             }
         }
 
+        [Command("te")]
+        public void test(Player player)
+        {
+            
+        }
+
         [Command("veh", "~r~/veh [vehName] [colourOne] [colourTwo]")]
         public void spawnVehicle(Player player, string vehName, int colourOne = 111, int colourTwo = 111)
         {

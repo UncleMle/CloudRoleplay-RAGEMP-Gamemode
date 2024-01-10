@@ -101,6 +101,13 @@ namespace CloudRP.VehicleSystems.Vehicles
 
                 foreach(DealerVehPos dealerVehPos in PlayerDealerVehPositions.dealerVehPositions)
                 {
+                    Vehicle findInSpot = checkVehInSpot(dealerVehPos.vehPos, 8);
+
+                    if(findInSpot != null && findInSpot.getData() != null && findInSpot.getData().dealership_id == -1)
+                    {
+                        findInSpot.sendVehicleToInsurance();
+                    }
+
                     if(dealerVehPos.ownerId == vehicle.dealership_id && dealerVehPos.vehInSpot == null)
                     {
                         dealerVehPos.vehInSpot = vehicle;
@@ -254,7 +261,7 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             if (vehicleData == null) return (null, null);
 
-            Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicleHash, position, rotation, 255, 255, vehiclePlate, 255, false, true, 0);
+            Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicleHash, position, rotation, 111, 111, vehiclePlate, 255, false, true, 0);
 
             veh.setVehicleData(vehicleData, true, true);
             return (veh, vehicleData);
@@ -715,6 +722,21 @@ namespace CloudRP.VehicleSystems.Vehicles
             rArr[0] = vehicleId.ToString();
 
             return string.Join("", rArr).ToUpper();
+        }
+
+        public static Vehicle checkVehInSpot(Vector3 spot, int range)
+        {
+            Vehicle blockingVehicle = null;
+
+            NAPI.Pools.GetAllVehicles().ForEach(veh =>
+            {
+                if(veh.Position.DistanceToSquared(spot) < range)
+                {
+                    blockingVehicle = veh;
+                }
+            });
+
+            return blockingVehicle;
         }
 
         [RemoteEvent("server:handleDoorInteraction")]
