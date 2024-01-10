@@ -99,20 +99,29 @@ namespace CloudRP.VehicleSystems.Vehicles
                 veh.SetSharedData(PlayerDealerships._playerVehicleDealerDataIdentifier, true);
                 veh.SetData(PlayerDealerships._playerVehicleDealerDataIdentifier, true);
 
+                bool foundSpot = false;
+
                 foreach(DealerVehPos dealerVehPos in PlayerDealerVehPositions.dealerVehPositions)
                 {
                     if(dealerVehPos.ownerId == vehicle.dealership_id && dealerVehPos.vehInSpot == null)
                     {
-                        PlayerDealerships.setSpotActiveWithVehicle(vehicle, vehicle.dealership_spot_id);
+                        Console.WriteLine("Dealer id " + vehicle.dealership_id);
 
+                        foundSpot = true;
                         dealerVehPos.vehInSpot = vehicle;
                         vehicle.dynamic_dealer_spot_id = dealerVehPos.spotId;
 
-                        Console.WriteLine($"{vehicle.numberplate} POS::" + JsonConvert.SerializeObject(dealerVehPos.vehPos));
                         veh.Position = dealerVehPos.vehPos;
                         veh.Rotation = new Vector3(0, 0, dealerVehPos.vehRot);
+
+                        PlayerDealerships.setSpotActiveWithVehicle(vehicle, vehicle.dynamic_dealer_spot_id);
                         break;
                     }
+                }
+
+                if(!foundSpot)
+                {
+                    Console.WriteLine("Spot not found for vehicle " + vehicle.numberplate);
                 }
             } else
             {
@@ -183,26 +192,7 @@ namespace CloudRP.VehicleSystems.Vehicles
 
                             if (vehicleData != null)
                             {
-                                if(vehicleData.dealership_id != -1 && vehicleData.dealership_spot_id != -1 && vehicleData.dynamic_dealer_spot_id != -1)
-                                {
-                                    KeyValuePair<string, Dealer> dealer = PlayerDealerships.playerDealerships
-                                    .Where(deal => deal.Value.dealerId == vehicleData.dealership_id)
-                                    .FirstOrDefault();
-
-                                    DealerVehPos dealerSlot = PlayerDealerVehPositions.dealerVehPositions
-                                    .Where(vehSlot => vehSlot.ownerId == vehicleData.dynamic_dealer_spot_id) 
-                                    .FirstOrDefault();
-
-                                    if(dealer.Value != null && dealerSlot != null)
-                                    {
-                                        vehicle.Position = new Vector3(dealerSlot.vehPos.X, dealerSlot.vehPos.Y, dealerSlot.vehPos.Z - 0.75);
-                                        vehicle.Rotation = new Vector3(0, 0, dealerSlot.vehRot);
-                                        vehicle.saveVehicleData(vehicleData, true);
-                                    }
-                                } else
-                                {
-                                    vehicle.saveVehicleData(vehicleData, true);
-                                }
+                                vehicle.saveVehicleData(vehicleData, true);
                             }
                         }
                     }

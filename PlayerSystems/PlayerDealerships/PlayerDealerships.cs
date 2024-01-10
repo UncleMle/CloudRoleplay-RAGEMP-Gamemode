@@ -203,7 +203,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                             targetVehicle.SetSharedData(_playerVehicleDealerDataIdentifier, true);
                             targetVehicle.SetData(_playerVehicleDealerDataIdentifier, true);
                             
-                            PlayerDealerships.setSpotActiveWithVehicle(targetVehicleData, vehPosition.spotId);
+                            setSpotActiveWithVehicle(targetVehicleData, vehPosition.spotId);
                             break;
                         }
                     }
@@ -337,6 +337,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                     .FirstOrDefault()
                     .vehInSpot = vehicleData;
 
+            Console.WriteLine("Set spot active " + spotId + " vehicle " + vehicleData.numberplate);
         }
     }
 }
