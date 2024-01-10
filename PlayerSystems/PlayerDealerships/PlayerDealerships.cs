@@ -91,7 +91,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
 
                     NAPI.TextLabel.CreateTextLabel("~r~No Park Zone.\n(Vehicles Will be towed to insurance)", new Vector3(pos.X, pos.Y, pos.Z - 0.17), 15f, 0.1f, 4, new Color(255, 255, 255, 255), true, 0);
 
-                    ColShape vehPosCol = NAPI.ColShape.CreateSphereColShape(pos, 5f);
+                    ColShape vehPosCol = NAPI.ColShape.CreateSphereColShape(pos, 8f);
 
                     vehPosCol.OnEntityEnterColShape += (col, player) =>
                     {
@@ -310,9 +310,8 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
             if(player.IsInVehicle)
             {
                 DbCharacter characterData = player.getPlayerCharacterData();
-                KeyValuePair<string, Dealer> dealerData = player.GetData<KeyValuePair<string, Dealer>>(_playerDealerPurchaseData);
 
-                if(characterData != null && dealerData.Value != null)
+                if (characterData != null)
                 {
                     Vehicle targetVehicle = player.Vehicle;
                     DbVehicle vehicleData = targetVehicle.getData();
@@ -369,6 +368,8 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                         CommandUtils.successSay(player, $"You purchased a vehicle [{targetVehicle.NumberPlate}] for ${vehicleData.dealership_price}");
                     }
                 }
+
+                uiHandling.setLoadingState(player, false, true);
             }
         }
 

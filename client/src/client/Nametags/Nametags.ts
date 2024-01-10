@@ -182,7 +182,7 @@ export default class NameTags {
 		if (!pCharData) return '';
 
 		let nick: string =
-			player._nickName && pCharData.characterClothing.mask == 0
+			player._nickName && pCharData?.characterClothing?.mask == 0
 				? player._nickName + ' [' + player.remoteId + ']'
 				: 'Stranger ' + player.remoteId;
 

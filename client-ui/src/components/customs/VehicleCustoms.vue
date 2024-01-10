@@ -482,6 +482,8 @@ export default {
                 } else {
                     window.mp.trigger("browser:sendObject", "server:purchasePlayerDealerVehicle");
                 }
+
+                window.mp.trigger("gui:toggleHudComplete", true);
             }
         },
         saveBasket() {
