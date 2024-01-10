@@ -261,7 +261,7 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             if (vehicleData == null) return (null, null);
 
-            Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicleHash, position, rotation, 111, 111, vehiclePlate, 255, false, true, 0);
+            Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicleHash, position, rotation, colourOne, colourTwo, vehiclePlate, 255, false, true, 0);
 
             veh.setVehicleData(vehicleData, true, true);
             return (veh, vehicleData);

@@ -24,7 +24,8 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
         public static readonly string _playerVehicleDealerDataIdentifier = "playerVehicleDealershipData";
         public static readonly string _playerDealerPurchaseData = "playerVehiclePurchaseVehicleData";
         public static readonly string _dealerColDataIdentifier = "PlayerVehicleDealerColshapeData";
-        public static Dictionary<string, Dealer> playerDealerships = new Dictionary<string, Dealer>
+
+        public static readonly Dictionary<string, Dealer> playerDealerships = new Dictionary<string, Dealer>
         {
             { "Low End Dealer - LS", new Dealer
             {
@@ -88,7 +89,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                 {
                     Vector3 pos = vehPos.vehPos;
 
-                    NAPI.TextLabel.CreateTextLabel("~r~No Park Zone.", new Vector3(pos.X, pos.Y, pos.Z - 0.08), 15f, 0.5f, 4, new Color(255, 255, 255, 255), true, 0);
+                    NAPI.TextLabel.CreateTextLabel("~r~No Park Zone.\n(Vehicles Will be towed to insurance)", new Vector3(pos.X, pos.Y, pos.Z - 0.17), 15f, 0.1f, 4, new Color(255, 255, 255, 255), true, 0);
 
                     ColShape vehPosCol = NAPI.ColShape.CreateSphereColShape(pos, 5f);
 
@@ -164,7 +165,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
 
                     foreach (DealerVehPos vehPosition in dealer.vehiclePositions)
                     {
-                        if(vehPosition.vehInSpot == null && VehicleSystem.checkVehInSpot(vehPosition.vehPos, 8) == null)
+                        if(vehPosition.vehInSpot == null)
                         {
                             foundSpot = true;
 
@@ -184,6 +185,13 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                             {
                                 CommandUtils.errorSay(player, "Dealer descriptions cannot be longer than 256 characters.");
                                 return;
+                            }
+
+                            Vehicle blockingSpot = VehicleSystem.checkVehInSpot(vehPosition.vehPos, 8);
+
+                            if (blockingSpot != null && blockingSpot.getData() != null && blockingSpot.getData().dealership_id == -1)
+                            {
+                                blockingSpot.sendVehicleToInsurance();
                             }
 
                             player.WarpOutOfVehicle();
