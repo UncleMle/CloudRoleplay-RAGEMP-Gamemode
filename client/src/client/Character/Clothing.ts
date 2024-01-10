@@ -119,9 +119,9 @@ export default class Clothing {
         entity.setComponentVariation(10, Number(clothingData.decals), Number(clothingData.decals_texture), 0);
         entity.setComponentVariation(11, Number(clothingData.top), Number(clothingData.top_texture), 0);
 
-        if(!characterModel) return;
+        if(!characterModel?.characterModel) return;
 
-        let sex: boolean = characterModel.characterModel.sex;
+        let sex: boolean = characterModel?.characterModel?.sex;
 
         if(clothingData.torso > 0) return;
 
