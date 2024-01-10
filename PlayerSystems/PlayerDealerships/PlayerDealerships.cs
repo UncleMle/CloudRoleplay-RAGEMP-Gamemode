@@ -19,6 +19,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
     {
         public static readonly long maxSellPrice = 200000000;
         public static readonly string _playerVehicleDealerDataIdentifier = "playerVehicleDealershipData";
+        public static readonly string _playerDealerPurchaseData = "playerVehiclePurchaseVehicleData";
         public static readonly string _dealerColDataIdentifier = "PlayerVehicleDealerColshapeData";
         public static Dictionary<string, Dealer> playerDealerships = new Dictionary<string, Dealer>
         {
@@ -26,7 +27,6 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
             {
                 dealerId = 0,
                 sellVehPos = new Vector3(-37.2, -2108.0, 16.7),
-                taxRate = 4.7f,
                 vehiclePositions = PlayerDealerVehPositions.dealerVehPositions
                 .Where(dealerV => dealerV.ownerId == 0)
                 .ToList()
@@ -35,7 +35,6 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
             { "High End Dealer", new Dealer 
             { 
                 dealerId = 1,
-                taxRate = 2.4f,
                 sellVehPos = new Vector3(-1650.1, -827.3, 10.0),
             } 
             },
@@ -45,7 +44,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
         {
             foreach (KeyValuePair<string, Dealer> item in playerDealerships)
             {
-                MarkersAndLabels.setTextLabel(item.Value.sellVehPos, $"Use /sellveh to sell vehicle.\nRate - ~r~{item.Value.taxRate}%", 15f);
+                MarkersAndLabels.setTextLabel(new Vector3(item.Value.sellVehPos.X, item.Value.sellVehPos.Y, item.Value.sellVehPos.Z - 0.06), $"~r~{item.Key}~w~\nUse /sellveh to sell vehicle.", 15f);
                 NAPI.Blip.CreateBlip(523, item.Value.sellVehPos, 1f, 1, item.Key, 255, 1f, true);
                 NAPI.Marker.CreateMarker(36, new Vector3(item.Value.sellVehPos.X, item.Value.sellVehPos.Y, item.Value.sellVehPos.Z + 0.09), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(255, 0, 0, 250), false, 0);
 
@@ -71,18 +70,31 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                 {
                     ColShape vehPosCol = NAPI.ColShape.CreateSphereColShape(vehPos.vehPos, 5f);
 
+                    vehPosCol.OnEntityEnterColShape += (col, player) =>
+                    {
+                        if(col.Equals(vehPosCol))
+                        {
+                            player.SetCustomData(_playerDealerPurchaseData, item);
+                        }
+                    };
+
                     vehPosCol.OnEntityExitColShape += (col, player) =>
                     {
-                        if(col.Equals(vehPosCol) && player.IsInVehicle)
+                        if(col.Equals(vehPosCol))
                         {
-                            Vehicle targetVeh = player.Vehicle;
-                            DbVehicle vehicleData = player.Vehicle.getData();
+                            player.ResetData(_playerDealerPurchaseData);
 
-                            if(vehicleData != null && vehicleData.dealership_id != -1 && vehicleData.dealership_spot_id != -1)
+                            if (player.IsInVehicle)
                             {
-                                player.WarpOutOfVehicle();
-                                targetVeh.Position = vehPos.vehPos;
-                                targetVeh.Rotation = new Vector3(0, 0, vehPos.vehRot);
+                                Vehicle targetVeh = player.Vehicle;
+                                DbVehicle vehicleData = player.Vehicle.getData();
+
+                                if (vehicleData != null && vehicleData.dealership_id != -1 && vehicleData.dealership_spot_id != -1)
+                                {
+                                    player.WarpOutOfVehicle();
+                                    targetVeh.Position = vehPos.vehPos;
+                                    targetVeh.Rotation = new Vector3(0, 0, vehPos.vehRot);
+                                }
                             }
                         }
                     };
@@ -217,7 +229,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
             if(player.IsInVehicle)
             {
                 DbCharacter characterData = player.getPlayerCharacterData();
-                KeyValuePair<string, Dealer> dealerData = player.GetData<KeyValuePair<string, Dealer>>(_dealerColDataIdentifier);
+                KeyValuePair<string, Dealer> dealerData = player.GetData<KeyValuePair<string, Dealer>>(_playerDealerPurchaseData);
 
                 if(characterData != null && dealerData.Value != null)
                 {
@@ -226,12 +238,14 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
 
                     if (vehicleData != null && vehicleData.dealership_id != -1 && vehicleData.dealership_spot_id != -1)
                     {
+                        /*
                         if (vehicleData.owner_id == characterData.character_id)
                         {
                             uiHandling.setLoadingState(player, false, true);
                             CommandUtils.errorSay(player, "You cannot purchase back your own vehicle. Use /getbackveh.");
                             return;
                         }
+                        */
 
                         if((characterData.money_amount - vehicleData.dealership_price) < 0)
                         {
@@ -241,8 +255,8 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                         }
 
                         characterData.money_amount -= vehicleData.dealership_price;
-                        
-                        using(DefaultDbContext dbContext = new DefaultDbContext())
+
+                        using (DefaultDbContext dbContext = new DefaultDbContext())
                         {
                             DbCharacter findCharacter = dbContext.characters
                                 .Where(character => character.character_id == vehicleData.owner_id)
@@ -250,9 +264,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
 
                             if(findCharacter != null)
                             {
-                                long taxedPrice = vehicleData.dealership_price -= vehicleData.dealership_price * (long)dealerData.Value.taxRate;
-
-                                findCharacter.money_amount += taxedPrice;
+                                findCharacter.money_amount += vehicleData.dealership_price;
                                 dbContext.Update(findCharacter);
                                 dbContext.SaveChanges();
 
