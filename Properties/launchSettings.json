@@ -2,7 +2,7 @@
   "profiles": {
     "Start": {
       "commandName": "Executable",
-      "executablePath": "C:\\RAGEMP\\server-files\\ragemp-server.exe"
+      "executablePath": "D:\\RAGEMP\\server-files\\ragemp-server.exe"
     },
     "Profile 1": {
       "commandName": "Executable"
