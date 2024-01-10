@@ -7,7 +7,6 @@ export default class PlayerDealership {
 
     constructor() {
         mp.events.add({
-            "playerEnterVehicle": PlayerDealership.handleVehEnter,
             "entityStreamIn": PlayerDealership.handleEntityStreamIn,
             "render": PlayerDealership.handleRender
         });
@@ -34,7 +33,7 @@ export default class PlayerDealership {
                         scale: [0.4, 0.4],
                         outline: false
                     });
-                    
+
                     mp.game.graphics.drawText(`"${vehicleData.dealership_description}"`, [drawCoordsChassis.x, drawCoordsChassis.y + 0.02], {
                         font: 4,
                         color: [255, 255, 255, 255],
@@ -46,26 +45,37 @@ export default class PlayerDealership {
         });
     }
 
-    private static handleDataHandler(vehicle: VehicleMp, value: boolean) {
-        if (vehicle.type === "vehicle" && !value) {
-            vehicle.freezePosition(false);
+    private static async handleDataHandler(vehicle: VehicleMp, value: boolean) {
+        if (vehicle.type === "vehicle" && value !== undefined) {
+            if(!value) {
+                vehicle.freezePosition(false);
+                return;
+            }
+
+            //let targetVector: Vector3 = vehicle.position;
+            //let vehGroundPosZ: number = mp.game.gameplay.getGroundZFor3dCoord(targetVector.x, targetVector.y, 1000, false, false);
+
+            //vehicle.position = new mp.Vector3(targetVector.x, targetVector.y, vehGroundPosZ);
+
+            await mp.game.waitAsync(2500);
+
+            if (mp.vehicles.at(vehicle.remoteId)) {
+                vehicle.freezePosition(value);
+            }
         }
     }
 
-    private static handleVehEnter(vehicle: VehicleMp) {
-        let vehicleData: VehicleData | undefined = getVehicleData(vehicle);
-
-        if (vehicleData && vehicleData.dealership_id != -1 && vehicleData.dealership_spot_id != -1) {
-            vehicle.freezePosition(true);
-        }
-    }
-
-    private static handleEntityStreamIn(vehicle: EntityMp) {
+    private static async handleEntityStreamIn(vehicle: EntityMp) {
         if (vehicle.type === "vehicle") {
-            let vehicleData: VehicleData | undefined = getVehicleData(vehicle as VehicleMp);
+            await mp.game.waitAsync(2500);
 
-            if (vehicleData && vehicleData.dealership_id != -1 && vehicleData.dealership_spot_id != -1) {
-                vehicle.freezePosition(true);
+            if (vehicle && mp.vehicles.at(vehicle.remoteId)) {
+
+                let vehicleData: VehicleData | undefined = getVehicleData(vehicle as VehicleMp);
+
+                if (vehicleData && vehicleData.dealership_id != -1 && vehicleData.dealership_spot_id != -1) {
+                    vehicle.freezePosition(true);
+                }
             }
         }
     }

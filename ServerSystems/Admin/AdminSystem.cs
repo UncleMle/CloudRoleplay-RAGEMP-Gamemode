@@ -2,6 +2,7 @@
 using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.DeathSystem;
 using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.PlayerSystems.PlayerDealerships;
 using CloudRP.ServerSystems.AntiCheat;
 using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.Database;
@@ -636,8 +637,7 @@ namespace CloudRP.ServerSystems.Admin
                     {
                         if(vehicleData.dealership_id != -1)
                         {
-                            CommandUtils.errorSay(player, "You cannot teleport vehicles from a dealership.");
-                            return;
+                            findVehicle.removePlayerDealerStatus();
                         }
 
                         uiHandling.sendNotification(player, "~r~Teleporting vehicle...", false);

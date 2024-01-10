@@ -2,6 +2,7 @@
 using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Admin;
+using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
@@ -182,19 +183,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                 
                 if(vehicleData.dynamic_dealer_spot_id != -1 && vehicleData.dealership_id != -1 && vehicleData.owner_id == player.getPlayerCharacterData()?.character_id)
                 {
-                    PlayerDealerVehPositions.dealerVehPositions
-                        .Where(dealerPos => dealerPos.spotId == vehicleData.dynamic_dealer_spot_id)
-                        .FirstOrDefault()
-                        .vehInSpot = null;
-
-                    vehicleData.dynamic_dealer_spot_id = -1;
-                    vehicleData.dealership_spot_id = -1;
-                    vehicleData.dealership_id = -1;
-
-                    targetVehicle.saveVehicleData(vehicleData, true);
-                    targetVehicle.ResetSharedData(_playerVehicleDealerDataIdentifier);
-                    targetVehicle.ResetData(_playerVehicleDealerDataIdentifier);
-
+                    targetVehicle.removePlayerDealerStatus();
                     CommandUtils.successSay(player, $"You got your vehicle [{targetVehicle.NumberPlate}] back from the dealership.");
                 } else
                 {
@@ -214,8 +203,9 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                 if(characterData.character_id == vehicleData.owner_id)
                 {
                     player.SendChatMessage(ChatUtils.info + "You own this vehicle. Use /getbackveh to retrieve it.");
-                    player.SendChatMessage(ChatUtils.info + "To view this vehicle's mods or purchase this vehicle use /mods.");
                 }
+
+                player.SendChatMessage(ChatUtils.info + "To view this vehicle's mods or purchase this vehicle use /mods.");
             }
         }
 
@@ -246,24 +236,37 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                             CommandUtils.errorSay(player, "You don't have enough money to cover the purchase of this vehicle.");
                             return;
                         }
-
-                        PlayerDealerVehPositions.dealerVehPositions
-                            .Where(dealerPos => dealerPos.spotId == vehicleData.dynamic_dealer_spot_id)
-                            .FirstOrDefault()
-                            .vehInSpot = null;
-
-
                         characterData.money_amount -= vehicleData.dealership_price;
-                        vehicleData.dynamic_dealer_spot_id = -1;
-                        vehicleData.dealership_spot_id = -1;
-                        vehicleData.dealership_id = -1;
+                        
+                        using(DefaultDbContext dbContext = new DefaultDbContext())
+                        {
+                            DbCharacter findCharacter = dbContext.characters
+                                .Where(character => character.character_id == vehicleData.owner_id)
+                                .FirstOrDefault();
+
+                            if(findCharacter != null)
+                            {
+                                findCharacter.money_amount += vehicleData.dealership_price;
+                                dbContext.Update(findCharacter);
+                                dbContext.SaveChanges();
+
+                                NAPI.Pools.GetAllPlayers().ForEach(p =>
+                                {
+                                    if(p.getPlayerCharacterData() != null && p.getPlayerCharacterData().character_id == vehicleData.owner_id)
+                                    {
+                                        p.setPlayerCharacterData(findCharacter, false, true);
+                                        p.SendChatMessage($"{ChatUtils.info} {characterData.character_name} has brought your vehicle [{vehicleData.numberplate}] for ${vehicleData.dealership_price}!");
+                                    }
+                                });
+                            }
+                        }
+
                         vehicleData.owner_name = characterData.character_name;
                         vehicleData.owner_id = characterData.character_id;
 
                         player.setPlayerCharacterData(characterData, false, true);
                         targetVehicle.saveVehicleData(vehicleData, true);
-                        targetVehicle.ResetSharedData(_playerVehicleDealerDataIdentifier);
-                        targetVehicle.ResetData(_playerVehicleDealerDataIdentifier);
+                        targetVehicle.removePlayerDealerStatus();
 
                         uiHandling.setLoadingState(player, false, true);
                         CommandUtils.successSay(player, $"You purchased a vehicle [{targetVehicle.NumberPlate}] for ${vehicleData.dealership_price}");
