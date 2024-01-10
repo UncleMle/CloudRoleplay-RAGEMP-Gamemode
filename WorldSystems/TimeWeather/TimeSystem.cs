@@ -17,8 +17,7 @@ namespace CloudRP.World.TimeWeather
         public static int min = 0;
         public static bool timeSyncOn = true;
 
-        [ServerEvent(Event.ResourceStart)]
-        public void onResourceStart()
+        public TimeSystem()
         {
             syncWorldTime();
             NAPI.Task.Run(() =>

@@ -20,8 +20,7 @@ namespace CloudRP.World.TimeWeather
         public static string weatherApiKey;
         public static bool weatherSyncOn = true;
 
-        [ServerEvent(Event.ResourceStart)]
-        public void onResourceStart()
+        public WeatherSystem()
         {
             NAPI.Task.Run(() =>
             {

@@ -1,5 +1,11 @@
-﻿using CloudRP.ServerSystems.Utils;
+﻿using CloudRP.GeneralSystems.GeneralCommands;
+using CloudRP.GeneralSystems.HousingSystem;
+using CloudRP.PlayerSystems.Character;
+using CloudRP.ServerSystems.Admin;
+using CloudRP.ServerSystems.DiscordSystem;
+using CloudRP.ServerSystems.Utils;
 using CloudRP.World;
+using CloudRP.World.BanksAtms;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
@@ -38,9 +44,6 @@ namespace CloudRP
         [ServerEvent(Event.ResourceStart)]
         public void Start()
         {
-            NAPI.Server.SetCommandErrorMessage(defaultErrorMessage);
-            ChatUtils.formatConsolePrint(" Gamemode has started", ConsoleColor.Cyan);
-
             _dbHost = NAPI.Resource.GetSetting<string>(this, "host");
             _dbDatabase = NAPI.Resource.GetSetting<string>(this, "database");
             _dbUser = NAPI.Resource.GetSetting<string>(this, "username");
@@ -58,6 +61,17 @@ namespace CloudRP
 
             _weatherApiKey = NAPI.Resource.GetSetting<string>(this, "weatherapikey");
             _vpnApiKey = NAPI.Resource.GetSetting<string>(this, "vpnapikey");
+
+            NAPI.Server.SetCommandErrorMessage(defaultErrorMessage);
+
+            HousingSystem.loadAllHouses();
+            FloatingDo.loadFdos();
+            CharacterSystem.beginSaveInterval();
+            AdminMarker.loadMarkers();
+            Atm.loadAtms();
+            DiscordSystems.initDiscordSystem();
+
+            ChatUtils.formatConsolePrint(" Gamemode has started", ConsoleColor.Cyan);
         }
 
         public void LogException(UnhandledExceptionEventArgs exception)

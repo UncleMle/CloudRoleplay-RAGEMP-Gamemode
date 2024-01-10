@@ -17,8 +17,7 @@ namespace CloudRP.GeneralSystems.Stores
         public static List<ClothingStore> clothingStores = new List<ClothingStore>();
         public static string _clothingStoreIdentifier = "clothingStoreData";
 
-        [ServerEvent(Event.ResourceStart)]
-        public void clothingStarted()
+        public ClothingStores()
         {
             clothingStores.Add(new ClothingStore
             {

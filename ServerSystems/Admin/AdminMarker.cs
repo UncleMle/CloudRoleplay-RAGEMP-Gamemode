@@ -22,8 +22,7 @@ namespace CloudRP.ServerSystems.Admin
         public float pos_y { get; set; }
         public float pos_z { get; set; }
 
-        [ServerEvent(Event.ResourceStart)]
-        public void loadMarkers()
+        public static void loadMarkers()
         {
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {

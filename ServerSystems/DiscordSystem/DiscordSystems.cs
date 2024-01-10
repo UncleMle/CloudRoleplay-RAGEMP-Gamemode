@@ -34,8 +34,7 @@ namespace CloudRP.ServerSystems.DiscordSystem
         public static int _updatePlayerCount = 5000;
         public static int _maxPlayers = 200;
 
-        [ServerEvent(Event.ResourceStart)]
-        public async Task initDiscordSystem()
+        public static async Task initDiscordSystem()
         {
             string token = Main._discordToken;
 

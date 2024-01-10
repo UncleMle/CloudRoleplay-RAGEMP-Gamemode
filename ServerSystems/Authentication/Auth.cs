@@ -22,8 +22,7 @@ namespace CloudRP.ServerSystems.Authentication
         public static string _otpStoreKey = "registering_otp";
 
 
-        [ServerEvent(Event.ResourceStart)]
-        public void onResourceStart()
+        public Auth()
         {
             Vector3 spawnPos = new Vector3(DefaultSpawn.pos_x, DefaultSpawn.pos_y, DefaultSpawn.pos_z);
             NAPI.Server.SetDefaultSpawnLocation(spawnPos, 0);

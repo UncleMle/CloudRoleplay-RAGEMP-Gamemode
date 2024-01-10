@@ -132,8 +132,7 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
             }
         };
 
-        [ServerEvent(Event.ResourceStart)]
-        public void loadDealerships()
+        public VehicleDealershipSystem()
         {
 
             foreach (DealerShip dealerShip in dealerships)

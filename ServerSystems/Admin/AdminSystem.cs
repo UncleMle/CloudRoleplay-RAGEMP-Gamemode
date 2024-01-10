@@ -781,7 +781,7 @@ namespace CloudRP.ServerSystems.Admin
                     targetPlayerData.isFrozen = targetPlayerData.isFrozen = !targetPlayerData.isFrozen;
                     string isFrozen = targetPlayerData.isFrozen ? "froze" : "unfroze";
 
-                    player.setPlayerAccountData(targetPlayerData);
+                    getPlayer.setPlayerAccountData(targetPlayerData);
                     if (!targetPlayerData.isFrozen)
                     {
                         getPlayer.TriggerEvent("admin:events:stopFly");

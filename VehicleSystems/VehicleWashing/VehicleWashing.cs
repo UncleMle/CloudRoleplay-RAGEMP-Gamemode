@@ -29,8 +29,7 @@ namespace CloudRP.VehicleSystems.VehicleWashing
             }
         };
 
-        [ServerEvent(Event.ResourceStart)]
-        public void loadAllWashStations()
+        public VehicleWashing()
         {
             vehicleWashingStations.ForEach(wash =>
             {

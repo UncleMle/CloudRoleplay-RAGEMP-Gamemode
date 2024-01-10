@@ -52,9 +52,6 @@ export default class DeathSystem {
 
     public static removeIntervalStatus() {
         if(DeathSystem._injuredInterval) {
-
-            mp.console.logInfo("Triggered clear interval");
-
             clearInterval(DeathSystem._injuredInterval);
             DeathSystem._injuredInterval = undefined;
         }
@@ -73,8 +70,6 @@ export default class DeathSystem {
             if(!characterData) return;
 
             characterData.injured_timer <= 0 && DeathSystem._saveInterval ? (clearInterval(DeathSystem._saveInterval), DeathSystem._saveInterval = undefined) : DeathSystem.injuredTimer--;
-
-            mp.console.logInfo("Death interval " + DeathSystem.injuredTimer);
         }, 1000);
 
         DeathSystem._injuredInterval = setInterval(() => {

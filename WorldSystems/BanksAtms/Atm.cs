@@ -15,15 +15,14 @@ namespace CloudRP.World.BanksAtms
     public class Atm : Script
     {
         public static string _atmDataIdentifier = "atmColshapeData";
-        List<Atm> Atms = new List<Atm>();
+        public static List<Atm> Atms = new List<Atm>();
 
         public int Id { get; set; }
         public int OwnerId { get; set; }
         public Vector3 Position { get; set; }
         public string Name { get; set; }
 
-        [ServerEvent(Event.ResourceStart)]
-        public void loadAtms()
+        public static void loadAtms()
         {
             Atms.Add(new Atm
             {

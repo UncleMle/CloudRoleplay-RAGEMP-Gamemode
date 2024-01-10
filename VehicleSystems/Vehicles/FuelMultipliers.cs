@@ -10,8 +10,7 @@ namespace CloudRP.VehicleSystems.Vehicles
     {
         public static Dictionary<int, double> fuelMultipliers = new Dictionary<int, double>();
 
-        [ServerEvent(Event.ResourceStart)]
-        public void onResourceStart()
+        public FuelMultipliers()
         {
             fuelMultipliers.Add(1, 0.0004);
             fuelMultipliers.Add(6, 0.004);
@@ -24,8 +23,6 @@ namespace CloudRP.VehicleSystems.Vehicles
             fuelMultipliers.Add(7, 0.01);
             fuelMultipliers.Add(16, 0.003);
             fuelMultipliers.Add(18, 0.003);
-
-            ChatUtils.formatConsolePrint("Vehicle fuel multipliers loaded.", ConsoleColor.Magenta);
         }
     }
 }

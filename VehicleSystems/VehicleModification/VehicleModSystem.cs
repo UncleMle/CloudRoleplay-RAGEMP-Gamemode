@@ -26,8 +26,7 @@ namespace CloudRP.VehicleSystems.VehicleModification
             }
         };
 
-        [ServerEvent(Event.ResourceStart)]
-        public void addColShapes()
+        public VehicleModSystem()
         {
             foreach (CustomArea col in customsAreas)
             {

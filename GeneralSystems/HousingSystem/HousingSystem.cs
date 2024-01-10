@@ -20,8 +20,7 @@ namespace CloudRP.GeneralSystems.HousingSystem
         public static string _housingDataIdentifier = "houseData";
         public static Dictionary<House, Blip> houseBlips = new Dictionary<House, Blip>();
 
-        [ServerEvent(Event.ResourceStart)]
-        public void loadAllHouses()
+        public static void loadAllHouses()
         {
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {

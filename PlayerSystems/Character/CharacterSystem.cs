@@ -23,14 +23,7 @@ namespace CloudRP.PlayerSystems.Character
         private static double _characterHungerRemover = 0.004;
         private static double _characterWaterRemover = 0.009;
 
-
-        [ServerEvent(Event.ResourceStart)]
-        public void onResourceStart()
-        {
-            beginSaveInterval();
-        }
-
-        void beginSaveInterval()
+        public static void beginSaveInterval()
         {
             ChatUtils.formatConsolePrint("Began saving characters.", ConsoleColor.Yellow);
 
