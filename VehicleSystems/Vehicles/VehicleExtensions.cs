@@ -3,6 +3,7 @@ using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Admin;
 using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
+using CloudRP.VehicleSystems.VehicleInsurance;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
@@ -21,10 +22,17 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             if (vehicleData != null)
             {
+                InsuranceArea closestInsuranceToDeath = VehicleSystem.getClosestInsuranceToDeath(vehicle);
+
                 vehicleData.vehicle_dimension = VehicleDimensions.Insurance;
-                vehicleData.UpdatedDate = DateTime.Now;
-                vehicleData.vehicle_health = 1000;
+                vehicleData.position_x = closestInsuranceToDeath.spawnPosition.X;
+                vehicleData.position_y = closestInsuranceToDeath.spawnPosition.Y;
+                vehicleData.position_z = closestInsuranceToDeath.spawnPosition.Z;
+                vehicleData.dealership_id = -1;
+                vehicleData.dealership_spot_id = -1;
+                vehicleData.vehicle_insurance_id = closestInsuranceToDeath.insuranceId;
                 vehicleData.vehicle_fuel = 100;
+                vehicleData.vehicle_health = 1000;
 
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
@@ -33,8 +41,8 @@ namespace CloudRP.VehicleSystems.Vehicles
                 }
 
                 vehicle.Delete();
+                ChatUtils.formatConsolePrint($"Vehicle #{vehicleData.vehicle_id} ({vehicleData.vehicle_spawn_hash}) was saved to {closestInsuranceToDeath.insuranceName}.");
 
-                return;
             }
         }
 

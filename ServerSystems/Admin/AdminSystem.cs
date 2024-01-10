@@ -703,6 +703,26 @@ namespace CloudRP.ServerSystems.Admin
             }
         }
 
+        [Command("senalltoi", "~r~/senalltoi")]
+        public void sendAllToInsuranceCommand(Player player)
+        {
+            if(player.checkUserData((int)AdminRanks.Admin_Developer))
+            {
+                int count = 0;
+
+                NAPI.Pools.GetAllVehicles().ForEach(veh =>
+                {
+                    if(veh.getData() != null)
+                    {
+                        veh.sendVehicleToInsurance();
+                        count++;
+                    }
+                });
+
+                AdminUtils.staffSay(player, $"You have sent all {count} vehicles to insurance.");
+            }
+        }
+
         [RemoteEvent("admin:fly")]
         [Command("fly", "~r~/fly")]
         public void fly(Player player)

@@ -371,6 +371,22 @@ namespace CloudRP.VehicleSystems.Vehicles
             return foundPlayer;
         }
 
+        public static InsuranceArea getClosestInsuranceToDeath(Vehicle vehicle)
+        {
+            List<InsuranceArea> insurances = VehicleInsuranceSystem.insuranceAreas;
+            Dictionary<float, InsuranceArea> iDists = new Dictionary<float, InsuranceArea>();
+
+            insurances.ForEach(insurance =>
+            {
+                iDists.Add(Vector3.Distance(insurance.spawnPosition, vehicle.Position), insurance);
+            });
+
+            List<float> dists = new List<float>(iDists.Keys);
+            dists.Sort();
+
+            return iDists.GetValueOrDefault(dists[0]);
+        }
+
         [ServerEvent(Event.VehicleDeath)]
         public void onVehicleDeath(Vehicle vehicle)
         {
@@ -380,17 +396,6 @@ namespace CloudRP.VehicleSystems.Vehicles
                 DbVehicle vehicleData = vehicle.getData();
 
                 if (vehicleData == null) return;
-
-                List<InsuranceArea> insurances = VehicleInsuranceSystem.insuranceAreas;
-                Dictionary<float, InsuranceArea> iDists = new Dictionary<float, InsuranceArea>();
-
-                insurances.ForEach(insurance =>
-                {
-                    iDists.Add(Vector3.Distance(insurance.spawnPosition, vehicle.Position), insurance);
-                });
-
-                List<float> dists = new List<float>(iDists.Keys);
-                dists.Sort();
 
                 if (vehicleData.dealership_id != -1)
                 {
@@ -412,27 +417,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                     return;
                 }
 
-                if (dists.Count > 0)
-                {
-                    InsuranceArea closestInsuranceToDeath = iDists.GetValueOrDefault(dists[0]);
-
-                    vehicleData.vehicle_dimension = VehicleDimensions.Insurance;
-                    vehicleData.position_x = closestInsuranceToDeath.spawnPosition.X;
-                    vehicleData.position_y = closestInsuranceToDeath.spawnPosition.Y;
-                    vehicleData.position_z = closestInsuranceToDeath.spawnPosition.Z;
-                    vehicleData.vehicle_insurance_id = closestInsuranceToDeath.insuranceId;
-                    vehicleData.vehicle_fuel = 100;
-                    vehicleData.vehicle_health = 1000;
-
-                    using (DefaultDbContext dbContext = new DefaultDbContext())
-                    {
-                        dbContext.vehicles.Update(vehicleData);
-                        dbContext.SaveChanges();
-                    }
-
-                    vehicle.Delete();
-                    ChatUtils.formatConsolePrint($"Vehicle #{vehicleData.vehicle_id} ({vehicleData.vehicle_spawn_hash}) was saved to {closestInsuranceToDeath.insuranceName}.");
-                }
+                vehicle.sendVehicleToInsurance();
             }
             catch
             {
