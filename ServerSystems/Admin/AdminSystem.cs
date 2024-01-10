@@ -1306,8 +1306,8 @@ namespace CloudRP.ServerSystems.Admin
 
                 ChatUtils.formatConsolePrint($"{userData.admin_name} set {findPlayerCharData.character_name}'s admin level to {RankList.adminRanksList[adminRankSet]}");
                 findPlayer.setPlayerAccountData(findPlayerData);
-                ; AdminUtils.staffSay(player, $"You set {findPlayerCharData.character_name}'s admin level to {setAdminRank}");
-                ; AdminUtils.staffSay(findPlayer, $"Your admin level was set to {setAdminRank}{AdminUtils.staffSuffixColour} by Admin {userData.admin_name}");
+                AdminUtils.staffSay(player, $"You set {findPlayerCharData.character_name}'s admin level to {setAdminRank}");
+                AdminUtils.staffSay(findPlayer, $"Your admin level was set to {setAdminRank}{AdminUtils.staffSuffixColour} by Admin {userData.admin_name}");
                 AdminUtils.sendMessageToAllStaff($"{userData.admin_name} set {findPlayerCharData.character_name}'s admin level to {setAdminRank}");
 
             }

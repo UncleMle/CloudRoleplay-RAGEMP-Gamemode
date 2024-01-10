@@ -102,6 +102,12 @@ namespace CloudRP.World.TimeWeather
             });
         }
 
+        [ServerEvent(Event.PlayerConnected)]
+        public void onPlayerConnected(Player player)
+        {
+            resyncWeather();
+        }
+
         [Command("wsync", "~r~/wsync")]
         public void toggleWeatherSync(Player player)
         {

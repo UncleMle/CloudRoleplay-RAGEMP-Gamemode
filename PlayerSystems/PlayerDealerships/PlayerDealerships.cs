@@ -194,7 +194,14 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                                 blockingSpot.sendVehicleToInsurance();
                             }
 
-                            player.WarpOutOfVehicle();
+                            NAPI.Pools.GetAllPlayers().ForEach(p =>
+                            {
+                                if(p.IsInVehicle && p.Vehicle.Equals(targetVehicle))
+                                {
+                                    p.WarpOutOfVehicle();
+                                }
+                            });
+
                             CommandUtils.successSay(player, $"You have sold your vehicle for {ChatUtils.moneyGreen}${price}{ChatUtils.White}!");
 
                             targetVehicle.Position = vehPosition.vehPos;
