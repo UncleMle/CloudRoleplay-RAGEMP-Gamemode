@@ -22,6 +22,7 @@ namespace CloudRP.GeneralSystems.GeneralCommands
         public static int maxFloatingDos = 10;
         public static int logoutPrintRange = 50;
 
+        #region Commands
         [Command("logout", "~y~Use: ~w~/logout")]
         public void logoutCommand(Player player)
         {
@@ -370,25 +371,6 @@ namespace CloudRP.GeneralSystems.GeneralCommands
             NAPI.Chat.SendChatMessageToPlayer(player, pmFromPlayer);
         }
 
-        [RemoteEvent("server:requestPlayerNickname")]
-        public static void requestNickName(Player player, Player target)
-        {
-            if (target == null) return;
-
-            string nickname = findNickNameForPlayer(player, target);
-
-            if (nickname != null)
-            {
-                setPlayersNick(player, target, nickname);
-            }
-
-        }
-
-        public static void setPlayersNick(Player player, Player targetEnt, string nick)
-        {
-            player.TriggerEvent("set:nickName", targetEnt, nick);
-        }
-
         [Command("removenick", "~y~Use: ~w~/removenick [nameOrId]")]
         public void removeNickName(Player player, string nameOrId)
         {
@@ -547,7 +529,28 @@ namespace CloudRP.GeneralSystems.GeneralCommands
         {
             player.KickSilent();
         }
+        #endregion
 
+        #region Remote Events
+        [RemoteEvent("server:requestPlayerNickname")]
+        public static void requestNickName(Player player, Player target)
+        {
+            if (target == null) return;
+
+            string nickname = findNickNameForPlayer(player, target);
+
+            if (nickname != null)
+            {
+                setPlayersNick(player, target, nickname);
+            }
+        }
+        #endregion
+
+        #region Global Methods
+        public static void setPlayersNick(Player player, Player targetEnt, string nick)
+        {
+            player.TriggerEvent("set:nickName", targetEnt, nick);
+        }
 
         public static string findNickNameForPlayer(Player player, Player target)
         {
@@ -570,5 +573,6 @@ namespace CloudRP.GeneralSystems.GeneralCommands
             }
             return null;
         }
+        #endregion
     }
 }

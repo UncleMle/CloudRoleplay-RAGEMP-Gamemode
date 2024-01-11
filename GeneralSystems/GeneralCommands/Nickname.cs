@@ -10,13 +10,10 @@ namespace CloudRP.GeneralSystems.GeneralCommands
     {
         [Key]
         public int nickname_id { get; set; }
-
         [Required]
         public int owner_id { get; set; }
-
         [Required]
         public int target_character_id { get; set; }
-
         [Required]
         public string nickname { get; set; }
     }

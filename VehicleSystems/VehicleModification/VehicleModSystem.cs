@@ -33,28 +33,22 @@ namespace CloudRP.VehicleSystems.VehicleModification
                 ColShape colshape = NAPI.ColShape.CreateSphereColShape(col.position, col.size, 0);
                 NAPI.Blip.CreateBlip(544, col.position, 1.0f, 4, col.name, 255, 1.0f, true, 0, 0);
                 setColData(colshape, col);
-            }
-        }
 
-        [ServerEvent(Event.PlayerEnterColshape)]
-        public void enterColShape(ColShape colShape, Player player)
-        {
-            CustomArea colShapeData = colShape.GetData<CustomArea>(_colShapeIdentifer);
-
-            if (colShapeData != null)
-            {
-                setPlayerColData(player, colShapeData);
-            }
-        }
-
-        [ServerEvent(Event.PlayerExitColshape)]
-        public void onExitColShape(ColShape colShape, Player player)
-        {
-            CustomArea colShapeData = colShape.GetData<CustomArea>(_colShapeIdentifer);
-
-            if (colShapeData != null)
-            {
-                flushPlayerColData(player);
+                colshape.OnEntityEnterColShape += (shape, player) =>
+                {
+                    if (shape.Equals(colshape))
+                    {
+                        setPlayerColData(player, col);
+                    }
+                };
+                
+                colshape.OnEntityExitColShape += (shape, player) =>
+                {
+                    if (shape.Equals(colshape))
+                    {
+                        flushPlayerColData(player);
+                    }
+                };
             }
         }
 

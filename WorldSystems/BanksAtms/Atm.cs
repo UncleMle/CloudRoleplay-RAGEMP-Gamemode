@@ -200,30 +200,27 @@ namespace CloudRP.World.BanksAtms
             atmColshape.SetData(_atmDataIdentifier, this);
             atmColshape.SetSharedData(_atmDataIdentifier, this);
 
-            atmColshape.OnEntityEnterColShape += setAtmData;
-            atmColshape.OnEntityExitColShape += setAtmData;
-        }
-
-        public void setAtmData(ColShape colshape, Player player)
-        {
-            Atm colshapeData = colshape.GetData<Atm>(_atmDataIdentifier);
-
-            if (colshapeData != null)
+            atmColshape.OnEntityEnterColShape += (col, player) =>
             {
-                player.SetCustomData(_atmDataIdentifier, colshapeData);
-                player.SetSharedData(_atmDataIdentifier, colshapeData);
-            }
-        }
+                Atm colshapeData = col.GetData<Atm>(_atmDataIdentifier);
 
-        public void removeAtmData(ColShape colshape, Player player)
-        {
-            Atm colshapeData = colshape.GetData<Atm>(_atmDataIdentifier);
+                if (colshapeData != null)
+                {
+                    player.SetCustomData(_atmDataIdentifier, colshapeData);
+                    player.SetSharedData(_atmDataIdentifier, colshapeData);
+                }
+            };
 
-            if (colshapeData != null)
+            atmColshape.OnEntityExitColShape += (col, player) =>
             {
-                player.ResetData(_atmDataIdentifier);
-                player.ResetSharedData(_atmDataIdentifier);
-            }
+                Atm colshapeData = col.GetData<Atm>(_atmDataIdentifier);
+
+                if (colshapeData != null)
+                {
+                    player.ResetData(_atmDataIdentifier);
+                    player.ResetSharedData(_atmDataIdentifier);
+                }
+            };
         }
 
         [RemoteEvent("server:openAtm")]
