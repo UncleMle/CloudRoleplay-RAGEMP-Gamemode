@@ -13,7 +13,7 @@ export default class Crouching {
         Crouching.loadClipSet(Crouching.strafeClipSet);
 
         mp.events.add("entityStreamIn", Crouching.handleStreamIn);
-        mp.events.addDataHandler("isCrouched", Crouching.handleDataHandler);
+        mp.events.addDataHandler(Crouching._crouchingAnimIdentifier, Crouching.handleDataHandler);
 
         mp.keys.bind(223, false, Crouching.handleKeyPress);
     }
