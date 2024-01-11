@@ -214,57 +214,70 @@ namespace CloudRP.VehicleSystems.Vehicles
 
         public static (Vehicle, DbVehicle) buildVehicle(string vehName, Vector3 position, float rotation, int ownerId, int colourOne, int colourTwo, string ownerName = "N/A")
         {
-            string vehiclePlate = "notset";
-            uint vehicleHash = NAPI.Util.GetHashKey(vehName);
-            DbVehicle vehicleData = null;
+            Vehicle vehicle = null;
+            DbVehicle vehData = null;
 
-            using (DefaultDbContext dbContext = new DefaultDbContext())
+            NAPI.Task.Run(() =>
             {
-                DbVehicle vehicleInsert = new DbVehicle
+                try
                 {
-                    CreatedDate = DateTime.Now,
-                    UpdatedDate = DateTime.Now,
-                    owner_id = ownerId,
-                    owner_name = ownerName,
-                    position_x = position.X,
-                    position_y = position.Y,
-                    position_z = position.Z,
-                    rotation = rotation,
-                    vehicle_spawn_hash = vehicleHash,
-                    vehicle_name = vehName,
-                    numberplate = "null",
-                    vehicle_dimension = VehicleDimensions.World
-                };
+                    string vehiclePlate = "notset";
+                    uint vehicleHash = NAPI.Util.GetHashKey(vehName);
+                    DbVehicle vehicleData = null;
 
-                dbContext.vehicles.Add(vehicleInsert);
-                dbContext.SaveChanges();
+                    using (DefaultDbContext dbContext = new DefaultDbContext())
+                    {
+                        DbVehicle vehicleInsert = new DbVehicle
+                        {
+                            CreatedDate = DateTime.Now,
+                            UpdatedDate = DateTime.Now,
+                            owner_id = ownerId,
+                            owner_name = ownerName,
+                            position_x = position.X,
+                            position_y = position.Y,
+                            position_z = position.Z,
+                            rotation = rotation,
+                            vehicle_spawn_hash = vehicleHash,
+                            vehicle_name = vehName,
+                            numberplate = "null",
+                            vehicle_dimension = VehicleDimensions.World
+                        };
 
-                DbVehicle findJustInserted = dbContext.vehicles.Find(vehicleInsert.vehicle_id);
-                vehiclePlate = genUniquePlate(vehicleInsert.vehicle_id);
+                        dbContext.vehicles.Add(vehicleInsert);
+                        dbContext.SaveChanges();
 
-                findJustInserted.numberplate = vehiclePlate;
+                        DbVehicle findJustInserted = dbContext.vehicles.Find(vehicleInsert.vehicle_id);
+                        vehiclePlate = genUniquePlate(vehicleInsert.vehicle_id);
 
-                vehicleData = dbContext.vehicles.Find(vehicleInsert.vehicle_id);
+                        findJustInserted.numberplate = vehiclePlate;
 
-                dbContext.vehicles.Update(vehicleInsert);
-                dbContext.SaveChanges();
+                        vehicleData = dbContext.vehicles.Find(vehicleInsert.vehicle_id);
 
-                dbContext.vehicle_mods.Add(new VehicleMods
+                        dbContext.vehicles.Update(vehicleInsert);
+                        dbContext.SaveChanges();
+
+                        dbContext.vehicle_mods.Add(new VehicleMods
+                        {
+                            vehicle_owner_id = vehicleInsert.vehicle_id,
+                            colour_1 = colourOne,
+                            colour_2 = colourTwo
+                        });
+
+                        dbContext.SaveChanges();
+                    }
+
+                    Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicleHash, position, rotation, colourOne, colourTwo, vehiclePlate, 255, false, true, 0);
+
+                    veh.setVehicleData(vehicleData, true, true);
+                    vehicle = veh;
+                    vehData = vehicleData;
+                }
+                catch
                 {
-                    vehicle_owner_id = vehicleInsert.vehicle_id,
-                    colour_1 = colourOne,
-                    colour_2 = colourTwo
-                });
+                }
+            });
 
-                dbContext.SaveChanges();
-            }
-
-            if (vehicleData == null) return (null, null);
-
-            Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicleHash, position, rotation, colourOne, colourTwo, vehiclePlate, 255, false, true, 0);
-
-            veh.setVehicleData(vehicleData, true, true);
-            return (veh, vehicleData);
+            return (vehicle, vehData);
         }
 
         public static Vehicle findVehicleById(int vehicleId)
