@@ -29,7 +29,7 @@ namespace CloudRP.VehicleSystems.Vehicles
         public static readonly string[] bones = { "door_dside_f", "door_pside_f", "door_dside_r", "door_pside_r", "bonnet", "boot" };
         public static readonly string[] names = { "door", "door", "door", "door", "hood", "trunk", "trunk" };
 
-
+        #region Init
         public VehicleSystem()
         {
             NAPI.Task.Run(() =>
@@ -69,7 +69,9 @@ namespace CloudRP.VehicleSystems.Vehicles
                 saveVehicleTimer.Enabled = true;
             });
         }
+        #endregion
 
+        #region Global Methods
         public static Vehicle spawnVehicle(DbVehicle vehicle, Vector3 spawnCoords = null)
         {
             Vector3 spawnPosition = new Vector3(vehicle.position_x, vehicle.position_y, vehicle.position_z);
@@ -387,44 +389,6 @@ namespace CloudRP.VehicleSystems.Vehicles
             return iDists.GetValueOrDefault(dists[0]);
         }
 
-        [ServerEvent(Event.VehicleDeath)]
-        public void onVehicleDeath(Vehicle vehicle)
-        {
-            if (vehicle == null) return;
-            try
-            {
-                DbVehicle vehicleData = vehicle.getData();
-
-                if (vehicleData == null) return;
-
-                if (vehicleData.dealership_id != -1)
-                {
-                    vehicle.Delete();
-
-                    PlayerDealerVehPositions.dealerVehPositions
-                        .Where(dealerPos => dealerPos.spotId == vehicleData.dynamic_dealer_spot_id)
-                        .FirstOrDefault()
-                        .vehInSpot = null;
-
-                    NAPI.Task.Run(() =>
-                    {
-                        if(vehicleData != null)
-                        {
-                            spawnVehicle(vehicleData);
-                        }
-                    }, 1500);
-                    
-                    return;
-                }
-
-                vehicle.sendVehicleToInsurance();
-            }
-            catch
-            {
-            }
-
-        }
-
         public static List<Vehicle> getVehicleInRange(Player player, float range)
         {
             List<Vehicle> vehicles = NAPI.Pools.GetAllVehicles();
@@ -518,6 +482,290 @@ namespace CloudRP.VehicleSystems.Vehicles
             }
 
             return keyHolders;
+        }
+
+
+        public static void removeKeyFromWorldVeh(int vehicleId, int keyId)
+        {
+            NAPI.Pools.GetAllVehicles().ForEach(veh =>
+            {
+                DbVehicle vehData = veh.getData();
+
+                if (vehData != null && vehData.vehicle_id == vehicleId)
+                {
+                    VehicleKey findKey = vehData.vehicle_key_holders
+                    .Where(key => key.vehicle_id == vehicleId && key.vehicle_key_id == keyId)
+                    .FirstOrDefault();
+
+                    if (findKey != null)
+                    {
+                        vehData.vehicle_key_holders.Remove(findKey);
+                    }
+                }
+            });
+        }
+
+        public static string genUniquePlate(int vehicleId)
+        {
+            string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+            string result = "";
+
+            int fillAmount = 8 - vehicleId.ToString().Count();
+
+            for (int i = 0; i < fillAmount; i++)
+            {
+                Random r = new Random();
+                int rInt = r.Next(0, characters.Length);
+                result += characters[rInt];
+            }
+
+            string[] rArr = result.Split("");
+
+            Array.Resize(ref rArr, rArr.Length + 1);
+            Array.Copy(rArr, 0, rArr, 1, rArr.Length - 1);
+            rArr[0] = vehicleId.ToString();
+
+            return string.Join("", rArr).ToUpper();
+        }
+
+        public static Vehicle checkVehInSpot(Vector3 spot, int range)
+        {
+            Vehicle blockingVehicle = null;
+
+            NAPI.Pools.GetAllVehicles().ForEach(veh =>
+            {
+                if(veh.Position.DistanceToSquared(spot) < range)
+                {
+                    blockingVehicle = veh;
+                }
+            });
+
+            return blockingVehicle;
+        }
+        #endregion
+
+        #region Commands
+        [Command("vw", "~y~Use: ~w~/vw [window]", Alias = "vehiclewindow")]
+        public void vehicleWindows(Player player, int vehicleIndex)
+        {
+            if (!player.IsInVehicle)
+            {
+                CommandUtils.errorSay(player, "You must be in a vehicle to use this command.");
+                return;
+            }
+
+            DbVehicle vehicleData = player.Vehicle.getData();
+
+            if (vehicleData == null) return;
+
+            if (!(player.VehicleSeat == 0 || player.VehicleSeat == 1))
+            {
+                CommandUtils.errorSay(player, "You must be the driver or front passenger to use this command.");
+                return;
+            }
+
+            if (vehicleIndex > vehicleData.vehicle_windows.Length || vehicleIndex < 0)
+            {
+                CommandUtils.errorSay(player, "Enter a valid window to roll up or down.");
+                return;
+            }
+
+            vehicleData.vehicle_windows[vehicleIndex] = !vehicleData.vehicle_windows[vehicleIndex];
+
+            string openCloseTextNotif = "You " + (vehicleData.vehicle_windows[vehicleIndex] ? "opened" : "closed") + " this vehicle's window.";
+
+            uiHandling.sendNotification(player, openCloseTextNotif, true, true, "Rolled " + (vehicleData.vehicle_windows[vehicleIndex] ? "down" : "up") + " a vehicle window.");
+
+            player.Vehicle.saveVehicleData(vehicleData);
+        }
+
+        [Command("cruisec", "~y~Use: ~w~ /cruisecontrol [limit | none]", Alias = "cruisecontrol")]
+        public void speedLimitCommand(Player player, string limit)
+        {
+            if (!player.IsInVehicle)
+            {
+                CommandUtils.errorSay(player, "You must be in a vehicle to use this command.");
+                return;
+            }
+
+            DbVehicle vehicleData = player.Vehicle.getData();
+
+            if (vehicleData != null)
+            {
+                if (limit == "none")
+                {
+                    vehicleData.speed_limit = -1;
+
+                    player.Vehicle.setVehicleData(vehicleData);
+
+                    CommandUtils.successSay(player, "You toggled off cruise control.");
+                    return;
+                }
+
+                try
+                {
+                    int speedLimit = int.Parse(limit);
+
+                    if (speedLimit < 50 || speedLimit > 300)
+                    {
+                        CommandUtils.errorSay(player, "Enter a speed limit between 50 and 300");
+                        return;
+                    }
+
+                    vehicleData.speed_limit = speedLimit * 0.2764976958525346;
+
+                    player.Vehicle.setVehicleData(vehicleData);
+
+                    CommandUtils.successSay(player, $"You set your vehicle's speed limit to {speedLimit}");
+                }
+                catch
+                {
+                    CommandUtils.errorSay(player, "Enter a valid speed limit.");
+                }
+            }
+        }
+        #endregion
+
+
+        #region Remote Events
+        [RemoteEvent("server:handleDoorInteraction")]
+        public void handleDoorInteraction(Player player, Vehicle vehicle, int boneTargetId)
+        {
+            if (vehicle == null || Vector3.Distance(player.Position, vehicle.Position) > 4) return;
+
+            DbVehicle vehicleData = vehicle.getData();
+
+            if (vehicleData == null || vehicle.Locked) return;
+
+            vehicleData.vehicle_doors[boneTargetId] = !vehicleData.vehicle_doors[boneTargetId];
+            vehicle.saveVehicleData(vehicleData);
+        }
+
+        [RemoteEvent("server:toggleEngine")]
+        public void handleToggleEngine(Player player, string vehName)
+        {
+            if (!player.IsInVehicle) return;
+
+            if (player.VehicleSeat != 0 || NAPI.Vehicle.GetVehicleBodyHealth(player.Vehicle) <= 0) return;
+
+            DbVehicle vehicleData = player.Vehicle.getData();
+
+            if (vehicleData == null) return;
+
+            vehicleData.engine_status = !vehicleData.engine_status;
+
+            string vehicleName = $"{(vehName != null && vehName != "NULL" ? vehName : "vehicle")}";
+
+            uiHandling.sendNotification(player, "You " + (vehicleData.engine_status ? "started" : "turned off") + $" the {vehicleName}'s engine.", true, true, (vehicleData.engine_status ? "Started" : "Turned off") + $" the {vehicleName}'s engine.");
+
+            player.Vehicle.saveVehicleData(vehicleData);
+        }
+
+        [RemoteEvent("server:toggleIndication")]
+        public void toggleVehicleIndicator(Player player, int indicationId)
+        {
+            if (!player.IsInVehicle) return;
+
+            DbVehicle vehicleData = player.Vehicle.getData();
+
+            if (vehicleData == null || player.VehicleSeat != 0) return;
+
+            vehicleData.indicator_status = indicationId;
+
+            player.Vehicle.saveVehicleData(vehicleData);
+        }
+
+        [RemoteEvent("server:toggleSiren")]
+        public void toggleVehicleSiren(Player player)
+        {
+            if (!player.IsInVehicle) return;
+
+            DbVehicle vehicleData = player.Vehicle.getData();
+
+            if (vehicleData == null || player.VehicleSeat != 0) return;
+
+            vehicleData.vehicle_siren = !vehicleData.vehicle_siren;
+
+            player.Vehicle.saveVehicleData(vehicleData);
+        }
+
+        [RemoteEvent("server:saveVehicleDamage")]
+        public void saveVehicleDamage(Player player)
+        {
+            if (player.IsInVehicle)
+            {
+                DbVehicle vehicleData = player.Vehicle.getData();
+
+                if (vehicleData != null)
+                {
+                    vehicleData.vehicle_health = NAPI.Vehicle.GetVehicleBodyHealth(player.Vehicle);
+
+                    if (vehicleData.vehicle_health <= 0)
+                    {
+                        vehicleData.engine_status = false;
+                        return;
+                    }
+                    player.Vehicle.saveVehicleData(vehicleData, true);
+                }
+            }
+        }
+
+        [RemoteEvent("server:updateVehicleDistance")]
+        public void updateVehicleDistance(Player player, string getOldDist)
+        {
+            if (!player.IsInVehicle || getOldDist == null) return;
+
+            Vehicle playerVehicle = player.Vehicle;
+            DbVehicle playerVehicleData = playerVehicle.getData();
+            if (playerVehicleData == null) return;
+
+            Vector3 oldDist = JsonConvert.DeserializeObject<Vector3>(getOldDist);
+            if (oldDist == null) return;
+
+            float dist = Vector3.Distance(oldDist, player.Vehicle.Position);
+
+            playerVehicleData.vehicle_distance += (ulong)dist;
+
+            playerVehicle.saveVehicleData(playerVehicleData);
+        }
+
+        [RemoteEvent("server:updateVehicleFuel")]
+        public void removeVehicleFuel(Player player, double vehicleSpeed)
+        {
+            Vehicle vehicle = player.Vehicle;
+            if (vehicle == null) return;
+
+            User userData = player.getPlayerAccountData();
+            if (userData != null && userData.adminDuty) return;
+
+            DbVehicle vehicleData = player.Vehicle.getData();
+
+            if (!vehicleData.engine_status) return;
+
+            Dictionary<int, double> fuelMultipliers = FuelMultipliers.fuelMultipliers;
+
+            bool completedRemoval = false;
+
+            foreach (KeyValuePair<int, double> multiplier in fuelMultipliers)
+            {
+                if (multiplier.Key == player.Vehicle.Class)
+                {
+                    vehicleData.vehicle_fuel -= vehicleSpeed * (multiplier.Value / 10);
+
+                    if (vehicleData.vehicle_fuel <= 0)
+                    {
+                        vehicleData.vehicle_fuel = 0;
+                    }
+
+                    completedRemoval = true;
+                }
+            }
+
+            if (completedRemoval)
+            {
+                vehicle.saveVehicleData(vehicleData);
+            }
         }
 
         [RemoteEvent("vehicle:toggleLock")]
@@ -692,229 +940,9 @@ namespace CloudRP.VehicleSystems.Vehicles
                 uiHandling.sendPushNotif(player, "You removed a vehicle key!", 6600, true, true, true);
             }
         }
+        #endregion
 
-        public static void removeKeyFromWorldVeh(int vehicleId, int keyId)
-        {
-            NAPI.Pools.GetAllVehicles().ForEach(veh =>
-            {
-                DbVehicle vehData = veh.getData();
-
-                if (vehData != null && vehData.vehicle_id == vehicleId)
-                {
-                    VehicleKey findKey = vehData.vehicle_key_holders
-                    .Where(key => key.vehicle_id == vehicleId && key.vehicle_key_id == keyId)
-                    .FirstOrDefault();
-
-                    if (findKey != null)
-                    {
-                        vehData.vehicle_key_holders.Remove(findKey);
-                    }
-                }
-            });
-        }
-
-        public static string genUniquePlate(int vehicleId)
-        {
-            string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-            string result = "";
-
-            int fillAmount = 8 - vehicleId.ToString().Count();
-
-            for (int i = 0; i < fillAmount; i++)
-            {
-                Random r = new Random();
-                int rInt = r.Next(0, characters.Length);
-                result += characters[rInt];
-            }
-
-            string[] rArr = result.Split("");
-
-            Array.Resize(ref rArr, rArr.Length + 1);
-            Array.Copy(rArr, 0, rArr, 1, rArr.Length - 1);
-            rArr[0] = vehicleId.ToString();
-
-            return string.Join("", rArr).ToUpper();
-        }
-
-        public static Vehicle checkVehInSpot(Vector3 spot, int range)
-        {
-            Vehicle blockingVehicle = null;
-
-            NAPI.Pools.GetAllVehicles().ForEach(veh =>
-            {
-                if(veh.Position.DistanceToSquared(spot) < range)
-                {
-                    blockingVehicle = veh;
-                }
-            });
-
-            return blockingVehicle;
-        }
-
-        [RemoteEvent("server:handleDoorInteraction")]
-        public void handleDoorInteraction(Player player, Vehicle vehicle, int boneTargetId)
-        {
-            if (vehicle == null || Vector3.Distance(player.Position, vehicle.Position) > 4) return;
-
-            DbVehicle vehicleData = vehicle.getData();
-
-            if (vehicleData == null || vehicle.Locked) return;
-
-            vehicleData.vehicle_doors[boneTargetId] = !vehicleData.vehicle_doors[boneTargetId];
-            vehicle.saveVehicleData(vehicleData);
-        }
-
-        [RemoteEvent("server:toggleEngine")]
-        public void handleToggleEngine(Player player, string vehName)
-        {
-            if (!player.IsInVehicle) return;
-
-            if (player.VehicleSeat != 0 || NAPI.Vehicle.GetVehicleBodyHealth(player.Vehicle) <= 0) return;
-
-            DbVehicle vehicleData = player.Vehicle.getData();
-
-            if (vehicleData == null) return;
-
-            vehicleData.engine_status = !vehicleData.engine_status;
-
-            string vehicleName = $"{(vehName != null && vehName != "NULL" ? vehName : "vehicle")}";
-
-            uiHandling.sendNotification(player, "You " + (vehicleData.engine_status ? "started" : "turned off") + $" the {vehicleName}'s engine.", true, true, (vehicleData.engine_status ? "Started" : "Turned off") + $" the {vehicleName}'s engine.");
-
-            player.Vehicle.saveVehicleData(vehicleData);
-        }
-
-        [RemoteEvent("server:toggleIndication")]
-        public void toggleVehicleIndicator(Player player, int indicationId)
-        {
-            if (!player.IsInVehicle) return;
-
-            DbVehicle vehicleData = player.Vehicle.getData();
-
-            if (vehicleData == null || player.VehicleSeat != 0) return;
-
-            vehicleData.indicator_status = indicationId;
-
-            player.Vehicle.saveVehicleData(vehicleData);
-        }
-
-        [RemoteEvent("server:toggleSiren")]
-        public void toggleVehicleSiren(Player player)
-        {
-            if (!player.IsInVehicle) return;
-
-            DbVehicle vehicleData = player.Vehicle.getData();
-
-            if (vehicleData == null || player.VehicleSeat != 0) return;
-
-            vehicleData.vehicle_siren = !vehicleData.vehicle_siren;
-
-            player.Vehicle.saveVehicleData(vehicleData);
-        }
-
-        [RemoteEvent("server:saveVehicleDamage")]
-        public void saveVehicleDamage(Player player)
-        {
-            if (player.IsInVehicle)
-            {
-                DbVehicle vehicleData = player.Vehicle.getData();
-
-                if (vehicleData != null)
-                {
-                    vehicleData.vehicle_health = NAPI.Vehicle.GetVehicleBodyHealth(player.Vehicle);
-
-                    if (vehicleData.vehicle_health <= 0)
-                    {
-                        vehicleData.engine_status = false;
-                        return;
-                    }
-                    player.Vehicle.saveVehicleData(vehicleData, true);
-                }
-            }
-        }
-
-        [Command("vw", "~y~Use: ~w~/vw [window]", Alias = "vehiclewindow")]
-        public void vehicleWindows(Player player, int vehicleIndex)
-        {
-            if (!player.IsInVehicle)
-            {
-                CommandUtils.errorSay(player, "You must be in a vehicle to use this command.");
-                return;
-            }
-
-            DbVehicle vehicleData = player.Vehicle.getData();
-
-            if (vehicleData == null) return;
-
-            if (!(player.VehicleSeat == 0 || player.VehicleSeat == 1))
-            {
-                CommandUtils.errorSay(player, "You must be the driver or front passenger to use this command.");
-                return;
-            }
-
-            if (vehicleIndex > vehicleData.vehicle_windows.Length || vehicleIndex < 0)
-            {
-                CommandUtils.errorSay(player, "Enter a valid window to roll up or down.");
-                return;
-            }
-
-            vehicleData.vehicle_windows[vehicleIndex] = !vehicleData.vehicle_windows[vehicleIndex];
-
-            string openCloseTextNotif = "You " + (vehicleData.vehicle_windows[vehicleIndex] ? "opened" : "closed") + " this vehicle's window.";
-
-            uiHandling.sendNotification(player, openCloseTextNotif, true, true, "Rolled " + (vehicleData.vehicle_windows[vehicleIndex] ? "down" : "up") + " a vehicle window.");
-
-            player.Vehicle.saveVehicleData(vehicleData);
-        }
-
-        [Command("cruisec", "~y~Use: ~w~ /cruisecontrol [limit | none]", Alias = "cruisecontrol")]
-        public void speedLimitCommand(Player player, string limit)
-        {
-            if (!player.IsInVehicle)
-            {
-                CommandUtils.errorSay(player, "You must be in a vehicle to use this command.");
-                return;
-            }
-
-            DbVehicle vehicleData = player.Vehicle.getData();
-
-            if (vehicleData != null)
-            {
-                if (limit == "none")
-                {
-                    vehicleData.speed_limit = -1;
-
-                    player.Vehicle.setVehicleData(vehicleData);
-
-                    CommandUtils.successSay(player, "You toggled off cruise control.");
-                    return;
-                }
-
-                try
-                {
-                    int speedLimit = int.Parse(limit);
-
-                    if (speedLimit < 50 || speedLimit > 300)
-                    {
-                        CommandUtils.errorSay(player, "Enter a speed limit between 50 and 300");
-                        return;
-                    }
-
-                    vehicleData.speed_limit = speedLimit * 0.2764976958525346;
-
-                    player.Vehicle.setVehicleData(vehicleData);
-
-                    CommandUtils.successSay(player, $"You set your vehicle's speed limit to {speedLimit}");
-                }
-                catch
-                {
-                    CommandUtils.errorSay(player, "Enter a valid speed limit.");
-                }
-            }
-        }
-
-
+        #region Server Events
         [ServerEvent(Event.PlayerEnterVehicle)]
         public void onPlayerEnterVehicle(Player player, Vehicle vehicle, sbyte seatId)
         {
@@ -933,61 +961,44 @@ namespace CloudRP.VehicleSystems.Vehicles
             }
         }
 
-        [RemoteEvent("server:updateVehicleDistance")]
-        public void updateVehicleDistance(Player player, string getOldDist)
+
+        [ServerEvent(Event.VehicleDeath)]
+        public void onVehicleDeath(Vehicle vehicle)
         {
-            if (!player.IsInVehicle || getOldDist == null) return;
-
-            Vehicle playerVehicle = player.Vehicle;
-            DbVehicle playerVehicleData = playerVehicle.getData();
-            if (playerVehicleData == null) return;
-
-            Vector3 oldDist = JsonConvert.DeserializeObject<Vector3>(getOldDist);
-            if (oldDist == null) return;
-
-            float dist = Vector3.Distance(oldDist, player.Vehicle.Position);
-
-            playerVehicleData.vehicle_distance += (ulong)dist;
-
-            playerVehicle.saveVehicleData(playerVehicleData);
-        }
-
-        [RemoteEvent("server:updateVehicleFuel")]
-        public void removeVehicleFuel(Player player, double vehicleSpeed)
-        {
-            Vehicle vehicle = player.Vehicle;
             if (vehicle == null) return;
-
-            User userData = player.getPlayerAccountData();
-            if (userData != null && userData.adminDuty) return;
-
-            DbVehicle vehicleData = player.Vehicle.getData();
-
-            if (!vehicleData.engine_status) return;
-
-            Dictionary<int, double> fuelMultipliers = FuelMultipliers.fuelMultipliers;
-
-            bool completedRemoval = false;
-
-            foreach (KeyValuePair<int, double> multiplier in fuelMultipliers)
+            try
             {
-                if (multiplier.Key == player.Vehicle.Class)
+                DbVehicle vehicleData = vehicle.getData();
+
+                if (vehicleData == null) return;
+
+                if (vehicleData.dealership_id != -1)
                 {
-                    vehicleData.vehicle_fuel -= vehicleSpeed * (multiplier.Value / 10);
+                    vehicle.Delete();
 
-                    if (vehicleData.vehicle_fuel <= 0)
+                    PlayerDealerVehPositions.dealerVehPositions
+                        .Where(dealerPos => dealerPos.spotId == vehicleData.dynamic_dealer_spot_id)
+                        .FirstOrDefault()
+                        .vehInSpot = null;
+
+                    NAPI.Task.Run(() =>
                     {
-                        vehicleData.vehicle_fuel = 0;
-                    }
+                        if (vehicleData != null)
+                        {
+                            spawnVehicle(vehicleData);
+                        }
+                    }, 1500);
 
-                    completedRemoval = true;
+                    return;
                 }
+
+                vehicle.sendVehicleToInsurance();
+            }
+            catch
+            {
             }
 
-            if (completedRemoval)
-            {
-                vehicle.saveVehicleData(vehicleData);
-            }
         }
+        #endregion
     }
 }
