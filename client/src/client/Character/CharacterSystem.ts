@@ -39,13 +39,13 @@ export default class CharacterSystem {
 		}
 
 		await mp.game.waitAsync(50);
-		if(!entity) return;
+		if(!entity || !charData) return;
 
 		if((entity.type == "ped" && mp.peds.exists(entity as PedMp)) || (entity.type == "player" && mp.players.exists(entity as PlayerMp))) {
 			let female: number = mp.game.joaat("mp_m_freemode_01");
 			let male: number = mp.game.joaat("mp_f_freemode_01");
 
-			entity.model = charData.sex ? female : male;
+			entity.model = charData?.sex ? female : male;
 
 			entity.setHeading(parseInt(charData.rotation));
 
