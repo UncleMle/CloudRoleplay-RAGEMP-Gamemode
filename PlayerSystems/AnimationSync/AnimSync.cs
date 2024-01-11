@@ -9,7 +9,8 @@ namespace CloudRP.PlayerSystems.AnimationSync
 {
     public class AnimSync : Script
     {
-        public static string _handsUpAnimIdentifer = "anim:hasHandsUp";
+        public static readonly string _handsUpAnimIdentifer = "anim:hasHandsUp";
+        public static readonly string _crouchingAnimIdentifier = "anim:isCrouching";
 
         [RemoteEvent("server:anim:startHandsUp")]
         public void startHandsUpAnim(Player player, bool animState)
@@ -23,5 +24,19 @@ namespace CloudRP.PlayerSystems.AnimationSync
             }
         }
 
+        [RemoteEvent("server:anim:toggleCrouching")]
+        public void togglePlayerCrouching(Player player)
+        {
+            if (!player.GetData<bool>(_crouchingAnimIdentifier))
+            {
+                player.SetCustomData(_crouchingAnimIdentifier, true);
+                player.SetCustomSharedData(_crouchingAnimIdentifier, true);
+            }
+            else
+            {
+                player.ResetData(_crouchingAnimIdentifier);
+                player.ResetSharedData(_crouchingAnimIdentifier);
+            }
+        }
     }
 }

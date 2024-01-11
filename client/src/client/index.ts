@@ -46,6 +46,7 @@ import BanksAtms from "./BanksAtms/BanksAtmSystem";
 import ConvienceStores from "./ConvienceStores/ConvIenceStores";
 import CruiseControl from "./VehicleSystems/VehicleCruiseControl";
 import PlayerDealership from "./PlayerDealership/PlayerDealership";
+import Crouching from "./Animation/Crouching";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -87,7 +88,6 @@ new MarkersAndLabels();
 new PhoneSystem();
 new VehicleDamage();
 new VehicleRadar();
-new Fingerpointing();
 new HandsUp();
 new ScaleForm();
 new SpeedCameras();
@@ -96,3 +96,4 @@ new InventorySystem();
 new ConvienceStores();
 new CruiseControl();
 new PlayerDealership();
+new Crouching();
