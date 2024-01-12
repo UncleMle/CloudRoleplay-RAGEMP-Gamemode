@@ -14,7 +14,6 @@ namespace CloudRP.GeneralSystems.WeaponSystem
     {
         Dictionary<string, Root> weaponData = new Dictionary<string, Root>();
         public static readonly string _attachmentDataIdentifier = "playerGunAttachmentData";
-        public static readonly string directory = Directory.GetCurrentDirectory() + "/json/";
 
         public static readonly Vector3 meleeAttachmentPos = new Vector3(-0.07, 0.07, 0.110);
         public static readonly Vector3 meleeAttachmentRot = new Vector3(37.0, 88.0, -3.0);
@@ -96,7 +95,8 @@ namespace CloudRP.GeneralSystems.WeaponSystem
 
         public AttachmentSystem()
         {
-            using (StreamReader sr = new StreamReader(directory + "weaponData.json"))
+            /*
+            using (StreamReader sr = new StreamReader(Main.JsonDirectory + "weaponData.json"))
             {
                 weaponData = JsonConvert.DeserializeObject<Dictionary<string, Root>>(sr.ReadToEnd());
 
@@ -113,6 +113,7 @@ namespace CloudRP.GeneralSystems.WeaponSystem
                     }
                 }
             }
+            */
         }
 
         [ServerEvent(Event.PlayerConnected)]
