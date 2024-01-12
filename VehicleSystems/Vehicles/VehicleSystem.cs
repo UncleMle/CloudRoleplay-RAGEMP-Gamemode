@@ -710,9 +710,7 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             vehicleData.engine_status = !vehicleData.engine_status;
 
-            string vehicleName = $"{(vehName != null && vehName != "NULL" ? vehName : "vehicle")}";
-
-            uiHandling.sendNotification(player, "You " + (vehicleData.engine_status ? "started" : "turned off") + $" the {vehicleName}'s engine.", true, true, (vehicleData.engine_status ? "Started" : "Turned off") + $" the {vehicleName}'s engine.");
+            uiHandling.sendNotification(player, "You " + (vehicleData.engine_status ? "started" : "turned off") + $" the {vehicleData.vehicle_display_name}'s engine.", true, true, (vehicleData.engine_status ? "Started" : "Turned off") + $" the {vehicleData.vehicle_display_name}'s engine.");
 
             player.Vehicle.saveVehicleData(vehicleData);
         }

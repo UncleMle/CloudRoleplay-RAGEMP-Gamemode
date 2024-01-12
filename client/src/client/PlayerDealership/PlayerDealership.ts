@@ -28,14 +28,12 @@ export default class PlayerDealership {
                     .length();
 
                 if (drawCoordsChassis && distance < 10) {
-                    if(VehicleSpeedo.getVehDispName(veh.model) !== "NULL") {
-                        mp.game.graphics.drawText(`~y~${VehicleSpeedo.getVehDispName(veh.model)}`, [drawCoordsChassis.x, drawCoordsChassis.y - 0.02], {
-                            font: 4,
-                            color: [255, 255, 255, 255],
-                            scale: [0.3, 0.3],
-                            outline: false
-                        });
-                    }
+                    mp.game.graphics.drawText(`~y~${vehicleData.vehicle_display_name}`, [drawCoordsChassis.x, drawCoordsChassis.y - 0.02], {
+                        font: 4,
+                        color: [255, 255, 255, 255],
+                        scale: [0.3, 0.3],
+                        outline: false
+                    });
                     
                     mp.game.graphics.drawText(`Being sold for ~g~$${vehicleData.dealership_price.toLocaleString('en-US')}`, [drawCoordsChassis.x, drawCoordsChassis.y], {
                         font: 4,
