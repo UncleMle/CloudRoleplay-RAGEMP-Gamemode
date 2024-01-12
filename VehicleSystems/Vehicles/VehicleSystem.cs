@@ -165,23 +165,22 @@ namespace CloudRP.VehicleSystems.Vehicles
 
         public static void addNewVehicleJson(VehicleJsonData newData)
         {
-            try
+            string path = directory + "vehicles.json";
+
+            List<VehicleJsonData> vehicleData = null;
+
+            using (StreamReader sr = new StreamReader(path))
             {
-                string path = directory + "vehicles.json";
+                vehicleData = JsonConvert.DeserializeObject<List<VehicleJsonData>>(sr.ReadToEnd());
 
-                using (StreamReader sr = new StreamReader(path))
-                {
-                    List<VehicleJsonData> vehicleData = JsonConvert.DeserializeObject<List<VehicleJsonData>>(sr.ReadToEnd());
-
-                    vehicleData.Add(newData);
-
-                    File.Delete(path);
-
-                    File.WriteAllText(path, JsonConvert.SerializeObject(vehicleData));
-                }
+                vehicleData.Add(newData);
             }
-            catch
+
+            if(vehicleData != null)
             {
+                string newJson = JsonConvert.SerializeObject(vehicleData);
+
+                File.WriteAllText(path, newJson);
             }
         }
 

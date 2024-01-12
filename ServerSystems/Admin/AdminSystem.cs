@@ -929,22 +929,24 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [Command("addnewv", "~r~/addnewv [vehicleName] [classId] [classType] [DisplayName]", GreedyArg = true)]
-        public void addNewVehicleCommand(Player player, int classId, string classType, string vehicleName)
+        public void addNewVehicleCommand(Player player, string vehicleName, int classId, string classType, string displayName)
         {
             if(player.checkUserData((int)AdminRanks.Admin_Founder))
             {
                 VehicleJsonData vehicleJsonData = new VehicleJsonData
                 {
                     ClassId = classId,
+                    Name = vehicleName,
                     DisplayName = new DisplayNameClass
                     {
-                        English = vehicleName,
-                        Name = vehicleName
+                        English = displayName,
+                        Name = displayName
                     },
                     Class = classType
                 };
 
                 VehicleSystem.addNewVehicleJson(vehicleJsonData);
+                AdminUtils.staffSay(player, $"You added a new vehicle {displayName}.");
             }
         }
 
