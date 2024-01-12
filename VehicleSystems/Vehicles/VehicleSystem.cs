@@ -234,7 +234,6 @@ namespace CloudRP.VehicleSystems.Vehicles
                     File.WriteAllText(path, newJson);
                     wasEdited = true;
                 }
-
             }
 
             return wasEdited;
