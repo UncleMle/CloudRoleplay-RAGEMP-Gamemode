@@ -1,0 +1,20 @@
+﻿<meta>
+    <info name="CloudRP" description="Cloud RP Server" />
+    <script src="bin/Debug/netcoreapp3.1/CloudRP.dll" />
+	<settings>
+		<setting name="jsonentrypoint" value="/dotnet/resources/CloudRP/Json/"/>
+		<setting name="host" value="localhost"/>
+		<setting name="username" value="dbuser"/>
+		<setting name="password" value="dbpass"/>
+		<setting name="database" value="cloud_rp"/>
+		<setting name="gmailuser" value="smptpuser"/>
+		<setting name="gmailpass" value="smptppass"/>
+		<setting name="discordtoken" value="discordapptoken"/>
+		<setting name="discordstaffchannel" value="discordstaffchannelid"/>
+		<setting name="discordreportalertchannel" value="discordreportalertchannelid"/>
+		<setting name="discordguildid" value="discordguildid"/>
+		<setting name="discordreportcat" value="discordreportcategory"/>
+		<setting name="weatherapikey" value="weatherapikey"/>
+		<setting name="vpnapikey" value="vpnapikey" />
+	</settings>
+</meta>
