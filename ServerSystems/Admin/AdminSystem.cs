@@ -997,7 +997,7 @@ namespace CloudRP.ServerSystems.Admin
                     return;
                 }
 
-                if (player.isBanned())
+                if (banPlayer.isBanned())
                 {
                     AdminUtils.staffSay(player, "This player is already in the server banned.");
                     return;
@@ -1009,7 +1009,7 @@ namespace CloudRP.ServerSystems.Admin
 
                 if (banPlayer.isImmuneTo(player)) return;
 
-                if (time < -1)
+                if (time < -1 || time == 0)
                 {
                     AdminUtils.staffSay(player, "Enter a valid minute time.");
                     return;
@@ -1780,8 +1780,6 @@ namespace CloudRP.ServerSystems.Admin
         [Command("delfdo", "~r~/delfdo [fdoId]")]
         public void deleteFdo(Player player, int fdoId)
         {
-            User userData = player.getPlayerAccountData();
-
             if (player.checkUserData((int)AdminRanks.Admin_Moderator))
             {
                 bool wasDeleted = FloatingDo.deleteById(fdoId);
@@ -1846,7 +1844,7 @@ namespace CloudRP.ServerSystems.Admin
 
             if (userData.admin_status == (int)AdminRanks.Admin_Developer)
             {
-                NAPI.Ped.CreatePed(NAPI.Util.GetHashKey(pedName), player.Position, 0, 0);
+                NAPI.Ped.CreatePed(NAPI.Util.GetHashKey(pedName), player.Position, 0, 0, true, true, true);
                 AdminUtils.staffSay(player, $"You spawned in a ped {ChatUtils.yellow}{pedName}{ChatUtils.White}");
 
                 uiHandling.sendNotification(player, $"~r~You spawned in a ped ~y~{pedName}", false);

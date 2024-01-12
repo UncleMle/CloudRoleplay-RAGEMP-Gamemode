@@ -13,7 +13,7 @@ namespace CloudRP.GeneralSystems.Stores
         {
             ConvienceStoreData.convienceStores.ForEach(store =>
             {
-                Ped ped = NAPI.Ped.CreatePed(PedHash.Indian01AFO, store.pedPosition, store.pedRot, 0);
+                Ped ped = NAPI.Ped.CreatePed(3134700416u, store.pedPosition, store.pedRot, false, true, true, true, 0);
                 ped.SetSharedData(_convienceStoreDataIdentifier, store);
                 ped.SetData(_convienceStoreDataIdentifier, store);
 

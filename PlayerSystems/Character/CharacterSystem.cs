@@ -91,10 +91,7 @@ namespace CloudRP.PlayerSystems.Character
                 DbCharacter characterData = player.getPlayerCharacterData();
                 bool vehicleDealerActive = player.GetData<bool>(VehicleDealershipSystem._dealerActiveIdentifier);
 
-                // Not checking for null here can crash the server (GetData even casted to bool can return null).
-                if (vehicleDealerActive != null && vehicleDealerActive) return;
-
-                if (userData == null || characterData == null) return;
+                if (vehicleDealerActive || userData == null || characterData == null) return;
 
                 checkForDups(characterData.character_name);
 

@@ -55,6 +55,12 @@ namespace CloudRP.PlayerSystems.PlayerData
         {
             if (player.checkDataSetIsValid())
             {
+                if(key == _sharedAccountDataIdentifier && checkIfAccountIsLogged((val as User).account_id) || key == _sharedCharacterDataIdentifier && checkIfCharacterIsLogged((val as DbCharacter).character_id))
+                {
+                    ChatUtils.formatConsolePrint($"[ServerData] Duplicate key error. Key: " + key, ConsoleColor.Red);
+                    return; 
+                }
+
                 player.addPlayerKey(key);
                 player.SetData(key, val);
             }
@@ -64,6 +70,12 @@ namespace CloudRP.PlayerSystems.PlayerData
         {
             if (player.checkDataSetIsValid())
             {
+                if (key == _sharedAccountDataIdentifier && checkIfAccountIsLogged((val as User).account_id) || key == _sharedCharacterDataIdentifier && checkIfCharacterIsLogged((val as DbCharacter).character_id))
+                {
+                    ChatUtils.formatConsolePrint($"[Shared] Duplicate key error. Key: " + key, ConsoleColor.Red);
+                    return;
+                }
+
                 player.addPlayerKey(key);
                 player.SetSharedData(key, val);
             }
