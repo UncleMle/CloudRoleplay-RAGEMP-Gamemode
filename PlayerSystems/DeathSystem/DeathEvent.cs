@@ -35,8 +35,6 @@ namespace CloudRP.PlayerSystems.DeathSystem
             NAPI.Server.SetAutoRespawnAfterDeath(false);
             NAPI.Server.SetAutoSpawnOnConnect(false);
 
-            ChatUtils.formatConsolePrint(ChatUtils._c_Hospital + "Disabled auto respawn and loaded hospitals", ConsoleColor.DarkCyan);
-
             foreach (Hospital hospital in hospitalList)
             {
                 NAPI.Blip.CreateBlip(61, hospital.position, 1.0f, 49, hospital.name, 255, 20, true, 0, 0);
