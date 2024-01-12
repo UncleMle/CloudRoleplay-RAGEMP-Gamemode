@@ -835,6 +835,9 @@ namespace CloudRP.Migrations
                     b.Property<float>("rotation_z")
                         .HasColumnType("float");
 
+                    b.Property<int>("vehicle_class_id")
+                        .HasColumnType("int");
+
                     b.Property<string>("vehicle_dimension")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 

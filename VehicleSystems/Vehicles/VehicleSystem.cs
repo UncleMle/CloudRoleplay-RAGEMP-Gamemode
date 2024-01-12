@@ -135,9 +135,10 @@ namespace CloudRP.VehicleSystems.Vehicles
             return veh;
         }
 
-        public static string getVehiclesDisplayName(string vehicleName)
+        public static (string, int) getVehiclesDisplayNameAndClass(string vehicleName)
         {
             string findDisplayName = null;
+            int findClass = -1;
 
             try
             {
@@ -150,6 +151,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                         if (item.Name.ToLower() == vehicleName.ToLower())
                         {
                             findDisplayName = item.DisplayName.English;
+                            findClass = item.ClassId;
                         }
                     }
                 }
@@ -158,7 +160,7 @@ namespace CloudRP.VehicleSystems.Vehicles
             {
             }
 
-            return findDisplayName;
+            return (findDisplayName, findClass);
         }
 
         public static Vehicle getClosestVehicleToPlayer(Player player, float maxDist = 10)
@@ -254,7 +256,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                 uint vehicleHash = NAPI.Util.GetHashKey(vehName);
                 DbVehicle vehicleData = null;
 
-                string vehicleName = getVehiclesDisplayName(vehName);
+                (string vehicleName, int classId) = getVehiclesDisplayNameAndClass(vehName);
 
                 if (vehicleName == null) return (null, null);
 
@@ -266,6 +268,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                         UpdatedDate = DateTime.Now,
                         owner_id = ownerId,
                         vehicle_display_name = vehicleName,
+                        vehicle_class_id = classId,
                         owner_name = ownerName,
                         position_x = position.X,
                         position_y = position.Y,
