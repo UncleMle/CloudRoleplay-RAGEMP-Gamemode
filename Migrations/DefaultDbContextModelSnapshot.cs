@@ -838,6 +838,9 @@ namespace CloudRP.Migrations
                     b.Property<string>("vehicle_dimension")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<string>("vehicle_display_name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
                     b.Property<ulong>("vehicle_distance")
                         .HasColumnType("bigint unsigned");
 

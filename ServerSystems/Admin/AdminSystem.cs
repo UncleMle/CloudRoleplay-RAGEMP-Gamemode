@@ -8,6 +8,7 @@ using CloudRP.ServerSystems.AntiCheat;
 using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.DiscordSystem;
+using CloudRP.ServerSystems.Extensions;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using Discord;
@@ -28,7 +29,6 @@ namespace CloudRP.ServerSystems.Admin
         public static int _maxReports = 2;
         public static int _maxAdminMarkers = 20;
         public static string defaultAdminPed = "ig_abigail";
-        public static readonly string directory = Directory.GetCurrentDirectory() + "/json/";
 
         [ServerEvent(Event.PlayerDisconnected)]
         public void OnPlayerDisconnect(Player player, DisconnectionType type, string reason)
@@ -597,7 +597,11 @@ namespace CloudRP.ServerSystems.Admin
 
                 (Vehicle vehicle, DbVehicle vehicleData) = VehicleSystem.buildVehicle(vehName, playerPosition, playerRotation, charData.character_id, colourOne, colourTwo, charData.character_name);
 
-                if (vehicle == null) return;
+                if (vehicle == null || vehicleData == null)
+                {
+                    CommandUtils.errorSay(player, "Invalid vehicle spawn name");
+                    return;
+                }
 
                 player.SetIntoVehicle(vehicle, 0);
 
@@ -1869,38 +1873,6 @@ namespace CloudRP.ServerSystems.Admin
                 uiHandling.sendNotification(player, $"~r~You spawned in a ped ~y~{objName}", false);
             }
             else AdminUtils.sendNoAuth(player);
-        }
-
-        [Command("getdispname")]
-        public void getVehiclesDisplayName(Player player)
-        {
-            if(player.checkUserData((int)AdminRanks.Admin_Developer))
-            {
-                if(player.IsInVehicle)
-                {
-                    try
-                    {
-                        using (StreamReader sr = new StreamReader(directory + "vehicleData.json"))
-                        {
-                            Dictionary<string, dynamic> vehicleData = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(sr.ReadToEnd());
-
-                            foreach (KeyValuePair<string, dynamic> item in vehicleData)
-                            {
-                                long compareModel = long.Parse(item.Key);
-
-                                if(compareModel == player.Vehicle.Model)
-                                {
-                                    Console.WriteLine("Vehicle data : " + JsonConvert.SerializeObject(item));
-                                }
-                            }
-                        }
-                    }
-                    catch
-                    {
-                    }
-                }
-            }
-
         }
     }
 }
