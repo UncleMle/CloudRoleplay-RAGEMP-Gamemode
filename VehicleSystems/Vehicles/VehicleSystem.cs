@@ -210,7 +210,7 @@ namespace CloudRP.VehicleSystems.Vehicles
 
                         vehicles.ForEach(dbVeh =>
                         {
-                            if(dbVeh.vehicle_display_name == targetName)
+                            if(dbVeh.vehicle_name == targetName)
                             {
                                 dbVeh.vehicle_display_name = targetName;
                                 dbContext.Update(dbVeh);
@@ -222,14 +222,16 @@ namespace CloudRP.VehicleSystems.Vehicles
                         {
                             DbVehicle onlineVehData = onlineVeh.getData();
                             
-                            if(onlineVehData?.vehicle_display_name == targetName)
+                            if(onlineVehData?.vehicle_name == targetName)
                             {
                                 onlineVehData.vehicle_display_name = displayName;
                                 onlineVeh.saveVehicleData(onlineVehData, true);
                             }
                         });
                     }
-                    
+
+                    string newJson = JsonConvert.SerializeObject(vehicleData);
+                    File.WriteAllText(path, newJson);
                     wasEdited = true;
                 }
 
