@@ -950,6 +950,20 @@ namespace CloudRP.ServerSystems.Admin
             }
         }
 
+        [Command("changevdata", "~r~/changevdata [targetName] [newDisplayName]", GreedyArg = true)]
+        public void changeVehicleDataCommand(Player player, string targetName, string newDisplayName)
+        {
+            if(player.checkUserData((int)AdminRanks.Admin_Developer))
+            {
+                bool updatedSuccess = VehicleSystem.editVehicleJsonData(targetName, newDisplayName);
+
+                if(updatedSuccess)
+                {
+                    AdminUtils.staffSay(player, $"You edited vehicle name {targetName} ==> {newDisplayName}");
+                }
+            }
+        }
+
         [Command("fix", "~r~/fix")]
         public void onFixVehicle(Player player)
         {

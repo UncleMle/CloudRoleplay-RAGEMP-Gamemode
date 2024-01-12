@@ -23,6 +23,7 @@ namespace CloudRP.VehicleSystems.Vehicles
     {
         public static List<DbVehicle> vehicles;
         public static readonly string directory = Directory.GetCurrentDirectory() + "/json/";
+        public static readonly string path = directory + "vehicles.json";
         public static string _vehicleSharedDataIdentifier = "VehicleData";
         public static string _vehicleSharedModData = "VehicleModData";
         public static string _vehicleDirtLevelIdentifier = "VehicleDirtLevel";
@@ -163,18 +164,21 @@ namespace CloudRP.VehicleSystems.Vehicles
             return (findDisplayName, findClass);
         }
 
-        public static void addNewVehicleJson(VehicleJsonData newData)
+        public static List<VehicleJsonData> getVehiclesJsonData()
         {
-            string path = directory + "vehicles.json";
-
             List<VehicleJsonData> vehicleData = null;
 
             using (StreamReader sr = new StreamReader(path))
             {
                 vehicleData = JsonConvert.DeserializeObject<List<VehicleJsonData>>(sr.ReadToEnd());
-
-                vehicleData.Add(newData);
             }
+
+            return vehicleData;
+        }
+
+        public static void addNewVehicleJson(VehicleJsonData newData)
+        {
+            List<VehicleJsonData> vehicleData = getVehiclesJsonData();
 
             if(vehicleData != null)
             {
@@ -182,6 +186,56 @@ namespace CloudRP.VehicleSystems.Vehicles
 
                 File.WriteAllText(path, newJson);
             }
+        }
+
+        public static bool editVehicleJsonData(string targetName, string displayName)
+        {
+            List<VehicleJsonData> vehicleData = getVehiclesJsonData();
+            bool wasEdited = false; 
+
+            if(vehicleData != null)
+            {
+                VehicleJsonData findData = vehicleData
+                    .Where(data => data.Name == targetName)
+                    .FirstOrDefault();
+
+                if(findData != null)
+                {
+                    findData.DisplayName.Name = displayName;
+                    findData.DisplayName.English = displayName;
+                    
+                    using(DefaultDbContext dbContext = new DefaultDbContext())
+                    {
+                        List<DbVehicle> vehicles = dbContext.vehicles.ToList();
+
+                        vehicles.ForEach(dbVeh =>
+                        {
+                            if(dbVeh.vehicle_display_name == targetName)
+                            {
+                                dbVeh.vehicle_display_name = targetName;
+                                dbContext.Update(dbVeh);
+                                dbContext.SaveChanges();
+                            }
+                        });
+
+                        NAPI.Pools.GetAllVehicles().ForEach(onlineVeh =>
+                        {
+                            DbVehicle onlineVehData = onlineVeh.getData();
+                            
+                            if(onlineVehData?.vehicle_display_name == targetName)
+                            {
+                                onlineVehData.vehicle_display_name = displayName;
+                                onlineVeh.saveVehicleData(onlineVehData, true);
+                            }
+                        });
+                    }
+                    
+                    wasEdited = true;
+                }
+
+            }
+
+            return wasEdited;
         }
 
         public static Vehicle getClosestVehicleToPlayer(Player player, float maxDist = 10)
