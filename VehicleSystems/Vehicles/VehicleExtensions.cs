@@ -167,8 +167,8 @@ namespace CloudRP.VehicleSystems.Vehicles
                 AdminUtils.staffSay(player, "Owner id: " + ChatUtils.red + vehicleData.owner_id + AdminUtils.staffSuffixColour + " Numberplate: " + ChatUtils.red + vehicleData.numberplate);
                 AdminUtils.staffSay(player, "Vehicle Dimension: " + ChatUtils.red + vehicleData.vehicle_dimension + AdminUtils.staffSuffixColour + " Lock Status: " + ChatUtils.red + vehicleData.vehicle_locked);
                 AdminUtils.staffSay(player, "Mileage: " + ChatUtils.red + (vehicleData.vehicle_distance / 1609).ToString("N0") + " Miles" + AdminUtils.staffSuffixColour + " Fuel Level: " + ChatUtils.red + vehicleData.vehicle_fuel.ToString("N1") + "%");
-                
-                if(vehicleData.dealership_id != -1)
+
+                if (vehicleData.dealership_id != -1)
                 {
                     KeyValuePair<string, Dealer> dealership = PlayerDealerships.playerDealerships
                         .Where(dealer => dealer.Value.dealerId == vehicleData.dealership_id)
@@ -187,6 +187,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                     AdminUtils.staffSay(player, "Owner: " + ChatUtils.red + vehicleOwnerData.character_name + AdminUtils.staffSuffixColour + " Owner Last Login: " + ChatUtils.red + vehicleOwnerData.last_login);
                 }
 
+                AdminUtils.staffSay(player, "Class: " + ChatUtils.red + vehicleData.vehicle_class_id);
                 player.SendChatMessage(ChatUtils.yellow + "-----------------------------------------------------------");
             }
         }
