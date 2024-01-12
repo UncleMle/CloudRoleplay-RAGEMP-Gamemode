@@ -163,6 +163,7 @@ namespace CloudRP.VehicleSystems.Vehicles
             {
                 player.SendChatMessage(ChatUtils.yellow + "-----------------------------------------------------------");
                 AdminUtils.staffSay(player, "Vehicle id: " + ChatUtils.red + vehicleData.vehicle_id + AdminUtils.staffSuffixColour + " VehName: " + ChatUtils.red + vehicleData.vehicle_name);
+                AdminUtils.staffSay(player, "Vehicle Display Name: " + ChatUtils.red + vehicleData.vehicle_display_name + AdminUtils.staffSuffixColour + " Doors: " + ChatUtils.red + JsonConvert.SerializeObject(vehicleData.vehicle_doors));
                 AdminUtils.staffSay(player, "Owner id: " + ChatUtils.red + vehicleData.owner_id + AdminUtils.staffSuffixColour + " Numberplate: " + ChatUtils.red + vehicleData.numberplate);
                 AdminUtils.staffSay(player, "Vehicle Dimension: " + ChatUtils.red + vehicleData.vehicle_dimension + AdminUtils.staffSuffixColour + " Lock Status: " + ChatUtils.red + vehicleData.vehicle_locked);
                 AdminUtils.staffSay(player, "Mileage: " + ChatUtils.red + (vehicleData.vehicle_distance / 1609).ToString("N0") + " Miles" + AdminUtils.staffSuffixColour + " Fuel Level: " + ChatUtils.red + vehicleData.vehicle_fuel.ToString("N1") + "%");
