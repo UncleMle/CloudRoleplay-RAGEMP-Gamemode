@@ -1,4 +1,5 @@
 ﻿using CloudRP.GeneralSystems.GeneralCommands;
+using CloudRP.GeneralSystems.WeaponSystem;
 using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.DeathSystem;
 using CloudRP.PlayerSystems.PlayerData;
@@ -11,8 +12,10 @@ using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using Discord;
 using GTANetworkAPI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -25,6 +28,7 @@ namespace CloudRP.ServerSystems.Admin
         public static int _maxReports = 2;
         public static int _maxAdminMarkers = 20;
         public static string defaultAdminPed = "ig_abigail";
+        public static readonly string directory = Directory.GetCurrentDirectory() + "/json/";
 
         [ServerEvent(Event.PlayerDisconnected)]
         public void OnPlayerDisconnect(Player player, DisconnectionType type, string reason)
@@ -1865,6 +1869,38 @@ namespace CloudRP.ServerSystems.Admin
                 uiHandling.sendNotification(player, $"~r~You spawned in a ped ~y~{objName}", false);
             }
             else AdminUtils.sendNoAuth(player);
+        }
+
+        [Command("getdispname")]
+        public void getVehiclesDisplayName(Player player)
+        {
+            if(player.checkUserData((int)AdminRanks.Admin_Developer))
+            {
+                if(player.IsInVehicle)
+                {
+                    try
+                    {
+                        using (StreamReader sr = new StreamReader(directory + "vehicleData.json"))
+                        {
+                            Dictionary<string, dynamic> vehicleData = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(sr.ReadToEnd());
+
+                            foreach (KeyValuePair<string, dynamic> item in vehicleData)
+                            {
+                                int compareModel = int.Parse(item.Key);
+
+                                if(compareModel == player.Vehicle.Model)
+                                {
+                                    Console.WriteLine("Vehicle data : " + JsonConvert.SerializeObject(item));
+                                }
+                            }
+                        }
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+
         }
     }
 }
