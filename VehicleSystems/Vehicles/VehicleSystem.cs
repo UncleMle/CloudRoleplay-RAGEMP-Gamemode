@@ -22,8 +22,6 @@ namespace CloudRP.VehicleSystems.Vehicles
     public class VehicleSystem : Script
     {
         public static List<DbVehicle> vehicles;
-        public static readonly string directory = Directory.GetCurrentDirectory() + "/dotnet/resources/CloudRP/Json/";
-        public static readonly string path = directory + "vehicles.json";
         public static string _vehicleSharedDataIdentifier = "VehicleData";
         public static string _vehicleSharedModData = "VehicleModData";
         public static string _vehicleDirtLevelIdentifier = "VehicleDirtLevel";
@@ -143,7 +141,7 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             try
             {
-                using (StreamReader sr = new StreamReader(directory + "vehicles.json"))
+                using (StreamReader sr = new StreamReader(Main.JsonDirectory + "vehicles.json"))
                 {
                     List<VehicleJsonData> vehicleData = JsonConvert.DeserializeObject<List<VehicleJsonData>>(sr.ReadToEnd());
 
@@ -168,7 +166,7 @@ namespace CloudRP.VehicleSystems.Vehicles
         {
             List<VehicleJsonData> vehicleData = null;
 
-            using (StreamReader sr = new StreamReader(path))
+            using (StreamReader sr = new StreamReader(Main.JsonDirectory + "vehicles.json"))
             {
                 vehicleData = JsonConvert.DeserializeObject<List<VehicleJsonData>>(sr.ReadToEnd());
             }
@@ -186,7 +184,7 @@ namespace CloudRP.VehicleSystems.Vehicles
 
                 string newJson = JsonConvert.SerializeObject(vehicleData);
 
-                File.WriteAllText(path, newJson);
+                File.WriteAllText(Main.JsonDirectory + "vehicles.json", newJson);
             }
         }
 
@@ -233,7 +231,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                     }
 
                     string newJson = JsonConvert.SerializeObject(vehicleData);
-                    File.WriteAllText(path, newJson);
+                    File.WriteAllText(Main.JsonDirectory + "vehicles.json", newJson);
                     wasEdited = true;
                 }
             }

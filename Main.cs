@@ -16,6 +16,7 @@ namespace CloudRP
 {
     public class Main : Script
     {
+        public static string JsonDirectory = "";
         public static string _dbHost = "";
         public static string _dbUser = "";
         public static string _dbPassword = "";
@@ -44,6 +45,7 @@ namespace CloudRP
         [ServerEvent(Event.ResourceStart)]
         public void Start()
         {
+            JsonDirectory = Directory.GetCurrentDirectory() + NAPI.Resource.GetSetting<string>(this, "jsonentrypoint");
             _dbHost = NAPI.Resource.GetSetting<string>(this, "host");
             _dbDatabase = NAPI.Resource.GetSetting<string>(this, "database");
             _dbUser = NAPI.Resource.GetSetting<string>(this, "username");
