@@ -20,6 +20,8 @@ namespace CloudRP.VehicleSystems.Vehicles
         public int owner_id { get; set; }
         public string owner_name { get; set; }
         public string vehicle_name { get; set; }
+        public string vehicle_display_name { get; set; }
+        public int vehicle_class_id { get; set; }
         public bool vehicle_locked { get; set; }
         public uint vehicle_spawn_hash { get; set; }
         public string numberplate { get; set; }

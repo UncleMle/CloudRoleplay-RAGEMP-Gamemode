@@ -144,6 +144,8 @@ namespace CloudRP.GeneralSystems.SpeedCameras
             {
                 double speed = vehicleSpeed * 3.6;
 
+                if (player.Vehicle.getData()?.vehicle_class_id == 18) return;
+
                 if (speed > speedFines[0].speed && speed > cameraData.speedLimit && player.VehicleSeat == 0)
                 {
                     SpeedFine closest = speedFines.OrderBy(item => Math.Abs(speed - item.speed)).First();

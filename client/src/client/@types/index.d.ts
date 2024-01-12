@@ -243,6 +243,8 @@ export interface VehicleData {
     dealership_spot_id: number;
 	dealership_price: number;
 	dealership_description: string;
+	vehicle_class_id: number;
+	vehicle_display_name: string
 }
 
 export interface RenderKeys {

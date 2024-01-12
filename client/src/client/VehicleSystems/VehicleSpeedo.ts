@@ -49,17 +49,12 @@ export default class VehicleSpeedo {
                     vehicleMileage: vehicleData.vehicle_distance,
                     metric: mp.game.gameplay.getProfileSetting(227),
                     numberPlate: vehicle.getNumberPlateText(),
-                    displayName: VehicleSpeedo.getVehDispName(vehicle.model),
+                    displayName: vehicleData.vehicle_display_name,
                     dbName: vehicleData.vehicle_name,
                     vehHealth: vehicle.getHealth(),
                     vehicleCruise: vehicleData.speed_limit
                 })}
             })`);
         }
-    }
-
-    public static getVehDispName(model: number): string {
-        let dispName: string = mp.game.ui.getLabelText(mp.game.vehicle.getDisplayNameFromVehicleModel(model));
-        return dispName;
     }
 }

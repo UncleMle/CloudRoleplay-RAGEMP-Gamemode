@@ -65,7 +65,7 @@ export default class VehicleEngine {
 				return;
 			}
 
-			mp.events.callRemote(VehicleEngine.engineToggleEvent, VehicleSpeedo.getVehDispName(VehicleEngine.LocalPlayer.vehicle.model));
+			mp.events.callRemote(VehicleEngine.engineToggleEvent, vehicleData.vehicle_display_name);
 		}
 	}
 }

@@ -23,7 +23,7 @@
                                                 class="w-30 h-20 rounded-xl" />
                                         </div>
                                         <font class="font-bold text-xl">
-                                            {{ item.vehicle_name[0].toUpperCase() + item.vehicle_name.substring(1) }}
+                                            {{ item.vehicle_display_name }}
                                         </font>
                                         <br />
                                         <div class="relative mt-2">

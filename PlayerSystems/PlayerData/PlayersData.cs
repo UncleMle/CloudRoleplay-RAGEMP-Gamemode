@@ -55,7 +55,7 @@ namespace CloudRP.PlayerSystems.PlayerData
         {
             if (player.checkDataSetIsValid())
             {
-                if(key == _sharedAccountDataIdentifier && checkIfAccountIsLogged((val as User).account_id) || key == _sharedCharacterDataIdentifier && checkIfCharacterIsLogged((val as DbCharacter).character_id))
+                if (key != null && (key == _sharedAccountDataIdentifier && checkIfAccountIsLogged((val as User).account_id) || key == _sharedCharacterDataIdentifier && checkIfCharacterIsLogged((val as DbCharacter).character_id)))
                 {
                     ChatUtils.formatConsolePrint($"[ServerData] Duplicate key error. Key: " + key, ConsoleColor.Red);
                     return; 
@@ -70,7 +70,7 @@ namespace CloudRP.PlayerSystems.PlayerData
         {
             if (player.checkDataSetIsValid())
             {
-                if (key == _sharedAccountDataIdentifier && checkIfAccountIsLogged((val as User).account_id) || key == _sharedCharacterDataIdentifier && checkIfCharacterIsLogged((val as DbCharacter).character_id))
+                if (key != null && (key == _sharedAccountDataIdentifier && checkIfAccountIsLogged((val as SharedDataAccount).account_id) || key == _sharedCharacterDataIdentifier && checkIfCharacterIsLogged((val as SharedDataCharacter).character_id)))
                 {
                     ChatUtils.formatConsolePrint($"[Shared] Duplicate key error. Key: " + key, ConsoleColor.Red);
                     return;
@@ -101,7 +101,7 @@ namespace CloudRP.PlayerSystems.PlayerData
 
             NAPI.Pools.GetAllPlayers().ForEach(p =>
             {
-                if (p.getPlayerCharacterData() != null && p.getPlayerAccountData().account_id == accId)
+                if (p.getPlayerAccountData() != null && p.getPlayerAccountData().account_id == accId)
                 {
                     onlineAccounts.Add(p.getPlayerAccountData());
                 }

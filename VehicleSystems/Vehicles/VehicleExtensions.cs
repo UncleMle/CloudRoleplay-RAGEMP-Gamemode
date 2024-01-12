@@ -1,8 +1,10 @@
 ﻿using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.PlayerSystems.PlayerDealerships;
 using CloudRP.ServerSystems.Admin;
 using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
+using CloudRP.VehicleSystems.VehicleDealerships;
 using CloudRP.VehicleSystems.VehicleInsurance;
 using GTANetworkAPI;
 using Newtonsoft.Json;
@@ -161,9 +163,23 @@ namespace CloudRP.VehicleSystems.Vehicles
             {
                 player.SendChatMessage(ChatUtils.yellow + "-----------------------------------------------------------");
                 AdminUtils.staffSay(player, "Vehicle id: " + ChatUtils.red + vehicleData.vehicle_id + AdminUtils.staffSuffixColour + " VehName: " + ChatUtils.red + vehicleData.vehicle_name);
+                AdminUtils.staffSay(player, "Vehicle Display Name: " + ChatUtils.red + vehicleData.vehicle_display_name + AdminUtils.staffSuffixColour + " Doors: " + ChatUtils.red + JsonConvert.SerializeObject(vehicleData.vehicle_doors));
                 AdminUtils.staffSay(player, "Owner id: " + ChatUtils.red + vehicleData.owner_id + AdminUtils.staffSuffixColour + " Numberplate: " + ChatUtils.red + vehicleData.numberplate);
                 AdminUtils.staffSay(player, "Vehicle Dimension: " + ChatUtils.red + vehicleData.vehicle_dimension + AdminUtils.staffSuffixColour + " Lock Status: " + ChatUtils.red + vehicleData.vehicle_locked);
                 AdminUtils.staffSay(player, "Mileage: " + ChatUtils.red + (vehicleData.vehicle_distance / 1609).ToString("N0") + " Miles" + AdminUtils.staffSuffixColour + " Fuel Level: " + ChatUtils.red + vehicleData.vehicle_fuel.ToString("N1") + "%");
+
+                if (vehicleData.dealership_id != -1)
+                {
+                    KeyValuePair<string, Dealer> dealership = PlayerDealerships.playerDealerships
+                        .Where(dealer => dealer.Value.dealerId == vehicleData.dealership_id)
+                        .FirstOrDefault();
+
+                    if(dealership.Value != null)
+                    {
+                        AdminUtils.staffSay(player, $"Market status: {ChatUtils.moneyGreen}true{AdminUtils.staffSuffixColour} Market: {dealership.Key}");
+                    }
+                }
+
 
                 DbCharacter vehicleOwnerData = VehicleSystem.getOwnerOfVehicleById(vehicleData.owner_id);
                 if ((userData.adminDuty || userData.admin_status > (int)AdminRanks.Admin_HeadAdmin) && vehicleOwnerData != null)
@@ -171,6 +187,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                     AdminUtils.staffSay(player, "Owner: " + ChatUtils.red + vehicleOwnerData.character_name + AdminUtils.staffSuffixColour + " Owner Last Login: " + ChatUtils.red + vehicleOwnerData.last_login);
                 }
 
+                AdminUtils.staffSay(player, "Class: " + ChatUtils.red + vehicleData.vehicle_class_id);
                 player.SendChatMessage(ChatUtils.yellow + "-----------------------------------------------------------");
             }
         }

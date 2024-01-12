@@ -1,4 +1,5 @@
 ﻿using CloudRP.GeneralSystems.GeneralCommands;
+using CloudRP.GeneralSystems.WeaponSystem;
 using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.DeathSystem;
 using CloudRP.PlayerSystems.PlayerData;
@@ -7,12 +8,15 @@ using CloudRP.ServerSystems.AntiCheat;
 using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.DiscordSystem;
+using CloudRP.ServerSystems.Extensions;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using Discord;
 using GTANetworkAPI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -593,7 +597,11 @@ namespace CloudRP.ServerSystems.Admin
 
                 (Vehicle vehicle, DbVehicle vehicleData) = VehicleSystem.buildVehicle(vehName, playerPosition, playerRotation, charData.character_id, colourOne, colourTwo, charData.character_name);
 
-                if (vehicle == null) return;
+                if (vehicle == null || vehicleData == null)
+                {
+                    CommandUtils.errorSay(player, "Invalid vehicle spawn name");
+                    return;
+                }
 
                 player.SetIntoVehicle(vehicle, 0);
 
@@ -920,7 +928,43 @@ namespace CloudRP.ServerSystems.Admin
             }
         }
 
-        [Command("fix")]
+        [Command("addnewv", "~r~/addnewv [vehicleName] [classId] [classType] [DisplayName]", GreedyArg = true)]
+        public void addNewVehicleCommand(Player player, string vehicleName, int classId, string classType, string displayName)
+        {
+            if(player.checkUserData((int)AdminRanks.Admin_Founder))
+            {
+                VehicleJsonData vehicleJsonData = new VehicleJsonData
+                {
+                    ClassId = classId,
+                    Name = vehicleName,
+                    DisplayName = new DisplayNameClass
+                    {
+                        English = displayName,
+                        Name = displayName
+                    },
+                    Class = classType
+                };
+
+                VehicleSystem.addNewVehicleJson(vehicleJsonData);
+                AdminUtils.staffSay(player, $"You added a new vehicle {displayName}.");
+            }
+        }
+
+        [Command("changevdata", "~r~/changevdata [targetName] [newDisplayName]", GreedyArg = true)]
+        public void changeVehicleDataCommand(Player player, string targetName, string newDisplayName)
+        {
+            if(player.checkUserData((int)AdminRanks.Admin_Developer))
+            {
+                bool updatedSuccess = VehicleSystem.editVehicleJsonData(targetName, newDisplayName);
+
+                if(updatedSuccess)
+                {
+                    AdminUtils.staffSay(player, $"You edited vehicle name {targetName} ==> {newDisplayName}");
+                }
+            }
+        }
+
+        [Command("fix", "~r~/fix")]
         public void onFixVehicle(Player player)
         {
             User userData = player.getPlayerAccountData();
@@ -1844,7 +1888,7 @@ namespace CloudRP.ServerSystems.Admin
 
             if (userData.admin_status == (int)AdminRanks.Admin_Developer)
             {
-                NAPI.Ped.CreatePed(NAPI.Util.GetHashKey(pedName), player.Position, 0, 0, true, true, true);
+                NAPI.Ped.CreatePed(NAPI.Util.GetHashKey(pedName), player.Position, 0, true, true, true);
                 AdminUtils.staffSay(player, $"You spawned in a ped {ChatUtils.yellow}{pedName}{ChatUtils.White}");
 
                 uiHandling.sendNotification(player, $"~r~You spawned in a ped ~y~{pedName}", false);
