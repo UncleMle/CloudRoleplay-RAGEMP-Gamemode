@@ -928,7 +928,27 @@ namespace CloudRP.ServerSystems.Admin
             }
         }
 
-        [Command("fix")]
+        [Command("addnewv", "~r~/addnewv [vehicleName] [classId] [classType] [DisplayName]", GreedyArg = true)]
+        public void addNewVehicleCommand(Player player, int classId, string classType, string vehicleName)
+        {
+            if(player.checkUserData((int)AdminRanks.Admin_Founder))
+            {
+                VehicleJsonData vehicleJsonData = new VehicleJsonData
+                {
+                    ClassId = classId,
+                    DisplayName = new DisplayNameClass
+                    {
+                        English = vehicleName,
+                        Name = vehicleName
+                    },
+                    Class = classType
+                };
+
+                VehicleSystem.addNewVehicleJson(vehicleJsonData);
+            }
+        }
+
+        [Command("fix", "~r~/fix")]
         public void onFixVehicle(Player player)
         {
             User userData = player.getPlayerAccountData();

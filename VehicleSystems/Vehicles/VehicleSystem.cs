@@ -163,6 +163,28 @@ namespace CloudRP.VehicleSystems.Vehicles
             return (findDisplayName, findClass);
         }
 
+        public static void addNewVehicleJson(VehicleJsonData newData)
+        {
+            try
+            {
+                string path = directory + "vehicles.json";
+
+                using (StreamReader sr = new StreamReader(path))
+                {
+                    List<VehicleJsonData> vehicleData = JsonConvert.DeserializeObject<List<VehicleJsonData>>(sr.ReadToEnd());
+
+                    vehicleData.Add(newData);
+
+                    File.Delete(path);
+
+                    File.WriteAllText(path, JsonConvert.SerializeObject(vehicleData));
+                }
+            }
+            catch
+            {
+            }
+        }
+
         public static Vehicle getClosestVehicleToPlayer(Player player, float maxDist = 10)
         {
             List<Vehicle> onlineVehicles = NAPI.Pools.GetAllVehicles();
