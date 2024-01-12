@@ -22,7 +22,7 @@ namespace CloudRP.VehicleSystems.Vehicles
     public class VehicleSystem : Script
     {
         public static List<DbVehicle> vehicles;
-        public static readonly string directory = Directory.GetCurrentDirectory() + "/json/";
+        public static readonly string directory = Directory.GetCurrentDirectory() + "/dotnet/resources/CloudRP/Json/";
         public static readonly string path = directory + "vehicles.json";
         public static string _vehicleSharedDataIdentifier = "VehicleData";
         public static string _vehicleSharedModData = "VehicleModData";
@@ -182,6 +182,8 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             if(vehicleData != null)
             {
+                vehicleData.Add(newData);
+
                 string newJson = JsonConvert.SerializeObject(vehicleData);
 
                 File.WriteAllText(path, newJson);

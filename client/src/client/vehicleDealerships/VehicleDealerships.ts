@@ -87,7 +87,7 @@ export default class VehicleDealerShips {
 			dealerData.vehDispNames = [];
 
 			dealerData.vehicles.forEach((data) => {
-				let dispName = VehicleSpeedo.getVehDispName(mp.game.joaat(data.spawnName));
+				let dispName = mp.game.vehicle.getDisplayNameFromVehicleModel(mp.game.joaat(data.spawnName));
 				dealerData?.vehDispNames.push(dispName);
 			});
 
@@ -162,8 +162,6 @@ export default class VehicleDealerShips {
 	public static purchaseDealerVehicle(vehName: string, spawnColour: string | number) {
 		if (!vehName) return;
 
-		let dispName: string = VehicleSpeedo.getVehDispName(mp.game.joaat(vehName));
-
-		mp.events.callRemote(VehicleDealerShips._dealerPurchaseEvent, vehName, Number(spawnColour), dispName == 'NULL' ? 'Vehicle' : dispName);
+		mp.events.callRemote(VehicleDealerShips._dealerPurchaseEvent, vehName, Number(spawnColour));
 	}
 }

@@ -200,7 +200,7 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
         }
 
         [RemoteEvent("server:purchaseVehicle")]
-        public void handlePlayerVehiclePurchase(Player player, string vehName, int spawnColour, string dispName)
+        public void handlePlayerVehiclePurchase(Player player, string vehName, int spawnColour)
         {
             DealerShip playerDealerData = player.GetData<DealerShip>(_dealershipIdentifer);
             bool dealerActive = player.GetData<bool>(_dealerActiveIdentifier);
@@ -234,13 +234,16 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
                 charData.money_amount -= findDealerVeh.price;
 
                 (Vehicle buildVeh, DbVehicle vehicleData) = VehicleSystem.buildVehicle(vehName, playerDealerData.spawnPosition, 0, charData.character_id, spawnColour, spawnColour, charData.character_name);
+
+                if (buildVeh == null || vehicleData == null) return;
+
                 player.setPlayerCharacterData(charData, true, true);
 
                 player.TriggerEvent("dealers:closeDealership");
-                CommandUtils.successSay(player, $"You purchased a new {dispName} for ${findDealerVeh.price}. Your vehicle ~y~has been marked on the map~w~.");
+                CommandUtils.successSay(player, $"You purchased a new {vehicleData.vehicle_display_name} for ${findDealerVeh.price}. Your vehicle ~y~has been marked on the map~w~.");
 
                 MarkersAndLabels.addBlipForClient(player, 523, $"Your new vehicle [{vehicleData.numberplate}]", playerDealerData.spawnPosition, 70, 255);
-                ChatUtils.formatConsolePrint($"{charData.character_name} purchased a new {dispName} with id #{vehicleData.vehicle_id}", ConsoleColor.Blue);
+                ChatUtils.formatConsolePrint($"{charData.character_name} purchased a new {vehicleData.vehicle_display_name} with id #{vehicleData.vehicle_id}", ConsoleColor.Blue);
 
                 uiHandling.setLoadingState(player, false);
                 uiHandling.pushRouterToClient(player, Browsers.None);

@@ -79,7 +79,7 @@ export default class VehicleRadar {
 								ownerName: targetVehicleData.owner_name,
 								speed: targetV.getSpeed(),
 								numberplate: targetVehicleData.numberplate,
-								vehicleName: VehicleSpeedo.getVehDispName(targetV.model)
+								vehicleName: targetVehicleData.vehicle_display_name
 							})}
                         })`);
 					}
