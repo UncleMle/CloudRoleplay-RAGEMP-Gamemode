@@ -349,7 +349,7 @@ namespace CloudRP.ServerSystems.Authentication
         {
             User userData = player.getPlayerAccountData();
 
-            if (userData != null && player.checkPlayerIsBanned() == null)
+            if (userData != null && player.checkPlayerIsBanned() == null && player.getPlayerCharacterData() == null)
             {
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
@@ -368,31 +368,44 @@ namespace CloudRP.ServerSystems.Authentication
                         .Where(tat => tat.tattoo_owner_id == character.character_id)
                         .ToList();
 
-                    character.UpdatedDate = DateTime.Now;
-                    character.last_login = DateTime.Now;
-                    dbContext.Update(character);
-                    dbContext.SaveChanges();
+                    bool wasFoundInGame = false;
 
-                    character.characterModel = charModel;
-                    character.characterClothing = charClothing;
-                    character.characterModel.player_tattos = charTats;
-
-                    player.Dimension = character.player_dimension;
-                    player.Position = new Vector3(character.position_x, character.position_y, character.position_z);
-                    player.Health = character.character_health;
-
-                    ChatUtils.formatConsolePrint($"Character {character.character_name} has logged in (#{character.character_id})", ConsoleColor.Yellow);
-                    player.setPlayerCharacterData(character, true);
-                    DiscordUtils.creationConnection(player, character, LogCreation.Join);
-
-                    Chat.welcomePlayerOnSpawn(player);
-
-                    if (character.injured_timer > 0)
+                    NAPI.Pools.GetAllPlayers().ForEach(p =>
                     {
-                        DeathEvent.updateAndSetInjuredState(player, character, character.injured_timer);
-                    }
+                        if(p.getPlayerCharacterData()?.character_id == character.character_id)
+                        {
+                            wasFoundInGame = true;
+                        }
+                    });
 
-                    welcomeAndSpawnPlayer(player);
+                    if(!wasFoundInGame)
+                    {
+                        character.UpdatedDate = DateTime.Now;
+                        character.last_login = DateTime.Now;
+                        dbContext.Update(character);
+                        dbContext.SaveChanges();
+
+                        character.characterModel = charModel;
+                        character.characterClothing = charClothing;
+                        character.characterModel.player_tattos = charTats;
+
+                        player.Dimension = character.player_dimension;
+                        player.Position = new Vector3(character.position_x, character.position_y, character.position_z);
+                        player.Health = character.character_health;
+
+                        ChatUtils.formatConsolePrint($"Character {character.character_name} has logged in (#{character.character_id})", ConsoleColor.Yellow);
+                        player.setPlayerCharacterData(character, true);
+                        DiscordUtils.creationConnection(player, character, LogCreation.Join);
+
+                        Chat.welcomePlayerOnSpawn(player);
+
+                        if (character.injured_timer > 0)
+                        {
+                            DeathEvent.updateAndSetInjuredState(player, character, character.injured_timer);
+                        }
+
+                        welcomeAndSpawnPlayer(player);
+                    }
                 }
             };
         }
