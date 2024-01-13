@@ -103,6 +103,8 @@ namespace CloudRP.VehicleSystems.VehicleModification
 
                 player.TriggerEvent("customs:loadIndexes");
 
+                uiHandling.handleObjectUiMutation(player, MutationKeys.PlayerVehDealer, false);
+
                 uiHandling.handleObjectUiMutation(player, MutationKeys.VehicleMods, vehicleData.vehicle_mods);
                 uiHandling.handleObjectUiMutation(player, MutationKeys.VehicleModsOld, vehicleData.vehicle_mods);
 
