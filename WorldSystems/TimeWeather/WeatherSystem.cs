@@ -15,7 +15,6 @@ namespace CloudRP.World.TimeWeather
         private static Timer syncWeatherTimer;
         private static int timerInterval_seconds = 900;
         private static int interval_delay_seconds = 5;
-        public static string weatherKeyIdentifier = "weatherApiKey";
         public static string weatherSyncTo = "london";
         public static string weatherApiKey;
         public static bool weatherSyncOn = true;
@@ -41,21 +40,23 @@ namespace CloudRP.World.TimeWeather
         {
             NAPI.Task.Run(async () =>
             {
-                if (!weatherSyncOn) return;
-                try
+                if(weatherSyncOn)
                 {
-                    string uri = "https://api.weatherapi.com/v1/current.json?key=";
+                    try
+                    {
+                        string uri = "https://api.weatherapi.com/v1/current.json?key=";
 
-                    HttpClient client = new HttpClient();
+                        HttpClient client = new HttpClient();
 
-                    string response = await client.GetStringAsync(uri + weatherApiKey + "&q=" + weatherSyncTo);
+                        string response = await client.GetStringAsync(uri + weatherApiKey + "&q=" + weatherSyncTo);
 
-                    WeatherData data = JsonConvert.DeserializeObject<WeatherData>(response);
+                        WeatherData data = JsonConvert.DeserializeObject<WeatherData>(response);
 
-                    setWeather(data.Current.Condition.Code);
-                }
-                catch
-                {
+                        setWeather(data.Current.Condition.Code);
+                    }
+                    catch
+                    {
+                    }
                 }
             });
         }
@@ -64,38 +65,38 @@ namespace CloudRP.World.TimeWeather
         {
             NAPI.Task.Run(() =>
             {
+                string weatherType = "EXTRASUNNY";
+
                 switch (code)
                 {
                     case 1000:
-                        NAPI.World.SetWeather(Weather.EXTRASUNNY);
+                        weatherType = "EXTRASUNNY";
                         break;
                     case 1003:
-                        NAPI.World.SetWeather(Weather.CLOUDS);
-                        break;
                     case 1006:
-                        NAPI.World.SetWeather(Weather.CLOUDS);
+                        weatherType = "CLOUDS";
                         break;
                     case 1063:
                     case 1225:
                     case 1066:
-                        NAPI.World.SetWeather(Weather.SNOWLIGHT);
+                        weatherType = "SNOWLIGHT";
                         break;
                     case 1135:
-                        NAPI.World.SetWeather(Weather.FOGGY);
+                        weatherType = "FOGGY";
                         break;
                     case 1183:
-                        NAPI.World.SetWeather(Weather.RAIN);
-                        break;
                     case 1189:
-                        NAPI.World.SetWeather(Weather.RAIN);
+                        weatherType = "RAIN";
                         break;
                     case 1273:
-                        NAPI.World.SetWeather(Weather.THUNDER);
+                        weatherType = "THUNDER";
                         break;
                     default:
-                        NAPI.World.SetWeather(Weather.CLEAR);
+                        weatherType = "CLEAR";
                         break;
                 }
+
+                NAPI.ClientEvent.TriggerClientEventForAll("client:weatherSet", weatherType);
 
                 ChatUtils.formatConsolePrint("Set weather to " + code, ConsoleColor.Cyan);
             });
@@ -128,7 +129,7 @@ namespace CloudRP.World.TimeWeather
 
             if (userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)
             {
-                NAPI.World.SetWeather(weather);
+                NAPI.ClientEvent.TriggerClientEventForAll("client:weatherSet", weather.ToString());
 
                 AdminUtils.staffSay(player, "Set weather to " + weather);
 

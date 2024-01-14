@@ -17,7 +17,7 @@ export default class VehicleDamage {
         if(!vehicle) return;
         let vehicleData: VehicleData | undefined = getVehicleData(vehicle);
 
-        if(vehicleData) {
+        if(vehicleData && vehicleData.vehicle_health !== undefined && typeof vehicleData.vehicle_health === "number") {
             vehicle.setHealth(vehicleData.vehicle_health);
             vehicle.setBodyHealth(vehicleData.vehicle_health);
             vehicle.setEngineHealth(vehicleData.vehicle_health);

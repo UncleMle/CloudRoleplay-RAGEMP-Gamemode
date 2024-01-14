@@ -47,6 +47,7 @@ import ConvienceStores from "./ConvienceStores/ConvIenceStores";
 import CruiseControl from "./VehicleSystems/VehicleCruiseControl";
 import PlayerDealership from "./PlayerDealership/PlayerDealership";
 import Crouching from "./Animation/Crouching";
+import Weather from "./world/Weather";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -97,3 +98,4 @@ new ConvienceStores();
 new CruiseControl();
 new PlayerDealership();
 new Crouching();
+new Weather();
