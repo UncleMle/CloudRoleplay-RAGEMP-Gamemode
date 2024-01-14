@@ -51,14 +51,9 @@ TestResult.xml
 nunit-*.xml
 
 # Remove TS client things
-client/dist
-client/.env
-client/node_modules
-
-# Remove frontend client UI things
-cloudrp-ui/dist
-cloudrp-ui/.env
-cloudrp-ui/node_modules
+ClientSide/client/dist
+ClientSide/client/.env
+ClientSide/client/node_modules
 
 # Remove meta
 meta.xml
