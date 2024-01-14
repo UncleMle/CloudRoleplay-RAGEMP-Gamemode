@@ -1,6 +1,5 @@
 import { VehicleData } from "@/@types";
 import getVehicleData from "@/PlayerMethods/getVehicleData";
-import VehicleSpeedo from "@/VehicleSystems/VehicleSpeedo";
 
 export default class PlayerDealership {
     public static LocalPlayer: PlayerMp = mp.players.local;
@@ -63,7 +62,7 @@ export default class PlayerDealership {
             await mp.game.waitAsync(2500);
 
             if (mp.vehicles.at(vehicle.remoteId)) {
-                vehicle.freezePosition(value);
+                PlayerDealership.reseatVehiclePosition(vehicle);
             }
         }
     }
@@ -77,9 +76,17 @@ export default class PlayerDealership {
                 let vehicleData: VehicleData | undefined = getVehicleData(vehicle as VehicleMp);
 
                 if (vehicleData && vehicleData.dealership_id != -1 && vehicleData.dealership_spot_id != -1) {
-                    vehicle.freezePosition(true);
+                    PlayerDealership.reseatVehiclePosition(vehicle as VehicleMp);
                 }
             }
         }
+    }
+
+    private static reseatVehiclePosition(vehicle: VehicleMp) {
+        while(!vehicle.isOnAllWheels()) {
+            mp.game.wait(0);
+        }
+
+        vehicle.freezePosition(true);
     }
 }

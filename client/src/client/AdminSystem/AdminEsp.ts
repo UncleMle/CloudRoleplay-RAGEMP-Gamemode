@@ -166,7 +166,7 @@ export default class AdminEsp {
 
 			let vehicleData: VehicleData | undefined = getVehicleData(ent as VehicleMp);
 
-			let dispText: string = `Vehicle (RID #${ent.remoteId}) (Model ${AdminEsp.getVehicleName(ent as VehicleMp)}) (Dist ${distBetweenCoords(AdminEsp.LocalPlayer.position, ent.position).toFixed(1)}M) `;
+			let dispText: string = `Vehicle (RID #${ent.remoteId}) (Model ${AdminEsp.getVehicleName(ent as VehicleMp)}) (Dist ${distBetweenCoords(AdminEsp.LocalPlayer.position, ent.position).toFixed(1)}M) on wheels (${ent.isOnAllWheels()}) `;
 
 			if (vehicleData != null) {
 				dispText += `(VID #${vehicleData.vehicle_id}) (Locked ${vehicleData.vehicle_locked}) I = ${vehicleData.indicator_status}`;
