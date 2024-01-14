@@ -180,9 +180,7 @@ export default {
         }),
     },
     mounted() {
-        if (window.mp) {
-            window.mp.trigger("gui:toggleHudComplete", false);
-        }
+        window.mp.trigger("gui:toggleHudComplete", false);
 
         this.selectedVehicle = this.playerData.vehicle_dealer_data.vehicles[0].spawnName;
     },
@@ -196,7 +194,6 @@ export default {
     },
     methods: {
         close() {
-            if (!window.mp) return;
             window.mp.trigger("browser:resetRouter");
             window.mp.trigger("dealers:closeDealership");
         },
@@ -209,7 +206,6 @@ export default {
             }
         },
         viewVehicle(name) {
-            if (!window.mp) return;
             this.selectedVehicle = name;
             window.mp.trigger("dealers:changeSelectVeh", name, this.rotation, this.selectedColour);
         },

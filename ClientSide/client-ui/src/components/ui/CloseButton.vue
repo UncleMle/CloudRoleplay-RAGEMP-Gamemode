@@ -5,29 +5,27 @@
 </template>
 
 <script>
-    export default {
-        props: ['resetGui', 'vehData', 'customEvent', 'callback'],
-        methods: {
-            resetRouter() {
-                if (window.mp) {
-                    window.mp.trigger("browser:resetRouter");
+export default {
+    props: ['resetGui', 'vehData', 'customEvent', 'callback'],
+    methods: {
+        resetRouter() {
+            window.mp.trigger("browser:resetRouter");
 
-                    if(this.customEvent) {
-                        window.mp.trigger(this.customEvent);
-                        return;
-                    }
+            if (this.customEvent) {
+                window.mp.trigger(this.customEvent);
+                return;
+            }
 
-                    if(this.callback) {
-                        this.callback();
-                    }
+            if (this.callback) {
+                this.callback();
+            }
 
-                    if(this.resetGui) {
-                        window.mp.trigger("gui:toggleHudComplete", true);
-                        console.log(JSON.stringify(this.vehData));
-                        window.mp.trigger("vehicle:setAttachments", JSON.stringify(this.vehData), true);
-                    }
-                }
+            if (this.resetGui) {
+                window.mp.trigger("gui:toggleHudComplete", true);
+                console.log(JSON.stringify(this.vehData));
+                window.mp.trigger("vehicle:setAttachments", JSON.stringify(this.vehData), true);
             }
         }
     }
+}
 </script>

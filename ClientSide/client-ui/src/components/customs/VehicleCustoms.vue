@@ -415,9 +415,7 @@ export default {
     watch: {
         vehicleData: {
             handler() {
-                if (window.mp) {
-                    window.mp.trigger("vehicle:setAttachments", JSON.stringify(this.vehicleData), true);
-                }
+                window.mp.trigger("vehicle:setAttachments", JSON.stringify(this.vehicleData), true);
             },
             deep: true,
         },
@@ -450,7 +448,6 @@ export default {
             return found;
         },
         removeFromBasket(modName, val) {
-            console.log(modName, val);
             let delIdx;
             this.basketItems.forEach((data, idx) => {
                 if (data.name == modName && data.val == val) {
@@ -476,15 +473,13 @@ export default {
         purchase() {
             this.$store.state.uiStates.serverLoading = true;
 
-            if (window.mp) {
-                if (!this.playerData.is_in_player_dealer) {
-                    window.mp.trigger("browser:sendObject", "server:vehicleModsSave", JSON.stringify(this.vehicleData));
-                } else {
-                    window.mp.trigger("browser:sendObject", "server:purchasePlayerDealerVehicle");
-                }
-
-                window.mp.trigger("gui:toggleHudComplete", true);
+            if (!this.playerData.is_in_player_dealer) {
+                window.mp.trigger("browser:sendObject", "server:vehicleModsSave", JSON.stringify(this.vehicleData));
+            } else {
+                window.mp.trigger("browser:sendObject", "server:purchasePlayerDealerVehicle");
             }
+
+            window.mp.trigger("gui:toggleHudComplete", true);
         },
         saveBasket() {
             this.$store.state.uiStates.serverLoading = true;
@@ -494,7 +489,6 @@ export default {
             }, 4000);
         },
         close() {
-            if (!window.mp) return;
             window.mp.trigger("browser:resetRouter");
             window.mp.trigger("gui:toggleHudComplete", true);
             window.mp.trigger("vehicle:setAttachments", JSON.stringify(this.playerData.vehicle_mod_data_old), true);
@@ -545,9 +539,7 @@ export default {
         }
     },
     mounted() {
-        if (window.mp) {
-            window.mp.trigger("gui:toggleHudComplete", false);
-        }
+        window.mp.trigger("gui:toggleHudComplete", false);
 
         this.vehicleData = this.playerData.vehicle_mod_data;
         this.vehicleDataOld = this.playerData.vehicle_mod_data_old;

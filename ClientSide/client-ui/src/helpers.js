@@ -11,6 +11,14 @@ export function sendToServer(eventName, value) {
     if(window.mp) {
         window.mp.trigger("browser:sendString", eventName, value);
     } else {
-        console.log(`MP EVENT |${eventName}| args: ${value}`);
+        console.log(`[Server] MP EVENT | ${eventName} |  ${value}`);
+    }
+}
+
+export function sendToClient(eventName, value) {
+    if(window.mp) {
+        window.mp.trigger(eventName, value);
+    } else {
+        console.log(`[Client] MP EVENT | ${eventName} |  ${value}`);
     }
 }

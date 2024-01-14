@@ -131,24 +131,18 @@ export default {
     watch: {
         clothingData: {
             handler() {
-                if(window.mp) {
-                    window.mp.trigger("clothes:setClothingData", JSON.stringify(this.clothingData), true, false);
-                }
+                window.mp.trigger("clothes:setClothingData", JSON.stringify(this.clothingData), true, false);
             },
             deep: true,
         },
         rotation() {
-            if(window.mp) {
-                window.mp.trigger("clothes:setRot", this.rotation);
-            }
+            window.mp.trigger("clothes:setRot", this.rotation);
         }
     },
     methods: {
         buyClothes() {
             this.$store.state.uiStates.serverLoading = true;
-            if(window.mp) {
-                window.mp.trigger("browser:sendObject", "server:handleClothesPurchase", JSON.stringify(this.clothingData));
-            }
+            window.mp.trigger("browser:sendObject", "server:handleClothesPurchase", JSON.stringify(this.clothingData));
         },
         checkForDifference() {
             let isDiff = false;
@@ -164,10 +158,7 @@ export default {
     },
     created() {
         if (!this.playerData.clothing_data) return;
-
-        if (window.mp) {
-            window.mp.trigger("clothes:setClothingData", this.playerData.clothing_data, true);
-        }
+        window.mp.trigger("clothes:setClothingData", this.playerData.clothing_data, true);
         this.clothingDataOld = this.playerData.clothing_data_old;
         this.clothingData = this.playerData.clothing_data;
         console.log(JSON.stringify(this.playerData.clothing_data));

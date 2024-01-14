@@ -224,6 +224,8 @@
 </template>
 
 <script>
+    import { sendToClient, sendToServer } from '@/helpers';
+
     export default {
 
         data() {
@@ -285,9 +287,7 @@
         watch: {
             characterData: {
                 handler(newValue) {
-                    if (window.mp) {
-                        window.mp.trigger("character:setModel", JSON.stringify(newValue.model));
-                    }
+                    sendToClient("character:setModel", JSON.stringify(newValue.model));
                 },
                 deep: true,
             },
@@ -322,9 +322,7 @@
         },
         methods: {
             createCharacter() {
-                if(window.mp) {
-                    window.mp.trigger("browser:sendObject", "server:recieveCharacterModel", JSON.stringify(this.$data.characterData));
-                }
+                sendToServer("server:recieveCharacterModel", JSON.stringify(this.$data.characterData));
             }
         }
 
