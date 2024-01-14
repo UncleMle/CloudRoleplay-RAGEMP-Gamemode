@@ -66,6 +66,7 @@
 import { mapGetters } from 'vuex';
 import CloseButton from '../ui/CloseButton.vue';
 import { getCarImagePath } from '../../helpers';
+import { sendToServer } from '@/helpers';
 
 export default {
     computed: {
@@ -79,8 +80,8 @@ export default {
     methods: {
         getCarImagePath,
         removeFromInsurance(vehicleId) {
-            window.mp.trigger("browser:sendString", "server:removeVehicleFromInsurance", vehicleId);
-        },
+            sendToServer("server:removeVehicleFromInsurance", vehicleId);
+        }
     }
 }
 

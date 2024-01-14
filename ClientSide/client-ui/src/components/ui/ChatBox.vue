@@ -14,6 +14,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { sendToServer } from "@/helpers";
 
 export default {
     data() {
@@ -117,7 +118,8 @@ export default {
         typingState(toggle) {
             if (window.mp) {
                 window.mp.invoke("focus", toggle);
-                window.mp.trigger("browser:sendString", "server:togglePlayerTyping", toggle);
+
+                sendToServer("server:togglePlayerTyping", toggle);
                 window.mp.invoke("setTypingInChatState", toggle);
             }
         },

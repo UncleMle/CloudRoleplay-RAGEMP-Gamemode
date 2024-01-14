@@ -139,6 +139,7 @@
 import CloseButton from '../ui/CloseButton.vue';
 import LoadingSpinner from '../ui/LoadingSpinner.vue';
 import { mapGetters } from 'vuex';
+import { sendToServer } from '@/helpers';
 
 export default {
     data() {
@@ -163,15 +164,15 @@ export default {
     methods: {
         withdrawPlayerCash() {
             this.$store.state.uiStates.serverLoading = true;
-            window.mp.trigger("browser:sendString", "server:atmWithdrawCash", this.withdrawCash);
+            sendToServer("server:atmWithdrawCash", this.withdrawCash);
         },
         depositPlayerCash() {
             this.$store.state.uiStates.serverLoading = true;
-            window.mp.trigger("browser:sendString", "server:bankDepositCash", this.depositAmount);
+            sendToServer("server:bankDepositCash", this.withdrawCash);
         },
         transferCash() {
             this.$store.state.uiStates.serverLoading = true;
-            window.mp.trigger("browser:sendString", "server:bankTransferSomeone", JSON.stringify({
+            sendToServer("server:bankTransferSomeone", JSON.stringify({
                 recieverName: this.transferCashName,
                 transferAmount: this.transferCashAmount
             }));

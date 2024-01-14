@@ -72,6 +72,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import MyCarsApp from './MyCarsApp.vue';
+import { sendToServer } from '@/helpers';
 
 export default {
     data() {
@@ -108,7 +109,7 @@ export default {
             this.phoneOpen = !this.phoneOpen;
             this.$store.state.uiStates.phoneState = this.phoneOpen;
 
-            window.mp.trigger("browser:sendString", "server:togglePhoneStatus");
+            sendToServer("server:togglePhoneStatus");
         },
         homeButton() {
             if(!this.spaceOrTabPressed) {

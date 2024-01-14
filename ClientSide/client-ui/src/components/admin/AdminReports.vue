@@ -45,6 +45,7 @@
 
 <script>
 import CloseButton from '../ui/CloseButton.vue';
+import { sendToServer } from '@/helpers';
 
 export default {
     data() {
@@ -57,14 +58,10 @@ export default {
     },
     methods: {
         accept(reportId) {
-            if (window.mp) {
-                window.mp.trigger("browser:sendString", "server:acceptReport", reportId);
-            }
+            sendToServer("server:acceptReport", reportId);
         },
         close(reportId) {
-            if (window.mp) {
-                window.mp.trigger("browser:sendString", "server:closeReport", reportId);
-            }
+            sendToServer("server:closeReport", reportId);
         }
     },
     mounted() {

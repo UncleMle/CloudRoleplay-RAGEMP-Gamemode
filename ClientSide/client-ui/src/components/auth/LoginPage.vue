@@ -310,7 +310,8 @@
                                             <i
                                                 class="fa-solid fa-lock absolute pt-3 border-r p-3 h-11 border-gray-400 text-gray-400"></i>
                                         </div>
-                                        <input v-model="passResetPassConfirm" type="password" placeholder="Confirm new Password..."
+                                        <input v-model="passResetPassConfirm" type="password"
+                                            placeholder="Confirm new Password..."
                                             class="ml-12 p-2 block w-full rounded-lg bg-transparent outline-none" />
                                     </div>
                                 </label>
@@ -340,6 +341,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import LoadingSpinner from '../ui/LoadingSpinner.vue'
+import { sendToServer } from '@/helpers';
 
 export default {
     data: function () {
@@ -378,63 +380,52 @@ export default {
     methods: {
         login(btn) {
             if (!btn) return;
-            if (window.mp) {
-                this.$store.state.uiStates.serverLoading = true;
-                window.mp.trigger("browser:sendObject", "server:recieveAuthInfo", JSON.stringify(this.$data));
-            }
+
+            this.$store.state.uiStates.serverLoading = true;
+            sendToServer('server:recieveAuthInfo', JSON.stringify(this.$data));
         },
         playCharacter(cname) {
-            if (this.characters.player_characters.length > 0 && window.mp) {
-                window.mp.trigger("browser:sendString", "server:recieveCharacterName", cname);
+            if (this.characters.player_characters.length > 0) {
+                sendToServer('server:recieveCharacterName', cname);
             }
         },
         createCharacter() {
-            if (window.mp) {
-                window.mp.trigger("browser:sendString", "server:setUserToCharacterCreation");
-            }
+            sendToServer("server:setUserToCharacterCreation");
         },
         sendRegisterDataToServer() {
             this.$store.state.uiStates.serverLoading = true;
 
-            let authData = {
+            sendToServer("server:recieveRegister", JSON.stringify({
                 registerUsername: this.registerUsername,
                 registerPassword: this.registerPassword,
                 registerPasswordConfirm: this.registerPasswordConfirm,
                 registerEmail: this.registerEmail
-            }
-
-            window.mp.trigger("browser:sendObject", "server:recieveRegister", JSON.stringify(authData));
+            }));
         },
         register() {
             if (!this.showRegister) return this.showRegister = true;
-            window.mp.trigger("browser:sendString", "server:authRecieveOtp", this.otpPassword);
+            sendToServer('server:authRecieveOtp', this.otpPassword);
         },
         resetPasswordAuth() {
             this.$store.state.uiStates.serverLoading = true;
 
-            if (window.mp) {
-                window.mp.trigger("browser:sendString", "server:resetPasswordAuth", this.resetEmail);
-            }
+            sendToServer("server:resetPasswordAuth", this.resetEmail);
         },
         resetPassword() {
             this.$store.state.uiStates.serverLoading = true;
 
-            if(window.mp) {
-                let resetData = {
-                    otpCode: this.passResetOtp,
-                    password: this.passResetPass,
-                    passwordConfirm: this.passResetPassConfirm,
-                }
+            sendToServer('server:resetPassword', JSON.stringify({
+                otpCode: this.passResetOtp,
+                password: this.passResetPass,
+                passwordConfirm: this.passResetPassConfirm
+            }));
 
-                window.mp.trigger("browser:sendString", "server:resetPassword", JSON.stringify(resetData))
+            this.password = this.passResetPass;
+            this.username = this.resetEmail;
+            this.resetEmail = "";
 
-                this.password = this.passResetPass;
-                this.username = this.resetEmail;
-                this.resetEmail = "";
-
-                this.passResetPass = "";
-                this.passResetPassConfirm = "";
-            }
+            this.passResetPass = "";
+            this.passResetPassConfirm = "";
         },
         getCharacterData() {
             return this.$store.state.playerInfo.player_characters;

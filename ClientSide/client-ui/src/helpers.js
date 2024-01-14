@@ -7,10 +7,10 @@ export function getCarImagePath (vehSpawnName) {
     }
 }
 
-export function sendToServer(eventName, ...args) {
+export function sendToServer(eventName, value) {
     if(window.mp) {
-        window.mp.trigger("browser:sendString", eventName, args);
+        window.mp.trigger("browser:sendString", eventName, value);
     } else {
-        console.log(`MP EVENT |${eventName}| args: ${args.join(',')}`);
+        console.log(`MP EVENT |${eventName}| args: ${value}`);
     }
 }

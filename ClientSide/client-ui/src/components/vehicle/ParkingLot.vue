@@ -65,6 +65,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import CloseButton from '../ui/CloseButton.vue';
+import { sendToServer } from '@/helpers';
 
 export default {
     components: {
@@ -87,9 +88,7 @@ export default {
             }
         },
         unparkVeh(vehId) {
-            if (window.mp) {
-                window.mp.trigger("browser:sendString", "server:unparkVehicle", vehId);
-            }
+            sendToServer("server:unparkVehicle", vehId);
         }
     }
 }

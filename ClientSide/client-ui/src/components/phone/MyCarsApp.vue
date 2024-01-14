@@ -115,6 +115,7 @@
 import { mapGetters } from 'vuex';
 import LoadingSpinner from '../ui/LoadingSpinner.vue';
 import { getCarImagePath } from '@/helpers';
+import { sendToServer } from '@/helpers';
 
 export default {
     data() {
@@ -155,9 +156,7 @@ export default {
             }
         },
         getAllVehicleData() {
-            if (window.mp) {
-                window.mp.trigger("browser:sendString", this.fetchVehiclesEvent);
-            }
+            sendToServer(this.fetchVehiclesEvent);
         },
         trackVehicle() {
             if (this.targetVehicleData && window.mp) {
