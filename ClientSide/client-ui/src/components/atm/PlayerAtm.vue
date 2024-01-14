@@ -115,8 +115,7 @@
                                 <div class="mt-6 mr-[15%] ml-[15%] space-y-5">
                                     <div class="p-3 rounded-lg bg-black/60">
                                         <i class="fa-solid fa-dollar-sign"></i>
-                                        <input v-model="depositAmount"
-                                            class="pr-3 pl-2 pb-3 pt-3 w-[90%] bg-transparent"
+                                        <input v-model="depositAmount" class="pr-3 pl-2 pb-3 pt-3 w-[90%] bg-transparent"
                                             placeholder="Enter an amount to deposit" />
                                     </div>
                                     <button @click="depositPlayerCash" :disabled="serverLoading"

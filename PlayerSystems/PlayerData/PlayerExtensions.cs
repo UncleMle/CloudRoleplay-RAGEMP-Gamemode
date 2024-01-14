@@ -273,7 +273,6 @@ namespace CloudRP.PlayerSystems.PlayerData
                 return true;
             }
 
-            AdminUtils.sendNoAuth(player);
             return false;
         }
 
