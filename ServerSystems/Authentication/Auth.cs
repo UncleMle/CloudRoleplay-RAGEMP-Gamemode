@@ -21,13 +21,13 @@ namespace CloudRP.ServerSystems.Authentication
         public static string _startAdminPed = "ig_mp_agent14";
         public static string _otpStoreKey = "registering_otp";
 
-
         public Auth()
         {
             Vector3 spawnPos = new Vector3(DefaultSpawn.pos_x, DefaultSpawn.pos_y, DefaultSpawn.pos_z);
             NAPI.Server.SetDefaultSpawnLocation(spawnPos, 0);
         }
 
+        #region Remote Events
         [RemoteEvent("server:recieveAuthInfo")]
         public void recieveAuthInfo(Player player, string data)
         {
@@ -132,47 +132,6 @@ namespace CloudRP.ServerSystems.Authentication
             {
                 enterRegisterOtpStage(player, registeringData);
             }
-        }
-
-        public Player checkInGame(int accountId)
-        {
-            List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
-
-            Player wasFound = null;
-
-            foreach (Player p in onlinePlayers)
-            {
-                User pData = p.getPlayerAccountData();
-
-                if (pData != null)
-                {
-                    if (pData.account_id == accountId)
-                    {
-                        wasFound = p;
-                    }
-                }
-            }
-
-            return wasFound;
-        }
-
-        public void enterRegisterOtpStage(Player player, Register registeringData)
-        {
-            uiHandling.setAuthState(player, AuthStates.otp);
-
-            string otp = AuthUtils.generateString(4, true);
-
-            player.SetCustomData(_otpStoreKey, new OtpStore
-            {
-                otp = otp,
-                otpTries = 0,
-                registeringData = registeringData,
-                unixMade = CommandUtils.generateUnix()
-            });
-
-            string otpContextEmail = $"Enter the OTP {otp} (This code is valid for 3 minutes)";
-
-            AuthUtils.sendEmail(registeringData.registerEmail, "Cloud RP | OTP", AuthUtils.getEmailWithContext(otpContextEmail));
         }
 
         [RemoteEvent("server:resetPasswordAuth")]
@@ -302,48 +261,6 @@ namespace CloudRP.ServerSystems.Authentication
             }
         }
 
-        public static void createAccount(Player player, Register registeringData)
-        {
-            string passwordHash = AuthUtils.hashPasword(registeringData.registerPassword);
-
-            using (DefaultDbContext dbContext = new DefaultDbContext())
-            {
-                Account creatingAccount = new Account
-                {
-                    admin_name = "notset",
-                    admin_ped = _startAdminPed,
-                    auto_login = 0,
-                    ban_status = 0,
-                    client_serial = player.Serial,
-                    password = passwordHash,
-                    email_address = registeringData.registerEmail,
-                    social_club_id = player.SocialClubId,
-                    CreatedDate = DateTime.Now,
-                    UpdatedDate = DateTime.Now,
-                    username = registeringData.registerUsername.ToLower(),
-                    user_ip = player.Address,
-                    vip_status = 0,
-                    admin_status = (int)AdminRanks.Admin_None,
-                    auto_login_key = "",
-                    max_characters = 2
-                };
-
-                dbContext.Add(creatingAccount);
-                dbContext.SaveChanges();
-
-                uiHandling.sendPushNotif(player, $"You have successfully created an account.", 6000);
-                User userData = createUser(creatingAccount);
-
-                setUserToCharacterSelection(player, userData);
-            }
-        }
-
-        [ServerEvent(Event.PlayerConnected)]
-        public void onPlayerConnected(Player player)
-        {
-            player.setPlayerToLoginScreen();
-        }
-
         [RemoteEvent("server:recieveCharacterName")]
         public void onEnterCharacterName(Player player, string name)
         {
@@ -448,7 +365,9 @@ namespace CloudRP.ServerSystems.Authentication
                 }
             }
         }
+        #endregion
 
+        #region Global Methods
         public static User createUser(Account accountData)
         {
             User newUser = JsonConvert.DeserializeObject<User>(JsonConvert.SerializeObject(accountData));
@@ -496,6 +415,91 @@ namespace CloudRP.ServerSystems.Authentication
             player.TriggerEvent("client:setAuthKey", randomString);
         }
 
+        public Player checkInGame(int accountId)
+        {
+            List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
+
+            Player wasFound = null;
+
+            foreach (Player p in onlinePlayers)
+            {
+                User pData = p.getPlayerAccountData();
+
+                if (pData != null)
+                {
+                    if (pData.account_id == accountId)
+                    {
+                        wasFound = p;
+                    }
+                }
+            }
+
+            return wasFound;
+        }
+
+        public void enterRegisterOtpStage(Player player, Register registeringData)
+        {
+            uiHandling.setAuthState(player, AuthStates.otp);
+
+            string otp = AuthUtils.generateString(4, true);
+
+            player.SetCustomData(_otpStoreKey, new OtpStore
+            {
+                otp = otp,
+                otpTries = 0,
+                registeringData = registeringData,
+                unixMade = CommandUtils.generateUnix()
+            });
+
+            string otpContextEmail = $"Enter the OTP {otp} (This code is valid for 3 minutes)";
+
+            AuthUtils.sendEmail(registeringData.registerEmail, "Cloud RP | OTP", AuthUtils.getEmailWithContext(otpContextEmail));
+        }
+
+        public static void createAccount(Player player, Register registeringData)
+        {
+            string passwordHash = AuthUtils.hashPasword(registeringData.registerPassword);
+
+            using (DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                Account creatingAccount = new Account
+                {
+                    admin_name = "notset",
+                    admin_ped = _startAdminPed,
+                    auto_login = 0,
+                    ban_status = 0,
+                    client_serial = player.Serial,
+                    password = passwordHash,
+                    email_address = registeringData.registerEmail,
+                    social_club_id = player.SocialClubId,
+                    CreatedDate = DateTime.Now,
+                    UpdatedDate = DateTime.Now,
+                    username = registeringData.registerUsername.ToLower(),
+                    user_ip = player.Address,
+                    vip_status = 0,
+                    admin_status = (int)AdminRanks.Admin_None,
+                    auto_login_key = "",
+                    max_characters = 2
+                };
+
+                dbContext.Add(creatingAccount);
+                dbContext.SaveChanges();
+
+                uiHandling.sendPushNotif(player, $"You have successfully created an account.", 6000);
+                User userData = createUser(creatingAccount);
+
+                setUserToCharacterSelection(player, userData);
+            }
+        }
+        #endregion
+
+        #region Server Events
+        [ServerEvent(Event.PlayerConnected)]
+        public void onPlayerConnected(Player player)
+        {
+            player.setPlayerToLoginScreen();
+        }
+        #endregion
     }
 
 }

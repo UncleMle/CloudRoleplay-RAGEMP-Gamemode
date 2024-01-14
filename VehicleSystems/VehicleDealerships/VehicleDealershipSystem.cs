@@ -143,31 +143,26 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
                 MarkersAndLabels.setTextLabel(dealerShip.viewPosition, $"{dealerShip.dealershipName} ~y~Y~w~ to interact", dealerShip.viewRange);
                 MarkersAndLabels.setPlaceMarker(dealerShip.viewPosition);
                 NAPI.Blip.CreateBlip(595, dealerShip.position, 1.0f, 7, dealerShip.dealershipName, 255, 1.0f, true, 0, 0);
-            }
-        }
 
-        [ServerEvent(Event.PlayerEnterColshape)]
-        public void setDealerData(ColShape colshape, Player player)
-        {
-            DealerShip dealerData = colshape.GetData<DealerShip>(_dealershipIdentifer);
+                viewingCol.OnEntityEnterColShape += (col, player) =>
+                {
+                    if(col.Equals(viewingCol))
+                    {
+                        player.SetCustomSharedData(_dealershipIdentifer, dealerShip);
+                        player.SetCustomData(_dealershipIdentifer, dealerShip);
+                    }
+                };
 
-            if (dealerData != null)
-            {
-                player.SetCustomSharedData(_dealershipIdentifer, dealerData);
-                player.SetCustomData(_dealershipIdentifer, dealerData);
-            }
-        }
+                viewingCol.OnEntityExitColShape += (col, player) =>
+                {
+                    bool dealerActive = player.GetData<bool>(_dealerActiveIdentifier);
 
-        [ServerEvent(Event.PlayerExitColshape)]
-        public void removeDealerData(ColShape colshape, Player player)
-        {
-            DealerShip dealerData = colshape.GetData<DealerShip>(_dealershipIdentifer);
-            bool dealerActive = player.GetData<bool>(_dealerActiveIdentifier);
-
-            if (dealerData != null && !dealerActive)
-            {
-                player.ResetData(_dealershipIdentifer);
-                player.ResetSharedData(_dealershipIdentifer);
+                    if (col.Equals(viewingCol) && !dealerActive)
+                    {
+                        player.ResetData(_dealershipIdentifer);
+                        player.ResetSharedData(_dealershipIdentifer);
+                    }
+                };
             }
         }
 

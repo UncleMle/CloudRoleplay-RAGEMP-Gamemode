@@ -38,29 +38,23 @@ namespace CloudRP.VehicleSystems.VehicleWashing
                 MarkersAndLabels.setTextLabel(new Vector3(wash.position.X, wash.position.Y, wash.position.Z - 0.4), "Use ~y~/wash~w~ to clean your car!", 6.3f);
                 ColShape washCol = NAPI.ColShape.CreateSphereColShape(wash.position, 5f, 0);
                 washCol.SetData(_washStationIdentifier, wash);
+
+                washCol.OnEntityEnterColShape += (col, player) =>
+                {
+                    if(col.Equals(washCol))
+                    {
+                        player.SetCustomData(_washStationIdentifier, wash);
+                    }
+                };
+
+                washCol.OnEntityExitColShape += (col, player) =>
+                {
+                    if (col.Equals(washCol))
+                    {
+                        player.ResetData(_washStationIdentifier);
+                    }
+                };
             });
-        }
-
-        [ServerEvent(Event.PlayerEnterColshape)]
-        public void addWashData(ColShape col, Player player)
-        {
-            VehicleWash washData = col.GetData<VehicleWash>(_washStationIdentifier);
-
-            if (washData != null)
-            {
-                player.SetCustomData(_washStationIdentifier, washData);
-            }
-        }
-
-        [ServerEvent(Event.PlayerExitColshape)]
-        public void removeWashData(ColShape col, Player player)
-        {
-            VehicleWash washData = col.GetData<VehicleWash>(_washStationIdentifier);
-
-            if (washData != null)
-            {
-                player.ResetData(_washStationIdentifier);
-            }
         }
 
         [Command("wash", "~y~Use: ~w~/wash")]

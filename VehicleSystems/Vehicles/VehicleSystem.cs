@@ -21,7 +21,6 @@ namespace CloudRP.VehicleSystems.Vehicles
 {
     public class VehicleSystem : Script
     {
-        public static List<DbVehicle> vehicles;
         public static string _vehicleSharedDataIdentifier = "VehicleData";
         public static string _vehicleSharedModData = "VehicleModData";
         public static string _vehicleDirtLevelIdentifier = "VehicleDirtLevel";
@@ -36,6 +35,8 @@ namespace CloudRP.VehicleSystems.Vehicles
         {
             NAPI.Task.Run(() =>
             {
+                List<DbVehicle> vehicles;
+                
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
                     vehicles = dbContext.vehicles.ToList();
@@ -45,7 +46,6 @@ namespace CloudRP.VehicleSystems.Vehicles
 
                 if (vehicles.Count > 0)
                 {
-
                     foreach (var item in vehicles)
                     {
                         if (item.vehicle_dimension == VehicleDimensions.World)

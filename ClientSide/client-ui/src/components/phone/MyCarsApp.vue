@@ -114,7 +114,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import LoadingSpinner from '../ui/LoadingSpinner.vue';
-import getCarImagePath from '@/helpers';
+import { getCarImagePath } from '@/helpers';
 
 export default {
     data() {

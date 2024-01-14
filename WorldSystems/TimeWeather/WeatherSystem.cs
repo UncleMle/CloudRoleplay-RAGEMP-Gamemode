@@ -13,6 +13,7 @@ namespace CloudRP.World.TimeWeather
     class WeatherSystem : Script
     {
         private static Timer syncWeatherTimer;
+        public static Weather weatherType = Weather.CLOUDS;
         private static int timerInterval_seconds = 900;
         private static int interval_delay_seconds = 5;
         public static string weatherSyncTo = "london";
@@ -65,38 +66,36 @@ namespace CloudRP.World.TimeWeather
         {
             NAPI.Task.Run(() =>
             {
-                string weatherType = "EXTRASUNNY";
-
                 switch (code)
                 {
                     case 1000:
-                        weatherType = "EXTRASUNNY";
+                        weatherType = Weather.EXTRASUNNY;
                         break;
                     case 1003:
                     case 1006:
-                        weatherType = "CLOUDS";
+                        weatherType = Weather.CLOUDS;
                         break;
                     case 1063:
                     case 1225:
                     case 1066:
-                        weatherType = "SNOWLIGHT";
+                        weatherType = Weather.SNOWLIGHT;
                         break;
                     case 1135:
-                        weatherType = "FOGGY";
+                        weatherType = Weather.FOGGY;
                         break;
                     case 1183:
                     case 1189:
-                        weatherType = "RAIN";
+                        weatherType = Weather.RAIN;
                         break;
                     case 1273:
-                        weatherType = "THUNDER";
+                        weatherType = Weather.THUNDER;
                         break;
                     default:
-                        weatherType = "CLEAR";
+                        weatherType = Weather.CLEAR;
                         break;
                 }
 
-                NAPI.ClientEvent.TriggerClientEventForAll("client:weatherSet", weatherType);
+                NAPI.ClientEvent.TriggerClientEventForAll("client:weatherSet", weatherType.ToString());
 
                 ChatUtils.formatConsolePrint("Set weather to " + code, ConsoleColor.Cyan);
             });

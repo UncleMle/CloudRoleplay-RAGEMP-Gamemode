@@ -45,6 +45,6 @@ namespace CloudRP.ServerSystems.Authentication
 
             return isLogging;
         }
-
     }
+
 }

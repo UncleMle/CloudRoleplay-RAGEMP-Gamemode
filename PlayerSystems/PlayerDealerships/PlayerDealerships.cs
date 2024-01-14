@@ -373,12 +373,10 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
             }
         }
 
-        public static void setSpotActiveWithVehicle(DbVehicle vehicleData, int spotId)
-        {
+        public static void setSpotActiveWithVehicle(DbVehicle vehicleData, int spotId) =>   
             PlayerDealerVehPositions.dealerVehPositions
                     .Where(dealerPos => dealerPos.spotId == spotId)
                     .FirstOrDefault()
                     .vehInSpot = vehicleData;
-        }
     }
 }

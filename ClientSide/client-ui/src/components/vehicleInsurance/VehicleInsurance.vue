@@ -65,7 +65,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import CloseButton from '../ui/CloseButton.vue';
-import getCarImagePath from '../../helpers';
+import { getCarImagePath } from '../../helpers';
 
 export default {
     computed: {
