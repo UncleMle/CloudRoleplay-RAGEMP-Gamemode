@@ -2,17 +2,60 @@
     <main>
         <div v-if="uiStates.authenticationState == 'charSelect'"
             class="fixed inset-0 w-full text-white text-lg duration-300">
-            <div class="duration-300 container flex items-center max-w-3xl mx-auto absolute left-20 mt-20">
+            <div class="duration-300 container flex items-center max-w-3xl mx-auto absolute left-40 mt-20">
+
                 <div class="flex justify-center w-full">
                     <div
                         class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none duration-300">
-
                         <div class="border-b-2 border-gray-400 p-3">
                             <i class="fa-solid fa-shield absolute mt-1.5 text-gray-400"></i>
                             <h1 class="flex justify-start text-xl font-bold ml-8">Account</h1>
                         </div>
-                        {{ characters.player_account_info }}
 
+                        <div class="p-5 pb-8 text-xl">
+                            <div class="relative w-full mt-4">
+                                <span class="left-0 top-0 "><i class="fa-solid fa-user pr-2"></i>Name</span>
+                                <span class="absolute right-0 top-0">{{ characters.player_account_info.username
+                                }}</span>
+                            </div>
+
+                            <div class="relative w-full mt-4">
+                                <span class="left-0 top-0 "><i class="fa-solid fa-user pr-2"></i>Email</span>
+                                <span class="absolute right-0 top-0">{{
+                                    characters.player_account_info.email_address }}</span>
+                            </div>
+
+                            <div class="relative w-full mt-4">
+                                <span class="left-0 top-0 ">
+                                    <i class="fa-solid fa-person absolute mt-1.5"></i>
+                                    <i class="fa-solid fa-person-dress absolute mt-1.5 ml-3"></i>
+                                    <font class="ml-8">Character Slots</font>
+                                </span>
+                                <span class="absolute right-0 top-0">{{
+                                    characters.player_account_info.max_characters }}</span>
+                            </div>
+
+                            <div v-if="characters.player_account_info.admin_status > 0" class="relative w-full mt-4">
+                                <span class="left-0 top-0 "><i class="fa-solid fa-shield pr-2"></i>Admin Rank</span>
+                                <span class="absolute right-0 top-0 font-bold"
+                                    :style="getStaffData(characters.player_account_info.admin_status).style">{{
+                                        getStaffData(characters.player_account_info.admin_status).rank
+                                    }}</span>
+                            </div>
+
+                            <div class="relative w-full mt-4">
+                                <span class="left-0 top-0 "><i class="fa-solid fa-right-to-bracket pr-2"></i>Auto
+                                    Login</span>
+                                <span class="absolute right-0 top-0">
+                                    <button :disabled="loadingState" @click="toggleAutoLogin"
+                                        class="bg-green-500/50 p-2 rounded-lg duration-300 hover:bg-green-500/20"
+                                        v-if="characters.player_account_info.auto_login == 1">Enabled</button>
+                                    <button :disabled="loadingState" @click="toggleAutoLogin"
+                                        class="bg-red-500/50 p-2 rounded-lg duration-300 hover:bg-red-500/20"
+                                        v-else>Disabled</button>
+                                </span>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
@@ -111,7 +154,7 @@
                                 You don't have any characters. Create a new one to get started.
                             </div>
 
-                            <div v-for="item in characters.player_characters" :key="item">
+                            <div v-for="(item, i) in characters.player_characters" :key="i">
 
                                 <div class="p-6 font-medium border rounded-3xl border-gray-500 mt-6 shadow-2xl">
 
@@ -360,6 +403,7 @@
 import { mapGetters } from 'vuex';
 import LoadingSpinner from '../ui/LoadingSpinner.vue'
 import { sendToServer } from '@/helpers';
+import { getStaffRanks } from '@/helpers';
 
 export default {
     data: function () {
@@ -398,7 +442,7 @@ export default {
             let baseStyle = "";
 
             if (this.uiStates.authenticationState === "charSelect") {
-                baseStyle += " absolute right-20";
+                baseStyle += " absolute right-40";
             }
 
             if (this.characters.player_characters.length > 1) {
@@ -459,6 +503,19 @@ export default {
 
             this.passResetPass = "";
             this.passResetPassConfirm = "";
+        },
+        getStaffData(rankId) {
+            let { adminRanksList, adminRanksStyles } = getStaffRanks();
+
+            return {
+                rank: adminRanksList[rankId],
+                style: adminRanksStyles[rankId]
+            };
+        },
+        toggleAutoLogin() {
+            console.log("Triggered")
+            this.$store.state.uiStates.serverLoading = true;
+            sendToServer("server:togglePlayerAutoLogin");
         },
         getCharacterData() {
             return this.$store.state.playerInfo.player_characters;

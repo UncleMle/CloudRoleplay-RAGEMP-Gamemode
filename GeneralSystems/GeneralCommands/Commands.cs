@@ -434,22 +434,6 @@ namespace CloudRP.GeneralSystems.GeneralCommands
         [Command("disableautologin", "~y~Use:~w~ /disableautologin")]
         public void disableAutoLogin(Player player)
         {
-            User userData = player.getPlayerAccountData();
-
-            if (userData != null)
-            {
-                if (userData.auto_login == 1)
-                {
-                    userData.auto_login = 0;
-                }
-                else
-                {
-                    userData.auto_login = 1;
-                }
-
-                player.setPlayerAccountData(userData, false, true);
-                CommandUtils.successSay(player, $"You {(userData.auto_login == 1 ? "enabled" : "disabled")} autologin.");
-            }
         }
 
         [Command("dice", "~y~Use:~w~ /dice [amount]")]

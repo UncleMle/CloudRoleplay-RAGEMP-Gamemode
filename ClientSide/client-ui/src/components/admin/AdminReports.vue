@@ -21,7 +21,7 @@
                                 </tr>
                             </thead>
                             <tbody class="text-center">
-                                <tr v-for="item in reportData" :key="item" class="max-h-10">
+                                <tr v-for="(item, i) in reportData" :key="i" class="max-h-10">
                                     <td class="border-b-2 border-gray-500">Player [{{ item.playerId }}]</td>
                                     <td class="border-b-2 border-gray-500">Report [{{ item.reportId }}]</td>
                                     <td class="border-b-2 border-gray-500 max-w-xs overflow-hidden text-ellipsis text-sm">{{

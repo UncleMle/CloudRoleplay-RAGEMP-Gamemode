@@ -164,6 +164,30 @@ namespace CloudRP.ServerSystems.Authentication
             }
         }
 
+        [RemoteEvent("server:togglePlayerAutoLogin")]
+        public void togglePlayerAutoLogin(Player player)
+        {
+            User userData = player.getPlayerAccountData();
+
+            Console.WriteLine("Triggered");
+
+            if (userData != null)
+            {
+                if (userData.auto_login == 1)
+                {
+                    userData.auto_login = 0;
+                }
+                else
+                {
+                    userData.auto_login = 1;
+                }
+
+                player.setPlayerAccountData(userData, false, true);
+
+                uiHandling.sendPushNotif(player, $"You {(userData.auto_login == 1 ? "enabled" : "disabled")} autologin.", 6600, true, true, true);
+            }
+        }
+
         [RemoteEvent("server:resetPassword")]
         public void resetPassword(Player player, string data)
         {

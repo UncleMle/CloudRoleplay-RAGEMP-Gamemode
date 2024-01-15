@@ -43,7 +43,7 @@ export default class PlayerAuthentication {
 			playerReady: PlayerAuthentication.handleLoginStart,
 			consoleCommand: PlayerAuthentication.consoleCommand,
 			"client:loginEnd": PlayerAuthentication.endClientLogin,
-			"client:setCharacterCreation": PlayerAuthentication.setBackToCharacterSelection,
+			"client:setCharacterCreation": PlayerAuthentication.setCharacterCreation,
 			"client:setBackToSelection": PlayerAuthentication.setBackToCharacterSelection,
 			"client:loginCameraStart": PlayerAuthentication.handleCameraStart,
 			"client:setAuthKey": PlayerAuthentication.setAuthenticationKey
