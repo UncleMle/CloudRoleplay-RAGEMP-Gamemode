@@ -323,10 +323,10 @@ namespace CloudRP.PlayerSystems.Character
         public static void fillCharacterSelectionTable(Player player, User userData)
         {
             uiHandling.resetMutationPusher(player, "player_characters");
+            uiHandling.resetMutationPusher(player, "player_account_info");
 
-            string mutationName = "setCharacterSelection";
-
-            uiHandling.sendMutationToClient(player, mutationName, "toggle", true);
+            uiHandling.sendMutationToClient(player, "setCharacterSelection", "toggle", true);
+            uiHandling.handleObjectUiMutation(player, MutationKeys.PlayerAccountData, userData);
 
             uiHandling.setAuthState(player, AuthStates.characterSelection);
 

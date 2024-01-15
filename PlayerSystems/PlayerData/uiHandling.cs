@@ -157,5 +157,6 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string AtmData = "atm_data";
         public static readonly string Inventory = "inventory_items";
         public static readonly string PlayerVehDealer = "is_in_player_dealer";
+        public static readonly string PlayerAccountData = "player_account_info";
     }
 }

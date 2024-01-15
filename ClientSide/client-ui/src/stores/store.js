@@ -16,6 +16,7 @@ const store = new Vuex.Store({
 			vehicle_mod_indexes: [],
 			player_bandata: {},
 			player_characters: [],
+			player_account_info: {},
 			report_data: [],
 			clothing_data: [],
 			clothing_data_old: [],

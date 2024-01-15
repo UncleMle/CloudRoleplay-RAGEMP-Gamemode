@@ -1,8 +1,26 @@
 <template>
     <main>
+        <div v-if="uiStates.authenticationState == 'charSelect'"
+            class="fixed inset-0 w-full text-white text-lg duration-300">
+            <div class="duration-300 container flex items-center max-w-3xl mx-auto absolute left-20 mt-20">
+                <div class="flex justify-center w-full">
+                    <div
+                        class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none duration-300">
+
+                        <div class="border-b-2 border-gray-400 p-3">
+                            <i class="fa-solid fa-shield absolute mt-1.5 text-gray-400"></i>
+                            <h1 class="flex justify-start text-xl font-bold ml-8">Account</h1>
+                        </div>
+                        {{ characters.player_account_info }}
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
         <div class="fixed inset-0 w-full text-white text-lg duration-300">
-            <div class="duration-300 container flex items-center max-w-3xl mx-auto"
-                :class="uiStates.authenticationState == 'charSelect' && characters.player_characters.length > 1 ? 'mt-20' : 'mt-52'">
+            <div class="duration-300 container flex items-center max-w-3xl mx-auto" :class="baseStyle">
                 <div class="flex justify-center w-full">
                     <div
                         class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none duration-300">
@@ -375,7 +393,22 @@ export default {
             loadingState: 'getLoadingState',
             characters: 'getPlayerInfo',
             uiStates: 'getUiStates'
-        })
+        }),
+        baseStyle() {
+            let baseStyle = "";
+
+            if (this.uiStates.authenticationState === "charSelect") {
+                baseStyle += " absolute right-20";
+            }
+
+            if (this.characters.player_characters.length > 1) {
+                baseStyle += " mt-20";
+            } else {
+                baseStyle += " mt-52";
+            }
+
+            return baseStyle;
+        }
     },
     methods: {
         login(btn) {
