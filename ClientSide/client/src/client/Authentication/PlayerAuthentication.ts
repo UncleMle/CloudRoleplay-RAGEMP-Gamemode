@@ -42,6 +42,7 @@ export default class PlayerAuthentication {
 		mp.events.add("client:loginEnd", PlayerAuthentication.endClientLogin);
 		mp.events.add("client:setCharacterCreation", PlayerAuthentication.setCharacterCreation);
 		mp.events.add("client:setBackToSelection", PlayerAuthentication.setBackToCharacterSelection);
+		mp.events.add("client:setToCharacterSelection", PlayerAuthentication.handleCharacterSelectionStart);
 		mp.events.add("client:loginCameraStart", PlayerAuthentication.handleCameraStart);
 		mp.events.add("client:setAuthKey", PlayerAuthentication.setAuthenticationKey);
 		mp.events.add("consoleCommand", PlayerAuthentication.consoleCommand);
@@ -101,6 +102,14 @@ export default class PlayerAuthentication {
 
 		PlayerAuthentication.freezeAndBlurClient();
 		PlayerAuthentication.handleCameraStart();
+
+	}
+
+	public static handleCharacterSelectionStart() {
+		PlayerAuthentication.LoginCamera?.delete();
+		mp.game.graphics.transitionFromBlurred(100);
+
+		PlayerAuthentication.LoginCamera = new Camera('selectionCam', PlayerAuthentication.cameraPositions[2], PlayerAuthentication.cameraPointAtPositions[2]);
 
 	}
 
