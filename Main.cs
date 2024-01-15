@@ -10,6 +10,7 @@ using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace CloudRP
@@ -73,7 +74,7 @@ namespace CloudRP
             Atm.loadAtms();
             DiscordSystems.initDiscordSystem();
 
-            ChatUtils.formatConsolePrint(" Gamemode has started", ConsoleColor.Cyan);
+            ChatUtils.formatConsolePrint($"Gamemode has started. (Loaded {Commands.loadedCommands.Count()} total commands)", ConsoleColor.Cyan);
         }
 
         public void LogException(UnhandledExceptionEventArgs exception)
