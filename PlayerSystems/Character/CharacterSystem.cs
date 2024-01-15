@@ -322,7 +322,6 @@ namespace CloudRP.PlayerSystems.Character
 
         public static void fillCharacterSelectionTable(Player player, User userData)
         {
-            player.TriggerEvent("client:setToCharacterSelection");
             uiHandling.resetMutationPusher(player, "player_characters");
 
             string mutationName = "setCharacterSelection";

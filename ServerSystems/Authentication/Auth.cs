@@ -485,6 +485,11 @@ namespace CloudRP.ServerSystems.Authentication
                 dbContext.Add(creatingAccount);
                 dbContext.SaveChanges();
 
+                creatingAccount.redeem_code = creatingAccount.account_id + AuthUtils.generateString(4);
+                dbContext.Update(creatingAccount);
+                dbContext.SaveChanges();
+
+
                 uiHandling.sendPushNotif(player, $"You have successfully created an account.", 6000);
                 User userData = createUser(creatingAccount);
 
