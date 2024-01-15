@@ -1,4 +1,5 @@
-﻿using CloudRP.PlayerSystems.Character;
+﻿using CloudRP.GeneralSystems.InventorySystem;
+using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.ChatSystem;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Authentication;
@@ -9,11 +10,14 @@ using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace CloudRP.GeneralSystems.GeneralCommands
 {
+
     internal class Commands : Script
     {
+        public static IEnumerable<CommandAttribute> loadedCommands = GetCommands();
         public static int _logoutTimeout_seconds = 15;
         public static string _logoutIdentifier = "playerIsLoggingOut";
         public static string _oocColour = "!{#78acff}";
@@ -21,6 +25,16 @@ namespace CloudRP.GeneralSystems.GeneralCommands
         public static int nickNameMaxLength_M = 7;
         public static int maxFloatingDos = 10;
         public static int logoutPrintRange = 50;
+
+        public static IEnumerable<CommandAttribute> GetCommands(Assembly assembly = null)
+        {
+            assembly ??= Assembly.GetExecutingAssembly();
+            Type[] assemblyTypes = assembly.GetTypes();
+            IEnumerable<MethodInfo> assemblyMethods = assemblyTypes.SelectMany(t => t.GetMethods());
+            return assemblyMethods
+                .Where(m => Attribute.IsDefined(m, typeof(CommandAttribute), false))
+                .SelectMany(m => m.GetCustomAttributes<CommandAttribute>());
+        }
 
         #region Commands
         [Command("logout", "~y~Use: ~w~/logout")]
@@ -420,22 +434,6 @@ namespace CloudRP.GeneralSystems.GeneralCommands
         [Command("disableautologin", "~y~Use:~w~ /disableautologin")]
         public void disableAutoLogin(Player player)
         {
-            User userData = player.getPlayerAccountData();
-
-            if (userData != null)
-            {
-                if (userData.auto_login == 1)
-                {
-                    userData.auto_login = 0;
-                }
-                else
-                {
-                    userData.auto_login = 1;
-                }
-
-                player.setPlayerAccountData(userData, false, true);
-                CommandUtils.successSay(player, $"You {(userData.auto_login == 1 ? "enabled" : "disabled")} autologin.");
-            }
         }
 
         [Command("dice", "~y~Use:~w~ /dice [amount]")]
@@ -539,7 +537,7 @@ namespace CloudRP.GeneralSystems.GeneralCommands
 
             string nickname = findNickNameForPlayer(player, target);
 
-            if (nickname != null)
+            if (nickname != null) 
             {
                 setPlayersNick(player, target, nickname);
             }

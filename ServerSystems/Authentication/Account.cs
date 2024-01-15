@@ -17,6 +17,7 @@ namespace CloudRP.ServerSystems.Authentication
         public string username { get; set; }
 
         [Required]
+        public string redeem_code { get; set; }
         public string password { get; set; }
         public string email_address { get; set; }
         public string user_ip { get; set; }

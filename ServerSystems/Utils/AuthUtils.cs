@@ -241,6 +241,7 @@ namespace CloudRP.ServerSystems.Utils
         public uint playerDimension { get; set; }
         public int max_characters { get; set; }
         public bool admin_esp { get; set; } = true;
+        public string redeem_code { get; set; }
         public bool showAdminPed { get; set; } = false;
     }
 

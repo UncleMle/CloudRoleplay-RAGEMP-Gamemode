@@ -13,6 +13,7 @@ const _storage_key: string = "AutoLoginToken";
 export default class PlayerAuthentication {
 	public static LoginCamera: Camera;
 	public static creationCam: Camera;
+	public static selectionCam: CameraMp;
 	public static LocalPlayer: PlayerMp
 	public static LocalStorage: StorageMp;
 	public static characterCreationPosition: Vector3 = new mp.Vector3(-38.6, -590.5, 78.8);
@@ -37,14 +38,16 @@ export default class PlayerAuthentication {
 		PlayerAuthentication.LocalPlayer = mp.players.local;
 		PlayerAuthentication.LocalStorage = mp.storage;
 
-		mp.events.add("render", PlayerAuthentication.handleUnauthed);
-		mp.events.add("playerReady", PlayerAuthentication.handleLoginStart);
-		mp.events.add("client:loginEnd", PlayerAuthentication.endClientLogin);
-		mp.events.add("client:setCharacterCreation", PlayerAuthentication.setCharacterCreation);
-		mp.events.add("client:setBackToSelection", PlayerAuthentication.setBackToCharacterSelection);
-		mp.events.add("client:loginCameraStart", PlayerAuthentication.handleCameraStart);
-		mp.events.add("client:setAuthKey", PlayerAuthentication.setAuthenticationKey);
-		mp.events.add("consoleCommand", PlayerAuthentication.consoleCommand);
+		mp.events.add({
+			render: PlayerAuthentication.handleUnauthed,
+			playerReady: PlayerAuthentication.handleLoginStart,
+			consoleCommand: PlayerAuthentication.consoleCommand,
+			"client:loginEnd": PlayerAuthentication.endClientLogin,
+			"client:setCharacterCreation": PlayerAuthentication.setCharacterCreation,
+			"client:setBackToSelection": PlayerAuthentication.setBackToCharacterSelection,
+			"client:loginCameraStart": PlayerAuthentication.handleCameraStart,
+			"client:setAuthKey": PlayerAuthentication.setAuthenticationKey
+		});
 
 		mp.events.addDataHandler(PlayerAuthentication._logoutIdentifier, PlayerAuthentication.handleLogoutHandler);
 	}
