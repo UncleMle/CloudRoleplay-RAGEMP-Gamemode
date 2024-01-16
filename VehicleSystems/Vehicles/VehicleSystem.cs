@@ -494,6 +494,11 @@ namespace CloudRP.VehicleSystems.Vehicles
 
                 if (vehicleData != null && vehicleData.vehicle_id == -1)
                 {
+                    if(vehicle.getFreelanceJobData() != null)
+                    {
+                        FreelanceJobSystem.handleVehicleDestroyed(vehicle);
+                    }
+
                     vehicle.Delete();
 
                     returnRes = true;
