@@ -444,13 +444,6 @@ export default {
             if (this.uiStates.authenticationState === "charSelect") {
                 baseStyle += " absolute right-40";
             }
-
-            if (this.characters.player_characters.length > 1) {
-                baseStyle += " mt-20";
-            } else {
-                baseStyle += " mt-52";
-            }
-
             return baseStyle;
         }
     },

@@ -264,18 +264,6 @@ namespace CloudRP.PlayerSystems.PlayerData
             uiHandling.handleObjectUiMutation(player, MutationKeys.BanData, banData);
         }
 
-        public static bool checkUserData(this Player player, int adminRank, bool checkAduty = true)
-        {
-            User userData = player.getPlayerAccountData();
-
-            if (userData != null && userData.admin_status >= adminRank || checkAduty && userData.adminDuty)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
         public static void addPlayerKey(this Player player, string usedKey)
         {
             List<string> usedKeys = new List<string>();

@@ -36,9 +36,26 @@ namespace CloudRP.ServerSystems.Admin
 
             public override bool Check(Player player, string cmdName, string cmdText)
             {
-                if (player.checkUserData(_adminRank, checkForAduty) || _adminRank == (int)AdminRanks.Admin_Developer || player.getAdmin() == (int)AdminRanks.Admin_Founder && _adminRank < (int)AdminRanks.Admin_Developer)
+                if(player.getAdmin() == (int)AdminRanks.Admin_Developer)
                 {
                     return true;
+                }
+
+                if (player.getAdmin() >= _adminRank)
+                {
+                    if(checkForAduty && player.getPlayerAccountData() != null && !player.getPlayerAccountData().adminDuty)
+                    {
+                        player.SendChatMessage(ChatUtils.error + "You must be on admin duty to use command /" + cmdName + ".");
+                        return false;
+                    }
+
+                    if(checkForAduty && player.getPlayerAccountData() != null && player.getPlayerAccountData().adminDuty)
+                    {
+                        return true;
+                    } else if(!checkForAduty)
+                    {
+                        return true;
+                    }
                 }
 
                 player.SendChatMessage(ChatUtils.error + "You are not authorized to use the command /" + cmdName + ".");
@@ -171,15 +188,12 @@ namespace CloudRP.ServerSystems.Admin
         {
             User userData = player.getPlayerAccountData();
 
-            if (player.checkUserData((int)AdminRanks.Admin_Moderator))
-            {
-                userData.admin_esp = !userData.admin_esp;
+            userData.admin_esp = !userData.admin_esp;
 
-                player.setPlayerAccountData(userData, true, true);
-                AdminUtils.staffSay(player, $"You have {(userData.admin_esp ? "disabled" : "enabled")} admin esp.");
-                uiHandling.sendNotification(player, $"~r~You {(userData.admin_esp ? "~r~disabled" : "~g~enabled")} admin esp", false);
-                ChatUtils.formatConsolePrint($"{userData.admin_name} toggled admin esp {(userData.admin_esp ? "on" : "off")}");
-            }
+            player.setPlayerAccountData(userData, true, true);
+            AdminUtils.staffSay(player, $"You have {(userData.admin_esp ? "disabled" : "enabled")} admin esp.");
+            uiHandling.sendNotification(player, $"~r~You {(userData.admin_esp ? "~r~disabled" : "~g~enabled")} admin esp", false);
+            ChatUtils.formatConsolePrint($"{userData.admin_name} toggled admin esp {(userData.admin_esp ? "on" : "off")}");
         }
 
         [Command("closereport", "~y~Use: ~w~/closereport")]
@@ -1054,7 +1068,6 @@ namespace CloudRP.ServerSystems.Admin
             AdminUtils.staffSay(player, $"You gave yourself a {ChatUtils.yellow}{weaponName}{ChatUtils.White}{AdminUtils.staffSuffixColour} with {ammo} ammo");
 
             uiHandling.sendNotification(player, $"~r~You spawned in a ~y~{weaponName}~r~ with ~y~{ammo}~r~ ammo", false);
-
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]
@@ -1207,7 +1220,7 @@ namespace CloudRP.ServerSystems.Admin
 
             Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
 
-            if (player.checkUserData((int)AdminRanks.Admin_SeniorAdmin) || player.checkUserData((int)AdminRanks.Admin_HeadAdmin, false))
+            if ((player.getAdmin() > (int)AdminRanks.Admin_SeniorAdmin || player.getAdmin() > (int)AdminRanks.Admin_HeadAdmin) && userData != null && userData.adminDuty || player.getAdmin() == (int)AdminRanks.Admin_Developer)
             {
                 if (findPlayer == null)
                 {

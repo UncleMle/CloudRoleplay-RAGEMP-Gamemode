@@ -177,7 +177,6 @@ export default {
     },
     watch: {
         selectedTats() {
-            console.log(JSON.stringify(this.selectedTats) + " TRIGGERED");
             window.mp.trigger("tat:setTatto", JSON.stringify(this.selectedTats));
         },
         rotation() {
