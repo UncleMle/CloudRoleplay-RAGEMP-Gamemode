@@ -31,6 +31,7 @@ namespace CloudRP.ServerSystems.Utils
         public static string info = "!{yellow}[Info] " + White;
         public static string reports = "!{yellow}[Reports] " + White;
         public static string afk = "!{orange}[Afk] " + White;
+        public static string freelanceJobs = CloudBlue + "[Freelance Jobs] " + White;
 
         public static void sendWithNickName(Player player, Player target, string prefix, string suffix, bool checkDims = true)
         {

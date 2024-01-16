@@ -2,11 +2,7 @@
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
-using Discord.Rest;
 using GTANetworkAPI;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CloudRP.PlayerSystems.Jobs
 {
@@ -23,10 +19,11 @@ namespace CloudRP.PlayerSystems.Jobs
             {
                 NAPI.Pools.GetAllPlayers().ForEach(p =>
                 {
-                    if(p.getPlayerCharacterData() != null && p.getPlayerCharacterData().character_id == vehicleData.characterOwnerId)
+                    DbCharacter playerData = p.getPlayerCharacterData();
+
+                    if(p.getPlayerCharacterData() != null && playerData != null && p.getPlayerCharacterData().character_id == vehicleData.characterOwnerId)
                     {
-                        p.SendChatMessage($"{ChatUtils.info} Your job vehicle has been destroyed and you have been fired from your job as a {vehicleData.jobName}.");
-                        p.ResetData(_FreelanceJobDataIdentifier);
+                        p.SendChatMessage($"{ChatUtils.freelanceJobs} Your job vehicle has been destroyed and you have been fired from your job as a {vehicleData.jobName}.");
                     }
                 });
 
@@ -79,13 +76,8 @@ namespace CloudRP.PlayerSystems.Jobs
             {
                 string jobName = player.getFreelanceJobData().jobName;
 
-                player.SendChatMessage(ChatUtils.info + "You have quit your freelance job as a " + jobName + ".");
-
-                characterData.freelance_job_data = null;
-                player.setPlayerCharacterData(characterData, false, true);
-
-                player.ResetData(_FreelanceJobDataIdentifier);
-                deleteFreeLanceVehs(player);
+                player.SendChatMessage(ChatUtils.freelanceJobs + "You have quit your freelance job as a " + jobName + ".");
+                player.resetFreeLanceJobData();
             }
         }
         #endregion
@@ -106,6 +98,7 @@ namespace CloudRP.PlayerSystems.Jobs
     public class FreeLanceJobVehicleData
     {
         public int characterOwnerId { get; set; }
+        public int jobId { get; set; }
         public string jobName { get; set; }
         public bool destroyOnLeave { get; set; } = true;
     }

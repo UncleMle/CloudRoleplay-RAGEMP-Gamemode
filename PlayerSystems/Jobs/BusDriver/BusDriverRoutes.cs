@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GTANetworkAPI;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,7 +11,10 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
         {
             new BusRoute
             {
-                routeName = ""
+                routeName = "",
+                stops = new Dictionary<string, Vector3> {
+                    
+                }
             }
         };
 

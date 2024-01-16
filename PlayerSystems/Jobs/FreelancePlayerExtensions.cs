@@ -33,5 +33,22 @@ namespace CloudRP.PlayerSystems.Jobs
                 });
             }
         }
+
+        public static void resetFreeLanceJobData(this Player player, bool deleteVehs = true)
+        {
+            DbCharacter playerData = player.getPlayerCharacterData();
+
+            if(playerData != null && player.getFreelanceJobData() != null)
+            {
+                playerData.freelance_job_data = null;
+                player.setPlayerCharacterData(playerData, false, true);
+                player.ResetData(FreelanceJobSystem._FreelanceJobDataIdentifier);
+
+                if(deleteVehs)
+                {
+                    FreelanceJobSystem.deleteFreeLanceVehs(player);
+                }
+            }
+        }
     }
 }

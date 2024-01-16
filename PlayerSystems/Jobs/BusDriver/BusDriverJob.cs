@@ -7,6 +7,7 @@ using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Xml;
 
 namespace CloudRP.PlayerSystems.Jobs.BusDriver
 {
@@ -90,6 +91,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                     newBus.SetData(_busVehicleData, data);
                     newBus.SetData(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier, new FreeLanceJobVehicleData
                     {
+                        jobId = (int)FreelanceJobs.BusJob,
                         characterOwnerId = playerData.character_id,
                         jobName = JobName
                     });
@@ -120,7 +122,25 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                     string spawnBus = depoData.buses[new Random().Next(0, depoData.buses.Count)];
 
                     player.SetIntoVehicle(createBusJobVehicle(player, spawnBus, depoData), 0);
-                    player.SendChatMessage("Started route");
+                    player.SendChatMessage(ChatUtils.freelanceJobs + "Your bus route has been started. Please follow the route once finished you will be paid. Don't exit your vehicle. You will be rewarded for good driving.");
+                }
+            }
+        }
+        #endregion
+
+        #region Server Events 
+        [ServerEvent(Event.PlayerExitVehicle)]
+        public void removeBusJobStatus(Player player, Vehicle vehicle)
+        {
+            FreeLanceJobVehicleData freelanceVehicleData = vehicle.getFreelanceJobData();
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if(freelanceVehicleData != null && character != null)
+            {
+                if(freelanceVehicleData.characterOwnerId == character.character_id && freelanceVehicleData.jobId == (int)FreelanceJobs.BusJob)
+                {
+                    player.SendChatMessage(ChatUtils.freelanceJobs + $"Your vehicle has been returned to your employer. ({freelanceVehicleData.jobName})");
+                    vehicle.Delete();
                 }
             }
         }
