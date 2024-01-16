@@ -84,6 +84,17 @@ namespace CloudRP.PlayerSystems.Jobs
             }
         }
         #endregion
+
+        #region Server Events
+        [ServerEvent(Event.PlayerDisconnected)]
+        public void removeLeavePlayerVehicles(Player player, DisconnectionType type, string reason)
+        {
+            if(player.getFreelanceJobData() != null)
+            {
+                deleteFreeLanceVehs(player);
+            }
+        }
+        #endregion
     }
 
     public enum FreelanceJobs

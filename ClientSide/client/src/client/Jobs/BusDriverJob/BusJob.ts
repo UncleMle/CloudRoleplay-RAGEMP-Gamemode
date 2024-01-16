@@ -23,6 +23,7 @@ export default class BusDriverJob {
 
         if (targetVector) {
             if (BusDriverJob.BusStopBlip) {
+                mp.gui.chat.push("Blip Destroyed.");
                 BusDriverJob.BusStopBlip.destroy();
                 BusDriverJob.BusStopBlip = undefined;
             }

@@ -103,18 +103,26 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
 
                                     NAPI.Task.Run(() =>
                                     {
-                                        player.TriggerEvent("client:busFreezeForStop", false);
-                                    }, busStopCooldown_seconds * 1000);
+                                        if(NAPI.Player.IsPlayerConnected(player) && player.IsInVehicle)
+                                        {
+                                            player.TriggerEvent("client:busFreezeForStop", false);
 
-                                    if(idx + 1 < route.stops.Count)
-                                    {
-                                        Stop nextStop = route.stops[idx++];
-                                        
-                                        player.TriggerEvent("client:setBusDriverBlipCoord", nextStop.stopPos.X, nextStop.stopPos.Y, nextStop.stopPos.Z);
-                                    } else
-                                    {
-                                        player.SendChatMessage("Route finished");
-                                    }
+                                            if (idx + 1 < route.stops.Count)
+                                            {
+                                                Console.WriteLine(idx + 1);
+                                                idx++;
+                                                Stop nextStop = route.stops[idx];
+
+                                                Console.WriteLine(JsonConvert.SerializeObject(nextStop));
+
+                                                player.TriggerEvent("client:setBusDriverBlipCoord", nextStop.stopPos.X, nextStop.stopPos.Y, nextStop.stopPos.Z);
+                                            }
+                                            else
+                                            {
+                                                player.SendChatMessage("Route finished");
+                                            }
+                                        }
+                                    }, busStopCooldown_seconds * 1000);
                                 }
                             }
                         };
