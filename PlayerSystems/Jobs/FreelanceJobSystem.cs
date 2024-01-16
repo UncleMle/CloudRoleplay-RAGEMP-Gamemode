@@ -73,14 +73,19 @@ namespace CloudRP.PlayerSystems.Jobs
         [Command("quitjob", "~y~Use: ~w~/quitjob", Alias = "qjob")]
         public void quitFreeLanceJob(Player player)
         {
-            if(player.getFreelanceJobData() != null)
+            DbCharacter characterData = player.getPlayerCharacterData();
+
+            if(player.getFreelanceJobData() != null && characterData != null)
             {
                 string jobName = player.getFreelanceJobData().jobName;
 
                 player.SendChatMessage(ChatUtils.info + "You have quit your freelance job as a " + jobName + ".");
 
-                deleteFreeLanceVehs(player);
+                characterData.freelance_job_data = null;
+                player.setPlayerCharacterData(characterData, false, true);
+
                 player.ResetData(_FreelanceJobDataIdentifier);
+                deleteFreeLanceVehs(player);
             }
         }
         #endregion
