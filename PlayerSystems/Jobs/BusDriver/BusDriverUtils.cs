@@ -10,6 +10,8 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
         public string depoName { get; set; }
         public Vector3 depoStartPosition { get; set; }
         public int depoId { get; set; }
+        public double busStartRotation { get; set; }
+        public Vector3 busStartPosition { get; set; }
     }
 
     public class BusRoute

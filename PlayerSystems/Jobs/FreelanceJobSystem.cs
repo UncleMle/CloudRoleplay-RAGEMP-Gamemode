@@ -6,6 +6,7 @@ namespace CloudRP.PlayerSystems.Jobs
 {
     public class FreelanceJobSystem
     {
-        public static readonly string FreelanceJobDataIdentifier = "FreeLanceJobData";
+        public static readonly string _FreelanceJobDataIdentifier = "FreeLanceJobData";
+        public static readonly string _FreelanceJobVehicleDataIdentifier = "FreeLanceJobVehicleData";
     }
 }

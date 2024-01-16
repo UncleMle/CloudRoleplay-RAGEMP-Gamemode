@@ -294,7 +294,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                 {
                     try
                     {
-                        if (vehicle.getData() == null)
+                        if (vehicle.getData() == null && vehicle.getFreelanceJobData<dynamic>() == null)
                         {
                             vehicle.Delete();
                             ChatUtils.formatConsolePrint("Possible vehicle spawn cheat. Vehicle with no data found!");

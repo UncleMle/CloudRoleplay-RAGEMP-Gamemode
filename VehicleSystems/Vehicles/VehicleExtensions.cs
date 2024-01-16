@@ -1,4 +1,5 @@
 ﻿using CloudRP.PlayerSystems.Character;
+using CloudRP.PlayerSystems.Jobs;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.PlayerSystems.PlayerDealerships;
 using CloudRP.ServerSystems.Admin;
@@ -152,6 +153,11 @@ namespace CloudRP.VehicleSystems.Vehicles
         public static DbVehicle getData(this Vehicle vehicle)
         {
             return vehicle.GetData<DbVehicle>(VehicleSystem._vehicleSharedDataIdentifier);
+        }
+
+        public static T getFreelanceJobData<T>(this Vehicle vehicle)
+        {
+            return vehicle.GetData<T>(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier);
         }
 
         public static void sayInfoAboutVehicle(this Vehicle vehicle, Player player)
