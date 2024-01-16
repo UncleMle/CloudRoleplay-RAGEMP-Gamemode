@@ -37,7 +37,6 @@ import MarkersAndLabels from "./MarkersAndLabels/MarkersAndLabels";
 import PhoneSystem from "./PhoneSystem/PhoneSystem";
 import VehicleDamage from "./VehicleSystems/VehicleDamage";
 import VehicleRadar from "./PoliceRadar/VehicleRadar";
-import Fingerpointing from "./Animation/Fingerpointing";
 import HandsUp from "./Animation/HandsUpAnim";
 import ScaleForm from "./Scaleform/ScaleformMessages";
 import SpeedCameras from "./SpeedCameras/SpeedCameras";
@@ -48,6 +47,7 @@ import CruiseControl from "./VehicleSystems/VehicleCruiseControl";
 import PlayerDealership from "./PlayerDealership/PlayerDealership";
 import Crouching from "./Animation/Crouching";
 import Weather from "./world/Weather";
+import BusDriverJob from "./Jobs/BusDriverJob/BusJob";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -99,3 +99,4 @@ new CruiseControl();
 new PlayerDealership();
 new Crouching();
 new Weather();
+new BusDriverJob();
