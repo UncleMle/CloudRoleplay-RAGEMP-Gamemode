@@ -53,7 +53,7 @@ namespace CloudRP.VehicleSystems.Vehicles
         {
             vehicle.setVehicleData(vehicleData);
 
-            if (updateDb)
+            if (updateDb && vehicleData.vehicle_id != -1)
             {
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {

@@ -1,5 +1,6 @@
 ﻿using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
@@ -13,6 +14,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
     {
         #region Init
         private static string _busDepoColShapeData = "playerEnteredBusDepoColshape";
+        private static string _busVehicleData = "busDriverJobVehicleData";
         public static List<BusDepo> busDepos = new List<BusDepo>
         {
             new BusDepo
@@ -84,7 +86,12 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                 
                 if(newBus != null)
                 {
-                    newBus.SetData(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier, data);
+                    newBus.SetData(_busVehicleData, data);
+                    newBus.SetData(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier, new FreeLanceJobVehicleData
+                    {
+                        characterOwnerId = playerData.character_id,
+                        jobName = "Bus Driver"
+                    });
                 }
             }
 
@@ -100,6 +107,13 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
 
             if(depoData != null)
             {
+                player.SetCustomData(FreelanceJobSystem._FreelanceJobDataIdentifier, new FreeLanceJobData
+                {
+                    jobName = "Bus Driver",
+                    jobStartedUnix = CommandUtils.generateUnix()
+                });
+
+
                 string spawnBus = depoData.buses[new Random().Next(0, depoData.buses.Count)];
 
                 player.SetIntoVehicle(createBusJobVehicle(player, spawnBus, depoData), 0);
