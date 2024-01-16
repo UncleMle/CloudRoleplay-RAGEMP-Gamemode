@@ -815,7 +815,7 @@ namespace CloudRP.ServerSystems.Admin
             {
                 DbVehicle vehicleData = player.Vehicle.getData();
 
-                if (vehicleData == null)
+                if (vehicleData == null || vehicleData != null && vehicleData.vehicle_id == -1)
                 {
                     player.Vehicle.Delete();
                     return;

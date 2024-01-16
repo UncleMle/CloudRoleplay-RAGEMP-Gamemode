@@ -21,7 +21,23 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                 busStartPosition = new Vector3(-233.7, 6188.2, 31.5),
                 busStartRotation = 133.5f,
                 depoName = "Duluoz Bus Depot",
-                depoStartPosition = new Vector3(-236.6, 6202.3, 31.9)
+                depoStartPosition = new Vector3(-236.6, 6202.3, 31.9),
+                buses = new List<string> {
+                    "blfs08",
+                    "blfs05"
+                }
+            },
+            new BusDepo
+            {
+                depoId = 1,
+                busStartPosition = new Vector3(423.3, -621.0, 28.5),
+                busStartRotation = -177.3f,
+                depoName = "Dashound Bus Depot",
+                depoStartPosition = new Vector3(436.3, -647.5, 28.7),
+                buses = new List<string> {
+                    "zxd40",
+                    "bxd40"
+                }
             }
         };
 
@@ -57,18 +73,18 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
         #endregion
 
         #region Global Events
-        public static Vehicle createBusJobVehicle(Player player, BusDepo data)
+        public static Vehicle createBusJobVehicle(Player player, string busType, BusDepo data)
         {
             DbCharacter playerData = player.getPlayerCharacterData();
             Vehicle newBus = null;
 
             if (playerData != null)
             {
-                Vehicle bus = VehicleSystem.buildVolatileVehicle(player, "BUS", data.busStartPosition, data.busStartRotation, "BUSDRIVER");
+                newBus = VehicleSystem.buildVolatileVehicle(player, busType, data.busStartPosition, data.busStartRotation, "BUSDRIVER");
                 
-                if(bus != null)
+                if(newBus != null)
                 {
-                    bus.SetData(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier, data);
+                    newBus.SetData(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier, data);
                 }
             }
 
@@ -84,7 +100,9 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
 
             if(depoData != null)
             {
-                player.SetIntoVehicle(createBusJobVehicle(player, depoData), 0);
+                string spawnBus = depoData.buses[new Random().Next(0, depoData.buses.Count)];
+
+                player.SetIntoVehicle(createBusJobVehicle(player, spawnBus, depoData), 0);
                 player.SendChatMessage("Started route");
             }
         }

@@ -417,6 +417,7 @@ namespace CloudRP.VehicleSystems.Vehicles
 
                         volatileVeh.saveVehicleData(new DbVehicle
                         {
+                            vehicle_id = -1,
                             CreatedDate = DateTime.Now,
                             dirt_level = 0,
                             vehicle_locked = false,
@@ -490,6 +491,13 @@ namespace CloudRP.VehicleSystems.Vehicles
             {
                 Vehicle vehicle = findVehicleById(vehicleId);
                 DbVehicle vehicleData = getVehicleDataById(vehicleId);
+
+                if (vehicleData != null && vehicleData.vehicle_id == -1)
+                {
+                    vehicle.Delete();
+
+                    returnRes = true;
+                }
 
                 if (vehicle != null && vehicleData != null)
                 {
@@ -795,8 +803,11 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             if (vehicleData == null || vehicle.Locked) return;
 
-            vehicleData.vehicle_doors[boneTargetId] = !vehicleData.vehicle_doors[boneTargetId];
-            vehicle.saveVehicleData(vehicleData);
+            if(boneTargetId >= vehicleData.vehicle_doors.Length && boneTargetId > 0)
+            {
+                vehicleData.vehicle_doors[boneTargetId] = !vehicleData.vehicle_doors[boneTargetId];
+                vehicle.saveVehicleData(vehicleData);
+            }
         }
 
         [RemoteEvent("server:toggleEngine")]
