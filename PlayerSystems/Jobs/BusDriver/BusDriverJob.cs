@@ -110,7 +110,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
             {
                 if(!FreelanceJobSystem.hasAJob(player, (int)FreelanceJobs.BusJob))
                 {
-                    player.SetCustomData(FreelanceJobSystem._FreelanceJobDataIdentifier, new FreeLanceJobData
+                    player.setFreelanceJobData(new FreeLanceJobData
                     {
                         jobName = JobName,
                         jobStartedUnix = CommandUtils.generateUnix()

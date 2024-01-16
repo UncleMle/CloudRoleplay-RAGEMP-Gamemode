@@ -28,6 +28,7 @@ namespace CloudRP.PlayerSystems.Character
         public uint player_dimension { get; set; }
         public ulong player_exp { get; set; }
         public int injured_timer { get; set; }
+        public string freelance_job_data { get; set; }
 
         [NotMapped]
         public bool voiceChatState { get; set; } = true;

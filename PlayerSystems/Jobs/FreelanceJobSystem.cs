@@ -77,7 +77,7 @@ namespace CloudRP.PlayerSystems.Jobs
             {
                 string jobName = player.getFreelanceJobData().jobName;
 
-                player.SendChatMessage("You have quit your freelance job as a " + jobName + ".");
+                player.SendChatMessage(ChatUtils.info + "You have quit your freelance job as a " + jobName + ".");
 
                 deleteFreeLanceVehs(player);
                 player.ResetData(_FreelanceJobDataIdentifier);
