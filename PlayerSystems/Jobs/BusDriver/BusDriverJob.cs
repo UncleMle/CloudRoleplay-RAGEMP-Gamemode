@@ -18,7 +18,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
             {
                 depoId = 0,
                 busStartPosition = new Vector3(-233.7, 6188.2, 31.5),
-                busStartRotation = 133.5,
+                busStartRotation = 133.5f,
                 depoName = "Duluoz Bus Depot",
                 depoStartPosition = new Vector3(-236.6, 6202.3, 31.9)
             }
@@ -56,9 +56,11 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
         #endregion
 
         #region Global Events
-        public static void createBusJobVehicle(Vector3 position, int rot, string routeName)
+        public static Vehicle createBusJobVehicle(BusDepo data, string routeName)
         {
-            Vehicle vehicle = NAPI.Vehicle.CreateVehicle(VehicleHash.Bus, position, rot, 111, 111, routeName, 255, false, true, 0);
+            Vehicle newBus = NAPI.Vehicle.CreateVehicle((uint)VehicleHash.Bus, data.busStartPosition, data.busStartRotation, 111, 111, routeName, 255, false, true, 0);
+            newBus.SetData(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier, data);
+            return newBus;
         }
         #endregion
 
@@ -70,7 +72,8 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
 
             if(depoData != null)
             {
-                Console.WriteLine("Started.");
+                player.SetIntoVehicle(createBusJobVehicle(depoData, "Test Route"), 0);
+                player.SendChatMessage("Started route");
             }
         }
         #endregion

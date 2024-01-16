@@ -1064,7 +1064,7 @@ namespace CloudRP.VehicleSystems.Vehicles
             DbVehicle vehicleData = vehicle.getData();
             User userData = player.getPlayerAccountData();
 
-            if (userData == null || vehicleData == null || vehicleData.vehicle_locked && !(userData.admin_status > (int)AdminRanks.Admin_HeadAdmin || userData.adminDuty))
+            if (userData == null || vehicleData == null && !vehicle.getFreelanceJobData<dynamic>() == null || vehicleData.vehicle_locked && !(userData.admin_status > (int)AdminRanks.Admin_HeadAdmin || userData.adminDuty))
             {
                 player.WarpOutOfVehicle();
                 return;
