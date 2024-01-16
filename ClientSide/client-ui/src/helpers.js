@@ -27,14 +27,14 @@ export function getStaffRanks() {
     let adminRanksList = ["None", "Support", "Senior Support", "Moderator", "Senior Moderator", "Administrator", "Senior Administrator", "Head Administrator", "Founder", "Developer"];
     let adminRanksStyles = [
         "",
-        "background: #ff00fa;",
-        "background: #9666ff;",
-        "background: #37db63;",
-        "background: #018a35;",
-        "background: #ff6363;",
-        "background: #ff0000;",
-        "background: #00bbff;",
-        "background: #c096ff;",
+        "color: #ff00fa;",
+        "color: #9666ff;",
+        "color: #37db63;",
+        "color: #018a35;",
+        "color: #ff6363;",
+        "color: #ff0000;",
+        "color: #00bbff;",
+        "color: #c096ff;",
         "background: -webkit-linear-gradient(#DAB8FF, #7AC8EE); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"
     ];
 

@@ -2,8 +2,7 @@
     <main>
         <div v-if="uiStates.authenticationState == 'charSelect'"
             class="fixed inset-0 w-full text-white text-lg duration-300">
-            <div class="duration-300 container flex items-center max-w-3xl mx-auto absolute left-40 mt-20">
-
+            <div class="duration-300 container flex items-center max-w-lg mx-auto mt-14 absolute left-10">
                 <div class="flex justify-center w-full">
                     <div
                         class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none duration-300">
@@ -12,7 +11,7 @@
                             <h1 class="flex justify-start text-xl font-bold ml-8">Account</h1>
                         </div>
 
-                        <div class="p-5 pb-8 text-xl">
+                        <div class="p-5 pb-8 text-lg">
                             <div class="relative w-full mt-4">
                                 <span class="left-0 top-0 "><i class="fa-solid fa-user pr-2"></i>Name</span>
                                 <span class="absolute right-0 top-0">{{ characters.player_account_info.username
@@ -439,11 +438,9 @@ export default {
             uiStates: 'getUiStates'
         }),
         baseStyle() {
-            let baseStyle = "";
+            let baseStyle = "mt-14";
 
-            if (this.uiStates.authenticationState === "charSelect") {
-                baseStyle += " absolute right-40";
-            }
+
             return baseStyle;
         }
     },
