@@ -295,7 +295,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                 {
                     try
                     {
-                        if (vehicle.getData() == null && vehicle.getFreelanceJobData<FreeLanceJobVehicleData>() == null)
+                        if (vehicle.getData() == null && vehicle.getFreelanceJobData() == null)
                         {
                             vehicle.Delete();
                             ChatUtils.formatConsolePrint("Possible vehicle spawn cheat. Vehicle with no data found!");
@@ -1115,7 +1115,7 @@ namespace CloudRP.VehicleSystems.Vehicles
             DbVehicle vehicleData = vehicle.getData();
             User userData = player.getPlayerAccountData();
 
-            if (userData == null || vehicleData == null && vehicle.getFreelanceJobData<FreeLanceJobVehicleData>() == null || vehicleData != null && vehicleData.vehicle_locked && !(userData.admin_status > (int)AdminRanks.Admin_HeadAdmin || userData.adminDuty))
+            if (userData == null || vehicleData == null && vehicle.getFreelanceJobData() == null || vehicleData != null && vehicleData.vehicle_locked && !(userData.admin_status > (int)AdminRanks.Admin_HeadAdmin || userData.adminDuty))
             {
                 player.WarpOutOfVehicle();
                 return;
@@ -1138,7 +1138,7 @@ namespace CloudRP.VehicleSystems.Vehicles
 
                 if (vehicleData == null) return;
 
-                if(vehicleData.vehicle_id == -1 && vehicle.getFreelanceJobData<FreeLanceJobVehicleData>() != null)
+                if(vehicleData.vehicle_id == -1 && vehicle.getFreelanceJobData() != null)
                 {
                     FreelanceJobSystem.handleVehicleDestroyed(vehicle);
                     return;

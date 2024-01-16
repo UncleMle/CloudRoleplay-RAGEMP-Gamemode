@@ -1,4 +1,5 @@
-﻿using CloudRP.PlayerSystems.PlayerData;
+﻿using CloudRP.PlayerSystems.Character;
+using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using Discord.Rest;
@@ -14,9 +15,10 @@ namespace CloudRP.PlayerSystems.Jobs
         public static readonly string _FreelanceJobDataIdentifier = "FreeLanceJobData";
         public static readonly string _FreelanceJobVehicleDataIdentifier = "FreeLanceJobVehicleData";
 
+        #region Global Methods
         public static void handleVehicleDestroyed(Vehicle vehicle)
         {
-            FreeLanceJobVehicleData vehicleData = vehicle.getFreelanceJobData<FreeLanceJobVehicleData>();
+            FreeLanceJobVehicleData vehicleData = vehicle.getFreelanceJobData();
             if (vehicleData != null)
             {
                 NAPI.Pools.GetAllPlayers().ForEach(p =>
@@ -32,22 +34,66 @@ namespace CloudRP.PlayerSystems.Jobs
             }
         }
 
-        public static bool hasAJob(Player player)
+        public static bool hasAJob(Player player, int compareJobId)
         {
             bool hasAJob = false;
 
-            if(player.getFreelanceJobData() != null)
+            if(player.getFreelanceJobData() != null && player.getFreelanceJobData().jobId != compareJobId)
             {
                 player.SendChatMessage(ChatUtils.error + "You already have a freelance job. Use /qjob to quit it.");
                 hasAJob = true;
             }
 
+            if(!hasAJob)
+            {
+                deleteFreeLanceVehs(player);
+            }
+
             return hasAJob;
         }
+
+        public static void deleteFreeLanceVehs(Player player)
+        {
+            DbCharacter characterData = player.getPlayerCharacterData();
+            
+            if(characterData != null)
+            {
+                NAPI.Pools.GetAllVehicles().ForEach(veh =>
+                {
+                    if (veh.getFreelanceJobData() != null && veh.getFreelanceJobData().characterOwnerId == characterData.character_id)
+                    {
+                        veh.Delete();
+                    }
+                });
+            }
+        }
+        #endregion
+
+        #region Commands
+        [Command("quitjob", "~y~Use: ~w~/quitjob", Alias = "qjob")]
+        public void quitFreeLanceJob(Player player)
+        {
+            if(player.getFreelanceJobData() != null)
+            {
+                string jobName = player.getFreelanceJobData().jobName;
+
+                player.SendChatMessage("You have quit your freelance job as a " + jobName + ".");
+
+                deleteFreeLanceVehs(player);
+                player.ResetData(_FreelanceJobDataIdentifier);
+            }
+        }
+        #endregion
+    }
+
+    public enum FreelanceJobs
+    {
+        BusJob = 0,
     }
 
     public class FreeLanceJobData
     {
+        public int jobId {  get; set; }
         public string jobName { get; set; }
         public long jobStartedUnix { get; set; }
     }

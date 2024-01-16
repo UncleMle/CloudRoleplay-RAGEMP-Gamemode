@@ -13,6 +13,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
     public class BusDriverJob : Script
     {
         #region Init
+        public static string JobName = "Bus Driver";
         private static string _busDepoColShapeData = "playerEnteredBusDepoColshape";
         private static string _busVehicleData = "busDriverJobVehicleData";
         public static List<BusDepo> busDepos = new List<BusDepo>
@@ -49,7 +50,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
             {
                 NAPI.Blip.CreateBlip(513, busDepo.depoStartPosition, 1.0f, 46, busDepo.depoName, 255, 2f, true, 0, 0);
                 MarkersAndLabels.setPlaceMarker(busDepo.depoStartPosition);
-                MarkersAndLabels.setTextLabel(busDepo.depoStartPosition, "Use ~y~Y~w~ to start the bus driver job.\n"+busDepo.depoName, 5.0f);
+                MarkersAndLabels.setTextLabel(busDepo.depoStartPosition, $"Use ~y~Y~w~ to start the {JobName} job.\n"+busDepo.depoName, 5.0f);
 
                 ColShape depoCol = NAPI.ColShape.CreateSphereColShape(busDepo.depoStartPosition, 2f, 0);
 
@@ -90,7 +91,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                     newBus.SetData(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier, new FreeLanceJobVehicleData
                     {
                         characterOwnerId = playerData.character_id,
-                        jobName = "Bus Driver"
+                        jobName = JobName
                     });
                 }
             }
@@ -107,17 +108,20 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
 
             if(depoData != null)
             {
-                player.SetCustomData(FreelanceJobSystem._FreelanceJobDataIdentifier, new FreeLanceJobData
+                if(!FreelanceJobSystem.hasAJob(player, (int)FreelanceJobs.BusJob))
                 {
-                    jobName = "Bus Driver",
-                    jobStartedUnix = CommandUtils.generateUnix()
-                });
+                    player.SetCustomData(FreelanceJobSystem._FreelanceJobDataIdentifier, new FreeLanceJobData
+                    {
+                        jobName = JobName,
+                        jobStartedUnix = CommandUtils.generateUnix()
+                    });
 
 
-                string spawnBus = depoData.buses[new Random().Next(0, depoData.buses.Count)];
+                    string spawnBus = depoData.buses[new Random().Next(0, depoData.buses.Count)];
 
-                player.SetIntoVehicle(createBusJobVehicle(player, spawnBus, depoData), 0);
-                player.SendChatMessage("Started route");
+                    player.SetIntoVehicle(createBusJobVehicle(player, spawnBus, depoData), 0);
+                    player.SendChatMessage("Started route");
+                }
             }
         }
         #endregion

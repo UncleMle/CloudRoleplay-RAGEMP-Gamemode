@@ -155,9 +155,9 @@ namespace CloudRP.VehicleSystems.Vehicles
             return vehicle.GetData<DbVehicle>(VehicleSystem._vehicleSharedDataIdentifier);
         }
 
-        public static T getFreelanceJobData<T>(this Vehicle vehicle)
+        public static FreeLanceJobVehicleData getFreelanceJobData(this Vehicle vehicle)
         {
-            return vehicle.GetData<T>(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier);
+            return vehicle.GetData<FreeLanceJobVehicleData>(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier);
         }
 
         public static void sayInfoAboutVehicle(this Vehicle vehicle, Player player)
