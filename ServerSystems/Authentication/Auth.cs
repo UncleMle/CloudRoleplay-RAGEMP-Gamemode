@@ -169,8 +169,6 @@ namespace CloudRP.ServerSystems.Authentication
         {
             User userData = player.getPlayerAccountData();
 
-            Console.WriteLine("Triggered");
-
             if (userData != null)
             {
                 if (userData.auto_login == 1)

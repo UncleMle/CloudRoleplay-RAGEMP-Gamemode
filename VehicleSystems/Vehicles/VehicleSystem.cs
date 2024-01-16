@@ -42,19 +42,20 @@ namespace CloudRP.VehicleSystems.Vehicles
                     vehicles = dbContext.vehicles.ToList();
                 }
 
-                ChatUtils.formatConsolePrint($"A total of {vehicles.Count} vehicles where loaded in.", ConsoleColor.Cyan);
-
+                int totalSpawned = 0;
                 if (vehicles.Count > 0)
                 {
-                    foreach (var item in vehicles)
+                    foreach (DbVehicle item in vehicles)
                     {
                         if (item.vehicle_dimension == VehicleDimensions.World)
                         {
+                            totalSpawned++;
                             spawnVehicle(item);
                         }
                     }
                 };
 
+                ChatUtils.formatConsolePrint($"A total of {totalSpawned} vehicles where loaded into the world.", ConsoleColor.Cyan);
                 beginSaveInterval();
             });
         }
@@ -129,7 +130,13 @@ namespace CloudRP.VehicleSystems.Vehicles
                 veh.Rotation = spawnRotation;
             }
 
-            veh.setVehicleData(vehicle, true, true);
+            NAPI.Task.Run(() =>
+            {
+                if(veh != null && vehicle != null)
+                {
+                    veh.setVehicleData(vehicle, true, true);
+                }
+            }, 1500);
 
             return veh;
         }
