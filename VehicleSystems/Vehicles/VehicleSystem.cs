@@ -1,4 +1,5 @@
 ﻿using CloudRP.PlayerSystems.Character;
+using CloudRP.PlayerSystems.Jobs;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.PlayerSystems.PlayerDealerships;
 using CloudRP.ServerSystems.Admin;
@@ -399,6 +400,45 @@ namespace CloudRP.VehicleSystems.Vehicles
             return (vehicle, vehData);
         }
 
+        public static Vehicle buildVolatileVehicle(Player player, string vehName, Vector3 pos, float rot, string plate)
+        {
+            DbCharacter playerData = player.getPlayerCharacterData();
+            Vehicle volatileVeh = null;
+            try
+            {
+                if (playerData != null)
+                {
+                    (string vehicleName, int classId) = getVehiclesDisplayNameAndClass(vehName);
+
+                    if(vehicleName != null)
+                    {
+                        volatileVeh = NAPI.Vehicle.CreateVehicle(NAPI.Util.GetHashKey(vehName), pos, rot, 111, 111, plate, 255, false, true, 0);
+                        volatileVeh.Locked = false;
+
+                        volatileVeh.saveVehicleData(new DbVehicle
+                        {
+                            CreatedDate = DateTime.Now,
+                            dirt_level = 0,
+                            vehicle_locked = false,
+                            vehicle_name = vehName,
+                            vehicle_display_name = vehicleName,
+                            vehicle_class_id = classId,
+                            engine_status = true,
+                            numberplate = plate,
+                            owner_name = playerData.character_name,
+                            owner_id = playerData.character_id,
+                            vehicle_fuel = 100,
+                        });
+                    }
+                }
+            }
+            catch
+            {
+            }
+
+            return volatileVeh;
+        }
+
         public static Vehicle findVehicleById(int vehicleId)
         {
             List<Vehicle> allVehicles = NAPI.Pools.GetAllVehicles();
@@ -749,7 +789,7 @@ namespace CloudRP.VehicleSystems.Vehicles
         [RemoteEvent("server:handleDoorInteraction")]
         public void handleDoorInteraction(Player player, Vehicle vehicle, int boneTargetId)
         {
-            if (vehicle == null || Vector3.Distance(player.Position, vehicle.Position) > 4) return;
+            if (vehicle == null || Vector3.Distance(player.Position, vehicle.Position) > 12) return;
 
             DbVehicle vehicleData = vehicle.getData();
 

@@ -57,26 +57,19 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
         #endregion
 
         #region Global Events
-        public static Vehicle createBusJobVehicle(Player player, BusDepo data, string routeName)
+        public static Vehicle createBusJobVehicle(Player player, BusDepo data)
         {
             DbCharacter playerData = player.getPlayerCharacterData();
             Vehicle newBus = null;
 
             if (playerData != null)
             {
-                newBus = NAPI.Vehicle.CreateVehicle((uint)VehicleHash.Bus, data.busStartPosition, data.busStartRotation, 111, 111, routeName, 255, false, true, 0);
-                newBus.SetData(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier, data);
-
-                newBus.saveVehicleData(new DbVehicle
+                Vehicle bus = VehicleSystem.buildVolatileVehicle(player, "BUS", data.busStartPosition, data.busStartRotation, "BUSDRIVER");
+                
+                if(bus != null)
                 {
-                    CreatedDate = DateTime.Now,
-                    dirt_level = 0,
-                    engine_status = true,
-                    numberplate = "BUSDRIVER",
-                    owner_name = playerData.character_name,
-                    owner_id = playerData.character_id,
-                    vehicle_fuel = 100,
-                });
+                    bus.SetData(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier, data);
+                }
             }
 
             return newBus;
@@ -91,7 +84,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
 
             if(depoData != null)
             {
-                player.SetIntoVehicle(createBusJobVehicle(player, depoData, "Test Route"), 0);
+                player.SetIntoVehicle(createBusJobVehicle(player, depoData), 0);
                 player.SendChatMessage("Started route");
             }
         }
