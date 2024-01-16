@@ -78,6 +78,9 @@ namespace CloudRP.PlayerSystems.Jobs
 
                 player.SendChatMessage(ChatUtils.freelanceJobs + "You have quit your freelance job as a " + jobName + ".");
                 player.resetFreeLanceJobData();
+            } else
+            {
+                CommandUtils.errorSay(player, "You don't have any freelance jobs to quit.");
             }
         }
         #endregion
@@ -91,6 +94,7 @@ namespace CloudRP.PlayerSystems.Jobs
     public class FreeLanceJobData
     {
         public int jobId {  get; set; }
+        public int jobLevel { get; set; }
         public string jobName { get; set; }
         public long jobStartedUnix { get; set; }
     }

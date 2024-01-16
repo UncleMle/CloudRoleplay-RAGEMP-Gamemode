@@ -7,6 +7,7 @@ export const _sharedCharacterDataIdentifier: string = "PlayerCharacterData";
 export const _sharedCharacterModelIdentifier: string = "characterModel";
 export const _sharedHungerDataIdentifier: string = "characterWaterAndHunger";
 export const _sharedClothingDataIdentifier: string = "characterClothing";
+export const _sharedFreelanceJobData: string = "FreeLanceJobData";
 export const _TEXT_R_RED: string = "~r~";
 export const _TEXT_CLOUD_ADMINBLUE: string = "#75a8ff";
 export const _TEXT_R_WHITE: string = "~w~";

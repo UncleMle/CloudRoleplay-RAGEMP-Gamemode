@@ -19,7 +19,13 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
     {
         public int ownerDepoId { get; set; }
         public string routeName { get; set; }
-        public Dictionary<string, Vector3> stops { get; set; } = new Dictionary<string, Vector3>();
+        public List<Stop> stops { get; set; } = new List<Stop>();
         public int routePay { get; set; }
+    }
+
+    public class Stop
+    {
+        public string stopName { get; set; }
+        public Vector3 stopPos { get; set; }
     }
 }

@@ -15,6 +15,11 @@ export enum AdminRanks {
 	Admin_Founder = 8
 }
 
+export enum FreelanceJobs
+{
+	BusJob = 0,
+}
+
 export class MutationKeys {
 	public static readonly PlayerStats: string = "player_stats";
 	public static readonly PlayerData: string = "player_data_server";

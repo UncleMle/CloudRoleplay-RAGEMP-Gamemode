@@ -4,9 +4,11 @@ using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
+using Microsoft.EntityFrameworkCore.Internal;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 
 namespace CloudRP.PlayerSystems.Jobs.BusDriver
@@ -17,6 +19,8 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
         public static string JobName = "Bus Driver";
         private static string _busDepoColShapeData = "playerEnteredBusDepoColshape";
         private static string _busVehicleData = "busDriverJobVehicleData";
+        private static string _busStop = "busDriverJobStop";
+        private static int busStopCooldown_seconds = 6;
         public static List<BusDepo> busDepos = new List<BusDepo>
         {
             new BusDepo
@@ -72,6 +76,50 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                         player.ResetSharedData(_busDepoColShapeData);
                     }
                 };
+
+                BusRoute route = BusDriverRoutes.busRoutes
+                .Where(route => route.ownerDepoId == busDepo.depoId)
+                .FirstOrDefault();
+
+                if(route != null)
+                {
+                    route.stops.ForEach(stop =>
+                    {
+                        ColShape stopColshape = NAPI.ColShape.CreateSphereColShape(stop.stopPos, 8f, 0);
+
+                        stopColshape.OnEntityEnterColShape += (col, player) =>
+                        {
+                            if(col.Equals(stopColshape) && player.IsInVehicle && player.Vehicle.getFreelanceJobData()?.jobId == (int)FreelanceJobs.BusJob)
+                            {
+                                FreeLanceJobData jobData = player.getFreelanceJobData();
+                                int idx = route.stops.IndexOf(stop);
+
+                                if(jobData != null && jobData.jobId == (int)FreelanceJobs.BusJob)
+                                {
+                                    jobData.jobLevel = idx;
+                                    player.setFreelanceJobData(jobData);
+
+                                    player.TriggerEvent("client:busFreezeForStop", true);
+
+                                    NAPI.Task.Run(() =>
+                                    {
+                                        player.TriggerEvent("client:busFreezeForStop", false);
+                                    }, busStopCooldown_seconds * 1000);
+
+                                    if(idx + 1 < route.stops.Count)
+                                    {
+                                        Stop nextStop = route.stops[idx++];
+                                        
+                                        player.TriggerEvent("client:setBusDriverBlipCoord", nextStop.stopPos.X, nextStop.stopPos.Y, nextStop.stopPos.Z);
+                                    } else
+                                    {
+                                        player.SendChatMessage("Route finished");
+                                    }
+                                }
+                            }
+                        };
+                    });
+                }
             });
         }
         #endregion
@@ -100,6 +148,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
 
             return newBus;
         }
+
         #endregion
 
         #region Remote Events
@@ -115,9 +164,20 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                     player.setFreelanceJobData(new FreeLanceJobData
                     {
                         jobName = JobName,
+                        jobId = (int)FreelanceJobs.BusJob,
+                        jobLevel = 0,
                         jobStartedUnix = CommandUtils.generateUnix()
                     });
 
+                    BusRoute firstRoute = BusDriverRoutes.busRoutes
+                        .Where(route => route.ownerDepoId == depoData.depoId)
+                        .FirstOrDefault();
+
+                    if(firstRoute != null)
+                    {
+                        Vector3 stopPos = firstRoute.stops[0].stopPos;
+                        player.TriggerEvent("client:setBusDriverBlipCoord", stopPos.X, stopPos.Y, stopPos.Z);
+                    }
 
                     string spawnBus = depoData.buses[new Random().Next(0, depoData.buses.Count)];
 
