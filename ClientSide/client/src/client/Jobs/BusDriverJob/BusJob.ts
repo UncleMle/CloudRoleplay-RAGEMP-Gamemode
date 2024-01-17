@@ -1,6 +1,7 @@
-import { FreeLanceJobData } from "@/@types";
-import { _control_ids, _sharedFreelanceJobData } from "@/Constants/Constants";
-import { FreelanceJobs } from "@/enums";
+import { FreeLanceJobData, FreeLanceJobVehicleData } from "@/@types";
+import BrowserSystem from "@/BrowserSystem/BrowserSystem";
+import { _control_ids, _sharedFreelanceJobData, _sharedFreelanceJobVehicleDataIdentifier } from "@/Constants/Constants";
+import { Browsers, FreelanceJobs } from "@/enums";
 
 export default class BusDriverJob {
     private static LocalPlayer: PlayerMp = mp.players.local;
@@ -12,15 +13,23 @@ export default class BusDriverJob {
         mp.events.add({
             "client:setBusDriverBlipCoord": BusDriverJob.handleBlipSet,
             "client:busDriverclearBlips": BusDriverJob.clearBlips,
-            "playerEnterVehicle": BusDriverJob.handleEnterVehicle,
-            "client:busFreezeForStop": BusDriverJob.freezeVehicle
+            "client:busFreezeForStop": BusDriverJob.freezeVehicle,
+            "render": BusDriverJob.handleBrowserOpen,
+            "playerEnterVehicle": (veh: VehicleMp) => BusDriverJob.handleVehLeaveEnter(veh, true),
+            "playerLeaveVehicle": (veh: VehicleMp) => BusDriverJob.handleVehLeaveEnter(veh, false),
         });
 
         mp.keys.bind(_control_ids.Y, false, BusDriverJob.handleKeyPress);
     }
 
+    private static handleBrowserOpen() {
+        if (BusDriverJob.LocalPlayer.browserRouter === Browsers.ViewBusRoutes) {
+            mp.gui.cursor.show(true, true);
+        }
+    }
+
     private static clearBlips() {
-        if(BusDriverJob.BusStopBlip) {
+        if (BusDriverJob.BusStopBlip) {
             BusDriverJob.BusStopBlip.destroy();
             BusDriverJob.BusStopBlip = undefined;
         }
@@ -54,10 +63,18 @@ export default class BusDriverJob {
         }
     }
 
-    private static handleEnterVehicle(vehicle: VehicleMp) {
+    private static handleVehLeaveEnter(vehicle: VehicleMp, uiToggle: boolean) {
+        if(!vehicle) return;
+        let vehicleBusData: FreeLanceJobVehicleData = vehicle.getVariable(_sharedFreelanceJobVehicleDataIdentifier);
         let freelanceJobData: FreeLanceJobData = BusDriverJob.LocalPlayer.getVariable(_sharedFreelanceJobData);
 
-        if (freelanceJobData && freelanceJobData.jobId === FreelanceJobs.BusJob) {
+        mp.gui.chat.push(JSON.stringify(vehicleBusData));
+        
+        if (freelanceJobData && freelanceJobData.jobId === FreelanceJobs.BusJob && vehicleBusData?.jobId === FreelanceJobs.BusJob) {
+            BrowserSystem._browserInstance.execute(`appSys.commit('setUiState', {
+                _stateKey: "busDriverUi",
+                status: ${uiToggle}
+            })`);
         }
     }
 

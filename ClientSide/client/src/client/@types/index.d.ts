@@ -465,3 +465,11 @@ interface FreeLanceJobData
 	jobName: string;
 	jobStartedUnix: number;
 }    
+
+interface FreeLanceJobVehicleData
+{
+	characterOwnerId: number;
+	jobId: number;
+	jobName: string;
+	destroyOnLeave: boolean;
+}

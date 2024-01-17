@@ -37,9 +37,9 @@
 </template>
 
 <script>
-import CloseButton from '../../components/ui/CloseButton.vue';
+import CloseButton from '../../../components/ui/CloseButton.vue';
 import { mapGetters } from "vuex";
-import { sendToServer } from '../../helpers';
+import { sendToServer } from '../../../helpers';
 
 export default {
     components: {

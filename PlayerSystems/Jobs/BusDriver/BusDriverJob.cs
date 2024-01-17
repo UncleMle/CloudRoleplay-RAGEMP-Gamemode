@@ -19,7 +19,6 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
         public static string JobName = "Bus Driver";
         private static string _busDepoColShapeData = "playerEnteredBusDepoColshape";
         private static string _busVehicleData = "busDriverJobVehicleData";
-        private static string _busStop = "busDriverJobStop";
         private static int busStopCooldown_seconds = 6;
         public static List<BusDepo> busDepos = new List<BusDepo>
         {
@@ -161,12 +160,14 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                             player.setFreelanceJobData(jobData);
 
                             player.TriggerEvent("client:busFreezeForStop", true);
+                            uiHandling.sendNotification(player, "Loading passengers...", false, true, "Stops at bus stop..");
 
                             NAPI.Task.Run(() =>
                             {
                                 if (NAPI.Player.IsPlayerConnected(player) && player.IsInVehicle)
                                 {
                                     player.TriggerEvent("client:busFreezeForStop", false);
+                                    uiHandling.sendNotification(player, "Finished loading passengers.", false);
 
                                     if (idx + 1 < route.stops.Count)
                                     {
@@ -177,6 +178,8 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                                     }
                                     else
                                     {
+                                        //if((CommandUtils.generateUnix() - jobData.jobStartedUnix) < 60) return;
+
                                         Vector3 goBackPos = busDepo.busStartPosition;
                                         player.TriggerEvent("client:setBusDriverBlipCoord", goBackPos.X, goBackPos.Y, goBackPos.Z, true);
                                         jobData.jobFinished = true;
@@ -203,14 +206,6 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
             {
                 if(!FreelanceJobSystem.hasAJob(player, (int)FreelanceJobs.BusJob))
                 {
-                    player.setFreelanceJobData(new FreeLanceJobData
-                    {
-                        jobName = JobName,
-                        jobId = (int)FreelanceJobs.BusJob,
-                        jobLevel = -1,
-                        jobStartedUnix = CommandUtils.generateUnix()
-                    });
-
                     List<BusRoute> availableRoutes = BusDriverRoutes.busRoutes
                         .Where(route => route.ownerDepoId == depoData.depoId)
                         .ToList();
@@ -237,23 +232,34 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
 
             if (depoData != null)
             {
-                uiHandling.resetRouter(player);
-
-                List<BusRoute> availableRoutes = BusDriverRoutes.busRoutes
-                    .Where(route => route.ownerDepoId == depoData.depoId)
-                    .ToList();
-
-                if(availableRoutes.Count > 0 && availableRoutes[routeId] != null)
+                if(Vector3.Distance(player.Position, depoData.depoStartPosition) < 12)
                 {
-                    BusRoute route = availableRoutes[routeId];
+                    uiHandling.resetRouter(player);
 
-                    Vector3 stopPos = route.stops[0].stopPos;
-                    player.TriggerEvent("client:setBusDriverBlipCoord", stopPos.X, stopPos.Y, stopPos.Z);
+                    List<BusRoute> availableRoutes = BusDriverRoutes.busRoutes
+                        .Where(route => route.ownerDepoId == depoData.depoId)
+                        .ToList();
 
-                    string spawnBus = depoData.buses[new Random().Next(0, depoData.buses.Count)];
+                    if (availableRoutes.Count > 0 && availableRoutes[routeId] != null)
+                    {
+                        player.setFreelanceJobData(new FreeLanceJobData
+                        {
+                            jobName = JobName,
+                            jobId = (int)FreelanceJobs.BusJob,
+                            jobLevel = -1,
+                            jobStartedUnix = CommandUtils.generateUnix()
+                        });
 
-                    player.SetIntoVehicle(createBusJobVehicle(player, spawnBus, depoData), 0);
-                    player.SendChatMessage(ChatUtils.freelanceJobs + "Your bus route has been started. Please follow the route once finished you will be paid. Don't exit your vehicle. You will be rewarded for good driving.");
+                        BusRoute route = availableRoutes[routeId];
+
+                        Vector3 stopPos = route.stops[0].stopPos;
+                        player.TriggerEvent("client:setBusDriverBlipCoord", stopPos.X, stopPos.Y, stopPos.Z);
+
+                        string spawnBus = depoData.buses[new Random().Next(0, depoData.buses.Count)];
+
+                        player.SetIntoVehicle(createBusJobVehicle(player, spawnBus, depoData), 0);
+                        player.SendChatMessage(ChatUtils.freelanceJobs + "Your bus route has been started. Please follow the route once finished you will be paid. Don't exit your vehicle. You will be rewarded for good driving.");
+                    }
                 }
             }
         }
@@ -263,23 +269,39 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
         [ServerEvent(Event.PlayerExitVehicle)]
         public void removeBusJobStatus(Player player, Vehicle vehicle)
         {
+            int rageId = vehicle.Id;
+
+            if(vehicle.getFreelanceJobData()?.jobId == (int)FreelanceJobs.BusJob)
+            {
+                player.setFreelanceJobData(new FreeLanceJobData
+                {
+                    jobFinished = false,
+                    jobId = (int)FreelanceJobs.BusJob,
+                    jobLevel = -1,
+                    jobName = JobName
+                });
+                player.TriggerEvent("client:busDriverclearBlips");
+            }
+
             NAPI.Task.Run(() =>
             {
-                if(NAPI.Player.IsPlayerConnected(player) && NAPI.Pools.GetAllVehicles().Contains(vehicle))
+                NAPI.Pools.GetAllVehicles().ForEach(veh =>
                 {
-                    FreeLanceJobVehicleData freelanceVehicleData = vehicle.getFreelanceJobData();
-                    DbCharacter character = player.getPlayerCharacterData();
-
-                    if (freelanceVehicleData != null && character != null)
+                    if(veh.Id == rageId)
                     {
-                        if (freelanceVehicleData.characterOwnerId == character.character_id && freelanceVehicleData.jobId == (int)FreelanceJobs.BusJob)
+                        FreeLanceJobVehicleData freelanceVehicleData = vehicle.getFreelanceJobData();
+                        DbCharacter character = player.getPlayerCharacterData();
+
+                        if (freelanceVehicleData != null && character != null)
                         {
-                            player.SendChatMessage(ChatUtils.freelanceJobs + $"Your vehicle has been returned to your employer. ({freelanceVehicleData.jobName})");
-                            player.TriggerEvent("client:busDriverclearBlips");
-                            vehicle.Delete();
+                            if (freelanceVehicleData.characterOwnerId == character.character_id && freelanceVehicleData.jobId == (int)FreelanceJobs.BusJob)
+                            {
+                                player.SendChatMessage(ChatUtils.freelanceJobs + $"Your vehicle has been returned to your employer. ({freelanceVehicleData.jobName})");
+                                vehicle.Delete();
+                            }
                         }
                     }
-                }
+                });
             }, 1500);
         }
 

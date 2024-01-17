@@ -16,7 +16,7 @@ import TattooStore from './components/tattoos/TattooStore.vue';
 import VehicleInsurance from './components/vehicleInsurance/VehicleInsurance.vue';
 import HelpModal from './components/help/HelpModal.vue';
 import PlayerAtm from './components/atm/PlayerAtm.vue';
-import BusRoutes from './components/jobs/BusRoutes.vue';
+import BusRoutes from './components/jobs/BusDriver/BusRoutes.vue';
 
 export default new Router({
     routes: [

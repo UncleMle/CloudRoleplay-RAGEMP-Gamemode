@@ -1,12 +1,15 @@
 <template>
     <div id="app">
         <ChatBox class="absolute" ref="chatsys" />
-        <InventoryHud v-if="uiStates.inventory && uiStates.guiEnabled" />
-        <PlayerPhone class="absolute" v-if="uiStates.guiEnabled" />
+        <div ref="guisystems" v-if="uiStates.guiEnabled">
+            <VehicleSpeedo />
+            <PlayerHud />
+            <BusJobGui />
+            <InventoryHud v-if="uiStates.inventory" />
+            <PlayerPhone class="absolute" />
+        </div>
         <RefuelMeter class="absolute" v-if="uiStates.refuelUi" />
         <PushNotification class="bg-red-200" ref="notification" />
-        <VehicleSpeedo v-if="uiStates.guiEnabled" />
-        <PlayerHud v-if="uiStates.guiEnabled" />
         <router-view class="absolute" ref="routers">
         </router-view>
     </div>
@@ -20,6 +23,7 @@ import PlayerHud from "./components/hud/PlayerHud.vue";
 import VehicleSpeedo from "./components/hud/VehicleSpeedo.vue";
 import RefuelMeter from "./components/ui/RefuelMeter.vue";
 import PlayerPhone from './components/phone/PlayerPhone.vue';
+import BusJobGui from "./components/jobs/BusDriver/BusJobGui.vue";
 import { mapGetters } from "vuex";
 
 export default {
@@ -31,7 +35,8 @@ export default {
         PlayerHud,
         InventoryHud,
         RefuelMeter,
-        PlayerPhone
+        PlayerPhone,
+        BusJobGui
     },
     computed: {
         ...mapGetters({
