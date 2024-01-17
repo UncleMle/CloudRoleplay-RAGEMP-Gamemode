@@ -8,14 +8,11 @@ using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.VehicleInsurance;
 using CloudRP.VehicleSystems.VehicleModification;
 using GTANetworkAPI;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Authentication;
 using System.Timers;
 
 namespace CloudRP.VehicleSystems.Vehicles
@@ -131,13 +128,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                 veh.Rotation = spawnRotation;
             }
 
-            NAPI.Task.Run(() =>
-            {
-                if(veh != null && vehicle != null)
-                {
-                    veh.setVehicleData(vehicle, true, true);
-                }
-            }, 1500);
+            veh.setVehicleData(vehicle, true, true);
 
             return veh;
         }
@@ -581,7 +572,7 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
-                DbVehicle findVehicle = dbContext.vehicles.Where(veh => veh.numberplate == vehiclePlate.ToUpper()).FirstOrDefault();
+                DbVehicle findVehicle = dbContext.vehicles.Where(veh => veh.numberplate.ToUpper() == vehiclePlate.ToUpper()).FirstOrDefault();
 
                 if (findVehicle != null && findVehicle.vehicle_dimension != VehicleDimensions.World)
                 {
@@ -1136,45 +1127,48 @@ namespace CloudRP.VehicleSystems.Vehicles
         [ServerEvent(Event.VehicleDeath)]
         public void onVehicleDeath(Vehicle vehicle)
         {
-            if (vehicle == null) return;
-            try
+            NAPI.Task.Run(() =>
             {
-                DbVehicle vehicleData = vehicle.getData();
-
-                if (vehicleData == null) return;
-
-                if(vehicleData.vehicle_id == -1 && vehicle.getFreelanceJobData() != null)
+                if (vehicle == null) return;
+                try
                 {
-                    FreelanceJobSystem.handleVehicleDestroyed(vehicle);
-                    return;
-                }
+                    DbVehicle vehicleData = vehicle.getData();
 
-                if (vehicleData.dealership_id != -1)
-                {
-                    vehicle.Delete();
+                    if (vehicleData == null) return;
 
-                    PlayerDealerVehPositions.dealerVehPositions
-                        .Where(dealerPos => dealerPos.spotId == vehicleData.dynamic_dealer_spot_id)
-                        .FirstOrDefault()
-                        .vehInSpot = null;
-
-                    NAPI.Task.Run(() =>
+                    if (vehicleData.vehicle_id == -1 && vehicle.getFreelanceJobData() != null)
                     {
-                        if (vehicleData != null)
+                        FreelanceJobSystem.handleVehicleDestroyed(vehicle);
+                        return;
+                    }
+
+                    if (vehicleData.dealership_id != -1)
+                    {
+                        vehicle.Delete();
+
+                        PlayerDealerVehPositions.dealerVehPositions
+                            .Where(dealerPos => dealerPos.spotId == vehicleData.dynamic_dealer_spot_id)
+                            .FirstOrDefault()
+                            .vehInSpot = null;
+
+                        NAPI.Task.Run(() =>
                         {
-                            spawnVehicle(vehicleData);
-                        }
-                    }, 1500);
+                            if (vehicleData != null)
+                            {
+                                spawnVehicle(vehicleData);
+                            }
+                        }, 1500);
 
-                    return;
+                        return;
+                    }
+
+                    vehicle.sendVehicleToInsurance();
                 }
-
-                vehicle.sendVehicleToInsurance();
-            }
-            catch
-            {
-            }
-
+                catch
+                {
+                    ChatUtils.formatConsolePrint("An error occured when saving vehicle.");
+                }
+            });
         }
         #endregion
     }

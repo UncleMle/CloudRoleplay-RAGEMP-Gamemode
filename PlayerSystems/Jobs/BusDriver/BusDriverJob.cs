@@ -131,7 +131,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
         {
             route.stops.ForEach(stop =>
             {
-                ColShape stopColshape = NAPI.ColShape.CreateSphereColShape(stop.stopPos, 8f, 0);
+                ColShape stopColshape = NAPI.ColShape.CreateSphereColShape(stop.stopPos, 2f, 0);
 
                 originCol.OnEntityEnterColShape += (col, player) =>
                 {
@@ -340,6 +340,15 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                     }
                 });
             }, 1500);
+        }
+
+        [Command("avt")]
+        public void avtCommand(Player player, float x, float y, float z)
+        {
+            if(player.IsInVehicle)
+            {
+                player.Vehicle.Position = new Vector3(x, y, z);
+            }
         }
         #endregion
     }

@@ -63,10 +63,9 @@ namespace CloudRP.PlayerSystems.PlayerData
         {
             if (!PlayersData.checkIfCharacterIsLogged(character.character_id))
             {
-                if(player.getPlayerCharacterData()?.money_amount != character.money_amount && player.getPlayerCharacterData() != null)
-                {
-                    ChatUtils.formatConsolePrint($"{character.character_name}'s money amount was altered from {player.getPlayerCharacterData()?.money_amount.ToString("C")} to {character.money_amount.ToString("C")}", ConsoleColor.Green);
-                }
+                DbCharacter oldData = player.getPlayerCharacterData();
+
+                Console.WriteLine($"{oldData?.money_amount.ToString("C")} || {character?.money_amount.ToString("C")}");
 
                 player.SetCustomData(PlayersData._sharedCharacterDataIdentifier, character);
 

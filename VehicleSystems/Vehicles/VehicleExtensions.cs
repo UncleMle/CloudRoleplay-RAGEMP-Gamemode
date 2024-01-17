@@ -45,7 +45,6 @@ namespace CloudRP.VehicleSystems.Vehicles
 
                 vehicle.Delete();
                 ChatUtils.formatConsolePrint($"Vehicle #{vehicleData.vehicle_id} ({vehicleData.vehicle_name}) was saved to {closestInsuranceToDeath.insuranceName}.");
-
             }
         }
 
