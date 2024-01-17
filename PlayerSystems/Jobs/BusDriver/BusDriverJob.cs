@@ -263,18 +263,24 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
         [ServerEvent(Event.PlayerExitVehicle)]
         public void removeBusJobStatus(Player player, Vehicle vehicle)
         {
-            FreeLanceJobVehicleData freelanceVehicleData = vehicle.getFreelanceJobData();
-            DbCharacter character = player.getPlayerCharacterData();
-
-            if(freelanceVehicleData != null && character != null)
+            NAPI.Task.Run(() =>
             {
-                if(freelanceVehicleData.characterOwnerId == character.character_id && freelanceVehicleData.jobId == (int)FreelanceJobs.BusJob)
+                if(NAPI.Player.IsPlayerConnected(player) && NAPI.Pools.GetAllVehicles().Contains(vehicle))
                 {
-                    player.SendChatMessage(ChatUtils.freelanceJobs + $"Your vehicle has been returned to your employer. ({freelanceVehicleData.jobName})");
-                    player.TriggerEvent("client:busDriverclearBlips");
-                    vehicle.Delete();
+                    FreeLanceJobVehicleData freelanceVehicleData = vehicle.getFreelanceJobData();
+                    DbCharacter character = player.getPlayerCharacterData();
+
+                    if (freelanceVehicleData != null && character != null)
+                    {
+                        if (freelanceVehicleData.characterOwnerId == character.character_id && freelanceVehicleData.jobId == (int)FreelanceJobs.BusJob)
+                        {
+                            player.SendChatMessage(ChatUtils.freelanceJobs + $"Your vehicle has been returned to your employer. ({freelanceVehicleData.jobName})");
+                            player.TriggerEvent("client:busDriverclearBlips");
+                            vehicle.Delete();
+                        }
+                    }
                 }
-            }
+            }, 1500);
         }
 
         [Command("avt")]
