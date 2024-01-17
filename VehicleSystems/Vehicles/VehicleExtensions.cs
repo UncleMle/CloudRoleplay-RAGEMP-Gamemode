@@ -185,11 +185,9 @@ namespace CloudRP.VehicleSystems.Vehicles
                     }
                 }
 
-
-                DbCharacter vehicleOwnerData = VehicleSystem.getOwnerOfVehicleById(vehicleData.owner_id);
-                if ((userData.adminDuty || userData.admin_status > (int)AdminRanks.Admin_HeadAdmin) && vehicleOwnerData != null)
+                if ((userData.adminDuty || userData.admin_status > (int)AdminRanks.Admin_HeadAdmin))
                 {
-                    AdminUtils.staffSay(player, "Owner: " + ChatUtils.red + vehicleOwnerData.character_name + AdminUtils.staffSuffixColour + " Owner Last Login: " + ChatUtils.red + vehicleOwnerData.last_login);
+                    AdminUtils.staffSay(player, "Owner: " + ChatUtils.red + vehicleData.owner_name);
                 }
 
                 AdminUtils.staffSay(player, "Class: " + ChatUtils.red + vehicleData.vehicle_class_id);
