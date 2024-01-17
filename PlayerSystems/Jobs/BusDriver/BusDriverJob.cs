@@ -194,8 +194,6 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                                     }
                                     else
                                     {
-                                        if((CommandUtils.generateUnix() - jobData.jobStartedUnix) < 60) return;
-
                                         Vector3 goBackPos = busDepo.busStartPosition;
                                         player.TriggerEvent("client:setBusDriverBlipCoord", goBackPos.X, goBackPos.Y, goBackPos.Z, true);
                                         jobData.jobFinished = true;

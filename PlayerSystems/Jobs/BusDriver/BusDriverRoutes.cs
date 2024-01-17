@@ -96,7 +96,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                     {
                         stopName = "Ginger Street",
                         stopPos = new Vector3(-741.2, -752.1, 26.7)
-                    },
+                    }
                 }
             },
         };
