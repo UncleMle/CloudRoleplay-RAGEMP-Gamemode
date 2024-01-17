@@ -1,28 +1,47 @@
-import { FreeLanceJobData, FreeLanceJobVehicleData } from "@/@types";
-import BrowserSystem from "@/BrowserSystem/BrowserSystem";
+import { BusSharedData } from "@/@types";
 import { _control_ids, _sharedFreelanceJobData, _sharedFreelanceJobVehicleDataIdentifier } from "@/Constants/Constants";
-import { Browsers, FreelanceJobs } from "@/enums";
+import { Browsers } from "@/enums";
 
 export default class BusDriverJob {
     private static LocalPlayer: PlayerMp = mp.players.local;
     private static BusStopBlip: BlipMp | undefined;
     private static readonly _busDepoColShapeData: string = "playerEnteredBusDepoColshape";
     public static readonly startRemoteEvent: string = "server:playerAttemptBusJobStart";
+    private static readonly _busVehicleData: string = "busDriverJobVehicleData";
 
     constructor() {
         mp.events.add({
             "client:setBusDriverBlipCoord": BusDriverJob.handleBlipSet,
             "client:busDriverclearBlips": BusDriverJob.clearBlips,
             "client:busFreezeForStop": BusDriverJob.freezeVehicle,
-            "render": BusDriverJob.handleBrowserOpen,
-            "playerEnterVehicle": (veh: VehicleMp) => BusDriverJob.handleVehLeaveEnter(veh, true),
-            "playerLeaveVehicle": (veh: VehicleMp) => BusDriverJob.handleVehLeaveEnter(veh, false),
+            "render": BusDriverJob.handleRender
         });
 
         mp.keys.bind(_control_ids.Y, false, BusDriverJob.handleKeyPress);
     }
 
-    private static handleBrowserOpen() {
+    private static handleRender() {
+        if (BusDriverJob.LocalPlayer.vehicle) {
+            let nextStop: BusSharedData = BusDriverJob.LocalPlayer.vehicle.getVariable(BusDriverJob._busVehicleData);
+
+            if(nextStop) {
+                mp.game.graphics.drawText(`~y~Destination ${nextStop.destination}`, [0.1, 0.64], {
+                    font: 4,
+                    color: [255, 255, 255, 255],
+                    scale: [0.65, 0.65],
+                    outline: false
+                });
+                
+                mp.game.graphics.drawText(`Next Stop ${nextStop.nextStop}`, [0.1, 0.70], {
+                    font: 4,
+                    color: [255, 255, 255, 255],
+                    scale: [0.65, 0.65],
+                    outline: false
+                });
+            }
+        }
+
+
         if (BusDriverJob.LocalPlayer.browserRouter === Browsers.ViewBusRoutes) {
             mp.gui.cursor.show(true, true);
         }
@@ -60,21 +79,6 @@ export default class BusDriverJob {
     private static freezeVehicle(toggle: boolean) {
         if (BusDriverJob.LocalPlayer.vehicle) {
             BusDriverJob.LocalPlayer.vehicle.freezePosition(toggle);
-        }
-    }
-
-    private static handleVehLeaveEnter(vehicle: VehicleMp, uiToggle: boolean) {
-        if(!vehicle) return;
-        let vehicleBusData: FreeLanceJobVehicleData = vehicle.getVariable(_sharedFreelanceJobVehicleDataIdentifier);
-        let freelanceJobData: FreeLanceJobData = BusDriverJob.LocalPlayer.getVariable(_sharedFreelanceJobData);
-
-        mp.gui.chat.push(JSON.stringify(vehicleBusData));
-        
-        if (freelanceJobData && freelanceJobData.jobId === FreelanceJobs.BusJob && vehicleBusData?.jobId === FreelanceJobs.BusJob) {
-            BrowserSystem._browserInstance.execute(`appSys.commit('setUiState', {
-                _stateKey: "busDriverUi",
-                status: ${uiToggle}
-            })`);
         }
     }
 

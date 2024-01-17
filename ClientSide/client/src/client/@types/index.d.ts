@@ -472,4 +472,10 @@ interface FreeLanceJobVehicleData
 	jobId: number;
 	jobName: string;
 	destroyOnLeave: boolean;
+}    
+
+interface BusSharedData
+{
+	destination: string
+	nextStop: string
 }

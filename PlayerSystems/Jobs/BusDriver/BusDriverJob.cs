@@ -104,8 +104,13 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                 
                 if(newBus != null)
                 {
-                    newBus.SetData(_busVehicleData, data);
                     newBus.SetData(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier, new FreeLanceJobVehicleData
+                    {
+                        jobId = (int)FreelanceJobs.BusJob,
+                        characterOwnerId = playerData.character_id,
+                        jobName = JobName
+                    });
+                    newBus.SetSharedData(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier, new FreeLanceJobVehicleData
                     {
                         jobId = (int)FreelanceJobs.BusJob,
                         characterOwnerId = playerData.character_id,
@@ -173,18 +178,31 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                                     {
                                         idx++;
                                         Stop nextStop = route.stops[idx];
+                                        
+                                        player.Vehicle.SetSharedData(_busVehicleData, new BusSharedData
+                                        {
+                                            destination = route.stops.Last().stopName,
+                                            nextStop = nextStop.stopName
+                                        });
 
                                         player.TriggerEvent("client:setBusDriverBlipCoord", nextStop.stopPos.X, nextStop.stopPos.Y, nextStop.stopPos.Z);
                                     }
                                     else
                                     {
-                                        //if((CommandUtils.generateUnix() - jobData.jobStartedUnix) < 60) return;
+                                        if((CommandUtils.generateUnix() - jobData.jobStartedUnix) < 60) return;
 
                                         Vector3 goBackPos = busDepo.busStartPosition;
                                         player.TriggerEvent("client:setBusDriverBlipCoord", goBackPos.X, goBackPos.Y, goBackPos.Z, true);
                                         jobData.jobFinished = true;
 
                                         player.setFreelanceJobData(jobData);
+
+                                        player.Vehicle.SetSharedData(_busVehicleData, new BusSharedData
+                                        {
+                                            destination = "~r~Terminated",
+                                            nextStop = busDepo.depoName
+                                        });
+
                                         player.SendChatMessage(ChatUtils.freelanceJobs + "You have finished the route. Head back to the bus depot to recieve your paycheck.");
                                     }
                                 }
@@ -251,13 +269,20 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                         });
 
                         BusRoute route = availableRoutes[routeId];
+                        Stop firstStop = route.stops[0];
 
-                        Vector3 stopPos = route.stops[0].stopPos;
+                        Vector3 stopPos = firstStop.stopPos;
                         player.TriggerEvent("client:setBusDriverBlipCoord", stopPos.X, stopPos.Y, stopPos.Z);
 
                         string spawnBus = depoData.buses[new Random().Next(0, depoData.buses.Count)];
-
-                        player.SetIntoVehicle(createBusJobVehicle(player, spawnBus, depoData), 0);
+                        Vehicle bus = createBusJobVehicle(player, spawnBus, depoData);
+                        bus.SetSharedData(_busVehicleData, new BusSharedData
+                        {
+                            destination = route.stops.Last().stopName,
+                            nextStop = firstStop.stopName
+                        });
+                        
+                        player.SetIntoVehicle(bus, 0);
                         player.SendChatMessage(ChatUtils.freelanceJobs + "Your bus route has been started. Please follow the route once finished you will be paid. Don't exit your vehicle. You will be rewarded for good driving.");
                     }
                 }

@@ -4,7 +4,6 @@
         <div ref="guisystems" v-if="uiStates.guiEnabled">
             <VehicleSpeedo />
             <PlayerHud />
-            <BusJobGui />
             <InventoryHud v-if="uiStates.inventory" />
             <PlayerPhone class="absolute" />
         </div>
@@ -23,7 +22,6 @@ import PlayerHud from "./components/hud/PlayerHud.vue";
 import VehicleSpeedo from "./components/hud/VehicleSpeedo.vue";
 import RefuelMeter from "./components/ui/RefuelMeter.vue";
 import PlayerPhone from './components/phone/PlayerPhone.vue';
-import BusJobGui from "./components/jobs/BusDriver/BusJobGui.vue";
 import { mapGetters } from "vuex";
 
 export default {
@@ -35,8 +33,7 @@ export default {
         PlayerHud,
         InventoryHud,
         RefuelMeter,
-        PlayerPhone,
-        BusJobGui
+        PlayerPhone
     },
     computed: {
         ...mapGetters({

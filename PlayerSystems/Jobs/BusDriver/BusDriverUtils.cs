@@ -28,4 +28,10 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
         public string stopName { get; set; }
         public Vector3 stopPos { get; set; }
     }
+
+    public class BusSharedData
+    {
+        public string destination { get; set; }
+        public string nextStop { get; set; }
+    }
 }
