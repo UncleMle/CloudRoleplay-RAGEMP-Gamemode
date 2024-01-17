@@ -120,6 +120,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                                             else
                                             {
                                                 player.SendChatMessage("Route finished");
+                                                player.TriggerEvent("client:busDriverclearBlips");
                                             }
                                         }
                                     }, busStopCooldown_seconds * 1000);
@@ -177,15 +178,44 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                         jobStartedUnix = CommandUtils.generateUnix()
                     });
 
-                    BusRoute firstRoute = BusDriverRoutes.busRoutes
+                    List<BusRoute> availableRoutes = BusDriverRoutes.busRoutes
                         .Where(route => route.ownerDepoId == depoData.depoId)
-                        .FirstOrDefault();
+                        .ToList();
 
-                    if(firstRoute != null)
+                    if(availableRoutes.Count > 0)
                     {
-                        Vector3 stopPos = firstRoute.stops[0].stopPos;
-                        player.TriggerEvent("client:setBusDriverBlipCoord", stopPos.X, stopPos.Y, stopPos.Z);
+                        uiHandling.resetMutationPusher(player, MutationKeys.BusDriverJobRoutes);
+
+                        availableRoutes.ForEach(route =>
+                        {
+                            uiHandling.handleObjectUiMutationPush(player, MutationKeys.BusDriverJobRoutes, route);
+                        });
+
+                        uiHandling.pushRouterToClient(player, Browsers.ViewBusRoutes);
                     }
+                }
+            }
+        }
+
+        [RemoteEvent("server:startBusJobRoute")]
+        public void startBusJobRoute(Player player, int routeId)
+        {
+            BusDepo depoData = player.GetData<BusDepo>(_busDepoColShapeData);
+
+            if (depoData != null)
+            {
+                uiHandling.resetRouter(player);
+
+                List<BusRoute> availableRoutes = BusDriverRoutes.busRoutes
+                    .Where(route => route.ownerDepoId == depoData.depoId)
+                    .ToList();
+
+                if(availableRoutes.Count > 0 && availableRoutes[routeId] != null)
+                {
+                    BusRoute route = availableRoutes[routeId];
+
+                    Vector3 stopPos = route.stops[0].stopPos;
+                    player.TriggerEvent("client:setBusDriverBlipCoord", stopPos.X, stopPos.Y, stopPos.Z);
 
                     string spawnBus = depoData.buses[new Random().Next(0, depoData.buses.Count)];
 
@@ -193,6 +223,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                     player.SendChatMessage(ChatUtils.freelanceJobs + "Your bus route has been started. Please follow the route once finished you will be paid. Don't exit your vehicle. You will be rewarded for good driving.");
                 }
             }
+
         }
         #endregion
 
@@ -208,6 +239,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                 if(freelanceVehicleData.characterOwnerId == character.character_id && freelanceVehicleData.jobId == (int)FreelanceJobs.BusJob)
                 {
                     player.SendChatMessage(ChatUtils.freelanceJobs + $"Your vehicle has been returned to your employer. ({freelanceVehicleData.jobName})");
+                    player.TriggerEvent("client:busDriverclearBlips");
                     vehicle.Delete();
                 }
             }

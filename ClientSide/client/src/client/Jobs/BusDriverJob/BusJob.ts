@@ -11,6 +11,7 @@ export default class BusDriverJob {
     constructor() {
         mp.events.add({
             "client:setBusDriverBlipCoord": BusDriverJob.handleBlipSet,
+            "client:busDriverclearBlips": BusDriverJob.clearBlips,
             "playerEnterVehicle": BusDriverJob.handleEnterVehicle,
             "client:busFreezeForStop": BusDriverJob.freezeVehicle
         });
@@ -18,15 +19,19 @@ export default class BusDriverJob {
         mp.keys.bind(_control_ids.Y, false, BusDriverJob.handleKeyPress);
     }
 
+    private static clearBlips() {
+        if(BusDriverJob.BusStopBlip) {
+            mp.gui.chat.push("Blip destroyed");
+            BusDriverJob.BusStopBlip.destroy();
+            BusDriverJob.BusStopBlip = undefined;
+        }
+    }
+
     private static handleBlipSet(pos_x: number, pos_y: number, pos_z: number) {
         let targetVector: Vector3 = new mp.Vector3(pos_x, pos_y, pos_z);
 
         if (targetVector) {
-            if (BusDriverJob.BusStopBlip) {
-                mp.gui.chat.push("Blip Destroyed.");
-                BusDriverJob.BusStopBlip.destroy();
-                BusDriverJob.BusStopBlip = undefined;
-            }
+            BusDriverJob.clearBlips();
 
             BusDriverJob.BusStopBlip = mp.blips.new(1, targetVector,
                 {

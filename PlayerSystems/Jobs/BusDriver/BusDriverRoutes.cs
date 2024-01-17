@@ -27,7 +27,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                     {
                         stopName = "Route 68 - Harmony", 
                         stopPos = new Vector3(624.6, 2704.7, 41.0)
-                    }
+                    },
                 }
             }
         };
