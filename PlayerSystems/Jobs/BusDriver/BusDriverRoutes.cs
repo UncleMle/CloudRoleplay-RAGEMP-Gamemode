@@ -79,13 +79,8 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                     },
                     new Stop
                     {
-                        stopName = "Dutch London Street",
-                        stopPos = new Vector3(-254.9, -2118.4, 22.1)
-                    },
-                    new Stop
-                    {
                         stopName = "Davis Avenue",
-                        stopPos = new Vector3(-38.1, 1721.9, 29.2)
+                        stopPos = new Vector3(-38.1, -1721.9, 29.2)
                     },
                     new Stop
                     {
