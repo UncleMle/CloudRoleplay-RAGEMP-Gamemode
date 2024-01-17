@@ -1791,8 +1791,24 @@ namespace CloudRP.ServerSystems.Admin
         [Command("makeobj", "~r~/makeobj [objName] [rot]")]
         public void makeObject(Player player, string objName, double rot = 0)
         {
-            NAPI.Object.CreateObject(NAPI.Util.GetHashKey(objName), player.Position, new Vector3(0, 0, rot), 255);
+            NAPI.Object.CreateObject(NAPI.Util.GetHashKey(objName), new Vector3(player.Position.X, player.Position.Y, player.Position.Z-1), new Vector3(0, 0, player.Rotation.Z), 255);
             AdminUtils.staffSay(player, $"You spawned in a object {ChatUtils.yellow}{objName}{ChatUtils.White}");
+
+            Console.WriteLine(player.Rotation.Z);
+
+            List<Vector3> positions = null;
+            
+            using(StreamReader sr = new StreamReader(Main.JsonDirectory + "objectpositions.json"))
+            {
+                positions = JsonConvert.DeserializeObject<List<Vector3>>(sr.ReadToEnd());
+            }
+
+
+            if(positions != null)
+            {
+                positions.Add(new Vector3(player.Position.X, player.Position.Y, player.Position.Z - 1));
+                File.WriteAllText(Main.JsonDirectory + "objectpositions.json", JsonConvert.SerializeObject(positions));
+            }
 
             uiHandling.sendNotification(player, $"~r~You spawned in a ped ~y~{objName}", false);
         }

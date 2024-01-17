@@ -50,6 +50,11 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
 
         public BusDriverJob()
         {
+            foreach(KeyValuePair<float, Vector3> stop in BusDriverRoutes.customBusStops)
+            {
+                NAPI.Object.CreateObject(NAPI.Util.GetHashKey("prop_busstop_02"), stop.Value, new Vector3(0, 0, stop.Key), 255);
+            }
+
             busDepos.ForEach(busDepo =>
             {
                 List<BusRoute> routes = BusDriverRoutes.busRoutes
@@ -154,7 +159,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
 
                 stopColshape.OnEntityEnterColShape += (col, player) =>
                 {
-                    if (col.Equals(stopColshape) && player.IsInVehicle && player.Vehicle.getFreelanceJobData()?.jobId == (int)FreelanceJobs.BusJob)
+                    if (col.Equals(stopColshape) && player.IsInVehicle && player.VehicleSeat == 0 && player.Vehicle.getFreelanceJobData()?.jobId == (int)FreelanceJobs.BusJob)
                     {
                         FreeLanceJobData jobData = player.getFreelanceJobData();
                         int idx = route.stops.IndexOf(stop);
@@ -338,15 +343,6 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                 });
             }, 1500);
         }
-
-        [Command("avt")]
-        public void avtCmd(Player player, float x, float y, float z)
-        {
-            if(player.IsInVehicle)
-            {
-                player.Vehicle.Position = new Vector3(x, y, z);
-            }
-        } 
         #endregion
     }
 }
