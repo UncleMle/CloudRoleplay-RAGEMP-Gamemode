@@ -302,15 +302,18 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
         {
             int rageId = vehicle.Id;
 
-            if(player.getFreelanceJobData() != null && vehicle.getFreelanceJobData()?.jobId == (int)FreelanceJobs.BusJob)
+            if(vehicle.getFreelanceJobData()?.jobId == (int)FreelanceJobs.BusJob)
             {
-                player.setFreelanceJobData(new FreeLanceJobData
+                if(player.getFreelanceJobData() != null)
                 {
-                    jobFinished = false,
-                    jobId = (int)FreelanceJobs.BusJob,
-                    jobLevel = -1,
-                    jobName = JobName
-                });
+                    player.setFreelanceJobData(new FreeLanceJobData
+                    {
+                        jobFinished = false,
+                        jobId = (int)FreelanceJobs.BusJob,
+                        jobLevel = -1,
+                        jobName = JobName
+                    });
+                }
                 player.TriggerEvent("client:busDriverclearBlips");
             }
 
