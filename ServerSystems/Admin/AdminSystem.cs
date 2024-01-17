@@ -1812,5 +1812,16 @@ namespace CloudRP.ServerSystems.Admin
 
             uiHandling.sendNotification(player, $"~r~You spawned in a ped ~y~{objName}", false);
         }
+
+        [AdminCommand(AdminRanks.Admin_Moderator)]
+        [Command("avt")]
+        public void avtCommand(Player player, float x, float y, float z)
+        {
+            if (player.IsInVehicle)
+            {
+                player.Vehicle.Position = new Vector3(x, y, z);
+                uiHandling.sendNotification(player, "~r~Teleported vehicle to coords.", false);
+            }
+        }
     }
 }
