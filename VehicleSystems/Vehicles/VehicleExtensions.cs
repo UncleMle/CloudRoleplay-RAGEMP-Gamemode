@@ -1,4 +1,5 @@
 ﻿using CloudRP.PlayerSystems.Character;
+using CloudRP.PlayerSystems.Jobs;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.PlayerSystems.PlayerDealerships;
 using CloudRP.ServerSystems.Admin;
@@ -44,7 +45,6 @@ namespace CloudRP.VehicleSystems.Vehicles
 
                 vehicle.Delete();
                 ChatUtils.formatConsolePrint($"Vehicle #{vehicleData.vehicle_id} ({vehicleData.vehicle_name}) was saved to {closestInsuranceToDeath.insuranceName}.");
-
             }
         }
 
@@ -52,7 +52,7 @@ namespace CloudRP.VehicleSystems.Vehicles
         {
             vehicle.setVehicleData(vehicleData);
 
-            if (updateDb)
+            if (updateDb && vehicleData.vehicle_id != -1)
             {
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
@@ -152,6 +152,11 @@ namespace CloudRP.VehicleSystems.Vehicles
         public static DbVehicle getData(this Vehicle vehicle)
         {
             return vehicle.GetData<DbVehicle>(VehicleSystem._vehicleSharedDataIdentifier);
+        }
+
+        public static FreeLanceJobVehicleData getFreelanceJobData(this Vehicle vehicle)
+        {
+            return vehicle.GetData<FreeLanceJobVehicleData>(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier);
         }
 
         public static void sayInfoAboutVehicle(this Vehicle vehicle, Player player)

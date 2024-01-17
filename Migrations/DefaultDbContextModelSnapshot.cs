@@ -393,6 +393,9 @@ namespace CloudRP.Migrations
                     b.Property<double>("character_water")
                         .HasColumnType("double");
 
+                    b.Property<string>("freelance_job_data")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
                     b.Property<int>("injured_timer")
                         .HasColumnType("int");
 

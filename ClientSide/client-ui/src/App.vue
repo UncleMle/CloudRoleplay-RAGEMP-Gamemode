@@ -1,12 +1,14 @@
 <template>
     <div id="app">
         <ChatBox class="absolute" ref="chatsys" />
-        <InventoryHud v-if="uiStates.inventory && uiStates.guiEnabled" />
-        <PlayerPhone class="absolute" v-if="uiStates.guiEnabled" />
+        <div ref="guisystems" v-if="uiStates.guiEnabled">
+            <VehicleSpeedo />
+            <PlayerHud />
+            <InventoryHud v-if="uiStates.inventory" />
+            <PlayerPhone class="absolute" />
+        </div>
         <RefuelMeter class="absolute" v-if="uiStates.refuelUi" />
         <PushNotification class="bg-red-200" ref="notification" />
-        <VehicleSpeedo v-if="uiStates.guiEnabled" />
-        <PlayerHud v-if="uiStates.guiEnabled" />
         <router-view class="absolute" ref="routers">
         </router-view>
     </div>

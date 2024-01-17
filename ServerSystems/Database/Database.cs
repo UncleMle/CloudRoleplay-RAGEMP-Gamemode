@@ -26,7 +26,8 @@ namespace CloudRP.ServerSystems.Database
         meta.xml
         */
 
-        public static readonly string _databaseConnectionString = $"Server={Main._dbHost};Database={Main._dbDatabase};Uid={Main._dbUser};Pwd={Main._dbPassword}";
+        //public static readonly string _databaseConnectionString = $"Server={Main._dbHost};Database={Main._dbDatabase};Uid={Main._dbUser};Pwd={Main._dbPassword}";
+        public static readonly string _databaseConnectionString = $"Server=localhost;Database=cloud_rp;Uid=root;Pwd=rootadmin13";
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

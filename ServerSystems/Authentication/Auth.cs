@@ -11,6 +11,7 @@ using CloudRP.ServerSystems.Admin;
 using CloudRP.ServerSystems.AntiCheat;
 using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
+using CloudRP.PlayerSystems.Jobs;
 
 namespace CloudRP.ServerSystems.Authentication
 {
@@ -341,6 +342,17 @@ namespace CloudRP.ServerSystems.Authentication
                         if (character.injured_timer > 0)
                         {
                             DeathEvent.updateAndSetInjuredState(player, character, character.injured_timer);
+                        }
+
+                        if(character.freelance_job_data != null)
+                        {
+                            FreeLanceJobData data = JsonConvert.DeserializeObject<FreeLanceJobData>(character.freelance_job_data);
+
+                            player.SetCustomData(FreelanceJobSystem._FreelanceJobDataIdentifier, new FreeLanceJobData
+                            {
+                                jobName = data.jobName,
+                                jobStartedUnix = CommandUtils.generateUnix()
+                            });
                         }
 
                         welcomeAndSpawnPlayer(player);

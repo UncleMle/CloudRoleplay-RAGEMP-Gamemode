@@ -457,3 +457,25 @@ interface Bank {
 	blipPos: Vector3,
 	tellers: Vector3[]
 }
+
+interface FreeLanceJobData
+{
+	jobId: number;
+	jobLevel: number;
+	jobName: string;
+	jobStartedUnix: number;
+}    
+
+interface FreeLanceJobVehicleData
+{
+	characterOwnerId: number;
+	jobId: number;
+	jobName: string;
+	destroyOnLeave: boolean;
+}    
+
+interface BusSharedData
+{
+	destination: string
+	nextStop: string
+}

@@ -1,4 +1,5 @@
 ﻿using CloudRP.PlayerSystems.Character;
+using CloudRP.PlayerSystems.Jobs;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.PlayerSystems.PlayerDealerships;
 using CloudRP.ServerSystems.Admin;
@@ -7,14 +8,11 @@ using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.VehicleInsurance;
 using CloudRP.VehicleSystems.VehicleModification;
 using GTANetworkAPI;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Authentication;
 using System.Timers;
 
 namespace CloudRP.VehicleSystems.Vehicles
@@ -130,13 +128,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                 veh.Rotation = spawnRotation;
             }
 
-            NAPI.Task.Run(() =>
-            {
-                if(veh != null && vehicle != null)
-                {
-                    veh.setVehicleData(vehicle, true, true);
-                }
-            }, 1500);
+            veh.setVehicleData(vehicle, true, true);
 
             return veh;
         }
@@ -294,7 +286,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                 {
                     try
                     {
-                        if (vehicle.getData() == null)
+                        if (vehicle.getData() == null && vehicle.getFreelanceJobData() == null)
                         {
                             vehicle.Delete();
                             ChatUtils.formatConsolePrint("Possible vehicle spawn cheat. Vehicle with no data found!");
@@ -399,6 +391,46 @@ namespace CloudRP.VehicleSystems.Vehicles
             return (vehicle, vehData);
         }
 
+        public static Vehicle buildVolatileVehicle(Player player, string vehName, Vector3 pos, float rot, string plate)
+        {
+            DbCharacter playerData = player.getPlayerCharacterData();
+            Vehicle volatileVeh = null;
+            try
+            {
+                if (playerData != null)
+                {
+                    (string vehicleName, int classId) = getVehiclesDisplayNameAndClass(vehName);
+
+                    if(vehicleName != null)
+                    {
+                        volatileVeh = NAPI.Vehicle.CreateVehicle(NAPI.Util.GetHashKey(vehName), pos, rot, 111, 111, plate, 255, false, true, 0);
+                        volatileVeh.Locked = false;
+
+                        volatileVeh.saveVehicleData(new DbVehicle
+                        {
+                            vehicle_id = -1,
+                            CreatedDate = DateTime.Now,
+                            dirt_level = 0,
+                            vehicle_locked = false,
+                            vehicle_name = vehName,
+                            vehicle_display_name = vehicleName,
+                            vehicle_class_id = classId,
+                            engine_status = true,
+                            numberplate = plate,
+                            owner_name = playerData.character_name,
+                            owner_id = playerData.character_id,
+                            vehicle_fuel = 100,
+                        });
+                    }
+                }
+            }
+            catch
+            {
+            }
+
+            return volatileVeh;
+        }
+
         public static Vehicle findVehicleById(int vehicleId)
         {
             List<Vehicle> allVehicles = NAPI.Pools.GetAllVehicles();
@@ -450,6 +482,18 @@ namespace CloudRP.VehicleSystems.Vehicles
             {
                 Vehicle vehicle = findVehicleById(vehicleId);
                 DbVehicle vehicleData = getVehicleDataById(vehicleId);
+
+                if (vehicleData != null && vehicleData.vehicle_id == -1)
+                {
+                    if(vehicle.getFreelanceJobData() != null)
+                    {
+                        FreelanceJobSystem.handleVehicleDestroyed(vehicle);
+                    }
+
+                    vehicle.Delete();
+
+                    returnRes = true;
+                }
 
                 if (vehicle != null && vehicleData != null)
                 {
@@ -528,7 +572,7 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
-                DbVehicle findVehicle = dbContext.vehicles.Where(veh => veh.numberplate == vehiclePlate.ToUpper()).FirstOrDefault();
+                DbVehicle findVehicle = dbContext.vehicles.Where(veh => veh.numberplate.ToUpper() == vehiclePlate.ToUpper()).FirstOrDefault();
 
                 if (findVehicle != null && findVehicle.vehicle_dimension != VehicleDimensions.World)
                 {
@@ -749,14 +793,17 @@ namespace CloudRP.VehicleSystems.Vehicles
         [RemoteEvent("server:handleDoorInteraction")]
         public void handleDoorInteraction(Player player, Vehicle vehicle, int boneTargetId)
         {
-            if (vehicle == null || Vector3.Distance(player.Position, vehicle.Position) > 4) return;
+            if (vehicle == null || Vector3.Distance(player.Position, vehicle.Position) > 12) return;
 
             DbVehicle vehicleData = vehicle.getData();
 
             if (vehicleData == null || vehicle.Locked) return;
 
-            vehicleData.vehicle_doors[boneTargetId] = !vehicleData.vehicle_doors[boneTargetId];
-            vehicle.saveVehicleData(vehicleData);
+            if(boneTargetId >= vehicleData.vehicle_doors.Length && boneTargetId > 0)
+            {
+                vehicleData.vehicle_doors[boneTargetId] = !vehicleData.vehicle_doors[boneTargetId];
+                vehicle.saveVehicleData(vehicleData);
+            }
         }
 
         [RemoteEvent("server:toggleEngine")]
@@ -1064,13 +1111,13 @@ namespace CloudRP.VehicleSystems.Vehicles
             DbVehicle vehicleData = vehicle.getData();
             User userData = player.getPlayerAccountData();
 
-            if (userData == null || vehicleData == null || vehicleData.vehicle_locked && !(userData.admin_status > (int)AdminRanks.Admin_HeadAdmin || userData.adminDuty))
+            if (userData == null || vehicleData == null && vehicle.getFreelanceJobData() == null || vehicleData != null && vehicleData.vehicle_locked && !(userData.admin_status > (int)AdminRanks.Admin_HeadAdmin || userData.adminDuty))
             {
                 player.WarpOutOfVehicle();
                 return;
             }
 
-            if (!vehicleData.engine_status && player.VehicleSeat == 0)
+            if (vehicleData != null && !vehicleData.engine_status && player.VehicleSeat == 0)
             {
                 uiHandling.sendNotification(player, "~w~Use ~y~Y~w~ to start the engine.", false);
             }
@@ -1080,39 +1127,48 @@ namespace CloudRP.VehicleSystems.Vehicles
         [ServerEvent(Event.VehicleDeath)]
         public void onVehicleDeath(Vehicle vehicle)
         {
-            if (vehicle == null) return;
-            try
+            NAPI.Task.Run(() =>
             {
-                DbVehicle vehicleData = vehicle.getData();
-
-                if (vehicleData == null) return;
-
-                if (vehicleData.dealership_id != -1)
+                if (vehicle == null) return;
+                try
                 {
-                    vehicle.Delete();
+                    DbVehicle vehicleData = vehicle.getData();
 
-                    PlayerDealerVehPositions.dealerVehPositions
-                        .Where(dealerPos => dealerPos.spotId == vehicleData.dynamic_dealer_spot_id)
-                        .FirstOrDefault()
-                        .vehInSpot = null;
+                    if (vehicleData == null) return;
 
-                    NAPI.Task.Run(() =>
+                    if (vehicleData.vehicle_id == -1 && vehicle.getFreelanceJobData() != null)
                     {
-                        if (vehicleData != null)
+                        FreelanceJobSystem.handleVehicleDestroyed(vehicle);
+                        return;
+                    }
+
+                    if (vehicleData.dealership_id != -1)
+                    {
+                        vehicle.Delete();
+
+                        PlayerDealerVehPositions.dealerVehPositions
+                            .Where(dealerPos => dealerPos.spotId == vehicleData.dynamic_dealer_spot_id)
+                            .FirstOrDefault()
+                            .vehInSpot = null;
+
+                        NAPI.Task.Run(() =>
                         {
-                            spawnVehicle(vehicleData);
-                        }
-                    }, 1500);
+                            if (vehicleData != null)
+                            {
+                                spawnVehicle(vehicleData);
+                            }
+                        }, 1500);
 
-                    return;
+                        return;
+                    }
+
+                    vehicle.sendVehicleToInsurance();
                 }
-
-                vehicle.sendVehicleToInsurance();
-            }
-            catch
-            {
-            }
-
+                catch
+                {
+                    ChatUtils.formatConsolePrint("An error occured when saving vehicle.");
+                }
+            });
         }
         #endregion
     }
