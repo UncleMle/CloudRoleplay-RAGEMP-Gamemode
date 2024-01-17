@@ -274,6 +274,12 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                         Vector3 stopPos = firstStop.stopPos;
                         player.TriggerEvent("client:setBusDriverBlipCoord", stopPos.X, stopPos.Y, stopPos.Z);
 
+                        if(VehicleSystem.checkVehInSpot(depoData.busStartPosition, 10) != null)
+                        {
+                            uiHandling.sendPushNotifError(player, "There is a vehicle blocking the bus spawn!", 6600);
+                            return;
+                        }
+
                         string spawnBus = depoData.buses[new Random().Next(0, depoData.buses.Count)];
                         Vehicle bus = createBusJobVehicle(player, spawnBus, depoData);
                         bus.SetSharedData(_busVehicleData, new BusSharedData
@@ -296,7 +302,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
         {
             int rageId = vehicle.Id;
 
-            if(vehicle.getFreelanceJobData()?.jobId == (int)FreelanceJobs.BusJob)
+            if(player.getFreelanceJobData() != null && vehicle.getFreelanceJobData()?.jobId == (int)FreelanceJobs.BusJob)
             {
                 player.setFreelanceJobData(new FreeLanceJobData
                 {

@@ -28,14 +28,14 @@ export default class BusDriverJob {
                 mp.game.graphics.drawText(`~y~Destination ${nextStop.destination}`, [0.1, 0.64], {
                     font: 4,
                     color: [255, 255, 255, 255],
-                    scale: [0.65, 0.65],
+                    scale: [0.45, 0.65],
                     outline: false
                 });
                 
-                mp.game.graphics.drawText(`Next Stop ${nextStop.nextStop}`, [0.1, 0.70], {
+                mp.game.graphics.drawText(`Next Stop ${nextStop.nextStop} ${nextStop.nextStop === nextStop.destination ? "~r~[Terminus]" : ""}`, [0.1, 0.70], {
                     font: 4,
                     color: [255, 255, 255, 255],
-                    scale: [0.65, 0.65],
+                    scale: [0.45, 0.45],
                     outline: false
                 });
             }
