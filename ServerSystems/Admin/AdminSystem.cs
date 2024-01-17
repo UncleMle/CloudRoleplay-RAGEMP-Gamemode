@@ -1207,7 +1207,7 @@ namespace CloudRP.ServerSystems.Admin
                 dbContext.SaveChanges();
             }
 
-            findPlayer.setPlayerAccountData(userData);
+            findPlayer.setPlayerAccountData(findPlayerData);
             AdminUtils.staffSay(player, $"Set Player [{findPlayer.Id}]'s admin name to {adminName}.");
             AdminUtils.staffSay(findPlayer, $"Your admin name was set to {adminName} by {userData.admin_name}.");
         }

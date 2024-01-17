@@ -1,5 +1,6 @@
 import { BusSharedData } from "@/@types";
 import { _control_ids, _sharedFreelanceJobData, _sharedFreelanceJobVehicleDataIdentifier } from "@/Constants/Constants";
+import validateKeyPress from "@/PlayerMethods/validateKeyPress";
 import { Browsers } from "@/enums";
 
 export default class BusDriverJob {
@@ -83,7 +84,7 @@ export default class BusDriverJob {
     }
 
     private static handleKeyPress() {
-        if (BusDriverJob.LocalPlayer.getVariable(BusDriverJob._busDepoColShapeData)) {
+        if (validateKeyPress(true, true, true) && BusDriverJob.LocalPlayer.getVariable(BusDriverJob._busDepoColShapeData)) {
             mp.events.callRemote(BusDriverJob.startRemoteEvent);
         }
     }

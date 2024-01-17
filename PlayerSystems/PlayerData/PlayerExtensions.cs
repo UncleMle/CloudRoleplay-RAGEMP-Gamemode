@@ -63,10 +63,6 @@ namespace CloudRP.PlayerSystems.PlayerData
         {
             if (!PlayersData.checkIfCharacterIsLogged(character.character_id))
             {
-                DbCharacter oldData = player.getPlayerCharacterData();
-
-                Console.WriteLine($"{oldData?.money_amount.ToString("C")} || {character?.money_amount.ToString("C")}");
-
                 player.SetCustomData(PlayersData._sharedCharacterDataIdentifier, character);
 
                 SharedDataCharacter sharedData = JsonConvert.DeserializeObject<SharedDataCharacter>(JsonConvert.SerializeObject(character));

@@ -799,11 +799,8 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             if (vehicleData == null || vehicle.Locked) return;
 
-            if(boneTargetId >= vehicleData.vehicle_doors.Length && boneTargetId > 0)
-            {
-                vehicleData.vehicle_doors[boneTargetId] = !vehicleData.vehicle_doors[boneTargetId];
-                vehicle.saveVehicleData(vehicleData);
-            }
+            vehicleData.vehicle_doors[boneTargetId] = !vehicleData.vehicle_doors[boneTargetId];
+            vehicle.saveVehicleData(vehicleData);
         }
 
         [RemoteEvent("server:toggleEngine")]

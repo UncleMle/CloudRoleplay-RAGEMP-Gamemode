@@ -60,7 +60,7 @@ export default class PhoneSystem {
         let pos: Vector3 = new mp.Vector3(0.1500, 0.02, -0.02);
         let rot: Vector3 = new mp.Vector3(71, 96.0, 169);
 
-        entity._mobilePhone.attachTo(entity.handle, 71, pos.x, pos.y, pos.z, rot.x, rot.y, rot.z, true, true, false, false, 0, true);
+        entity._mobilePhone?.attachTo(entity.handle, 71, pos.x, pos.y, pos.z, rot.x, rot.y, rot.z, true, true, false, false, 0, true);
     }
 
     public static async playMobilePhoneAnim(entity: PlayerMp) {
