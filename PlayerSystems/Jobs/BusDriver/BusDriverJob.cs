@@ -53,11 +53,16 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
         {
             busDepos.ForEach(busDepo =>
             {
+                List<BusRoute> routes = BusDriverRoutes.busRoutes
+                .Where(route => route.ownerDepoId == busDepo.depoId)
+                .ToList();
+
                 NAPI.Blip.CreateBlip(513, busDepo.depoStartPosition, 1.0f, 46, busDepo.depoName, 255, 2f, true, 0, 0);
                 MarkersAndLabels.setPlaceMarker(busDepo.depoStartPosition);
                 MarkersAndLabels.setTextLabel(busDepo.depoStartPosition, $"Use ~y~Y~w~ to start the {JobName} job.\n"+busDepo.depoName, 5.0f);
 
                 ColShape depoCol = NAPI.ColShape.CreateSphereColShape(busDepo.depoStartPosition, 2f, 0);
+                ColShape busStartCol = NAPI.ColShape.CreateSphereColShape(busDepo.busStartPosition, 8f, 0);
 
                 depoCol.OnEntityEnterColShape += (col, player) =>
                 {
@@ -77,56 +82,11 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                     }
                 };
 
-                BusRoute route = BusDriverRoutes.busRoutes
-                .Where(route => route.ownerDepoId == busDepo.depoId)
-                .FirstOrDefault();
-
-                if(route != null)
+                if(routes.Count > 0)
                 {
-                    route.stops.ForEach(stop =>
+                    routes.ForEach(route =>
                     {
-                        ColShape stopColshape = NAPI.ColShape.CreateSphereColShape(stop.stopPos, 8f, 0);
-
-                        stopColshape.OnEntityEnterColShape += (col, player) =>
-                        {
-                            if(col.Equals(stopColshape) && player.IsInVehicle && player.Vehicle.getFreelanceJobData()?.jobId == (int)FreelanceJobs.BusJob)
-                            {
-                                FreeLanceJobData jobData = player.getFreelanceJobData();
-                                int idx = route.stops.IndexOf(stop);
-
-                                if(jobData != null && jobData.jobId == (int)FreelanceJobs.BusJob)
-                                {
-                                    jobData.jobLevel = idx;
-                                    player.setFreelanceJobData(jobData);
-
-                                    player.TriggerEvent("client:busFreezeForStop", true);
-
-                                    NAPI.Task.Run(() =>
-                                    {
-                                        if(NAPI.Player.IsPlayerConnected(player) && player.IsInVehicle)
-                                        {
-                                            player.TriggerEvent("client:busFreezeForStop", false);
-
-                                            if (idx + 1 < route.stops.Count)
-                                            {
-                                                Console.WriteLine(idx + 1);
-                                                idx++;
-                                                Stop nextStop = route.stops[idx];
-
-                                                Console.WriteLine(JsonConvert.SerializeObject(nextStop));
-
-                                                player.TriggerEvent("client:setBusDriverBlipCoord", nextStop.stopPos.X, nextStop.stopPos.Y, nextStop.stopPos.Z);
-                                            }
-                                            else
-                                            {
-                                                player.SendChatMessage("Route finished");
-                                                player.TriggerEvent("client:busDriverclearBlips");
-                                            }
-                                        }
-                                    }, busStopCooldown_seconds * 1000);
-                                }
-                            }
-                        };
+                        initRoute(busDepo, route, busStartCol);
                     });
                 }
             });
@@ -158,6 +118,79 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
             return newBus;
         }
 
+        private static void initRoute(BusDepo busDepo, BusRoute route, ColShape originCol)
+        {
+            route.stops.ForEach(stop =>
+            {
+                ColShape stopColshape = NAPI.ColShape.CreateSphereColShape(stop.stopPos, 8f, 0);
+
+                originCol.OnEntityEnterColShape += (col, player) =>
+                {
+                    FreeLanceJobData jobData = player.getFreelanceJobData();
+                    DbCharacter characterData = player.getPlayerCharacterData();
+
+                    if (characterData != null && col.Equals(originCol) && jobData != null && player.IsInVehicle && jobData.jobId == (int)FreelanceJobs.BusJob && jobData.jobFinished)
+                    {
+                        FreeLanceJobVehicleData vehicleData = player.Vehicle.getFreelanceJobData();
+
+                        if (vehicleData != null)
+                        {
+                            jobData.jobFinished = false;
+                            jobData.jobLevel = -1;
+                            player.setFreelanceJobData(jobData);
+
+                            characterData.money_amount += route.routePay;
+                            player.setPlayerCharacterData(characterData, false, true);
+
+                            player.SendChatMessage(ChatUtils.freelanceJobs + $"You have been payed {ChatUtils.moneyGreen}${route.routePay}{ChatUtils.White} for completeting the {route.routeName} route.");
+                            player.Vehicle.Delete();
+                        }
+                    }
+                };
+
+                stopColshape.OnEntityEnterColShape += (col, player) =>
+                {
+                    if (col.Equals(stopColshape) && player.IsInVehicle && player.Vehicle.getFreelanceJobData()?.jobId == (int)FreelanceJobs.BusJob)
+                    {
+                        FreeLanceJobData jobData = player.getFreelanceJobData();
+                        int idx = route.stops.IndexOf(stop);
+
+                        if (jobData != null && jobData.jobId == (int)FreelanceJobs.BusJob && ((idx - jobData.jobLevel) == 1 || idx == 0 && jobData.jobLevel == -1))
+                        {
+                            jobData.jobLevel = idx;
+                            player.setFreelanceJobData(jobData);
+
+                            player.TriggerEvent("client:busFreezeForStop", true);
+
+                            NAPI.Task.Run(() =>
+                            {
+                                if (NAPI.Player.IsPlayerConnected(player) && player.IsInVehicle)
+                                {
+                                    player.TriggerEvent("client:busFreezeForStop", false);
+
+                                    if (idx + 1 < route.stops.Count)
+                                    {
+                                        idx++;
+                                        Stop nextStop = route.stops[idx];
+
+                                        player.TriggerEvent("client:setBusDriverBlipCoord", nextStop.stopPos.X, nextStop.stopPos.Y, nextStop.stopPos.Z);
+                                    }
+                                    else
+                                    {
+                                        Vector3 goBackPos = busDepo.busStartPosition;
+                                        player.TriggerEvent("client:setBusDriverBlipCoord", goBackPos.X, goBackPos.Y, goBackPos.Z, true);
+                                        jobData.jobFinished = true;
+
+                                        player.setFreelanceJobData(jobData);
+                                        player.SendChatMessage(ChatUtils.freelanceJobs + "You have finished the route. Head back to the bus depot to recieve your paycheck.");
+                                    }
+                                }
+                            }, busStopCooldown_seconds * 1000);
+                        }
+                    }
+                };
+            });
+        }
         #endregion
 
         #region Remote Events
@@ -174,7 +207,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                     {
                         jobName = JobName,
                         jobId = (int)FreelanceJobs.BusJob,
-                        jobLevel = 0,
+                        jobLevel = -1,
                         jobStartedUnix = CommandUtils.generateUnix()
                     });
 
@@ -223,7 +256,6 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                     player.SendChatMessage(ChatUtils.freelanceJobs + "Your bus route has been started. Please follow the route once finished you will be paid. Don't exit your vehicle. You will be rewarded for good driving.");
                 }
             }
-
         }
         #endregion
 
@@ -244,6 +276,15 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                 }
             }
         }
+
+        [Command("avt")]
+        public void avtCmd(Player player, float x, float y, float z)
+        {
+            if(player.IsInVehicle)
+            {
+                player.Vehicle.Position = new Vector3(x, y, z);
+            }
+        } 
         #endregion
     }
 }

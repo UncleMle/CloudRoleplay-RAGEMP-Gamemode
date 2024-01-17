@@ -21,13 +21,12 @@ export default class BusDriverJob {
 
     private static clearBlips() {
         if(BusDriverJob.BusStopBlip) {
-            mp.gui.chat.push("Blip destroyed");
             BusDriverJob.BusStopBlip.destroy();
             BusDriverJob.BusStopBlip = undefined;
         }
     }
 
-    private static handleBlipSet(pos_x: number, pos_y: number, pos_z: number) {
+    private static handleBlipSet(pos_x: number, pos_y: number, pos_z: number, isDepot: boolean = false) {
         let targetVector: Vector3 = new mp.Vector3(pos_x, pos_y, pos_z);
 
         if (targetVector) {
@@ -37,7 +36,7 @@ export default class BusDriverJob {
                 {
                     name: "Bus Stop",
                     scale: 1,
-                    color: 3,
+                    color: isDepot ? 69 : 3,
                     alpha: 255,
                     drawDistance: 10,
                     shortRange: false,
@@ -59,7 +58,6 @@ export default class BusDriverJob {
         let freelanceJobData: FreeLanceJobData = BusDriverJob.LocalPlayer.getVariable(_sharedFreelanceJobData);
 
         if (freelanceJobData && freelanceJobData.jobId === FreelanceJobs.BusJob) {
-            mp.gui.chat.push(JSON.stringify(freelanceJobData));
         }
     }
 

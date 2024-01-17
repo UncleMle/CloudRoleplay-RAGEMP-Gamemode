@@ -105,6 +105,7 @@ namespace CloudRP.PlayerSystems.Jobs
     public class FreeLanceJobData
     {
         public int jobId {  get; set; }
+        public bool jobFinished { get; set; }
         public int jobLevel { get; set; }
         public string jobName { get; set; }
         public long jobStartedUnix { get; set; }

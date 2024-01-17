@@ -26,21 +26,17 @@ namespace CloudRP.PlayerSystems.Jobs
 
                 player.setPlayerCharacterData(characterData, false, true);
 
-                player.SetCustomData(FreelanceJobSystem._FreelanceJobDataIdentifier, new FreeLanceJobData
+                FreeLanceJobData settedData = new FreeLanceJobData
                 {
                     jobName = data.jobName,
                     jobId = data.jobId,
                     jobLevel = data.jobLevel,
+                    jobFinished = data.jobFinished,
                     jobStartedUnix = CommandUtils.generateUnix()
-                });
-                
-                player.SetSharedData(FreelanceJobSystem._FreelanceJobDataIdentifier, new FreeLanceJobData
-                {
-                    jobName = data.jobName,
-                    jobId = data.jobId,
-                    jobLevel = data.jobLevel,
-                    jobStartedUnix = CommandUtils.generateUnix()
-                });
+                };
+
+                player.SetCustomData(FreelanceJobSystem._FreelanceJobDataIdentifier, settedData);
+                player.SetCustomSharedData(FreelanceJobSystem._FreelanceJobDataIdentifier, settedData);
             }
         }
 
