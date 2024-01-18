@@ -38,7 +38,7 @@
                                             </div>
                                         </div>
 
-                                        <button @click="startBusRoute(item.character_name)"
+                                        <button @click="startBusRoute(item.routeId)"
                                             class="border p-2 w-full mt-10 rounded-lg border-gray-500 duration-300 hover:text-green-400 hover:border-green-400">
                                             <i class="fa-solid fa-play"></i>
                                         </button>
@@ -68,8 +68,8 @@ export default {
         }),
     },
     methods: {
-        startBusRoute(idx) {
-            sendToServer("server:startBusJobRoute", idx);
+        startBusRoute(routeId) {
+            sendToServer("server:startBusJobRoute", routeId);
         }
     }
 }

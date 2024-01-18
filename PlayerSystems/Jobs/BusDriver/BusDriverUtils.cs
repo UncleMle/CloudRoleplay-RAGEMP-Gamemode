@@ -17,6 +17,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
 
     public class BusRoute
     {
+        public int routeId { get; set; }
         public int ownerDepoId { get; set; }
         public string routeName { get; set; }
         public List<Stop> stops { get; set; } = new List<Stop>();

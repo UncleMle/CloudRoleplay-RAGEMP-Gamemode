@@ -15,7 +15,7 @@ using System.Reflection;
 namespace CloudRP.GeneralSystems.GeneralCommands
 {
 
-    internal class Commands : Script
+    public class Commands : Script
     {
         public static IEnumerable<CommandAttribute> loadedCommands = GetCommands();
         public static int _logoutTimeout_seconds = 15;
@@ -34,6 +34,14 @@ namespace CloudRP.GeneralSystems.GeneralCommands
             return assemblyMethods
                 .Where(m => Attribute.IsDefined(m, typeof(CommandAttribute), false))
                 .SelectMany(m => m.GetCustomAttributes<CommandAttribute>());
+        }
+
+        public Commands()
+        {
+            foreach (CommandAttribute i in loadedCommands)
+            {
+                Console.WriteLine(i.CommandHelpText + " group" + i.Group);
+            }
         }
 
         #region Commands
@@ -422,12 +430,10 @@ namespace CloudRP.GeneralSystems.GeneralCommands
                     CommandUtils.errorSay(player, "You do not have a nickname set for this player!");
                     return;
                 }
-                else
-                {
-                    dbContext.Remove(findNick);
-                    dbContext.SaveChanges();
-                    CommandUtils.successSay(player, $"Removed nickname of {findNick.nickname} for Player [{findPlayer.Id}]");
-                }
+
+                dbContext.Remove(findNick);
+                dbContext.SaveChanges();
+                CommandUtils.successSay(player, $"Removed nickname of {findNick.nickname} for Player [{findPlayer.Id}]");
             }
         }
 

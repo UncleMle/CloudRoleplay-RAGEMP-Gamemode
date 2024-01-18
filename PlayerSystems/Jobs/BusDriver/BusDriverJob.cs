@@ -58,6 +58,13 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                 NAPI.Object.CreateObject(NAPI.Util.GetHashKey("prop_busstop_02"), stop.Value, new Vector3(0, 0, stop.Key), 255);
             }
 
+            BusDriverRoutes.busRoutes.ForEach(route =>
+            {
+                int idx = BusDriverRoutes.busRoutes.IndexOf(route);
+
+                route.routeId = idx;
+            });
+
             busDepos.ForEach(busDepo =>
             {
                 List<BusRoute> routes = BusDriverRoutes.busRoutes
@@ -268,7 +275,11 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                         .Where(route => route.ownerDepoId == depoData.depoId)
                         .ToList();
 
-                    if (availableRoutes.Count > 0 && availableRoutes[routeId] != null)
+                    BusRoute route = availableRoutes
+                        .Where(route => route.routeId == routeId)
+                        .FirstOrDefault();
+
+                    if (availableRoutes.Count > 0 && route != null && BusDriverRoutes.busRoutes.Contains(route))
                     {
                         player.setFreelanceJobData(new FreeLanceJobData
                         {
@@ -278,7 +289,6 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                             jobStartedUnix = CommandUtils.generateUnix()
                         });
 
-                        BusRoute route = availableRoutes[routeId];
                         Stop firstStop = route.stops[0];
 
                         Vector3 stopPos = firstStop.stopPos;

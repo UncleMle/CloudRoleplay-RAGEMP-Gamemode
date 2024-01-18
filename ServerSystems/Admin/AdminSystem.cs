@@ -118,7 +118,7 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_SeniorSupport, checkForAduty = false)]
-        [Command("ahelp", "~r~/ahelp")]
+        [Command("ahelp", "~r~/ahelp", Group = "admin")]
         public void adminHelpCommand(Player player)
         {
             for (int i = 0; i < NAPI.Resource.GetResourceCommands("CloudRP").Length; i++)
@@ -176,7 +176,7 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_SeniorModerator)]
-        [Command("ann", "~r~/ann [message]", Alias = "announce", GreedyArg = true)]
+        [Command("ann", "~r~/ann [message]", Alias = "announce", GreedyArg = true, Group = "admin")]
         public void announceCommand(Player player, string message)
         {
             User userData = player.getPlayerAccountData();
@@ -189,7 +189,7 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_SeniorModerator)]
-        [Command("aesp", "~r~/asep")]
+        [Command("aesp", "~r~/asep", Group = "admin")]
         public void adminEspToggle(Player player)
         {
             User userData = player.getPlayerAccountData();
@@ -226,7 +226,7 @@ namespace CloudRP.ServerSystems.Admin
 
         [RemoteEvent("server:viewReports")]
         [AdminCommand(AdminRanks.Admin_Support, checkForAduty = false)]
-        [Command("reports", "~r~/reports")]
+        [Command("reports", "~r~/reports", Group = "admin")]
         public void viewReports(Player player)
         {
             if (activeReports.Count == 0)
@@ -373,7 +373,7 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]
-        [Command("goback", "~r~/goback")]
+        [Command("goback", "~r~/goback", Group = "admin")]
         public static void goAdminBack(Player player)
         {
             User userData = player.getPlayerAccountData();
@@ -395,7 +395,7 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator, checkForAduty = false)]
-        [Command("aduty", "~r~/aduty", Alias = "ad")]
+        [Command("aduty", "~r~/aduty", Alias = "ad", Group = "admin")]
         public void onAduty(Player player)
         {
             User userData = player.getPlayerAccountData();
@@ -411,7 +411,7 @@ namespace CloudRP.ServerSystems.Admin
 
 
         [AdminCommand(AdminRanks.Admin_Support, checkForAduty = false)]
-        [Command("staff", "~r~/staff")]
+        [Command("staff", "~r~/staff", Group = "admin")]
         public void staff(Player player)
         {
             Dictionary<Player, User> onlineStaff = AdminUtils.gatherStaff();
@@ -435,7 +435,7 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_Support, checkForAduty = false)]
-        [Command("a", "~r~/adminchat [message]", GreedyArg = true, Alias = "adminchat")]
+        [Command("a", "~r~/adminchat [message]", GreedyArg = true, Alias = "adminchat", Group = "admin")]
         public void adminChat(Player player, string message)
         {
             User userData = player.getPlayerAccountData();
@@ -451,7 +451,7 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]
-        [Command("tpto", "~r~/tpto [nameOrId]", Alias = "goto")]
+        [Command("tpto", "~r~/tpto [nameOrId]", Alias = "goto", Group = "admin")]
         public void teleportToPlayer(Player player, string nameOrId)
         {
             User userData = player.getPlayerAccountData();
@@ -485,7 +485,7 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]
-        [Command("kick", "~r~/kick [nameOrId] [silent]")]
+        [Command("kick", "~r~/kick [nameOrId] [silent]", Group = "admin")]
         public void kickPlayer(Player player, string nameOrId, bool isSilent = false)
         {
             User userData = player.getPlayerAccountData();
@@ -519,7 +519,7 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]
-        [Command("revive", "~r~/revive [nameOrId]")]
+        [Command("revive", "~r~/revive [nameOrId]", Group = "admin")]
         public void reviveCommand(Player player, string nameOrId)
         {
             User userData = player.getPlayerAccountData();
@@ -554,7 +554,7 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]
-        [Command("bring", "~r~/bring [nameOrId]")]
+        [Command("bring", "~r~/bring [nameOrId]", Group = "admin")]
         public void bringPlayer(Player player, string nameOrId)
         {
             User userData = player.getPlayerAccountData();
@@ -725,28 +725,29 @@ namespace CloudRP.ServerSystems.Admin
             AdminUtils.staffSay(player, $"You have sent all {count} vehicles to insurance.");
         }
 
-        [AdminCommand(AdminRanks.Admin_Moderator)]
-        [Command("fly", "~r~/fly")]
         public static void fly(Player player, bool isInSwitchNative, bool hasPhoneOut, bool isPauseMenuActive, bool isTyping, bool isInVehicle, bool isInjured)
         {
             User userData = player.getPlayerAccountData();
 
-            userData.isFlying = !userData.isFlying;
-
-            ChatUtils.formatConsolePrint($"{userData.admin_name} {(userData.isFlying ? "enabled" : "disabled")} fly.");
-
-            if (userData.isFlying)
+            if(userData.adminDuty && player.getAdmin() > (int)AdminRanks.Admin_SeniorSupport || player.getAdmin() == (int)AdminRanks.Admin_Developer)
             {
-                player.TriggerEvent("admin:startFly");
-            }
-            else
-            {
-                player.TriggerEvent("admin:endFly");
-            }
+                userData.isFlying = !userData.isFlying;
 
-            uiHandling.sendNotification(player, userData.isFlying ? "~g~Enabled fly" : "~r~Disabled fly", false);
+                ChatUtils.formatConsolePrint($"{userData.admin_name} {(userData.isFlying ? "enabled" : "disabled")} fly.");
 
-            player.setPlayerAccountData(userData);
+                if (userData.isFlying)
+                {
+                    player.TriggerEvent("admin:startFly");
+                }
+                else
+                {
+                    player.TriggerEvent("admin:endFly");
+                }
+
+                uiHandling.sendNotification(player, userData.isFlying ? "~g~Enabled fly" : "~r~Disabled fly", false);
+
+                player.setPlayerAccountData(userData);
+            }
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]

@@ -9,8 +9,8 @@ export default class KeyPressActions {
     private static cooldown: boolean;
 
     constructor() {
-        mp.keys.bind(_control_ids.Y, false, KeyPressActions.handleYPressed);
-        mp.keys.bind(_control_ids.F4, false, KeyPressActions.handleF4Pressed);
+        mp.keys.bind(_control_ids.Y, false, () => KeyPressActions.handleKeyPressed("Y"));
+        mp.keys.bind(_control_ids.F4, false, () => KeyPressActions.handleKeyPressed("F4"));
     }
 
     private static getArgs(): boolean[] {
@@ -55,17 +55,10 @@ export default class KeyPressActions {
         }, KeyPressActions.cooldown_seconds * 1000);
     }
 
-    private static handleYPressed() {
+    private static handleKeyPressed(key: string) {
         if(!KeyPressActions.cooldown) {
             KeyPressActions.cooldownStart();
-            mp.events.callRemote("server:handleKeyPress:Y", ...KeyPressActions.getArgs());
-        }
-    }
-    
-    private static handleF4Pressed() {
-        if(!KeyPressActions.cooldown) {
-            KeyPressActions.cooldownStart();
-            mp.events.callRemote("server:handleKeyPress:F4", ...KeyPressActions.getArgs());
+            mp.events.callRemote("server:handleKeyPress:" + key, ...KeyPressActions.getArgs());
         }
     }
 }
