@@ -13,6 +13,8 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
 
         public TruckerJob()
         {
+            NAPI.Blip.CreateBlip(477, truckerJobStart, 1f, 41, "Trucker Job", 255, 1f, true, 0, 0);
+
             KeyPressEvents.keyPress_Y += (Player player, bool isInSwitchNative, bool hasPhoneOut, bool isPauseMenuActive, bool isTyping, bool isInVehicle, bool isInjured) =>
             {
                 if(!isInSwitchNative && !hasPhoneOut && !isTyping && !isInVehicle && !isInjured)
