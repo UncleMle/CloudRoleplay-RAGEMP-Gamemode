@@ -171,12 +171,14 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
 
                             player.TriggerEvent("client:busFreezeForStop", true);
                             uiHandling.sendNotification(player, "Loading passengers...", false, true, "Stops at bus stop..");
+                            player.Vehicle.openAllDoors();
 
                             NAPI.Task.Run(() =>
                             {
                                 if (NAPI.Player.IsPlayerConnected(player) && player.IsInVehicle)
                                 {
                                     player.TriggerEvent("client:busFreezeForStop", false);
+                                    player.Vehicle.closeAllDoors();
                                     uiHandling.sendNotification(player, "Finished loading passengers.", false);
 
                                     if (idx + 1 < route.stops.Count)

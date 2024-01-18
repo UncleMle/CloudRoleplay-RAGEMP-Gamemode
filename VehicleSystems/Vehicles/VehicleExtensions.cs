@@ -121,6 +121,21 @@ namespace CloudRP.VehicleSystems.Vehicles
                 vehicle.saveVehicleData(vehicleData);
             }
         }
+        
+        public static void openAllDoors(this Vehicle vehicle)
+        {
+            DbVehicle vehicleData = vehicle.getData();
+
+            if (vehicleData != null)
+            {
+                for (int i = 0; i < vehicleData.vehicle_doors.Length; i++)
+                {
+                    vehicleData.vehicle_doors[i] = true;
+                }
+
+                vehicle.saveVehicleData(vehicleData);
+            }
+        }
 
         public static void closeAllWindows(this Vehicle vehicle)
         {

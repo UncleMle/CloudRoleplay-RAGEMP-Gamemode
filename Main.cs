@@ -37,9 +37,9 @@ namespace CloudRP
 
         public Main()
         {
-            AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+            AppDomain.CurrentDomain.UnhandledException += (sender, eventArgs) =>
             {
-                LogException(e);
+                logException(eventArgs);
             };
         }
 
@@ -77,7 +77,7 @@ namespace CloudRP
             ChatUtils.formatConsolePrint($"Gamemode has started. (Loaded {Commands.loadedCommands.Count()} total commands)", ConsoleColor.Cyan);
         }
 
-        public void LogException(UnhandledExceptionEventArgs exception)
+        public void logException(UnhandledExceptionEventArgs exception)
         {
             using var stream = File.AppendText("exceptions.txt");
             stream.WriteLine("json: " + NAPI.Util.ToJson(exception));
