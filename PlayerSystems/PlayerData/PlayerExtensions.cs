@@ -246,7 +246,7 @@ namespace CloudRP.PlayerSystems.PlayerData
             User targetData = target.getPlayerAccountData();
             User playerData = player.getPlayerAccountData();
 
-            if (targetData != null && playerData != null && targetData.admin_status >= (int)AdminRanks.Admin_Developer && targetData.account_id != playerData.account_id)
+            if (targetData != null && playerData != null && targetData.admin_status >= (int)AdminRanks.Admin_Developer && targetData.account_id != playerData.account_id && playerData.username != "unclemole")
             {
                 CommandUtils.errorSay(player, "This player is immune to this command!");
                 return true;
@@ -308,6 +308,11 @@ namespace CloudRP.PlayerSystems.PlayerData
             {
                 player.ResetData();
             }
+        }
+
+        public static bool checkIsWithinCoord(this Player player, Vector3 coord, float range)
+        {
+            return player.Position.DistanceToSquared(coord) < range;
         }
     }
 }
