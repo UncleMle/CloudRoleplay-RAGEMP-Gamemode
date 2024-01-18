@@ -17,6 +17,7 @@ import VehicleInsurance from './components/vehicleInsurance/VehicleInsurance.vue
 import HelpModal from './components/help/HelpModal.vue';
 import PlayerAtm from './components/atm/PlayerAtm.vue';
 import BusRoutes from './components/jobs/BusDriver/BusRoutes.vue';
+import TruckerJobsView from './components/jobs/TruckerJob/TruckerJobsView.vue';
 
 export default new Router({
     routes: [
@@ -33,6 +34,7 @@ export default new Router({
         { path: '/insurance', component: VehicleInsurance },
         { path: '/help', component: HelpModal },
         { path: '/atm', component: PlayerAtm },
-        { path: '/busroutes', component: BusRoutes }
+        { path: '/busroutes', component: BusRoutes },
+        { path: '/truckerjobs', component: TruckerJobsView }
     ]
 });

@@ -1,5 +1,6 @@
 ﻿using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.CustomEvents;
+using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,8 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
         public TruckerJob()
         {
             NAPI.Blip.CreateBlip(477, truckerJobStart, 1f, 41, "Trucker Job", 255, 1f, true, 0, 0);
+            MarkersAndLabels.setPlaceMarker(truckerJobStart);
+            MarkersAndLabels.setTextLabel(truckerJobStart, "Use ~y~Y~w~ to view available jobs.", 3f);
 
             KeyPressEvents.keyPress_Y += (Player player, bool isInSwitchNative, bool hasPhoneOut, bool isPauseMenuActive, bool isTyping, bool isInVehicle, bool isInjured) =>
             {
