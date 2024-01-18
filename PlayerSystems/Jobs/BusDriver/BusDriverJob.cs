@@ -1,5 +1,6 @@
 ﻿using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
@@ -50,6 +51,11 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
 
         public BusDriverJob()
         {
+            KeyPressEvents.keyPress_Y += (Player player) =>
+            {
+                Console.WriteLine("Key Press Y Player" + player.Id);
+            };
+
             foreach(KeyValuePair<float, Vector3> stop in BusDriverRoutes.customBusStops)
             {
                 NAPI.Object.CreateObject(NAPI.Util.GetHashKey("prop_busstop_02"), stop.Value, new Vector3(0, 0, stop.Key), 255);
@@ -175,7 +181,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
 
                             NAPI.Task.Run(() =>
                             {
-                                if (NAPI.Player.IsPlayerConnected(player) && player.IsInVehicle)
+                                if (NAPI.Player.IsPlayerConnected(player) && player.IsInVehicle && player.Vehicle.getFreelanceJobData()?.characterOwnerId == player.getPlayerCharacterData()?.character_id)
                                 {
                                     player.TriggerEvent("client:busFreezeForStop", false);
                                     player.Vehicle.closeAllDoors();

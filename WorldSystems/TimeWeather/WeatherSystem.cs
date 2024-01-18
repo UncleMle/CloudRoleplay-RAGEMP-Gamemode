@@ -104,7 +104,7 @@ namespace CloudRP.World.TimeWeather
         [ServerEvent(Event.PlayerConnected)]
         public void onPlayerConnected(Player player)
         {
-            resyncWeather();
+            player.TriggerEvent("client:weatherSet", weatherType.ToString());
         }
 
         [Command("wsync", "~r~/wsync")]
@@ -118,7 +118,6 @@ namespace CloudRP.World.TimeWeather
                 AdminUtils.staffSay(player, $"You turned weather sync {(weatherSyncOn ? "on" : "off")}.");
             }
             else AdminUtils.sendNoAuth(player);
-
         }
 
         [Command("setw", "~r~/setw [weather]")]

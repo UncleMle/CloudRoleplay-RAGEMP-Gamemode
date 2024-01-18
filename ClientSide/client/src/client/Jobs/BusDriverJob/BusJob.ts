@@ -95,6 +95,8 @@ export default class BusDriverJob {
     }
 
     private static handleKeyPress() {
+        mp.events.callRemote("server:handleKeyPress:Y");
+
         if (validateKeyPress(true, true, true) && BusDriverJob.LocalPlayer.getVariable(BusDriverJob._busDepoColShapeData)) {
             mp.events.callRemote(BusDriverJob.startRemoteEvent);
         }

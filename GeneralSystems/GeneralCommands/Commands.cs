@@ -431,11 +431,6 @@ namespace CloudRP.GeneralSystems.GeneralCommands
             }
         }
 
-        [Command("disableautologin", "~y~Use:~w~ /disableautologin")]
-        public void disableAutoLogin(Player player)
-        {
-        }
-
         [Command("dice", "~y~Use:~w~ /dice [amount]")]
         public void diceCommand(Player player, int amount = 6)
         {

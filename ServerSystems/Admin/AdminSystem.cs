@@ -1197,17 +1197,7 @@ namespace CloudRP.ServerSystems.Admin
 
             findPlayerData.admin_name = adminName;
 
-            using (DefaultDbContext dbContext = new DefaultDbContext())
-            {
-                Account findAccount = dbContext.accounts.Find(findPlayerData.account_id);
-
-                findAccount.admin_name = adminName;
-
-                dbContext.Update(findAccount);
-                dbContext.SaveChanges();
-            }
-
-            findPlayer.setPlayerAccountData(findPlayerData);
+            findPlayer.setPlayerAccountData(findPlayerData, true, true);
             AdminUtils.staffSay(player, $"Set Player [{findPlayer.Id}]'s admin name to {adminName}.");
             AdminUtils.staffSay(findPlayer, $"Your admin name was set to {adminName} by {userData.admin_name}.");
         }
@@ -1814,7 +1804,7 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]
-        [Command("avt")]
+        [Command("avt", "~r~/avt [x] [y] [z]")]
         public void avtCommand(Player player, float x, float y, float z)
         {
             if (player.IsInVehicle)
