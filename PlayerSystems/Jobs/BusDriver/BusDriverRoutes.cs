@@ -132,7 +132,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                     new Stop
                     {
                         stopName = "Strawbery Avenue - Grove Street",
-                        stopPos = new Vector3(-107.3, 1687.9, 29.3)
+                        stopPos = new Vector3(-107.3, -1687.9, 29.3)
                     },
                     new Stop
                     {
@@ -187,17 +187,5 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                 61.776722f, new Vector3(-1004.15344, -2456.655, 12.771277)
             }
         };
-
-        public BusDriverRoutes()
-        {
-            busRoutes.ForEach(route =>
-            {
-                int idx = busRoutes.IndexOf(route);
-
-                route.routeId = idx;
-
-                Console.WriteLine(idx);
-            });
-        }
     }
 }

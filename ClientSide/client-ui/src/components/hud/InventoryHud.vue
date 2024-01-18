@@ -15,18 +15,20 @@
 
                                 <div class="grid grid-cols-6 w-full">
                                     <div v-for="i in 24" :key="i" class="border h-32 w-full">
-                                        <div :id="'invenItem'+i" v-if="playerData.inventory_items[i - 1]" class="h-full w-full relative">
+                                        <div :id="'invenItem' + i" v-if="playerData.inventory_items[i - 1]"
+                                            class="h-full w-full relative">
 
-                                            <img :src="getItemImg(playerData.inventory_items[i - 1].name)" class="scale-[55%] absolute bottom-2" />
+                                            <img :src="getItemImg(playerData.inventory_items[i - 1].name)"
+                                                class="scale-[55%] absolute bottom-2" />
 
                                             <div class="absolute bottom-0 bg-black/70 w-full">
-                                                <p class="text-center max-h-7 max-w-xs overflow-hidden text-ellipsis whitespace-nowrap font-medium text-gray-300">
+                                                <p
+                                                    class="text-center max-h-7 max-w-xs overflow-hidden text-ellipsis whitespace-nowrap font-medium text-gray-300">
                                                     {{ playerData.inventory_items[i - 1].displayName }}
                                                 </p>
                                             </div>
                                         </div>
-                                        <div v-else :id="'invenContainer'+i" class="bg-red-300 h-full">
-                                            None
+                                        <div v-else :id="'invenContainer' + i" class="h-full">
                                         </div>
                                     </div>
                                 </div>
@@ -86,7 +88,7 @@ export default {
     },
     mounted() {
 
-        for(let i = 0; i < 24; i++) {
+        for (let i = 0; i < 24; i++) {
             dragular([document.getElementById(`invenItem${i}`), document.getElementById(`invenContainer${i}`)]);
         }
     }

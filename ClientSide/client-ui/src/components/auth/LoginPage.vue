@@ -440,6 +440,9 @@ export default {
         baseStyle() {
             let baseStyle = "mt-14";
 
+            if (this.uiStates.authenticationState !== "charSelect") {
+                baseStyle = "mt-52";
+            }
 
             return baseStyle;
         }
