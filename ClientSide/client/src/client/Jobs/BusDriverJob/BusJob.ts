@@ -1,13 +1,11 @@
 import { BusSharedData } from "@/@types";
 import { _control_ids, _sharedFreelanceJobData, _sharedFreelanceJobVehicleDataIdentifier } from "@/Constants/Constants";
-import validateKeyPress from "@/PlayerMethods/validateKeyPress";
 import { Browsers } from "@/enums";
 
 export default class BusDriverJob {
     private static LocalPlayer: PlayerMp = mp.players.local;
     private static BusStopBlip: BlipMp | undefined;
     private static BusStopMarker: MarkerMp | undefined;
-    private static readonly _busDepoColShapeData: string = "playerEnteredBusDepoColshape";
     public static readonly startRemoteEvent: string = "server:playerAttemptBusJobStart";
     private static readonly _busVehicleData: string = "busDriverJobVehicleData";
 
@@ -18,8 +16,6 @@ export default class BusDriverJob {
             "client:busFreezeForStop": BusDriverJob.freezeVehicle,
             "render": BusDriverJob.handleRender
         });
-
-        mp.keys.bind(_control_ids.Y, false, BusDriverJob.handleKeyPress);
     }
 
     private static handleRender() {
@@ -91,14 +87,6 @@ export default class BusDriverJob {
     private static freezeVehicle(toggle: boolean) {
         if (BusDriverJob.LocalPlayer.vehicle) {
             BusDriverJob.LocalPlayer.vehicle.freezePosition(toggle);
-        }
-    }
-
-    private static handleKeyPress() {
-        mp.events.callRemote("server:handleKeyPress:Y");
-
-        if (validateKeyPress(true, true, true) && BusDriverJob.LocalPlayer.getVariable(BusDriverJob._busDepoColShapeData)) {
-            mp.events.callRemote(BusDriverJob.startRemoteEvent);
         }
     }
 }

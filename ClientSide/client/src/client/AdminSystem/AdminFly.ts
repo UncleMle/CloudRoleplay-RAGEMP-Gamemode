@@ -33,19 +33,6 @@ export default class AdminFly {
 		mp.events.add("render", AdminFly.handleFlyOnRender);
 		mp.events.add("admin:startFly", AdminFly.handleFlyStartup);
 		mp.events.add("admin:endFly", AdminFly.handleFlyEnd);
-
-		mp.keys.bind(_control_ids.F4, false, AdminFly.handleFlyClick);
-	}
-
-	public static handleFlyClick() {
-		if(!validateKeyPress()) return;
-
-		let userData: UserData | undefined = getUserData();
-		if(!userData) return;
-
-		if(userData?.adminDuty || userData.admin_status > AdminRanks.Admin_HeadAdmin) {
-			mp.events.callRemote(AdminFly.flyEvent);
-		}
 	}
 
 	public static handleFlyStartup() {

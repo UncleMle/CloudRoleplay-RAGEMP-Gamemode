@@ -6,6 +6,7 @@ using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.PlayerSystems.PlayerDealerships;
 using CloudRP.ServerSystems.AntiCheat;
 using CloudRP.ServerSystems.Authentication;
+using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.DiscordSystem;
 using CloudRP.ServerSystems.Extensions;
@@ -24,6 +25,12 @@ namespace CloudRP.ServerSystems.Admin
 {
     internal class AdminSystem : Script
     {
+        public static List<Report> activeReports = new List<Report>();
+        public static Dictionary<int, Vector3> adminAdutyPositions = new Dictionary<int, Vector3>();
+        public static int _maxReports = 2;
+        public static int _maxAdminMarkers = 20;
+        public static string defaultAdminPed = "ig_abigail";
+
         public class AdminCommand : CommandConditionAttribute
         {
             int _adminRank = 9;
@@ -63,11 +70,10 @@ namespace CloudRP.ServerSystems.Admin
             }
         }
 
-        public static List<Report> activeReports = new List<Report>();
-        public static Dictionary<int, Vector3> adminAdutyPositions = new Dictionary<int, Vector3>();
-        public static int _maxReports = 2;
-        public static int _maxAdminMarkers = 20;
-        public static string defaultAdminPed = "ig_abigail";
+        public AdminSystem()
+        {
+            KeyPressEvents.keyPress_F4 += fly;
+        }
 
         [ServerEvent(Event.PlayerDisconnected)]
         public void OnPlayerDisconnect(Player player, DisconnectionType type, string reason)
@@ -719,10 +725,9 @@ namespace CloudRP.ServerSystems.Admin
             AdminUtils.staffSay(player, $"You have sent all {count} vehicles to insurance.");
         }
 
-        [RemoteEvent("admin:fly")]
         [AdminCommand(AdminRanks.Admin_Moderator)]
         [Command("fly", "~r~/fly")]
-        public void fly(Player player)
+        public static void fly(Player player, bool isInSwitchNative, bool hasPhoneOut, bool isPauseMenuActive, bool isTyping, bool isInVehicle, bool isInjured)
         {
             User userData = player.getPlayerAccountData();
 

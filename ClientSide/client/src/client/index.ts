@@ -48,6 +48,7 @@ import PlayerDealership from "./PlayerDealership/PlayerDealership";
 import Crouching from "./Animation/Crouching";
 import Weather from "./world/Weather";
 import BusDriverJob from "./Jobs/BusDriverJob/BusJob";
+import KeyPressActions from "./KeyPressActions/KeyPressActions";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -100,3 +101,4 @@ new PlayerDealership();
 new Crouching();
 new Weather();
 new BusDriverJob();
+new KeyPressActions();

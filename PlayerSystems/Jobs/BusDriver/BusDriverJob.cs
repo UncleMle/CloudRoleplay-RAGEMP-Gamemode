@@ -51,12 +51,9 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
 
         public BusDriverJob()
         {
-            KeyPressEvents.keyPress_Y += (Player player) =>
-            {
-                Console.WriteLine("Key Press Y Player" + player.Id);
-            };
+            KeyPressEvents.keyPress_Y += startBusJob;
 
-            foreach(KeyValuePair<float, Vector3> stop in BusDriverRoutes.customBusStops)
+            foreach (KeyValuePair<float, Vector3> stop in BusDriverRoutes.customBusStops)
             {
                 NAPI.Object.CreateObject(NAPI.Util.GetHashKey("prop_busstop_02"), stop.Value, new Vector3(0, 0, stop.Key), 255);
             }
@@ -131,6 +128,36 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
             }
 
             return newBus;
+        }
+
+        public void startBusJob(Player player, bool isInSwitchNative, bool hasPhoneOut, bool isPauseMenuActive, bool isTyping, bool isInVehicle, bool isInjured)
+        {
+            if(!isInSwitchNative && !isTyping)
+            {
+                BusDepo depoData = player.GetData<BusDepo>(_busDepoColShapeData);
+
+                if (depoData != null)
+                {
+                    if (!FreelanceJobSystem.hasAJob(player, (int)FreelanceJobs.BusJob))
+                    {
+                        List<BusRoute> availableRoutes = BusDriverRoutes.busRoutes
+                            .Where(route => route.ownerDepoId == depoData.depoId)
+                            .ToList();
+
+                        if (availableRoutes.Count > 0)
+                        {
+                            uiHandling.resetMutationPusher(player, MutationKeys.BusDriverJobRoutes);
+
+                            availableRoutes.ForEach(route =>
+                            {
+                                uiHandling.handleObjectUiMutationPush(player, MutationKeys.BusDriverJobRoutes, route);
+                            });
+
+                            uiHandling.pushRouterToClient(player, Browsers.ViewBusRoutes);
+                        }
+                    }
+                }
+            }
         }
 
         private static void initRoute(BusDepo busDepo, BusRoute route, ColShape originCol)
@@ -226,34 +253,6 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
         #endregion
 
         #region Remote Events
-        [RemoteEvent("server:playerAttemptBusJobStart")]
-        public void startBusJob(Player player)
-        {
-            BusDepo depoData = player.GetData<BusDepo>(_busDepoColShapeData);
-
-            if(depoData != null)
-            {
-                if(!FreelanceJobSystem.hasAJob(player, (int)FreelanceJobs.BusJob))
-                {
-                    List<BusRoute> availableRoutes = BusDriverRoutes.busRoutes
-                        .Where(route => route.ownerDepoId == depoData.depoId)
-                        .ToList();
-
-                    if(availableRoutes.Count > 0)
-                    {
-                        uiHandling.resetMutationPusher(player, MutationKeys.BusDriverJobRoutes);
-
-                        availableRoutes.ForEach(route =>
-                        {
-                            uiHandling.handleObjectUiMutationPush(player, MutationKeys.BusDriverJobRoutes, route);
-                        });
-
-                        uiHandling.pushRouterToClient(player, Browsers.ViewBusRoutes);
-                    }
-                }
-            }
-        }
-
         [RemoteEvent("server:startBusJobRoute")]
         public void startBusJobRoute(Player player, int routeId)
         {
