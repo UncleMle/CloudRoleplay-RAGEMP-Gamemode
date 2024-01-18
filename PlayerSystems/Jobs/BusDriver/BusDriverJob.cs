@@ -131,7 +131,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
         {
             route.stops.ForEach(stop =>
             {
-                ColShape stopColshape = NAPI.ColShape.CreateSphereColShape(stop.stopPos, 2f, 0);
+                ColShape stopColshape = NAPI.ColShape.CreateSphereColShape(stop.stopPos, 3.5f, 0);
 
                 originCol.OnEntityEnterColShape += (col, player) =>
                 {

@@ -6,6 +6,7 @@ import { Browsers } from "@/enums";
 export default class BusDriverJob {
     private static LocalPlayer: PlayerMp = mp.players.local;
     private static BusStopBlip: BlipMp | undefined;
+    private static BusStopMarker: MarkerMp | undefined;
     private static readonly _busDepoColShapeData: string = "playerEnteredBusDepoColshape";
     public static readonly startRemoteEvent: string = "server:playerAttemptBusJobStart";
     private static readonly _busVehicleData: string = "busDriverJobVehicleData";
@@ -53,6 +54,11 @@ export default class BusDriverJob {
             BusDriverJob.BusStopBlip.destroy();
             BusDriverJob.BusStopBlip = undefined;
         }
+
+        if(BusDriverJob.BusStopMarker) {
+            BusDriverJob.BusStopMarker.destroy();
+            BusDriverJob.BusStopMarker = undefined;
+        }
     }
 
     private static handleBlipSet(pos_x: number, pos_y: number, pos_z: number, isDepot: boolean = false) {
@@ -72,6 +78,11 @@ export default class BusDriverJob {
                     rotation: 0,
                     dimension: 0,
                 });
+                
+            BusDriverJob.BusStopMarker = mp.markers.new(1, new mp.Vector3(targetVector.x, targetVector.y, targetVector.z - 1), 2, {
+                color: [0, 255, 0, 30],
+                dimension: 0
+            });
 
             BusDriverJob.BusStopBlip.setRoute(true);
         }
