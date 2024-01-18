@@ -143,7 +143,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                 Vehicle targetVehicle = player.Vehicle;
                 DbVehicle targetVehicleData = player.Vehicle.getData();
 
-                if(dealer.vehiclePositions?.Count > 0 && targetVehicleData != null && characterData != null)
+                if(dealer.vehiclePositions?.Count > 0 && targetVehicleData != null && targetVehicleData.vehicle_id != -1 && characterData != null)
                 {
                     if(characterData.character_id != targetVehicleData.owner_id && player.getAdmin() < (int)AdminRanks.Admin_Developer)
                     {

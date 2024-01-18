@@ -93,7 +93,7 @@ namespace CloudRP.VehicleSystems.VehicleModification
             Vehicle viewModsVehicle = player.Vehicle;
             DbVehicle vehicleData = viewModsVehicle.getData();
 
-            if (vehicleData != null)
+            if (vehicleData != null && vehicleData.vehicle_id != -1)
             {
                 if (vehicleData.owner_id != characterData.character_id)
                 {
