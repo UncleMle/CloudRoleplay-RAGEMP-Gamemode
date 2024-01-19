@@ -89,6 +89,8 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
 
                 spawnedTruck = VehicleSystem.buildVolatileVehicle(player, spawnableTrucks[new Random().Next(0, spawnableTrucks.Length)], spawnPosition.Value, spawnPosition.Key, "TRUCK" + characterData.character_id);
 
+                spawnedTruck.addSyncedTrailer("freighttrailer");
+
                 spawnedTruck.setFreelanceJobData(new FreeLanceJobVehicleData
                 {
                     characterOwnerId = characterData.character_id,

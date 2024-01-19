@@ -49,6 +49,7 @@ import Crouching from "./Animation/Crouching";
 import Weather from "./world/Weather";
 import BusDriverJob from "./Jobs/BusDriverJob/BusJob";
 import KeyPressActions from "./KeyPressActions/KeyPressActions";
+import TrailerSync from "./VehicleSystems/TrailerSync";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -102,3 +103,4 @@ new Crouching();
 new Weather();
 new BusDriverJob();
 new KeyPressActions();
+new TrailerSync();

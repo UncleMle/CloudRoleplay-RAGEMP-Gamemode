@@ -180,6 +180,11 @@ namespace CloudRP.VehicleSystems.Vehicles
             vehicle.SetSharedData(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier, data);
         }
 
+        public static void addSyncedTrailer(this Vehicle vehicle, string trailerName)
+        {
+            vehicle.SetSharedData("truckerVehicleTrailerData", trailerName);
+        }
+
         public static void sayInfoAboutVehicle(this Vehicle vehicle, Player player)
         {
             User userData = player.getPlayerAccountData();
