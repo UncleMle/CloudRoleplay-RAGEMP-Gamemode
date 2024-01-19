@@ -15,7 +15,7 @@
                                     class="relative border mt-4 ml-2 mr-4 rounded-lg border-gray-500">
 
                                     <div class="p-4 h-48">
-                                        <img :src="getTruckerImagePath(item.img)" class="absolute w-32 h-32 mb-4 ml-4" />
+                                        <img :src="getTruckerImagePath(item.image)" class="absolute w-32 h-32 mb-4 ml-4" />
 
                                         <div class="absolute left-48">
                                             <div class="font-medium text-3xl">
@@ -30,9 +30,15 @@
                                         </div>
 
 
-                                        <div class="absolute right-[40%] top-24 text-md text-gray-400">
+                                        <div class="absolute left-[42%] top-24 text-md text-gray-400">
                                             <span class="font-medium">
-                                                Eta 20 minutes
+                                                Eta {{ item.estimatedTime }} minutes
+                                            </span>
+                                        </div>
+
+                                        <div class="absolute left-[42%] top-14 text-md text-gray-400">
+                                            <span class="font-medium text-xl">
+                                                {{ item.destinationName }}
                                             </span>
                                         </div>
                                     </div>
