@@ -10,10 +10,44 @@
                                     class="fa-solid fa-truck text-gray-400"></i> Available Jobs</h1>
                             <CloseButton />
 
-                            <div class="overflow-x-hidden overflow-y-scroll max-h-[40vw]">
-                                <div v-for="(item, idx) in truckerJobs" :key="idx"
-                                    class="p-4 border mt-4 ml-2 mr-4 rounded-lg border-gray-500">
-                                    <img :src="getTruckerImagePath(item.img)" class="w-40 h-40" />
+                            <div class="overflow-x-hidden overflow-y-scroll max-h-[30vw]">
+                                <div v-for="(item, idx) in playerData.trucker_jobs" :key="idx"
+                                    class="relative border mt-4 ml-2 mr-4 rounded-lg border-gray-500">
+
+                                    <div class="p-4 h-48">
+                                        <img :src="getTruckerImagePath(item.img)" class="absolute w-32 h-32 mb-4 ml-4" />
+
+                                        <div class="absolute left-48">
+                                            <div class="font-medium text-3xl">
+                                                {{ item.jobName }}
+                                            </div>
+                                            <div
+                                                class="font-medium text-lg max-w-[4vw] w-[4vw] overflow-hidden text-ellipsis text-green-400 bg-black/20 p-2 mt-2 w-[40%] rounded-xl">
+                                                ${{ item.jobPay.toLocaleString("en-US") }}
+                                                <br>
+                                                <font class="text-white text-sm">$22 per KM</font>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="absolute right-[40%] top-24 text-md text-gray-400">
+                                            <span class="font-medium">
+                                                Eta 20 minutes
+                                            </span>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="absolute w-full bottom-0">
+                                        <div class="flex justify-center">
+                                            <button @click="startBusRoute(item.routeId)"
+                                                class="w-full w-[40%] p-1.5 bg-black/40 rounded-lg border-gray-500 duration-300 hover:text-green-400 hover:border-green-400">
+                                                <i class="fa-solid fa-play"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+
                                 </div>
                             </div>
 
@@ -27,29 +61,14 @@
 
 <script>
 import CloseButton from '../../ui/CloseButton.vue'
+import { sendToServer } from '../../../helpers';
+import { mapGetters } from 'vuex';
 
 export default {
-    data() {
-        return {
-            truckerJobs: [
-                {
-                    name: "Test",
-                    img: "fleet"
-                },
-                {
-                    name: "Test",
-                    img: "gravel"
-                },
-                {
-                    name: "Test",
-                    img: "gravel"
-                },
-                {
-                    name: "Test",
-                    img: "gravel"
-                }
-            ]
-        }
+    computed: {
+        ...mapGetters({
+            playerData: 'getPlayerInfo'
+        })
     },
     methods: {
         getTruckerImagePath(jobImage) {
@@ -59,6 +78,9 @@ export default {
             } catch (error) {
                 return require("../../../assets/img/cars/sentinel.png");
             }
+        },
+        requestTruckerJob(jobId) {
+            sendToServer("server:handleTruckerJobRequest", jobId);
         }
     },
     components: {
