@@ -26,8 +26,6 @@ namespace CloudRP.PlayerSystems.Jobs
 
                 player.setPlayerCharacterData(characterData, false, true);
 
-                Console.WriteLine(data.jobId + " id");
-
                 FreeLanceJobData settedData = new FreeLanceJobData
                 {
                     jobName = data.jobName,

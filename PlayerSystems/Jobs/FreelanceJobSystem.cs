@@ -1,4 +1,5 @@
-﻿using CloudRP.PlayerSystems.Character;
+﻿using CloudRP.GeneralSystems.GeneralCommands;
+using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
@@ -11,6 +12,17 @@ namespace CloudRP.PlayerSystems.Jobs
     {
         public static readonly string _FreelanceJobDataIdentifier = "FreeLanceJobData";
         public static readonly string _FreelanceJobVehicleDataIdentifier = "FreeLanceJobVehicleData";
+
+        public FreelanceJobSystem()
+        {
+            Commands.loggingOut += (Player player, DbCharacter character) =>
+            {
+                if(player.getFreelanceJobData() != null)
+                {
+                    deleteFreeLanceVehs(player);
+                }
+            };
+        }
 
         #region Global Methods
         public static void handleVehicleDestroyed(Vehicle vehicle)
