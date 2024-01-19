@@ -149,13 +149,15 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
         [ServerEvent(Event.PlayerEnterVehicle)]
         public void beginTruckerJob(Player player, Vehicle vehicle, sbyte seatId)
         {
-            TruckerJobVehicleData vehicleData = vehicle.GetData<TruckerJobVehicleData>(_truckerVehicleDataKey);
+            TruckerJobVehicleData truckData = vehicle.GetData<TruckerJobVehicleData>(_truckerVehicleDataKey);
 
-            if (vehicle.getFreelanceJobData()?.jobId == (int)FreelanceJobs.TruckerJob)
+            if (vehicle.getFreelanceJobData()?.jobId == (int)FreelanceJobs.TruckerJob && truckData != null)
             {
-                Vector3 loadingPosition = vehicleData.loadingPosition;
+                Vector3 loadingPosition = truckData.loadingPosition;
 
                 MarkersAndLabels.addBlipForClient(player, 1, "Truck Loading position", loadingPosition, 1, 255, -1, true);
+
+                player.SendChatMessage(ChatUtils.freelanceJobs + "Head to the loading area to collect load your trailer.");
             }
         } 
         #endregion

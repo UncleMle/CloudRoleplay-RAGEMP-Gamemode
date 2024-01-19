@@ -3,6 +3,7 @@ using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
+using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
 using System;
 
@@ -106,6 +107,7 @@ namespace CloudRP.PlayerSystems.Jobs
 
                 player.SendChatMessage(ChatUtils.freelanceJobs + "You have quit your freelance job as a " + jobName + ".");
                 player.resetFreeLanceJobData();
+                MarkersAndLabels.removeClientBlip(player);
             } else
             {
                 CommandUtils.errorSay(player, "You don't have any freelance jobs to quit.");
