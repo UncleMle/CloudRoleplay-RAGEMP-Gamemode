@@ -19,7 +19,7 @@ export default class KeyPressActions {
         ];
 
         let charData: CharacterData | undefined = getUserCharacterData();
-    
+
         if (mp.game.invoke(_IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE)) {
             args[0] = true;
         }
@@ -56,7 +56,7 @@ export default class KeyPressActions {
     }
 
     private static handleKeyPressed(key: string) {
-        if(!KeyPressActions.cooldown) {
+        if (!KeyPressActions.cooldown) {
             KeyPressActions.cooldownStart();
             mp.events.callRemote("server:handleKeyPress:" + key, ...KeyPressActions.getArgs());
         }

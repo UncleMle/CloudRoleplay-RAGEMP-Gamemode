@@ -47,7 +47,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                 uiHandling.handleObjectUiMutationPush(player, MutationKeys.TruckerJobs, job);
             });
 
-            uiHandling.pushRouterToClient(player, Browsers.TruckerViewUI);
+            uiHandling.pushRouterToClient(player, Browsers.TruckerViewUI, true);
         }
 
         #endregion

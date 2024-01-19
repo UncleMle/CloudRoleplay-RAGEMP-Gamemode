@@ -82,8 +82,10 @@ namespace CloudRP.PlayerSystems.PlayerData
             }
         }
 
-        public static void pushRouterToClient(Player player, string route)
+        public static void pushRouterToClient(Player player, string route, bool freezeCursor = false)
         {
+            player.setRouteFrozen(freezeCursor);
+
             if (route == Browsers.None)
             {
                 player.TriggerEvent("browser:resetRouter");

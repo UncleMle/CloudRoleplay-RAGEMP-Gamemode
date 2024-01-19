@@ -38,6 +38,8 @@ namespace CloudRP.PlayerSystems.Character
         public CharacterClothing characterClothing { get; set; }
         [NotMapped]
         public bool loggingOut { get; set; }
+        [NotMapped]
+        public bool routeIsFrozen { get; set; }
     }
 
 }

@@ -88,6 +88,17 @@ namespace CloudRP.PlayerSystems.PlayerData
             }
         }
 
+        public static void setRouteFrozen(this Player player, bool toggle)
+        {
+            DbCharacter characterData = player.getPlayerCharacterData();
+            
+            if(characterData != null)
+            {
+                characterData.routeIsFrozen = toggle;
+                player.setPlayerCharacterData(characterData, false);
+            }
+        }
+
         public static void setPlayerVoiceStatus(this Player player, bool tog)
         {
             player.SetCustomSharedData(PlayersData._voipStatusKey, tog);

@@ -62,7 +62,8 @@ export interface CharacterData {
 	characterModel: CharacterModel
 	characterClothing: ClothingData,
 	voiceChatState: boolean,
-	loggingOut: boolean
+	loggingOut: boolean,
+	routeIsFrozen: boolean
 }
 
 export interface DbCharacter {

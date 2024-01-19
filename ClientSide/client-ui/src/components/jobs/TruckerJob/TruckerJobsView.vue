@@ -46,7 +46,7 @@
 
                                     <div class="absolute w-full bottom-0">
                                         <div class="flex justify-center">
-                                            <button @click="startBusRoute(item.routeId)"
+                                            <button @click="startTruckJob(item.jobId)"
                                                 class="w-full w-[40%] p-1.5 bg-black/40 rounded-lg border-gray-500 duration-300 hover:text-green-400 hover:border-green-400">
                                                 <i class="fa-solid fa-play"></i>
                                             </button>
@@ -85,7 +85,7 @@ export default {
                 return require("../../../assets/img/cars/sentinel.png");
             }
         },
-        requestTruckerJob(jobId) {
+        startTruckJob(jobId) {
             sendToServer("server:handleTruckerJobRequest", jobId);
         }
     },

@@ -1,6 +1,8 @@
 import { BrowserEnv } from '../enums';
 import { F2 } from './ClientButtons';
 import { _REMOVE_TIMER_NATIVE } from '../Constants/Constants';
+import getUserCharacterData from '@/PlayerMethods/getUserCharacterData';
+import { CharacterData } from '@/@types';
 
 let isFunctionPressed: boolean;
 
@@ -63,11 +65,17 @@ export default class BrowserSystem {
 	public static handleRender() {
 		BrowserSystem.disableAfkTimer();
 		BrowserSystem.disableDefaultGuiElements();
+
+		let characterData: CharacterData | undefined = getUserCharacterData();
+
+		if (characterData?.routeIsFrozen && BrowserSystem.LocalPlayer.browserRouter != "/") {
+			mp.gui.cursor.show(true, true);
+		}
 	}
 
 	public static pushRouter(route: string, showCursor: boolean = true) {
 		if (BrowserSystem._browserInstance) {
-			if(showCursor) {
+			if (showCursor) {
 				mp.gui.cursor.show(true, true);
 			}
 			BrowserSystem.LocalPlayer.browserRouter = route;
