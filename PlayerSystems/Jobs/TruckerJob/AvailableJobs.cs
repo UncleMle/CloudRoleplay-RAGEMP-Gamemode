@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GTANetworkAPI;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -15,17 +16,10 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                 estimatedTime = 10,
                 destinationName = "Paleto",
                 image = "fleet",
-                jobPay = 4000
+                jobPay = 4000,
+                loadingPosition = new Vector3(-15.1, -1102.1, 26.7),
+                destinationPosition = new Vector3(-357.0, 6072.7, 31.5)
             },
-            new AvailableJobTrucker
-            {
-                jobName = "Wheat Plants",
-                jobTypes = TruckJobTypes.WheatPlants,
-                image = "wheat-plant",
-                estimatedTime = 14,
-                destinationName = "LS Docks",
-                jobPay = 7500
-            }
         };
 
     }

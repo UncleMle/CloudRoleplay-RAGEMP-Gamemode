@@ -54,7 +54,7 @@ namespace CloudRP.GeneralSystems.GeneralCommands
 
             if (characterData != null)
             {
-                if(characterData.loggingOut)
+                if(player.isLoggingOut())
                 {
                     CommandUtils.errorSay(player, "Your already logging out.");
                     return;

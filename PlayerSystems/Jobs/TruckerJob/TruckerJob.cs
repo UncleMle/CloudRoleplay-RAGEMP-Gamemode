@@ -16,6 +16,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
     {
         public static readonly string jobName = "Trucker Job";
         public static readonly Vector3 truckerJobStart = new Vector3(-424.4, -2789.8, 6.5);
+        public static readonly string _truckerVehicleDataKey = "truckerJobVehicleDataIdentifier";
         public static string[] spawnableTrucks = new string[] {
             "packer",
             "hauler",
@@ -62,10 +63,11 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
             uiHandling.pushRouterToClient(player, Browsers.TruckerViewUI, true);
         }
 
-        private static void spawnWorkTruck(Player player)
+        private static Vehicle spawnWorkTruck(Player player)
         {
             DbCharacter characterData = player.getPlayerCharacterData();
-
+            Vehicle spawnedTruck = null;
+            
             if(characterData != null)
             {
                 KeyValuePair<float, Vector3> spawnPosition = new KeyValuePair<float, Vector3>();
@@ -82,10 +84,10 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                 if (spawnPosition.Value == null)
                 {
                     uiHandling.sendPushNotifError(player, "There are no free spots to spawn in your work truck.", 6600);
-                    return;
+                    return null;
                 }
 
-                Vehicle spawnedTruck = VehicleSystem.buildVolatileVehicle(player, spawnableTrucks[new Random().Next(0, spawnableTrucks.Length)], spawnPosition.Value, spawnPosition.Key, "TRUCK" + characterData.character_id);
+                spawnedTruck = VehicleSystem.buildVolatileVehicle(player, spawnableTrucks[new Random().Next(0, spawnableTrucks.Length)], spawnPosition.Value, spawnPosition.Key, "TRUCK" + characterData.character_id);
 
                 spawnedTruck.setFreelanceJobData(new FreeLanceJobVehicleData
                 {
@@ -99,13 +101,15 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
 
                 player.SendChatMessage(ChatUtils.freelanceJobs + $"You work truck has been spawned in and marked on the minimap for. Get in the truck to start the job.");
             }
+
+            return spawnedTruck;
         }
 
         #endregion
 
         #region Remote Events
         [RemoteEvent("server:handleTruckerJobRequest")]
-        private void handleTruckerJob(Player player, int truckerJobId)
+        public void handleTruckerJob(Player player, int truckerJobId)
         {
             if (!player.checkIsWithinCoord(truckerJobStart, 2f)) return;
 
@@ -128,12 +132,32 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                         jobStartedUnix = CommandUtils.generateUnix()
                     });
 
-                    spawnWorkTruck(player);
+                    spawnWorkTruck(player)?.SetData(_truckerVehicleDataKey, new TruckerJobVehicleData
+                    {
+                        destinationPosition = selectedJob.destinationPosition,
+                        loadingPosition = selectedJob.loadingPosition,
+                        jobId = selectedJob.jobId,
+                    });
                 }
 
                 uiHandling.resetRouter(player);
             }            
         }
+        #endregion
+
+        #region Server Events
+        [ServerEvent(Event.PlayerEnterVehicle)]
+        public void beginTruckerJob(Player player, Vehicle vehicle, sbyte seatId)
+        {
+            TruckerJobVehicleData vehicleData = vehicle.GetData<TruckerJobVehicleData>(_truckerVehicleDataKey);
+
+            if (vehicle.getFreelanceJobData()?.jobId == (int)FreelanceJobs.TruckerJob)
+            {
+                Vector3 loadingPosition = vehicleData.loadingPosition;
+
+                MarkersAndLabels.addBlipForClient(player, 1, "Truck Loading position", loadingPosition, 1, 255, -1, true);
+            }
+        } 
         #endregion
 
     }
