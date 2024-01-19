@@ -65,6 +65,24 @@ namespace CloudRP.PlayerSystems.Jobs
             return hasVeh;
         }
 
+        public static bool checkValidFreelanceVeh(Player player, FreelanceJobs job)
+        {
+            bool isValid = false;
+            if(player.IsInVehicle)
+            {
+                FreeLanceJobVehicleData freelanceVehData = player.Vehicle.getFreelanceJobData();
+                FreeLanceJobData playerJobData = player.getFreelanceJobData();
+                DbCharacter characterData = player.getPlayerCharacterData();
+
+                if(freelanceVehData != null && characterData != null && playerJobData != null && freelanceVehData.jobId == (int)job && freelanceVehData.characterOwnerId == characterData.character_id)
+                {
+                    isValid = true;
+                }
+            }
+
+            return isValid;
+        }
+
         public static bool hasAJob(Player player, int compareJobId)
         {
             bool hasAJob = false;

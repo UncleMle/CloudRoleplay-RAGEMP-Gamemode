@@ -22,14 +22,14 @@ export default class BusDriverJob {
         if (BusDriverJob.LocalPlayer.vehicle) {
             let nextStop: BusSharedData = BusDriverJob.LocalPlayer.vehicle.getVariable(BusDriverJob._busVehicleData);
 
-            if(nextStop) {
+            if (nextStop) {
                 mp.game.graphics.drawText(`~y~Destination ${nextStop.destination}`, [0.1, 0.64], {
                     font: 4,
                     color: [255, 255, 255, 255],
                     scale: [0.45, 0.65],
                     outline: false
                 });
-                
+
                 mp.game.graphics.drawText(`Next Stop ${nextStop.nextStop} ${nextStop.nextStop === nextStop.destination ? "~r~[Terminus]" : ""}`, [0.1, 0.70], {
                     font: 4,
                     color: [255, 255, 255, 255],
@@ -51,7 +51,7 @@ export default class BusDriverJob {
             BusDriverJob.BusStopBlip = undefined;
         }
 
-        if(BusDriverJob.BusStopMarker) {
+        if (BusDriverJob.BusStopMarker) {
             BusDriverJob.BusStopMarker.destroy();
             BusDriverJob.BusStopMarker = undefined;
         }
@@ -74,7 +74,7 @@ export default class BusDriverJob {
                     rotation: 0,
                     dimension: 0,
                 });
-                
+
             BusDriverJob.BusStopMarker = mp.markers.new(1, new mp.Vector3(targetVector.x, targetVector.y, targetVector.z - 1), 2, {
                 color: [0, 255, 0, 30],
                 dimension: 0

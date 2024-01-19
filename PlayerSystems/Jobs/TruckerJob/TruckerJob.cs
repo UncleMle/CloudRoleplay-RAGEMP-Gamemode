@@ -31,6 +31,17 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
             AvailableJobs.availableJobs.ForEach(job =>
             {
                 job.jobId = AvailableJobs.availableJobs.IndexOf(job);
+
+                ColShape loadColshape = NAPI.ColShape.CreateSphereColShape(job.loadingPosition, 12f, 0);
+                ColShape endJobColshape = NAPI.ColShape.CreateSphereColShape(job.destinationPosition, 12f, 0);
+
+                loadColshape.OnEntityEnterColShape += (col, player) => {
+                    if(col.Equals(loadColshape) && player.IsInVehicle)
+                    {
+                        Console.WriteLine("entered");
+                        handleTruckerLoad(player);
+                    }
+                };
             });
 
             NAPI.Blip.CreateBlip(477, truckerJobStart, 1f, 41, "Trucker Job", 255, 1f, true, 0, 0);
@@ -70,24 +81,24 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
             
             if(characterData != null)
             {
-                KeyValuePair<float, Vector3> spawnPosition = new KeyValuePair<float, Vector3>();
+                TruckerSpawnPosition spawnPosition = null;
 
-                foreach (KeyValuePair<float, Vector3> position in TruckerSpawns.truckerSpawnPositions)
+                foreach (TruckerSpawnPosition position in TruckerSpawns.truckerSpawnPositions)
                 {
-                    if (VehicleSystem.checkVehInSpot(position.Value, 6) == null)
+                    if (VehicleSystem.checkVehInSpot(position.position, 6) == null)
                     {
                         spawnPosition = position;
                         break;
                     }
                 }
 
-                if (spawnPosition.Value == null)
+                if (spawnPosition == null)
                 {
                     uiHandling.sendPushNotifError(player, "There are no free spots to spawn in your work truck.", 6600);
                     return null;
                 }
 
-                spawnedTruck = VehicleSystem.buildVolatileVehicle(player, spawnableTrucks[new Random().Next(0, spawnableTrucks.Length)], spawnPosition.Value, spawnPosition.Key, "TRUCK" + characterData.character_id);
+                spawnedTruck = VehicleSystem.buildVolatileVehicle(player, spawnableTrucks[new Random().Next(0, spawnableTrucks.Length)], spawnPosition.position, spawnPosition.rotation, "TRUCK" + characterData.character_id);
 
                 spawnedTruck.setFreelanceJobData(new FreeLanceJobVehicleData
                 {
@@ -97,12 +108,22 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                     jobName = jobName
                 });
 
-                MarkersAndLabels.addBlipForClient(player, 477, "You work truck", spawnPosition.Value, 5, 255, 18);
+                MarkersAndLabels.addBlipForClient(player, 477, "You work truck", spawnPosition.position, 5, 255, 18, false);
 
                 player.SendChatMessage(ChatUtils.freelanceJobs + $"You work truck has been spawned in and marked on the minimap for. Get in the truck to start the job.");
             }
 
             return spawnedTruck;
+        }
+
+        private static void handleTruckerLoad(Player player)
+        {
+            Console.WriteLine("triggered");
+
+            if(FreelanceJobSystem.checkValidFreelanceVeh(player, FreelanceJobs.TruckerJob))
+            {
+                player.SendChatMessage("Loading truck");
+            }
         }
 
         #endregion
@@ -158,11 +179,11 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
         {
             TruckerJobVehicleData truckData = vehicle.GetData<TruckerJobVehicleData>(_truckerVehicleDataKey);
 
-            if (vehicle.getFreelanceJobData()?.jobId == (int)FreelanceJobs.TruckerJob && truckData != null)
+            if (FreelanceJobSystem.checkValidFreelanceVeh(player, FreelanceJobs.TruckerJob) && truckData != null)
             {
                 Vector3 loadingPosition = truckData.loadingPosition;
 
-                MarkersAndLabels.addBlipForClient(player, 1, "Truck Loading position", loadingPosition, 1, 255, -1, true);
+                MarkersAndLabels.addBlipForClient(player, 1, "Truck Loading position", loadingPosition, 1, 255, -1, true, true);
 
                 player.SendChatMessage(ChatUtils.freelanceJobs + "Head to the loading area to collect load your trailer.");
             }
