@@ -100,6 +100,7 @@ namespace CloudRP.PlayerSystems.Jobs
     public enum FreelanceJobs
     {
         BusJob = 0,
+        TruckerJob = 1,
     }
 
     public class FreeLanceJobData

@@ -119,13 +119,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                 
                 if(newBus != null)
                 {
-                    newBus.SetData(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier, new FreeLanceJobVehicleData
-                    {
-                        jobId = (int)FreelanceJobs.BusJob,
-                        characterOwnerId = playerData.character_id,
-                        jobName = JobName
-                    });
-                    newBus.SetSharedData(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier, new FreeLanceJobVehicleData
+                    newBus.setFreelanceJobData(new FreeLanceJobVehicleData
                     {
                         jobId = (int)FreelanceJobs.BusJob,
                         characterOwnerId = playerData.character_id,

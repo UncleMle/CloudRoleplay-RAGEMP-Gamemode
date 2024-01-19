@@ -173,6 +173,12 @@ namespace CloudRP.VehicleSystems.Vehicles
         {
             return vehicle.GetData<FreeLanceJobVehicleData>(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier);
         }
+        
+        public static void setFreelanceJobData(this Vehicle vehicle, FreeLanceJobVehicleData data)
+        {
+            vehicle.SetData(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier, data);
+            vehicle.SetSharedData(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier, data);
+        }
 
         public static void sayInfoAboutVehicle(this Vehicle vehicle, Player player)
         {
