@@ -3,6 +3,7 @@ using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using GTANetworkAPI;
+using System;
 
 namespace CloudRP.PlayerSystems.Jobs
 {
@@ -31,6 +32,26 @@ namespace CloudRP.PlayerSystems.Jobs
             }
         }
 
+        public static bool hasFreeLanceVehicle(Player player)
+        {
+            DbCharacter characterData = player.getPlayerCharacterData();
+            bool hasVeh = false;
+
+            if (characterData != null)
+            {
+                NAPI.Pools.GetAllVehicles().ForEach(veh =>
+                {
+                    if(veh.getFreelanceJobData()?.characterOwnerId == characterData.character_id)
+                    {
+                        hasVeh = true;
+                    }
+                });
+            }
+
+
+            return hasVeh;
+        }
+
         public static bool hasAJob(Player player, int compareJobId)
         {
             bool hasAJob = false;
@@ -39,11 +60,6 @@ namespace CloudRP.PlayerSystems.Jobs
             {
                 player.SendChatMessage(ChatUtils.error + "You already have a freelance job. Use /qjob to quit it.");
                 hasAJob = true;
-            }
-
-            if(!hasAJob)
-            {
-                deleteFreeLanceVehs(player);
             }
 
             return hasAJob;

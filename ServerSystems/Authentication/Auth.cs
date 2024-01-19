@@ -348,11 +348,7 @@ namespace CloudRP.ServerSystems.Authentication
                         {
                             FreeLanceJobData data = JsonConvert.DeserializeObject<FreeLanceJobData>(character.freelance_job_data);
 
-                            player.SetCustomData(FreelanceJobSystem._FreelanceJobDataIdentifier, new FreeLanceJobData
-                            {
-                                jobName = data.jobName,
-                                jobStartedUnix = CommandUtils.generateUnix()
-                            });
+                            player.setFreelanceJobData(data);
                         }
 
                         welcomeAndSpawnPlayer(player);

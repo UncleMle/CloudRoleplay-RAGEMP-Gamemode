@@ -96,6 +96,8 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                 });
 
                 MarkersAndLabels.addBlipForClient(player, 477, "You work truck", spawnPosition.Value, 5, 255, 18);
+
+                player.SendChatMessage(ChatUtils.freelanceJobs + $"You work truck has been spawned in and marked on the minimap for. Get in the truck to start the job.");
             }
         }
 
@@ -109,19 +111,27 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
 
             if(!FreelanceJobSystem.hasAJob(player, (int)FreelanceJobs.TruckerJob))
             {
-                AvailableJobTrucker selectedJob = AvailableJobs.availableJobs
-                    .Where(job => job.jobId == truckerJobId)
-                    .FirstOrDefault();
-
-                player.setFreelanceJobData(new FreeLanceJobData
+                if(FreelanceJobSystem.hasFreeLanceVehicle(player))
                 {
-                    jobId = (int)FreelanceJobs.TruckerJob,
-                    jobLevel = -1,
-                    jobName = jobName,
-                    jobStartedUnix = CommandUtils.generateUnix()
-                });
+                    CommandUtils.errorSay(player, "You already have a work truck. Continue with your job or use /qjob.");
+                } else
+                {
+                    AvailableJobTrucker selectedJob = AvailableJobs.availableJobs
+                        .Where(job => job.jobId == truckerJobId)
+                        .FirstOrDefault();
 
-                spawnWorkTruck(player);
+                    player.setFreelanceJobData(new FreeLanceJobData
+                    {
+                        jobId = (int)FreelanceJobs.TruckerJob,
+                        jobLevel = -1,
+                        jobName = jobName,
+                        jobStartedUnix = CommandUtils.generateUnix()
+                    });
+
+                    spawnWorkTruck(player);
+                }
+
+                uiHandling.resetRouter(player);
             }            
         }
         #endregion
