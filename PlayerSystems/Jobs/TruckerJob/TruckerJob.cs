@@ -98,7 +98,9 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                     return null;
                 }
 
-                spawnedTruck = VehicleSystem.buildVolatileVehicle(player, spawnableTrucks[new Random().Next(0, spawnableTrucks.Length)], spawnPosition.position, spawnPosition.rotation, "TRUCK" + characterData.character_id);
+                int colour = new Random().Next(49, 121);
+
+                spawnedTruck = VehicleSystem.buildVolatileVehicle(player, spawnableTrucks[new Random().Next(0, spawnableTrucks.Length)], spawnPosition.position, spawnPosition.rotation, "TRUCK" + characterData.character_id, colour, colour);
 
                 spawnedTruck.setFreelanceJobData(new FreeLanceJobVehicleData
                 {
