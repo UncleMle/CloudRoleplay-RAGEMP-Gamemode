@@ -32,7 +32,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
 
         private static void startTruckerJob(Player player)
         {
-            Console.WriteLine("started.");
+            uiHandling.pushRouterToClient(player, Browsers.TruckerViewUI);
         }
 
     }

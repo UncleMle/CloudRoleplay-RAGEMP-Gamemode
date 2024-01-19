@@ -130,6 +130,7 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string Help = "/help";
         public static readonly string Atm = "/atm";
         public static readonly string ViewBusRoutes = "/busroutes";
+        public static readonly string TruckerViewUI = "/truckerjobs";
     }
 
     public static class AuthStates
