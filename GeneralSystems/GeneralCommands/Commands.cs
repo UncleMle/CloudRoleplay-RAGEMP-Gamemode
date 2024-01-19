@@ -52,6 +52,12 @@ namespace CloudRP.GeneralSystems.GeneralCommands
 
             if (characterData != null)
             {
+                if(characterData.loggingOut)
+                {
+                    CommandUtils.errorSay(player, "Your already logging out.");
+                    return;
+                }
+
                 if (player.IsInVehicle)
                 {
                     player.WarpOutOfVehicle();
