@@ -72,7 +72,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
 
                 foreach (KeyValuePair<float, Vector3> position in TruckerSpawns.truckerSpawnPositions)
                 {
-                    if (VehicleSystem.checkVehInSpot(position.Value, 6) != null)
+                    if (VehicleSystem.checkVehInSpot(position.Value, 6) == null)
                     {
                         spawnPosition = position;
                         break;
@@ -94,6 +94,8 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                     jobId = (int)FreelanceJobs.TruckerJob,
                     jobName = jobName
                 });
+
+                MarkersAndLabels.addBlipForClient(player, 477, "You work truck", spawnPosition.Value, 5, 255, 18);
             }
         }
 
