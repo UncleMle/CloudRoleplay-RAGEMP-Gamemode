@@ -16,6 +16,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
         public int jobPay {  get; set; }
         public Vector3 loadingPosition { get; set; }
         public Vector3 destinationPosition { get; set; }
+        public string vehicleTrailer { get; set; }
     }
 
     public class TruckerJobVehicleData

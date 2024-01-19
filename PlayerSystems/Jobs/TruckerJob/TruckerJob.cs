@@ -89,8 +89,6 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
 
                 spawnedTruck = VehicleSystem.buildVolatileVehicle(player, spawnableTrucks[new Random().Next(0, spawnableTrucks.Length)], spawnPosition.Value, spawnPosition.Key, "TRUCK" + characterData.character_id);
 
-                spawnedTruck.addSyncedTrailer("freighttrailer");
-
                 spawnedTruck.setFreelanceJobData(new FreeLanceJobVehicleData
                 {
                     characterOwnerId = characterData.character_id,
@@ -134,12 +132,19 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                         jobStartedUnix = CommandUtils.generateUnix()
                     });
 
-                    spawnWorkTruck(player)?.SetData(_truckerVehicleDataKey, new TruckerJobVehicleData
+                    Vehicle spawnedWorkTruck = spawnWorkTruck(player);
+
+                    if(spawnedWorkTruck != null)
                     {
-                        destinationPosition = selectedJob.destinationPosition,
-                        loadingPosition = selectedJob.loadingPosition,
-                        jobId = selectedJob.jobId,
-                    });
+                        spawnedWorkTruck.SetData(_truckerVehicleDataKey, new TruckerJobVehicleData
+                        {
+                            destinationPosition = selectedJob.destinationPosition,
+                            loadingPosition = selectedJob.loadingPosition,
+                            jobId = selectedJob.jobId,
+                        });
+
+                        spawnedWorkTruck.addSyncedTrailer(selectedJob.vehicleTrailer);
+                    }
                 }
 
                 uiHandling.resetRouter(player);
