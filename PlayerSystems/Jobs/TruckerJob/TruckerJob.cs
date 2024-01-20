@@ -117,8 +117,6 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
 
         private static void handleTruckerLoad(Player player, AvailableJobTrucker job)
         {
-            Console.WriteLine("loaded " + FreelanceJobSystem.checkValidFreelanceVeh(player, FreelanceJobs.TruckerJob));
-
             if(FreelanceJobSystem.checkValidFreelanceVeh(player, FreelanceJobs.TruckerJob))
             {
                 FreeLanceJobData freelanceData = player.getFreelanceJobData();
@@ -205,7 +203,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                             jobId = selectedJob.jobId,
                         });
 
-                        spawnedWorkTruck.addSyncedTrailer(selectedJob.vehicleTrailer);
+                        spawnedWorkTruck.addSyncedTrailer(player, selectedJob.vehicleTrailer);
                     }
                 }
 
