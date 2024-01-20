@@ -168,7 +168,7 @@ namespace CloudRP.VehicleSystems.Vehicles
         {
             NAPI.Pools.GetAllPlayers().ForEach(p =>
             {
-                if(p.Vehicle.Equals(vehicle))
+                if(p.IsInVehicle && p.Vehicle.Equals(vehicle))
                 {
                     p.TriggerEvent("vehicleSystem:freezePlayerVehicle", toggle);
                 } 
