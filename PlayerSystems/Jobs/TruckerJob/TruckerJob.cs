@@ -17,12 +17,12 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
         public static readonly string jobName = "Trucker Job";
         public static readonly Vector3 truckerJobStart = new Vector3(-424.4, -2789.8, 6.5);
         public static readonly string _truckerVehicleDataKey = "truckerJobVehicleDataIdentifier";
+        public static readonly int truckerLoadTime_seconds = 40;
         public static string[] spawnableTrucks = new string[] {
             "packer",
             "hauler",
             "phantom",
-            "phantom3",
-            "phantom4"
+            "phantom3"
         };
 
         #region Init
@@ -38,8 +38,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                 loadColshape.OnEntityEnterColShape += (col, player) => {
                     if(col.Equals(loadColshape) && player.IsInVehicle)
                     {
-                        Console.WriteLine("entered");
-                        handleTruckerLoad(player);
+                        handleTruckerLoad(player, job);
                     }
                 };
             });
@@ -118,13 +117,55 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
             return spawnedTruck;
         }
 
-        private static void handleTruckerLoad(Player player)
+        private static void handleTruckerLoad(Player player, AvailableJobTrucker job)
         {
-            Console.WriteLine("triggered");
+            Console.WriteLine("loaded " + FreelanceJobSystem.checkValidFreelanceVeh(player, FreelanceJobs.TruckerJob));
 
             if(FreelanceJobSystem.checkValidFreelanceVeh(player, FreelanceJobs.TruckerJob))
             {
-                player.SendChatMessage("Loading truck");
+                FreeLanceJobData freelanceData = player.getFreelanceJobData();
+
+                Console.WriteLine(freelanceData.jobLevel + " id");
+
+                if(freelanceData.jobLevel == -1)
+                {
+                    toggleLoadState(player.Vehicle, true);
+                    freelanceData.jobLevel = 0;
+
+                    player.setFreelanceJobData(freelanceData);
+
+                    player.SendChatMessage(ChatUtils.freelanceJobs + "Please remain in your truck whilst it is being loaded.");
+
+                    NAPI.Task.Run(() =>
+                    {
+                        if(NAPI.Player.IsPlayerConnected(player) && player.getFreelanceJobData()?.jobId == (int)FreelanceJobs.TruckerJob)
+                        {
+                            if (FreelanceJobSystem.checkValidFreelanceVeh(player, FreelanceJobs.TruckerJob))
+                            {
+                                toggleLoadState(player.Vehicle, false);
+                                MarkersAndLabels.addBlipForClient(player, 1, "Trucker Destination", job.destinationPosition, 1, 255, -1, true, true);
+                                return;
+                            }
+
+                            FreelanceJobSystem.deleteFreeLanceVehs(player);
+                            player.SendChatMessage(ChatUtils.freelanceJobs + "Your truck has been returned to your employer.");
+                        } 
+                    }, truckerLoadTime_seconds * 1000);
+                }
+            }
+        }
+
+        private static void toggleLoadState(Vehicle vehicle, bool toggle)
+        {
+            TruckerJobVehicleData truckerData = vehicle.GetData<TruckerJobVehicleData>(_truckerVehicleDataKey);
+
+            if(truckerData != null)
+            {
+                truckerData.beingLoaded = toggle;
+                vehicle.freeze(toggle);
+
+                vehicle.SetData(_truckerVehicleDataKey, truckerData);
+                vehicle.SetSharedData(_truckerVehicleDataKey, truckerData);
             }
         }
 
@@ -180,17 +221,25 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
         public void beginTruckerJob(Player player, Vehicle vehicle, sbyte seatId)
         {
             TruckerJobVehicleData truckData = vehicle.GetData<TruckerJobVehicleData>(_truckerVehicleDataKey);
+            FreeLanceJobData playerJobData = player.getFreelanceJobData();
 
-            if (FreelanceJobSystem.checkValidFreelanceVeh(player, FreelanceJobs.TruckerJob) && truckData != null)
+            if(playerJobData != null && playerJobData.jobLevel == -1)
             {
-                Vector3 loadingPosition = truckData.loadingPosition;
+                if (truckData != null && truckData.beingLoaded)
+                {
+                    vehicle.freeze(true);
+                }
 
-                MarkersAndLabels.addBlipForClient(player, 1, "Truck Loading position", loadingPosition, 1, 255, -1, true, true);
+                if (FreelanceJobSystem.checkValidFreelanceVeh(player, FreelanceJobs.TruckerJob) && truckData != null)
+                {
+                    Vector3 loadingPosition = truckData.loadingPosition;
 
-                player.SendChatMessage(ChatUtils.freelanceJobs + "Head to the loading area to collect load your trailer.");
+                    MarkersAndLabels.addBlipForClient(player, 1, "Truck Loading position", loadingPosition, 1, 255, -1, true, true);
+
+                    player.SendChatMessage(ChatUtils.freelanceJobs + "Head to the loading area to collect load your trailer.");
+                }
             }
         } 
         #endregion
-
     }
 }

@@ -164,6 +164,17 @@ namespace CloudRP.VehicleSystems.Vehicles
             }
         }
 
+        public static void freeze(this Vehicle vehicle, bool toggle)
+        {
+            NAPI.Pools.GetAllPlayers().ForEach(p =>
+            {
+                if(p.Vehicle.Equals(vehicle))
+                {
+                    p.TriggerEvent("vehicleSystem:freezePlayerVehicle", toggle);
+                } 
+            });
+        }
+
         public static DbVehicle getData(this Vehicle vehicle)
         {
             return vehicle.GetData<DbVehicle>(VehicleSystem._vehicleSharedDataIdentifier);

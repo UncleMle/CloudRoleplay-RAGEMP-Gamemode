@@ -24,6 +24,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
         public Vector3 loadingPosition { get; set; }
         public Vector3 destinationPosition { get; set; }
         public int jobId { get; set; }
+        public bool beingLoaded { get; set; }
     }
 
     public enum TruckJobTypes
