@@ -15,13 +15,13 @@ export default class TrailerSync {
                 if (truck.getVariable(TrailerSync._trailerSharedKey) != null) {
                     TrailerSync.createTrailer(truck, truck.position);
                     if (mp.vehicles.exists(trailer)) {
-                        trailer.setCanBeVisiblyDamaged(false);
-                        trailer.setCanBreak(false);
-                        trailer.setDeformationFixed();
-                        trailer.setDirtLevel(0);
-                        trailer.setDisablePetrolTankDamage(true);
-                        trailer.setDisablePetrolTankFires(true);
-                        trailer.setInvincible(true);
+                        // trailer.setCanBeVisiblyDamaged(false);
+                        // trailer.setCanBreak(false);
+                        // trailer.setDeformationFixed();
+                        // trailer.setDirtLevel(0);
+                        // trailer.setDisablePetrolTankDamage(true);
+                        // trailer.setDisablePetrolTankFires(true);
+                        // trailer.setInvincible(true);
                     } else {
                         if (reAttachInterval) clearInterval(reAttachInterval);
                     }

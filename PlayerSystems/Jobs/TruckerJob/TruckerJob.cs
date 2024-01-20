@@ -6,9 +6,7 @@ using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace CloudRP.PlayerSystems.Jobs.TruckerJob
 {
