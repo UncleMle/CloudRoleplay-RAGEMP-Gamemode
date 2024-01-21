@@ -19,7 +19,7 @@ export default class WeaponSystem {
     public static handleRender() {
         let userData: UserData | undefined = getUserData();
 
-        if(WeaponSystem.LocalPlayer.vehicle && WeaponSystem.LocalPlayer.vehicle.getPedInSeat(-1) == WeaponSystem.LocalPlayer.handle) {
+        if(!userData?.adminDuty && WeaponSystem.LocalPlayer.vehicle && WeaponSystem.LocalPlayer.vehicle.getPedInSeat(-1) == WeaponSystem.LocalPlayer.handle) {
             WeaponSystem.disableGunShooting();
         }
     }
