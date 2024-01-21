@@ -27,7 +27,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                 jobTypes = TruckJobTypes.HayBales,
                 estimatedTime = 16,
                 destinationName = "Paleto - Farm",
-                image = "hay-bale",
+                image = "haybale",
                 jobPay = 3440,
                 loadingPosition = new Vector3(-347.4, -2637.1, 6.0),
                 destinationPosition = new Vector3(410.2, 6474.7, 28.8),

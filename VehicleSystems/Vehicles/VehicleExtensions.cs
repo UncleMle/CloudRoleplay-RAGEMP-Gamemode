@@ -196,7 +196,17 @@ namespace CloudRP.VehicleSystems.Vehicles
 
         public static void addSyncedTrailer(this Vehicle vehicle, string trailerName)
         {
+            Vector3 vehRot = vehicle.Rotation;
+
             vehicle.SetSharedData(_trailerSyncDataKey, trailerName);
+
+            NAPI.Task.Run(() =>
+            {
+                if(vehicle.Exists)
+                {
+                    vehicle.Rotation = vehRot;
+                }
+            }, 1000);
         }
 
         public static void sayInfoAboutVehicle(this Vehicle vehicle, Player player)

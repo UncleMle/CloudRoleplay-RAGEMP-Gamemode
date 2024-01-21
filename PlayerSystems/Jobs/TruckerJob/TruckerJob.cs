@@ -275,7 +275,13 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                             jobId = selectedJob.jobId,
                         });
 
-                        spawnedWorkTruck.addSyncedTrailer(selectedJob.vehicleTrailer);
+                        NAPI.Task.Run(() =>
+                        {
+                            if(spawnedWorkTruck.Exists)
+                            {
+                                spawnedWorkTruck.addSyncedTrailer(selectedJob.vehicleTrailer);
+                            }
+                        }, 1500);
                     }
                 }
 
