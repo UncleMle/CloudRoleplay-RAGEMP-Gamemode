@@ -32,6 +32,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
         DealerVehicles,
         Gravel,
         Petrol,
-        WheatPlants
+        WheatPlants,
+        HayBales
     }
 }

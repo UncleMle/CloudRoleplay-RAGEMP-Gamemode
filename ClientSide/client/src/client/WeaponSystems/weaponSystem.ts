@@ -1,3 +1,8 @@
+import { UserData } from "@/@types";
+import getTargetData from "@/PlayerMethods/getTargetData";
+import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
+import getUserData from "@/PlayerMethods/getUserData";
+
 export default class WeaponSystem {
     public static LocalPlayer: PlayerMp;
     public static _switchAnimIdentifer: string = "weaponSwitchAnim";
@@ -12,7 +17,7 @@ export default class WeaponSystem {
     }
 
     public static handleRender() {
-        // mp.game1.weapon.unequipEmptyWeapons = false;
+        let userData: UserData | undefined = getUserData();
 
         if(WeaponSystem.LocalPlayer.vehicle && WeaponSystem.LocalPlayer.vehicle.getPedInSeat(-1) == WeaponSystem.LocalPlayer.handle) {
             WeaponSystem.disableGunShooting();

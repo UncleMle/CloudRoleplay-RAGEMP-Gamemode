@@ -48,8 +48,6 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                 {
                     if (col.Equals(destinationColShape) && player.IsInVehicle)
                     {
-                        Console.WriteLine("Dest trigger");
-
                         handleTruckerDestination(player, job);
                     }
                 };
@@ -160,6 +158,12 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                             {
                                 toggleLoadState(player.Vehicle, false);
                                 MarkersAndLabels.addBlipForClient(player, 1, "Trucker Destination", job.destinationPosition, 1, 255, -1, true, true);
+
+                                if(job.jobTypes == TruckJobTypes.DealerVehicles)
+                                {
+                                    player.Vehicle.addSyncedTrailer("tr4");
+                                }
+
                                 return;
                             }
 
