@@ -8,6 +8,8 @@ export default class TrailerSync {
             "entityStreamOut": TrailerSync.handleStreamOut
         });
 
+        mp.events.addDataHandler(TrailerSync._trailerSharedKey, TrailerSync.handleDataHandler);
+
         setInterval(() => {
             mp.vehicles.forEachInStreamRange(truck => {
                 if (truck.getVariable(TrailerSync._trailerSharedKey)) {
@@ -54,6 +56,19 @@ export default class TrailerSync {
             if (truck && mp.vehicles.at(truck.remoteId)) {
                 truck.attachToTrailer(trailer.handle, 1000);
             }
+        }
+    }
+
+    private static handleDataHandler(entity: EntityMp, trailer: string) {
+        if(entity.type === "vehicle" && trailer !== undefined) {
+            let existingTrailer: VehicleMp | null | undefined = TrailerSync.trailers.get(entity.remoteId);
+
+            if(existingTrailer) {
+                existingTrailer.destroy();
+                TrailerSync.trailers.set(entity.remoteId, null);
+            }
+
+            TrailerSync.createTrailer(entity as VehicleMp, entity.position);
         }
     }
 

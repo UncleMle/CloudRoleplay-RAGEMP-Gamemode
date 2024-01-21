@@ -16,6 +16,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
         public static readonly Vector3 truckerJobStart = new Vector3(-424.4, -2789.8, 6.5);
         public static readonly Vector3 truckerJobFinishJob = new Vector3(-446.6, -2788.5, 6.0);
         public static readonly string _truckerVehicleDataKey = "truckerJobVehicleDataIdentifier";
+        public static readonly string _truckerPlayerJobData = "truckerJobPlayerDataIdentifier";
         public static readonly int truckerLoadTime_seconds = 40;
         public static readonly int truckerUnloadTime_seconds = 25;
         public static string[] spawnableTrucks = new string[] {
@@ -40,7 +41,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                 {
                     if(col.Equals(loadColshape) && player.IsInVehicle)
                     {
-                        handleTruckerLoad(player, job);
+                        handleTruckerLoad(player);
                     }
                 };
 
@@ -48,7 +49,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                 {
                     if (col.Equals(destinationColShape) && player.IsInVehicle)
                     {
-                        handleTruckerDestination(player, job);
+                        handleTruckerDestination(player);
                     }
                 };
                 
@@ -56,7 +57,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                 {
                     if (col.Equals(endJobColshape) && player.IsInVehicle)
                     {
-                        handleTruckerEndJob(player, job);
+                        handleTruckerEndJob(player);
                     }
                 };
             });
@@ -135,16 +136,17 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
             return spawnedTruck;
         }
 
-        private static void handleTruckerLoad(Player player, AvailableJobTrucker job)
+        private static void handleTruckerLoad(Player player)
         {
             if(FreelanceJobSystem.checkValidFreelanceVeh(player, FreelanceJobs.TruckerJob))
             {
                 FreeLanceJobData freelanceData = player.getFreelanceJobData();
+                AvailableJobTrucker selectedJob = player.GetData<AvailableJobTrucker>(_truckerPlayerJobData);
 
-                if(freelanceData.jobLevel == -1)
+                if (freelanceData.jobLevel == 0 && selectedJob != null)
                 {
                     toggleLoadState(player.Vehicle, true);
-                    freelanceData.jobLevel = 0;
+                    freelanceData.jobLevel = 1;
 
                     player.setFreelanceJobData(freelanceData);
 
@@ -157,9 +159,9 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                             if (FreelanceJobSystem.checkValidFreelanceVeh(player, FreelanceJobs.TruckerJob))
                             {
                                 toggleLoadState(player.Vehicle, false);
-                                MarkersAndLabels.addBlipForClient(player, 1, "Trucker Destination", job.destinationPosition, 1, 255, -1, true, true);
+                                MarkersAndLabels.addBlipForClient(player, 1, "Trucker Destination", selectedJob.destinationPosition, 1, 255, -1, true, true);
 
-                                if(job.jobTypes == TruckJobTypes.DealerVehicles)
+                                if(selectedJob.jobTypes == TruckJobTypes.DealerVehicles)
                                 {
                                     player.Vehicle.addSyncedTrailer("tr4");
                                 }
@@ -174,16 +176,17 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
             }
         }
 
-        private static void handleTruckerDestination(Player player, AvailableJobTrucker job)
+        private static void handleTruckerDestination(Player player)
         {
             if(FreelanceJobSystem.checkValidFreelanceVeh(player, FreelanceJobs.TruckerJob))
             {
                 FreeLanceJobData jobData = player.getFreelanceJobData();
+                AvailableJobTrucker selectedJob = player.GetData<AvailableJobTrucker>(_truckerPlayerJobData);
 
-                if(jobData.jobLevel == 0)
+                if (jobData.jobLevel == 1 && selectedJob != null)
                 {
                     player.SendChatMessage(ChatUtils.freelanceJobs + "Please remain in your truck whilst it gets unloaded.");
-                    jobData.jobLevel = 1;
+                    jobData.jobLevel = 2;
                     player.setFreelanceJobData(jobData);
                     player.Vehicle.freeze(true);
                     
@@ -194,7 +197,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                             player.Vehicle.freeze(false);
                             MarkersAndLabels.addBlipForClient(player, 1, "Trucker Depot", truckerJobFinishJob, 69, 255, -1, true, true);
 
-                            player.SendChatMessage(ChatUtils.freelanceJobs + $"You have finished the trucker job {job.jobName} to get payed return your truck to the trucker depot.");
+                            player.SendChatMessage(ChatUtils.freelanceJobs + $"You have finished the trucker job {selectedJob.jobName} to get payed return your truck to the trucker depot.");
                         } else
                         {
                             FreelanceJobSystem.deleteFreeLanceVehs(player, true);
@@ -204,19 +207,20 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
             }
         }
 
-        private static void handleTruckerEndJob(Player player, AvailableJobTrucker job)
+        private static void handleTruckerEndJob(Player player)
         {
             if (FreelanceJobSystem.checkValidFreelanceVeh(player, FreelanceJobs.TruckerJob))
             {
                 FreeLanceJobData jobData = player.getFreelanceJobData();
                 DbCharacter characterData = player.getPlayerCharacterData();
+                AvailableJobTrucker selectedJob = player.GetData<AvailableJobTrucker>(_truckerPlayerJobData);
 
-                if(characterData != null && jobData.jobLevel == 1)
+                if(characterData != null && selectedJob != null && jobData.jobLevel == 2)
                 {
-                    characterData.money_amount += job.jobPay;
+                    characterData.money_amount += selectedJob.jobPay;
                     player.setPlayerCharacterData(characterData, false, true);
 
-                    player.SendChatMessage(ChatUtils.freelanceJobs + $"You have finished the trucker job {job.jobName} and have been payed {ChatUtils.moneyGreen}${job.jobPay}");
+                    player.SendChatMessage(ChatUtils.freelanceJobs + $"You have finished the trucker job {selectedJob.jobName} and have been payed {ChatUtils.moneyGreen}${selectedJob.jobPay}");
                     FreelanceJobSystem.deleteFreeLanceVehs(player);
                     MarkersAndLabels.removeClientBlip(player);
                 }
@@ -264,6 +268,9 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                         jobStartedUnix = CommandUtils.generateUnix()
                     });
 
+
+                    player.SetData(_truckerPlayerJobData, selectedJob);
+
                     Vehicle spawnedWorkTruck = spawnWorkTruck(player);
 
                     if(spawnedWorkTruck != null)
@@ -304,8 +311,11 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                     vehicle.freeze(true);
                 }
 
-                if (FreelanceJobSystem.checkValidFreelanceVeh(player, FreelanceJobs.TruckerJob) && truckData != null)
+                if (FreelanceJobSystem.checkValidFreelanceVeh(player, FreelanceJobs.TruckerJob) && truckData != null && playerJobData.jobLevel == -1)
                 {
+                    playerJobData.jobLevel = 0;
+                    player.setFreelanceJobData(playerJobData);
+
                     Vector3 loadingPosition = truckData.loadingPosition;
 
                     MarkersAndLabels.addBlipForClient(player, 1, "Truck Loading position", loadingPosition, 1, 255, -1, true, true);
