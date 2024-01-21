@@ -6,7 +6,7 @@
                     <div
                         class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
 
-                        <div class="relative w-full h-fit py-4 rounded-lg border border-gray-900 ">
+                        <div class="relative w-full h-fit py-4 rounded-lg">
                             <h1 class="font-bold text-2xl pl-4"><i class="fa-solid fa-circle-info text-gray-400"></i> Help
                             </h1>
                             <CloseButton />

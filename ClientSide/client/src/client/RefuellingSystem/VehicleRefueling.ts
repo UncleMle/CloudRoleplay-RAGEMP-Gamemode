@@ -115,7 +115,7 @@ export default class VehicleRefueling {
 
         if(!entity._fuelNozzleObject) return;
 
-        for (let i = 0; entity._fuelNozzleObject.handle === 0 && i < 15; ++i) {
+        for (let i = 0; entity._fuelNozzleObject && entity._fuelNozzleObject?.handle === 0 && i < 15; ++i) {
             await mp.game.waitAsync(100);
         }
 

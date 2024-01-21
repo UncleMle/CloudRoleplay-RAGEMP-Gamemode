@@ -82,8 +82,10 @@ namespace CloudRP.PlayerSystems.PlayerData
             }
         }
 
-        public static void pushRouterToClient(Player player, string route)
+        public static void pushRouterToClient(Player player, string route, bool freezeCursor = false)
         {
+            player.setRouteFrozen(freezeCursor);
+
             if (route == Browsers.None)
             {
                 player.TriggerEvent("browser:resetRouter");
@@ -130,6 +132,7 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string Help = "/help";
         public static readonly string Atm = "/atm";
         public static readonly string ViewBusRoutes = "/busroutes";
+        public static readonly string TruckerViewUI = "/truckerjobs";
     }
 
     public static class AuthStates
@@ -160,5 +163,6 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string PlayerVehDealer = "is_in_player_dealer";
         public static readonly string PlayerAccountData = "player_account_info";
         public static readonly string BusDriverJobRoutes = "player_bus_job_routes";
+        public static readonly string TruckerJobs = "trucker_jobs";
     }
 }

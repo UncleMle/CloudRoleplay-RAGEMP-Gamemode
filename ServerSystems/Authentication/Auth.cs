@@ -329,6 +329,7 @@ namespace CloudRP.ServerSystems.Authentication
                         character.characterClothing = charClothing;
                         character.characterModel.player_tattos = charTats;
 
+                        player.Name = character.character_name.Replace("_", " ");
                         player.Dimension = character.player_dimension;
                         player.Position = new Vector3(character.position_x, character.position_y, character.position_z);
                         player.Health = character.character_health;
@@ -348,11 +349,7 @@ namespace CloudRP.ServerSystems.Authentication
                         {
                             FreeLanceJobData data = JsonConvert.DeserializeObject<FreeLanceJobData>(character.freelance_job_data);
 
-                            player.SetCustomData(FreelanceJobSystem._FreelanceJobDataIdentifier, new FreeLanceJobData
-                            {
-                                jobName = data.jobName,
-                                jobStartedUnix = CommandUtils.generateUnix()
-                            });
+                            player.setFreelanceJobData(data);
                         }
 
                         welcomeAndSpawnPlayer(player);

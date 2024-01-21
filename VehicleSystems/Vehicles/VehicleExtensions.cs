@@ -19,6 +19,9 @@ namespace CloudRP.VehicleSystems.Vehicles
 {
     public static class VehicleExtensions
     {
+        public static readonly string _trailerSyncDataKey = "truckerVehicleTrailerData";
+        public static readonly string _vehicleTrailerDataKey = "truckerVehicleTrailer";
+
         public static void sendVehicleToInsurance(this Vehicle vehicle)
         {
             DbVehicle vehicleData = vehicle.getData();
@@ -164,6 +167,17 @@ namespace CloudRP.VehicleSystems.Vehicles
             }
         }
 
+        public static void freeze(this Vehicle vehicle, bool toggle)
+        {
+            NAPI.Pools.GetAllPlayers().ForEach(p =>
+            {
+                if(p.IsInVehicle && p.Vehicle.Equals(vehicle))
+                {
+                    p.TriggerEvent("vehicleSystem:freezePlayerVehicle", toggle);
+                } 
+            });
+        }
+
         public static DbVehicle getData(this Vehicle vehicle)
         {
             return vehicle.GetData<DbVehicle>(VehicleSystem._vehicleSharedDataIdentifier);
@@ -172,6 +186,27 @@ namespace CloudRP.VehicleSystems.Vehicles
         public static FreeLanceJobVehicleData getFreelanceJobData(this Vehicle vehicle)
         {
             return vehicle.GetData<FreeLanceJobVehicleData>(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier);
+        }
+        
+        public static void setFreelanceJobData(this Vehicle vehicle, FreeLanceJobVehicleData data)
+        {
+            vehicle.SetData(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier, data);
+            vehicle.SetSharedData(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier, data);
+        }
+
+        public static void addSyncedTrailer(this Vehicle vehicle, string trailerName)
+        {
+            Vector3 vehRot = vehicle.Rotation;
+
+            vehicle.SetSharedData(_trailerSyncDataKey, trailerName);
+
+            NAPI.Task.Run(() =>
+            {
+                if(vehicle.Exists)
+                {
+                    vehicle.Rotation = vehRot;
+                }
+            }, 1000);
         }
 
         public static void sayInfoAboutVehicle(this Vehicle vehicle, Player player)

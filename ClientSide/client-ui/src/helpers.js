@@ -7,6 +7,15 @@ export function getCarImagePath(vehSpawnName) {
     }
 }
 
+export function getTruckerImagePath(jobImage) {
+    try {
+        const imageModule = require(`./assets/img/jobs/${jobImage}.png`);
+        return imageModule;
+    } catch (error) {
+        return require("./assets/img/cars/sentinel.png");
+    }
+}
+
 export function sendToServer(eventName, value) {
     if (window.mp) {
         window.mp.trigger("browser:sendString", eventName, value);

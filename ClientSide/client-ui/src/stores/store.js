@@ -34,7 +34,8 @@ const store = new Vuex.Store({
 			atm_data: {},
 			phone_data_player_vehicles: [],
 			inventory_items: [],
-			is_in_player_dealer: false
+			is_in_player_dealer: false,
+			trucker_jobs: []
 		},
 		uiStates: {
 			characterSelection: false,
@@ -119,7 +120,7 @@ const store = new Vuex.Store({
 		setLoadingState: (state, { toggle }) => {
 			state.uiStates.serverLoading = toggle;
 		},
-		setUiState: (state, {_stateKey, status}) => {
+		setUiState: (state, { _stateKey, status }) => {
 			state.uiStates[_stateKey] = status;
 		}
 	}

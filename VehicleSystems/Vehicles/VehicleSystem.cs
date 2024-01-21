@@ -391,7 +391,7 @@ namespace CloudRP.VehicleSystems.Vehicles
             return (vehicle, vehData);
         }
 
-        public static Vehicle buildVolatileVehicle(Player player, string vehName, Vector3 pos, float rot, string plate)
+        public static Vehicle buildVolatileVehicle(Player player, string vehName, Vector3 pos, float rot, string plate, int colourOne = 111, int colourTwo = 111)
         {
             DbCharacter playerData = player.getPlayerCharacterData();
             Vehicle volatileVeh = null;
@@ -403,7 +403,7 @@ namespace CloudRP.VehicleSystems.Vehicles
 
                     if(vehicleName != null)
                     {
-                        volatileVeh = NAPI.Vehicle.CreateVehicle(NAPI.Util.GetHashKey(vehName), pos, rot, 111, 111, plate, 255, false, true, 0);
+                        volatileVeh = NAPI.Vehicle.CreateVehicle(NAPI.Util.GetHashKey(vehName), pos, rot, colourOne, colourTwo, plate, 255, false, true, 0);
                         volatileVeh.Locked = false;
 
                         volatileVeh.saveVehicleData(new DbVehicle
@@ -1119,7 +1119,6 @@ namespace CloudRP.VehicleSystems.Vehicles
                 uiHandling.sendNotification(player, "~w~Use ~y~Y~w~ to start the engine.", false);
             }
         }
-
 
         [ServerEvent(Event.VehicleDeath)]
         public void onVehicleDeath(Vehicle vehicle)

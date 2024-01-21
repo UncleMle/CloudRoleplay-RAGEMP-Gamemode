@@ -583,6 +583,9 @@ namespace CloudRP.ServerSystems.Admin
 
                 uiHandling.sendNotification(player, $"~r~You teleported {findPlayerData.character_name}.", false);
                 uiHandling.sendNotification(findPlayer, $"~r~You have been teleported by {userData.admin_name}.", false);
+            } else
+            {
+                CommandUtils.notFound(player);
             }
         }
 
@@ -1165,12 +1168,6 @@ namespace CloudRP.ServerSystems.Admin
                 return;
             }
 
-            if (targetUserData != null && targetUserData.adminDuty)
-            {
-                CommandUtils.errorSay(player, "You cannot use this command with on duty admins.");
-                return;
-            }
-
             if (findPlayer.isImmuneTo(player)) return;
 
             findPlayer.Health = health;
@@ -1616,14 +1613,6 @@ namespace CloudRP.ServerSystems.Admin
 
             if (findP != null)
             {
-                User targetUserData = findP.getPlayerAccountData();
-
-                if (targetUserData.adminDuty)
-                {
-                    CommandUtils.errorSay(player, "You cannot apply this command for on duty admins.");
-                    return;
-                }
-
                 if (findP.isImmuneTo(player)) return;
 
                 DbCharacter charData = findP.getPlayerCharacterData();
@@ -1647,6 +1636,26 @@ namespace CloudRP.ServerSystems.Admin
             else AdminUtils.playerNotFound(player);
         }
 
+
+        [AdminCommand(AdminRanks.Admin_Developer)]
+        [Command("atruck", "~r~/atruck [truckName] [trailerName]")]
+        public void spawnInAdminTruck(Player player, string truckName, string trailerName)
+        {
+            DbCharacter characterData = player.getPlayerCharacterData();
+
+            if(characterData != null)
+            {
+                 (Vehicle veh, DbVehicle data) = VehicleSystem.buildVehicle(truckName, player.Position, 0, characterData.character_id, 111, 111, characterData.character_name);
+
+                if(veh != null)
+                {
+                    veh.addSyncedTrailer(trailerName);
+                }
+
+                AdminUtils.staffSay(player, "Spawned in truck.");
+            }
+        }
+
         [AdminCommand(AdminRanks.Admin_Moderator)]
         [Command("slay", "~r~/slay [nameOrId]")]
         public void slayCommand(Player player, string nameOrId)
@@ -1658,14 +1667,6 @@ namespace CloudRP.ServerSystems.Admin
 
             if (findPlayer != null && findPlayerCharData != null)
             {
-                User targetUserData = findPlayer.getPlayerAccountData();
-
-                if (targetUserData.adminDuty)
-                {
-                    CommandUtils.errorSay(player, "You cannot use this command with on duty admins.");
-                    return;
-                }
-
                 if (findPlayer.isImmuneTo(player)) return;
 
 
@@ -1777,7 +1778,7 @@ namespace CloudRP.ServerSystems.Admin
         [Command("makeped", "~r~/makeped [pedName]")]
         public void makePed(Player player, string pedName)
         {
-            NAPI.Ped.CreatePed(NAPI.Util.GetHashKey(pedName), player.Position, 0, true, true, true);
+            NAPI.Ped.CreatePed(NAPI.Util.GetHashKey(pedName), player.Position, 0, 0);
             AdminUtils.staffSay(player, $"You spawned in a ped {ChatUtils.yellow}{pedName}{ChatUtils.White}");
 
             uiHandling.sendNotification(player, $"~r~You spawned in a ped ~y~{pedName}", false);

@@ -271,6 +271,7 @@ namespace CloudRP.ServerSystems.Utils
         public CharacterClothing characterClothing { get; set; }
         public bool voiceChatState { get; set; }
         public bool loggingOut { get; set; }
+        public bool routeIsFrozen { get; set; }
     }
 
     class Register

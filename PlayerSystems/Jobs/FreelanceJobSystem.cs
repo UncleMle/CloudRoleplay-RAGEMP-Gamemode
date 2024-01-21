@@ -1,8 +1,12 @@
-﻿using CloudRP.PlayerSystems.Character;
+﻿using CloudRP.GeneralSystems.GeneralCommands;
+using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
+using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
+using Newtonsoft.Json;
+using System;
 
 namespace CloudRP.PlayerSystems.Jobs
 {
@@ -10,6 +14,17 @@ namespace CloudRP.PlayerSystems.Jobs
     {
         public static readonly string _FreelanceJobDataIdentifier = "FreeLanceJobData";
         public static readonly string _FreelanceJobVehicleDataIdentifier = "FreeLanceJobVehicleData";
+
+        public FreelanceJobSystem()
+        {
+            Commands.loggingOut += (Player player, DbCharacter character) =>
+            {
+                if(player.getFreelanceJobData() != null)
+                {
+                    deleteFreeLanceVehs(player);
+                }
+            };
+        }
 
         #region Global Methods
         public static void handleVehicleDestroyed(Vehicle vehicle)
@@ -31,6 +46,44 @@ namespace CloudRP.PlayerSystems.Jobs
             }
         }
 
+        public static bool hasFreeLanceVehicle(Player player)
+        {
+            DbCharacter characterData = player.getPlayerCharacterData();
+            bool hasVeh = false;
+
+            if (characterData != null)
+            {
+                NAPI.Pools.GetAllVehicles().ForEach(veh =>
+                {
+                    if(veh.getFreelanceJobData()?.characterOwnerId == characterData.character_id)
+                    {
+                        hasVeh = true;
+                    }
+                });
+            }
+
+
+            return hasVeh;
+        }
+
+        public static bool checkValidFreelanceVeh(Player player, FreelanceJobs job)
+        {
+            bool isValid = false;
+            if(player.IsInVehicle)
+            {
+                FreeLanceJobVehicleData freelanceVehData = player.Vehicle.getFreelanceJobData();
+                FreeLanceJobData playerJobData = player.getFreelanceJobData();
+                DbCharacter characterData = player.getPlayerCharacterData();
+
+                if(freelanceVehData != null && characterData != null && playerJobData != null && freelanceVehData.jobId == (int)job && freelanceVehData.characterOwnerId == characterData.character_id)
+                {
+                    isValid = true;
+                }
+            }
+
+            return isValid;
+        }
+
         public static bool hasAJob(Player player, int compareJobId)
         {
             bool hasAJob = false;
@@ -41,15 +94,10 @@ namespace CloudRP.PlayerSystems.Jobs
                 hasAJob = true;
             }
 
-            if(!hasAJob)
-            {
-                deleteFreeLanceVehs(player);
-            }
-
             return hasAJob;
         }
 
-        public static void deleteFreeLanceVehs(Player player)
+        public static void deleteFreeLanceVehs(Player player, bool sendMsg = false)
         {
             DbCharacter characterData = player.getPlayerCharacterData();
             
@@ -62,6 +110,12 @@ namespace CloudRP.PlayerSystems.Jobs
                         veh.Delete();
                     }
                 });
+
+                if(sendMsg)
+                {
+                    player.SendChatMessage(ChatUtils.freelanceJobs + "Your truck has been returned to your employer.");
+                }
+
             }
         }
         #endregion
@@ -78,6 +132,7 @@ namespace CloudRP.PlayerSystems.Jobs
 
                 player.SendChatMessage(ChatUtils.freelanceJobs + "You have quit your freelance job as a " + jobName + ".");
                 player.resetFreeLanceJobData();
+                MarkersAndLabels.removeClientBlip(player);
             } else
             {
                 CommandUtils.errorSay(player, "You don't have any freelance jobs to quit.");
@@ -100,6 +155,7 @@ namespace CloudRP.PlayerSystems.Jobs
     public enum FreelanceJobs
     {
         BusJob = 0,
+        TruckerJob = 1,
     }
 
     public class FreeLanceJobData

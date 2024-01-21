@@ -21,6 +21,7 @@ export default class VehicleSystems {
 		mp.events.add("playerLeaveVehicle", (veh: VehicleMp) => VehicleSystems.beltToggle ? VehicleSystems.toggleSeatBelt(veh) : null);
 		mp.events.add("playerEnterVehicle", VehicleSystems.handlePlayerEnterVehicle);
 		mp.events.add("playerLeaveVehicle", VehicleSystems.handleExitDistCalc);
+		mp.events.add("vehicleSystem:freezePlayerVehicle", VehicleSystems.freezePlayerVehicle);
 		mp.keys.bind(_control_ids.F, false, VehicleSystems.stopWindowBreaking);
 		mp.keys.bind(_control_ids.J, false, VehicleSystems.toggleSeatBelt);
 
@@ -113,6 +114,12 @@ export default class VehicleSystems {
 					e++;
 				}, 200);
 			}
+		}
+	}
+
+	public static freezePlayerVehicle(toggle: boolean) {
+		if(VehicleSystems.LocalPlayer.vehicle) {
+			VehicleSystems.LocalPlayer.vehicle.freezePosition(toggle);
 		}
 	}
 

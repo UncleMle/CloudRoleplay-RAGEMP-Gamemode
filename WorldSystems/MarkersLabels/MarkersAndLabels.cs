@@ -17,9 +17,15 @@ namespace CloudRP.World.MarkersLabels
             return NAPI.Marker.CreateMarker(27, new Vector3(position.X, position.Y, position.Z - 0.92), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, dim);
         }
 
-        public static void addBlipForClient(Player target, int blipSprite, string name, Vector3 pos, int colour, int alpha = 255, int timeout = 60)
+        public static void addBlipForClient(Player target, int blipSprite, string name, Vector3 pos, int colour, int alpha = 255, int timeout = 60, bool setRoute = false, bool setMarker = false)
         {
-            target.TriggerEvent("clientBlip:addClientBlip", blipSprite, name, pos, colour, alpha, timeout);
+            removeClientBlip(target);
+            target.TriggerEvent("clientBlip:addClientBlip", blipSprite, name, pos, colour, alpha, timeout, setRoute, setMarker);
+        }
+
+        public static void removeClientBlip(Player player)
+        {
+            player.TriggerEvent("clientBlip:removeClientBlip");
         }
     }
 }

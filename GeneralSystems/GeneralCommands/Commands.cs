@@ -17,6 +17,8 @@ namespace CloudRP.GeneralSystems.GeneralCommands
 
     public class Commands : Script
     {
+        public delegate void LogoutEventsHandler(Player player, DbCharacter character);
+        public static event LogoutEventsHandler loggingOut;
         public static IEnumerable<CommandAttribute> loadedCommands = GetCommands();
         public static int _logoutTimeout_seconds = 15;
         public static string _logoutIdentifier = "playerIsLoggingOut";
@@ -52,6 +54,12 @@ namespace CloudRP.GeneralSystems.GeneralCommands
 
             if (characterData != null)
             {
+                if(player.isLoggingOut())
+                {
+                    CommandUtils.errorSay(player, "Your already logging out.");
+                    return;
+                }
+
                 if (player.IsInVehicle)
                 {
                     player.WarpOutOfVehicle();
@@ -62,6 +70,8 @@ namespace CloudRP.GeneralSystems.GeneralCommands
 
                 player.SetData(_logoutIdentifier, true);
                 player.SetSharedData(_logoutIdentifier, true);
+
+                loggingOut(player, characterData);
 
                 uiHandling.sendNotification(player, "~y~Logging out...", false);
 
