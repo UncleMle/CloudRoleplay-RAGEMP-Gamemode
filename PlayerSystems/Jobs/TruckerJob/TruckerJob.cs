@@ -34,7 +34,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
 
                 ColShape loadColshape = NAPI.ColShape.CreateSphereColShape(job.loadingPosition, 5f, 0);
                 ColShape destinationColShape = NAPI.ColShape.CreateSphereColShape(job.destinationPosition, 5f, 0);
-                ColShape endJobColshape = NAPI.ColShape.CreateSphereColShape(job.destinationPosition, 5f, 0);
+                ColShape endJobColshape = NAPI.ColShape.CreateSphereColShape(truckerJobFinishJob, 5f, 0);
 
                 loadColshape.OnEntityEnterColShape += (col, player) => 
                 {
@@ -46,15 +46,17 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
 
                 destinationColShape.OnEntityEnterColShape += (col, player) =>
                 {
-                    if (col.Equals(loadColshape) && player.IsInVehicle)
+                    if (col.Equals(destinationColShape) && player.IsInVehicle)
                     {
+                        Console.WriteLine("Dest trigger");
+
                         handleTruckerDestination(player, job);
                     }
                 };
                 
                 endJobColshape.OnEntityEnterColShape += (col, player) =>
                 {
-                    if (col.Equals(loadColshape) && player.IsInVehicle)
+                    if (col.Equals(endJobColshape) && player.IsInVehicle)
                     {
                         handleTruckerEndJob(player, job);
                     }
@@ -174,7 +176,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
             {
                 FreeLanceJobData jobData = player.getFreelanceJobData();
 
-                if(jobData != null && jobData.jobLevel == 0)
+                if(jobData.jobLevel == 0)
                 {
                     player.SendChatMessage(ChatUtils.freelanceJobs + "Please remain in your truck whilst it gets unloaded.");
                     jobData.jobLevel = 1;
@@ -205,13 +207,14 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                 FreeLanceJobData jobData = player.getFreelanceJobData();
                 DbCharacter characterData = player.getPlayerCharacterData();
 
-                if(jobData != null && characterData != null && jobData.jobLevel == 1)
+                if(characterData != null && jobData.jobLevel == 1)
                 {
                     characterData.money_amount += job.jobPay;
                     player.setPlayerCharacterData(characterData, false, true);
 
                     player.SendChatMessage(ChatUtils.freelanceJobs + $"You have finished the trucker job {job.jobName} and have been payed {ChatUtils.moneyGreen}${job.jobPay}");
                     FreelanceJobSystem.deleteFreeLanceVehs(player);
+                    MarkersAndLabels.removeClientBlip(player);
                 }
             }
         }
