@@ -20,6 +20,7 @@ namespace CloudRP.VehicleSystems.Vehicles
     public static class VehicleExtensions
     {
         public static readonly string _trailerSyncDataKey = "truckerVehicleTrailerData";
+        public static readonly string _vehicleTrailerDataKey = "truckerVehicleTrailer";
 
         public static void sendVehicleToInsurance(this Vehicle vehicle)
         {
@@ -193,14 +194,9 @@ namespace CloudRP.VehicleSystems.Vehicles
             vehicle.SetSharedData(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier, data);
         }
 
-        public static void addSyncedTrailer(this Vehicle vehicle, Player player, string trailerName)
+        public static void addSyncedTrailer(this Vehicle vehicle, string trailerName)
         {
-            Vehicle trailer = VehicleSystem.buildVolatileVehicle(player, trailerName, vehicle.Position, 2f, "TRL1", 0, 0);
-
-            if(trailer != null)
-            {
-                trailer.SetSharedData(_trailerSyncDataKey, vehicle.Id);
-            }
+            vehicle.SetSharedData(_trailerSyncDataKey, trailerName);
         }
 
         public static void sayInfoAboutVehicle(this Vehicle vehicle, Player player)

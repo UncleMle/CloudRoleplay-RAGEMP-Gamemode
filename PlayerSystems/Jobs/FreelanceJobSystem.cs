@@ -97,7 +97,7 @@ namespace CloudRP.PlayerSystems.Jobs
             return hasAJob;
         }
 
-        public static void deleteFreeLanceVehs(Player player)
+        public static void deleteFreeLanceVehs(Player player, bool sendMsg = false)
         {
             DbCharacter characterData = player.getPlayerCharacterData();
             
@@ -110,6 +110,12 @@ namespace CloudRP.PlayerSystems.Jobs
                         veh.Delete();
                     }
                 });
+
+                if(sendMsg)
+                {
+                    player.SendChatMessage(ChatUtils.freelanceJobs + "Your truck has been returned to your employer.");
+                }
+
             }
         }
         #endregion

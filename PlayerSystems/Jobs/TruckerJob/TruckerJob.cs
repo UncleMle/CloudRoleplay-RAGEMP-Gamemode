@@ -14,8 +14,10 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
     {
         public static readonly string jobName = "Trucker Job";
         public static readonly Vector3 truckerJobStart = new Vector3(-424.4, -2789.8, 6.5);
+        public static readonly Vector3 truckerJobFinishJob = new Vector3(-446.6, -2788.5, 6.0);
         public static readonly string _truckerVehicleDataKey = "truckerJobVehicleDataIdentifier";
         public static readonly int truckerLoadTime_seconds = 40;
+        public static readonly int truckerUnloadTime_seconds = 25;
         public static string[] spawnableTrucks = new string[] {
             "packer",
             "hauler",
@@ -30,13 +32,31 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
             {
                 job.jobId = AvailableJobs.availableJobs.IndexOf(job);
 
-                ColShape loadColshape = NAPI.ColShape.CreateSphereColShape(job.loadingPosition, 12f, 0);
-                ColShape endJobColshape = NAPI.ColShape.CreateSphereColShape(job.destinationPosition, 12f, 0);
+                ColShape loadColshape = NAPI.ColShape.CreateSphereColShape(job.loadingPosition, 5f, 0);
+                ColShape destinationColShape = NAPI.ColShape.CreateSphereColShape(job.destinationPosition, 5f, 0);
+                ColShape endJobColshape = NAPI.ColShape.CreateSphereColShape(job.destinationPosition, 5f, 0);
 
-                loadColshape.OnEntityEnterColShape += (col, player) => {
+                loadColshape.OnEntityEnterColShape += (col, player) => 
+                {
                     if(col.Equals(loadColshape) && player.IsInVehicle)
                     {
                         handleTruckerLoad(player, job);
+                    }
+                };
+
+                destinationColShape.OnEntityEnterColShape += (col, player) =>
+                {
+                    if (col.Equals(loadColshape) && player.IsInVehicle)
+                    {
+                        handleTruckerDestination(player, job);
+                    }
+                };
+                
+                endJobColshape.OnEntityEnterColShape += (col, player) =>
+                {
+                    if (col.Equals(loadColshape) && player.IsInVehicle)
+                    {
+                        handleTruckerEndJob(player, job);
                     }
                 };
             });
@@ -121,8 +141,6 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
             {
                 FreeLanceJobData freelanceData = player.getFreelanceJobData();
 
-                Console.WriteLine(freelanceData.jobLevel + " id");
-
                 if(freelanceData.jobLevel == -1)
                 {
                     toggleLoadState(player.Vehicle, true);
@@ -143,10 +161,57 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                                 return;
                             }
 
-                            FreelanceJobSystem.deleteFreeLanceVehs(player);
-                            player.SendChatMessage(ChatUtils.freelanceJobs + "Your truck has been returned to your employer.");
+                            FreelanceJobSystem.deleteFreeLanceVehs(player, true);
                         } 
                     }, truckerLoadTime_seconds * 1000);
+                }
+            }
+        }
+
+        private static void handleTruckerDestination(Player player, AvailableJobTrucker job)
+        {
+            if(FreelanceJobSystem.checkValidFreelanceVeh(player, FreelanceJobs.TruckerJob))
+            {
+                FreeLanceJobData jobData = player.getFreelanceJobData();
+
+                if(jobData != null && jobData.jobLevel == 0)
+                {
+                    player.SendChatMessage(ChatUtils.freelanceJobs + "Please remain in your truck whilst it gets unloaded.");
+                    jobData.jobLevel = 1;
+                    player.setFreelanceJobData(jobData);
+                    player.Vehicle.freeze(true);
+                    
+                    NAPI.Task.Run(() =>
+                    {
+                        if (NAPI.Player.IsPlayerConnected(player) && FreelanceJobSystem.checkValidFreelanceVeh(player, FreelanceJobs.TruckerJob))
+                        {
+                            player.Vehicle.freeze(false);
+                            MarkersAndLabels.addBlipForClient(player, 1, "Trucker Depot", truckerJobFinishJob, 69, 255, -1, true, true);
+
+                            player.SendChatMessage(ChatUtils.freelanceJobs + $"You have finished the trucker job {job.jobName} to get payed return your truck to the trucker depot.");
+                        } else
+                        {
+                            FreelanceJobSystem.deleteFreeLanceVehs(player, true);
+                        }
+                    }, truckerUnloadTime_seconds * 1000);
+                }
+            }
+        }
+
+        private static void handleTruckerEndJob(Player player, AvailableJobTrucker job)
+        {
+            if (FreelanceJobSystem.checkValidFreelanceVeh(player, FreelanceJobs.TruckerJob))
+            {
+                FreeLanceJobData jobData = player.getFreelanceJobData();
+                DbCharacter characterData = player.getPlayerCharacterData();
+
+                if(jobData != null && characterData != null && jobData.jobLevel == 1)
+                {
+                    characterData.money_amount += job.jobPay;
+                    player.setPlayerCharacterData(characterData, false, true);
+
+                    player.SendChatMessage(ChatUtils.freelanceJobs + $"You have finished the trucker job {job.jobName} and have been payed {ChatUtils.moneyGreen}${job.jobPay}");
+                    FreelanceJobSystem.deleteFreeLanceVehs(player);
                 }
             }
         }
@@ -203,7 +268,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                             jobId = selectedJob.jobId,
                         });
 
-                        spawnedWorkTruck.addSyncedTrailer(player, selectedJob.vehicleTrailer);
+                        spawnedWorkTruck.addSyncedTrailer(selectedJob.vehicleTrailer);
                     }
                 }
 

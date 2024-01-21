@@ -1120,12 +1120,6 @@ namespace CloudRP.VehicleSystems.Vehicles
             }
         }
 
-        [ServerEvent(Event.VehicleTrailerChange)]
-        public void OnVehicleTrailerChange(Vehicle vehicle, Vehicle trailer)
-        {
-            Console.WriteLine("Changed");
-        }
-
         [ServerEvent(Event.VehicleDeath)]
         public void onVehicleDeath(Vehicle vehicle)
         {
