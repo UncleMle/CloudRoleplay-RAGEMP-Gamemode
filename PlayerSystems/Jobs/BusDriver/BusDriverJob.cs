@@ -18,8 +18,9 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
     {
         #region Init
         public static string JobName = "Bus Driver";
-        private static string _busDepoColShapeData = "playerEnteredBusDepoColshape";
-        private static string _busVehicleData = "busDriverJobVehicleData";
+        private static readonly string _busDepoColShapeData = "playerEnteredBusDepoColshape";
+        private static readonly string _busVehicleData = "busDriverJobVehicleData";
+        private static readonly string _busJobPlayerData = "busDriverPlayerJobData";
         private static int busStopCooldown_seconds = 6;
         public static List<BusDepo> busDepos = new List<BusDepo>
         {
@@ -171,8 +172,9 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                 {
                     FreeLanceJobData jobData = player.getFreelanceJobData();
                     DbCharacter characterData = player.getPlayerCharacterData();
+                    BusRoute selectedRoute = player.GetData<BusRoute>(_busJobPlayerData);
 
-                    if (characterData != null && col.Equals(originCol) && jobData != null && player.IsInVehicle && jobData.jobId == (int)FreelanceJobs.BusJob && jobData.jobFinished)
+                    if (characterData != null && col.Equals(originCol) && selectedRoute != null && jobData != null && player.IsInVehicle && jobData.jobId == (int)FreelanceJobs.BusJob && jobData.jobFinished)
                     {
                         FreeLanceJobVehicleData vehicleData = player.Vehicle.getFreelanceJobData();
 
@@ -182,10 +184,10 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                             jobData.jobLevel = -1;
                             player.setFreelanceJobData(jobData);
 
-                            characterData.money_amount += route.routePay;
+                            characterData.money_amount += selectedRoute.routePay;
                             player.setPlayerCharacterData(characterData, false, true);
 
-                            player.SendChatMessage(ChatUtils.freelanceJobs + $"You have been payed {ChatUtils.moneyGreen}${route.routePay}{ChatUtils.White} for completeting the {route.routeName} route.");
+                            player.SendChatMessage(ChatUtils.freelanceJobs + $"You have been payed {ChatUtils.moneyGreen}${selectedRoute.routePay}{ChatUtils.White} for completeting the {selectedRoute.routeName} route.");
                             player.Vehicle.Delete();
                         }
                     }
@@ -293,6 +295,8 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                             uiHandling.sendPushNotifError(player, "There is a vehicle blocking the bus spawn!", 6600);
                             return;
                         }
+
+                        player.SetData(_busJobPlayerData, route);
 
                         string spawnBus = depoData.buses[new Random().Next(0, depoData.buses.Count)];
                         Vehicle bus = createBusJobVehicle(player, spawnBus, depoData);
