@@ -90,7 +90,7 @@ export default {
 
                 if (e.keyCode == this.KEYBIND_UPARR) {
 
-                    if( (this.chatIteration + 1) > this.playerMessages.length - 1) {
+                    if ((this.chatIteration + 1) > this.playerMessages.length - 1) {
                         this.chatIteration = 0;
                     } else {
                         this.chatIteration++;
@@ -101,7 +101,7 @@ export default {
 
                 if (e.keyCode == this.KEYBIND_DOWNARR) {
 
-                    if( (this.chatIteration - 1) < 0) {
+                    if ((this.chatIteration - 1) < 0) {
                         this.chatIteration = 0;
                     } else {
                         this.chatIteration--;

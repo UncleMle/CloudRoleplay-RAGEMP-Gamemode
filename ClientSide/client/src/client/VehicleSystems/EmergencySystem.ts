@@ -1,6 +1,6 @@
 import validateKeyPress from "@/PlayerMethods/validateKeyPress";
-import { ElsData, VehicleData } from "../@types";
-import { GET_SOUND_ID, STOP_SOUND, _SHARED_VEHICLE_DATA, _control_ids } from "../Constants/Constants";
+import { VehicleData } from "../@types";
+import { _SHARED_VEHICLE_DATA, _control_ids } from "../Constants/Constants";
 import getVehicleData from "../PlayerMethods/getVehicleData";
 
 export default class EmergencySystem {
@@ -26,7 +26,6 @@ export default class EmergencySystem {
 		54 // Auxiliary siren (tone 1)
 	];
 	public static readonly keyTimeout_ms: number = 350;
-	private static keyCooldown: boolean;
 
 	constructor() {
 		mp.events.add({
@@ -35,14 +34,7 @@ export default class EmergencySystem {
 		});
 
 		mp.events.addDataHandler(_SHARED_VEHICLE_DATA, EmergencySystem.handleDataHandler);
-		mp.events.addDataHandler("vehicleELSLightsData", EmergencySystem.handleElsDataHandler);
-
 		mp.keys.bind(_control_ids.Q, false, EmergencySystem.toggleVehicleSiren);
-		mp.keys.bind(_control_ids.X, false, EmergencySystem.toggleVehicleSiren);
-
-		EmergencySystem.elsKeyBinds.forEach(key => {
-			mp.keys.bind(key, false, () => EmergencySystem.handleElsKey(key));
-		});
 	}
 
 	public static handleRender() {
@@ -54,45 +46,6 @@ export default class EmergencySystem {
 				veh.setSirenSound(false);
 			}
 		});
-	}
-
-	private static async startKeyCooldown() {
-		EmergencySystem.keyCooldown = true;
-		mp.game.waitAsync(EmergencySystem.keyTimeout_ms);
-
-		EmergencySystem.keyCooldown = false;
-	}
-
-	private static handleElsKey(key: number) {
-		if (EmergencySystem.keyCooldown) return;
-
-		switch (key) {
-			case EmergencySystem.elsKeyBinds[0]: {
-				let sirenId: number = EmergencySystem.getSirenIdCode();
-				mp.events.callRemote(EmergencySystem.elsEventName, EmergencySystem.sirenTones[2], sirenId);
-				break;
-			}
-			case EmergencySystem.elsKeyBinds[1]: {
-				let sirenId: number = EmergencySystem.getSirenIdCode();
-				mp.events.callRemote(EmergencySystem.elsEventName, EmergencySystem.sirenTones[3], sirenId);
-				break;
-			}
-			case EmergencySystem.elsKeyBinds[2]: {
-				let sirenId: number = EmergencySystem.getSirenIdCode();
-				mp.events.callRemote(EmergencySystem.elsEventName, EmergencySystem.sirenTones[4], sirenId);
-				break;
-			}
-		}
-
-		EmergencySystem.startKeyCooldown();
-	}
-
-	private static getSirenIdCode(): number {
-		return mp.game.invoke(GET_SOUND_ID);
-	}
-
-	private static stopSound(soundId: number) {
-		return mp.game.invoke(STOP_SOUND, soundId);
 	}
 
 	public static handleEntityStreamIn(entity: EntityMp) {
@@ -107,18 +60,6 @@ export default class EmergencySystem {
 		if (entity.type != "vehicle" || !data) return;
 
 		entity.setSirenSound(data.vehicle_siren ? true : false);
-	}
-
-	private static handleElsDataHandler(entity: VehicleMp, data: ElsData[]) {
-		if (entity.type === "vehicle" && data !== undefined) {
-			mp.gui.chat.push(JSON.stringify(data));
-
-			data.forEach(elsData => {
-				EmergencySystem.stopSound(elsData.soundId);
-
-				mp.game.audio.playSoundFromEntity(elsData.soundId, elsData.soundName, entity.handle, '', true, 0)
-			});
-		}
 	}
 
 	public static toggleVehicleSiren() {

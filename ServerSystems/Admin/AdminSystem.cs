@@ -1092,6 +1092,7 @@ namespace CloudRP.ServerSystems.Admin
             if (vehicleId == -1 && !player.IsInVehicle)
             {
                 CommandUtils.errorSay(player, "You must be in a vehicle or specify a vehicle ID.");
+                return;
             }
 
             if (player.IsInVehicle)

@@ -17,7 +17,7 @@ export default class HousingSystem {
 	constructor() {
 		HousingSystem.LocalPlayer = mp.players.local;
 
-        mp.events.add("housing:createObject", HousingSystem.createAnObject);
+		mp.events.add("housing:createObject", HousingSystem.createAnObject);
 
 		mp.keys.bind(_control_ids.Y, false, HousingSystem.handleKeyPress_Y);
 		mp.keys.bind(_control_ids.K, false, HousingSystem.handleKeyPress_K);
@@ -69,7 +69,7 @@ export default class HousingSystem {
 	public static createAnObject(model: string) {
 		let pos: Vector3 = HousingSystem.LocalPlayer.position;
 
-        let obj: ObjectMp = mp.objects.new(model, pos, {
+		let obj: ObjectMp = mp.objects.new(model, pos, {
 			rotation: new mp.Vector3(0, 0, 0),
 			alpha: 255,
 			dimension: 0

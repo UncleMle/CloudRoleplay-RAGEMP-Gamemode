@@ -14,7 +14,7 @@ export default class InventorySystem {
     }
 
     public static toggleInventory() {
-        if(validateKeyPress(false, true, false) && getUserCharacterData()) {
+        if (validateKeyPress(false, true, false) && getUserCharacterData()) {
             InventorySystem.LocalPlayer.inventoryStatus = !InventorySystem.LocalPlayer.inventoryStatus;
 
             mp.events.callRemote(InventorySystem._inventoryResyncEvent);

@@ -37,7 +37,7 @@ export default class DeathSystem {
             mp.players.forEach(player => {
                 let targetCharData: CharacterData | undefined = getTargetCharacterData(player);
 
-                if(targetCharData && targetCharData.injured_timer > 0) {
+                if (targetCharData && targetCharData.injured_timer > 0) {
                     DeathSystem.playDeathAnim(player);
                 }
             })
@@ -45,13 +45,13 @@ export default class DeathSystem {
     }
 
     private static handleLogoutDataHandler(entity: PlayerMp, logout: boolean) {
-        if(entity.type === "player" && logout) {
+        if (entity.type === "player" && logout) {
             DeathSystem.removeIntervalStatus();
         }
     }
 
     public static removeIntervalStatus() {
-        if(DeathSystem._injuredInterval) {
+        if (DeathSystem._injuredInterval) {
             clearInterval(DeathSystem._injuredInterval);
             DeathSystem._injuredInterval = undefined;
         }
@@ -67,7 +67,7 @@ export default class DeathSystem {
 
         DeathSystem._saveInterval = setInterval(() => {
             let characterData: CharacterData | undefined = getUserCharacterData();
-            if(!characterData) return;
+            if (!characterData) return;
 
             characterData.injured_timer <= 0 && DeathSystem._saveInterval ? (clearInterval(DeathSystem._saveInterval), DeathSystem._saveInterval = undefined) : DeathSystem.injuredTimer--;
         }, 1000);
@@ -81,14 +81,14 @@ export default class DeathSystem {
         mp.game.gameplay.setFadeOutAfterDeath(false);
 
         let characterData: CharacterData | undefined = getUserCharacterData();
-        if(!characterData) return;
+        if (!characterData) return;
 
-        if(characterData.injured_timer > 0) {
+        if (characterData.injured_timer > 0) {
             DeathSystem.disableControls();
             WeaponSystem.disableGunShooting();
             DeathSystem.renderInjuredText();
 
-            if(DeathSystem.LocalPlayer.vehicle && DeathSystem.LocalPlayer.vehicle.getPedInSeat(-1) == DeathSystem.LocalPlayer.handle) {
+            if (DeathSystem.LocalPlayer.vehicle && DeathSystem.LocalPlayer.vehicle.getPedInSeat(-1) == DeathSystem.LocalPlayer.handle) {
                 VehicleSystems.disableControls();
                 DeathSystem.LocalPlayer.vehicle.setUndriveable(true);
             }
@@ -105,7 +105,7 @@ export default class DeathSystem {
     private static async turnGuiOnAfterScaleform() {
         await mp.game.waitAsync(2500);
 
-        if(ScaleForm.isActive()) {
+        if (ScaleForm.isActive()) {
             DeathSystem.turnGuiOnAfterScaleform();
         } else {
             GuiSystem.toggleHudComplete(true);
@@ -114,19 +114,19 @@ export default class DeathSystem {
 
     private static handleStreamIn(entity: EntityMp) {
         let characterData: CharacterData | undefined = getUserCharacterData();
-        if(entity.type != "player" || !characterData) return;
+        if (entity.type != "player" || !characterData) return;
 
-        if(characterData.injured_timer > 0) {
+        if (characterData.injured_timer > 0) {
             DeathSystem.playDeathAnim(entity as PlayerMp);
         }
     }
 
     private static handleDataHandler(entity: PlayerMp, data: CharacterData) {
-        if(entity.type != "player" || !data) return;
+        if (entity.type != "player" || !data) return;
 
-        if(entity.remoteId != DeathSystem.LocalPlayer.remoteId) return;
+        if (entity.remoteId != DeathSystem.LocalPlayer.remoteId) return;
 
-        if(data.injured_timer > 0) {
+        if (data.injured_timer > 0) {
             DeathSystem.injuredTimer = data.injured_timer;
             DeathSystem.playDeathAnim(entity);
         } else {
@@ -135,15 +135,15 @@ export default class DeathSystem {
     }
 
     private static async playDeathAnim(player: PlayerMp) {
-		for (let i = 0; player.handle === 0 && i < 15; ++i) {
-			await mp.game.waitAsync(100);
-		}
+        for (let i = 0; player.handle === 0 && i < 15; ++i) {
+            await mp.game.waitAsync(100);
+        }
 
         mp.game.streaming.requestAnimDict(DeathSystem.injuredAnim);
 
         await mp.game.waitAsync(50);
 
-        if(!player || !mp.players.atRemoteId(player.remoteId)) return;
+        if (!player || !mp.players.atRemoteId(player.remoteId)) return;
 
         player.taskPlayAnim(DeathSystem.injuredAnim, DeathSystem._lib_injuredAnim, 8.0, 1.0, -1, 1, 1.0, false, false, false);
     }
@@ -161,7 +161,7 @@ export default class DeathSystem {
     }
 
     private static renderInjuredText() {
-        if(!ScaleForm.isActive()) {
+        if (!ScaleForm.isActive()) {
             mp.game.graphics.drawText(`~r~INJURED`, [0.5, 0.81], {
                 font: 4,
                 color: [255, 255, 255, 255],
