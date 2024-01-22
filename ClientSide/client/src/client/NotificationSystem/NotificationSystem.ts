@@ -14,8 +14,11 @@ export default class NotificationSystem {
 
 
 	constructor() {
-		mp.events.add("render", NotificationSystem.handleRender);
-		mp.events.add("client:addNotif", NotificationSystem.createNotification);
+		mp.events.add({
+			"render": NotificationSystem.handleRender,
+			"client:addNotif": NotificationSystem.createNotification,
+			"client:addHintNotif": NotificationSystem.addHintNotif
+		});
 	}
 
 	public static createNotification(text: string, isRpText: boolean = true, isAme: boolean = false, ameText: string = "") {
@@ -39,10 +42,10 @@ export default class NotificationSystem {
 			NotificationSystem.y_pos += 0.0005;
 		}, 10);
 
-		if(isAme) {
+		if (isAme) {
 			mp.events.callRemote(NotificationSystem._ameServerEvent, ameText);
 
-			if(NotificationSystem.ameCancelTimeout) {
+			if (NotificationSystem.ameCancelTimeout) {
 				clearTimeout(NotificationSystem.ameCancelTimeout);
 				NotificationSystem.ameCancelTimeout = undefined;
 			}
@@ -51,6 +54,18 @@ export default class NotificationSystem {
 				mp.events.callRemote(NotificationSystem._ameServerEvent, null);
 				NotificationSystem.ameCancelTimeout = undefined;
 			}, NotificationSystem.ameDuration_seconds * 1000);
+		}
+	}
+
+	public static async addHintNotif(message: string, type: number, timeOut: number = -1) {
+		mp.game.ui.setTextComponentFormat("STRING");
+		mp.game.ui.addTextComponentSubstringPlayerName(message);
+		mp.game.ui.displayHelpTextFromStringLabel(type, true, true, -1);
+
+		if (timeOut != -1) {
+			await mp.game.waitAsync(timeOut);
+
+			mp.game.ui.clearHelp(true);
 		}
 	}
 

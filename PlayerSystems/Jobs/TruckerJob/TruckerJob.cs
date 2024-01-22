@@ -269,7 +269,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                     });
 
 
-                    player.SetData(_truckerPlayerJobData, selectedJob);
+                    player.SetCustomData(_truckerPlayerJobData, selectedJob);
 
                     Vehicle spawnedWorkTruck = spawnWorkTruck(player);
 

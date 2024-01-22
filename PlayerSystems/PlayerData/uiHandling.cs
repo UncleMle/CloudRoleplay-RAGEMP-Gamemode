@@ -54,6 +54,11 @@ namespace CloudRP.PlayerSystems.PlayerData
             player.TriggerEvent("gui:toggleHudComplete", toggle);
         }
 
+        public static void sendHintNotif(Player player, string message, int type, int timeOut = -1)
+        {
+            player.TriggerEvent("client:addHintNotif", message, type, timeOut);
+        }
+
         public static void sendPushNotifError(Player player, string text, int time, bool resetLoading = false)
         {
             player.TriggerEvent("browser:sendErrorPushNotif", text, time);
@@ -114,6 +119,11 @@ namespace CloudRP.PlayerSystems.PlayerData
                 resetRouter(player);
             }
         }
+    }
+    
+    public static class HintKeys
+    {
+        public static readonly string LCTRL_KEY = "~INPUT_VEH_MOVE_UD~";
     }
 
     public static class Browsers

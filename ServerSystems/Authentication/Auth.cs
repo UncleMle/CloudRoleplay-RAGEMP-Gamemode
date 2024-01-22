@@ -43,74 +43,59 @@ namespace CloudRP.ServerSystems.Authentication
                     .Where(b => b.username == userCredentials.username.ToLower() || b.email_address == userCredentials.username.ToLower())
                     .FirstOrDefault();
 
-                if (findAccount != null)
+                if (findAccount != null && AuthUtils.comparePassword(findAccount.password, userCredentials.password))
                 {
-                    bool passwordHashCompare = AuthUtils.comparePassword(findAccount.password, userCredentials.password);
+                    Player findIsOnline = checkInGame(findAccount.account_id);
 
-                    if (passwordHashCompare)
+                    if (findIsOnline != null)
                     {
-                        Player findIsOnline = checkInGame(findAccount.account_id);
-
-                        if (findIsOnline != null)
+                        Ban ban = new Ban
                         {
-                            Ban ban = new Ban
-                            {
-                                account_id = -1,
-                                admin = "System",
-                                username = "N/A",
-                                ban_reason = $"Attempting to breach accounts. REFID #{findAccount.account_id}",
-                                ip_address = player.Address,
-                                lift_unix_time = -1,
-                                social_club_id = player.SocialClubId,
-                                social_club_name = player.SocialClubName,
-                                client_serial = player.Serial,
-                                CreatedDate = DateTime.Now,
-                                UpdatedDate = DateTime.Now,
-                                issue_unix_date = CommandUtils.generateUnix(),
-                            };
+                            account_id = -1,
+                            admin = "System",
+                            username = "N/A",
+                            ban_reason = $"Attempting to breach accounts. REFID #{findAccount.account_id}",
+                            ip_address = player.Address,
+                            lift_unix_time = -1,
+                            social_club_id = player.SocialClubId,
+                            social_club_name = player.SocialClubName,
+                            client_serial = player.Serial,
+                            CreatedDate = DateTime.Now,
+                            UpdatedDate = DateTime.Now,
+                            issue_unix_date = CommandUtils.generateUnix(),
+                        };
 
-                            dbContext.bans.Add(ban);
+                        dbContext.bans.Add(ban);
 
-                            AuthUtils.sendEmail(findAccount.email_address, "Authentication Warning", $"Our systems detected a third party attempting to gain access to your account (<b>{findAccount.username}</b>). We have blocked the login attempt. Please reset all related passwords immediately.");
-                            NAPI.Chat.SendChatMessageToPlayer(findIsOnline, ChatUtils.red + "~h~[AUTHENTICATION WARNING] " + ChatUtils.White + "A third party attempted to login into your account. Please reset your account password immediately.");
-                            player.KickSilent();
-                            return;
-                        }
-
-                        User user = createUser(findAccount);
-
-                        findAccount.client_serial = player.Serial;
-                        findAccount.user_ip = player.Address;
-                        findAccount.UpdatedDate = DateTime.Now;
-
-                        dbContext.Update(findAccount);
-                        dbContext.SaveChanges();
-
-                        if (findAccount.ban_status == 1)
-                        {
-                            User acUser = new User
-                            {
-                                admin_name = "System"
-                            };
-
-                            player.banPlayer(-1, user, user, "Logging into banned accounts.");
-                            return;
-                        }
-
-                        setUserToCharacterSelection(player, user);
-
-                        if (userCredentials.rememberMe)
-                        {
-                            setUpAutoLogin(player, findAccount);
-                        }
-
-                        ChatUtils.formatConsolePrint($"User {findAccount.username} (#{findAccount.account_id}) has logged in.", ConsoleColor.Green);
-                    }
-                    else
-                    {
-                        uiHandling.sendPushNotifError(player, "Incorrect account credentials", 4000, true);
+                        AuthUtils.sendEmail(findAccount.email_address, "Authentication Warning", $"Our systems detected a third party attempting to gain access to your account (<b>{findAccount.username}</b>). We have blocked the login attempt. Please reset all related passwords immediately.");
+                        NAPI.Chat.SendChatMessageToPlayer(findIsOnline, ChatUtils.red + "~h~[AUTHENTICATION WARNING] " + ChatUtils.White + "A third party attempted to login into your account. Please reset your account password immediately.");
+                        player.KickSilent();
+                        return;
                     }
 
+                    User user = createUser(findAccount);
+
+                    findAccount.client_serial = player.Serial;
+                    findAccount.user_ip = player.Address;
+                    findAccount.UpdatedDate = DateTime.Now;
+
+                    dbContext.Update(findAccount);
+                    dbContext.SaveChanges();
+
+                    if (findAccount.ban_status == 1)
+                    {
+                        player.banPlayer(-1, user, user, "Logging into banned accounts.");
+                        return;
+                    }
+
+                    setUserToCharacterSelection(player, user);
+
+                    if (userCredentials.rememberMe)
+                    {
+                        setUpAutoLogin(player, findAccount);
+                    }
+
+                    ChatUtils.formatConsolePrint($"User {findAccount.username} (#{findAccount.account_id}) has logged in.", ConsoleColor.Green);
                 }
                 else
                 {
@@ -308,17 +293,9 @@ namespace CloudRP.ServerSystems.Authentication
                         .Where(tat => tat.tattoo_owner_id == character.character_id)
                         .ToList();
 
-                    bool wasFoundInGame = false;
+                    Player wasFoundInGame = checkInGameCharacter(character.character_id);
 
-                    NAPI.Pools.GetAllPlayers().ForEach(p =>
-                    {
-                        if(p.getPlayerCharacterData()?.character_id == character.character_id)
-                        {
-                            wasFoundInGame = true;
-                        }
-                    });
-
-                    if(!wasFoundInGame)
+                    if(wasFoundInGame == null)
                     {
                         character.UpdatedDate = DateTime.Now;
                         character.last_login = DateTime.Now;
@@ -456,12 +433,28 @@ namespace CloudRP.ServerSystems.Authentication
             {
                 User pData = p.getPlayerAccountData();
 
-                if (pData != null)
+                if (pData != null && pData.account_id == accountId)
                 {
-                    if (pData.account_id == accountId)
-                    {
-                        wasFound = p;
-                    }
+                    wasFound = p;
+                }
+            }
+
+            return wasFound;
+        }
+        
+        public Player checkInGameCharacter(int characterId)
+        {
+            List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
+
+            Player wasFound = null;
+
+            foreach (Player p in onlinePlayers)
+            {
+                DbCharacter charData = p.getPlayerCharacterData();
+
+                if (charData != null && charData.character_id == characterId)
+                {
+                    wasFound = p;
                 }
             }
 

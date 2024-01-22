@@ -3,7 +3,6 @@ import { _control_ids, SET_PARTICLE_FX_, _SET_FORCE_PED_FOOTSTEPS_TRACKS } from 
 import getUserData from '../PlayerMethods/getUserData';
 import { AdminRanks } from '../enums';
 import getTargetData from '@/PlayerMethods/getTargetData';
-import validateKeyPress from '@/PlayerMethods/validateKeyPress';
 
 export default class AdminFly {
 	public static LocalPlayer: PlayerMp;
@@ -90,27 +89,29 @@ export default class AdminFly {
 			});
 
 			const position: Vector3 = AdminFly.LocalPlayer.position;
+			
 			if (AdminFly.gameControls.isControlPressed(0, _control_ids.W)) {
-				if (AdminFly.flightData.f < 8.0) { AdminFly.flightData.f *= 11.025; }
+				if (AdminFly.flightData.f < 8.0) AdminFly.flightData.f *= 11.025;
 
 				position.x += AdminFly.direction.x / (AdminFly.flightData.f / 7);
 				position.y += AdminFly.direction.y / (AdminFly.flightData.f / 7);
 				position.z += AdminFly.direction.z / (AdminFly.flightData.f / 7);
 				updated = true;
 			} else if (AdminFly.gameControls.isControlPressed(0, _control_ids.S)) {
-				if (AdminFly.flightData.f < 8.0) { AdminFly.flightData.f *= 11.025; }
+				if (AdminFly.flightData.f < 8.0) AdminFly.flightData.f *= 11.025;
 
 				position.x -= AdminFly.direction.x / (AdminFly.flightData.f / 8);
 				position.y -= AdminFly.direction.y / (AdminFly.flightData.f / 8);
 				position.z -= AdminFly.direction.z / (AdminFly.flightData.f / 8);
 				updated = true;
 			}
-			else if (AdminFly.gameControls.isControlPressed(0, _control_ids.LCtrl)) {
-				if (AdminFly.flightData.f < 8.0) { AdminFly.flightData.f *= 11.025; }
+			
+			if (AdminFly.gameControls.isControlPressed(0, _control_ids.LCtrl)) {
+				if (AdminFly.flightData.f < 8.0) AdminFly.flightData.f *= 11.025;
 
-				position.x += AdminFly.direction.x / (AdminFly.flightData.f / 60);
-				position.y += AdminFly.direction.y / (AdminFly.flightData.f / 60);
-				position.z += AdminFly.direction.z / (AdminFly.flightData.f / 60);
+				position.x += AdminFly.direction.x / (AdminFly.flightData.f / 75);
+				position.y += AdminFly.direction.y / (AdminFly.flightData.f / 75);
+				position.z += AdminFly.direction.z / (AdminFly.flightData.f / 75);
 				updated = true;
 			}
 			else {
@@ -118,13 +119,13 @@ export default class AdminFly {
 			}
 
 			if (AdminFly.gameControls.isControlPressed(0, _control_ids.A)) {
-				if (AdminFly.flightData.l < 8.0) { AdminFly.flightData.l *= 11.025; }
+				if (AdminFly.flightData.l < 8.0) AdminFly.flightData.l *= 11.025; 
 
 				position.x += (-AdminFly.direction.y) / (AdminFly.flightData.l / 7);
 				position.y += AdminFly.direction.x / (AdminFly.flightData.l / 7);
 				updated = true;
 			} else if (AdminFly.gameControls.isControlPressed(0, _control_ids.D)) {
-				if (AdminFly.flightData.l < 8.0) { AdminFly.flightData.l *= 11.025; }
+				if (AdminFly.flightData.l < 8.0) AdminFly.flightData.l *= 11.025; 
 
 				position.x -= (-AdminFly.direction.y) / (AdminFly.flightData.l / 8);
 				position.y -= AdminFly.direction.x / (AdminFly.flightData?.l / 8);
@@ -134,12 +135,12 @@ export default class AdminFly {
 			}
 
 			if (AdminFly.gameControls.isControlPressed(0, _control_ids.E)) {
-				if (AdminFly.flightData.h < 8.0) { AdminFly.flightData.h *= 11.025; }
+				if (AdminFly.flightData.h < 8.0) AdminFly.flightData.h *= 11.025; 
 
 				position.z += (AdminFly.flightData.h / 55);
 				updated = true;
 			} else if (AdminFly.gameControls.isControlPressed(0, _control_ids.Q)) {
-				if (AdminFly.flightData.h < 8.0) { AdminFly.flightData.h *= 11.025; }
+				if (AdminFly.flightData.h < 8.0) AdminFly.flightData.h *= 11.025; 
 
 				position.z -= (AdminFly.flightData.h / 55);
 				updated = true;

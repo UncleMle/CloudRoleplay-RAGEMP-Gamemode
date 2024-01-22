@@ -291,17 +291,6 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                     vehicle.Rotation = new Vector3(0, 0, vehSpot.vehRot);
                 }
             }
-
-        }
-
-        [Command("d")]
-        public void dealeraddcomd(Player player)
-        {
-            if(player.getAdmin() > 7)
-            {
-                Console.WriteLine(",\r\n            new DealerVehPos\r\n            {\r\n                ownerId = 0,\r\n                spotId = 29,\r\n                vehPos = new Vector3("+player.Position.X+","+player.Position.Y+" ,"+ player.Position.Z+"),\r\n                vehRot = "+player.Rotation.Z+"\r\n            } ");
-
-            }
         }
 
         [RemoteEvent("server:purchasePlayerDealerVehicle")]

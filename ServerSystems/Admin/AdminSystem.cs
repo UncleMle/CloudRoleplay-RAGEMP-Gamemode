@@ -740,6 +740,7 @@ namespace CloudRP.ServerSystems.Admin
 
                 if (userData.isFlying)
                 {
+                    uiHandling.sendPushNotif(player, "Use LCTRL to speed up in fly mode.", 3500, true, true);
                     player.TriggerEvent("admin:startFly");
                 }
                 else
@@ -752,6 +753,7 @@ namespace CloudRP.ServerSystems.Admin
                 player.setPlayerAccountData(userData);
             }
         }
+
 
         [AdminCommand(AdminRanks.Admin_Moderator)]
         [Command("freeze", "~r~/freeze [nameOrId]")]
