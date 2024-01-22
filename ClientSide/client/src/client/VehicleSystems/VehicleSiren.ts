@@ -15,7 +15,7 @@ export default class VehicleSiren {
 		mp.events.add("entityStreamIn", VehicleSiren.handleEntityStreamIn);
 		mp.events.addDataHandler(_SHARED_VEHICLE_DATA, VehicleSiren.handleDataHandler);
 
-		mp.keys.bind(_control_ids.QBIND, false, VehicleSiren.toggleVehicleSiren);
+		mp.keys.bind(_control_ids.X, false, VehicleSiren.toggleVehicleSiren);
 	}
 
 	public static handleRender() {

@@ -846,6 +846,8 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             vehicleData.vehicle_siren = !vehicleData.vehicle_siren;
 
+            Console.WriteLine("Triggered");
+
             player.Vehicle.saveVehicleData(vehicleData);
         }
 

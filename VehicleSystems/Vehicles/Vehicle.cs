@@ -52,7 +52,7 @@ namespace CloudRP.VehicleSystems.Vehicles
         [NotMapped]
         public int indicator_status { get; set; } = -1;
         [NotMapped]
-        public bool vehicle_siren { get; set; }
+        public bool vehicle_siren { get; set; } = false;
         [NotMapped]
         public bool emergency_lights { get; set; }
         [NotMapped]
