@@ -147,4 +147,10 @@ namespace CloudRP.VehicleSystems.Vehicles
         public int BoneId { get; set; }
         public string BoneName { get; set; }
     }
+
+    public class ElsData 
+    {
+        public int soundId { get; set; }
+        public string soundName { get; set; }
+    }
 }

@@ -19,10 +19,11 @@ namespace CloudRP.VehicleSystems.Vehicles
 {
     public class VehicleSystem : Script
     {
-        public static string _vehicleSharedDataIdentifier = "VehicleData";
-        public static string _vehicleSharedModData = "VehicleModData";
-        public static string _vehicleDirtLevelIdentifier = "VehicleDirtLevel";
-        public static string _seatBeltIdentifier = "playerIsWearingSeatBelt";
+        public static readonly string _vehicleSharedDataIdentifier = "VehicleData";
+        public static readonly string _vehicleSharedModData = "VehicleModData";
+        public static readonly string _vehicleDirtLevelIdentifier = "VehicleDirtLevel";
+        public static readonly string _seatBeltIdentifier = "playerIsWearingSeatBelt";
+        public static readonly string _vehicleElsData = "vehicleELSLightsData";
         private static int _timerInterval_seconds = 10;
         private static Timer saveVehicleTimer;
         public static readonly string[] bones = { "door_dside_f", "door_pside_f", "door_dside_r", "door_pside_r", "bonnet", "boot" };
@@ -849,6 +850,41 @@ namespace CloudRP.VehicleSystems.Vehicles
             Console.WriteLine("Triggered");
 
             player.Vehicle.saveVehicleData(vehicleData);
+        }
+
+        [RemoteEvent("server:updateElsSirens")]
+        public void toggleElsSirens(Player player, string soundName, int sirenId)
+        {
+            if (!player.IsInVehicle) return;
+
+            DbVehicle vehicleData = player.Vehicle.getData();
+
+            if(vehicleData != null && vehicleData.vehicle_class_id == 18)
+            {
+                List<ElsData> elsData = player.Vehicle.GetData<List<ElsData>>(_vehicleElsData);
+                ElsData createdData = new ElsData
+                {
+                    soundId = sirenId,
+                    soundName = soundName,
+                };
+
+                if (elsData == null)
+                {
+                    elsData = new List<ElsData>() {
+                        createdData
+                    };
+                }
+
+                if(elsData.IndexOf(createdData) == -1)
+                {
+                    elsData.Add(createdData);
+                }
+
+                Console.WriteLine("Els Data " + JsonConvert.SerializeObject(elsData));
+
+                player.Vehicle.SetData(_vehicleElsData, elsData);
+                player.Vehicle.SetSharedData(_vehicleElsData, elsData);
+            }
         }
 
         [RemoteEvent("server:saveVehicleDamage")]

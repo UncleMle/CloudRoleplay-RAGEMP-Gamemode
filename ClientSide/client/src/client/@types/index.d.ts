@@ -480,3 +480,9 @@ interface BusSharedData
 	destination: string
 	nextStop: string
 }
+
+interface ElsData 
+{
+    soundId: number;
+    soundName: string;
+}
