@@ -9,7 +9,6 @@ using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 
 namespace CloudRP.PlayerSystems.DeathSystem
@@ -95,28 +94,32 @@ namespace CloudRP.PlayerSystems.DeathSystem
 
             player.TriggerEvent("client:moveSkyCamera", "up", 1, false);
 
-            Dictionary<float, Hospital> pDist = new Dictionary<float, Hospital>();
+            List<HosList> pDist = new List<HosList>();
 
             foreach (Hospital hospital in hospitalList)
             {
                 float dist = Vector3.Distance(hospital.position, player.Position);
 
-                pDist.Add(dist, hospital);
+                pDist.Add(new HosList { dist = dist, hospital = hospital });
             }
 
-            List<float> distList = new List<float>(pDist.Keys);
+            List<float> distList = new List<float>();
+
+            pDist.ForEach(pdist =>
+            {
+                distList.Add(pdist.dist);
+            });
 
             handleCorpseSet(player);
-
             distList.Sort();
 
             AntiCheatSystem.sleepClient(player);
 
-            Hospital closestHospital = pDist.GetValueOrDefault(distList[0]);
+            HosList closestHospital = pDist.FirstOrDefault(d => d.dist == distList[0]);
 
-            NAPI.Player.SpawnPlayer(player, closestHospital.position);
+            NAPI.Player.SpawnPlayer(player, closestHospital.hospital.position);
 
-            NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.hospital + "You recieved medial treatment at " + closestHospital.name);
+            NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.hospital + "You recieved medial treatment at " + closestHospital.hospital.position);
             player.TriggerEvent("client:moveSkyCamera", "down");
             player.TriggerEvent("injured:removeStatus");
         }

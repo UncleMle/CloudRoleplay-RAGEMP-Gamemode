@@ -12,6 +12,12 @@ namespace CloudRP.PlayerSystems.DeathSystem
         public string name;
     }
 
+    class HosList
+    {
+        public float dist;
+        public Hospital hospital;
+    }
+
     class Corpse
     {
         public int characterId;
