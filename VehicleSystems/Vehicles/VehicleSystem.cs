@@ -814,6 +814,14 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             if (vehicleData == null) return;
 
+            Console.WriteLine("stalled " + player.Vehicle.isStalled());
+
+            if(player.Vehicle.isStalled())
+            {
+                uiHandling.sendNotification(player, "~r~Vehicle is stalled", false);
+                return;
+            }
+
             vehicleData.engine_status = !vehicleData.engine_status;
 
             uiHandling.sendNotification(player, "You " + (vehicleData.engine_status ? "started" : "turned off") + $" the {vehicleData.vehicle_display_name}'s engine.", true, true, (vehicleData.engine_status ? "Started" : "Turned off") + $" the {vehicleData.vehicle_display_name}'s engine.");
@@ -1097,6 +1105,32 @@ namespace CloudRP.VehicleSystems.Vehicles
 
                 removeKeyFromWorldVeh(findVeh.vehicle_id, checkIfExists.vehicle_key_id);
                 uiHandling.sendPushNotif(player, "You removed a vehicle key!", 6600, true, true, true);
+            }
+        }
+
+        [RemoteEvent("server:stallVehicle")]
+        public void beginVehicleStall(Player player, int stallType)
+        {
+            if(player.IsInVehicle && player.VehicleSeat == 0 && !player.Vehicle.isStalled() && player.Vehicle.getData() != null)
+            {
+                DbVehicle vehicleData = player.Vehicle.getData();
+                int targetVehId = vehicleData.vehicle_id;
+                int timeOut_seconds = stallType == 0 ? 6 : 12;
+                
+                player.Vehicle.setVehicleStalled(true);
+                uiHandling.sendNotification(player, $"~r~You have stalled the vehicle. Please wait {timeOut_seconds} seconds.", false);
+
+                NAPI.Task.Run(() =>
+                {
+                    NAPI.Pools.GetAllVehicles().ForEach(veh =>
+                    {
+                        if(veh.getData()?.vehicle_id ==  targetVehId)
+                        {
+                            veh.setVehicleStalled(false);
+                        }
+                    });
+                }, timeOut_seconds * 1000);
+
             }
         }
         #endregion

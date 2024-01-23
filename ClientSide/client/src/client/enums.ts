@@ -18,6 +18,13 @@ export enum AdminRanks {
 export enum FreelanceJobs
 {
 	BusJob = 0,
+	TruckerJob = 1,
+}
+
+export enum StallTypes
+{
+	Small = 0,
+	Medium = 1,
 }
 
 export class MutationKeys {

@@ -21,6 +21,7 @@ namespace CloudRP.VehicleSystems.Vehicles
     {
         public static readonly string _trailerSyncDataKey = "truckerVehicleTrailerData";
         public static readonly string _vehicleTrailerDataKey = "truckerVehicleTrailer";
+        public static readonly string _vehicleStalledIdentifier = "vehicleIsStalledDataKey";
 
         public static void sendVehicleToInsurance(this Vehicle vehicle, bool sendMessageToOwner = false)
         {
@@ -187,6 +188,27 @@ namespace CloudRP.VehicleSystems.Vehicles
                     p.TriggerEvent("vehicleSystem:freezePlayerVehicle", toggle);
                 } 
             });
+        }
+
+        public static void setVehicleStalled(this Vehicle vehicle, bool toggle)
+        {
+            vehicle.SetData(_vehicleStalledIdentifier, toggle);
+            vehicle.SetSharedData(_vehicleStalledIdentifier, toggle);
+
+            DbVehicle vehicleData = vehicle.getData();
+
+            if(vehicleData != null)
+            {
+                vehicleData.engine_status = toggle;
+
+                vehicle.setVehicleData(vehicleData);
+            }
+
+        }
+        
+        public static bool isStalled(this Vehicle vehicle)
+        {
+            return vehicle.GetData<bool>(_vehicleStalledIdentifier);
         }
 
         public static DbVehicle getData(this Vehicle vehicle)
