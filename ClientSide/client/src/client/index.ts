@@ -50,6 +50,7 @@ import Weather from "./world/Weather";
 import BusDriverJob from "./Jobs/BusDriverJob/BusJob";
 import KeyPressActions from "./KeyPressActions/KeyPressActions";
 import TrailerSync from "./VehicleSystems/TrailerSync";
+import VehicleStall from "./VehicleSystems/VehicleStall";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -104,3 +105,4 @@ new BusDriverJob();
 new KeyPressActions();
 new TrailerSync();
 new EmergencySystem();
+new VehicleStall();

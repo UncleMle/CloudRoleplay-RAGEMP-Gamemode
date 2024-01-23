@@ -468,7 +468,7 @@ namespace CloudRP.GeneralSystems.GeneralCommands
             CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_commands_radius);
         }
 
-        [Command("nick", "~y~Use: ~w~/nick [nameOrId] [nickname]", GreedyArg = true)]
+        [Command("nick", "~y~Use: ~w~/nick [nameOrId] [nickname]", Alias = "alias", GreedyArg = true)]
         public void nicknameCommand(Player player, string playerOrId, string nickname)
         {
             User userData = player.getPlayerAccountData();
@@ -495,6 +495,12 @@ namespace CloudRP.GeneralSystems.GeneralCommands
             if(findCharData.characterClothing != null && findCharData.characterClothing.mask != 0)
             {
                 CommandUtils.errorSay(player, "You can't alias a player with a mask on.");
+                return;
+            }
+
+            if(player.Equals(findPlayer))
+            {
+                CommandUtils.errorSay(player, "You can't alias yourself.");
                 return;
             }
 
