@@ -151,6 +151,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                     player.setFreelanceJobData(freelanceData);
 
                     player.SendChatMessage(ChatUtils.freelanceJobs + "Please remain in your truck whilst it is being loaded.");
+                    player.TriggerEvent("client:truckerJob:addProgressTimer", "Loading truck", truckerLoadTime_seconds);
 
                     NAPI.Task.Run(() =>
                     {
@@ -160,12 +161,6 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                             {
                                 toggleLoadState(player.Vehicle, false);
                                 MarkersAndLabels.addBlipForClient(player, 1, "Trucker Destination", selectedJob.destinationPosition, 1, 255, -1, true, true);
-
-                                if(selectedJob.jobTypes == TruckJobTypes.DealerVehicles)
-                                {
-                                    player.Vehicle.addSyncedTrailer("tr4");
-                                }
-
                                 return;
                             }
 
@@ -189,7 +184,8 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                     jobData.jobLevel = 2;
                     player.setFreelanceJobData(jobData);
                     player.Vehicle.freeze(true);
-                    
+                    player.TriggerEvent("client:truckerJob:addProgressTimer", "Unloading truck", truckerUnloadTime_seconds);
+
                     NAPI.Task.Run(() =>
                     {
                         if (NAPI.Player.IsPlayerConnected(player) && FreelanceJobSystem.checkValidFreelanceVeh(player, FreelanceJobs.TruckerJob))

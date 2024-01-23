@@ -25,6 +25,8 @@ export const STOP_SOUND: string = "0xA3B0C41BA5CC0BB5";
 export const CF_PED_FLAG_CAN_FLY_THRU_WINDSCREEN: number = 32;
 export const CLEAR_FOCUS: string = "0x31B73D1EA9F01DA2";
 export const COLOURED_HEADLIGHT_NATIVE: string = "0xE41033B25D003A07";
+export const FREELANCE_JOB_DATA_KEY: string = "FreeLanceJobData";
+export const FREELANCE_JOB_VEHICLE_DATA_KEY: string = "FreeLanceJobVehicleData";
 
 
 export const _control_ids = {

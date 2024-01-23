@@ -19,7 +19,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                 jobPay = 4000,
                 loadingPosition = new Vector3(-15.1, -1102.1, 26.7),
                 destinationPosition = new Vector3(-357.0, 6072.7, 31.5),
-                vehicleTrailer = "tr2"
+                vehicleTrailer = "tr4"
             },
             new AvailableJobTrucker
             {
