@@ -23,10 +23,8 @@ namespace CloudRP.PlayerSystems.Character
         private static double _characterHungerRemover = 0.004;
         private static double _characterWaterRemover = 0.009;
 
-        public static void beginSaveInterval()
+        public CharacterSystem()
         {
-            ChatUtils.formatConsolePrint("Began saving characters.", ConsoleColor.Yellow);
-
             NAPI.Task.Run(() =>
             {
                 saveCharactersTimer = new Timer();
@@ -317,13 +315,12 @@ namespace CloudRP.PlayerSystems.Character
             }
             AntiCheatSystem.sleepClient(player);
             player.TriggerEvent("client:setCharacterCreation");
-
         }
 
         public static void fillCharacterSelectionTable(Player player, User userData)
         {
-            uiHandling.resetMutationPusher(player, "player_characters");
-            uiHandling.resetMutationPusher(player, "player_account_info");
+            uiHandling.resetMutationPusher(player, MutationKeys.PlayerCharacters);
+            uiHandling.resetMutationPusher(player, MutationKeys.PlayerAccountData);
 
             uiHandling.sendMutationToClient(player, "setCharacterSelection", "toggle", true);
             uiHandling.handleObjectUiMutation(player, MutationKeys.PlayerAccountData, userData);
@@ -332,7 +329,9 @@ namespace CloudRP.PlayerSystems.Character
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
-                List<DbCharacter> allPlayerCharacters = dbContext.characters.Where(character => character.owner_id == userData.account_id).ToList();
+                List<DbCharacter> allPlayerCharacters = dbContext.characters
+                    .Where(character => character.owner_id == userData.account_id)
+                    .ToList();
 
                 allPlayerCharacters.ForEach(character =>
                 {

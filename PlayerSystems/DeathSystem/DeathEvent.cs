@@ -16,7 +16,14 @@ namespace CloudRP.PlayerSystems.DeathSystem
 {
     class DeathEvent : Script
     {
-        public static List<Hospital> hospitalList = new List<Hospital>();
+        public static List<Hospital> hospitalList = new List<Hospital> {
+            new Hospital { name = "Paleto Hospital", position = new Vector3(-381.1, 6119.7, 31.5) },
+            new Hospital { name = "Pillbox Hill Hospital Back", position = new Vector3(360.8, -585.3, 28.8) },
+            new Hospital { name = "Pillbox Hill Hospital Front", position = new Vector3(297.7, -583.6, 43.3) },
+            new Hospital { name = "Mount Zonah", position = new Vector3(-497.3, -336.3, 34.5) },
+            new Hospital { name = "Sandy Hospital", position = new Vector3(1821.3, 3684.9, 34.3) },
+            new Hospital { name = "Paleto Hospital", position = new Vector3(-381.1, 6119.7, 31.5) }
+        };
         public static List<Corpse> corpses = new List<Corpse>();
         public static int _respawnTimeout_seconds = 3;
         public const int _deathTimer_seconds = 600;
@@ -25,13 +32,6 @@ namespace CloudRP.PlayerSystems.DeathSystem
 
         public DeathEvent()
         {
-            hospitalList.Add(new Hospital { name = "South LS Hospital", position = new Vector3(342.3, -1397.5, 32.5) });
-            hospitalList.Add(new Hospital { name = "Pillbox Hill Hospital Back", position = new Vector3(360.8, -585.3, 28.8) });
-            hospitalList.Add(new Hospital { name = "Pillbox Hill Hospital Front", position = new Vector3(297.7, -583.6, 43.3) });
-            hospitalList.Add(new Hospital { name = "Mount Zonah", position = new Vector3(-497.3, -336.3, 34.5) });
-            hospitalList.Add(new Hospital { name = "Sandy Hospital", position = new Vector3(1821.3, 3684.9, 34.3) });
-            hospitalList.Add(new Hospital { name = "Paleto Hospital", position = new Vector3(-381.1, 6119.7, 31.5) });
-
             NAPI.Server.SetAutoRespawnAfterDeath(false);
             NAPI.Server.SetAutoSpawnOnConnect(false);
 

@@ -60,13 +60,13 @@ namespace CloudRP.ServerSystems.DiscordSystem
             await DiscordIntegration.SetUpBotInstance(token, "Starting...", ActivityType.Playing, UserStatus.Online);
 
 
-            NAPI.Task.Run(() =>
+            NAPI.Task.Run(async () =>
             {
                 DiscordIntegration.RegisterChannelForListenting(staffChannel);
                 DiscordIntegration.RegisterChannelForListenting(reportAlertChannel);
 
                 ChatUtils.formatConsolePrint("Started listening on staff channel and report alert channel.", ConsoleColor.Magenta);
-                DiscordIntegration.flushOldReports();
+                await DiscordIntegration.flushOldReports();
             }, 5000);
 
 

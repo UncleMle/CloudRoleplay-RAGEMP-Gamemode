@@ -22,7 +22,7 @@ namespace CloudRP.VehicleSystems.Vehicles
         public static readonly string _trailerSyncDataKey = "truckerVehicleTrailerData";
         public static readonly string _vehicleTrailerDataKey = "truckerVehicleTrailer";
 
-        public static void sendVehicleToInsurance(this Vehicle vehicle)
+        public static void sendVehicleToInsurance(this Vehicle vehicle, bool sendMessageToOwner = false)
         {
             DbVehicle vehicleData = vehicle.getData();
 
@@ -44,6 +44,17 @@ namespace CloudRP.VehicleSystems.Vehicles
                 {
                     dbContext.vehicles.Update(vehicleData);
                     dbContext.SaveChanges();
+                }
+
+                if(sendMessageToOwner)
+                {
+                    NAPI.Pools.GetAllPlayers().ForEach(owner =>
+                    {
+                        if(owner.getPlayerCharacterData()?.character_id == vehicleData.owner_id)
+                        {
+                            owner.SendChatMessage(ChatUtils.info + $"Your vehicle [{vehicleData.numberplate}] was destroyed and sent to {closestInsuranceToDeath.insuranceName}.");
+                        }
+                    });
                 }
 
                 vehicle.Delete();

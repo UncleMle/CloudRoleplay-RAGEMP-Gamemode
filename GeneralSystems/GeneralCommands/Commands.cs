@@ -492,6 +492,12 @@ namespace CloudRP.GeneralSystems.GeneralCommands
                 return;
             }
 
+            if(findCharData.characterClothing != null && findCharData.characterClothing.mask != 0)
+            {
+                CommandUtils.errorSay(player, "You can't alias a player with a mask on.");
+                return;
+            }
+
             if (!AuthUtils.validateNick(nickname))
             {
                 CommandUtils.errorSay(player, "You cannot use certain special characters within player nicknames.");

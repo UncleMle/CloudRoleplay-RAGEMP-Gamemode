@@ -220,23 +220,17 @@ namespace CloudRP.World.BanksAtms
                     uiHandling.sendPushNotifError(player, "Enter a valid transfer amount.", 6600, true);
                 }
             }
-
         }
 
         public static bool isBankOpen(Player player)
         {
-            bool isOpen = false;
-
             if (TimeSystem.hour > bankCloseHour - 1 || TimeSystem.hour < bankOpenHour)
             {
                 uiHandling.sendPushNotifError(player, $"The bank is currently closed. Come back at {bankOpenHour}{(bankOpenHour > 12 ? "PM" : "AM")}", 5500);
-                isOpen = false;
-            } else
-            {
-                isOpen = true;
+                return true;
             }
 
-            return isOpen;
+            return false;
         }
     }
 }

@@ -69,7 +69,6 @@ namespace CloudRP
 
             HousingSystem.loadAllHouses();
             FloatingDo.loadFdos();
-            CharacterSystem.beginSaveInterval();
             AdminMarker.loadMarkers();
             Atm.loadAtms();
             DiscordSystems.initDiscordSystem();
