@@ -67,7 +67,7 @@ export default class VehicleStall {
                 return;
             }
 
-            if (difference > 4) {
+            if (difference > 2) {
                 VehicleStall.beingStall(StallTypes.Small);
                 return;
             }
