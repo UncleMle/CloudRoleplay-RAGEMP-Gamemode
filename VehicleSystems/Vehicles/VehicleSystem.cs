@@ -814,8 +814,6 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             if (vehicleData == null) return;
 
-            Console.WriteLine("stalled " + player.Vehicle.isStalled());
-
             if(player.Vehicle.isStalled())
             {
                 uiHandling.sendNotification(player, "~r~Vehicle is stalled", false);

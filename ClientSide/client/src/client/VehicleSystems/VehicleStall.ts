@@ -20,6 +20,13 @@ export default class VehicleStall {
     private static handleRender() {
         if (VehicleStall.LocalPlayer.vehicle && VehicleStall.LocalPlayer.vehicle.getVariable(VehicleStall.isStalledKey)) {
             VehicleStall.LocalPlayer.vehicle.setUndriveable(true);
+
+            mp.game.graphics.drawText("~r~Vehicle is stalled.", [0.5, 0.72], {
+                font: 4,
+                color: [255, 255, 255, 255],
+                scale: [0.45, 0.45],
+                outline: false
+            });
         }
     }
 
@@ -65,6 +72,7 @@ export default class VehicleStall {
                 return;
             }
 
+            VehicleStall.oldVehicleDmg = VehicleStall.LocalPlayer.vehicle.getBodyHealth();
         }
     }
 }
