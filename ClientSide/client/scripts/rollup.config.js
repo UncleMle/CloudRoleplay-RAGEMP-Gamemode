@@ -118,12 +118,12 @@ copyFiles();
 const terserMinify =
 	isProduction && !useSWC
 		? terser({
-				keep_classnames: true,
-				keep_fnames: true,
-				output: {
-					comments: false
-				}
-		  })
+			keep_classnames: true,
+			keep_fnames: true,
+			output: {
+				comments: false
+			}
+		})
 		: [];
 
 const generateConfig = (options = {}) => {
@@ -150,28 +150,28 @@ const generateConfig = (options = {}) => {
 			commonjsPlugin(),
 			useSWC
 				? swc({
-						tsconfig: tsConfigPath,
-						minify: isProduction,
-						jsc: {
-							target: 'es2020',
-							parser: {
-								syntax: 'typescript',
-								dynamicImport: true,
-								decorators: true
-							},
-							transform: {
-								legacyDecorator: true,
-								decoratorMetadata: true
-							},
-							externalHelpers: true,
-							keepClassNames: true,
-							loose: true
-						}
-				  })
+					tsconfig: tsConfigPath,
+					minify: isProduction,
+					jsc: {
+						target: 'es2020',
+						parser: {
+							syntax: 'typescript',
+							dynamicImport: true,
+							decorators: true
+						},
+						transform: {
+							legacyDecorator: true,
+							decoratorMetadata: true
+						},
+						externalHelpers: true,
+						keepClassNames: true,
+						loose: true
+					}
+				})
 				: typescriptPlugin({
-						check: false,
-						tsconfig: tsConfigPath
-				  }),
+					check: false,
+					tsconfig: tsConfigPath
+				}),
 			isServer ? [...serverPlugins] : null,
 			...plugins
 		],

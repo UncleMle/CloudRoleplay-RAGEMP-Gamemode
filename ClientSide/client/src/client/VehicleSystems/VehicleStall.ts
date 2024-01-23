@@ -63,17 +63,22 @@ export default class VehicleStall {
             let difference: number = Math.round(VehicleStall.oldVehicleDmg / 10) - Math.round(VehicleStall.LocalPlayer.vehicle.getHealth() / 10);
 
             if (difference > 8) {
-                mp.events.callRemote(VehicleStall.beginStallEvent, StallTypes.Medium);
-                VehicleStall.oldVehicleDmg = VehicleStall.LocalPlayer.vehicle.getHealth();
+                VehicleStall.beingStall(StallTypes.Medium);
                 return;
             }
 
             if (difference > 4) {
-                mp.events.callRemote(VehicleStall.beginStallEvent, StallTypes.Small);
-                VehicleStall.oldVehicleDmg = VehicleStall.LocalPlayer.vehicle.getHealth();
+                VehicleStall.beingStall(StallTypes.Small);
                 return;
             }
 
+            VehicleStall.oldVehicleDmg = VehicleStall.LocalPlayer.vehicle.getHealth();
+        }
+    }
+
+    private static beingStall(type: StallTypes) {
+        if (VehicleStall.LocalPlayer.vehicle) {
+            mp.events.callRemote(VehicleStall.beginStallEvent, type);
             VehicleStall.oldVehicleDmg = VehicleStall.LocalPlayer.vehicle.getHealth();
         }
     }
