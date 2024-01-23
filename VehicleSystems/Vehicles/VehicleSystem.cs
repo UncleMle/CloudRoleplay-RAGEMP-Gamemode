@@ -8,6 +8,7 @@ using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.VehicleInsurance;
 using CloudRP.VehicleSystems.VehicleModification;
 using GTANetworkAPI;
+using Microsoft.EntityFrameworkCore.Internal;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ namespace CloudRP.VehicleSystems.Vehicles
         private static Timer saveVehicleTimer;
         public static readonly string[] bones = { "door_dside_f", "door_pside_f", "door_dside_r", "door_pside_r", "bonnet", "boot" };
         public static readonly string[] names = { "door", "door", "door", "door", "hood", "trunk", "trunk" };
+        public static readonly int[] blockedSeatbeltClasses = { 13, 14, 15, 16, 21, 8 };
 
         #region Init
         public VehicleSystem()
@@ -972,8 +974,12 @@ namespace CloudRP.VehicleSystems.Vehicles
         {
             if (player.IsInVehicle)
             {
-                player.SetCustomData(_seatBeltIdentifier, toggle);
-                player.SetCustomSharedData(_seatBeltIdentifier, toggle);
+                DbVehicle vehicleData = player.Vehicle.getData();
+
+                if(vehicleData != null && !blockedSeatbeltClasses.Contains(vehicleData.vehicle_class_id)) {
+                    player.SetCustomData(_seatBeltIdentifier, toggle);
+                    player.SetCustomSharedData(_seatBeltIdentifier, toggle);
+                }
             }
         }
 
