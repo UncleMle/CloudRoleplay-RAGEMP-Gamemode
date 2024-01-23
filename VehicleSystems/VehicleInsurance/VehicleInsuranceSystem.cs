@@ -34,7 +34,7 @@ namespace CloudRP.VehicleSystems.VehicleInsurance
                 retrievePosition = new Vector3(-227.6, 6333.6, 32.4),
                 spawnPosition = new Vector3(-219.7, 6342.0, 32.3),
                 retrieveFee = 2500
-            },
+            }
         };
 
         public VehicleInsuranceSystem()
@@ -71,7 +71,6 @@ namespace CloudRP.VehicleSystems.VehicleInsurance
                             player.ResetSharedData(_insuranceDataIdentifier);
                         }
                     };
-
                 });
             });
         }

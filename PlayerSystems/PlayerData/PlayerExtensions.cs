@@ -5,15 +5,12 @@ using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.Database;
 using GTANetworkAPI;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using CloudRP.ServerSystems.Utils;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace CloudRP.PlayerSystems.PlayerData
 {

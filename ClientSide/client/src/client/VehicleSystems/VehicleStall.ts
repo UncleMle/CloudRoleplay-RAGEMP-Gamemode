@@ -53,26 +53,28 @@ export default class VehicleStall {
 
     private static handlePlayerEnterVeh(vehicle: VehicleMp, seat: number) {
         if (seat && vehicle && mp.vehicles.at(vehicle.remoteId)) {
-            VehicleStall.oldVehicleDmg = vehicle.getBodyHealth();
+            VehicleStall.oldVehicleDmg = vehicle.getHealth();
             VehicleStall.startCheck();
         }
     }
 
     private static handleDamageCheck() {
         if (VehicleStall.LocalPlayer.vehicle && getVehicleData(VehicleStall.LocalPlayer.vehicle)) {
-            if ((VehicleStall.oldVehicleDmg - VehicleStall.LocalPlayer.vehicle.getBodyHealth()) > 9) {
+            let difference: number = Math.round(VehicleStall.oldVehicleDmg / 10) - Math.round(VehicleStall.LocalPlayer.vehicle.getHealth() / 10);
+
+            if (difference > 8) {
                 mp.events.callRemote(VehicleStall.beginStallEvent, StallTypes.Medium);
-                VehicleStall.oldVehicleDmg = VehicleStall.LocalPlayer.vehicle.getBodyHealth();
+                VehicleStall.oldVehicleDmg = VehicleStall.LocalPlayer.vehicle.getHealth();
                 return;
             }
 
-            if ((VehicleStall.oldVehicleDmg - VehicleStall.LocalPlayer.vehicle.getBodyHealth()) > 4) {
+            if (difference > 4) {
                 mp.events.callRemote(VehicleStall.beginStallEvent, StallTypes.Small);
-                VehicleStall.oldVehicleDmg = VehicleStall.LocalPlayer.vehicle.getBodyHealth();
+                VehicleStall.oldVehicleDmg = VehicleStall.LocalPlayer.vehicle.getHealth();
                 return;
             }
 
-            VehicleStall.oldVehicleDmg = VehicleStall.LocalPlayer.vehicle.getBodyHealth();
+            VehicleStall.oldVehicleDmg = VehicleStall.LocalPlayer.vehicle.getHealth();
         }
     }
 }

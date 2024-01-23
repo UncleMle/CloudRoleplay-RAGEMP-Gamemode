@@ -29,6 +29,12 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static string _voipStatusKey = "voipIsTalking";
         public static string _characterModelKey = "characterModel";
 
+        public enum ExternalSlots
+        {
+            Account,
+            Character
+        }
+
         public static bool checkIfCharacterIsLogged(int charId)
         {
             bool wasFound = false;
@@ -55,6 +61,8 @@ namespace CloudRP.PlayerSystems.PlayerData
         {
             if (player.checkDataSetIsValid())
             {
+                player.GetAllData();
+
                 if (key != null && (key == _sharedAccountDataIdentifier && checkIfAccountIsLogged((val as User).account_id) || key == _sharedCharacterDataIdentifier && checkIfCharacterIsLogged((val as DbCharacter).character_id)))
                 {
                     ChatUtils.formatConsolePrint($"[ServerData] Duplicate key error. Key: " + key, ConsoleColor.Red);
