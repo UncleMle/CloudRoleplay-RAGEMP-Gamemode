@@ -7,6 +7,7 @@ using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
 using System;
 using System.Linq;
+using System.Threading;
 
 namespace CloudRP.PlayerSystems.Jobs.TruckerJob
 {
@@ -29,6 +30,14 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
         #region Init
         public TruckerJob()
         {
+            FreelanceJobSystem.quitJob += (player, job) =>
+            {
+                if(job.jobId == (int)FreelanceJobs.TruckerJob)
+                {
+                    player.TriggerEvent("client:truckerJob:clearProgress");
+                }
+            };
+
             AvailableJobs.availableJobs.ForEach(job =>
             {
                 job.jobId = AvailableJobs.availableJobs.IndexOf(job);

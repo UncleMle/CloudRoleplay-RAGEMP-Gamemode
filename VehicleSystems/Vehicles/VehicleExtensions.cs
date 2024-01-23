@@ -53,7 +53,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                     {
                         if(owner.getPlayerCharacterData()?.character_id == vehicleData.owner_id)
                         {
-                            owner.SendChatMessage(ChatUtils.info + $"Your vehicle [{vehicleData.numberplate}] was destroyed and sent to {closestInsuranceToDeath.insuranceName}.");
+                            owner.SendChatMessage(ChatUtils.info + $"Your vehicle {vehicleData.vehicle_display_name} [{vehicleData.numberplate}] was destroyed and sent to {closestInsuranceToDeath.insuranceName}.");
                         }
                     });
                 }

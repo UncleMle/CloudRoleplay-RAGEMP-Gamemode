@@ -12,9 +12,11 @@ namespace CloudRP.PlayerSystems.Jobs
 {
     public class FreelanceJobSystem : Script
     {
+        public delegate void FreelanceJobSystemEventsHandler(Player player, FreeLanceJobData job);
+        public static event FreelanceJobSystemEventsHandler quitJob;
         public static readonly string _FreelanceJobDataIdentifier = "FreeLanceJobData";
         public static readonly string _FreelanceJobVehicleDataIdentifier = "FreeLanceJobVehicleData";
-
+        
         public FreelanceJobSystem()
         {
             Commands.loggingOut += (Player player, DbCharacter character) =>
@@ -125,14 +127,17 @@ namespace CloudRP.PlayerSystems.Jobs
         public void quitFreeLanceJob(Player player)
         {
             DbCharacter characterData = player.getPlayerCharacterData();
+            FreeLanceJobData jobData = player.getFreelanceJobData();
 
-            if(player.getFreelanceJobData() != null && characterData != null)
+            if(jobData != null && characterData != null)
             {
-                string jobName = player.getFreelanceJobData().jobName;
+                string jobName = jobData.jobName;
+                quitJob(player, jobData);
 
                 player.SendChatMessage(ChatUtils.freelanceJobs + "You have quit your freelance job as a " + jobName + ".");
                 player.resetFreeLanceJobData();
                 MarkersAndLabels.removeClientBlip(player);
+
             } else
             {
                 CommandUtils.errorSay(player, "You don't have any freelance jobs to quit.");

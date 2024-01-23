@@ -13,7 +13,8 @@ export default class TruckerJob {
     constructor() {
         mp.events.add({
             "render": TruckerJob.handleRender,
-            "client:truckerJob:addProgressTimer": TruckerJob.handleProgressTimer
+            "client:truckerJob:addProgressTimer": TruckerJob.handleProgressTimer,
+            "client:truckerJob:clearProgress": TruckerJob.clearProgressTimer
         });
     }
 
