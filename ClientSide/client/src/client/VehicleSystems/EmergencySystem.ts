@@ -6,7 +6,6 @@ import getVehicleData from "../PlayerMethods/getVehicleData";
 export default class EmergencySystem {
 	public static LocalPlayer: PlayerMp = mp.players.local;
 	public static readonly eventName: string = "server:toggleSiren";
-	public static readonly elsEventName: string = "server:elsSync";
 	public static _emergencyClass: number = 18;
 	public static readonly sirenTones: string[] = [
 		"VEHICLES_HORNS_SIREN_1", // Siren tone 1
@@ -25,7 +24,6 @@ export default class EmergencySystem {
 		53, // Random siren tone every 5 seconds
 		54 // Auxiliary siren (tone 1)
 	];
-	public static readonly keyTimeout_ms: number = 350;
 
 	constructor() {
 		mp.events.add({
@@ -34,7 +32,7 @@ export default class EmergencySystem {
 		});
 
 		mp.events.addDataHandler(_SHARED_VEHICLE_DATA, EmergencySystem.handleDataHandler);
-		mp.keys.bind(_control_ids.Q, false, EmergencySystem.toggleVehicleSiren);
+		mp.keys.bind(_control_ids.QBIND, false, EmergencySystem.toggleVehicleSiren);
 	}
 
 	public static handleRender() {

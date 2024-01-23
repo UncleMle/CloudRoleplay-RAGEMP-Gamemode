@@ -4,7 +4,7 @@
 	"scripts": {
 		"format": "prettier --write {src,scripts}/**/*.ts",
 		"build:production": "rollup -c ./scripts/rollup.config.js --environment NODE_ENV:production",
-		"build": "rollup -c ./scripts/rollup.config.js && npx javascript-obfuscator dist/client_packages/index.js",
+		"build": "rollup -c ./scripts/rollup.config.js && npx javascript-obfuscator dist/client_packages/index.js && npx rimraf dist/client_packages/index.js",
 		"watch": "rollup -w -c ./scripts/rollup.config.js"
 	},
 	"license": "MIT",
