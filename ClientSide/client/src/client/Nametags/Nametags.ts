@@ -33,7 +33,7 @@ export default class NameTags {
 			let isFocused: boolean = mp.system.isFocused;
 
 			if (isFocused != NameTags.isClientTabbed) {
-				mp.events.callRemote(NameTags.setTabbedEvent);
+				mp.events.callRemote(NameTags.setTabbedEvent, isFocused);
 			}
 
 			NameTags.isClientTabbed = isFocused;

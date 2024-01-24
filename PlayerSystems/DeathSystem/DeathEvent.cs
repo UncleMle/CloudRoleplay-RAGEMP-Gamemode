@@ -119,7 +119,7 @@ namespace CloudRP.PlayerSystems.DeathSystem
 
             NAPI.Player.SpawnPlayer(player, closestHospital.hospital.position);
 
-            NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.hospital + "You recieved medial treatment at " + closestHospital.hospital.position);
+            NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.hospital + "You recieved medial treatment at " + closestHospital.hospital.name);
             player.TriggerEvent("client:moveSkyCamera", "down");
             player.TriggerEvent("injured:removeStatus");
         }

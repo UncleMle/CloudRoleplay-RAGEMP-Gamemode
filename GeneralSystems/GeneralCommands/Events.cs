@@ -71,18 +71,10 @@ namespace CloudRP.GeneralSystems.GeneralCommands
         }
 
         [RemoteEvent("server:setPlayerTabbedOut")]
-        public static void setPlayerTabbedOut(Player player)
+        public static void setPlayerTabbedOut(Player player, bool state )
         {
-            if(!player.GetData<bool>(_tabbedOutIdentifier))
-            {
-                player.SetCustomData(_tabbedOutIdentifier, true);
-                player.SetCustomSharedData(_tabbedOutIdentifier, true);
-            } else
-            {
-                player.SetCustomData(_tabbedOutIdentifier, false);
-                player.SetCustomSharedData(_tabbedOutIdentifier, false);
-            }
-
+            player.SetCustomData(_tabbedOutIdentifier, state);
+            player.SetCustomSharedData(_tabbedOutIdentifier, state);
         }
     }
 }
