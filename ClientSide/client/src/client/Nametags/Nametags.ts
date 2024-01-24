@@ -11,22 +11,33 @@ import VehicleSystems from '@/VehicleSystems/VehicleSystem';
 import PlayerAuthentication from '@/Authentication/PlayerAuthentication';
 
 export default class NameTags {
+	public static LocalPlayer: PlayerMp = mp.players.local;
+	public static ScreenRes: GetScreenResolutionResult = mp.game.graphics.getScreenResolution();
 	public static userData: UserData | undefined;
-	public static LocalPlayer: PlayerMp;
-	public static ScreenRes: GetScreenResolutionResult;
-	public static requestNickEvent: string = 'server:requestPlayerNickname';
-	public static playerIsTypingState: string = 'playerIsTypingState';
+	public static readonly requestNickEvent: string = 'server:requestPlayerNickname';
+	public static readonly setTabbedEvent: string = 'server:setPlayerTabbedOut';
+	public static readonly playerIsTypingState: string = 'playerIsTypingState';
+	public static readonly playerIsTabbedState: string = "playerIsTabbedOut";
+	public static isClientTabbed: boolean;
+	public static readonly checkClientTabbed_seconds: number = 1;
 
 	constructor() {
-		NameTags.LocalPlayer = mp.players.local;
-		NameTags.ScreenRes = mp.game.graphics.getScreenResolution();
-
 		mp.nametags.enabled = false;
 		mp.events.add('render', NameTags.renderNametags);
 		mp.events.add('entityStreamIn', NameTags.handleStreamIn);
 		mp.events.add('set:nickName', NameTags.handleNickNameSet);
 		mp.events.add('sendWithNickName', NameTags.sendWithNick);
 		mp.events.add('playerQuit', NameTags.sendQuitMessage);
+
+		setInterval(() => {
+			let isFocused: boolean = mp.system.isFocused;
+
+			if (isFocused != NameTags.isClientTabbed) {
+				mp.events.callRemote(NameTags.setTabbedEvent);
+			}
+
+			NameTags.isClientTabbed = isFocused;
+		}, NameTags.checkClientTabbed_seconds * 1000);
 	}
 
 	public static sendQuitMessage(playerQuitting: PlayerMp, exitType: string, reason: string) {
@@ -34,10 +45,10 @@ export default class NameTags {
 		if (distBetweenCoords(NameTags.LocalPlayer.position, playerQuitting.position) > 25) return;
 		mp.gui.chat.push(
 			'!{#f57b42}[Disconnected] !{white}' +
-				NameTags.getPlayerNick(playerQuitting) +
-				' has ' +
-				NameTags.formatExit(exitType, reason) +
-				' from the server!'
+			NameTags.getPlayerNick(playerQuitting) +
+			' has ' +
+			NameTags.formatExit(exitType, reason) +
+			' from the server!'
 		);
 	}
 
@@ -83,7 +94,7 @@ export default class NameTags {
 			DeathSystem.disableControls();
 		}
 
-		if(getUserCharacterData()?.loggingOut) {
+		if (getUserCharacterData()?.loggingOut) {
 			PlayerAuthentication.LocalPlayer.freezePosition(true);
 		}
 
@@ -160,10 +171,23 @@ export default class NameTags {
 						);
 					}
 
-					if(target.getVariable(PlayerAuthentication._logoutIdentifier)) {
+					if (target.getVariable(PlayerAuthentication._logoutIdentifier)) {
 						mp.game.graphics.drawText(
-							"~y~Logging out...~w~",
+							"~y~(( Logging out... ))~w~",
 							[x, y - 0.042],
+							{
+								font: 4,
+								color: [220, 125, 225, 255],
+								scale: [0.325, 0.325],
+								outline: false
+							}
+						);
+					}
+
+					if (!target.getVariable(NameTags.playerIsTabbedState)) {
+						mp.game.graphics.drawText(
+							"~p~(( Tabbed Out ))~w~",
+							[x, y - 0.052],
 							{
 								font: 4,
 								color: [220, 125, 225, 255],

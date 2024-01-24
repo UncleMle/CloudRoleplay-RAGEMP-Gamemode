@@ -12,8 +12,9 @@ namespace CloudRP.GeneralSystems.GeneralCommands
     class Events : Script
     {
         public static int afkMaxCalcNum = 10;
-        public static string _afkKeyIdentifier = "playerAfkData";
-        public static string _ameTextIdentifier = "playerAmeTextMessage";
+        public static readonly string _afkKeyIdentifier = "playerAfkData";
+        public static readonly string _ameTextIdentifier = "playerAmeTextMessage";
+        public static readonly string _tabbedOutIdentifier = "playerIsTabbedOut";
         public static long kickTime_seconds = 40;
 
         [RemoteEvent("server:beginAfk")]
@@ -67,6 +68,21 @@ namespace CloudRP.GeneralSystems.GeneralCommands
 
             player.SetData(_ameTextIdentifier, text);
             player.SetSharedData(_ameTextIdentifier, text);
+        }
+
+        [RemoteEvent("server:setPlayerTabbedOut")]
+        public static void setPlayerTabbedOut(Player player)
+        {
+            if(!player.GetData<bool>(_tabbedOutIdentifier))
+            {
+                player.SetCustomData(_tabbedOutIdentifier, true);
+                player.SetCustomSharedData(_tabbedOutIdentifier, true);
+            } else
+            {
+                player.SetCustomData(_tabbedOutIdentifier, false);
+                player.SetCustomSharedData(_tabbedOutIdentifier, false);
+            }
+
         }
     }
 }

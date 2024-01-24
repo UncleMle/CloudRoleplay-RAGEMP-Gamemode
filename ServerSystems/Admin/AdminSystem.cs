@@ -1330,7 +1330,7 @@ namespace CloudRP.ServerSystems.Admin
             }
             else
             {
-                CommandUtils.errorSay(player, "Vehicle couldn't be found.");
+                CommandUtils.errorSay(player, "Vehicle couldn't be found within the world.");
             }
         }
 
