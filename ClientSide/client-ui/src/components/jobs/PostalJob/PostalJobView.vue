@@ -7,7 +7,7 @@
 
                         <div class="relative w-full h-fit py-4 rounded-lg">
                             <h1 class="font-bold text-2xl border-b-2 pb-2 border-gray-500 pl-4"><i
-                                    class="fa-solid fa-truck text-gray-400"></i> Available Jobs</h1>
+                                    class="fa-solid fa-signs-post text-gray-400"></i> Available Jobs</h1>
                             <CloseButton />
 
                         </div>

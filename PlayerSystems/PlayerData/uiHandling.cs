@@ -175,5 +175,6 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string PlayerAccountData = "player_account_info";
         public static readonly string BusDriverJobRoutes = "player_bus_job_routes";
         public static readonly string TruckerJobs = "trucker_jobs";
+        public static readonly string PostalJobView = "postal_jobs";
     }
 }

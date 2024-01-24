@@ -37,6 +37,6 @@ export default new Router({
         { path: '/atm', component: PlayerAtm },
         { path: '/busroutes', component: BusRoutes },
         { path: '/truckerjobs', component: TruckerJobsView },
-        { path: '/postaljobsview', component: PostalJobView }
+        { path: '/postaljobview', component: PostalJobView }
     ]
 });

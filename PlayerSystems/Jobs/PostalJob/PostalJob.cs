@@ -2,9 +2,6 @@
 using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CloudRP.PlayerSystems.Jobs.PostalJob
 {
@@ -24,6 +21,13 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
         public static void startPostalJob(Player player, bool isInSwitchNative, bool hasPhoneOut, bool isPauseMenuActive, bool isTyping, bool isInVehicle, bool isInjured)
         {
             if (!player.checkIsWithinCoord(jobStartPosition, 2f) || isInSwitchNative || hasPhoneOut || isPauseMenuActive || isTyping || isInjured) return;
+
+            uiHandling.resetMutationPusher(player, MutationKeys.PostalJobView);
+
+            AvailableJobs.availablePostalJobs.ForEach(postalJob =>
+            {
+                uiHandling.handleObjectUiMutationPush(player, MutationKeys.PostalJobView, postalJob);    
+            });
 
             uiHandling.pushRouterToClient(player, Browsers.PostalJobView, true);
         }
