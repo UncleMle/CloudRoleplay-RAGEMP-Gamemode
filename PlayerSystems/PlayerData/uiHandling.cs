@@ -143,6 +143,7 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string Atm = "/atm";
         public static readonly string ViewBusRoutes = "/busroutes";
         public static readonly string TruckerViewUI = "/truckerjobs";
+        public static readonly string PostalJobView = "/postaljobview";
     }
 
     public static class AuthStates
