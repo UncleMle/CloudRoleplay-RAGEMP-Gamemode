@@ -12,8 +12,10 @@ using CloudRP.ServerSystems.Utils;
 namespace CloudRP.ServerSystems.DiscordSystem
 {
     public class DiscordIntegration : Script
-    {
+    { 
         static DiscordSocketClient discord = null;
+        public static bool IsSetupCompleted { get; private set; } = false;
+        private static List<ulong> g_lstSubscribedChannels = new List<ulong>();
         private static string m_strToken = null;
         private static string m_strBotGameName = null;
         private static ActivityType m_eActivityType = ActivityType.Playing;
@@ -374,9 +376,5 @@ namespace CloudRP.ServerSystems.DiscordSystem
         {
             ChatUtils.formatConsolePrint(StrErrorMessage);
         }
-
-
-        public static bool IsSetupCompleted { get; private set; } = false;
-        private static List<ulong> g_lstSubscribedChannels = new List<ulong>();
     }
 }

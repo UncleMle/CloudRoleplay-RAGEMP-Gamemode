@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CloudRP.VehicleSystems.VehicleInsurance;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -152,5 +153,11 @@ namespace CloudRP.VehicleSystems.Vehicles
     {
         public int soundId { get; set; }
         public string soundName { get; set; }
+    }
+
+    public class InsuranceList
+    {
+        public float dist { get; set; }
+        public InsuranceArea area { get; set; }
     }
 }

@@ -9,6 +9,7 @@ using CloudRP.VehicleSystems.VehicleInsurance;
 using CloudRP.VehicleSystems.VehicleModification;
 using GTANetworkAPI;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.Logging.Console;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -539,17 +540,29 @@ namespace CloudRP.VehicleSystems.Vehicles
         public static InsuranceArea getClosestInsuranceToDeath(Vehicle vehicle)
         {
             List<InsuranceArea> insurances = VehicleInsuranceSystem.insuranceAreas;
-            Dictionary<float, InsuranceArea> iDists = new Dictionary<float, InsuranceArea>();
+            List<InsuranceList> closeInsurances = new List<InsuranceList>();
 
             insurances.ForEach(insurance =>
             {
-                iDists.Add(Vector3.Distance(insurance.spawnPosition, vehicle.Position), insurance);
+                closeInsurances.Add(new InsuranceList {
+                    area = insurance,
+                    dist = Vector3.Distance(insurance.spawnPosition, vehicle.Position)
+                });
             });
 
-            List<float> dists = new List<float>(iDists.Keys);
+            List<float> dists = new List<float>();
+
+            closeInsurances.ForEach(insurance =>
+            {
+                dists.Add(insurance.dist);
+            });
+
             dists.Sort();
 
-            return iDists.GetValueOrDefault(dists[0]);
+            return closeInsurances
+                .Where(insurance => insurance.dist == dists[0])
+                .FirstOrDefault()
+                ?.area;
         }
 
         public static List<Vehicle> getVehicleInRange(Player player, float range)
