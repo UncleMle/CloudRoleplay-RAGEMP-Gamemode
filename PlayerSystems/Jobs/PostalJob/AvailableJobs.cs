@@ -13,7 +13,7 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
                 description = "Drive a route around the LS Hills delivering packages.",
                 jobId = 1,
                 jobPay = 4000,
-                name = "LS Hills"
+                name = "LS Hills Route"
             }
         };
 

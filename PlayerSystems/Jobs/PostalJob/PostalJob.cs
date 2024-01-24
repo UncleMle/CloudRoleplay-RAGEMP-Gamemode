@@ -1,13 +1,22 @@
-﻿using CloudRP.PlayerSystems.PlayerData;
+﻿using CloudRP.PlayerSystems.Character;
+using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.CustomEvents;
+using CloudRP.ServerSystems.Utils;
+using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
+using System;
 
 namespace CloudRP.PlayerSystems.Jobs.PostalJob
 {
     public class PostalJob : Script
     {
         private static readonly Vector3 jobStartPosition = new Vector3(-232.1, -914.9, 32.3);
+        private static readonly Vector3 jobVehicleSpawn = new Vector3(-212.6, -920.4, 29.3);
+        private static readonly float jobVehicleRotation = -22.0f;
+        private static readonly string postalTruck = "boxville2";
+        private static readonly int jobId = (int)FreelanceJobs.PostalJob;
+        private static readonly string jobName = "Postal Job";
 
         public PostalJob()
         {
@@ -18,7 +27,23 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
             MarkersAndLabels.setTextLabel(jobStartPosition, "Postal OP\n Use ~y~Y~w~ to interact.", 5f);
         }
 
-        public static void startPostalJob(Player player, bool isInSwitchNative, bool hasPhoneOut, bool isPauseMenuActive, bool isTyping, bool isInVehicle, bool isInjured)
+        #region Methods
+        void spawnPostalJobVehicle(Player player)
+        {
+            DbCharacter characterData = player.getPlayerCharacterData();
+            if (characterData == null) return;
+
+            Vehicle workTruck = VehicleSystem.buildVolatileVehicle(player, postalTruck, jobVehicleSpawn, jobVehicleRotation, "POST" + characterData.character_id, 44, 44);
+
+            workTruck.setFreelanceJobData(new FreeLanceJobVehicleData
+            {
+                jobId = jobId,
+                jobName = jobName,
+                characterOwnerId = characterData.character_id,
+            });
+        }
+
+        void startPostalJob(Player player, bool isInSwitchNative, bool hasPhoneOut, bool isPauseMenuActive, bool isTyping, bool isInVehicle, bool isInjured)
         {
             if (!player.checkIsWithinCoord(jobStartPosition, 2f) || isInSwitchNative || hasPhoneOut || isPauseMenuActive || isTyping || isInjured) return;
 
@@ -26,11 +51,37 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
 
             AvailableJobs.availablePostalJobs.ForEach(postalJob =>
             {
-                uiHandling.handleObjectUiMutationPush(player, MutationKeys.PostalJobView, postalJob);    
+                uiHandling.handleObjectUiMutationPush(player, MutationKeys.PostalJobView, postalJob);
             });
 
             uiHandling.pushRouterToClient(player, Browsers.PostalJobView, true);
         }
+        #endregion
 
+        #region Remote Events
+        [RemoteEvent("server:postalJob:selectJob")]
+        void selectPostalJob(Player player, int selectedJob)
+        {
+            if(!FreelanceJobSystem.hasAJob(player, jobId) && player.checkIsWithinCoord(jobStartPosition, 2f))
+            {
+                if (FreelanceJobSystem.hasFreeLanceVehicle(player)) return;
+
+                Console.WriteLine(selectedJob + " jid");
+
+                player.setFreelanceJobData(new FreeLanceJobData
+                {
+                    jobId = jobId,
+                    jobLevel = -1,
+                    jobStartedUnix = CommandUtils.generateUnix(),
+                    jobName = jobName
+                });
+
+                spawnPostalJobVehicle(player);
+                uiHandling.resetRouter(player);
+
+                MarkersAndLabels.addBlipForClient(player, 616, "Postal truck", jobVehicleSpawn, 67, 255, 20);
+            }
+        }
+        #endregion
     }
 }

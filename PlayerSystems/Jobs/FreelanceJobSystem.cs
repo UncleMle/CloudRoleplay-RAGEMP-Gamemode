@@ -64,6 +64,10 @@ namespace CloudRP.PlayerSystems.Jobs
                 });
             }
 
+            if(hasVeh)
+            {
+                CommandUtils.errorSay(player, "You already have a work truck. Continue with your job or use /qjob.");
+            }
 
             return hasVeh;
         }
@@ -159,8 +163,10 @@ namespace CloudRP.PlayerSystems.Jobs
 
     public enum FreelanceJobs
     {
-        BusJob = 0,
-        TruckerJob = 1,
+        BusJob,
+        TruckerJob,
+        PostalJob,
+        GruppeSix
     }
 
     public class FreeLanceJobData

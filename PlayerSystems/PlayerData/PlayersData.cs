@@ -32,7 +32,8 @@ namespace CloudRP.PlayerSystems.PlayerData
         public enum ExternalSlots
         {
             Account,
-            Character
+            Character,
+            VehicleFreelance
         }
 
         public static bool checkIfCharacterIsLogged(int charId)

@@ -146,6 +146,8 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                             .Where(route => route.ownerDepoId == depoData.depoId)
                             .ToList();
 
+                        if (FreelanceJobSystem.hasFreeLanceVehicle(player)) return;
+
                         if (availableRoutes.Count > 0)
                         {
                             uiHandling.resetMutationPusher(player, MutationKeys.BusDriverJobRoutes);
