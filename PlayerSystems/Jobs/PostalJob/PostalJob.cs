@@ -5,6 +5,7 @@ using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
+using Newtonsoft.Json;
 using System;
 using System.Linq;
 
@@ -27,6 +28,16 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
             NAPI.Blip.CreateBlip(837, jobStartPosition, 1f, 62, "Postal OP", 255, 5f, true, 0, 0);
             MarkersAndLabels.setPlaceMarker(jobStartPosition);
             MarkersAndLabels.setTextLabel(jobStartPosition, "Postal OP\n Use ~y~Y~w~ to interact.", 5f);
+
+            ColShape finishJob = NAPI.ColShape.CreateSphereColShape(jobVehicleSpawn, 5f, 0);
+
+            finishJob.OnEntityEnterColShape += (col, player) =>
+            {
+                if (col.Equals(finishJob))
+                {
+                    handleJobPay(player);
+                }
+            };
 
             AvailableJobs.availablePostalJobs.ForEach(postalJob =>
             {
@@ -79,22 +90,35 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
                 
                 if(playerJobData == null || postalData == null) return;
 
-                int selectedIdx = AvailableJobs.availablePostalJobs.IndexOf(postalData.selectedJob);
+                AvailablePostalJob findJob = AvailableJobs.availablePostalJobs
+                .Where(job => job.Equals(postalData.selectedJob)).FirstOrDefault();
 
+                int selectedIdx = findJob.deliveryStops.IndexOf(stopPos);
 
-                if(((postalData.selectedJobLevel - selectedIdx) == 1 || postalData.selectedJobLevel == 0 && selectedIdx == 0) && playerJobData.jobId == jobId && playerJobData.jobLevel == 0)
+                Console.WriteLine($"{postalData.selectedJobLevel} || {selectedIdx}");
+
+                if((postalData.selectedJobLevel - selectedIdx) == 0 && playerJobData.jobId == jobId && playerJobData.jobLevel == 0)
                 {
-                    if((postalData.selectedJobLevel + 1) > postalData.selectedJob.deliveryStops.Count)
+                    if (!postalData.hasPackage)
+                    {
+                        uiHandling.sendPushNotifError(player, $"You don't have a package fetch one from the back of the post truck.", 6500);
+                        return;
+                    }
+
+                    if ((postalData.selectedJobLevel + 1) > postalData.selectedJob.deliveryStops.Count - 1)
                     {
                         handleJobEnd(player, postalData);
                         return;
                     }
 
                     postalData.selectedJobLevel++;
+                    postalData.hasPackage = false;
+                    AttachmentSync.AttachmentSync.removePlayerAttachments(player);
 
-                    player.SendChatMessage("Recieved parcel");
+                    player.SendChatMessage(ChatUtils.freelanceJobs + "Head over to the next delievery spot.");
 
                     addDeliverPointMarker(player, postalData.selectedJob.deliveryStops[postalData.selectedJobLevel]);
+                    player.SetData(postalJobDataKey, postalData);
                 }
             };
         }
@@ -106,7 +130,39 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
 
         void handleJobEnd(Player player, PostalJobData jobData)
         {
-            player.SendChatMessage("Job end");
+            FreeLanceJobData freelance = player.getFreelanceJobData();
+            if (freelance == null) return;
+
+            freelance.jobLevel = 1;
+            freelance.jobFinished = true;
+            jobData.selectedJobLevel = jobData.selectedJob.deliveryStops.Count;
+
+            AttachmentSync.AttachmentSync.removePlayerAttachments(player);
+
+            player.SendChatMessage(ChatUtils.freelanceJobs + "Head back to Postal OP to finish your job and get payed.");
+            MarkersAndLabels.addBlipForClient(player, 1, "Finish Postal Job", jobVehicleSpawn, 69, 255, -1, true, true);
+
+            player.setFreelanceJobData(freelance);
+            player.SetData(postalJobDataKey, jobData);
+        }
+
+        void handleJobPay(Player player)
+        {
+            FreeLanceJobData freelance = player.getFreelanceJobData();
+            PostalJobData postal = player.GetData<PostalJobData>(postalJobDataKey);
+            DbCharacter characterData = player.getPlayerCharacterData();
+            if(postal == null || freelance == null) return;
+
+            if(freelance.jobFinished && freelance.jobId == jobId)
+            {
+                FreelanceJobSystem.deleteFreeLanceVehs(player);
+                MarkersAndLabels.removeClientBlip(player);
+
+                characterData.money_amount += postal.selectedJob.jobPay;
+
+                player.setPlayerCharacterData(characterData, false, true);
+                player.SendChatMessage(ChatUtils.freelanceJobs + $"You have finished your postal route ({postal.selectedJob.name}) and earned {ChatUtils.moneyGreen}${postal.selectedJob.jobPay}");
+            }
         }
         #endregion
 
@@ -142,6 +198,8 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
                 uiHandling.resetRouter(player);
 
                 MarkersAndLabels.addBlipForClient(player, 616, "Postal truck", jobVehicleSpawn, 67, 255, 20);
+
+                player.SendChatMessage(ChatUtils.freelanceJobs + "Your postal truck has been spawned in get in it and head to your first destination.");
             }
         }
 
@@ -182,7 +240,7 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
             PostalJobData postalJobData = player.GetData<PostalJobData>(postalJobDataKey);
             if(vehicleFreelanceData == null || playerFreelanceData == null || characterData == null || postalJobData == null) return;
 
-            if(vehicleFreelanceData.characterOwnerId == characterData.character_id && playerFreelanceData.jobId == jobId && vehicleFreelanceData.jobId == jobId)
+            if(playerFreelanceData.jobLevel == -1 && vehicleFreelanceData.characterOwnerId == characterData.character_id && playerFreelanceData.jobId == jobId && vehicleFreelanceData.jobId == jobId)
             {
                 playerFreelanceData.jobLevel = 0;
 
