@@ -2,16 +2,17 @@ import { BoneData, VehicleData } from '../@types';
 import getVehicleData from '../PlayerMethods/getVehicleData';
 import distBetweenCoords from '../PlayerMethods/distanceBetweenCoords';
 import { _config_flags, _control_ids } from '../Constants/Constants';
+import { InteractMenu } from '@/enums';
 
 export default class VehicleInteraction {
-	public static LocalPlayer: PlayerMp;
+	public static LocalPlayer: PlayerMp = mp.players.local;
 	public static bones: string[] = ['door_dside_f', 'door_pside_f', 'door_dside_r', 'door_pside_r', 'bonnet', 'boot'];
 	public static names: string[] = ['door', 'door', 'door', 'door', 'hood', 'trunk', 'trunk'];
 	public static boneTarget: BoneData;
+	private static wheelMenuPosition: number = 0;
+	private static renderedMenu: string[];
 
 	constructor() {
-		VehicleInteraction.LocalPlayer = mp.players.local;
-
 		mp.events.add('render', VehicleInteraction.handleInteractionRender);
 		mp.keys.bind(_control_ids.EBIND, false, VehicleInteraction.handleInteraction);
 
@@ -24,7 +25,6 @@ export default class VehicleInteraction {
 
 	public static handleInteractionRender() {
 		VehicleInteraction.syncVehicleDoors();
-
 		VehicleInteraction.LocalPlayer.setConfigFlag(_config_flags.PED_FLAG_STOP_ENGINE_TURNING, true);
 
 		if (VehicleInteraction.checkInteractionRender()) {
@@ -38,27 +38,54 @@ export default class VehicleInteraction {
 				const vehicleData: VehicleData | undefined = getVehicleData(raycast.entity as VehicleMp);
 				if (!vehicleData) return;
 
-				if (vehicleData.vehicle_locked) {
-					return;
-				}
+				if (vehicleData.vehicle_locked) return;
 
-				let renderText: string =
-					'~g~[E]~w~' +
-					` ${
-						VehicleInteraction.boneTarget.locked
+				let renderText: string[] =
+					[
+						` ${VehicleInteraction.boneTarget.locked
 							? `Close ${VehicleInteraction.names[VehicleInteraction.bones.indexOf(VehicleInteraction.boneTarget.name)]}`
 							: `Open ${VehicleInteraction.names[VehicleInteraction.bones.indexOf(VehicleInteraction.boneTarget.name)]}`
-					}`;
+						}`
+					];
+
+				if (VehicleInteraction.boneTarget.name == VehicleInteraction.bones[2] || VehicleInteraction.boneTarget.name == VehicleInteraction.bones[3]) {
+					renderText.push(InteractMenu.PostalMenu);
+				}
+
+				VehicleInteraction.handleWheelMenu(renderText);
 
 				let dist: number = distBetweenCoords(VehicleInteraction.LocalPlayer.position, bonePos);
 
-				mp.game.graphics.drawText(renderText, [bonePos.x, bonePos.y, bonePos.z], {
-					scale: [0.3, 0.3],
-					outline: false,
-					color: [255, 255, 255, 255 - dist * 80],
-					font: 4
+				renderText.forEach((text, idx) => {
+					let textSelected: string = VehicleInteraction.wheelMenuPosition == idx ? "~g~[E]~w~" : "~c~";
+
+					mp.game.graphics.drawText(textSelected + text, [bonePos.x, bonePos.y, bonePos.z - (idx > 0 ? idx / 7 : 0)], {
+						scale: [0.3, 0.3],
+						outline: false,
+						color: [255, 255, 255, 255 - dist * 80],
+						font: 4
+					});
 				});
 			}
+		}
+	}
+
+	private static handleWheelMenu(renderArr: string[]) {
+		VehicleInteraction.renderedMenu = renderArr;
+		mp.game.ui.weaponWheelIgnoreSelection();
+
+		if (renderArr.length === 1) return VehicleInteraction.wheelMenuPosition = 0;
+
+		let wheelDown = mp.game.controls.isControlPressed(0, 14);
+		let wheelUp = mp.game.controls.isControlPressed(0, 15);
+
+		if (wheelUp) {
+			if (VehicleInteraction.wheelMenuPosition >= renderArr.length - 1) return VehicleInteraction.wheelMenuPosition = renderArr.length - 1;
+			VehicleInteraction.wheelMenuPosition++;
+		}
+		if (wheelDown) {
+			if (VehicleInteraction.wheelMenuPosition <= 0) return VehicleInteraction.wheelMenuPosition = 0;
+			VehicleInteraction.wheelMenuPosition--;
 		}
 	}
 
@@ -80,8 +107,19 @@ export default class VehicleInteraction {
 			!VehicleInteraction.LocalPlayer.isTypingInTextChat &&
 			VehicleInteraction.boneTarget &&
 			VehicleInteraction.boneTarget.pushTime + 1 >= Date.now() / 1000
+			&& VehicleInteraction.renderedMenu
 		) {
-			VehicleInteraction.interactionHandler();
+			switch (VehicleInteraction.renderedMenu[VehicleInteraction.wheelMenuPosition]) {
+				case InteractMenu.PostalMenu:
+					{
+						mp.events.callRemote("server:postalJob:pickPackage", VehicleInteraction.boneTarget.veh);
+						mp.gui.chat.push("Postal interact");
+						break;
+					}
+				default: {
+					VehicleInteraction.interactionHandler();
+				}
+			}
 		}
 	}
 
@@ -165,17 +203,5 @@ export default class VehicleInteraction {
 			return true;
 		}
 		return false;
-	}
-
-	public static drawTarget3d(
-		pos: Vector3,
-		textureDict: string = 'mpmissmarkers256',
-		textureName: string = 'corona_shade',
-		scaleX: number = 0.005,
-		scaleY: number = 0.01
-	) {
-		const position = mp.game.graphics.world3dToScreen2d(pos);
-		if (!position) return;
-		mp.game.graphics.drawSprite(textureDict, textureName, position.x, position.y, scaleX, scaleY, 0, 0, 0, 0, 200, false);
 	}
 }

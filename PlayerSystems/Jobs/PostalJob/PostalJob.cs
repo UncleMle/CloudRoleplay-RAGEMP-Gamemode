@@ -82,6 +82,20 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
                 MarkersAndLabels.addBlipForClient(player, 616, "Postal truck", jobVehicleSpawn, 67, 255, 20);
             }
         }
+
+        [RemoteEvent("server:postalJob:pickPackage")]
+        void pickupPackage(Player player, Vehicle vehicle)
+        {
+            DbCharacter characterData = player.getPlayerCharacterData();
+            FreeLanceJobVehicleData vehicleJobData = vehicle.getFreelanceJobData();
+
+            if (characterData == null || vehicleJobData == null) return;
+
+            if (Vector3.Distance(player.Position, vehicle.Position) > 12 || vehicleJobData.characterOwnerId != characterData.character_id || vehicleJobData.jobId != jobId) return;
+
+            AttachmentSync.AttachmentSync.addAttachmentForPlayer(player, "SKEL_L_Finger01", "prop_cs_package_01", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+            player.SendChatMessage("Given package");
+        }
         #endregion
     }
 }

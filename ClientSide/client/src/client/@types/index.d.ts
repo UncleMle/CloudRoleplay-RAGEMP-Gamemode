@@ -477,12 +477,20 @@ interface FreeLanceJobVehicleData
 
 interface BusSharedData
 {
-	destination: string
-	nextStop: string
+	destination: string;
+	nextStop: string;
 }
 
 interface ElsData 
 {
     soundId: number;
     soundName: string;
+}
+
+interface AttachmentData {
+	bone: string;
+	offset: Vector3;
+	rotation: Vector3;
+	object: ObjectMp;
+	modelName: string;
 }

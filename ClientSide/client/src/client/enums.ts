@@ -15,14 +15,12 @@ export enum AdminRanks {
 	Admin_Founder = 8
 }
 
-export enum FreelanceJobs
-{
+export enum FreelanceJobs {
 	BusJob = 0,
 	TruckerJob = 1,
 }
 
-export enum StallTypes
-{
+export enum StallTypes {
 	Small = 0,
 	Medium = 1,
 }
@@ -48,4 +46,8 @@ export class Browsers {
 	public static readonly Insurance: string = "/insurance";
 	public static readonly Atm: string = "/atm";
 	public static readonly ViewBusRoutes: string = "/busroutes";
+}
+
+export class InteractMenu {
+	public static readonly PostalMenu: string = " To unload package";
 }

@@ -52,6 +52,7 @@ import KeyPressActions from "./KeyPressActions/KeyPressActions";
 import TrailerSync from "./VehicleSystems/TrailerSync";
 import VehicleStall from "./VehicleSystems/VehicleStall";
 import TruckerJob from "./Jobs/TruckerJob/TruckerJobs";
+import AttachmentSync from "./AttachmentSync/AttachmentSync";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -108,3 +109,4 @@ new TrailerSync();
 new EmergencySystem();
 new VehicleStall();
 new TruckerJob();
+new AttachmentSync();
