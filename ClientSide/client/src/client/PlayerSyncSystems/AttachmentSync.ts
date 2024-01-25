@@ -66,7 +66,7 @@ export default class AttachmentSync {
         if (attachment) {
             let targetEntity: PlayerMp = mp.players.at(entityId);
 
-            if (!mp.objects.atHandle(attachment.object.handle) && targetEntity) {
+            if (!mp.objects.atHandle(attachment?.object?.handle) && targetEntity) {
 
                 let createdObject = mp.objects.new(mp.game.joaat(attachment.modelName), targetEntity.position, {
                     alpha: 255,
@@ -79,7 +79,9 @@ export default class AttachmentSync {
 
                 attachment.object = createdObject;
 
-                targetEntity.attachTo(createdObject.handle, targetEntity.getBoneIndexByName(attachment.bone),
+                mp.gui.chat.push(`Bone IDX: ${targetEntity.getBoneIndex(attachment.boneId)} || BNAME ${attachment.boneId}`);
+
+                createdObject.attachTo(targetEntity.handle, targetEntity.getBoneIndex(attachment.boneId),
                     attachment.offset.x, attachment.offset.y, attachment.offset.z, attachment.rotation.x,
                     attachment.rotation.y, attachment.rotation.z, false, false, false, false, 2, true);
             }

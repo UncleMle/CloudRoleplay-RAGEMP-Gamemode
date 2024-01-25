@@ -11,11 +11,11 @@ namespace CloudRP.PlayerSystems.AttachmentSync
     {
         private static readonly string _attachmentDataKey = "attachmentSync:dataKey";
 
-        public static void addAttachmentForPlayer(Player player, string bone, string model, Vector3 offset, Vector3 rotation)
+        public static void addAttachmentForPlayer(Player player, int boneId, string model, Vector3 offset, Vector3 rotation)
         {
             AttachmentData attachmentData = new AttachmentData
             {
-                bone = bone,
+                boneId = boneId,
                 modelName = model,
                 offset = offset,
                 rotation = rotation

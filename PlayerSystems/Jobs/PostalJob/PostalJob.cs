@@ -93,7 +93,9 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
 
             if (Vector3.Distance(player.Position, vehicle.Position) > 12 || vehicleJobData.characterOwnerId != characterData.character_id || vehicleJobData.jobId != jobId) return;
 
-            AttachmentSync.AttachmentSync.addAttachmentForPlayer(player, "SKEL_L_Finger01", "prop_cs_package_01", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+            AttachmentSync.AttachmentSync.addAttachmentForPlayer(player, 28422, "prop_cs_package_01", new Vector3(0, -0.18, -0.18), new Vector3(0, 0, 0));
+            AnimationSync.AnimSync.playSyncAnimation(player, "anim@heists@box_carry@", "idle", 49);
+
             player.SendChatMessage("Given package");
         }
         #endregion

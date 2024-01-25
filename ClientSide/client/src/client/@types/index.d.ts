@@ -6,9 +6,6 @@ declare global {
 		browserInstance: BrowserMp;
 		browserCurrentState: string;
 		isListening: boolean;
-		__attachments: Attachment;
-		__attachmentObjects: any;
-		__attMgrData: any;
 		_nickName: string;
 		guiState: boolean;
 		_fuelNozzleObject: ObjectMp | null;
@@ -241,7 +238,7 @@ export interface VehicleData {
 	vehicle_health: number;
 	speed_limit: number;
 	dealership_id: number;
-    dealership_spot_id: number;
+	dealership_spot_id: number;
 	dealership_price: number;
 	dealership_description: string;
 	vehicle_class_id: number;
@@ -459,38 +456,40 @@ interface Bank {
 	tellers: Vector3[]
 }
 
-interface FreeLanceJobData
-{
+interface FreeLanceJobData {
 	jobId: number;
 	jobLevel: number;
 	jobName: string;
 	jobStartedUnix: number;
-}    
+}
 
-interface FreeLanceJobVehicleData
-{
+interface FreeLanceJobVehicleData {
 	characterOwnerId: number;
 	jobId: number;
 	jobName: string;
 	destroyOnLeave: boolean;
-}    
+}
 
-interface BusSharedData
-{
+interface BusSharedData {
 	destination: string;
 	nextStop: string;
 }
 
-interface ElsData 
-{
-    soundId: number;
-    soundName: string;
+interface ElsData {
+	soundId: number;
+	soundName: string;
 }
 
 interface AttachmentData {
-	bone: string;
+	boneId: number;
 	offset: Vector3;
 	rotation: Vector3;
 	object: ObjectMp;
 	modelName: string;
+}
+
+interface AnimationData {
+	animName: string;
+	propName: string;
+	flag: number;
 }
