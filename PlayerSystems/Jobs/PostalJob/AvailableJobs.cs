@@ -23,8 +23,8 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
                     new Vector3(8.4, 540.1, 176.0),
                     new Vector3(-355.0, 469.9, 112.6),
                     new Vector3(-520.8, 593.9, 120.8),
-                    new Vector3(580.1, 491.6, 108.9),
-                    new Vector3(-968.7, 437.0, 80.8),
+                    new Vector3(-580.1, 491.6, 108.9),
+                    new Vector3(-968.7, 437.0, 80.8)
                 }
             },
             new AvailablePostalJob

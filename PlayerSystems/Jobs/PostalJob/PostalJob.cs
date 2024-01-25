@@ -113,7 +113,7 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
                     postalData.hasPackage = false;
                     AttachmentSync.AttachmentSync.removePlayerAttachments(player);
 
-                    player.SendChatMessage(ChatUtils.freelanceJobs + "Head over to the next delievery spot.");
+                    uiHandling.sendNotification(player, "~g~Delivered parcel.", false, true, "Delivers parcel...");
 
                     addDeliverPointMarker(player, postalData.selectedJob.deliveryStops[postalData.selectedJobLevel]);
                     player.SetData(postalJobDataKey, postalData);
@@ -221,16 +221,16 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
 
             if (playerJobData?.jobLevel != 0) return;
 
+            PostalJobData currentPostalData = player.GetData<PostalJobData>(postalJobDataKey);
+            if (currentPostalData == null) return;
+
+            if (currentPostalData.hasPackage) return;
+
             AttachmentSync.AttachmentSync.addAttachmentForPlayer(player, 6286, "prop_cs_package_01", new Vector3(0, -0.18, -0.18), new Vector3(0, 0, 0));
             AnimationSync.AnimSync.playSyncAnimation(player, "anim@heists@box_carry@", "idle", 49);
 
-            PostalJobData currentPostalData = player.GetData<PostalJobData>(postalJobDataKey);
-            if(currentPostalData == null) return;
-
             currentPostalData.hasPackage = true;
             player.SetData(postalJobDataKey, currentPostalData);
-
-            player.SendChatMessage("Given package");
         }
         #endregion
 

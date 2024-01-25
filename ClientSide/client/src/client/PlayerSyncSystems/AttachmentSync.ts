@@ -79,8 +79,6 @@ export default class AttachmentSync {
 
                 attachment.object = createdObject;
 
-                mp.gui.chat.push(`Bone IDX: ${targetEntity.getBoneIndex(attachment.boneId)} || BNAME ${attachment.boneId}`);
-
                 createdObject.attachTo(targetEntity.handle, targetEntity.getBoneIndex(attachment.boneId),
                     attachment.offset.x, attachment.offset.y, attachment.offset.z, attachment.rotation.x,
                     attachment.rotation.y, attachment.rotation.z, false, false, false, false, 2, true);
