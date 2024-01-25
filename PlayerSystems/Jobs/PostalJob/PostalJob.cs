@@ -54,7 +54,7 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
             DbCharacter characterData = player.getPlayerCharacterData();
             if (characterData == null) return;
 
-            Vehicle workTruck = VehicleSystem.buildVolatileVehicle(player, postalTruck, jobVehicleSpawn, jobVehicleRotation, "POST" + characterData.character_id, 44, 44);
+            Vehicle workTruck = VehicleSystem.buildVolatileVehicle(player, postalTruck, jobVehicleSpawn, jobVehicleRotation, "POST" + characterData.character_id, 111, 111);
 
             workTruck.setFreelanceJobData(new FreeLanceJobVehicleData
             {
@@ -94,8 +94,6 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
                 .Where(job => job.Equals(postalData.selectedJob)).FirstOrDefault();
 
                 int selectedIdx = findJob.deliveryStops.IndexOf(stopPos);
-
-                Console.WriteLine($"{postalData.selectedJobLevel} || {selectedIdx}");
 
                 if((postalData.selectedJobLevel - selectedIdx) == 0 && playerJobData.jobId == jobId && playerJobData.jobLevel == 0)
                 {
@@ -193,6 +191,12 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
                     selectedJob = job,
                     selectedJobLevel = 0
                 });
+
+                if (VehicleSystem.checkVehInSpot(jobVehicleSpawn, 5) != null)
+                {
+                    CommandUtils.errorSay(player, "There is a vehicle blocking the spawn point.");
+                    return;
+                }
 
                 spawnPostalJobVehicle(player);
                 uiHandling.resetRouter(player);

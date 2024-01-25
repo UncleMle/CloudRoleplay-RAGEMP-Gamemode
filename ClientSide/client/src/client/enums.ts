@@ -18,6 +18,8 @@ export enum AdminRanks {
 export enum FreelanceJobs {
 	BusJob = 0,
 	TruckerJob = 1,
+	PostalJob = 2,
+	GruppeSix = 3
 }
 
 export enum StallTypes {

@@ -1,8 +1,9 @@
-import { BoneData, VehicleData } from '../@types';
+import { BoneData, FreeLanceJobVehicleData, VehicleData } from '../@types';
 import getVehicleData from '../PlayerMethods/getVehicleData';
 import distBetweenCoords from '../PlayerMethods/distanceBetweenCoords';
-import { _config_flags, _control_ids } from '../Constants/Constants';
-import { InteractMenu } from '@/enums';
+import { FREELANCE_JOB_VEHICLE_DATA_KEY, _config_flags, _control_ids } from '../Constants/Constants';
+import { FreelanceJobs, InteractMenu } from '@/enums';
+import getUserCharacterData from '@/PlayerMethods/getUserCharacterData';
 
 export default class VehicleInteraction {
 	public static LocalPlayer: PlayerMp = mp.players.local;
@@ -36,6 +37,7 @@ export default class VehicleInteraction {
 				const bonePos: Vector3 = (raycast.entity as EntityMp).getWorldPositionOfBone(VehicleInteraction.boneTarget.boneIndex);
 
 				const vehicleData: VehicleData | undefined = getVehicleData(raycast.entity as VehicleMp);
+				const freelanceData: FreeLanceJobVehicleData = VehicleInteraction.boneTarget.veh.getVariable(FREELANCE_JOB_VEHICLE_DATA_KEY);
 				if (!vehicleData) return;
 
 				if (vehicleData.vehicle_locked) return;
@@ -48,8 +50,10 @@ export default class VehicleInteraction {
 						}`
 					];
 
-				if (VehicleInteraction.boneTarget.name == VehicleInteraction.bones[2] || VehicleInteraction.boneTarget.name == VehicleInteraction.bones[3]) {
-					renderText.push(InteractMenu.PostalMenu);
+				if (freelanceData?.jobId == FreelanceJobs.PostalJob && freelanceData.characterOwnerId == getUserCharacterData()?.character_id) {
+					if (VehicleInteraction.boneTarget.name == VehicleInteraction.bones[2] || VehicleInteraction.boneTarget.name == VehicleInteraction.bones[3]) {
+						renderText.push(InteractMenu.PostalMenu);
+					}
 				}
 
 				VehicleInteraction.handleWheelMenu(renderText);
@@ -113,7 +117,6 @@ export default class VehicleInteraction {
 				case InteractMenu.PostalMenu:
 					{
 						mp.events.callRemote("server:postalJob:pickPackage", VehicleInteraction.boneTarget.veh);
-						mp.gui.chat.push("Postal interact");
 						break;
 					}
 				default: {

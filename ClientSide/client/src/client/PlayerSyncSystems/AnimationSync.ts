@@ -20,8 +20,6 @@ export default class AnimationSync {
     private static handleDataHandler(entity: PlayerMp, anim: AnimationData) {
         if (!anim || entity.type != "player") return;
         AnimationSync.playAnimation(entity, anim);
-
-        mp.gui.chat.push(JSON.stringify(anim));
     }
 
     private static playAnimation(entity: PlayerMp, anim: AnimationData) {
