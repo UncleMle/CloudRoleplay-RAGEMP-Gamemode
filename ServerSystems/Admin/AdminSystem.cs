@@ -1,5 +1,6 @@
 ﻿using CloudRP.GeneralSystems.GeneralCommands;
 using CloudRP.GeneralSystems.WeaponSystem;
+using CloudRP.PlayerSystems.AnimationSync;
 using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.DeathSystem;
 using CloudRP.PlayerSystems.PlayerData;
@@ -125,6 +126,14 @@ namespace CloudRP.ServerSystems.Admin
             {
                 AdminUtils.staffSay(player, " /" + NAPI.Resource.GetResourceCommands("CloudRP")[i]);
             }
+        }
+
+        [AdminCommand(AdminRanks.Admin_Developer)]
+        [Command("aaa", "~r~/aaa [aName] [aDict] [flag]")]
+        public void playAdminAnimation(Player player, string aName, string aDict, int flag)
+        {
+            AnimSync.playSyncAnimation(player, aName, aDict, flag);
+            AdminUtils.staffSay(player, "Started animation.");
         }
 
         [Command("report", "~y~Use: ~w~/report [description]", GreedyArg = true)]
