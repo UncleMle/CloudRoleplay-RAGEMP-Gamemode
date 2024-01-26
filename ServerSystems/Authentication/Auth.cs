@@ -386,7 +386,6 @@ namespace CloudRP.ServerSystems.Authentication
         {
             NAPI.Native.SendNativeToPlayer(player, Hash.SET_PLAYER_INVINCIBLE, false);
 
-            AntiCheatSystem.sleepClient(player);
             player.TriggerEvent("client:loginEnd");
             player.TriggerEvent("client:moveSkyCamera", "up", 1);
 
@@ -503,7 +502,8 @@ namespace CloudRP.ServerSystems.Authentication
                     vip_status = 0,
                     admin_status = (int)AdminRanks.Admin_None,
                     auto_login_key = "",
-                    max_characters = 2
+                    max_characters = 2,
+                    redeem_code = ""
                 };
 
                 dbContext.Add(creatingAccount);
@@ -512,7 +512,6 @@ namespace CloudRP.ServerSystems.Authentication
                 creatingAccount.redeem_code = creatingAccount.account_id + AuthUtils.generateString(4);
                 dbContext.Update(creatingAccount);
                 dbContext.SaveChanges();
-
 
                 uiHandling.sendPushNotif(player, $"You have successfully created an account.", 6000);
                 User userData = createUser(creatingAccount);

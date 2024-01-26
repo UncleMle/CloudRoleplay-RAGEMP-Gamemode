@@ -22,7 +22,14 @@ export default class AnimationSync {
         AnimationSync.playAnimation(entity, anim);
     }
 
-    private static playAnimation(entity: PlayerMp, anim: AnimationData) {
-        entity.taskPlayAnim(anim.animName, anim.propName, 8.0, 1.0, -1, anim.flag, 1.0, false, false, false);
+    private static async playAnimation(entity: PlayerMp, anim: AnimationData) {
+        mp.game.streaming.requestAnimDict(anim.animName);
+
+        while(!mp.game.streaming.hasAnimDictLoaded(anim.animName)) {
+            await mp.game.waitAsync(10);
+        }
+
+        entity.taskPlayAnim(anim.animName, anim.propName, 1, 0, -1, anim.flag, 1.0, false, false, false);
+        entity.setDynamic(true);
     }
 }

@@ -15,14 +15,16 @@ namespace CloudRP.PlayerSystems.ChatSystem
 {
     public class Chat : Script
     {
-        public static double _chatradius = 30.0;
-        public static string _typingStateIdentifier = "playerIsTypingState";
+        public static readonly double _chatRadius = 30.0;
+        public static readonly double _adminChatRadius = 52.0;
+        public static readonly string _typingStateIdentifier = "playerIsTypingState";
 
         public Chat()
         {
             NAPI.Server.SetGlobalServerChat(false);
         }
 
+        #region Server Events
         [ServerEvent(Event.ChatMessage)]
         public void onChatMessage(Player player, string message)
         {
@@ -42,7 +44,7 @@ namespace CloudRP.PlayerSystems.ChatSystem
                 prefix += adminRank + "!{red}" + $"{userData.admin_name}" + "!{white} ";
             }
 
-            List<Player> playersInRange = CommandUtils.getPlayersInRadius(player, _chatradius);
+            List<Player> playersInRange = CommandUtils.getPlayersInRadius(player, userData.adminDuty ? _adminChatRadius : _chatRadius);
 
             string chatMessage = prefix + suffix + message;
 
@@ -59,6 +61,22 @@ namespace CloudRP.PlayerSystems.ChatSystem
             });
         }
 
+        [ServerEvent(Event.PlayerDisconnected)]
+        public void onPlayerDisconect(Player player, DisconnectionType type, string reason)
+        {
+            User user = player.getPlayerAccountData();
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if(user != null && character != null)
+            {
+                AdminUtils.sendMessageToAllStaff($"Admin {user.admin_name} has disconnected from the server.", 0, true);
+            }
+
+        }
+
+        #endregion
+
+        #region Global Methods
         public static void welcomePlayerOnSpawn(Player player)
         {
             User user = player.getPlayerAccountData();
@@ -87,7 +105,9 @@ namespace CloudRP.PlayerSystems.ChatSystem
                 }
             }
         }
+        #endregion
 
+        #region Remote Events
         [RemoteEvent("server:togglePlayerTyping")]
         public static void toggleTypingState(Player player, bool state)
         {
@@ -99,5 +119,6 @@ namespace CloudRP.PlayerSystems.ChatSystem
                 player.SetCustomSharedData(_typingStateIdentifier, state);
             }
         }
+        #endregion
     }
 }

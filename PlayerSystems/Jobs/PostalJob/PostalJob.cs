@@ -60,7 +60,7 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
             {
                 jobId = jobId,
                 jobName = jobName,
-                characterOwnerId = characterData.character_id,
+                characterOwnerId = characterData.character_id
             });
         }
 

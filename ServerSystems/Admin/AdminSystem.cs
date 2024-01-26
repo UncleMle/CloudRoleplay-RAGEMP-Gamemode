@@ -581,8 +581,6 @@ namespace CloudRP.ServerSystems.Admin
                 }
 
                 if (findPlayer.isImmuneTo(player)) return;
-
-                AntiCheatSystem.sleepClient(findPlayer);
                 findPlayer.Position = player.Position;
                 findPlayer.Dimension = player.Dimension;
 

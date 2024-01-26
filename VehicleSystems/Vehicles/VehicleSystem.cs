@@ -1,4 +1,5 @@
-﻿using CloudRP.PlayerSystems.Character;
+﻿using CloudRP.PlayerSystems.AnimationSync;
+using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.Jobs;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.PlayerSystems.PlayerDealerships;
@@ -959,27 +960,18 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             if (vehicleData == null || charData == null) return;
 
-            if (charData.character_id == vehicleData.owner_id || playerData.adminDuty)
-            {
-                vehicle.toggleLock(!vehicleData.vehicle_locked);
-
-                string lockUnlockText = $"{(playerData.adminDuty ? "~r~[Staff]" : "")} You {(vehicleData.vehicle_locked ? "locked" : "unlocked")} vehicle.";
-                uiHandling.sendNotification(player, lockUnlockText, !playerData.adminDuty, !playerData.adminDuty, (vehicleData.vehicle_locked ? "Locks" : "Unlocks") + " vehicle.");
-            }
-            else if (vehicleData.vehicle_key_holders.Count > 0)
-            {
-                VehicleKey vehicleKey = vehicleData.vehicle_key_holders
+            VehicleKey vehicleKey = vehicleData.vehicle_key_holders
                     .Where(holder => holder.target_character_id == charData.character_id && holder.vehicle_id == vehicleData.vehicle_id)
                     .FirstOrDefault();
 
-                if (vehicleKey != null)
-                {
-                    vehicle.toggleLock(!vehicleData.vehicle_locked);
+            if (vehicleKey == null && charData.character_id != vehicleData.owner_id && !playerData.adminDuty) return;
 
-                    string lockUnlockText = $"{(playerData.adminDuty ? "~r~[Staff]" : "")} You {(vehicleData.vehicle_locked ? "locked" : "unlocked")} vehicle.";
-                    uiHandling.sendNotification(player, lockUnlockText, !playerData.adminDuty, !playerData.adminDuty, (vehicleData.vehicle_locked ? "Locks" : "Unlocks") + " vehicle.");
-                }
-            }
+            vehicle.toggleLock(!vehicleData.vehicle_locked);
+
+            string lockUnlockText = $"{(playerData.adminDuty ? "~r~[Staff]" : "")} You {(vehicleData.vehicle_locked ? "locked" : "unlocked")} vehicle.";
+            uiHandling.sendNotification(player, lockUnlockText, !playerData.adminDuty, !playerData.adminDuty, (vehicleData.vehicle_locked ? "Locks" : "Unlocks") + " vehicle.");
+
+            AnimSync.playSyncAnimation(player, "anim@mp_player_intmenu@key_fob@", "fob_click_fp", 49, 5);
         }
 
         [RemoteEvent("vehicle:toggleSeatBelt")]

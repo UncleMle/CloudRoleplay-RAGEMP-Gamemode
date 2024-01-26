@@ -10,11 +10,14 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static CloudRP.ServerSystems.CustomEvents.KeyPressEvents;
 
 namespace CloudRP.PlayerSystems.DeathSystem
 {
     class DeathEvent : Script
     {
+        public delegate void DeathEventEventHandler(Player player);
+        public static event DeathEventEventHandler onDeath;
         public static List<Hospital> hospitalList = new List<Hospital> {
             new Hospital { name = "Paleto Hospital", position = new Vector3(-381.1, 6119.7, 31.5) },
             new Hospital { name = "Pillbox Hill Hospital Back", position = new Vector3(360.8, -585.3, 28.8) },
@@ -83,6 +86,8 @@ namespace CloudRP.PlayerSystems.DeathSystem
         {
             DbCharacter playerCharacterData = player.getPlayerCharacterData();
 
+            onDeath(player);
+
             if (playerCharacterData != null)
             {
                 player.Dimension = 0;
@@ -112,8 +117,6 @@ namespace CloudRP.PlayerSystems.DeathSystem
 
             handleCorpseSet(player);
             distList.Sort();
-
-            AntiCheatSystem.sleepClient(player);
 
             HosList closestHospital = pDist.FirstOrDefault(d => d.dist == distList[0]);
 

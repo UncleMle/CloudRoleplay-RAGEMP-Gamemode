@@ -153,12 +153,9 @@ namespace CloudRP.VehicleSystems.VehicleModification
 
                         pVehData.vehicle_mods = newModData;
                         dbContext.SaveChanges();
-
-                        NAPI.Task.Run(() =>
-                        {
-                            pVeh.setVehicleData(pVehData, true);
-                        }, 1500);
                     }
+
+                    pVeh.setVehicleData(pVehData, true);
                 }
             }
 
