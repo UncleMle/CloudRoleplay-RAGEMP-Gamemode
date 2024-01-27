@@ -1,6 +1,6 @@
 export enum BrowserEnv {
-	development = "package://dist/index.html#/", //"package://dist/index.html",
-	//production = "package://dist/index.html/?#/" // 192.168.1.188:3000/?#/
+	development = "192.168.1.188:3000/?#/", //"package://dist/index.html",
+	production = "package://dist/index.html/?#/" // 192.168.1.188:3000/?#/
 }
 
 export enum AdminRanks {
@@ -58,4 +58,5 @@ export class Browsers {
 
 export class InteractMenu {
 	public static readonly PostalMenu: string = " To unload package";
+	public static readonly GruppeSix: string = " To grab cash";
 }

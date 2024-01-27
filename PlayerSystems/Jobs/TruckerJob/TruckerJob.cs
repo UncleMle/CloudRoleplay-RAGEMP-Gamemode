@@ -20,6 +20,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
         public static readonly string _truckerPlayerJobData = "truckerJobPlayerDataIdentifier";
         public static readonly int truckerLoadTime_seconds = 40;
         public static readonly int truckerUnloadTime_seconds = 25;
+        public static readonly int jobId = (int)FreelanceJobs.TruckerJob;
         public static string[] spawnableTrucks = new string[] {
             "packer",
             "hauler",
@@ -82,7 +83,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
         #region Global Methods
         private static void startTruckerJob(Player player)
         {
-            if (!player.checkIsWithinCoord(truckerJobStart, 2f)) return;
+            if (!player.checkIsWithinCoord(truckerJobStart, 2f) || FreelanceJobSystem.hasAJob(player, jobId)) return;
 
             uiHandling.resetMutationPusher(player, MutationKeys.TruckerJobs);
 

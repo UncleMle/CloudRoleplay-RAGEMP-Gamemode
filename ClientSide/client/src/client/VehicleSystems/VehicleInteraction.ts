@@ -50,10 +50,20 @@ export default class VehicleInteraction {
 						}`
 					];
 
-				if (freelanceData?.jobId == FreelanceJobs.PostalJob && freelanceData.characterOwnerId == getUserCharacterData()?.character_id) {
-					if (VehicleInteraction.boneTarget.name == VehicleInteraction.bones[2] || VehicleInteraction.boneTarget.name == VehicleInteraction.bones[3]) {
-						renderText.push(InteractMenu.PostalMenu);
+				if (freelanceData && freelanceData.characterOwnerId == getUserCharacterData()?.character_id) {
+					if (VehicleInteraction.boneTarget.name !== VehicleInteraction.bones[2] && VehicleInteraction.boneTarget.name !== VehicleInteraction.bones[3]) return;
+
+					switch (freelanceData.jobId) {
+						case FreelanceJobs.PostalJob: {
+							renderText.push(InteractMenu.PostalMenu);
+							break;
+						}
+						case FreelanceJobs.GruppeSix: {
+							renderText.push(InteractMenu.GruppeSix);
+							break;
+						}
 					}
+
 				}
 
 				VehicleInteraction.handleWheelMenu(renderText);
@@ -119,6 +129,10 @@ export default class VehicleInteraction {
 						mp.events.callRemote("server:postalJob:pickPackage", VehicleInteraction.boneTarget.veh);
 						break;
 					}
+				case InteractMenu.GruppeSix: {
+					mp.events.callRemote("server:jobs:gruppeSix:takeMoney", VehicleInteraction.boneTarget.veh);
+					break;
+				}
 				default: {
 					VehicleInteraction.interactionHandler();
 				}

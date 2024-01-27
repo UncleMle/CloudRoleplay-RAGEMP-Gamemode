@@ -66,7 +66,7 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
 
         void startPostalJob(Player player)
         {
-            if (!player.checkIsWithinCoord(jobStartPosition, 2f)) return;
+            if (!player.checkIsWithinCoord(jobStartPosition, 2f) || FreelanceJobSystem.hasAJob(player, jobId)) return;
 
             uiHandling.resetMutationPusher(player, MutationKeys.PostalJobView);
 

@@ -19,6 +19,7 @@ import PlayerAtm from './components/atm/PlayerAtm.vue';
 import BusRoutes from './components/jobs/BusDriver/BusRoutes.vue';
 import TruckerJobsView from './components/jobs/TruckerJob/TruckerJobsView.vue';
 import PostalJobView from './components/jobs/PostalJob/PostalJobView.vue';
+import GruppeSixJobView from './components/jobs/GruppeSix/GruppeSixJobView.vue';
 
 export default new Router({
     routes: [
@@ -37,6 +38,7 @@ export default new Router({
         { path: '/atm', component: PlayerAtm },
         { path: '/busroutes', component: BusRoutes },
         { path: '/truckerjobs', component: TruckerJobsView },
-        { path: '/postaljobview', component: PostalJobView }
+        { path: '/postaljobview', component: PostalJobView },
+        { path: '/gruppesixview', component: GruppeSixJobView }
     ]
 });
