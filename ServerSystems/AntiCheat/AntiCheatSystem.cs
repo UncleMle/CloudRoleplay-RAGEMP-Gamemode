@@ -96,39 +96,40 @@ namespace CloudRP.ServerSystems.AntiCheat
             player.TriggerEvent("client:acSleep", duration);
         }
 
-        public static async Task handleVpnCheck(Player player)
+        public static void handleVpnCheck(Player player)
         {
-            if (player.Address == null) return;
-
-            string str = player.Address[..7];
-
-            if (str == "192.168" || player.Address == "127.0.0.1") return;
-
-            try
+            NAPI.Task.Run( async () =>
             {
-                string uri = $"https://vpnapi.io/api/{player.Address}?key={Main._vpnApiKey}";
+                if (player.Address == null) return;
 
-                HttpClient client = new HttpClient();
+                string str = player.Address[..7];
 
-                string response = await client.GetStringAsync(uri);
+                if (str == "192.168" || player.Address == "127.0.0.1") return;
 
-                if (response != null)
+                try
                 {
-                    IPAddressInfo data = JsonConvert.DeserializeObject<IPAddressInfo>(response);
+                    string uri = $"https://vpnapi.io/api/{player.Address}?key={Main._vpnApiKey}";
 
-                    if (data != null && (data.security.vpn || data.security.proxy))
+                    HttpClient client = new HttpClient();
+
+                    string response = await client.GetStringAsync(uri);
+
+                    if (response != null)
                     {
-                        ChatUtils.formatConsolePrint($"Player [{player.Id}] was kicked for VPN or Proxy! Address: {player.Address}");
-                        player.Kick();
+                        IPAddressInfo data = JsonConvert.DeserializeObject<IPAddressInfo>(response);
+
+                        if (data != null && (data.security.vpn || data.security.proxy))
+                        {
+                            ChatUtils.formatConsolePrint($"Player [{player.Id}] was kicked for VPN or Proxy! Address: {player.Address}");
+                            player.Kick();
+                        }
                     }
                 }
-            }
-            catch
-            {
+                catch
+                {
 
-            }
-
-            sleepClient(player);
+                }
+            });
         }
 
         #endregion
