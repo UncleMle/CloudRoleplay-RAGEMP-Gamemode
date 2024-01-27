@@ -143,6 +143,8 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string Atm = "/atm";
         public static readonly string ViewBusRoutes = "/busroutes";
         public static readonly string TruckerViewUI = "/truckerjobs";
+        public static readonly string PostalJobView = "/postaljobview";
+        public static readonly string GruppeSixJobView = "/gruppesixview";
     }
 
     public static class AuthStates
@@ -174,5 +176,7 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string PlayerAccountData = "player_account_info";
         public static readonly string BusDriverJobRoutes = "player_bus_job_routes";
         public static readonly string TruckerJobs = "trucker_jobs";
+        public static readonly string PostalJobView = "postal_jobs";
+        public static readonly string GruppeSixJobs = "gruppe_six_jobs";
     }
 }

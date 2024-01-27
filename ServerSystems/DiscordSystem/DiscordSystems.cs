@@ -36,62 +36,66 @@ namespace CloudRP.ServerSystems.DiscordSystem
 
         public static async Task initDiscordSystem()
         {
-            string token = Main._discordToken;
-
-            try
+            if (Main.ProductionBuild == "true")
             {
-                staffChannel = ulong.Parse(Main._discordStaffChannel);
-                reportAlertChannel = ulong.Parse(Main._discordReportChannel);
-                guildId = ulong.Parse(Main._discordGuild);
-                reportCategory = ulong.Parse(Main._discordReportCat);
-            }
-            catch
-            {
-                ChatUtils.formatConsolePrint("Discord staff channels where not found or are incorrectly formatted.", ConsoleColor.Magenta);
-            }
+                string token = Main._discordToken;
 
-
-            if (token == null)
-            {
-                ChatUtils.formatConsolePrint("Discord Token was not found.", ConsoleColor.Magenta);
-                return;
-            }
-
-            await DiscordIntegration.SetUpBotInstance(token, "Starting...", ActivityType.Playing, UserStatus.Online);
-
-
-            NAPI.Task.Run(async () =>
-            {
-                DiscordIntegration.RegisterChannelForListenting(staffChannel);
-                DiscordIntegration.RegisterChannelForListenting(reportAlertChannel);
-
-                ChatUtils.formatConsolePrint("Started listening on staff channel and report alert channel.", ConsoleColor.Magenta);
-                await DiscordIntegration.flushOldReports();
-            }, 5000);
-
-
-            NAPI.Task.Run(() =>
-            {
-                updatePlayerCountTimer = new Timer();
-                updatePlayerCountTimer.Interval = _updatePlayerCount;
-                updatePlayerCountTimer.Elapsed += async (object source, ElapsedEventArgs e) =>
+                try
                 {
-                    try
-                    {
-                        List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
+                    staffChannel = ulong.Parse(Main._discordStaffChannel);
+                    reportAlertChannel = ulong.Parse(Main._discordReportChannel);
+                    guildId = ulong.Parse(Main._discordGuild);
+                    reportCategory = ulong.Parse(Main._discordReportCat);
+                }
+                catch
+                {
+                    ChatUtils.formatConsolePrint("Discord staff channels where not found or are incorrectly formatted.", ConsoleColor.Magenta);
+                }
 
-                        string status = "with " + onlinePlayers.Count + "/" + _maxPlayers + " players.";
-                        await DiscordIntegration.UpdateStatus(status, ActivityType.Playing, UserStatus.Online);
-                    }
-                    catch
-                    {
-                        ChatUtils.formatConsolePrint("Failed to update discord status.");
-                    }
-                };
 
-                updatePlayerCountTimer.AutoReset = true;
-                updatePlayerCountTimer.Enabled = true;
-            });
+                if (token == null)
+                {
+                    ChatUtils.formatConsolePrint("Discord Token was not found.", ConsoleColor.Magenta);
+                    return;
+                }
+
+                await DiscordIntegration.SetUpBotInstance(token, "Starting...", ActivityType.Playing, UserStatus.Online);
+
+
+                NAPI.Task.Run(async () =>
+                {
+                    DiscordIntegration.RegisterChannelForListenting(staffChannel);
+                    DiscordIntegration.RegisterChannelForListenting(reportAlertChannel);
+
+                    ChatUtils.formatConsolePrint("Started listening on staff channel and report alert channel.", ConsoleColor.Magenta);
+                    await DiscordIntegration.flushOldReports();
+                }, 5000);
+
+
+                NAPI.Task.Run(() =>
+                {
+                    updatePlayerCountTimer = new Timer();
+                    updatePlayerCountTimer.Interval = _updatePlayerCount;
+                    updatePlayerCountTimer.Elapsed += async (object source, ElapsedEventArgs e) =>
+                    {
+                        try
+                        {
+                            List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
+                            int count = onlinePlayers.Count;
+
+                            string status = "with " + count + (count == 1 ? " player" : " players") + ".";
+                            await DiscordIntegration.UpdateStatus(status, ActivityType.Playing, UserStatus.Online);
+                        }
+                        catch
+                        {
+                            ChatUtils.formatConsolePrint("Failed to update discord status.");
+                        }
+                    };
+
+                    updatePlayerCountTimer.AutoReset = true;
+                    updatePlayerCountTimer.Enabled = true;
+                });
+            }
         }
 
         public static void handleDiscordCommand(string[] args, SocketUser user)

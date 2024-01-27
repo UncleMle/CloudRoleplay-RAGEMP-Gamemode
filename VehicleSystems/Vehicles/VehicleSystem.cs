@@ -1,8 +1,10 @@
-﻿using CloudRP.PlayerSystems.Character;
+﻿using CloudRP.PlayerSystems.AnimationSync;
+using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.Jobs;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.PlayerSystems.PlayerDealerships;
 using CloudRP.ServerSystems.Admin;
+using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.VehicleInsurance;
@@ -34,6 +36,8 @@ namespace CloudRP.VehicleSystems.Vehicles
         #region Init
         public VehicleSystem()
         {
+            KeyPressEvents.keyPress_Y += handleToggleEngine;
+
             NAPI.Task.Run(() =>
             {
                 List<DbVehicle> vehicles;
@@ -803,8 +807,30 @@ namespace CloudRP.VehicleSystems.Vehicles
         }
         #endregion
 
-
         #region Remote Events
+        [RemoteEvent("server:handleEngineToggle")]
+        public void handleToggleEngine(Player player)
+        {
+            if (!player.IsInVehicle) return;
+
+            if (player.VehicleSeat != 0) return;
+
+            if (NAPI.Vehicle.GetVehicleBodyHealth(player.Vehicle) <= 0 || player.Vehicle.isStalled())
+            {
+                uiHandling.sendNotification(player, "~r~Engine fails to start", false, true, "Fails to start engine");
+                return;
+            }
+
+            DbVehicle vehicleData = player.Vehicle.getData();
+            if (vehicleData == null) return;
+
+            vehicleData.engine_status = !vehicleData.engine_status;
+
+            uiHandling.sendNotification(player, "You " + (vehicleData.engine_status ? "started" : "turned off") + $" the {vehicleData.vehicle_display_name}'s engine.", true, true, (vehicleData.engine_status ? "Started" : "Turned off") + $" the {vehicleData.vehicle_display_name}'s engine.");
+
+            player.Vehicle.saveVehicleData(vehicleData);
+        }
+
         [RemoteEvent("server:handleDoorInteraction")]
         public void handleDoorInteraction(Player player, Vehicle vehicle, int boneTargetId)
         {
@@ -816,30 +842,6 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             vehicleData.vehicle_doors[boneTargetId] = !vehicleData.vehicle_doors[boneTargetId];
             vehicle.saveVehicleData(vehicleData);
-        }
-
-        [RemoteEvent("server:toggleEngine")]
-        public void handleToggleEngine(Player player, string vehName)
-        {
-            if (!player.IsInVehicle) return;
-
-            if (player.VehicleSeat != 0 || NAPI.Vehicle.GetVehicleBodyHealth(player.Vehicle) <= 0) return;
-
-            DbVehicle vehicleData = player.Vehicle.getData();
-
-            if (vehicleData == null) return;
-
-            if(player.Vehicle.isStalled())
-            {
-                uiHandling.sendNotification(player, "~r~Vehicle is stalled", false);
-                return;
-            }
-
-            vehicleData.engine_status = !vehicleData.engine_status;
-
-            uiHandling.sendNotification(player, "You " + (vehicleData.engine_status ? "started" : "turned off") + $" the {vehicleData.vehicle_display_name}'s engine.", true, true, (vehicleData.engine_status ? "Started" : "Turned off") + $" the {vehicleData.vehicle_display_name}'s engine.");
-
-            player.Vehicle.saveVehicleData(vehicleData);
         }
 
         [RemoteEvent("server:toggleIndication")]
@@ -959,27 +961,18 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             if (vehicleData == null || charData == null) return;
 
-            if (charData.character_id == vehicleData.owner_id || playerData.adminDuty)
-            {
-                vehicle.toggleLock(!vehicleData.vehicle_locked);
-
-                string lockUnlockText = $"{(playerData.adminDuty ? "~r~[Staff]" : "")} You {(vehicleData.vehicle_locked ? "locked" : "unlocked")} vehicle.";
-                uiHandling.sendNotification(player, lockUnlockText, !playerData.adminDuty, !playerData.adminDuty, (vehicleData.vehicle_locked ? "Locks" : "Unlocks") + " vehicle.");
-            }
-            else if (vehicleData.vehicle_key_holders.Count > 0)
-            {
-                VehicleKey vehicleKey = vehicleData.vehicle_key_holders
+            VehicleKey vehicleKey = vehicleData.vehicle_key_holders
                     .Where(holder => holder.target_character_id == charData.character_id && holder.vehicle_id == vehicleData.vehicle_id)
                     .FirstOrDefault();
 
-                if (vehicleKey != null)
-                {
-                    vehicle.toggleLock(!vehicleData.vehicle_locked);
+            if (vehicleKey == null && charData.character_id != vehicleData.owner_id && !playerData.adminDuty) return;
 
-                    string lockUnlockText = $"{(playerData.adminDuty ? "~r~[Staff]" : "")} You {(vehicleData.vehicle_locked ? "locked" : "unlocked")} vehicle.";
-                    uiHandling.sendNotification(player, lockUnlockText, !playerData.adminDuty, !playerData.adminDuty, (vehicleData.vehicle_locked ? "Locks" : "Unlocks") + " vehicle.");
-                }
-            }
+            vehicle.toggleLock(!vehicleData.vehicle_locked);
+
+            string lockUnlockText = $"{(playerData.adminDuty ? "~r~[Staff]" : "")} You {(vehicleData.vehicle_locked ? "locked" : "unlocked")} vehicle.";
+            uiHandling.sendNotification(player, lockUnlockText, !playerData.adminDuty, !playerData.adminDuty, (vehicleData.vehicle_locked ? "Locks" : "Unlocks") + " vehicle.");
+
+            AnimSync.playSyncAnimation(player, "anim@mp_player_intmenu@key_fob@", "fob_click_fp", 49, 5);
         }
 
         [RemoteEvent("vehicle:toggleSeatBelt")]

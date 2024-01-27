@@ -91,8 +91,7 @@ namespace CloudRP.VehicleSystems.Vehicles
             if (resyncMods)
             {
                 vehicleData.vehicle_mods = VehicleSystem.getVehiclesMods(vehicleData.vehicle_id);
-                vehicle.SetData(VehicleSystem._vehicleSharedModData, vehicleData.vehicle_mods);
-                vehicle.SetSharedData(VehicleSystem._vehicleSharedDataIdentifier, vehicleData.vehicle_mods);
+                vehicle.SetSharedData(VehicleSystem._vehicleSharedModData, vehicleData.vehicle_mods);
             }
 
             if (resyncDirtLevel)
@@ -218,13 +217,26 @@ namespace CloudRP.VehicleSystems.Vehicles
 
         public static FreeLanceJobVehicleData getFreelanceJobData(this Vehicle vehicle)
         {
-            return vehicle.GetData<FreeLanceJobVehicleData>(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier);
+            return vehicle.GetExternalData<FreeLanceJobVehicleData>((int)PlayersData.ExternalSlots.VehicleFreelance);
         }
         
         public static void setFreelanceJobData(this Vehicle vehicle, FreeLanceJobVehicleData data)
         {
-            vehicle.SetData(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier, data);
+            vehicle.SetExternalData((int)PlayersData.ExternalSlots.VehicleFreelance, data);
             vehicle.SetSharedData(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier, data);
+        }
+
+        public static void resyncSharedData(this Vehicle vehicle)
+        {
+            if(vehicle.getFreelanceJobData() != null)
+            {
+                vehicle.SetSharedData(FreelanceJobSystem._FreelanceJobVehicleDataIdentifier, vehicle.getFreelanceJobData());
+            }
+
+            if(vehicle.getData() != null)
+            {
+                vehicle.SetSharedData(VehicleSystem._vehicleSharedDataIdentifier, vehicle.getData());
+            }
         }
 
         public static void addSyncedTrailer(this Vehicle vehicle, string trailerName)

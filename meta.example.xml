@@ -16,5 +16,6 @@
 		<setting name="discordreportcat" value="discordreportcategory"/>
 		<setting name="weatherapikey" value="weatherapikey"/>
 		<setting name="vpnapikey" value="vpnapikey" />
+		<setting name="production" value="true" />
 	</settings>
 </meta>

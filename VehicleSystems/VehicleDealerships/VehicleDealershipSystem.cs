@@ -1,5 +1,6 @@
 ﻿using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.VehicleParking;
 using CloudRP.VehicleSystems.Vehicles;
@@ -134,6 +135,7 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
 
         public VehicleDealershipSystem()
         {
+            KeyPressEvents.keyPress_Y += serverViewDealerVehicles;
 
             foreach (DealerShip dealerShip in dealerships)
             {
@@ -166,7 +168,6 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
             }
         }
 
-        [RemoteEvent("server:viewDealerVehicles")]
         public void serverViewDealerVehicles(Player player)
         {
             DealerShip dealerData = player.GetData<DealerShip>(_dealershipIdentifer);

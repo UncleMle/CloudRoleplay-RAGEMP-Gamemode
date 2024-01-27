@@ -1,5 +1,6 @@
 ﻿using CloudRP.GeneralSystems.GeneralCommands;
 using CloudRP.PlayerSystems.Character;
+using CloudRP.PlayerSystems.DeathSystem;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
@@ -19,6 +20,15 @@ namespace CloudRP.PlayerSystems.Jobs
         
         public FreelanceJobSystem()
         {
+            DeathEvent.onDeath += (player) =>
+            {
+                if(player.getFreelanceJobData() != null)
+                {
+                    deleteFreeLanceVehs(player, true);
+                    MarkersAndLabels.removeClientBlip(player);
+                }
+            };
+
             Commands.loggingOut += (Player player, DbCharacter character) =>
             {
                 if(player.getFreelanceJobData() != null)
@@ -64,6 +74,10 @@ namespace CloudRP.PlayerSystems.Jobs
                 });
             }
 
+            if(hasVeh)
+            {
+                CommandUtils.errorSay(player, "You already have a work truck. Continue with your job or use /qjob.");
+            }
 
             return hasVeh;
         }
@@ -159,8 +173,10 @@ namespace CloudRP.PlayerSystems.Jobs
 
     public enum FreelanceJobs
     {
-        BusJob = 0,
-        TruckerJob = 1,
+        BusJob,
+        TruckerJob,
+        PostalJob,
+        GruppeSix
     }
 
     public class FreeLanceJobData

@@ -20,6 +20,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
         public static readonly string _truckerPlayerJobData = "truckerJobPlayerDataIdentifier";
         public static readonly int truckerLoadTime_seconds = 40;
         public static readonly int truckerUnloadTime_seconds = 25;
+        public static readonly int jobId = (int)FreelanceJobs.TruckerJob;
         public static string[] spawnableTrucks = new string[] {
             "packer",
             "hauler",
@@ -75,22 +76,15 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
             MarkersAndLabels.setPlaceMarker(truckerJobStart);
             MarkersAndLabels.setTextLabel(truckerJobStart, "Use ~y~Y~w~ to view available jobs.", 3f);
 
-            KeyPressEvents.keyPress_Y += (Player player, bool isInSwitchNative, bool hasPhoneOut, bool isPauseMenuActive, bool isTyping, bool isInVehicle, bool isInjured) =>
-            {
-                if(!isInSwitchNative && !hasPhoneOut && !isTyping && !isInVehicle && !isInjured)
-                {
-                    if(player.checkIsWithinCoord(truckerJobStart, 2f))
-                    {
-                        startTruckerJob(player);
-                    }
-                }
-            };
+            KeyPressEvents.keyPress_Y += startTruckerJob;
         }
         #endregion
 
         #region Global Methods
         private static void startTruckerJob(Player player)
         {
+            if (!player.checkIsWithinCoord(truckerJobStart, 2f) || FreelanceJobSystem.hasAJob(player, jobId)) return;
+
             uiHandling.resetMutationPusher(player, MutationKeys.TruckerJobs);
 
             AvailableJobs.availableJobs.ForEach(job =>
@@ -256,45 +250,40 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
 
             if(!FreelanceJobSystem.hasAJob(player, (int)FreelanceJobs.TruckerJob))
             {
-                if(FreelanceJobSystem.hasFreeLanceVehicle(player))
-                {
-                    CommandUtils.errorSay(player, "You already have a work truck. Continue with your job or use /qjob.");
-                } else
-                {
-                    AvailableJobTrucker selectedJob = AvailableJobs.availableJobs
-                        .Where(job => job.jobId == truckerJobId)
-                        .FirstOrDefault();
+                if (FreelanceJobSystem.hasFreeLanceVehicle(player)) return;
 
-                    player.setFreelanceJobData(new FreeLanceJobData
+                AvailableJobTrucker selectedJob = AvailableJobs.availableJobs
+                    .Where(job => job.jobId == truckerJobId)
+                    .FirstOrDefault();
+
+                player.setFreelanceJobData(new FreeLanceJobData
+                {
+                    jobId = (int)FreelanceJobs.TruckerJob,
+                    jobLevel = -1,
+                    jobName = jobName,
+                    jobStartedUnix = CommandUtils.generateUnix()
+                });
+
+                player.SetCustomData(_truckerPlayerJobData, selectedJob);
+
+                Vehicle spawnedWorkTruck = spawnWorkTruck(player);
+
+                if (spawnedWorkTruck != null)
+                {
+                    spawnedWorkTruck.SetData(_truckerVehicleDataKey, new TruckerJobVehicleData
                     {
-                        jobId = (int)FreelanceJobs.TruckerJob,
-                        jobLevel = -1,
-                        jobName = jobName,
-                        jobStartedUnix = CommandUtils.generateUnix()
+                        destinationPosition = selectedJob.destinationPosition,
+                        loadingPosition = selectedJob.loadingPosition,
+                        jobId = selectedJob.jobId,
                     });
 
-
-                    player.SetCustomData(_truckerPlayerJobData, selectedJob);
-
-                    Vehicle spawnedWorkTruck = spawnWorkTruck(player);
-
-                    if(spawnedWorkTruck != null)
+                    NAPI.Task.Run(() =>
                     {
-                        spawnedWorkTruck.SetData(_truckerVehicleDataKey, new TruckerJobVehicleData
+                        if (spawnedWorkTruck.Exists)
                         {
-                            destinationPosition = selectedJob.destinationPosition,
-                            loadingPosition = selectedJob.loadingPosition,
-                            jobId = selectedJob.jobId,
-                        });
-
-                        NAPI.Task.Run(() =>
-                        {
-                            if(spawnedWorkTruck.Exists)
-                            {
-                                spawnedWorkTruck.addSyncedTrailer(selectedJob.vehicleTrailer);
-                            }
-                        }, 1500);
-                    }
+                            spawnedWorkTruck.addSyncedTrailer(selectedJob.vehicleTrailer);
+                        }
+                    }, 1500);
                 }
 
                 uiHandling.resetRouter(player);

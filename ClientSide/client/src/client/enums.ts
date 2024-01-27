@@ -1,6 +1,6 @@
 export enum BrowserEnv {
 	development = "192.168.1.188:3000/?#/", //"package://dist/index.html",
-	production = "192.168.1.188:3000/?#/"
+	production = "package://dist/index.html/?#/" // 192.168.1.188:3000/?#/
 }
 
 export enum AdminRanks {
@@ -15,16 +15,22 @@ export enum AdminRanks {
 	Admin_Founder = 8
 }
 
-export enum FreelanceJobs
-{
+export enum FreelanceJobs {
 	BusJob = 0,
 	TruckerJob = 1,
+	PostalJob = 2,
+	GruppeSix = 3
 }
 
-export enum StallTypes
-{
+export enum StallTypes {
 	Small = 0,
 	Medium = 1,
+}
+
+export enum KeyType
+{
+	KEY_Y,
+	KEY_F4,
 }
 
 export class MutationKeys {
@@ -48,4 +54,9 @@ export class Browsers {
 	public static readonly Insurance: string = "/insurance";
 	public static readonly Atm: string = "/atm";
 	public static readonly ViewBusRoutes: string = "/busroutes";
+}
+
+export class InteractMenu {
+	public static readonly PostalMenu: string = " To unload package";
+	public static readonly GruppeSix: string = " To grab cash";
 }

@@ -2,15 +2,17 @@ import { _IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE, _control_ids } from "@/Constants/
 import PhoneSystem from "@/PhoneSystem/PhoneSystem";
 import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
 import { CharacterData } from "@/@types";
+import { KeyType } from "@/enums";
 
 export default class KeyPressActions {
     public static LocalPlayer: PlayerMp = mp.players.local;
+    public static readonly KeyEvent: string = "server:handleKeyPress";
     private static cooldown_seconds: number = 0.5;
     private static cooldown: boolean;
 
     constructor() {
-        mp.keys.bind(_control_ids.Y, false, () => KeyPressActions.handleKeyPressed("Y"));
-        mp.keys.bind(_control_ids.F4, false, () => KeyPressActions.handleKeyPressed("F4"));
+        mp.keys.bind(_control_ids.Y, false, () => KeyPressActions.handleKeyPressed(KeyType.KEY_Y));
+        mp.keys.bind(_control_ids.F4, false, () => KeyPressActions.handleKeyPressed(KeyType.KEY_F4));
     }
 
     private static getArgs(): boolean[] {
@@ -55,10 +57,15 @@ export default class KeyPressActions {
         }, KeyPressActions.cooldown_seconds * 1000);
     }
 
-    private static handleKeyPressed(key: string) {
+    private static handleKeyPressed(key: KeyType) {
         if (!KeyPressActions.cooldown) {
             KeyPressActions.cooldownStart();
-            mp.events.callRemote("server:handleKeyPress:" + key, ...KeyPressActions.getArgs());
+
+            let args: boolean[] = KeyPressActions.getArgs();
+
+            if (!args.find(arg => arg)) {
+                mp.events.callRemote(KeyPressActions.KeyEvent, key);
+            }
         }
     }
 }

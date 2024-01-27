@@ -1,5 +1,6 @@
 ﻿using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
@@ -39,6 +40,8 @@ namespace CloudRP.VehicleSystems.VehicleInsurance
 
         public VehicleInsuranceSystem()
         {
+            KeyPressEvents.keyPress_Y += viewServerInsuranceVehicles;
+
             NAPI.Task.Run(() =>
             {
                 insuranceAreas.ForEach(area =>
@@ -75,7 +78,6 @@ namespace CloudRP.VehicleSystems.VehicleInsurance
             });
         }
 
-        [RemoteEvent("server:viewInsuranceVehicles")]
         public void viewServerInsuranceVehicles(Player player)
         {
             InsuranceArea playerInsuranceData = player.GetData<InsuranceArea>(_insuranceDataIdentifier);

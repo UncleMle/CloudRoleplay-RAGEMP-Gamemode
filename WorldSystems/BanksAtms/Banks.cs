@@ -1,5 +1,6 @@
 ﻿using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.World.MarkersLabels;
 using CloudRP.World.TimeWeather;
@@ -52,6 +53,8 @@ namespace CloudRP.World.BanksAtms
 
         public Banks()
         {
+            KeyPressEvents.keyPress_Y += openBankEvent;
+
             NAPI.Task.Run(() =>
             {
                 banks.ForEach(bank =>
@@ -89,7 +92,6 @@ namespace CloudRP.World.BanksAtms
             });
         }
 
-        [RemoteEvent("server:openBank")]
         public void openBankEvent(Player player)
         {
             Bank bankData = player.GetData<Bank>(_tellerColshapeDataIdentifier);
@@ -106,7 +108,7 @@ namespace CloudRP.World.BanksAtms
                         balanceCash = characterData.cash_amount,
                     });
 
-                    uiHandling.pushRouterToClient(player, Browsers.Atm);
+                    uiHandling.pushRouterToClient(player, Browsers.Atm, true);
                 }
             }
         }

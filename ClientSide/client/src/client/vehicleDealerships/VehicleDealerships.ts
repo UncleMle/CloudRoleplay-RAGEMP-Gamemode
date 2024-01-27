@@ -2,16 +2,12 @@ import { DealerShip } from '@/@types';
 import BrowserSystem from '@/BrowserSystem/BrowserSystem';
 import GuiSystem from '@/BrowserSystem/GuiSystem';
 import { CLEAR_FOCUS, _IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE, _control_ids } from '@/Constants/Constants';
-import DeathSystem from '@/DeathSystem/DeathSystem';
-import validateKeyPress from '@/PlayerMethods/validateKeyPress';
-import VehicleSpeedo from '@/VehicleSystems/VehicleSpeedo';
 import { Browsers } from '@/enums';
 import vehicleData from './VehicleData.json';
 
 export default class VehicleDealerShips {
-	public static LocalPlayer: PlayerMp;
+	public static LocalPlayer: PlayerMp = mp.players.local;
 	public static _dealershipIdentifer: string = 'vehicleDealership';
-	public static _viewDealerEvent: string = 'server:viewDealerVehicles';
 	public static _closeDealerEvent: string = 'server:closeDealership';
 	public static _dealerPurchaseEvent: string = 'server:purchaseVehicle';
 	public static dealerCam: CameraMp;
@@ -20,33 +16,14 @@ export default class VehicleDealerShips {
 	public static defaultSpawnColour: number = 111;
 
 	constructor() {
-		VehicleDealerShips.LocalPlayer = mp.players.local;
-
-		mp.keys.bind(_control_ids.Y, false, VehicleDealerShips.handleKeyPress);
-		mp.events.add('dealers:initDealership', VehicleDealerShips.initDealership);
-		mp.events.add('dealers:closeDealership', VehicleDealerShips.closeDealerShip);
-		mp.events.add('dealers:changeSelectVeh', VehicleDealerShips.addDealerShipVehicle);
-		mp.events.add('dealers:setSelectedVehRot', VehicleDealerShips.setDealerVehRot);
-		mp.events.add('dealers:changeSelectVehColour', VehicleDealerShips.setDealerVehColour);
-		mp.events.add('dealers:purchaseVehicle', VehicleDealerShips.purchaseDealerVehicle);
-		mp.events.add('render', VehicleDealerShips.handleRender);
-	}
-
-	public static handleRender() {
-		if (VehicleDealerShips.LocalPlayer.browserRouter == Browsers.Dealership) {
-			DeathSystem.disableControls();
-			mp.gui.cursor.show(true, true);
-		}
-	}
-
-	public static handleKeyPress() {
-		if (!validateKeyPress(true) || mp.game.invoke(_IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE)) return;
-
-		let dealerData: DealerShip | undefined = VehicleDealerShips.LocalPlayer.getVariable(VehicleDealerShips._dealershipIdentifer);
-
-		if (dealerData) {
-			mp.events.callRemote(VehicleDealerShips._viewDealerEvent);
-		}
+		mp.events.add({
+			"dealers:initDealership": VehicleDealerShips.initDealership,
+			"dealers:closeDealership": VehicleDealerShips.closeDealerShip,
+			"dealers:changeSelectVeh": VehicleDealerShips.addDealerShipVehicle,
+			"dealers:setSelectedVehRot": VehicleDealerShips.setDealerVehRot,
+			"dealers:changeSelectVehColour": VehicleDealerShips.setDealerVehColour,
+			"dealers:purchaseVehicle": VehicleDealerShips.purchaseDealerVehicle
+		});
 	}
 
 	public static closeDealerShip() {
@@ -98,7 +75,7 @@ export default class VehicleDealerShips {
 
 			await mp.game.waitAsync(1300);
 			mp.game.cam.doScreenFadeIn(600);
-			BrowserSystem.pushRouter(Browsers.Dealership);
+			BrowserSystem.pushRouter(Browsers.Dealership, true);
 		}
 	}
 
