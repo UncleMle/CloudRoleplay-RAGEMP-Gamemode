@@ -83,7 +83,7 @@ namespace CloudRP.ServerSystems.DiscordSystem
                             List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
                             int count = onlinePlayers.Count;
 
-                            string status = "with " + count + "/" + _maxPlayers + (count == 1 ? "player" : " players.");
+                            string status = "with " + count + (count == 1 ? " player" : " players") + ".";
                             await DiscordIntegration.UpdateStatus(status, ActivityType.Playing, UserStatus.Online);
                         }
                         catch
