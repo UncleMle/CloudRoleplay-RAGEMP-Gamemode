@@ -67,7 +67,7 @@ namespace CloudRP.PlayerSystems.ChatSystem
             User user = player.getPlayerAccountData();
             DbCharacter character = player.getPlayerCharacterData();
 
-            if(user != null && character != null)
+            if(user != null && character != null && user.admin_status > (int)AdminRanks.Admin_None)
             {
                 AdminUtils.sendMessageToAllStaff($"Admin {user.admin_name} has disconnected from the server.", 0, true);
             }

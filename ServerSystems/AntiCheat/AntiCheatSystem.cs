@@ -8,49 +8,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace CloudRP.ServerSystems.AntiCheat
 {
     class AntiCheatSystem : Script
     {
-        /*
+        #region Server Events
         [ServerEvent(Event.PlayerConnected)]
         public void OnPlayerConnected(Player player)
         {
-            NAPI.Task.Run(async() =>
-            {
-                if (player.Address == null) return;
-
-                string str = player.Address[..7];
-
-                if (str == "192.168" || player.Address == "127.0.0.1") return;
-
-                try
-                {
-                    string uri = $"https://vpnapi.io/api/{player.Address}?key={Main._vpnApiKey}";
-
-                    HttpClient client = new HttpClient();
-
-                    string response = await client.GetStringAsync(uri);
-
-                    if (response != null)
-                    {
-                        IPAddressInfo data = JsonConvert.DeserializeObject<IPAddressInfo>(response);
-
-                        if (data != null && (data.security.vpn || data.security.proxy))
-                        {
-                            ChatUtils.formatConsolePrint($"Player [{player.Id}] was kicked for VPN or Proxy! Address: {player.Address}");
-                            player.Kick();
-                        }
-                    }
-                }
-                catch
-                {
-
-                }
-
-                sleepClient(player);
-            });
+            handleVpnCheck(player);
         }
 
         [ServerEvent(Event.IncomingConnection)]
@@ -69,7 +37,9 @@ namespace CloudRP.ServerSystems.AntiCheat
 
             player.TriggerEvent("client:weaponSwap");
         }
+        #endregion
 
+        #region Remote Events
         [RemoteEvent("server:CheatDetection")]
         public static void alertAdmins(Player player, int exception, string message)
         {
@@ -118,12 +88,50 @@ namespace CloudRP.ServerSystems.AntiCheat
                 NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.antiCheat + message + suffix);
             }
         }
+        #endregion
 
+        #region Global Methods
         public static void sleepClient(Player player, int duration = 2000)
         {
             player.TriggerEvent("client:acSleep", duration);
         }
-        */
+
+        public static async Task handleVpnCheck(Player player)
+        {
+            if (player.Address == null) return;
+
+            string str = player.Address[..7];
+
+            if (str == "192.168" || player.Address == "127.0.0.1") return;
+
+            try
+            {
+                string uri = $"https://vpnapi.io/api/{player.Address}?key={Main._vpnApiKey}";
+
+                HttpClient client = new HttpClient();
+
+                string response = await client.GetStringAsync(uri);
+
+                if (response != null)
+                {
+                    IPAddressInfo data = JsonConvert.DeserializeObject<IPAddressInfo>(response);
+
+                    if (data != null && (data.security.vpn || data.security.proxy))
+                    {
+                        ChatUtils.formatConsolePrint($"Player [{player.Id}] was kicked for VPN or Proxy! Address: {player.Address}");
+                        player.Kick();
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+
+            sleepClient(player);
+        }
+
+        #endregion
     }
 
     enum AcExceptions

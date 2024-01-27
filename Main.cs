@@ -17,6 +17,7 @@ namespace CloudRP
 {
     public class Main : Script
     {
+        public static string ProductionBuild = "";
         public static string JsonDirectory = "";
         public static string _dbHost = "";
         public static string _dbUser = "";
@@ -46,6 +47,8 @@ namespace CloudRP
         [ServerEvent(Event.ResourceStart)]
         public void Start()
         {
+            ProductionBuild = NAPI.Resource.GetSetting<string>(this, "production");
+
             JsonDirectory = Directory.GetCurrentDirectory() + NAPI.Resource.GetSetting<string>(this, "jsonentrypoint");
             _dbHost = NAPI.Resource.GetSetting<string>(this, "host");
             _dbDatabase = NAPI.Resource.GetSetting<string>(this, "database");
@@ -64,7 +67,7 @@ namespace CloudRP
 
             _weatherApiKey = NAPI.Resource.GetSetting<string>(this, "weatherapikey");
             _vpnApiKey = NAPI.Resource.GetSetting<string>(this, "vpnapikey");
-
+            
             NAPI.Server.SetCommandErrorMessage(defaultErrorMessage);
 
             HousingSystem.loadAllHouses();
@@ -73,7 +76,9 @@ namespace CloudRP
             Atm.loadAtms();
             DiscordSystems.initDiscordSystem();
 
-            ChatUtils.formatConsolePrint($"Gamemode has started. (Loaded {Commands.loadedCommands.Count()} total commands)", ConsoleColor.Cyan);
+            string prod = ProductionBuild == "true" ? "[Production]" : "[Development]";
+
+            ChatUtils.formatConsolePrint($"{prod} Gamemode has started. (Loaded {Commands.loadedCommands.Count()} total commands)", ConsoleColor.Cyan);
         }
 
         public void logException(UnhandledExceptionEventArgs exception)
