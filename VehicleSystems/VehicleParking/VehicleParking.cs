@@ -1,5 +1,6 @@
 ﻿using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
@@ -102,6 +103,8 @@ namespace CloudRP.VehicleSystems.VehicleParking
 
         public VehicleParking()
         {
+            KeyPressEvents.keyPress_Y += viewParkedVehicles;
+
             NAPI.Task.Run(() =>
             {
                 for (int i = 0; i < parkingLots.Count; i++)
@@ -211,7 +214,6 @@ namespace CloudRP.VehicleSystems.VehicleParking
             }
         }
 
-        [RemoteEvent("server:viewParkedVehicles")]
         public void viewParkedVehicles(Player player)
         {
             DbCharacter charData = player.getPlayerCharacterData();

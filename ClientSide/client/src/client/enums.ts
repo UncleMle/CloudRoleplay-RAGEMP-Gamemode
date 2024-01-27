@@ -27,6 +27,12 @@ export enum StallTypes {
 	Medium = 1,
 }
 
+export enum KeyType
+{
+	KEY_Y,
+	KEY_F4,
+}
+
 export class MutationKeys {
 	public static readonly PlayerStats: string = "player_stats";
 	public static readonly PlayerData: string = "player_data_server";

@@ -75,22 +75,15 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
             MarkersAndLabels.setPlaceMarker(truckerJobStart);
             MarkersAndLabels.setTextLabel(truckerJobStart, "Use ~y~Y~w~ to view available jobs.", 3f);
 
-            KeyPressEvents.keyPress_Y += (Player player, bool isInSwitchNative, bool hasPhoneOut, bool isPauseMenuActive, bool isTyping, bool isInVehicle, bool isInjured) =>
-            {
-                if(!isInSwitchNative && !hasPhoneOut && !isTyping && !isInVehicle && !isInjured)
-                {
-                    if(player.checkIsWithinCoord(truckerJobStart, 2f))
-                    {
-                        startTruckerJob(player);
-                    }
-                }
-            };
+            KeyPressEvents.keyPress_Y += startTruckerJob;
         }
         #endregion
 
         #region Global Methods
         private static void startTruckerJob(Player player)
         {
+            if (!player.checkIsWithinCoord(truckerJobStart, 2f)) return;
+
             uiHandling.resetMutationPusher(player, MutationKeys.TruckerJobs);
 
             AvailableJobs.availableJobs.ForEach(job =>

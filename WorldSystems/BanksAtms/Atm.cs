@@ -1,5 +1,6 @@
 ﻿using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
@@ -192,6 +193,8 @@ namespace CloudRP.World.BanksAtms
 
         public void init()
         {
+            KeyPressEvents.keyPress_Y += openAtm;
+
             NAPI.Blip.CreateBlip(434, Position, 1.0f, 43, "ATM", 255, 1.0f, true, 0, 0);
             MarkersAndLabels.setTextLabel(Position, "Use ~y~Y~w~ to interact with this ATM", 2f);
             MarkersAndLabels.setPlaceMarker(Position);
@@ -223,7 +226,6 @@ namespace CloudRP.World.BanksAtms
             };
         }
 
-        [RemoteEvent("server:openAtm")]
         public void openAtm(Player player)
         {
             Atm atmData = player.GetData<Atm>(_atmDataIdentifier);
@@ -237,7 +239,7 @@ namespace CloudRP.World.BanksAtms
                     balanceCash = characterData.cash_amount
                 });
 
-                uiHandling.pushRouterToClient(player, Browsers.Atm);
+                uiHandling.pushRouterToClient(player, Browsers.Atm, true);
             }
         }
 

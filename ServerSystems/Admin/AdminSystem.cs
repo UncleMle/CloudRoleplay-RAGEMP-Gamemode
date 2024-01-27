@@ -735,7 +735,7 @@ namespace CloudRP.ServerSystems.Admin
             AdminUtils.staffSay(player, $"You have sent all {count} vehicles to insurance.");
         }
 
-        public static void fly(Player player, bool isInSwitchNative, bool hasPhoneOut, bool isPauseMenuActive, bool isTyping, bool isInVehicle, bool isInjured)
+        public static void fly(Player player)
         {
             User userData = player.getPlayerAccountData();
 

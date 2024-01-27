@@ -40,7 +40,7 @@ namespace CloudRP.ServerSystems.Authentication
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
                 Account findAccount = dbContext.accounts
-                    .Where(b => b.username == userCredentials.username.ToLower() || b.email_address == userCredentials.username.ToLower())
+                    .Where(b => b.username == userCredentials.username.ToLower() || b.email_address == userCredentials.username)
                     .FirstOrDefault();
 
                 if (findAccount != null && AuthUtils.comparePassword(findAccount.password, userCredentials.password))

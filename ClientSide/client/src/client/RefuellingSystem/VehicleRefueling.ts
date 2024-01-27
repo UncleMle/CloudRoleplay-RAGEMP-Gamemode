@@ -7,7 +7,6 @@ export default class VehicleRefueling {
 	public static LocalPlayer: PlayerMp;
 	public static _refuelPumpIdenfitier: string = 'refuelingPumpData';
 	public static _refuelServerEvent: string = 'server:refuelVehicleCycle';
-	public static _startRefuelEvent: string = 'server:startRefuelEvent';
 	public static _stopRefuelEvent: string = 'server:stopRefuellingVehicle';
 	public static refuelInterval: ReturnType<typeof setInterval> | undefined;
 	public static _refuelInterval_seconds: number = 1.5;
@@ -21,20 +20,7 @@ export default class VehicleRefueling {
 		mp.events.add('refuel:closeRefuelInterval', VehicleRefueling.endRefuelling);
 		mp.events.add('refuel:startRefuelInterval', VehicleRefueling.startRefuelInterval);
 
-		mp.keys.bind(_control_ids.Y, true, VehicleRefueling.handleKeyPress_Y);
-
         mp.events.addDataHandler(VehicleRefueling._refuelDataIdentifier, VehicleRefueling.handleRefuellingDataHandler);
-	}
-
-	public static handleKeyPress_Y() {
-        if(!validateKeyPress(true)) return;
-
-		let refuelStationData: RefuelStation | undefined = VehicleRefueling.LocalPlayer.getVariable(VehicleRefueling._refuelPumpIdenfitier);
-
-		if (refuelStationData) {
-			VehicleRefueling.endRefuelling(true);
-            mp.events.callRemote(VehicleRefueling._startRefuelEvent);
-		}
 	}
 
     public static startRefuelInterval() {

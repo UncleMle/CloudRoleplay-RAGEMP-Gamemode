@@ -132,33 +132,30 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
             return newBus;
         }
 
-        public void startBusJob(Player player, bool isInSwitchNative, bool hasPhoneOut, bool isPauseMenuActive, bool isTyping, bool isInVehicle, bool isInjured)
+        public void startBusJob(Player player)
         {
-            if(!isInSwitchNative && !isTyping)
+            BusDepo depoData = player.GetData<BusDepo>(_busDepoColShapeData);
+
+            if (depoData != null)
             {
-                BusDepo depoData = player.GetData<BusDepo>(_busDepoColShapeData);
-
-                if (depoData != null)
+                if (!FreelanceJobSystem.hasAJob(player, (int)FreelanceJobs.BusJob))
                 {
-                    if (!FreelanceJobSystem.hasAJob(player, (int)FreelanceJobs.BusJob))
+                    List<BusRoute> availableRoutes = BusDriverRoutes.busRoutes
+                        .Where(route => route.ownerDepoId == depoData.depoId)
+                        .ToList();
+
+                    if (FreelanceJobSystem.hasFreeLanceVehicle(player)) return;
+
+                    if (availableRoutes.Count > 0)
                     {
-                        List<BusRoute> availableRoutes = BusDriverRoutes.busRoutes
-                            .Where(route => route.ownerDepoId == depoData.depoId)
-                            .ToList();
+                        uiHandling.resetMutationPusher(player, MutationKeys.BusDriverJobRoutes);
 
-                        if (FreelanceJobSystem.hasFreeLanceVehicle(player)) return;
-
-                        if (availableRoutes.Count > 0)
+                        availableRoutes.ForEach(route =>
                         {
-                            uiHandling.resetMutationPusher(player, MutationKeys.BusDriverJobRoutes);
+                            uiHandling.handleObjectUiMutationPush(player, MutationKeys.BusDriverJobRoutes, route);
+                        });
 
-                            availableRoutes.ForEach(route =>
-                            {
-                                uiHandling.handleObjectUiMutationPush(player, MutationKeys.BusDriverJobRoutes, route);
-                            });
-
-                            uiHandling.pushRouterToClient(player, Browsers.ViewBusRoutes);
-                        }
+                        uiHandling.pushRouterToClient(player, Browsers.ViewBusRoutes);
                     }
                 }
             }

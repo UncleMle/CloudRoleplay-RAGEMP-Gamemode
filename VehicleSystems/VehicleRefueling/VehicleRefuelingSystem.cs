@@ -1,5 +1,6 @@
 ﻿using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
@@ -15,6 +16,8 @@ namespace CloudRP.VehicleSystems.VehicleRefueling
 
         public VehicleRefuelingSystem()
         {
+            KeyPressEvents.keyPress_Y += startVehicleRefuel;
+
             VehicleRefuelStations.refuelingStations.ForEach(refuelStation =>
             {
                 NAPI.Blip.CreateBlip(361, refuelStation.position, 1.0f, 75, refuelStation.name, 255, 20f, true, 0, 0);
@@ -57,7 +60,6 @@ namespace CloudRP.VehicleSystems.VehicleRefueling
             removeRefuellingPlayerFromVehicle(player);
         }
 
-        [RemoteEvent("server:startRefuelEvent")]
         public void startVehicleRefuel(Player player)
         {
             Vehicle findClosestVehicle = VehicleSystem.getClosestVehicleToPlayer(player, 4);
@@ -94,6 +96,8 @@ namespace CloudRP.VehicleSystems.VehicleRefueling
                     uiHandling.sendPushNotifError(player, "Ensure the vehicle's engine is off.", 6600);
                     return;
                 }
+
+                player.TriggerEvent("refuel:closeRefuelInterval", true);
 
                 closeVehicleData.player_refuelling_char_id = charData.character_id;
                 closeVehicleData.vehicle_fuel_purchase_price = -1;

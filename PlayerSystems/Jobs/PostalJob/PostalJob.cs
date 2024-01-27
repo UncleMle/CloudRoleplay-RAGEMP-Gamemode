@@ -64,9 +64,9 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
             });
         }
 
-        void startPostalJob(Player player, bool isInSwitchNative, bool hasPhoneOut, bool isPauseMenuActive, bool isTyping, bool isInVehicle, bool isInjured)
+        void startPostalJob(Player player)
         {
-            if (!player.checkIsWithinCoord(jobStartPosition, 2f) || isInSwitchNative || hasPhoneOut || isPauseMenuActive || isTyping || isInjured) return;
+            if (!player.checkIsWithinCoord(jobStartPosition, 2f)) return;
 
             uiHandling.resetMutationPusher(player, MutationKeys.PostalJobView);
 
