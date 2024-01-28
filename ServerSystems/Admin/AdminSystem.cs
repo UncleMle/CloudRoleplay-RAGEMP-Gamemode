@@ -233,7 +233,6 @@ namespace CloudRP.ServerSystems.Admin
             }
         }
 
-        [RemoteEvent("server:viewReports")]
         [AdminCommand(AdminRanks.Admin_Support, checkForAduty = false)]
         [Command("reports", "~r~/reports", Group = "admin")]
         public void viewReports(Player player)

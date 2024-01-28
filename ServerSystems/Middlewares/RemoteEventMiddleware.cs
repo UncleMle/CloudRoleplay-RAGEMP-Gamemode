@@ -1,4 +1,5 @@
 ﻿using CloudRP.Migrations;
+using CloudRP.ServerSystems.Admin;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
@@ -6,19 +7,13 @@ using System.Text;
 
 namespace CloudRP.ServerSystems.Middlewares
 {
-    public class RemoteEventMiddleware
+    public class RemoteEventMiddleware : Script
     {
         public static Dictionary<int, List<string>> allowedEvents = new Dictionary<int, List<string>>();
 
-    }
-
-    public class RemoteEventAttribute : GTANetworkAPI.RemoteEventAttribute
-    {
-        public RemoteEventAttribute() : base() { }
-        public RemoteEventAttribute(string eventName) : base("remote." + eventName)
+        public RemoteEventMiddleware()
         {
-            GTANetworkAPI.NAPI.Util.ConsoleOutput("remote." + eventName); // i have 2 references to this constructor but none outputs to the console
+            NAPI.ClientEvent.Register(typeof(AdminSystem).GetMethod(nameof(AdminSystem.viewReports)), "server:viewReports", new AdminSystem());
         }
-        public RemoteEventAttribute(string eventName, Type castTo) : base("remote." + eventName, castTo) { }
     }
 }

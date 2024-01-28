@@ -106,7 +106,7 @@ namespace CloudRP.PlayerSystems.Jobs.GruppeSixJob
             {
                 FreeLanceJobData jobData = player.getFreelanceJobData();
                 GruppeSixJobData selectedJob = player.GetData<GruppeSixJobData>(_gruppeSixJobDataKey);
-                if (!col.Equals(stopCol) || selectedJob == null || jobData == null || jobData.jobId != jobId || jobData.jobLevel < 0) return
+                if (!col.Equals(stopCol) || selectedJob == null || jobData == null || jobData.jobId != jobId || jobData.jobLevel < 0) return;
 
                 if (!selectedJob.carryingMoney)
                 {
