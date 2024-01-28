@@ -5,6 +5,7 @@ using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
+using Microsoft.EntityFrameworkCore.Internal;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -105,17 +106,15 @@ namespace CloudRP.PlayerSystems.Jobs.GruppeSixJob
             {
                 FreeLanceJobData jobData = player.getFreelanceJobData();
                 GruppeSixJobData selectedJob = player.GetData<GruppeSixJobData>(_gruppeSixJobDataKey);
-                if (!col.Equals(stopCol) || selectedJob == null || jobData == null || jobData.jobId != jobId || jobData.jobLevel < 0) return;
+                if (!col.Equals(stopCol) || selectedJob == null || jobData == null || jobData.jobId != jobId || jobData.jobLevel < 0) return
 
-                if(!selectedJob.carryingMoney)
+                if (!selectedJob.carryingMoney)
                 {
                     uiHandling.sendPushNotifError(player, "You don't have any money to refill the ATM grab some from the truck.", 6700);
                     return;
                 }
 
                 uiHandling.sendNotification(player, "~g~Refilled ATM", false, true, "Refills Atm...");
-
-                Console.WriteLine($"{jobData.jobLevel} || {selectedJob.selectJob.deliveryStops.Count - 1}");
 
                 selectedJob.carryingMoney = false;
                 player.SetData(_gruppeSixJobDataKey, selectedJob);
@@ -126,12 +125,16 @@ namespace CloudRP.PlayerSystems.Jobs.GruppeSixJob
                     return;
                 }
 
+                Vector3 nextStop = selectedJob.selectJob.deliveryStops[jobData.jobLevel];
+                int selectIndex = selectedJob.selectJob.deliveryStops.IndexOf(nextStop);
+
+                if ((jobData.jobLevel - selectIndex) != 1) return;
+
                 jobData.jobLevel++;
 
                 player.SetData(_gruppeSixJobDataKey, selectedJob);
 
-                Vector3 nextStop = selectedJob.selectJob.deliveryStops[jobData.jobLevel];
-
+                
                 MarkersAndLabels.addBlipForClient(player, 1, "Next ATM", nextStop, 41, 255, -1, true, true);
             };
 
