@@ -13,7 +13,13 @@ namespace CloudRP.ServerSystems.Middlewares
 
         public RemoteEventMiddleware()
         {
-            NAPI.ClientEvent.Register(typeof(AdminSystem).GetMethod(nameof(AdminSystem.viewReports)), "server:viewReports", new AdminSystem());
+            NAPI.ClientEvent.Register(testAuth(typeof(AdminSystem).GetMethod(nameof(AdminSystem.viewReports))), "server:viewReports", new AdminSystem());
+        }
+
+        public T testAuth<T>(T t)
+        {
+            Console.WriteLine("Event trigger");
+            return t;
         }
     }
 }
