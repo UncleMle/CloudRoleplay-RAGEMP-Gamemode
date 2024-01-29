@@ -100,13 +100,18 @@ namespace CloudRP.PlayerSystems.Jobs.GruppeSixJob
 
         private static void initAtm(Vector3 stop)
         {
-            ColShape stopCol = NAPI.ColShape.CreateSphereColShape(stop, 3f, 0);
+            ColShape stopCol = NAPI.ColShape.CreateSphereColShape(stop, 2f, 0);
 
             stopCol.OnEntityEnterColShape += (col, player) =>
             {
                 FreeLanceJobData jobData = player.getFreelanceJobData();
                 GruppeSixJobData selectedJob = player.GetData<GruppeSixJobData>(_gruppeSixJobDataKey);
                 if (!col.Equals(stopCol) || selectedJob == null || jobData == null || jobData.jobId != jobId || jobData.jobLevel < 0) return;
+
+                Vector3 currentStop = selectedJob.selectJob.deliveryStops[jobData.jobLevel];
+                int selectIndex = selectedJob.selectJob.deliveryStops.IndexOf(currentStop);
+
+                if ((selectIndex != selectedJob.selectJob.deliveryStops.IndexOf(stop))) return; 
 
                 if (!selectedJob.carryingMoney)
                 {
@@ -125,15 +130,11 @@ namespace CloudRP.PlayerSystems.Jobs.GruppeSixJob
                     return;
                 }
 
-                Vector3 nextStop = selectedJob.selectJob.deliveryStops[jobData.jobLevel];
-                int selectIndex = selectedJob.selectJob.deliveryStops.IndexOf(nextStop);
-
-                if ((jobData.jobLevel - selectIndex) != 1) return;
-
                 jobData.jobLevel++;
 
-                player.SetData(_gruppeSixJobDataKey, selectedJob);
+                player.setFreelanceJobData(jobData);
 
+                Vector3 nextStop = selectedJob.selectJob.deliveryStops[jobData.jobLevel];
                 
                 MarkersAndLabels.addBlipForClient(player, 1, "Next ATM", nextStop, 41, 255, -1, true, true);
             };
@@ -142,7 +143,6 @@ namespace CloudRP.PlayerSystems.Jobs.GruppeSixJob
 
         private static void handleJobEnd(Player player, FreeLanceJobData job, string selectJobName)
         {
-            MarkersAndLabels.addBlipForClient(player, 1, "Next ATM", vehicleSpawn, 2, 255, -1, true, true);
             job.jobFinished = true;
 
             player.setFreelanceJobData(job);
