@@ -5,6 +5,7 @@ using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
+using Microsoft.EntityFrameworkCore.Internal;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -99,7 +100,7 @@ namespace CloudRP.PlayerSystems.Jobs.GruppeSixJob
 
         private static void initAtm(Vector3 stop)
         {
-            ColShape stopCol = NAPI.ColShape.CreateSphereColShape(stop, 3f, 0);
+            ColShape stopCol = NAPI.ColShape.CreateSphereColShape(stop, 2f, 0);
 
             stopCol.OnEntityEnterColShape += (col, player) =>
             {
@@ -107,15 +108,18 @@ namespace CloudRP.PlayerSystems.Jobs.GruppeSixJob
                 GruppeSixJobData selectedJob = player.GetData<GruppeSixJobData>(_gruppeSixJobDataKey);
                 if (!col.Equals(stopCol) || selectedJob == null || jobData == null || jobData.jobId != jobId || jobData.jobLevel < 0) return;
 
-                if(!selectedJob.carryingMoney)
+                Vector3 currentStop = selectedJob.selectJob.deliveryStops[jobData.jobLevel];
+                int selectIndex = selectedJob.selectJob.deliveryStops.IndexOf(currentStop);
+
+                if ((selectIndex != selectedJob.selectJob.deliveryStops.IndexOf(stop))) return; 
+
+                if (!selectedJob.carryingMoney)
                 {
                     uiHandling.sendPushNotifError(player, "You don't have any money to refill the ATM grab some from the truck.", 6700);
                     return;
                 }
 
                 uiHandling.sendNotification(player, "~g~Refilled ATM", false, true, "Refills Atm...");
-
-                Console.WriteLine($"{jobData.jobLevel} || {selectedJob.selectJob.deliveryStops.Count - 1}");
 
                 selectedJob.carryingMoney = false;
                 player.SetData(_gruppeSixJobDataKey, selectedJob);
@@ -128,10 +132,10 @@ namespace CloudRP.PlayerSystems.Jobs.GruppeSixJob
 
                 jobData.jobLevel++;
 
-                player.SetData(_gruppeSixJobDataKey, selectedJob);
+                player.setFreelanceJobData(jobData);
 
                 Vector3 nextStop = selectedJob.selectJob.deliveryStops[jobData.jobLevel];
-
+                
                 MarkersAndLabels.addBlipForClient(player, 1, "Next ATM", nextStop, 41, 255, -1, true, true);
             };
 
@@ -139,7 +143,6 @@ namespace CloudRP.PlayerSystems.Jobs.GruppeSixJob
 
         private static void handleJobEnd(Player player, FreeLanceJobData job, string selectJobName)
         {
-            MarkersAndLabels.addBlipForClient(player, 1, "Next ATM", vehicleSpawn, 2, 255, -1, true, true);
             job.jobFinished = true;
 
             player.setFreelanceJobData(job);

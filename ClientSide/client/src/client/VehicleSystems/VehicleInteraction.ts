@@ -129,10 +129,11 @@ export default class VehicleInteraction {
 						mp.events.callRemote("server:postalJob:pickPackage", VehicleInteraction.boneTarget.veh);
 						break;
 					}
-				case InteractMenu.GruppeSix: {
-					mp.events.callRemote("server:jobs:gruppeSix:takeMoney", VehicleInteraction.boneTarget.veh);
-					break;
-				}
+				case InteractMenu.GruppeSix:
+					{
+						mp.events.callRemote("server:jobs:gruppeSix:takeMoney", VehicleInteraction.boneTarget.veh);
+						break;
+					}
 				default: {
 					VehicleInteraction.interactionHandler();
 				}

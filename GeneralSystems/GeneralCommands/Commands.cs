@@ -42,7 +42,7 @@ namespace CloudRP.GeneralSystems.GeneralCommands
         {
             foreach (CommandAttribute i in loadedCommands)
             {
-                Console.WriteLine(i.CommandHelpText + " group" + i.Group);
+                //Console.WriteLine(i.CommandHelpText + " group" + i.Group);
             }
         }
 

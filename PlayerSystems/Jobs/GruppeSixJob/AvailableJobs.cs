@@ -30,17 +30,19 @@ namespace CloudRP.PlayerSystems.Jobs.GruppeSixJob
             {
                 jobId = 2,
                 jobPay = 3990,
-                name = "LS Circle",
+                name = "LS Main",
                 description = "Do a ring around the city filling up all the ATMS.",
                 deliveryStops = new List<Vector3>
                 {
-                    new Vector3(-258.7763366699219f, -723.3988037109375f, 33.467262268066406f),
-                    new Vector3(-256.1478576660156f, -716.0738525390625f, 33.51643371582031f),
-                    new Vector3(-254.31884765625f, -692.4165649414062f, 33.61027908325195f),
-                    new Vector3(-2295.475830078125f, 358.1181640625f, 174.60171508789062f),
-                    new Vector3(-2294.67529296875f, 356.5382995605469f, 174.60171508789062f),
-                    new Vector3(-2293.8984375f, 354.8272705078125f, 174.60171508789062f),
-                    new Vector3(-3044.10546875f, 594.6197509765625f, 7.736138820648193f)
+                    new Vector3(-717.6, -915.7, 19.2),
+                    new Vector3(-1314.9, -836.0, 17.0),
+                    new Vector3(-1315.8, -834.8, 17.0),
+                    new Vector3(-1571.0, 547.3, 35.0),
+                    new Vector3(-1570.2, 546.7, 35.0),
+                    new Vector3(-1205.0, -326.2, 37.8),
+                    new Vector3(-1205.7, -324.8, 37.9),
+                    new Vector3(-846.9, -340.2, 38.7),
+                    new Vector3(-846.2, -341.2, 38.7)
                 }
             }
         };
