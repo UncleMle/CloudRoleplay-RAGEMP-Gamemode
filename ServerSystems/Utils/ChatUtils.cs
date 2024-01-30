@@ -72,4 +72,10 @@ namespace CloudRP.ServerSystems.Utils
             return time < 10 ? "0" + time : time.ToString();
         }
     }
+
+    public class ChatDistanceColour
+    {
+        public float distance { get; set; }
+        public string colour { get; set; }
+    }
 }

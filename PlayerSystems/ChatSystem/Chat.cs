@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using CloudRP.ServerSystems.Utils;
+using CloudRP.GeneralSystems.SpeedCameras;
+using System.Linq;
 
 namespace CloudRP.PlayerSystems.ChatSystem
 {
@@ -18,6 +20,29 @@ namespace CloudRP.PlayerSystems.ChatSystem
         public static readonly double _chatRadius = 30.0;
         public static readonly double _adminChatRadius = 52.0;
         public static readonly string _typingStateIdentifier = "playerIsTypingState";
+        public static readonly List<ChatDistanceColour> distanceColours = new List<ChatDistanceColour>
+        {
+            new ChatDistanceColour
+            {
+                distance = 0,
+                colour = "white"
+            },
+            new ChatDistanceColour
+            {
+                distance = 10,
+                colour = "#a6a6a6"
+            },
+            new ChatDistanceColour
+            {
+                distance = 20,
+                colour = "#757474"
+            },
+            new ChatDistanceColour
+            {
+                distance = 25,
+                colour = "#424242"
+            }
+        };
 
         public Chat()
         {
@@ -46,16 +71,22 @@ namespace CloudRP.PlayerSystems.ChatSystem
 
             List<Player> playersInRange = CommandUtils.getPlayersInRadius(player, userData.adminDuty ? _adminChatRadius : _chatRadius);
 
-            string chatMessage = prefix + suffix + message;
-
             playersInRange.ForEach(p =>
             {
+                string chatMessage = prefix + suffix + message;
+
                 if (userData.adminDuty)
                 {
                     NAPI.Chat.SendChatMessageToPlayer(p, chatMessage);
                 }
                 else
                 {
+                    float dist = Vector3.Distance(player.Position, p.Position);
+
+                    string chatColour = "!{"+distanceColours.OrderBy(item => Math.Abs(dist - item.distance)).First()?.colour+ "}";
+
+                    chatMessage = chatColour + prefix + suffix + chatColour + message;
+
                     ChatUtils.sendWithNickName(p, player, prefix, suffix + message);
                 }
             });
