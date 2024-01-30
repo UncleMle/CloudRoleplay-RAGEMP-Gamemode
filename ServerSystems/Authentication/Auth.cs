@@ -12,6 +12,7 @@ using CloudRP.ServerSystems.AntiCheat;
 using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.PlayerSystems.Jobs;
+using CloudRP.ServerSystems.Middlewares;
 
 namespace CloudRP.ServerSystems.Authentication
 {
@@ -21,6 +22,10 @@ namespace CloudRP.ServerSystems.Authentication
         public static uint _startDimension = 20;
         public static string _startAdminPed = "ig_mp_agent14";
         public static string _otpStoreKey = "registering_otp";
+        public string[] test = new string[]
+        {
+            "test"
+        };
 
         public Auth()
         {

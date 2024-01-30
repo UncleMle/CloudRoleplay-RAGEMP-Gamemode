@@ -79,7 +79,7 @@ namespace CloudRP.ServerSystems.DiscordSystem
 
                             if (validReport != null)
                             {
-                                await DiscordSystems.handleReportReaction(validReport, mesg, reaction);
+                                DiscordSystems.handleReportReaction(validReport, mesg, reaction);
                                 return;
                             }
                         }

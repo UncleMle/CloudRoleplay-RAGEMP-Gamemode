@@ -13,7 +13,14 @@ namespace CloudRP.ServerSystems.Middlewares
 
         public RemoteEventMiddleware()
         {
+            // change event name to hash on server start . client requests when nessescary
+
             //NAPI.ClientEvent.Register(testAuth(typeof(AdminSystem).GetMethod(nameof(AdminSystem.viewReports))), "server:viewReports", new AdminSystem());
+        }
+
+        public static string setEvent(string name)
+        {
+            return name;
         }
 
         public T testAuth<T>(T t)

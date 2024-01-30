@@ -104,7 +104,7 @@ namespace CloudRP.ServerSystems.DiscordSystem
             {
                 commands.Clear();
 
-                addCommmand(async () => await say(args, user), "to say message to all online players", "say");
+                addCommmand(() => say(args, user), "to say message to all online players", "say");
                 addCommmand(async () => await vinfo(args, user), "to view info about a vehicle", "vinfo");
                 addCommmand(async () => await kickPlayer(args, user), "to kick a player from the server", "kickplayer");
                 addCommmand(async () => await helpCommand(args, user), "to view all available commands", "help");
@@ -264,15 +264,18 @@ namespace CloudRP.ServerSystems.DiscordSystem
             await DiscordIntegration.SendEmbed(staffChannel, builder);
         }
 
-        public static async Task say(string[] args, SocketUser user)
+        public static void say(string[] args, SocketUser user)
         {
-            if (!DiscordUtils.checkArgs(args, "say", 2, "message")) return;
+            NAPI.Task.Run(async () =>
+            {
+                if (!DiscordUtils.checkArgs(args, "say", 2, "message")) return;
 
-            string message = ChatUtils.red + "[Discord] " + ChatUtils.White + user.Username + ChatUtils.red + " says: " + ChatUtils.White + DiscordUtils.getSplicedArgument(args);
+                string message = ChatUtils.red + "[Discord] " + ChatUtils.White + user.Username + ChatUtils.red + " says: " + ChatUtils.White + DiscordUtils.getSplicedArgument(args);
 
 
-            await DiscordIntegration.SendMessage(staffChannel, MentionUtils.MentionUser(user.Id) + " sent message in game!", false);
-            NAPI.Chat.SendChatMessageToAll(message);
+                await DiscordIntegration.SendMessage(staffChannel, MentionUtils.MentionUser(user.Id) + " sent message in game!", false);
+                NAPI.Chat.SendChatMessageToAll(message);
+            });
         }
 
         public static async Task errorEmbed(ulong userId, string desc)
@@ -348,10 +351,10 @@ namespace CloudRP.ServerSystems.DiscordSystem
                 foreach (KeyValuePair<Player, User> admin in isHandling.adminsHandling)
                 {
                     if (isHandling.playerReporting.Equals(admin.Key)) return;
-                    NAPI.Chat.SendChatMessageToPlayer(admin.Key, ChatUtils.reports + $"Admin {adminData.admin_name} who was joined in your report has disconnected from the server.");
+                    admin.Key.SendChatMessage(ChatUtils.reports + $"Admin {adminData.admin_name} who was joined in your report has disconnected from the server.");
                 }
 
-                NAPI.Chat.SendChatMessageToPlayer(isHandling.playerReporting, $"{ChatUtils.reports} Admin {adminData.admin_name} who was part of your report disconnected from the server.");
+                isHandling.playerReporting.SendChatMessage($"{ChatUtils.reports} Admin {adminData.admin_name} who was part of your report disconnected from the server.");
 
                 NAPI.Task.Run(async () =>
                 {
@@ -368,44 +371,47 @@ namespace CloudRP.ServerSystems.DiscordSystem
             }
         }
 
-        public static async Task handleReportReaction(Report report, IUserMessage message, SocketReaction reaction)
+        public static void handleReportReaction(Report report, IUserMessage message, SocketReaction reaction)
         {
-            IUser discordUser = reaction.User.Value;
-            Player reportingPlayer = NAPI.Player.GetPlayerFromHandle(report.playerReporting.Handle);
-            int rid = AdminSystem.activeReports.IndexOf(report);
-
-            if (discordUser.IsBot || !AdminSystem.activeReports.Contains(report)) return;
-
-            if (reaction.Emote.GetHashCode() == DiscordIntegration.closeReaction.GetHashCode())
+            NAPI.Task.Run(async () =>
             {
-                if (reportingPlayer != null)
+                IUser discordUser = reaction.User.Value;
+                Player reportingPlayer = NAPI.Player.GetPlayerFromHandle(report.playerReporting.Handle);
+                int rid = AdminSystem.activeReports.IndexOf(report);
+
+                if (discordUser.IsBot || !AdminSystem.activeReports.Contains(report)) return;
+
+                if (reaction.Emote.GetHashCode() == DiscordIntegration.closeReaction.GetHashCode())
                 {
-                    NAPI.Chat.SendChatMessageToPlayer(reportingPlayer, ChatUtils.reports + "Your report was closed.");
+                    if (reportingPlayer != null)
+                    {
+                        reportingPlayer.SendChatMessage(ChatUtils.reports + "Your report was closed.");
+                    }
+
+                    await DiscordIntegration.SendMessageToUser(discordUser.Id, "You closed report **#" + rid + "**");
+                    await DiscordIntegration.SendMessage(report.discordChannelId, $"Report was closed by {discordUser.Username} closing report...");
+                    await closeAReport(report);
                 }
 
-                await DiscordIntegration.SendMessageToUser(discordUser.Id, "You closed report **#" + rid + "**");
-                await DiscordIntegration.SendMessage(report.discordChannelId, $"Report was closed by {discordUser.Username} closing report...");
-                await closeAReport(report);
-            }
-
-            if (reaction.Emote.GetHashCode() == DiscordIntegration.joinReaction.GetHashCode())
-            {
-                if (report.discordAdminsHandling.Count == 0 && report.adminsHandling.Count == 0)
+                if (reaction.Emote.GetHashCode() == DiscordIntegration.joinReaction.GetHashCode())
                 {
-                    NAPI.Chat.SendChatMessageToPlayer(reportingPlayer, ChatUtils.reports + $"Your report has been accepted by {discordUser.Username}.");
-                    report.discordAdminsHandling.Add(discordUser.Id);
-                    return;
-                }
+                    if (report.discordAdminsHandling.Count == 0 && report.adminsHandling.Count == 0)
+                    {
+                        reportingPlayer.SendChatMessage(ChatUtils.reports + $"Your report has been accepted by {discordUser.Username}.");
+                        report.discordAdminsHandling.Add(discordUser.Id);
+                        return;
+                    }
 
-                if (!report.discordAdminsHandling.Contains(discordUser.Id))
-                {
-                    string sendTo = ChatUtils.reports + $"Admin {discordUser.Username} joined the report.";
+                    if (!report.discordAdminsHandling.Contains(discordUser.Id))
+                    {
+                        string sendTo = ChatUtils.reports + $"Admin {discordUser.Username} joined the report.";
 
-                    NAPI.Chat.SendChatMessageToPlayer(reportingPlayer, sendTo);
-                    AdminUtils.sendToAdminsHandlingReport(report, sendTo, reportingPlayer);
-                    report.discordAdminsHandling.Add(discordUser.Id);
+                        reportingPlayer.SendChatMessage(sendTo);
+                        AdminUtils.sendToAdminsHandlingReport(report, sendTo, reportingPlayer);
+                        report.discordAdminsHandling.Add(discordUser.Id);
+                    }
                 }
-            }
+            });
         }
 
         public static async Task closeAReport(Report report, bool shouldAlertAdmins = false)
@@ -417,31 +423,40 @@ namespace CloudRP.ServerSystems.DiscordSystem
             await DiscordIntegration.removeAChannel(report.discordChannelId);
         }
 
-        public static async Task handleReportChannelMessage(Report report, SocketMessage message)
+        public static void handleReportChannelMessage(Report report, SocketMessage message)
         {
-            Player reportingPlayer = report.playerReporting;
-
-            SocketUser admin = message.Author;
-
-            if (reportingPlayer == null)
+            NAPI.Task.Run(async () =>
             {
-                await DiscordIntegration.SendMessage(report.discordChannelId, "The player is not in the server closing report...");
-                await closeAReport(report);
-                return;
-            }
+                try
+                {
+                    Player reportingPlayer = report.playerReporting;
 
-            if (!report.discordAdminsHandling.Contains(admin.Id))
-            {
-                string msgUri = DiscordUtils.getRedirectUri(report.discordRefId);
-                await DiscordIntegration.SendMessage(report.discordChannelId, "You must react to the report message to gain access to this report. (" + msgUri + ")");
-                return;
-            }
+                    SocketUser admin = message.Author;
 
-            string toPlayer = ChatUtils.reports + admin.Username + ChatUtils.red + " says: " + ChatUtils.White + message.Content;
+                    string toPlayer = ChatUtils.reports + admin.Username + ChatUtils.red + " says: " + ChatUtils.White + message.Content;
+                    reportingPlayer.SendChatMessage(toPlayer);
 
-            await message.AddReactionAsync(DiscordIntegration.joinReaction);
-            NAPI.Chat.SendChatMessageToPlayer(reportingPlayer, toPlayer);
-            AdminUtils.sendToAdminsHandlingReport(report, toPlayer, reportingPlayer);
+                    if (reportingPlayer == null)
+                    {
+                        await DiscordIntegration.SendMessage(report.discordChannelId, "The player is not in the server closing report...");
+                        await closeAReport(report);
+                        return;
+                    }
+
+                    if (!report.discordAdminsHandling.Contains(admin.Id))
+                    {
+                        string msgUri = DiscordUtils.getRedirectUri(report.discordRefId);
+                        await DiscordIntegration.SendMessage(report.discordChannelId, "You must react to the report message to gain access to this report. (" + msgUri + ")");
+                        return;
+                    }
+
+                    await message.AddReactionAsync(DiscordIntegration.joinReaction);
+                    AdminUtils.sendToAdminsHandlingReport(report, toPlayer, reportingPlayer);
+                }
+                catch
+                {
+                }
+            });
         }
 
     }
