@@ -209,7 +209,25 @@ namespace CloudRP.ServerSystems.DiscordSystem
                     builder.AddField(x =>
                     {
                         x.Name = "Vehicle Name";
-                        x.Value = vehicle.vehicle_name;
+                        x.Value = vehicle.vehicle_display_name;
+                    });
+                    
+                    builder.AddField(x =>
+                    {
+                        x.Name = "Travelled (KM)";
+                        x.Value = (vehicle.vehicle_distance / 1000).ToString("N0");
+                    });
+                    
+                    builder.AddField(x =>
+                    {
+                        x.Name = "Fuel Level";
+                        x.Value = vehicle.vehicle_fuel.ToString("N0");
+                    });
+                    
+                    builder.AddField(x =>
+                    {
+                        x.Name = "Vehicle Health";
+                        x.Value = vehicle.vehicle_health.ToString("N0");
                     });
 
                     DbCharacter characterData = dbContext.characters.Find(vehicle.owner_id);
