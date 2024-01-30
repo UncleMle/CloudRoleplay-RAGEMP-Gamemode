@@ -106,7 +106,7 @@ namespace CloudRP.PlayerSystems.Jobs.GruppeSixJob
             {
                 FreeLanceJobData jobData = player.getFreelanceJobData();
                 GruppeSixJobData selectedJob = player.GetData<GruppeSixJobData>(_gruppeSixJobDataKey);
-                if (!col.Equals(stopCol) || selectedJob == null || jobData == null || jobData.jobId != jobId || jobData.jobLevel < 0) return;
+                if (!col.Equals(stopCol) || selectedJob == null || jobData == null || jobData.jobId != jobId || jobData.jobLevel < 0 || jobData.jobFinished) return;
 
                 Vector3 currentStop = selectedJob.selectJob.deliveryStops[jobData.jobLevel];
                 int selectIndex = selectedJob.selectJob.deliveryStops.IndexOf(currentStop);

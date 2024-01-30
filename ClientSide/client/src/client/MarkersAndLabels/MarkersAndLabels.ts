@@ -23,7 +23,7 @@ export default class MarkersAndLabels {
             name: name,
             rotation: 0,
             scale: 1.0,
-            shortRange: true
+            shortRange: false
         });
 
         MarkersAndLabels.createBlip = createdBlip;

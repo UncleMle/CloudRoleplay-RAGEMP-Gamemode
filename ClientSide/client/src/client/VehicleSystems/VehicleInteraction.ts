@@ -51,19 +51,18 @@ export default class VehicleInteraction {
 					];
 
 				if (freelanceData && freelanceData.characterOwnerId == getUserCharacterData()?.character_id) {
-					if (VehicleInteraction.boneTarget.name !== VehicleInteraction.bones[2] && VehicleInteraction.boneTarget.name !== VehicleInteraction.bones[3]) return;
-
-					switch (freelanceData.jobId) {
-						case FreelanceJobs.PostalJob: {
-							renderText.push(InteractMenu.PostalMenu);
-							break;
-						}
-						case FreelanceJobs.GruppeSix: {
-							renderText.push(InteractMenu.GruppeSix);
-							break;
+					if (VehicleInteraction.boneTarget.name == VehicleInteraction.bones[2] || VehicleInteraction.boneTarget.name == VehicleInteraction.bones[3]) {
+						switch (freelanceData.jobId) {
+							case FreelanceJobs.PostalJob: {
+								renderText.push(InteractMenu.PostalMenu);
+								break;
+							}
+							case FreelanceJobs.GruppeSix: {
+								renderText.push(InteractMenu.GruppeSix);
+								break;
+							}
 						}
 					}
-
 				}
 
 				VehicleInteraction.handleWheelMenu(renderText);
