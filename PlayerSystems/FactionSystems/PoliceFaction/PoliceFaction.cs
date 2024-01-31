@@ -8,10 +8,26 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CloudRP.PlayerSystems.FactionSystems
+namespace CloudRP.PlayerSystems.FactionSystems.PoliceFaction
 {
     public class PoliceFaction : Script
     {
+        public static Dictionary<string, Vector3> policePrecincts = new Dictionary<string, Vector3>
+        {
+            {
+                "Mission Row - PD", new Vector3(451.8, -981.4, 43.7)
+            }
+        };
+
+        public PoliceFaction()
+        {
+            foreach (KeyValuePair<string, Vector3> item in policePrecincts)
+            {
+                NAPI.Blip.CreateBlip(60, item.Value, 1f, 4, item.Key, 255, 1f, true, 0, 0);
+            }
+        }
+
+        #region Commands
         [Command("m", "~y~Use:~w~ /megaphone [message]", GreedyArg = true)]
         public void megaphoneCommand(Player player, string message)
         {
@@ -57,5 +73,6 @@ namespace CloudRP.PlayerSystems.FactionSystems
                 CommandUtils.errorSay(player, "You must be in or near a police vehicle to use this command.");
             }
         }
+        #endregion
     }
 }

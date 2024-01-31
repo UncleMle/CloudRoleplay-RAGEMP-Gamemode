@@ -1,6 +1,7 @@
 ﻿using CloudRP.GeneralSystems.GeneralCommands;
 using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.DeathSystem;
+using CloudRP.PlayerSystems.DMV;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
@@ -108,6 +109,12 @@ namespace CloudRP.PlayerSystems.Jobs
             {
                 player.SendChatMessage(ChatUtils.error + "You already have a freelance job. Use /qjob to quit it.");
                 hasAJob = true;
+            }
+
+            if(player.GetData<DmvLicensePlayer>(DmvSystem._PlayerDmvDataKey) != null)
+            {
+                hasAJob = true;
+                player.SendChatMessage(ChatUtils.error + "You have a DMV Course pending.");
             }
 
             return hasAJob;

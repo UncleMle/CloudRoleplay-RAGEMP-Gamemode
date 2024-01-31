@@ -18,8 +18,8 @@ namespace CloudRP.PlayerSystems.DMV
     public class DmvSystem : Script
     {
         private static readonly Vector3 dmvStartPoint = new Vector3(797.8, -2988.7, 6.0);
-        private static readonly string _PlayerDmvDataKey = "server:dmvSystem:selectCourseKeyPlayer";
-        private static readonly string _VehicleDmvDataKey = "server:dmvSystem:selectCourseKeyVehicle";
+        public static readonly string _PlayerDmvDataKey = "server:dmvSystem:selectCourseKeyPlayer";
+        public static readonly string _VehicleDmvDataKey = "server:dmvSystem:selectCourseKeyVehicle";
 
         public DmvSystem()
         {
