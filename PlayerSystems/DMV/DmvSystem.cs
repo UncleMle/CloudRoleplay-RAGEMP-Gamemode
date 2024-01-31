@@ -73,9 +73,15 @@ namespace CloudRP.PlayerSystems.DMV
                     MarkersAndLabels.removeClientBlip(player);
                     Licenses license = dmvPlayer.course.license;
 
-                    player.addAlicense(license);
+                    if (NAPI.Vehicle.GetVehicleEngineHealth(player.Vehicle) < 980)
+                    {
+                        player.SendChatMessage(ChatUtils.dmv + $"You have {ChatUtils.red}FAILED{ChatUtils.White} your DMV Course for license {license}. Your welcome to try again whenever.");
+                    } else
+                    {
+                        player.addAlicense(license);
+                        player.SendChatMessage(ChatUtils.dmv + $"You have {ChatUtils.moneyGreen}PASSED{ChatUtils.White} your DMV Course for license {license}.");
+                    }
 
-                    CommandUtils.successSay(player, $"You have finished your DMV course and have recieved the license {license}!");
                     player.ResetData(_PlayerDmvDataKey);
                     player.Vehicle.Delete();
                 }
@@ -221,7 +227,11 @@ namespace CloudRP.PlayerSystems.DMV
                 return;
             }
 
-            if(player.getAllLicenses()?.Where(l => l.license.Equals(selectCourse.license)) != null)
+            PlayerLicense license = player.getAllLicenses()?
+                .Where(license => license.license.Equals(selectCourse.license))
+                .FirstOrDefault();
+
+            if (license != null)
             {
                 uiHandling.sendPushNotifError(player, "You already have this license.", 5600);
                 return;
@@ -255,6 +265,7 @@ namespace CloudRP.PlayerSystems.DMV
 
                 player.SetCustomData(_PlayerDmvDataKey, pLicense);
                 player.SendChatMessage(ChatUtils.dmv + $"You have started the course for the license {pLicense.course.license}. Head over to the first blip on the gps. Ensure to remain within the vehicle at all times.");
+                player.SendChatMessage(ChatUtils.dmv + "Ensure not to crash or damage your vehicle at all. Or you will fail your test.");
 
                 setNextDmvStop(player, nextStop);
             }
@@ -274,6 +285,19 @@ namespace CloudRP.PlayerSystems.DMV
                 }, 1500);
             }
         }
+
+        [ServerEvent(Event.PlayerDisconnected)]
+        public void removeDmvVehicle(Player player, DisconnectionType type, string reason)
+        {
+            NAPI.Pools.GetAllVehicles().ForEach(veh =>
+            {
+                if(veh.GetData<DmvLicenseVehicle>(_VehicleDmvDataKey)?.characterOwnerId == player.getPlayerCharacterData()?.character_id)
+                {
+                    veh.Delete();
+                }
+            });
+        }
+
         #endregion
 
     }
