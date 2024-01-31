@@ -51,7 +51,6 @@ import VehicleStall from "./VehicleSystems/VehicleStall";
 import TruckerJob from "./Jobs/TruckerJob/TruckerJobs";
 import AttachmentSync from "./PlayerSyncSystems/AttachmentSync";
 import AnimationSync from "./PlayerSyncSystems/AnimationSync";
-import Dmv from "./DmvSystem/Dmv";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -107,4 +106,3 @@ new VehicleStall();
 new TruckerJob();
 new AttachmentSync();
 new AnimationSync();
-new Dmv();

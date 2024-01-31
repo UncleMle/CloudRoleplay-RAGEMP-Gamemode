@@ -65,5 +65,18 @@ namespace CloudRP.PlayerSystems.Character
             character.character_license_data = JsonConvert.SerializeObject(licenses);
         }
 
+        public static bool hasLicense(this Player player, Licenses license)
+        {
+            bool has = false;
+            List<PlayerLicense> licenses = player.getAllLicenses();
+
+            if(licenses.Where(l => l.license.Equals(license)).FirstOrDefault() != null)
+            {
+                has = true;
+            }
+
+            return has;
+        }
+
     }
 }

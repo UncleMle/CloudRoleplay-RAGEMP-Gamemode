@@ -252,6 +252,12 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
             {
                 if (FreelanceJobSystem.hasFreeLanceVehicle(player)) return;
 
+                if(!player.hasLicense(Licenses.HeavyGoods))
+                {
+                    uiHandling.sendPushNotifError(player, "You must have a heavy goods license to start this job.", 5600);
+                    return;
+                }
+
                 AvailableJobTrucker selectedJob = AvailableJobs.availableJobs
                     .Where(job => job.jobId == truckerJobId)
                     .FirstOrDefault();
