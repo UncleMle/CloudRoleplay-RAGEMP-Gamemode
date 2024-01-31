@@ -18,11 +18,6 @@
                                     }}</span>
                                 </div>
                                 <div class="relative w-full mt-4">
-                                    <span class="left-0 top-0 "><i class="fa-solid fa-id-card-clip pr-2"></i>Player
-                                        ID</span>
-                                    <span class="absolute right-0 top-0">{{ playerDataServer.id }}</span>
-                                </div>
-                                <div class="relative w-full mt-4">
                                     <span class="left-0 top-0 "><i class="fa-solid fa-money-bill pr-2"></i>Money
                                         Amount</span>
                                     <span class="absolute right-0 top-0 text-green-400">${{
@@ -44,10 +39,32 @@
                                     <span class="absolute right-0 top-0">{{ (characterStats.play_time_seconds /
                                         60).toFixed(0) }} minutes</span>
                                 </div>
+
                                 <div class="relative w-full mt-4">
-                                    <span class="left-0 top-0 "><i class="fa-solid fa-briefcase pr-2"></i>Freelance Job Status</span>
+                                    <span class="left-0 top-0 "><i class="fa-solid fa-id-card-clip pr-2"></i>Licenses</span>
                                     <span class="absolute right-0 top-0">
-                                        <span v-if="!characterStats.freelance_job_data">
+                                        <span class="text-gray-300" v-if="!characterStats.character_license_data">
+                                            No licenses
+                                        </span>
+
+                                        <span v-else>
+                                            <span v-for="(item, idx) in JSON.parse(characterStats.character_license_data)"
+                                                :key="idx">
+                                                <font class="text-yellow-200">{{ getFormattedName(item) }}{{ idx !=
+                                                    JSON.parse(characterStats.character_license_data).length - 1 ? "," : ""
+                                                }}
+                                                </font>
+                                            </span>
+
+                                        </span>
+                                    </span>
+                                </div>
+
+                                <div class="relative w-full mt-4">
+                                    <span class="left-0 top-0 "><i class="fa-solid fa-briefcase pr-2"></i>Freelance Job
+                                        Status</span>
+                                    <span class="absolute right-0 top-0">
+                                        <span class="text-gray-300" v-if="!characterStats.freelance_job_data">
                                             Unemployed
                                         </span>
                                         <span v-else>
@@ -77,6 +94,19 @@ export default {
             characterStats: "getPlayerStats",
             playerDataServer: "getPlayerDataServer"
         })
+    },
+    methods: {
+        getFormattedName(id) {
+            let licenses = [
+                "Car",
+                "HGV",
+                "Boats",
+                "Helicopter",
+                "Firearm"
+            ];
+
+            return licenses[id];
+        }
     }
 }
 </script>

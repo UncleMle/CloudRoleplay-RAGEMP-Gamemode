@@ -97,6 +97,9 @@ namespace CloudRP.PlayerSystems.Character
     public enum Licenses
     {
         Car,
-        HeavyGoods
+        HeavyGoods,
+        Boat,
+        Helicopter,
+        Firearm
     }
 }

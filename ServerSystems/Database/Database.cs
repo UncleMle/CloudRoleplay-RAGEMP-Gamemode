@@ -16,7 +16,7 @@ namespace CloudRP.ServerSystems.Database
 {
 
     public class DefaultDbContext : DbContext
-    {
+    {     
         /*
 		<setting name = "host" value="localhost"/>
 		<setting name = "username" value="username"/>
@@ -24,17 +24,9 @@ namespace CloudRP.ServerSystems.Database
 		<setting name = "database" value="cloud_rp"/>
 
         meta.xml
-        
-        
-        		<setting name="host" value="cloudragemp.serv.nu"/>
-		<setting name="username" value="root"/>
-		<setting name="password" value="ssctj65bakza7gkp"/>
-		<setting name="database" value="cloud_rp"/>
+        */
 
-         */
-
-
-        public static readonly string _databaseConnectionString = $"Server=cloudragemp.serv.nu;Database=cloud_rp;Uid=root;Pwd=ssctj65bakza7gkp";
+        public static readonly string _databaseConnectionString = $"Server={Main._dbHost};Database={Main._dbDatabase};Uid={Main._dbUser};Pwd={Main._dbPassword}";
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
