@@ -21,6 +21,14 @@ namespace CloudRP.PlayerSystems.FactionSystems.PoliceFaction
 
         public PoliceFaction()
         {
+            FactionSystem.onDutyAreaPress += (player, faction) =>
+            {
+                if(faction.Equals(Factions.LSPD))
+                {
+                    Console.WriteLine("Duty press");
+                }
+            };
+
             foreach (KeyValuePair<string, Vector3> item in policePrecincts)
             {
                 NAPI.Blip.CreateBlip(60, item.Value, 1f, 4, item.Key, 255, 1f, true, 0, 0);

@@ -33,6 +33,7 @@ namespace CloudRP.PlayerSystems.Character
         public string freelance_job_data { get; set; }
         public string character_license_data { get; set; }
         public string character_faction_data { get; set; }
+        public bool faction_duty_status { get; set; }
 
         [NotMapped]
         public bool voiceChatState { get; set; } = true;

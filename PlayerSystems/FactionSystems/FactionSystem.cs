@@ -1,6 +1,7 @@
 ﻿using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.VehicleSystems.Vehicles;
+using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Text;
 
 namespace CloudRP.PlayerSystems.FactionSystems
 {
-    public class FactionSystem
+    public class FactionSystem : Script
     {
         public delegate void FactionSystemEventsHandler(Player player, Factions faction);
         public static event FactionSystemEventsHandler onDutyAreaPress;
@@ -26,15 +27,24 @@ namespace CloudRP.PlayerSystems.FactionSystems
         public FactionSystem()
         {
             KeyPressEvents.keyPress_Y += handleOnDuty;
+
+            foreach (KeyValuePair<Factions, List<Vector3>> area in onDutyAreas)
+            {
+                area.Value.ForEach(marker =>
+                {
+                    MarkersAndLabels.setTextLabel(marker, "Use ~y~Y~w~ to interact", 5f);
+                    MarkersAndLabels.setPlaceMarker(marker, 0);
+                });
+            }
         }
 
         public void handleOnDuty(Player player)
         {
-            foreach (KeyValuePair<Factions, List<Vector3>> item in onDutyAreas)
+            foreach (KeyValuePair<Factions, List<Vector3>> area in onDutyAreas)
             {
-                item.Value.ForEach(spot =>
+                area.Value.ForEach(spot =>
                 {
-                    if (player.checkIsWithinCoord(spot, 2f)) onDutyAreaPress(player, item.Key);
+                    if (player.checkIsWithinCoord(spot, 2f)) onDutyAreaPress(player, area.Key);
                 });
             }
         }
