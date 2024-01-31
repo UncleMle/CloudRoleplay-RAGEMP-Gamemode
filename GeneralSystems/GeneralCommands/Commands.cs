@@ -7,6 +7,7 @@ using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.World.TimeWeather;
 using GTANetworkAPI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -550,6 +551,34 @@ namespace CloudRP.GeneralSystems.GeneralCommands
         {
             player.KickSilent();
         }
+
+        [Command("licenses", "~y~Use:~w~ /licenses [nameOrId (optional)]")]
+        public void licensesCommand(Player player, string nameOrId = null)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+            if (character == null) return;
+
+            Player targetPlayer = null;
+
+            if(nameOrId == null)
+            {
+                targetPlayer = player;
+            }
+            else
+            {
+                targetPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+                if(targetPlayer == null || targetPlayer != null && Vector3.Distance(player.Position, targetPlayer.Position) > 12)
+                {
+                    CommandUtils.errorSay(player, "Player couldn't be found. (Are you within distance?)");
+                    return;
+                }
+            }
+
+            uiHandling.pushRouterToClient(targetPlayer, Browsers.LicensePage);
+            uiHandling.handleObjectUiMutation(targetPlayer, MutationKeys.PlayerStats, JsonConvert.DeserializeObject<LicenseData>(JsonConvert.SerializeObject(character)));
+        }
+
         #endregion
 
         #region Remote Events

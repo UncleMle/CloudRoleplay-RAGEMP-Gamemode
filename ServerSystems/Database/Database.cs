@@ -14,7 +14,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CloudRP.ServerSystems.Database
 {
-
     public class DefaultDbContext : DbContext
     {     
         /*

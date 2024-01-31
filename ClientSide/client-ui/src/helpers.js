@@ -1,3 +1,11 @@
+export let licenses = [
+    "Car",
+    "HGV",
+    "Boats",
+    "Helicopter",
+    "Firearm"
+];
+
 export function getCarImagePath(vehSpawnName) {
     try {
         const imageModule = require(`./assets/img/cars/${vehSpawnName}.png`);

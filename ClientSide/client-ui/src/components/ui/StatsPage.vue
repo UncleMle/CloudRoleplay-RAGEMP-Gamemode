@@ -41,26 +41,6 @@
                                 </div>
 
                                 <div class="relative w-full mt-4">
-                                    <span class="left-0 top-0 "><i class="fa-solid fa-id-card-clip pr-2"></i>Licenses</span>
-                                    <span class="absolute right-0 top-0">
-                                        <span class="text-gray-300" v-if="!characterStats.character_license_data">
-                                            No licenses
-                                        </span>
-
-                                        <span v-else>
-                                            <span v-for="(item, idx) in JSON.parse(characterStats.character_license_data)"
-                                                :key="idx">
-                                                <font class="text-yellow-200">{{ getFormattedName(item) }}{{ idx !=
-                                                    JSON.parse(characterStats.character_license_data).length - 1 ? "," : ""
-                                                }}
-                                                </font>
-                                            </span>
-
-                                        </span>
-                                    </span>
-                                </div>
-
-                                <div class="relative w-full mt-4">
                                     <span class="left-0 top-0 "><i class="fa-solid fa-briefcase pr-2"></i>Freelance Job
                                         Status</span>
                                     <span class="absolute right-0 top-0">
@@ -84,8 +64,14 @@
 <script>
 import { mapGetters } from 'vuex';
 import CloseButton from './CloseButton.vue';
+import { licenses } from '@/helpers';
 
 export default {
+    data() {
+        return {
+            licenses: licenses
+        }
+    },
     components: {
         CloseButton
     },
@@ -94,19 +80,6 @@ export default {
             characterStats: "getPlayerStats",
             playerDataServer: "getPlayerDataServer"
         })
-    },
-    methods: {
-        getFormattedName(id) {
-            let licenses = [
-                "Car",
-                "HGV",
-                "Boats",
-                "Helicopter",
-                "Firearm"
-            ];
-
-            return licenses[id];
-        }
     }
 }
 </script>

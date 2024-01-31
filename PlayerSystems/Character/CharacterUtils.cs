@@ -94,6 +94,13 @@ namespace CloudRP.PlayerSystems.Character
         public Vector3 position { get; set; }
     }
 
+    public class PlayerLicense
+    {
+        public Licenses license { get; set; }
+        public bool valid { get; set; }
+        public long givenAt { get; set; }
+    }
+
     public enum Licenses
     {
         Car,

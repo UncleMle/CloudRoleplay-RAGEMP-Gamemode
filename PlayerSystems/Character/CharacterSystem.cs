@@ -338,6 +338,17 @@ namespace CloudRP.PlayerSystems.Character
             }
         }
 
+        public static void sendMessageViaCharacterId(int characterId, string message)
+        {
+            NAPI.Pools.GetAllPlayers().ForEach(player =>
+            {
+                if(player.getPlayerCharacterData()?.character_id == characterId)
+                {
+                    player.SendChatMessage(message);
+                } 
+            });
+        }
+
         public static void resetToCharacterModel(Player player)
         {
             if (player.getPlayerCharacterData() != null)

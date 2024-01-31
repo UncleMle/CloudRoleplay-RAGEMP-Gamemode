@@ -1836,6 +1836,8 @@ namespace CloudRP.ServerSystems.Admin
         [Command("agivel", "~r~/agivel [nameOrId] [licenseId (0 - 1)]")]
         public void giveAlicenseCommand(Player player, string nameOrId, Licenses license)
         {
+            User user = player.getPlayerAccountData();
+
             Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
 
             if(findPlayer == null)
@@ -1848,6 +1850,26 @@ namespace CloudRP.ServerSystems.Admin
             findPlayer.addAlicense(license);
 
             AdminUtils.staffSay(player, $"You gave {character.character_name} the license {license}");
+            AdminUtils.staffSay(findPlayer, $"You were given a {license} license by {user.admin_name}");
+        }
+
+        [AdminCommand(AdminRanks.Admin_Founder)]
+        [Command("asuspend", "~r~/asuspend [nameOrId] [license]")]
+        public void suspendLicenseCommand(Player player, string nameOrId, Licenses license)
+        {
+            Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+            User user = player.getPlayerAccountData();
+
+            if(findPlayer == null) 
+            {
+                CommandUtils.notFound(player);
+            }
+
+            DbCharacter character = findPlayer.getPlayerCharacterData();
+            findPlayer.suspendLicense(license);
+
+            AdminUtils.staffSay(player, $"You suspended {character.character_name}'s {license} license.");
+            AdminUtils.staffSay(player, $"Your {license} license was suspended by {user.admin_name}.");
         }
     }
 }

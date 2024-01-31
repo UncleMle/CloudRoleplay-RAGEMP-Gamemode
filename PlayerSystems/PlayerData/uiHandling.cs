@@ -145,6 +145,8 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string TruckerViewUI = "/truckerjobs";
         public static readonly string PostalJobView = "/postaljobview";
         public static readonly string GruppeSixJobView = "/gruppesixview";
+        public static readonly string LicensePage = "/licenseview";
+        public static readonly string DmvCourseView = "/dmvcourseview";
     }
 
     public static class AuthStates
@@ -178,5 +180,6 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string TruckerJobs = "trucker_jobs";
         public static readonly string PostalJobView = "postal_jobs";
         public static readonly string GruppeSixJobs = "gruppe_six_jobs";
+        public static readonly string DmvCourses = "dmv_courses";
     }
 }

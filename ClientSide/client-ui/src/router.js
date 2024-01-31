@@ -20,6 +20,8 @@ import BusRoutes from './components/jobs/BusDriver/BusRoutes.vue';
 import TruckerJobsView from './components/jobs/TruckerJob/TruckerJobsView.vue';
 import PostalJobView from './components/jobs/PostalJob/PostalJobView.vue';
 import GruppeSixJobView from './components/jobs/GruppeSix/GruppeSixJobView.vue';
+import LicensePage from './components/ui/LicensePage.vue';
+import DmvRouteView from './components/dmv/DmvRouteView.vue';
 
 export default new Router({
     routes: [
@@ -39,6 +41,8 @@ export default new Router({
         { path: '/busroutes', component: BusRoutes },
         { path: '/truckerjobs', component: TruckerJobsView },
         { path: '/postaljobview', component: PostalJobView },
-        { path: '/gruppesixview', component: GruppeSixJobView }
+        { path: '/gruppesixview', component: GruppeSixJobView },
+        { path: '/licenseview', component: LicensePage },
+        { path: '/dmvcourseview', component: DmvRouteView }
     ]
 });

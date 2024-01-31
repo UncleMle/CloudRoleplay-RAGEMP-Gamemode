@@ -23,6 +23,9 @@ namespace CloudRP.VehicleSystems.Vehicles
 {
     public class VehicleSystem : Script
     {
+        public delegate void VehicleSystemEventsHandler(Vehicle vehicle, DbVehicle vehicleData);
+        public static event VehicleSystemEventsHandler vehicleDeath;
+
         public static readonly string _vehicleSharedDataIdentifier = "VehicleData";
         public static readonly string _vehicleSharedModData = "VehicleModData";
         public static readonly string _vehicleDirtLevelIdentifier = "VehicleDirtLevel";
@@ -1174,6 +1177,8 @@ namespace CloudRP.VehicleSystems.Vehicles
                     DbVehicle vehicleData = vehicle.getData();
 
                     if (vehicleData == null) return;
+
+                    vehicleDeath(vehicle, vehicleData);
 
                     if (vehicleData.vehicle_id == -1 && vehicle.getFreelanceJobData() != null)
                     {
