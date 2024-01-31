@@ -32,6 +32,7 @@ namespace CloudRP.ServerSystems.Authentication
         public ulong social_club_id { get; set; }
         public int max_characters { get; set; }
         public bool admin_esp { get; set; }
+        public bool has_first_login { get; set; }
 
         [NotMapped]
         public bool adminDuty { get; set; }

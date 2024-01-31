@@ -85,9 +85,7 @@ namespace CloudRP.PlayerSystems.ChatSystem
 
                     string chatColour = "!{"+distanceColours.OrderBy(item => Math.Abs(dist - item.distance)).First()?.colour+ "}";
 
-                    chatMessage = chatColour + prefix + suffix + chatColour + message;
-
-                    ChatUtils.sendWithNickName(p, player, prefix, suffix + message);
+                    ChatUtils.sendWithNickName(p, player, chatColour, chatColour + suffix + chatColour + message);
                 }
             });
         }

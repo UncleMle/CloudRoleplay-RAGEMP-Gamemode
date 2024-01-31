@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace CloudRP.ServerSystems.Admin
@@ -1829,6 +1830,24 @@ namespace CloudRP.ServerSystems.Admin
                 player.Vehicle.Position = new Vector3(x, y, z);
                 uiHandling.sendNotification(player, "~r~Teleported vehicle to coords.", false);
             }
+        }
+
+        [AdminCommand(AdminRanks.Admin_Founder)]
+        [Command("agivel", "~r~/agivel [nameOrId] [licenseId (0 - 1)]")]
+        public void giveAlicenseCommand(Player player, string nameOrId, Licenses license)
+        {
+            Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+            if(findPlayer == null)
+            {
+                CommandUtils.notFound(player);
+                return;
+            }
+
+            DbCharacter character = findPlayer.getPlayerCharacterData();
+            findPlayer.addAlicense(license);
+
+            AdminUtils.staffSay(player, $"You gave {character.character_name} the license {license}");
         }
     }
 }

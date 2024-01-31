@@ -323,7 +323,6 @@ namespace CloudRP.PlayerSystems.Character
 
             uiHandling.sendMutationToClient(player, "setCharacterSelection", "toggle", true);
             uiHandling.handleObjectUiMutation(player, MutationKeys.PlayerAccountData, userData);
-
             uiHandling.setAuthState(player, AuthStates.characterSelection);
 
             using (DefaultDbContext dbContext = new DefaultDbContext())

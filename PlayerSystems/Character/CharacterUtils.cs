@@ -93,4 +93,10 @@ namespace CloudRP.PlayerSystems.Character
         public string overlayDlc { get; set; }
         public Vector3 position { get; set; }
     }
+
+    public enum Licenses
+    {
+        Car,
+        HeavyGoods
+    }
 }

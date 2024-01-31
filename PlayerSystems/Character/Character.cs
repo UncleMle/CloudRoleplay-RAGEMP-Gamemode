@@ -3,6 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Database;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace CloudRP.PlayerSystems.Character
 {
@@ -29,6 +31,7 @@ namespace CloudRP.PlayerSystems.Character
         public ulong player_exp { get; set; }
         public int injured_timer { get; set; }
         public string freelance_job_data { get; set; }
+        public string character_license_data { get; set; }
 
         [NotMapped]
         public bool voiceChatState { get; set; } = true;
