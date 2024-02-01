@@ -18,7 +18,11 @@ namespace CloudRP.PlayerSystems.FactionSystems
     public class FactionSystem : Script
     {
         public delegate void FactionSystemEventsHandler(Player player, Factions faction);
+
+        #region Event Handlers
         public static event FactionSystemEventsHandler onDutyAreaPress;
+        public static event FactionSystemEventsHandler vehicleAreaPress;
+        #endregion
 
         public static string[] factionColours = new string[] {
             "",
@@ -37,10 +41,29 @@ namespace CloudRP.PlayerSystems.FactionSystems
                 }
             }
         };
+        
+        public static Dictionary<Factions, List<FactionVehSpawn>> vehicleSpawnPoints = new Dictionary<Factions, List<FactionVehSpawn>>
+        {
+            {
+                Factions.LSPD, new List<FactionVehSpawn>
+                {
+                    new FactionVehSpawn
+                    {
+                        vehicleRot = 90.6f,
+                        spawnPos = new Vector3(416.7, -1025.0, 29.1)
+                    },
+                    new FactionVehSpawn
+                    {
+                        vehicleRot = 57.4f,
+                        spawnPos = new Vector3(407.4, -997.3, 29.3)
+                    },
+                }
+            }
+        };
 
         public FactionSystem()
         {
-            KeyPressEvents.keyPress_Y += handleOnDuty;
+            KeyPressEvents.keyPress_Y += handleKeyInteraction;
             Main.resourceStart += initFactionRanks;
 
             foreach (KeyValuePair<Factions, List<Vector3>> area in onDutyAreas)
@@ -49,6 +72,16 @@ namespace CloudRP.PlayerSystems.FactionSystems
                 {
                     MarkersAndLabels.setTextLabel(marker, "Duty Point\nUse ~y~Y~w~ to interact", 5f);
                     MarkersAndLabels.setPlaceMarker(marker, 0);
+                });
+            }
+
+            foreach (KeyValuePair<Factions, List<FactionVehSpawn>> point in vehicleSpawnPoints)
+            {
+                point.Value.ForEach(marker =>
+                {
+                    MarkersAndLabels.setTextLabel(marker.spawnPos, "Vehicle Point\nUse ~y~Y~w~ to interact", 5f);
+                    MarkersAndLabels.setPlaceMarker(marker.spawnPos, 0);
+                    NAPI.Marker.CreateMarker(36, marker.spawnPos, new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
                 });
             }
         }
@@ -91,13 +124,21 @@ namespace CloudRP.PlayerSystems.FactionSystems
         }
 
         #region Global Methods
-        public void handleOnDuty(Player player)
+        private void handleKeyInteraction(Player player)
         {
             foreach (KeyValuePair<Factions, List<Vector3>> area in onDutyAreas)
             {
                 area.Value.ForEach(spot =>
                 {
                     if (player.checkIsWithinCoord(spot, 2f)) onDutyAreaPress(player, area.Key);
+                });
+            }
+
+            foreach (KeyValuePair<Factions, List<FactionVehSpawn>> point in vehicleSpawnPoints)
+            {
+                point.Value.ForEach(spot =>
+                {
+                    if (player.checkIsWithinCoord(spot.spawnPos, 2f)) vehicleAreaPress(player, point.Key);
                 });
             }
         }

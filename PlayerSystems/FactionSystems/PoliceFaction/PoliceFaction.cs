@@ -29,9 +29,17 @@ namespace CloudRP.PlayerSystems.FactionSystems.PoliceFaction
 
             FactionSystem.onDutyAreaPress += (player, faction) =>
             {
-                if(faction.Equals(Factions.LSPD) && player.getPlayerFactions()?.Contains(faction) != null)
+                if(faction.Equals(Factions.LSPD) && player.isPartOfFaction(Factions.LSPD))
                 {
                     handleDutySelection(player);
+                }
+            };
+            
+            FactionSystem.vehicleAreaPress += (player, faction) =>
+            {
+                if(faction.Equals(Factions.LSPD) && player.isPartOfFaction(Factions.LSPD, true))
+                {
+                    handleVehicleSelection(player);
                 }
             };
 
@@ -50,9 +58,16 @@ namespace CloudRP.PlayerSystems.FactionSystems.PoliceFaction
 
             character.faction_duty_status = (int)Factions.LSPD;
 
-
             player.setPlayerCharacterData(character, false, true);
+
+            player.SendChatMessage("Faction duty");
         }
+
+        private static void handleVehicleSelection(Player player)
+        {
+            player.SendChatMessage("Select vehicles");
+        }
+
         #endregion
 
         #region Commands

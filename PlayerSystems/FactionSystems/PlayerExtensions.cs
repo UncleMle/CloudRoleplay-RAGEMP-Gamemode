@@ -39,5 +39,34 @@ namespace CloudRP.PlayerSystems.FactionSystems
             player.setPlayerCharacterData(character, false, true);
         }
 
+        public static bool isPartOfFaction(this Player player, Factions compareFaction, bool checkForDuty = false)
+        {
+            bool isPart = false;
+
+            List<Factions> playerFactions = player.getPlayerFactions();
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if(playerFactions != null && character != null && playerFactions.Contains(compareFaction))
+            {
+                if(checkForDuty && character.faction_duty_status != (int)compareFaction)
+                {
+                    uiHandling.sendPushNotifError(player, "You must be on faction duty to use this.", 6500);
+                }
+
+                if(checkForDuty && character.faction_duty_status == (int)compareFaction)
+                {
+                    isPart = true;
+                }
+                else if(!checkForDuty)
+                {
+                    isPart = true;
+                }
+            }
+
+            Console.WriteLine("is part " + isPart);
+
+            return isPart;
+        }
+
     }
 }

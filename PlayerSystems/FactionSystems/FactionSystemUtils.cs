@@ -1,10 +1,13 @@
-﻿using System;
+﻿using GTANetworkAPI;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CloudRP.PlayerSystems.FactionSystems
 {
-    internal class FactionSystemUtils
+    public class FactionVehSpawn
     {
+        public float vehicleRot { get; set; }
+        public Vector3 spawnPos { get; set; }
     }
 }
