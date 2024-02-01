@@ -3,6 +3,7 @@ using CloudRP.GeneralSystems.WeaponSystem;
 using CloudRP.PlayerSystems.AnimationSync;
 using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.DeathSystem;
+using CloudRP.PlayerSystems.FactionSystems;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.PlayerSystems.PlayerDealerships;
 using CloudRP.ServerSystems.AntiCheat;
@@ -1870,6 +1871,24 @@ namespace CloudRP.ServerSystems.Admin
 
             AdminUtils.staffSay(player, $"You suspended {character.character_name}'s {license} license.");
             AdminUtils.staffSay(player, $"Your {license} license was suspended by {user.admin_name}.");
+        }
+
+        [AdminCommand(AdminRanks.Admin_Founder)]
+        [Command("agivef", "~r~/agivef [nameOrId] [faction]")]
+        public void giveFactionCommand(Player player, string nameOrId, Factions faction)
+        {
+            Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+            if(findPlayer == null)
+            {
+                CommandUtils.notFound(player);
+                return;
+            }
+
+            findPlayer.addPlayerFaction(faction);
+
+            AdminUtils.staffSay(player, $"You've added {player.getPlayerCharacterData().character_name} to the {faction} faction.");
+            AdminUtils.staffSay(findPlayer, $"You've been added to the {faction} by admin {player.getPlayerAccountData().admin_name}.");
         }
     }
 }

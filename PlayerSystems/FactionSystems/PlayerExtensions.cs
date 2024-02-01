@@ -14,7 +14,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
         {
             DbCharacter character = player.getPlayerCharacterData();
 
-            if (character == null) return null;
+            if (character == null || character.character_faction_data == null) return null;
 
             return JsonConvert.DeserializeObject<List<Factions>>(character.character_faction_data);
         }

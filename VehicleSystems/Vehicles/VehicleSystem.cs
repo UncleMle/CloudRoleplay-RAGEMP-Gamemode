@@ -1,5 +1,6 @@
 ﻿using CloudRP.PlayerSystems.AnimationSync;
 using CloudRP.PlayerSystems.Character;
+using CloudRP.PlayerSystems.FactionSystems;
 using CloudRP.PlayerSystems.Jobs;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.PlayerSystems.PlayerDealerships;
@@ -330,7 +331,7 @@ namespace CloudRP.VehicleSystems.Vehicles
             }
         }
 
-        public static (Vehicle, DbVehicle) buildVehicle(string vehName, Vector3 position, float rotation, int ownerId, int colourOne, int colourTwo, string ownerName = "N/A")
+        public static (Vehicle, DbVehicle) buildVehicle(string vehName, Vector3 position, float rotation, int ownerId, int colourOne, int colourTwo, string ownerName = "N/A", Factions faction = Factions.None)
         {
             Vehicle vehicle = null;
             DbVehicle vehData = null;
@@ -362,7 +363,8 @@ namespace CloudRP.VehicleSystems.Vehicles
                         vehicle_spawn_hash = vehicleHash,
                         vehicle_name = vehName,
                         numberplate = "null",
-                        vehicle_dimension = VehicleDimensions.World
+                        vehicle_dimension = VehicleDimensions.World,
+                        faction_owner_id = (int)faction,
                     };
 
                     dbContext.vehicles.Add(vehicleInsert);

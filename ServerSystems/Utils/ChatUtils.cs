@@ -7,32 +7,33 @@ namespace CloudRP.ServerSystems.Utils
 {
     internal class ChatUtils : Script
     {
-        public static string CloudBlue = "!{#ad67ee}";
-        public static string CloudBlueLight = "!{#d6affa}";
-        public static string White = "!{white}";
-        public static string grey = "!{grey}";
-        public static string orange = "!{orange}";
-        public static string moneyGreen = "!{#3e9c35}";
-        public static string CloudRP = CloudBlue + "[CloudRP] " + White;
-        public static string error = "!{red}[Error]!{white} ";
-        public static string _c_CharacterSystem = "[Characters] ";
-        public static string _c_AntiCheatSystem = "[AntiCheat] ";
-        public static string _c_DiscordSystem = "[Discord] ";
-        public static string _c_DeathSystem = "[Death] ";
-        public static string _c_Hospital = "[Hospital] ";
-        public static string _c_Server = "[Server] ";
-        public static string _c_AdminSys = "[Staff] ";
-        public static string yellow = "!{yellow}";
-        public static string red = "!{red}";
-        public static string Success = "!{#61d480}[Success] " + White;
-        public static string disconnected = "!{#f57b42}[Disconnected] " + White;
-        public static string antiCheat = "!{red}[AC] " + White;
-        public static string hospital = "!{green}[Hospital] " + White;
-        public static string info = "!{yellow}[Info] " + White;
-        public static string reports = "!{yellow}[Reports] " + White;
-        public static string afk = "!{orange}[Afk] " + White;
-        public static string freelanceJobs = CloudBlue + "[Freelance Jobs] " + White;
-        public static string dmv = yellow + "[Dmv] " + White;
+        public static readonly string CloudBlue = "!{#ad67ee}";
+        public static readonly string CloudBlueLight = "!{#d6affa}";
+        public static readonly string White = "!{white}";
+        public static readonly string grey = "!{grey}";
+        public static readonly string orange = "!{orange}";
+        public static readonly string moneyGreen = "!{#3e9c35}";
+        public static readonly string CloudRP = CloudBlue + "[CloudRP] " + White;
+        public static readonly string error = "!{red}[Error]!{white} ";
+        public static readonly string _c_CharacterSystem = "[Characters] ";
+        public static readonly string _c_AntiCheatSystem = "[AntiCheat] ";
+        public static readonly string _c_DiscordSystem = "[Discord] ";
+        public static readonly string _c_DeathSystem = "[Death] ";
+        public static readonly string _c_Hospital = "[Hospital] ";
+        public static readonly string _c_Server = "[Server] ";
+        public static readonly string _c_AdminSys = "[Staff] ";
+        public static readonly string yellow = "!{yellow}";
+        public static readonly string red = "!{red}";
+        public static readonly string Success = "!{#61d480}[Success] " + White;
+        public static readonly string disconnected = "!{#f57b42}[Disconnected] " + White;
+        public static readonly string antiCheat = "!{red}[AC] " + White;
+        public static readonly string hospital = "!{green}[Hospital] " + White;
+        public static readonly string info = "!{yellow}[Info] " + White;
+        public static readonly string reports = "!{yellow}[Reports] " + White;
+        public static readonly string afk = "!{orange}[Afk] " + White;
+        public static readonly string freelanceJobs = CloudBlue + "[Freelance Jobs] " + White;
+        public static readonly string dmv = yellow + "[Dmv] " + White;
+        public static readonly string darkGreen = "!{#7bb089}";
 
         public static void sendWithNickName(Player player, Player target, string prefix, string suffix, bool checkDims = true)
         {
