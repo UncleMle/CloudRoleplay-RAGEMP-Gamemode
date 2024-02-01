@@ -12,6 +12,7 @@ declare global {
 		_mobilePhone: ObjectMp | null;
 		lastReceivedPointing: number | undefined;
 		pointingInterval: number | undefined;
+		testMethod: () => UserData;
 	}
 
 	interface PedMp {

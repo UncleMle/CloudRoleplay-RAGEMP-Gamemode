@@ -2,10 +2,12 @@
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Admin;
 using CloudRP.ServerSystems.CustomEvents;
+using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +41,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
         public FactionSystem()
         {
             KeyPressEvents.keyPress_Y += handleOnDuty;
+            Main.resourceStart += initFactionRanks;
 
             foreach (KeyValuePair<Factions, List<Vector3>> area in onDutyAreas)
             {
@@ -47,6 +50,43 @@ namespace CloudRP.PlayerSystems.FactionSystems
                     MarkersAndLabels.setTextLabel(marker, "Duty Point\nUse ~y~Y~w~ to interact", 5f);
                     MarkersAndLabels.setPlaceMarker(marker, 0);
                 });
+            }
+        }
+
+        private static void initFactionRanks()
+        {
+            using (DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                List<Faction> factions = dbContext.factions.ToList();
+
+                int currentFactions = Enum.GetNames(typeof(Factions)).Length;
+
+                if (factions.Count < currentFactions)
+                {
+                    string[] defaultVehicles = new string[]
+                    {
+                        "pbuffalo4",
+                        "dnscout"
+                    };
+
+                    factions.ForEach(fac =>
+                    {
+                        dbContext.factions.Remove(fac);
+                        dbContext.SaveChanges();
+                    });
+
+                    for (int i = 0; i < currentFactions; i++)
+                    {
+                        dbContext.factions.Add(new Faction
+                        {
+                            CreatedDate = DateTime.Now,
+                            faction_allowed_vehicles = JsonConvert.SerializeObject(defaultVehicles),
+                            faction_name = Enum.GetNames(typeof(Factions))[i],
+                            owner_id = -1,
+                        });
+                        dbContext.SaveChanges();
+                    }
+                }
             }
         }
 
@@ -60,6 +100,29 @@ namespace CloudRP.PlayerSystems.FactionSystems
                     if (player.checkIsWithinCoord(spot, 2f)) onDutyAreaPress(player, area.Key);
                 });
             }
+        }
+
+        public static List<string> loadFactionVehicles(Factions faction)
+        {
+            List<string> vehicles = new List<string>();
+
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                Faction findFaction = dbContext.factions
+                    .Where(fac => fac.faction_name == Enum.GetNames(typeof(Factions))[(int)faction])
+                    .FirstOrDefault();
+
+                vehicles = JsonConvert.DeserializeObject<List<string>>(findFaction.faction_allowed_vehicles);
+            }
+
+            int loadedVehicles = vehicles.Count;
+
+            if(loadedVehicles > 0)
+            {
+                ChatUtils.formatConsolePrint($"Loaded {loadedVehicles} allowed vehicles for faction {faction}", ConsoleColor.Green);
+            }
+
+            return vehicles;
         }
         #endregion
 

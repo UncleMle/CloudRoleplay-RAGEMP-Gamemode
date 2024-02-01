@@ -12,6 +12,11 @@ namespace CloudRP.ServerSystems.Admin
     {
         public static string _adminMarkerDataIdentifier = "adminMarkerLabel";
 
+        public AdminMarker()
+        {
+            Main.resourceStart += loadMarkers;
+        }
+
         [Key]
         public int admin_marker_id { get; set; }
 
@@ -22,7 +27,7 @@ namespace CloudRP.ServerSystems.Admin
         public float pos_y { get; set; }
         public float pos_z { get; set; }
 
-        public static void loadMarkers()
+        private static void loadMarkers()
         {
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {

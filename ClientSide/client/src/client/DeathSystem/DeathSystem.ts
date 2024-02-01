@@ -45,7 +45,7 @@ export default class DeathSystem {
     }
 
     private static handleLogoutDataHandler(entity: PlayerMp, logout: boolean) {
-        if (entity.type === "player" && logout) {
+        if (entity.type === "player" && logout && entity === DeathSystem.LocalPlayer) {
             DeathSystem.removeIntervalStatus();
         }
     }

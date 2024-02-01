@@ -18,12 +18,17 @@ namespace CloudRP.World.BanksAtms
         public static string _atmDataIdentifier = "atmColshapeData";
         public static List<Atm> Atms = new List<Atm>();
 
+        public Atm()
+        {
+            Main.resourceStart += loadAtms;
+        }
+
         public int Id { get; set; }
         public int OwnerId { get; set; }
         public Vector3 Position { get; set; }
         public string Name { get; set; }
 
-        public static void loadAtms()
+        private static void loadAtms()
         {
             Atms.Add(new Atm
             {

@@ -3,14 +3,16 @@ using System;
 using CloudRP.ServerSystems.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CloudRP.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240201183011_Added faction duty uniform and freelance duty uniform columns within character")]
+    partial class Addedfactiondutyuniformandfreelancedutyuniformcolumnswithincharacter
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -405,9 +407,6 @@ namespace CloudRP.Migrations
                     b.Property<int>("faction_duty_uniform")
                         .HasColumnType("int");
 
-                    b.Property<string>("faction_ranks")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
                     b.Property<string>("freelance_job_data")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -473,59 +472,6 @@ namespace CloudRP.Migrations
                     b.HasKey("tattoo_id");
 
                     b.ToTable("player_tattoos");
-                });
-
-            modelBuilder.Entity("CloudRP.PlayerSystems.FactionSystems.Faction", b =>
-                {
-                    b.Property<int>("faction_id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("faction_allowed_vehicles")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("faction_name")
-                        .IsRequired()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<int>("owner_id")
-                        .HasColumnType("int");
-
-                    b.HasKey("faction_id");
-
-                    b.ToTable("factions");
-                });
-
-            modelBuilder.Entity("CloudRP.PlayerSystems.FactionSystems.FactionRank", b =>
-                {
-                    b.Property<int>("faction_rank_id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("faction_owner_id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("rank_permissions")
-                        .HasColumnType("int");
-
-                    b.Property<int>("rank_salary")
-                        .HasColumnType("int");
-
-                    b.HasKey("faction_rank_id");
-
-                    b.ToTable("faction_ranks");
                 });
 
             modelBuilder.Entity("CloudRP.ServerSystems.Admin.AdminMarker", b =>

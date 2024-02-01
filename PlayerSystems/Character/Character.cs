@@ -34,6 +34,9 @@ namespace CloudRP.PlayerSystems.Character
         public string character_license_data { get; set; }
         public string character_faction_data { get; set; }
         public int faction_duty_status { get; set; } = -1;
+        public string faction_ranks { get; set; }
+        public int faction_duty_uniform { get; set; } = -1;
+        public int freelance_job_uniform { get; set; } = -1;
 
         [NotMapped]
         public bool voiceChatState { get; set; } = true;

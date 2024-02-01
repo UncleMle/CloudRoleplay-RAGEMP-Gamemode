@@ -12,6 +12,7 @@ namespace CloudRP.PlayerSystems.FactionSystems.PoliceFaction
 {
     public class PoliceFaction : Script
     {
+        private static List<string> allowedVehicles = new List<string>();
         public static Dictionary<string, Vector3> policePrecincts = new Dictionary<string, Vector3>
         {
             {
@@ -21,11 +22,16 @@ namespace CloudRP.PlayerSystems.FactionSystems.PoliceFaction
 
         public PoliceFaction()
         {
+            Main.resourceStart += () =>
+            {
+                allowedVehicles = FactionSystem.loadFactionVehicles(Factions.LSPD);
+            };
+
             FactionSystem.onDutyAreaPress += (player, faction) =>
             {
-                if(faction.Equals(Factions.LSPD))
+                if(faction.Equals(Factions.LSPD) && player.getPlayerFactions()?.Contains(faction) != null)
                 {
-                    Console.WriteLine("Duty press");
+                    handleDutySelection(player);
                 }
             };
 
@@ -34,6 +40,20 @@ namespace CloudRP.PlayerSystems.FactionSystems.PoliceFaction
                 NAPI.Blip.CreateBlip(60, item.Value, 1f, 4, item.Key, 255, 1f, true, 0, 0);
             }
         }
+
+        #region Global Methods 
+        private static void handleDutySelection(Player player)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if (character == null) return;
+
+            character.faction_duty_status = (int)Factions.LSPD;
+
+
+            player.setPlayerCharacterData(character, false, true);
+        }
+        #endregion
 
         #region Commands
         [Command("m", "~y~Use:~w~ /megaphone [message]", GreedyArg = true)]

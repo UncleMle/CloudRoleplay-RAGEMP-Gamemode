@@ -34,7 +34,14 @@ namespace CloudRP.ServerSystems.DiscordSystem
         public static int _updatePlayerCount = 5000;
         public static int _maxPlayers = 200;
 
-        public static async Task initDiscordSystem()
+        public DiscordSystems()
+        {
+            Main.resourceStart += () => {
+                initDiscordSystem();
+            };
+        }
+
+        private static async Task initDiscordSystem()
         {
             if (Main.ProductionBuild == "true")
             {

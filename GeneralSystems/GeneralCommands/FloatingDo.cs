@@ -13,7 +13,12 @@ namespace CloudRP.GeneralSystems.GeneralCommands
 {
     public class FloatingDo : Script
     {
-        public static void loadFdos()
+        public FloatingDo()
+        {
+            Main.resourceStart += loadFdos;
+        }
+
+        private static void loadFdos()
         {
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {

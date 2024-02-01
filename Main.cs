@@ -1,9 +1,11 @@
 ﻿using CloudRP.GeneralSystems.GeneralCommands;
 using CloudRP.GeneralSystems.HousingSystem;
 using CloudRP.PlayerSystems.Character;
+using CloudRP.PlayerSystems.FactionSystems;
 using CloudRP.ServerSystems.Admin;
 using CloudRP.ServerSystems.DiscordSystem;
 using CloudRP.ServerSystems.Utils;
+using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World;
 using CloudRP.World.BanksAtms;
 using GTANetworkAPI;
@@ -17,6 +19,9 @@ namespace CloudRP
 {
     public class Main : Script
     {
+        public delegate void MainEventsHandler();
+        public static event MainEventsHandler resourceStart;
+
         public static string ProductionBuild = "";
         public static string JsonDirectory = "";
         public static string _dbHost = "";
@@ -70,11 +75,7 @@ namespace CloudRP
             
             NAPI.Server.SetCommandErrorMessage(defaultErrorMessage);
 
-            HousingSystem.loadAllHouses();
-            FloatingDo.loadFdos();
-            AdminMarker.loadMarkers();
-            Atm.loadAtms();
-            DiscordSystems.initDiscordSystem();
+            resourceStart();
 
             string prod = ProductionBuild == "true" ? "[Production]" : "[Development]";
 
