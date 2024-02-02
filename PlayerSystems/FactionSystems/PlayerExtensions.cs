@@ -1,5 +1,6 @@
 ﻿using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.ServerSystems.Database;
 using GTANetworkAPI;
 using Microsoft.EntityFrameworkCore.Internal;
 using Newtonsoft.Json;
@@ -134,6 +135,33 @@ namespace CloudRP.PlayerSystems.FactionSystems
             List<DbFactionRank> ranks = JsonConvert.DeserializeObject<List<DbFactionRank>>(character.faction_ranks);
 
             return ranks;
+        }
+
+        public static FactionRank getFactionRankViaFaction(this Player player, Factions faction)
+        {
+            FactionRank rank = null;
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if (character == null) return rank;
+
+            List<DbFactionRank> ranks = player.getFactionRanks();
+
+            int targetRankId = -1;
+
+            ranks.ForEach(rank =>
+            {
+                if(rank.faction == (int)faction)
+                {
+                    targetRankId = rank.rankId;
+                }
+            });
+
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                rank = dbContext.faction_ranks.Find(targetRankId);
+            }
+
+            return rank;
         }
 
     }

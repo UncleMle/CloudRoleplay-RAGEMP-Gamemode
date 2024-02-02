@@ -312,7 +312,9 @@ namespace CloudRP.PlayerSystems.FactionSystems
             player.setFactionUniform(uniform);
             player.setFactionDuty(targetFaction);
 
-            uiHandling.sendNotification(player, $"Your now ~g~on duty~w~ for faction {targetFaction}", false);
+            FactionRank rank = player.getFactionRankViaFaction(targetFaction);
+
+            uiHandling.sendNotification(player, $"Your now ~g~on duty~w~ for faction {targetFaction}. As a {rank.rank_name}", false);
             uiHandling.resetRouter(player);
         }
 
