@@ -13,6 +13,7 @@ using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.PlayerSystems.Jobs;
 using CloudRP.ServerSystems.Middlewares;
+using CloudRP.PlayerSystems.FactionSystems;
 
 namespace CloudRP.ServerSystems.Authentication
 {
@@ -22,10 +23,6 @@ namespace CloudRP.ServerSystems.Authentication
         public static uint _startDimension = 20;
         public static string _startAdminPed = "ig_mp_agent14";
         public static string _otpStoreKey = "registering_otp";
-        public string[] test = new string[]
-        {
-            "test"
-        };
 
         public Auth()
         {
@@ -308,7 +305,16 @@ namespace CloudRP.ServerSystems.Authentication
                         dbContext.SaveChanges();
 
                         character.characterModel = charModel;
-                        character.characterClothing = charClothing;
+
+                        if (character.faction_duty_uniform == -1)
+                        {
+                            character.characterClothing = charClothing;
+                        }
+                        else
+                        {
+                            FactionSystem.loadFactionUniform(player);
+                        }
+
                         character.characterModel.player_tattos = charTats;
 
                         player.Name = character.character_name.Replace("_", " ");

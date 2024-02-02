@@ -70,6 +70,15 @@ namespace CloudRP.PlayerSystems.FactionSystems.PoliceFaction
 
         #endregion
 
+        #region Remote Events
+        [RemoteEvent("server:faction:LSPD:duty")]
+        private void selectPdDuty(Player player, int uniformId)
+        {
+
+        }
+
+        #endregion
+
         #region Commands
         [Command("m", "~y~Use:~w~ /megaphone [message]", GreedyArg = true)]
         public void megaphoneCommand(Player player, string message)

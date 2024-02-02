@@ -165,6 +165,27 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
             return vehicles;
         }
+
+        public static void loadFactionUniform(Player player)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if(character != null)
+            {
+                FactionUniform findUniform = FactionUniforms.factionUniforms
+                    .Where(fac => (int)fac.faction == character.faction_duty_status && fac.uniformId == character.faction_duty_uniform)
+                    .FirstOrDefault();
+
+                if(findUniform != null)
+                {
+                    character.characterClothing = findUniform.uniform;
+                    player.setPlayerCharacterData(character, true);
+
+                    ChatUtils.formatConsolePrint($"Loaded faction uniform for {character.character_name}.");
+                }
+            }
+        }
+
         #endregion
 
         #region Commands
