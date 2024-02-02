@@ -14,6 +14,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
     public class FactionUniform
     {
+        public string uniformName { get; set; }
         public int uniformId { get; set; }
         public Factions faction { get; set; }
         public CharacterClothing uniform {  get; set; }

@@ -104,7 +104,7 @@ namespace CloudRP.GeneralSystems.GeneralCommands
             }
         }
 
-        [Command("b", "~y~Use:~w~ /b [message]", Alias = "ooc", GreedyArg = true)]
+        [Command("b", "~y~Use:~w~ /b [message]", Alias = "ooc,o", GreedyArg = true)]
         public void oocCommand(Player player, string oocChat)
         {
             DbCharacter character = player.getPlayerCharacterData();

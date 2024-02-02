@@ -118,6 +118,12 @@ namespace CloudRP.GeneralSystems.Stores
 
             if (characterData != null && clothingData != null)
             {
+                if(characterData.faction_duty_status != -1)
+                {
+                    uiHandling.sendPushNotifError(player, "You can't purchase clothing whilst on faction duty.", 6600);
+                    return;
+                }
+
                 if (characterData.characterClothing.Equals(clothingData))
                 {
                     uiHandling.sendPushNotifError(player, "You haven't purchased anything.", 6600);

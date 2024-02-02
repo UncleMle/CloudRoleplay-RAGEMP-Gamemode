@@ -41,6 +41,13 @@
                                 </div>
 
                                 <div class="relative w-full mt-4">
+                                    <span class="left-0 top-0 "><i class="fa-solid fa-layer-group pr-2"></i>Faction
+                                        Count</span>
+                                    <span class="absolute right-0 top-0">{{
+                                        JSON.parse(characterStats.character_faction_data).length }}</span>
+                                </div>
+
+                                <div class="relative w-full mt-4">
                                     <span class="left-0 top-0 "><i class="fa-solid fa-briefcase pr-2"></i>Freelance Job
                                         Status</span>
                                     <span class="absolute right-0 top-0">

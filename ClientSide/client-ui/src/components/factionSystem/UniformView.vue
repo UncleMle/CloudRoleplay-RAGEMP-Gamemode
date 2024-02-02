@@ -19,7 +19,7 @@
                                     <div class="p-4 h-48">
                                         <div class="absolute left-8">
                                             <div class="font-medium text-3xl">
-                                                uniform {{ item.uniformId }}
+                                                {{ item.uniformName }}
                                             </div>
 
                                         </div>

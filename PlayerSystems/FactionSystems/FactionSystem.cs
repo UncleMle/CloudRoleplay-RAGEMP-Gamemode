@@ -347,7 +347,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
             DbCharacter character = player.getPlayerCharacterData();
             if (character == null) return;
 
-            if(factionData == null || factionData != null && factionData.Contains(faction))
+            if(factionData == null || factionData != null && !factionData.Contains(faction))
             {
                 CommandUtils.errorSay(player, "You aren't part of this faction.");
                 return;
