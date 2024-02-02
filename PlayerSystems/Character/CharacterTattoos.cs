@@ -43,7 +43,7 @@ namespace CloudRP.PlayerSystems.Character
             foreach (TattooShop store in tattooStore)
             {
                 ColShape tattoCol = NAPI.ColShape.CreateSphereColShape(store.position, 2f, 0);
-                tattoCol.SetSharedData(_tattoStoreIdentifier, store);
+                tattoCol.SetData(_tattoStoreIdentifier, store);
 
                 NAPI.Blip.CreateBlip(75, store.position, 1, 1, store.name, 255, 50, true, 0, 0);
                 MarkersAndLabels.setTextLabel(store.position, $"{store.name} use ~y~Y~w~ to interact", 7f);

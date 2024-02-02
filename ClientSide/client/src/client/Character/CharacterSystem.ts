@@ -47,7 +47,11 @@ export default class CharacterSystem {
 
 			entity.model = charData?.sex ? female : male;
 
-			entity.setHeading(parseInt(charData.rotation));
+			let rot: number = parseInt(charData.rotation);
+
+			if(rot != 0) {
+				entity.setHeading(rot);
+			}
 
 			entity.setComponentVariation(2, parseInt(charData.hairStyle), 0, 0);
 			entity.setHairColor(parseInt(charData.hairColour), parseInt(charData.hairHighlights));
