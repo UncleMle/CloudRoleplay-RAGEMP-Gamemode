@@ -11,11 +11,20 @@ namespace CloudRP.PlayerSystems.FactionSystems
         {
             new FactionUniform
             {
-                uniformId = 2,
+                uniformId = 1,
                 faction = Factions.LSPD,
                 uniform = new CharacterClothing
                 {
                     top = 26
+                }
+            },
+            new FactionUniform
+            {
+                uniformId = 2,
+                faction = Factions.LSPD,
+                uniform = new CharacterClothing
+                {
+                    top = 8
                 }
             }
         };

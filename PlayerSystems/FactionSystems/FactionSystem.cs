@@ -153,13 +153,13 @@ namespace CloudRP.PlayerSystems.FactionSystems
         {
             DbCharacter character = player.getPlayerCharacterData();
 
-            List<DbFactionRank> ranks = JsonConvert.DeserializeObject<List<DbFactionRank>>(character.faction_ranks);
+            List<DbFactionRank> ranks = player.getFactionRanks();
 
             int targetRankId = -1;
 
             ranks.ForEach(rank =>
             {
-                if(rank.faction.Equals(targetFaction))
+                if(rank.faction == (int)targetFaction)
                 {
                     targetRankId = rank.rankId;
                 }
@@ -185,7 +185,12 @@ namespace CloudRP.PlayerSystems.FactionSystems
                 }
             }
 
-            Console.WriteLine(JsonConvert.SerializeObject(allowedUniforms));
+            uiHandling.pushRouterToClient(player, Browsers.FactionUniforms, true);
+
+            allowedUniforms.ForEach(uniform =>
+            {
+                uiHandling.handleObjectUiMutationPush(player, MutationKeys.FactionUniforms, uniform);
+            });
         }
 
         public static void handleVehiclePoint(Player player)

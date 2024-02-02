@@ -125,5 +125,16 @@ namespace CloudRP.PlayerSystems.FactionSystems
             player.setPlayerCharacterData(character, false, true);
         }
 
+        public static List<DbFactionRank> getFactionRanks(this Player player)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if(character == null) return null;
+
+            List<DbFactionRank> ranks = JsonConvert.DeserializeObject<List<DbFactionRank>>(character.faction_ranks);
+
+            return ranks;
+        }
+
     }
 }

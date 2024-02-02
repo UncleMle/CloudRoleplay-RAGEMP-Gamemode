@@ -38,7 +38,8 @@ const store = new Vuex.Store({
 			trucker_jobs: [],
 			postal_jobs: [],
 			gruppe_six_jobs: [],
-			dmv_courses: []
+			dmv_courses: [],
+			faction_uniforms: [],
 		},
 		uiStates: {
 			characterSelection: false,
