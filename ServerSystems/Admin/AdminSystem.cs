@@ -1890,5 +1890,53 @@ namespace CloudRP.ServerSystems.Admin
             AdminUtils.staffSay(player, $"You've added {player.getPlayerCharacterData().character_name} to the {faction} faction.");
             AdminUtils.staffSay(findPlayer, $"You've been added to the {faction} by admin {player.getPlayerAccountData().admin_name}.");
         }
+
+        [AdminCommand(AdminRanks.Admin_Developer)]
+        [Command("addfrank")]
+        public void addFactionRankCommand(Player player, Factions faction, int salary, string rankName)
+        {
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                string defaultPermissions = JsonConvert.SerializeObject(new string[] {});
+
+                dbContext.faction_ranks.Add(new FactionRank
+                {
+                    allowed_uniforms = defaultPermissions,
+                    allowed_vehicles = defaultPermissions,
+                    allowed_weapons = defaultPermissions,
+                    CreatedDate = DateTime.Now,
+                    faction_owner_id = (int)faction,
+                    rank_name = rankName,
+                    rank_salary = salary,
+                    UpdatedDate = DateTime.Now,
+                });
+
+                dbContext.SaveChanges();
+            }
+        }
+
+        [AdminCommand(AdminRanks.Admin_Developer)]
+        [Command("givefrank")]
+        public void addFactionRankCommand(Player player, string nameOrId, Factions faction, int rankId)
+        {
+            Player target = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+            if(target == null)
+            {
+                CommandUtils.notFound(player);
+                return;
+            }
+
+            DbCharacter character = target.getPlayerCharacterData();
+
+            if(player.hasFactionRank(rankId))
+            {
+                CommandUtils.errorSay(player, "Player already has this faction rank.");
+                return;
+            }
+
+            player.addFactionRank(faction, rankId);
+            AdminUtils.staffSay(player, $"You gave {character.character_name} faction rank {rankId} for faction {faction}");
+        }
     }
 }

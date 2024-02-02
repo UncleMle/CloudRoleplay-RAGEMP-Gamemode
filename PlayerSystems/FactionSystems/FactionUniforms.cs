@@ -15,7 +15,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
                 faction = Factions.LSPD,
                 uniform = new CharacterClothing
                 {
-                    undershirt = 20
+                    top = 26
                 }
             }
         };

@@ -3,14 +3,16 @@ using System;
 using CloudRP.ServerSystems.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CloudRP.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240202145314_Faction rank name column")]
+    partial class Factionranknamecolumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -405,8 +407,8 @@ namespace CloudRP.Migrations
                     b.Property<int>("faction_duty_uniform")
                         .HasColumnType("int");
 
-                    b.Property<string>("faction_ranks")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                    b.Property<int>("faction_rank")
+                        .HasColumnType("int");
 
                     b.Property<string>("freelance_job_data")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");

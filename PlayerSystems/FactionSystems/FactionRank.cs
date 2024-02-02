@@ -12,8 +12,12 @@ namespace CloudRP.PlayerSystems.FactionSystems
         public int faction_rank_id { get; set; }
 
         [Required]
+        public string rank_name { get; set; }
         public int faction_owner_id { get; set; }
         public int rank_salary { get; set; }
         public int rank_permissions { get; set; }
+        public string allowed_vehicles { get; set; }
+        public string allowed_weapons { get; set; }
+        public string allowed_uniforms { get; set; }
     }
 }

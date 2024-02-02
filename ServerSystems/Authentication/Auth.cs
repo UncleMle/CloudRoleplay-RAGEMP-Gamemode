@@ -306,15 +306,6 @@ namespace CloudRP.ServerSystems.Authentication
 
                         character.characterModel = charModel;
 
-                        if (character.faction_duty_uniform == -1)
-                        {
-                            character.characterClothing = charClothing;
-                        }
-                        else
-                        {
-                            FactionSystem.loadFactionUniform(player);
-                        }
-
                         character.characterModel.player_tattos = charTats;
 
                         player.Name = character.character_name.Replace("_", " ");
@@ -338,6 +329,16 @@ namespace CloudRP.ServerSystems.Authentication
                             FreeLanceJobData data = JsonConvert.DeserializeObject<FreeLanceJobData>(character.freelance_job_data);
 
                             player.setFreelanceJobData(data);
+                        }
+
+                        if (character.faction_duty_uniform == -1)
+                        {
+                            character.characterClothing = charClothing;
+                            player.setPlayerCharacterData(character, true);
+                        }
+                        else
+                        {
+                            FactionSystem.loadFactionUniform(player);
                         }
 
                         welcomeAndSpawnPlayer(player);

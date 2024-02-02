@@ -27,22 +27,6 @@ namespace CloudRP.PlayerSystems.FactionSystems.PoliceFaction
                 allowedVehicles = FactionSystem.loadFactionVehicles(Factions.LSPD);
             };
 
-            FactionSystem.onDutyAreaPress += (player, faction) =>
-            {
-                if(faction.Equals(Factions.LSPD) && player.isPartOfFaction(Factions.LSPD))
-                {
-                    handleDutySelection(player);
-                }
-            };
-            
-            FactionSystem.vehicleAreaPress += (player, faction) =>
-            {
-                if(faction.Equals(Factions.LSPD) && player.isPartOfFaction(Factions.LSPD, true))
-                {
-                    handleVehicleSelection(player);
-                }
-            };
-
             foreach (KeyValuePair<string, Vector3> item in policePrecincts)
             {
                 NAPI.Blip.CreateBlip(60, item.Value, 1f, 4, item.Key, 255, 1f, true, 0, 0);
@@ -50,33 +34,9 @@ namespace CloudRP.PlayerSystems.FactionSystems.PoliceFaction
         }
 
         #region Global Methods 
-        private static void handleDutySelection(Player player)
-        {
-            DbCharacter character = player.getPlayerCharacterData();
-
-            if (character == null) return;
-
-            character.faction_duty_status = (int)Factions.LSPD;
-
-            player.setPlayerCharacterData(character, false, true);
-
-            player.SendChatMessage("Faction duty");
-        }
-
-        private static void handleVehicleSelection(Player player)
-        {
-            player.SendChatMessage("Select vehicles");
-        }
-
         #endregion
 
         #region Remote Events
-        [RemoteEvent("server:faction:LSPD:duty")]
-        private void selectPdDuty(Player player, int uniformId)
-        {
-
-        }
-
         #endregion
 
         #region Commands

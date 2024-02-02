@@ -130,7 +130,10 @@ namespace CloudRP.PlayerSystems.FactionSystems
             {
                 area.Value.ForEach(spot =>
                 {
-                    if (player.checkIsWithinCoord(spot, 2f)) onDutyAreaPress(player, area.Key);
+                    if (player.checkIsWithinCoord(spot, 2f) && player.isPartOfFaction(area.Key))
+                    {
+                        handleDutyArea(player, area.Key);
+                    }
                 });
             }
 
@@ -138,9 +141,78 @@ namespace CloudRP.PlayerSystems.FactionSystems
             {
                 point.Value.ForEach(spot =>
                 {
-                    if (player.checkIsWithinCoord(spot.spawnPos, 2f)) vehicleAreaPress(player, point.Key);
+                    if (player.checkIsWithinCoord(spot.spawnPos, 2f) && player.isPartOfFaction(point.Key) && player.getPlayerCharacterData()?.faction_duty_status == (int)point.Key)
+                    {
+                        handleVehiclePoint(player);
+                    }
                 });
             }
+        }
+
+        public static void handleDutyArea(Player player, Factions targetFaction)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+
+            List<DbFactionRank> ranks = JsonConvert.DeserializeObject<List<DbFactionRank>>(character.faction_ranks);
+
+            int targetRankId = -1;
+
+            ranks.ForEach(rank =>
+            {
+                if(rank.faction.Equals(targetFaction))
+                {
+                    targetRankId = rank.rankId;
+                }
+            });
+
+            if (targetRankId == -1) return;
+
+            RankPermissions permissions = getAllowedItemsFromRank(targetRankId);
+
+            if (permissions == null) return;
+
+            List<FactionUniform> allowedUniforms = new List<FactionUniform>();
+
+            foreach (int uniformId in permissions.uniforms)
+            {
+                FactionUniform findUniform = FactionUniforms.factionUniforms
+                    .Where(uniform => uniform.uniformId == uniformId)
+                    .FirstOrDefault();
+
+                if(findUniform != null)
+                {
+                    allowedUniforms.Add(findUniform);
+                }
+            }
+
+            Console.WriteLine(JsonConvert.SerializeObject(allowedUniforms));
+        }
+
+        public static void handleVehiclePoint(Player player)
+        {
+            player.SendChatMessage("Vehicle spawn point");
+        }
+
+        public static RankPermissions getAllowedItemsFromRank(int factionRankId)
+        {
+            RankPermissions permissions = null;
+
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                FactionRank rank = dbContext.faction_ranks.Find(factionRankId);
+
+                if(rank != null)
+                {
+                    permissions = new RankPermissions
+                    {
+                        uniforms = JsonConvert.DeserializeObject<int[]>(rank.allowed_uniforms),
+                        vehicles = JsonConvert.DeserializeObject<string[]>(rank.allowed_vehicles),
+                        weapons = JsonConvert.DeserializeObject<string[]>(rank.allowed_weapons)
+                    };
+                }
+            }
+
+            return permissions;
         }
 
         public static List<string> loadFactionVehicles(Factions faction)
@@ -186,6 +258,49 @@ namespace CloudRP.PlayerSystems.FactionSystems
             }
         }
 
+        public static List<FactionUniform> getAllUniformsForFaction(Factions faction) 
+            => FactionUniforms.factionUniforms
+            .Where(uniform => uniform.faction == faction)
+            .ToList();
+
+        public static FactionUniform getFactionUniform(int uniformId, Factions targetFaction)
+            => FactionUniforms.factionUniforms
+            .Where(uniform => uniform.faction == targetFaction && uniform.uniformId == uniformId)
+            .FirstOrDefault();
+
+        #endregion
+
+        #region Remote Events
+        [RemoteEvent("server:factionSystem:duty")]
+        public void beginFactionDuty(Player player, int uniformId)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+            Factions targetFaction = Factions.None;
+
+            if (character == null) return;
+
+            foreach (KeyValuePair<Factions, List<Vector3>> area in onDutyAreas)
+            {
+                area.Value.ForEach(spot =>
+                {
+                    if (player.checkIsWithinCoord(spot, 2f) && player.isPartOfFaction(area.Key))
+                    {
+                        targetFaction = area.Key;
+                    }
+                });
+            }
+
+            if (targetFaction == Factions.None) return;
+
+            FactionUniform uniform = getFactionUniform(uniformId, targetFaction);
+
+            if(uniform == null) return;
+
+            player.setFactionUniform(uniform);
+            player.setFactionDuty(targetFaction);
+
+            uiHandling.sendNotification(player, $"Your now ~g~on duty~w~ for faction {targetFaction}", false);
+        }
         #endregion
 
         #region Commands
@@ -196,13 +311,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
             DbCharacter character = player.getPlayerCharacterData();
             if (character == null) return;
 
-            if(factionData == null)
-            {
-                CommandUtils.errorSay(player, "You aren't part of any faction.");
-                return;
-            }
-
-            if(!factionData.Contains(faction))
+            if(factionData == null || factionData != null && factionData.Contains(faction))
             {
                 CommandUtils.errorSay(player, "You aren't part of this faction.");
                 return;
