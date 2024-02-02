@@ -185,6 +185,8 @@ namespace CloudRP.PlayerSystems.FactionSystems
                 }
             }
 
+            uiHandling.resetMutationPusher(player, MutationKeys.FactionUniforms);
+
             uiHandling.pushRouterToClient(player, Browsers.FactionUniforms, true);
 
             allowedUniforms.ForEach(uniform =>
@@ -297,6 +299,12 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
             if (targetFaction == Factions.None) return;
 
+            if(character.faction_duty_status == (int)targetFaction)
+            {
+                uiHandling.sendPushNotifError(player, "Your already on duty. Head off duty to change uniform.", 6600);
+                return;
+            }
+
             FactionUniform uniform = getFactionUniform(uniformId, targetFaction);
 
             if(uniform == null) return;
@@ -305,6 +313,27 @@ namespace CloudRP.PlayerSystems.FactionSystems
             player.setFactionDuty(targetFaction);
 
             uiHandling.sendNotification(player, $"Your now ~g~on duty~w~ for faction {targetFaction}", false);
+            uiHandling.resetRouter(player);
+        }
+
+        [RemoteEvent("server:factionSystem:dutyEnd")]
+        public void endFactionDuty(Player player)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if (character == null) return;
+
+            if (character.faction_duty_status == -1) return;
+
+            character.faction_duty_status = -1;
+            character.faction_duty_uniform = -1;
+
+            character.characterClothing = CharacterSystem.getClothingViaCharacterId(character.character_id);
+
+            player.setPlayerCharacterData(character, true);
+            uiHandling.resetRouter(player);
+
+            uiHandling.sendNotification(player, "Your now ~r~off~w~ faction duty.", false);
         }
         #endregion
 

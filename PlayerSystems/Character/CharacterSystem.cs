@@ -36,16 +36,7 @@ namespace CloudRP.PlayerSystems.Character
             });
         }
 
-        public static void saveCharData(object source, ElapsedEventArgs e)
-        {
-            List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
-
-            foreach (Player player in onlinePlayers)
-            {
-                saveCharacterData(player);
-            }
-        }
-
+        #region Server Events
         [ServerEvent(Event.PlayerDisconnected)]
         public void onPlayerDisconect(Player player, DisconnectionType type, string reason)
         {
@@ -57,7 +48,32 @@ namespace CloudRP.PlayerSystems.Character
             {
                 DiscordUtils.creationConnection(player, characterData, LogCreation.Leave);
             }
+        }
+        #endregion
 
+        #region Global Methods
+        public static void saveCharData(object source, ElapsedEventArgs e)
+        {
+            List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
+
+            foreach (Player player in onlinePlayers)
+            {
+                saveCharacterData(player);
+            }
+        }
+
+        public static CharacterClothing getClothingViaCharacterId(int characterId)
+        {
+            CharacterClothing clothing = null;
+
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                clothing = dbContext.character_clothes
+                        .Where(clothes => clothes.character_id == characterId)
+                        .FirstOrDefault();
+            }
+
+            return clothing;
         }
 
         public static void saveCharacterData(Player player)
@@ -184,6 +200,56 @@ namespace CloudRP.PlayerSystems.Character
             }
         }
 
+        public static void fillCharacterSelectionTable(Player player, User userData)
+        {
+            uiHandling.resetMutationPusher(player, MutationKeys.PlayerCharacters);
+            uiHandling.resetMutationPusher(player, MutationKeys.PlayerAccountData);
+
+            uiHandling.sendMutationToClient(player, "setCharacterSelection", "toggle", true);
+            uiHandling.handleObjectUiMutation(player, MutationKeys.PlayerAccountData, userData);
+            uiHandling.setAuthState(player, AuthStates.characterSelection);
+
+            using (DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                List<DbCharacter> allPlayerCharacters = dbContext.characters
+                    .Where(character => character.owner_id == userData.account_id)
+                    .ToList();
+
+                allPlayerCharacters.ForEach(character =>
+                {
+                    uiHandling.handleObjectUiMutationPush(player, MutationKeys.PlayerCharacters, character);
+                });
+            }
+        }
+
+        public static void sendMessageViaCharacterId(int characterId, string message)
+        {
+            NAPI.Pools.GetAllPlayers().ForEach(player =>
+            {
+                if(player.getPlayerCharacterData()?.character_id == characterId)
+                {
+                    player.SendChatMessage(message);
+                } 
+            });
+        }
+
+        public static void resetToCharacterModel(Player player)
+        {
+            if (player.getPlayerCharacterData() != null)
+            {
+                CharacterModel characterModelData = player.getPlayerCharacterData().characterModel;
+                if (characterModelData == null) return;
+                DbCharacter character = player.getPlayerCharacterData();
+                if (character == null) return;
+
+                character.characterModel = characterModelData;
+
+                player.setPlayerCharacterData(character);
+            }
+        }
+        #endregion
+
+        #region Remote Events
         [RemoteEvent("server:recieveCharacterModel")]
         public void saveCharacterModelAsync(Player player, string data)
         {
@@ -315,53 +381,6 @@ namespace CloudRP.PlayerSystems.Character
             }
             player.TriggerEvent("client:setCharacterCreation");
         }
-
-        public static void fillCharacterSelectionTable(Player player, User userData)
-        {
-            uiHandling.resetMutationPusher(player, MutationKeys.PlayerCharacters);
-            uiHandling.resetMutationPusher(player, MutationKeys.PlayerAccountData);
-
-            uiHandling.sendMutationToClient(player, "setCharacterSelection", "toggle", true);
-            uiHandling.handleObjectUiMutation(player, MutationKeys.PlayerAccountData, userData);
-            uiHandling.setAuthState(player, AuthStates.characterSelection);
-
-            using (DefaultDbContext dbContext = new DefaultDbContext())
-            {
-                List<DbCharacter> allPlayerCharacters = dbContext.characters
-                    .Where(character => character.owner_id == userData.account_id)
-                    .ToList();
-
-                allPlayerCharacters.ForEach(character =>
-                {
-                    uiHandling.handleObjectUiMutationPush(player, MutationKeys.PlayerCharacters, character);
-                });
-            }
-        }
-
-        public static void sendMessageViaCharacterId(int characterId, string message)
-        {
-            NAPI.Pools.GetAllPlayers().ForEach(player =>
-            {
-                if(player.getPlayerCharacterData()?.character_id == characterId)
-                {
-                    player.SendChatMessage(message);
-                } 
-            });
-        }
-
-        public static void resetToCharacterModel(Player player)
-        {
-            if (player.getPlayerCharacterData() != null)
-            {
-                CharacterModel characterModelData = player.getPlayerCharacterData().characterModel;
-                if (characterModelData == null) return;
-                DbCharacter character = player.getPlayerCharacterData();
-                if (character == null) return;
-
-                character.characterModel = characterModelData;
-
-                player.setPlayerCharacterData(character);
-            }
-        }
+        #endregion
     }
 }
