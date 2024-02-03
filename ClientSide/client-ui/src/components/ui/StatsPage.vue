@@ -43,8 +43,10 @@
                                 <div class="relative w-full mt-4">
                                     <span class="left-0 top-0 "><i class="fa-solid fa-layer-group pr-2"></i>Faction
                                         Count</span>
-                                    <span class="absolute right-0 top-0">{{
+                                    <span v-if="characterStats.character_faction_data" class="absolute right-0 top-0">{{
                                         JSON.parse(characterStats.character_faction_data).length }}</span>
+                                    <span v-if="characterStats.character_faction_data"
+                                        class="absolute right-0 top-0">0</span>
                                 </div>
 
                                 <div class="relative w-full mt-4">

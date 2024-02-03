@@ -596,7 +596,7 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
-                DbVehicle findVehicle = dbContext.vehicles.Where(veh => veh.numberplate.ToUpper() == vehiclePlate.ToUpper()).FirstOrDefault();
+                DbVehicle findVehicle = dbContext.vehicles.Where(veh => veh.numberplate == vehiclePlate.ToUpper()).FirstOrDefault();
 
                 if (findVehicle != null && findVehicle.vehicle_dimension != VehicleDimensions.World)
                 {

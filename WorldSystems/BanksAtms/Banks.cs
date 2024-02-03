@@ -121,6 +121,9 @@ namespace CloudRP.World.BanksAtms
 
             if (bankData != null && characterData != null && isBankOpen(player))
             {
+                Console.WriteLine($"amount {amount}");
+
+                /*
                 try
                 {
                     int cashDepo = int.Parse(amount);
@@ -149,6 +152,7 @@ namespace CloudRP.World.BanksAtms
                 {
                     uiHandling.sendPushNotifError(player, "Enter a valid money amount", 6600, true);
                 }
+                */
             }
             else
             {
