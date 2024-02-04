@@ -289,23 +289,26 @@ namespace CloudRP.VehicleSystems.Vehicles
 
         public static void saveAllVehicleDataToDb(object source, ElapsedEventArgs e)
         {
-            List<Vehicle> allVehicles = NAPI.Pools.GetAllVehicles();
-
-            foreach (var vehicle in allVehicles)
+            NAPI.Task.Run(() =>
             {
-                try
-                {
-                    DbVehicle vehicleData = vehicle.getData();
+                List<Vehicle> allVehicles = NAPI.Pools.GetAllVehicles();
 
-                    if (vehicleData == null) return;
-
-                    vehicle.saveVehicleData(vehicleData, true);
-                }
-                catch (Exception ex)
+                foreach (var vehicle in allVehicles)
                 {
-                    ChatUtils.formatConsolePrint(ex.ToString());
+                    try
+                    {
+                        DbVehicle vehicleData = vehicle.getData();
+
+                        if (vehicleData == null) return;
+
+                        vehicle.saveVehicleData(vehicleData, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        ChatUtils.formatConsolePrint(ex.ToString());
+                    }
                 }
-            }
+            });
         }
 
         public static void bringVehicleToPlayer(Player player, Vehicle vehicle, bool putInVehicle)
