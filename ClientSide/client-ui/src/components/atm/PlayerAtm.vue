@@ -6,8 +6,7 @@
                     <div
                         class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
 
-                        <div
-                            class="relative w-full h-fit py-4 rounded-lg duration-300 text-xl text-gray-200 font-medium">
+                        <div class="relative w-full h-fit py-4 rounded-lg duration-300 text-xl text-gray-200 font-medium">
                             <h1 class="font-bold text-2xl border-b-2 pb-2 border-gray-500 pl-4"><i
                                     v-if="!playerData.atm_data.isBank" class="fa-solid fa-money-bill text-gray-400"></i>
                                 <i v-else class="fa-solid fa-building-columns text-gray-400"></i>
@@ -167,7 +166,7 @@ export default {
         },
         depositPlayerCash() {
             this.$store.state.uiStates.serverLoading = true;
-            sendToServer("server:bankDepositCash", this.withdrawCash);
+            sendToServer("server:bankDepositCash", this.depositAmount);
         },
         transferCash() {
             this.$store.state.uiStates.serverLoading = true;

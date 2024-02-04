@@ -293,30 +293,18 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             foreach (var vehicle in allVehicles)
             {
-                NAPI.Task.Run(() =>
+                try
                 {
-                    try
-                    {
-                        if (vehicle.getData() == null && vehicle.getFreelanceJobData() == null)
-                        {
-                            vehicle.Delete();
-                            ChatUtils.formatConsolePrint("Possible vehicle spawn cheat. Vehicle with no data found!");
-                        }
-                        else
-                        {
-                            DbVehicle vehicleData = vehicle.getData();
+                    DbVehicle vehicleData = vehicle.getData();
 
-                            if (vehicleData != null)
-                            {
-                                vehicle.saveVehicleData(vehicleData, true);
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        ChatUtils.formatConsolePrint(ex.ToString());
-                    }
-                });
+                    if (vehicleData == null) return;
+
+                    vehicle.saveVehicleData(vehicleData, true);
+                }
+                catch (Exception ex)
+                {
+                    ChatUtils.formatConsolePrint(ex.ToString());
+                }
             }
         }
 

@@ -45,7 +45,7 @@
                                         Count</span>
                                     <span v-if="characterStats.character_faction_data" class="absolute right-0 top-0">{{
                                         JSON.parse(characterStats.character_faction_data).length }}</span>
-                                    <span v-if="characterStats.character_faction_data"
+                                    <span v-else
                                         class="absolute right-0 top-0">0</span>
                                 </div>
 

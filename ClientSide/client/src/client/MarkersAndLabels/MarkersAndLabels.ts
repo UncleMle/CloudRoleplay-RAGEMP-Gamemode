@@ -8,8 +8,14 @@ export default class MarkersAndLabels {
     constructor() {
         MarkersAndLabels.LocalPlayer = mp.players.local;
 
+        mp.events.add("render", MarkersAndLabels.removeNorthBlip);
+
         mp.events.add("clientBlip:addClientBlip", MarkersAndLabels.addClientBlip);
         mp.events.add("clientBlip:removeClientBlip", MarkersAndLabels.removeClientBlip);
+    }
+
+    public static removeNorthBlip() {
+        mp.game.ui.setBlipAlpha(mp.game.invoke("0x3F0CF9CB7E589B88"), 0);
     }
 
     public static addClientBlip(blipSprite: number, name: string, position: Vector3, blipColour: number, alpha: number = 255, timeout: number = MarkersAndLabels.defaultBlipTimeout_seconds, setRoute: boolean = false, setMarker: boolean = false) {

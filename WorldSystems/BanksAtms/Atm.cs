@@ -279,7 +279,7 @@ namespace CloudRP.World.BanksAtms
                         characterData.cash_amount += withdrawAmount;
 
                         player.setPlayerCharacterData(characterData, false, true);
-                        CommandUtils.successSay(player, $"You withdrew {withdrawAmount.ToString("C")}.");
+                        uiHandling.sendNotification(player, $"~g~You withdrew ${withdrawAmount.ToString("N0")}.", false, true, "Withdraws cash.");
                         uiHandling.pushRouterToClient(player, Browsers.None);
                         uiHandling.setLoadingState(player, false);
                     }

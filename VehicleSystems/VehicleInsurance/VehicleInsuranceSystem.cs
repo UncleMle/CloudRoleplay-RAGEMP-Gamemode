@@ -137,8 +137,8 @@ namespace CloudRP.VehicleSystems.VehicleInsurance
                         charData.money_amount -= playerInsuranceData.retrieveFee;
 
                         player.setPlayerCharacterData(charData, false, true);
-                        ChatUtils.formatConsolePrint($"{charData.character_name} retrieved their vehicle [{findFromDb.numberplate}] from {playerInsuranceData.insuranceName} for {playerInsuranceData.retrieveFee.ToString("C")}");
-                        CommandUtils.successSay(player, $"You retrieved your vehicle [{findFromDb.numberplate}] from {playerInsuranceData.insuranceName} for {playerInsuranceData.retrieveFee.ToString("C")}. The vehicle has ~y~been marked on the map~w~.");
+                        ChatUtils.formatConsolePrint($"{charData.character_name} retrieved their vehicle [{findFromDb.numberplate}] from {playerInsuranceData.insuranceName} for ${playerInsuranceData.retrieveFee.ToString("N0")}");
+                        CommandUtils.successSay(player, $"You retrieved your vehicle [{findFromDb.numberplate}] from {playerInsuranceData.insuranceName} for ${playerInsuranceData.retrieveFee.ToString("N0")}. The vehicle has ~y~been marked on the map~w~.");
 
                         MarkersAndLabels.addBlipForClient(player, 380, $"Your vehicle [{findFromDb.numberplate}]", playerInsuranceData.spawnPosition, 70, 255);
                     }

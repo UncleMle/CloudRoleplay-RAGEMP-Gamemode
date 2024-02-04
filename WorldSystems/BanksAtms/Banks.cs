@@ -121,9 +121,6 @@ namespace CloudRP.World.BanksAtms
 
             if (bankData != null && characterData != null && isBankOpen(player))
             {
-                Console.WriteLine($"amount {amount}");
-
-                /*
                 try
                 {
                     int cashDepo = int.Parse(amount);
@@ -143,8 +140,9 @@ namespace CloudRP.World.BanksAtms
                     characterData.cash_amount -= cashDepo;
                     characterData.money_amount += cashDepo;
 
-                    player.setPlayerCharacterData(characterData, true, true);
-                    CommandUtils.successSay(player, $"You deposited ${cashDepo} into your bank account.");
+                    player.setPlayerCharacterData(characterData, false, true);
+                    uiHandling.sendNotification(player, $"~g~Deposited ${cashDepo.ToString("N0")}.", false, true, "Deposits cash.");
+
                     uiHandling.setLoadingState(player, false);
                     uiHandling.pushRouterToClient(player, Browsers.None);
                 }
@@ -152,7 +150,6 @@ namespace CloudRP.World.BanksAtms
                 {
                     uiHandling.sendPushNotifError(player, "Enter a valid money amount", 6600, true);
                 }
-                */
             }
             else
             {
@@ -209,8 +206,8 @@ namespace CloudRP.World.BanksAtms
 
                                 player.setPlayerCharacterData(characterData, false, true);
                                 p.setPlayerCharacterData(targetCharData, false, true);
-                                p.SendChatMessage(ChatUtils.info + $"You have just been bank transferred {transferAmount.ToString("C")}.");
-                                CommandUtils.successSay(player, $"You successfully bank transferred {targetCharData.character_name} {transferAmount.ToString("C")}");
+                                p.SendChatMessage(ChatUtils.info + $"You have just been bank transferred ${transferAmount.ToString("N0")}.");
+                                CommandUtils.successSay(player, $"You successfully bank transferred {targetCharData.character_name} ${transferAmount.ToString("N0")}");
                                 uiHandling.setLoadingState(player, false);
                             }
                         });

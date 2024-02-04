@@ -356,7 +356,7 @@ namespace CloudRP.GeneralSystems.GeneralCommands
                 }
             });
 
-            player.SendChatMessage(ChatUtils.info + $"There are currently {ChatUtils.yellow}{count}{ChatUtils.White} players online.");
+            player.SendChatMessage(ChatUtils.info + $"There are currently {ChatUtils.yellow}{count}{ChatUtils.White} {(count == 1 ? "player" : "players")} online.");
         }
 
         [Command("pm", "~y~Use:~w~ /pm [playerNameOrId] [message]", GreedyArg = true, Alias = "privatemessage")]

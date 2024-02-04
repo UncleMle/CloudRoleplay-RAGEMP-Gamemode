@@ -49,7 +49,7 @@ namespace CloudRP.GeneralSystems.HousingSystem
             if (house.blip_visible)
             {
                 Vector3 pricePos = new Vector3(housePos.X, housePos.Y, housePos.Z + 0.4);
-                priceLabel = MarkersAndLabels.setTextLabel(pricePos, $"~g~On sale for {house.house_price.ToString("C")}", 5f);
+                priceLabel = MarkersAndLabels.setTextLabel(pricePos, $"~g~On sale for ${house.house_price.ToString("N0")}", 5f);
             }
 
             TextLabel houseLabel = MarkersAndLabels.setTextLabel(housePos, house.house_name + " #" + house.house_id + "\n use ~y~Y~w~ to interact", 5f);

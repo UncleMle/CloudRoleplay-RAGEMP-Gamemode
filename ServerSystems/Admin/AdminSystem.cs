@@ -1576,9 +1576,9 @@ namespace CloudRP.ServerSystems.Admin
 
             findPlayer.setPlayerCharacterData(charData, false, true);
 
-            ChatUtils.formatConsolePrint($"{userData.admin_name} gave {charData.character_name} {amount.ToString("C")}.");
-            AdminUtils.staffSay(player, $"You gave {charData.character_name} {ChatUtils.moneyGreen}{amount.ToString("C")}{AdminUtils.staffSuffixColour} their total money level is at {ChatUtils.moneyGreen}${charData.money_amount.ToString("C")}");
-            AdminUtils.staffSay(findPlayer, $"You have been given {ChatUtils.moneyGreen}{amount.ToString("C")}{AdminUtils.staffSuffixColour} from Admin {userData.admin_name}");
+            ChatUtils.formatConsolePrint($"{userData.admin_name} gave {charData.character_name} ${amount.ToString("N0")}.");
+            AdminUtils.staffSay(player, $"You gave {charData.character_name} {ChatUtils.moneyGreen}${amount.ToString("N0")}{AdminUtils.staffSuffixColour} their total money level is at {ChatUtils.moneyGreen}${charData.money_amount.ToString("N0")}");
+            AdminUtils.staffSay(findPlayer, $"You have been given {ChatUtils.moneyGreen}${amount.ToString("N0")}{AdminUtils.staffSuffixColour} from Admin {userData.admin_name}");
         }
 
         [AdminCommand(AdminRanks.Admin_HeadAdmin)]
@@ -1597,16 +1597,16 @@ namespace CloudRP.ServerSystems.Admin
 
             if (charData.money_amount - amount < 0)
             {
-                CommandUtils.errorSay(player, "You cannot set money amount below zero. Target's current money amount " + charData.money_amount.ToString("C"));
+                CommandUtils.errorSay(player, "You cannot set money amount below zero. Target's current money amount $" + charData.money_amount.ToString("N0"));
                 return;
             }
 
             charData.money_amount -= amount;
             findPlayer.setPlayerCharacterData(charData, false, true);
 
-            ChatUtils.formatConsolePrint($"{userData.admin_name} removed {amount.ToString("C")} from {charData.character_name}.");
-            AdminUtils.staffSay(player, $"You removed {ChatUtils.moneyGreen}${amount.ToString("C")}{AdminUtils.staffSuffixColour} from {charData.character_name} their total money level is at {ChatUtils.moneyGreen}{charData.money_amount.ToString("C")}");
-            AdminUtils.staffSay(findPlayer, $"You had {ChatUtils.moneyGreen}${amount.ToString("C")}{AdminUtils.staffSuffixColour} removed from you by Admin {userData.admin_name}");
+            ChatUtils.formatConsolePrint($"{userData.admin_name} removed ${amount.ToString("N0")} from {charData.character_name}.");
+            AdminUtils.staffSay(player, $"You removed {ChatUtils.moneyGreen}${amount.ToString("N0")}{AdminUtils.staffSuffixColour} from {charData.character_name} their total money level is at {ChatUtils.moneyGreen}${charData.money_amount.ToString("N0")}");
+            AdminUtils.staffSay(findPlayer, $"You had {ChatUtils.moneyGreen}${amount.ToString("N0")}{AdminUtils.staffSuffixColour} removed from you by Admin {userData.admin_name}");
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]
