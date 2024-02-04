@@ -681,28 +681,33 @@ namespace CloudRP.VehicleSystems.Vehicles
             });
         }
 
-        public static string genUniquePlate(int vehicleId)
+        public static string genUniquePlate(int vehicleId, bool insured = false)
         {
             string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
             string result = "";
 
-            int fillAmount = 8 - vehicleId.ToString().Count();
-
-            for (int i = 0; i < fillAmount; i++)
+            if(insured)
             {
-                Random r = new Random();
-                int rInt = r.Next(0, characters.Length);
-                result += characters[rInt];
+                int fillAmount = 8 - vehicleId.ToString().Count();
+
+                for (int i = 0; i < fillAmount; i++)
+                {
+                    Random r = new Random();
+                    int rInt = r.Next(0, characters.Length);
+                    result += characters[rInt];
+                }
+
+                string[] rArr = result.Split("");
+
+                Array.Resize(ref rArr, rArr.Length + 1);
+                Array.Copy(rArr, 0, rArr, 1, rArr.Length - 1);
+                rArr[0] = vehicleId.ToString();
+
+                return string.Join("", rArr).ToUpper();
             }
 
-            string[] rArr = result.Split("");
-
-            Array.Resize(ref rArr, rArr.Length + 1);
-            Array.Copy(rArr, 0, rArr, 1, rArr.Length - 1);
-            rArr[0] = vehicleId.ToString();
-
-            return string.Join("", rArr).ToUpper();
+            return "V" + vehicleId; 
         }
 
         public static Vehicle checkVehInSpot(Vector3 spot, int range)
@@ -718,6 +723,80 @@ namespace CloudRP.VehicleSystems.Vehicles
             });
 
             return blockingVehicle;
+        }
+
+        public static Vehicle checkInstance(DbVehicle vehicle)
+        {
+            Vehicle found = null;
+
+            NAPI.Pools.GetAllVehicles().ForEach(veh =>
+            {
+                DbVehicle data = veh.getData();
+
+                if(data != null && data.vehicle_id == vehicle.vehicle_id)
+                {
+                    found = veh;
+                }
+            });
+
+            return found;
+        }
+
+        public static DbVehicle getPlayerVehicleFromInsurance(Player player, int vehicleId, int insuranceId)
+        {
+            DbVehicle findFromDb = null;
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if(character != null)
+            {
+                using (DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    findFromDb = dbContext.vehicles
+                        .Where(veh => veh.owner_id == character.character_id && veh.vehicle_id == vehicleId && veh.vehicle_dimension == VehicleDimensions.Insurance && veh.vehicle_insurance_id == insuranceId)
+                        .FirstOrDefault();
+                }
+            }
+
+            return findFromDb;
+        }
+
+        public static List<DbVehicle> getInsuranceVehicles(Player player, int insuranceId)
+        {
+            List<DbVehicle> vehicles = new List<DbVehicle>();
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if (character != null)
+            {
+                using (DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    vehicles = dbContext.vehicles
+                        .Where(veh => veh.owner_id == character.character_id && veh.vehicle_dimension == VehicleDimensions.Insurance && veh.vehicle_insurance_id == insuranceId)
+                        .ToList();
+                }
+            }
+
+            return vehicles;
+        }
+
+        public static List<DbVehicle> getPlayerUninsuredVehicles(Player player)
+        {
+            List<DbVehicle> vehicles = new List<DbVehicle>();
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if (character != null)
+            {
+                using (DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    vehicles = dbContext.vehicles
+                        .Where(veh =>
+                        veh.owner_id == character.character_id &&
+                        veh.vehicle_dimension == VehicleDimensions.World &&
+                        !veh.insurance_status)
+                        .ToList();
+                }
+            } 
+
+            return vehicles;
         }
         #endregion
 

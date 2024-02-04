@@ -236,7 +236,7 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
                 player.setPlayerCharacterData(charData, true, true);
 
                 player.TriggerEvent("dealers:closeDealership");
-                CommandUtils.successSay(player, $"You purchased a new {vehicleData.vehicle_display_name} for ${findDealerVeh.price}. Your vehicle ~y~has been marked on the map~w~.");
+                CommandUtils.successSay(player, $"You purchased a new {vehicleData.vehicle_display_name} for {ChatUtils.moneyGreen}${findDealerVeh.price.ToString("N0")}{ChatUtils.White}. Your vehicle ~y~has been marked on the map~w~.");
 
                 MarkersAndLabels.addBlipForClient(player, 523, $"Your new vehicle [{vehicleData.numberplate}]", playerDealerData.spawnPosition, 70, 255);
                 ChatUtils.formatConsolePrint($"{charData.character_name} purchased a new {vehicleData.vehicle_display_name} with id #{vehicleData.vehicle_id}", ConsoleColor.Blue);

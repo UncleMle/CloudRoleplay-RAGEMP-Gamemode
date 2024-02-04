@@ -17,8 +17,10 @@ namespace CloudRP.VehicleSystems.VehicleInsurance
 {
     public class VehicleInsuranceSystem : Script
     {
-        public static string _insuranceDataIdentifier = "vehicleInsuranceData";
-        public static List<InsuranceArea> insuranceAreas = new List<InsuranceArea>
+        public static readonly string _insuranceDataIdentifier = "vehicleInsuranceData";
+        public static readonly int insureVehicleFee = 400;
+        public static readonly float insuranceVehicleMaxDist = 60;
+        public static readonly List<InsuranceArea> insuranceAreas = new List<InsuranceArea>
         {
             new InsuranceArea
             {
@@ -85,23 +87,74 @@ namespace CloudRP.VehicleSystems.VehicleInsurance
 
             if (playerInsuranceData != null && charData != null)
             {
-                using (DefaultDbContext dbContext = new DefaultDbContext())
-                {
-                    List<DbVehicle> inInsuranceVehicles = dbContext.vehicles
-                        .Where(veh => veh.owner_id == charData.character_id && veh.vehicle_dimension == VehicleDimensions.Insurance && veh.vehicle_insurance_id == playerInsuranceData.insuranceId)
-                        .ToList();
+                List<DbVehicle> inInsuranceVehicles = VehicleSystem.getInsuranceVehicles(player, playerInsuranceData.insuranceId);
+                List<DbVehicle> unInsuredVehicles = VehicleSystem.getPlayerUninsuredVehicles(player);
 
-                    if (inInsuranceVehicles.Count > 0)
+                uiHandling.pushRouterToClient(player, Browsers.Insurance);
+                uiHandling.resetMutationPusher(player, MutationKeys.InsuranceVehicles);
+                uiHandling.resetMutationPusher(player, MutationKeys.UninsuredVehicles);
+
+                unInsuredVehicles.ForEach(veh =>
+                {
+                    Vehicle found = VehicleSystem.checkInstance(veh);
+
+                    if(found != null && Vector3.Distance(player.Position, found.Position) < insuranceVehicleMaxDist)
                     {
-                        uiHandling.pushRouterToClient(player, Browsers.Insurance);
-                        uiHandling.handleObjectUiMutation(player, MutationKeys.InsuranceVehicles, inInsuranceVehicles);
+                        uiHandling.handleObjectUiMutationPush(player, MutationKeys.UninsuredVehicles, veh);
                     }
-                    else
-                    {
-                        uiHandling.sendPushNotifError(player, "You don't have any vehicles stored in this insurance.", 5500);
-                    }
-                }
+                });
+
+                inInsuranceVehicles.ForEach(veh =>
+                {
+                    uiHandling.handleObjectUiMutationPush(player, MutationKeys.InsuranceVehicles, veh);
+                });
             }
+        }
+
+        [RemoteEvent("server:insureVehicle")]
+        public void insureVehicle(Player player, int vehicleId)
+        {
+            InsuranceArea playerInsuranceData = player.GetData<InsuranceArea>(_insuranceDataIdentifier);
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if (playerInsuranceData == null || character == null) return;
+
+            Vehicle targetVehicle = VehicleSystem.getVehicleById(vehicleId, null, false);
+
+            if(targetVehicle == null) return;
+
+            if(Vector3.Distance(targetVehicle.Position, player.Position) > insuranceVehicleMaxDist)
+            {
+                uiHandling.sendPushNotifError(player, "Vehicle is too far a distance from the insurance company.", 6600);
+                return;
+            }
+
+            DbVehicle vehicleData = targetVehicle.getData();
+
+            if (vehicleData == null || vehicleData != null && vehicleData.insurance_status) return;
+
+            if(character.money_amount - insureVehicleFee < 0)
+            {
+                long difference = insureVehicleFee - character.money_amount;
+
+                uiHandling.sendPushNotifError(player, $"You don't have enough to pay for the insurance fee. You need ${difference.ToString("N0")} more.", 6600);
+                return;
+            }
+
+            uiHandling.resetRouter(player);
+
+            character.money_amount -= insureVehicleFee;
+            player.setPlayerCharacterData(character, false, true);
+
+            string newPlate = VehicleSystem.genUniquePlate(vehicleData.vehicle_id, true);
+
+            vehicleData.numberplate = newPlate;
+            vehicleData.insurance_status = true;
+            targetVehicle.saveVehicleData(vehicleData, true);
+            targetVehicle.NumberPlate = newPlate;
+
+            CommandUtils.successSay(player, $"You have insured your vehicle {vehicleData.vehicle_display_name} for {ChatUtils.moneyGreen}${insureVehicleFee.ToString("N0")}{ChatUtils.White}.");
+            CommandUtils.successSay(player, $"Your vehicle {vehicleData.vehicle_display_name} has been assigned a new license plate of {newPlate}");
         }
 
         [RemoteEvent("server:removeVehicleFromInsurance")]
@@ -112,41 +165,40 @@ namespace CloudRP.VehicleSystems.VehicleInsurance
 
             if (playerInsuranceData != null && charData != null)
             {
-                if (charData.money_amount - playerInsuranceData.retrieveFee < 0)
+                DbVehicle findFromDb = VehicleSystem.getPlayerVehicleFromInsurance(player, vehicleId, playerInsuranceData.insuranceId);
+
+                if (findFromDb == null) return;
+
+                int insuranceFee = findFromDb.insurance_status ? playerInsuranceData.retrieveFee : playerInsuranceData.retrieveFee * 2;
+
+                if (charData.money_amount - insuranceFee < 0)
                 {
-                    uiHandling.sendPushNotifError(player, $"You don't have enough money to pay for this. You need {playerInsuranceData.retrieveFee - charData.money_amount} more.", 5500);
+                    uiHandling.sendPushNotifError(player, $"You don't have enough money to pay for this. You need {playerInsuranceData.retrieveFee - charData.money_amount:N0} more.", 5500);
                     return;
                 }
-                using (DefaultDbContext dbContext = new DefaultDbContext())
+
+                if(VehicleSystem.checkVehInSpot(playerInsuranceData.spawnPosition, 8) != null)
                 {
-                    DbVehicle findFromDb = dbContext.vehicles
-                        .Where(veh => veh.vehicle_id == vehicleId && veh.vehicle_dimension == VehicleDimensions.Insurance && veh.vehicle_insurance_id == playerInsuranceData.insuranceId)
-                        .FirstOrDefault();
-
-                    if (findFromDb != null)
-                    {
-                        uiHandling.pushRouterToClient(player, Browsers.None);
-
-                        findFromDb.vehicle_dimension = VehicleDimensions.World;
-
-                        dbContext.vehicles.Update(findFromDb);
-                        dbContext.SaveChanges();
-
-                        VehicleSystem.spawnVehicle(findFromDb, playerInsuranceData.spawnPosition);
-
-                        charData.money_amount -= playerInsuranceData.retrieveFee;
-
-                        player.setPlayerCharacterData(charData, false, true);
-                        ChatUtils.formatConsolePrint($"{charData.character_name} retrieved their vehicle [{findFromDb.numberplate}] from {playerInsuranceData.insuranceName} for ${playerInsuranceData.retrieveFee.ToString("N0")}");
-                        CommandUtils.successSay(player, $"You retrieved your vehicle [{findFromDb.numberplate}] from {playerInsuranceData.insuranceName} for ${playerInsuranceData.retrieveFee.ToString("N0")}. The vehicle has ~y~been marked on the map~w~.");
-
-                        MarkersAndLabels.addBlipForClient(player, 380, $"Your vehicle [{findFromDb.numberplate}]", playerInsuranceData.spawnPosition, 70, 255);
-                    }
-                    else
-                    {
-                        uiHandling.sendPushNotifError(player, "Vehicle wasn't found.", 5500);
-                    }
+                    uiHandling.sendPushNotifError(player, "There is a vehicle blocking the spawn point!", 6600);
+                    return;
                 }
+
+                uiHandling.pushRouterToClient(player, Browsers.None);
+
+                VehicleSystem.spawnVehicle(findFromDb, playerInsuranceData.spawnPosition);
+
+                if (!findFromDb.insurance_status)
+                {
+                    player.SendChatMessage(ChatUtils.info + $"You have had to pay {ChatUtils.red}${playerInsuranceData.retrieveFee.ToString("N0")}{ChatUtils.White} more in insurance due to your car not being insured.");
+                }
+
+                charData.money_amount -= insuranceFee;
+
+                player.setPlayerCharacterData(charData, false, true);
+                ChatUtils.formatConsolePrint($"{charData.character_name} retrieved their vehicle [{findFromDb.numberplate}] from {playerInsuranceData.insuranceName} for ${insuranceFee.ToString("N0")}");
+                CommandUtils.successSay(player, $"You retrieved your vehicle [{findFromDb.numberplate}] from {playerInsuranceData.insuranceName} for ${insuranceFee.ToString("N0")}. The vehicle has ~y~been marked on the map~w~.");
+
+                MarkersAndLabels.addBlipForClient(player, 380, $"Your vehicle [{findFromDb.numberplate}]", playerInsuranceData.spawnPosition, 70, 255);
             }
         }
     }

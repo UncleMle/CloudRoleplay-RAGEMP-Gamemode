@@ -183,5 +183,6 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string GruppeSixJobs = "gruppe_six_jobs";
         public static readonly string DmvCourses = "dmv_courses";
         public static readonly string FactionUniforms = "faction_uniforms";
+        public static readonly string UninsuredVehicles = "uninsured_vehicle_data";
     }
 }

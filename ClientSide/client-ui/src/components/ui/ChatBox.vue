@@ -148,7 +148,7 @@ export default {
             }
         },
         push(text) {
-            this.chatMessages.unshift(`<span class='text-gray-400 opacity-80'>${this.getTimeFormatted()} |</span> ` + text);
+            this.chatMessages.unshift(`<span class='text-gray-400 opacity-80 text-sm'>${this.getTimeFormatted()} </span> ` + text);
         },
         getTimeFormatted() {
             const timeNow = new Date();
