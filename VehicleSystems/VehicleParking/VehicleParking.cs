@@ -1,4 +1,5 @@
 ﻿using CloudRP.PlayerSystems.Character;
+using CloudRP.PlayerSystems.FactionSystems;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Database;
@@ -10,11 +11,16 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using static CloudRP.PlayerSystems.FactionSystems.FactionSystem;
 
 namespace CloudRP.VehicleSystems.VehicleParking
 {
     public class VehicleParking : Script
     {
+        public delegate void VehicleParkingEventsHandler(Player player, int vehicleId);
+
+        public static event VehicleParkingEventsHandler onVehicleUnpark;
+
         public static string _parkingLotIdentifier = "parkingLotData";
         public static string _retrievalIdentifier = "retreivalParkingData";
         public static List<ParkingLot> parkingLots = new List<ParkingLot>
@@ -194,18 +200,7 @@ namespace CloudRP.VehicleSystems.VehicleParking
 
                 if (pVehData != null)
                 {
-                    using (DefaultDbContext dbContext = new DefaultDbContext())
-                    {
-                        pVehData.vehicle_dimension = VehicleDimensions.Garage;
-                        pVehData.vehicle_garage_id = parkCol.owner_id;
-
-                        dbContext.Update(pVehData);
-                        dbContext.SaveChanges();
-
-                        CommandUtils.successSay(player, $"You parked your vehicle [{pVehData.numberplate}]");
-                        pVeh.Delete();
-                    }
-
+                    player.Vehicle.parkVehicle(player, parkCol.owner_id);
                 }
             }
             else
@@ -250,6 +245,8 @@ namespace CloudRP.VehicleSystems.VehicleParking
         [RemoteEvent("server:unparkVehicle")]
         public void unparkVehicle(Player player, int vehicleId)
         {
+            onVehicleUnpark(player, vehicleId);
+
             DbCharacter characterData = player.getPlayerCharacterData();
             RetrieveCol retrievalCol = player.GetData<RetrieveCol>(_retrievalIdentifier);
             if (retrievalCol == null) return;

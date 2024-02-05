@@ -4,6 +4,7 @@ using CloudRP.ServerSystems.Admin;
 using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
+using CloudRP.VehicleSystems.VehicleParking;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
@@ -49,11 +50,13 @@ namespace CloudRP.PlayerSystems.FactionSystems
                 {
                     new FactionVehSpawn
                     {
+                        garageId = 1,
                         vehicleRot = 90.6f,
                         spawnPos = new Vector3(416.7, -1025.0, 29.1)
                     },
                     new FactionVehSpawn
                     {
+                        garageId = 2,
                         vehicleRot = 57.4f,
                         spawnPos = new Vector3(407.4, -997.3, 29.3)
                     },
@@ -65,6 +68,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
         {
             KeyPressEvents.keyPress_Y += handleKeyInteraction;
             Main.resourceStart += initFactionRanks;
+            VehicleParking.onVehicleUnpark += handleFactionUnpark;
 
             foreach (KeyValuePair<Factions, List<Vector3>> area in onDutyAreas)
             {
@@ -141,9 +145,9 @@ namespace CloudRP.PlayerSystems.FactionSystems
             {
                 point.Value.ForEach(spot =>
                 {
-                    if (player.checkIsWithinCoord(spot.spawnPos, 2f) && player.isPartOfFaction(point.Key) && player.getPlayerCharacterData()?.faction_duty_status == (int)point.Key)
+                    if (player.checkIsWithinCoord(spot.spawnPos, 2f) && player.isPartOfFaction(point.Key, true))
                     {
-                        handleVehiclePoint(player);
+                        handleVehiclePoint(player, point.Key, spot.garageId);
                     }
                 });
             }
@@ -195,9 +199,23 @@ namespace CloudRP.PlayerSystems.FactionSystems
             });
         }
 
-        public static void handleVehiclePoint(Player player)
+        public static void handleVehiclePoint(Player player, Factions targetFaction, int garageId)
         {
-            player.SendChatMessage("Vehicle spawn point");
+            List<DbVehicle> parkedVehicles = getParkedFactionVehicles(targetFaction, garageId);
+
+            if(parkedVehicles.Count == 0)
+            {
+                uiHandling.sendPushNotifError(player, "There are no faction vehicles in this vehicle point.", 6600);
+                return;
+            }
+
+            uiHandling.resetMutationPusher(player, MutationKeys.ParkedVehicles);
+            uiHandling.pushRouterToClient(player, Browsers.Parking);
+
+            parkedVehicles.ForEach(veh =>
+            {
+                uiHandling.handleObjectUiMutationPush(player, MutationKeys.ParkedVehicles, veh);
+            });
         }
 
         public static RankPermissions getAllowedItemsFromRank(int factionRankId)
@@ -245,6 +263,22 @@ namespace CloudRP.PlayerSystems.FactionSystems
             return vehicles;
         }
 
+        public static List<DbVehicle> getParkedFactionVehicles(Factions faction, int garageId)
+        {
+            List<DbVehicle> vehicles = new List<DbVehicle>();
+
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                vehicles = dbContext.vehicles
+                    .Where(veh => veh.faction_owner_id == (int)faction && 
+                    veh.vehicle_garage_id == garageId &&
+                    veh.vehicle_dimension == VehicleDimensions.Garage)
+                    .ToList();
+            }
+
+            return vehicles;
+        }
+
         public static void loadFactionUniform(Player player)
         {
             DbCharacter character = player.getPlayerCharacterData();
@@ -274,6 +308,63 @@ namespace CloudRP.PlayerSystems.FactionSystems
             => FactionUniforms.factionUniforms
             .Where(uniform => uniform.faction == targetFaction && uniform.uniformId == uniformId)
             .FirstOrDefault();
+
+        public static (Factions, int) getClosestVehiclePoint(Player player)
+        {
+            int garageId = -1;
+            Factions faction = Factions.None;
+
+            foreach(KeyValuePair<Factions, List<FactionVehSpawn>> point in vehicleSpawnPoints)
+            {
+                point.Value.ForEach(spot =>
+                {
+                    if (player.checkIsWithinCoord(spot.spawnPos, 2f) && player.isPartOfFaction(point.Key, true))
+                    {
+                        faction = point.Key;
+                        garageId = spot.garageId;
+                    }
+                });
+            }
+
+            return (faction, garageId);
+        }
+
+        public static void handleFactionUnpark(Player player, int vehicleId)
+        {
+            DbVehicle targetVehicle = null;
+
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                targetVehicle = dbContext.vehicles.
+                    Where(veh => veh.vehicle_dimension == VehicleDimensions.Garage &&
+                    veh.faction_owner_id != (int)Factions.None)
+                    .FirstOrDefault();
+            }
+
+            if(targetVehicle != null)
+            {
+                KeyValuePair<Factions, List<FactionVehSpawn>> point = vehicleSpawnPoints
+                    .Where(spawnPoint => (int)spawnPoint.Key == targetVehicle.faction_owner_id)
+                    .FirstOrDefault();
+
+                if (point.Value == null) return;
+
+                FactionVehSpawn spawn = null;
+
+                foreach (FactionVehSpawn targetSpawn in point.Value)
+                {
+                    if(targetSpawn.garageId == targetVehicle.vehicle_garage_id)
+                    {
+                        spawn = targetSpawn;
+                    }
+                }
+
+                if (spawn == null) return;
+
+                VehicleSystem.spawnVehicle(targetVehicle, spawn.spawnPos);
+                uiHandling.resetRouter(player);
+            }
+        }
 
         #endregion
 
@@ -375,6 +466,28 @@ namespace CloudRP.PlayerSystems.FactionSystems
             });
 
             ChatUtils.formatConsolePrint($"[F] [{faction}] {character.character_name} says: {message}", ConsoleColor.Magenta);
+        }
+
+        [Command("fpark", "~y~Use: ~w~/fpark", Alias = "factionpark,fpa")]
+        public void factionParkCommand(Player player)
+        {
+            (Factions faction, int garageId) = getClosestVehiclePoint(player);
+
+            if (garageId == -1 || faction == Factions.None) return;
+
+            if (!player.IsInVehicle)
+            {
+                CommandUtils.errorSay(player, "You must be in a vehicle to use this command.");
+                return;
+            }
+
+            DbVehicle vehicle = player.Vehicle.getData();
+
+            if (vehicle == null) return;
+
+            if (vehicle.faction_owner_id != (int)faction) return;
+
+            player.Vehicle.parkVehicle(player, garageId);
         }
         #endregion
     }

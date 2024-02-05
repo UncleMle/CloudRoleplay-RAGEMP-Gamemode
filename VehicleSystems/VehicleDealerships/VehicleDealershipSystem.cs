@@ -233,7 +233,7 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
 
                 if (buildVeh == null || vehicleData == null) return;
 
-                player.setPlayerCharacterData(charData, true, true);
+                player.setPlayerCharacterData(charData, false, true);
 
                 player.TriggerEvent("dealers:closeDealership");
                 CommandUtils.successSay(player, $"You purchased a new {vehicleData.vehicle_display_name} for {ChatUtils.moneyGreen}${findDealerVeh.price.ToString("N0")}{ChatUtils.White}. Your vehicle ~y~has been marked on the map~w~.");

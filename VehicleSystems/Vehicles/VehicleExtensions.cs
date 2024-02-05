@@ -7,7 +7,9 @@ using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.VehicleDealerships;
 using CloudRP.VehicleSystems.VehicleInsurance;
+using CloudRP.VehicleSystems.VehicleParking;
 using GTANetworkAPI;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -314,6 +316,21 @@ namespace CloudRP.VehicleSystems.Vehicles
         public static bool isBlockingSpotInRange(this Vehicle vehicle, Vector3 spot)
         {
             return vehicle.Position.DistanceToSquared(spot) < 10;
+        }
+
+        public static void parkVehicle(this Vehicle vehicle, Player player, int garageId)
+        {
+            DbVehicle vehicleData = vehicle.getData();
+
+            if (vehicleData == null) return;
+
+            vehicleData.vehicle_dimension = VehicleDimensions.Garage;
+            vehicleData.vehicle_garage_id = garageId;
+
+            vehicle.saveVehicleData(vehicleData, true);
+
+            CommandUtils.successSay(player, $"You parked your vehicle [{vehicleData.numberplate}]");
+            vehicle.Delete();
         }
 
     }

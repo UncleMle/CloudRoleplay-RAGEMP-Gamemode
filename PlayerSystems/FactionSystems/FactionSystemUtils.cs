@@ -8,6 +8,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
 {
     public class FactionVehSpawn
     {
+        public int garageId { get; set; }
         public float vehicleRot { get; set; }
         public Vector3 spawnPos { get; set; }
     }
