@@ -8,6 +8,7 @@ using CloudRP.VehicleSystems.VehicleParking;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
+using Microsoft.EntityFrameworkCore.Query;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -118,7 +119,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
                         {
                             CreatedDate = DateTime.Now,
                             faction_allowed_vehicles = JsonConvert.SerializeObject(defaultVehicles),
-                            faction_name = Enum.GetNames(typeof(Factions))[i],
+                            faction_name = getFactionName(i),
                             owner_id = -1,
                         });
                         dbContext.SaveChanges();
@@ -210,7 +211,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
             }
 
             uiHandling.resetMutationPusher(player, MutationKeys.ParkedVehicles);
-            uiHandling.pushRouterToClient(player, Browsers.Parking);
+            uiHandling.pushRouterToClient(player, Browsers.Parking, true);
 
             parkedVehicles.ForEach(veh =>
             {
@@ -309,6 +310,9 @@ namespace CloudRP.PlayerSystems.FactionSystems
             .Where(uniform => uniform.faction == targetFaction && uniform.uniformId == uniformId)
             .FirstOrDefault();
 
+        public static string getFactionName(int faction)
+            => Enum.GetNames(typeof(Factions))[faction];
+
         public static (Factions, int) getClosestVehiclePoint(Player player)
         {
             int garageId = -1;
@@ -359,9 +363,10 @@ namespace CloudRP.PlayerSystems.FactionSystems
                     }
                 }
 
-                if (spawn == null) return;
+                if (spawn == null || spawn != null && Vector3.Distance(player.Position, spawn.spawnPos) > 12) return;
 
-                VehicleSystem.spawnVehicle(targetVehicle, spawn.spawnPos);
+                Vehicle spawnedVehicle = VehicleSystem.spawnVehicle(targetVehicle, spawn.spawnPos);
+                player.SetIntoVehicle(spawnedVehicle, 0);
                 uiHandling.resetRouter(player);
             }
         }
@@ -416,17 +421,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
             if (character == null) return;
 
-            if (character.faction_duty_status == -1) return;
-
-            character.faction_duty_status = -1;
-            character.faction_duty_uniform = -1;
-
-            character.characterClothing = CharacterSystem.getClothingViaCharacterId(character.character_id);
-
-            player.setPlayerCharacterData(character, true);
-            uiHandling.resetRouter(player);
-
-            uiHandling.sendNotification(player, "Your now ~r~off~w~ faction duty.", false);
+            player.setOffFactionDuty();
         }
         #endregion
 

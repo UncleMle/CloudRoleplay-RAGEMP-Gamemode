@@ -272,6 +272,7 @@ namespace CloudRP.ServerSystems.Utils
         public bool voiceChatState { get; set; }
         public bool loggingOut { get; set; }
         public bool routeIsFrozen { get; set; }
+        public int faction_duty_status { get; set; }
     }
 
     class Register

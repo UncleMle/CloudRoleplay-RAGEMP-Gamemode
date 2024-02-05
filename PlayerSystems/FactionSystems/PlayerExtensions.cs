@@ -13,6 +13,8 @@ namespace CloudRP.PlayerSystems.FactionSystems
 {
     public static class PlayerExtensions
     {
+        public static readonly string _FactionSystemSharedDutyKey = "factionSystem:dutyStatus:key";
+
         public static List<Factions> getPlayerFactions(this Player player)
         {
             DbCharacter character = player.getPlayerCharacterData();
@@ -72,8 +74,28 @@ namespace CloudRP.PlayerSystems.FactionSystems
         {
             DbCharacter character = player.getPlayerCharacterData();
 
+            if (character == null) return;
+
             character.faction_duty_status = (int)faction;
             player.setPlayerCharacterData(character, false, true);
+        }
+        
+        public static void setOffFactionDuty(this Player player)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if (character == null || character != null && character.faction_duty_status == -1) return;
+
+            character.faction_duty_status = -1;
+            character.faction_duty_uniform = -1;
+
+            character.characterClothing = CharacterSystem.getClothingViaCharacterId(character.character_id);
+
+            player.setPlayerCharacterData(character, true);
+
+            uiHandling.resetRouter(player);
+
+            uiHandling.sendNotification(player, "Your now ~r~off~w~ faction duty.", false);
         }
 
         public static void setFactionUniform(this Player player, FactionUniform uniform)

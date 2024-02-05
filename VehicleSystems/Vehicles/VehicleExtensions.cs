@@ -1,4 +1,5 @@
 ﻿using CloudRP.PlayerSystems.Character;
+using CloudRP.PlayerSystems.FactionSystems;
 using CloudRP.PlayerSystems.Jobs;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.PlayerSystems.PlayerDealerships;
@@ -288,7 +289,13 @@ namespace CloudRP.VehicleSystems.Vehicles
                     AdminUtils.staffSay(player, "Owner: " + ChatUtils.red + vehicleData.owner_name);
                 }
 
-                AdminUtils.staffSay(player, "Class: " + ChatUtils.red + vehicleData.vehicle_class_id);
+                AdminUtils.staffSay(player, "Class: " + ChatUtils.red + vehicleData.vehicle_class_id + AdminUtils.staffSuffixColour + " Insurance Status: " + (vehicleData.insurance_status ? ChatUtils.moneyGreen + "Insured" : ChatUtils.red + "Not insured"));
+                
+                if(vehicleData.faction_owner_id != -1)
+                {
+                    AdminUtils.staffSay(player, $"Faction Vehicle: {ChatUtils.red}{FactionSystem.getFactionName(vehicleData.faction_owner_id)} Faction");
+                }
+
                 player.SendChatMessage(ChatUtils.yellow + "-----------------------------------------------------------");
             }
         }

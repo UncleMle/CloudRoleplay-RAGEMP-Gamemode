@@ -229,7 +229,7 @@ namespace CloudRP.VehicleSystems.VehicleParking
                         foreach (DbVehicle findVeh in vehicles)
                         {
                             uiHandling.handleObjectUiMutationPush(player, MutationKeys.ParkedVehicles, findVeh);
-                            uiHandling.pushRouterToClient(player, Browsers.Parking);
+                            uiHandling.pushRouterToClient(player, Browsers.Parking, true);
                         }
 
                     }
@@ -263,8 +263,13 @@ namespace CloudRP.VehicleSystems.VehicleParking
 
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
+                    Console.WriteLine("Park ID " + parkingLot.parkingId);
+
                     DbVehicle findVeh = dbContext.vehicles
-                        .Where(veh => veh.vehicle_id == vehicleId && veh.vehicle_dimension == VehicleDimensions.Garage && veh.vehicle_garage_id == parkingLot.parkingId && veh.owner_id == characterData.character_id)
+                        .Where(veh => veh.vehicle_id == vehicleId && 
+                        veh.vehicle_dimension == VehicleDimensions.Garage && 
+                        veh.vehicle_garage_id == parkingLot.parkingId && 
+                        veh.owner_id == characterData.character_id)
                         .FirstOrDefault();
 
                     if (findVeh == null)
@@ -275,7 +280,7 @@ namespace CloudRP.VehicleSystems.VehicleParking
 
                     VehicleSystem.spawnVehicle(findVeh, parkingLot.spawnVehiclesAt);
                     CommandUtils.successSay(player, $"You unparked your vehicle [{findVeh.numberplate}]");
-                    uiHandling.pushRouterToClient(player, Browsers.None);
+                    uiHandling.resetRouter(player);
                 }
             }
         }

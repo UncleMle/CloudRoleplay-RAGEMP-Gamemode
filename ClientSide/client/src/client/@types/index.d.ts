@@ -57,30 +57,12 @@ export interface CharacterData {
 	character_hunger: number;
 	character_name: string;
 	injured_timer: number;
-	characterModel: CharacterModel
-	characterClothing: ClothingData,
-	voiceChatState: boolean,
-	loggingOut: boolean,
-	routeIsFrozen: boolean
-}
-
-export interface DbCharacter {
-	character_id: number;
-	owner_id: number;
-	character_name: string;
-	position_x: number;
-	position_y: number;
-	position_z: number;
-	last_login: Date;
-	character_health: number;
-	character_isbanned: number;
-	money_amount: number;
-	play_time_seconds: bigint;
-	player_dimension: number;
-	player_exp: bigint;
-	injured_timer: number;
-	voiceChatState?: boolean;
-	characterModel?: CharacterModel;
+	characterModel: CharacterModel;
+	characterClothing: ClothingData;
+	voiceChatState: boolean;
+	loggingOut: boolean;
+	routeIsFrozen: boolean;
+	faction_duty_status: number;
 }
 
 export interface CharacterModel {
@@ -493,4 +475,11 @@ interface AnimationData {
 	animName: string;
 	propName: string;
 	flag: number;
+}
+
+interface FactionVehSpawn
+{
+    garageId: number;
+    vehicleRot: number;
+    spawnPos: Vector3;
 }
