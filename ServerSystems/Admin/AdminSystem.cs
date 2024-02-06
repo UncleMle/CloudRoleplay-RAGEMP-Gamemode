@@ -19,6 +19,7 @@ using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -742,6 +743,8 @@ namespace CloudRP.ServerSystems.Admin
         public static void fly(Player player)
         {
             User userData = player.getPlayerAccountData();
+
+            if (userData == null) return;
 
             if(userData.adminDuty && player.getAdmin() > (int)AdminRanks.Admin_SeniorSupport || player.getAdmin() == (int)AdminRanks.Admin_Developer)
             {
@@ -1899,13 +1902,15 @@ namespace CloudRP.ServerSystems.Admin
         {
             using(DefaultDbContext dbContext = new DefaultDbContext())
             {
-                string defaultPermissions = JsonConvert.SerializeObject(new string[] {});
+                string defaultPermissions = JsonConvert.SerializeObject(new int[] {
+                    (int)GeneralRankPerms.ViewFactionParking,
+                    (int)GeneralRankPerms.CanGoOnDuty,
+                    (int)GeneralRankPerms.ImportVehicles
+                });
 
                 dbContext.faction_ranks.Add(new FactionRank
                 {
-                    allowed_uniforms = defaultPermissions,
-                    allowed_vehicles = defaultPermissions,
-                    allowed_weapons = defaultPermissions,
+                    rank_permissions = defaultPermissions,
                     CreatedDate = DateTime.Now,
                     faction_owner_id = (int)faction,
                     rank_name = rankName,

@@ -243,47 +243,7 @@ namespace CloudRP.VehicleSystems.VehicleParking
         }
 
         [RemoteEvent("server:unparkVehicle")]
-        public void unparkVehicle(Player player, int vehicleId)
-        {
-            onVehicleUnpark(player, vehicleId);
-
-            DbCharacter characterData = player.getPlayerCharacterData();
-            RetrieveCol retrievalCol = player.GetData<RetrieveCol>(_retrievalIdentifier);
-            if (retrievalCol == null) return;
-
-            ParkingLot parkingLot = parkingLots.Where(pl => pl.parkingId == retrievalCol.owner_id).FirstOrDefault();
-
-            if (characterData != null && parkingLot != null && Vector3.Distance(player.Position, retrievalCol.position) < 2)
-            {
-                if (VehicleParkingUtils.checkIfVehicleInVector(parkingLot.spawnVehiclesAt))
-                {
-                    uiHandling.sendPushNotifError(player, "There is a vehicle blocking the spawn point!", 5500);
-                    return;
-                }
-
-                using (DefaultDbContext dbContext = new DefaultDbContext())
-                {
-                    Console.WriteLine("Park ID " + parkingLot.parkingId);
-
-                    DbVehicle findVeh = dbContext.vehicles
-                        .Where(veh => veh.vehicle_id == vehicleId && 
-                        veh.vehicle_dimension == VehicleDimensions.Garage && 
-                        veh.vehicle_garage_id == parkingLot.parkingId && 
-                        veh.owner_id == characterData.character_id)
-                        .FirstOrDefault();
-
-                    if (findVeh == null)
-                    {
-                        uiHandling.sendPushNotifError(player, "This vehicle couldn't be found.", 7600);
-                        return;
-                    }
-
-                    VehicleSystem.spawnVehicle(findVeh, parkingLot.spawnVehiclesAt);
-                    CommandUtils.successSay(player, $"You unparked your vehicle [{findVeh.numberplate}]");
-                    uiHandling.resetRouter(player);
-                }
-            }
-        }
+        public void unparkVehicle(Player player, int vehicleId) => onVehicleUnpark(player, vehicleId);
         #endregion
     }
 }

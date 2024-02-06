@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace CloudRP.PlayerSystems.FactionSystems
@@ -31,7 +32,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
             List<Factions> factions = new List<Factions>();
 
-            if(character.character_faction_data != null)
+            if (character.character_faction_data != null)
             {
                 factions = JsonConvert.DeserializeObject<List<Factions>>(character.character_faction_data);
             }
@@ -51,18 +52,18 @@ namespace CloudRP.PlayerSystems.FactionSystems
             List<Factions> playerFactions = player.getPlayerFactions();
             DbCharacter character = player.getPlayerCharacterData();
 
-            if(playerFactions != null && character != null && playerFactions.Contains(compareFaction))
+            if (playerFactions != null && character != null && playerFactions.Contains(compareFaction))
             {
-                if(checkForDuty && character.faction_duty_status != (int)compareFaction)
+                if (checkForDuty && character.faction_duty_status != (int)compareFaction)
                 {
                     uiHandling.sendPushNotifError(player, "You must be on faction duty to use this.", 6500);
                 }
 
-                if(checkForDuty && character.faction_duty_status == (int)compareFaction)
+                if (checkForDuty && character.faction_duty_status == (int)compareFaction)
                 {
                     isPart = true;
                 }
-                else if(!checkForDuty)
+                else if (!checkForDuty)
                 {
                     isPart = true;
                 }
@@ -79,7 +80,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
             character.faction_duty_status = (int)faction;
             player.setPlayerCharacterData(character, false, true);
         }
-        
+
         public static void setOffFactionDuty(this Player player)
         {
             DbCharacter character = player.getPlayerCharacterData();
@@ -120,14 +121,14 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
             List<DbFactionRank> ranks = JsonConvert.DeserializeObject<List<DbFactionRank>>(character.faction_ranks);
 
-            if(ranks.Where(rank => rank.rankId == rankId).FirstOrDefault() != null)
+            if (ranks.Where(rank => rank.rankId == rankId).FirstOrDefault() != null)
             {
                 has = true;
             }
 
             return has;
         }
-        
+
         public static void addFactionRank(this Player player, Factions faction, int rankId)
         {
             DbCharacter character = player.getPlayerCharacterData();
@@ -152,11 +153,52 @@ namespace CloudRP.PlayerSystems.FactionSystems
         {
             DbCharacter character = player.getPlayerCharacterData();
 
-            if(character == null) return null;
+            if (character == null) return null;
 
             List<DbFactionRank> ranks = JsonConvert.DeserializeObject<List<DbFactionRank>>(character.faction_ranks);
 
             return ranks;
+        }
+
+        public static bool hasFactionPermission(this Player player, Factions faction, GeneralRankPerms perm)
+        {
+            bool hasPermission = false;
+
+            List<DbFactionRank> ranks = player.getFactionRanks();
+
+            DbFactionRank rank = ranks.Where(r => r.faction == (int)faction)
+                .FirstOrDefault();
+
+            if (rank != null)
+            {
+                RankPermissions perms = FactionSystem.getAllowedItemsFromRank(rank.rankId);
+
+                if (perms == null) return false;
+
+                if (perms.general.Contains((int)perm)) hasPermission = true; 
+            }
+
+            return hasPermission;
+        }
+
+        public static DbFactionRank getOnDutyRank(this Player player)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+            List<DbFactionRank> ranks = player.getFactionRanks();
+            DbFactionRank targetRank = null;
+
+            if(character != null)
+            {
+                ranks.ForEach(rank =>
+                {
+                    if(rank.faction == character.faction_duty_status)
+                    {
+                        targetRank = rank;
+                    }
+                });
+            }
+
+            return targetRank;
         }
 
         public static FactionRank getFactionRankViaFaction(this Player player, Factions faction)

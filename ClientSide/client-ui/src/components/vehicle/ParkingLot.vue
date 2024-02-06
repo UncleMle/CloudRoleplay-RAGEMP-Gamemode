@@ -4,7 +4,7 @@
 
             <div class="relative mt-52 bg-black/70 p-3 rounded-xl">
                 <h1 class="font-bold text-2xl pl-4">
-                    <i class="fa-solid fa-car text-gray-400"></i> Vehicle Parking
+                    <i class="fa-solid fa-car text-gray-400"></i> Vehicle's
                 </h1>
                 <CloseButton />
             </div>
@@ -37,7 +37,7 @@
                                             Select
                                         </button>
                                         <div class="mt-3">
-                                            <div class="absolute right-4 bottom-1 font-medium text-gray-300">
+                                            <div v-if="item.vehicle_distance > 0" class="absolute right-4 bottom-1 font-medium text-gray-300">
                                                 <p><i class="fa-solid fa-gauge"></i> {{ (item.vehicle_distance /
                                                     1000).toFixed(0) }}km </p>
                                             </div>

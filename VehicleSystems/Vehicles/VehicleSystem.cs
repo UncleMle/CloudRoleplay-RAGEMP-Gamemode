@@ -10,6 +10,7 @@ using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.VehicleInsurance;
 using CloudRP.VehicleSystems.VehicleModification;
+using CloudRP.VehicleSystems.VehicleParking;
 using GTANetworkAPI;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging.Console;
@@ -33,14 +34,13 @@ namespace CloudRP.VehicleSystems.Vehicles
         public static readonly string _seatBeltIdentifier = "playerIsWearingSeatBelt";
         private static int _timerInterval_seconds = 10;
         private static Timer saveVehicleTimer;
-        public static readonly string[] bones = { "door_dside_f", "door_pside_f", "door_dside_r", "door_pside_r", "bonnet", "boot" };
-        public static readonly string[] names = { "door", "door", "door", "door", "hood", "trunk", "trunk" };
         public static readonly int[] blockedSeatbeltClasses = { 13, 14, 15, 16, 21, 8 };
 
         #region Init
         public VehicleSystem()
         {
             KeyPressEvents.keyPress_Y += handleToggleEngine;
+            VehicleParking.VehicleParking.onVehicleUnpark += handleDefaultUnpark;
 
             NAPI.Task.Run(() =>
             {
@@ -356,13 +356,14 @@ namespace CloudRP.VehicleSystems.Vehicles
                         numberplate = "null",
                         vehicle_dimension = VehicleDimensions.World,
                         faction_owner_id = (int)faction,
+                        insurance_status = faction != Factions.None
                     };
 
                     dbContext.vehicles.Add(vehicleInsert);
                     dbContext.SaveChanges();
 
                     DbVehicle findJustInserted = dbContext.vehicles.Find(vehicleInsert.vehicle_id);
-                    vehiclePlate = genUniquePlate(vehicleInsert.vehicle_id);
+                    vehiclePlate = genUniquePlate(vehicleInsert.vehicle_id, faction != Factions.None);
 
                     findJustInserted.numberplate = vehiclePlate;
 
@@ -798,6 +799,45 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             return vehicles;
         }
+
+        public static void handleDefaultUnpark(Player player, int vehicleId)
+        {
+            DbCharacter characterData = player.getPlayerCharacterData();
+            RetrieveCol retrievalCol = player.GetData<RetrieveCol>(VehicleParking.VehicleParking._retrievalIdentifier);
+            if (retrievalCol == null) return;
+
+            ParkingLot parkingLot = VehicleParking.VehicleParking.parkingLots.Where(pl => pl.parkingId == retrievalCol.owner_id).FirstOrDefault();
+
+            if (characterData != null && parkingLot != null && Vector3.Distance(player.Position, retrievalCol.position) < 2)
+            {
+                if (VehicleParkingUtils.checkIfVehicleInVector(parkingLot.spawnVehiclesAt))
+                {
+                    uiHandling.sendPushNotifError(player, "There is a vehicle blocking the spawn point!", 5500);
+                    return;
+                }
+
+                using (DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    DbVehicle findVeh = dbContext.vehicles
+                        .Where(veh => veh.vehicle_id == vehicleId &&
+                        veh.vehicle_dimension == VehicleDimensions.Garage &&
+                        veh.vehicle_garage_id == parkingLot.parkingId &&
+                        veh.owner_id == characterData.character_id)
+                        .FirstOrDefault();
+
+                    if (findVeh == null)
+                    {
+                        uiHandling.sendPushNotifError(player, "This vehicle couldn't be found.", 7600);
+                        return;
+                    }
+
+                    VehicleSystem.spawnVehicle(findVeh, parkingLot.spawnVehiclesAt);
+                    CommandUtils.successSay(player, $"You unparked your vehicle [{findVeh.numberplate}]");
+                    uiHandling.resetRouter(player);
+                }
+            }
+        }
+
         #endregion
 
         #region Commands

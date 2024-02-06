@@ -26,6 +26,10 @@ namespace CloudRP.PlayerSystems.FactionSystems
         public static event FactionSystemEventsHandler vehicleAreaPress;
         #endregion
 
+        public static readonly Vector3 vehicleImportArea = new Vector3(858.7, -3202.6, 6.0);
+        public static readonly Vector3 spawnVehicleArea = new Vector3(854.0, -3218.3, 5.9);
+        public static readonly float spawnVehicleRot = -88.8f;
+
         public static string[] factionColours = new string[] {
             "",
             "#135DD8",
@@ -61,6 +65,12 @@ namespace CloudRP.PlayerSystems.FactionSystems
                         vehicleRot = 57.4f,
                         spawnPos = new Vector3(407.4, -997.3, 29.3)
                     },
+                    new FactionVehSpawn
+                    {
+                        garageId = 3,
+                        vehicleRot = 92.1f,
+                        spawnPos = new Vector3(449.1, -980.9, 43.7)
+                    }
                 }
             }
         };
@@ -70,6 +80,12 @@ namespace CloudRP.PlayerSystems.FactionSystems
             KeyPressEvents.keyPress_Y += handleKeyInteraction;
             Main.resourceStart += initFactionRanks;
             VehicleParking.onVehicleUnpark += handleFactionUnpark;
+            VehicleParking.onVehicleUnpark += handleVehicleImport;
+
+            MarkersAndLabels.setPlaceMarker(vehicleImportArea);
+            MarkersAndLabels.setTextLabel(vehicleImportArea, "Vehicle Import Area\nUse ~y~Y~w~ to interact", 5f);
+            NAPI.Marker.CreateMarker(36, vehicleImportArea, new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
+            NAPI.Blip.CreateBlip(524, vehicleImportArea, 1f, 17, "Vehicle Imports", 255, 1f, true, 0, 0);
 
             foreach (KeyValuePair<Factions, List<Vector3>> area in onDutyAreas)
             {
@@ -146,16 +162,20 @@ namespace CloudRP.PlayerSystems.FactionSystems
             {
                 point.Value.ForEach(spot =>
                 {
-                    if (player.checkIsWithinCoord(spot.spawnPos, 2f) && player.isPartOfFaction(point.Key, true))
+                    if (player.checkIsWithinCoord(spot.spawnPos, 5f) && player.isPartOfFaction(point.Key, true))
                     {
                         handleVehiclePoint(player, point.Key, spot.garageId);
                     }
                 });
             }
+
+            if (player.checkIsWithinCoord(vehicleImportArea, 2f)) handleVehicleImportArea(player);
         }
 
         public static void handleDutyArea(Player player, Factions targetFaction)
         {
+            if (!player.hasFactionPermission(targetFaction, GeneralRankPerms.CanGoOnDuty)) return;
+
             DbCharacter character = player.getPlayerCharacterData();
 
             List<DbFactionRank> ranks = player.getFactionRanks();
@@ -202,6 +222,8 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
         public static void handleVehiclePoint(Player player, Factions targetFaction, int garageId)
         {
+            if (!player.hasFactionPermission(targetFaction, GeneralRankPerms.ViewFactionParking)) return;
+
             List<DbVehicle> parkedVehicles = getParkedFactionVehicles(targetFaction, garageId);
 
             if(parkedVehicles.Count == 0)
@@ -219,6 +241,32 @@ namespace CloudRP.PlayerSystems.FactionSystems
             });
         }
 
+        public static void handleVehicleImportArea(Player player)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+
+            Factions playerFaction = (Factions)character.faction_duty_status;
+
+            if (!player.hasFactionPermission(playerFaction, GeneralRankPerms.ImportVehicles)) return;
+
+            List<string> vehicles = loadFactionVehicles(playerFaction);
+
+            uiHandling.resetMutationPusher(player, MutationKeys.ParkedVehicles);
+            uiHandling.pushRouterToClient(player, Browsers.Parking, true);
+
+            vehicles.ForEach(veh =>
+            {
+                uiHandling.handleObjectUiMutationPush(player, MutationKeys.ParkedVehicles, new DbVehicle
+                {
+                    vehicle_fuel = 100,
+                    CreatedDate = DateTime.Now,
+                    vehicle_id = vehicles.IndexOf(veh),
+                    vehicle_display_name = VehicleSystem.getVehiclesDisplayNameAndClass(veh).Item1,
+                    vehicle_name = veh
+                });
+            });
+        }
+
         public static RankPermissions getAllowedItemsFromRank(int factionRankId)
         {
             RankPermissions permissions = null;
@@ -231,6 +279,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
                 {
                     permissions = new RankPermissions
                     {
+                        general = JsonConvert.DeserializeObject<int[]>(rank.rank_permissions),
                         uniforms = JsonConvert.DeserializeObject<int[]>(rank.allowed_uniforms),
                         vehicles = JsonConvert.DeserializeObject<string[]>(rank.allowed_vehicles),
                         weapons = JsonConvert.DeserializeObject<string[]>(rank.allowed_weapons)
@@ -252,13 +301,6 @@ namespace CloudRP.PlayerSystems.FactionSystems
                     .FirstOrDefault();
 
                 vehicles = JsonConvert.DeserializeObject<List<string>>(findFaction.faction_allowed_vehicles);
-            }
-
-            int loadedVehicles = vehicles.Count;
-
-            if(loadedVehicles > 0)
-            {
-                ChatUtils.formatConsolePrint($"Loaded {loadedVehicles} allowed vehicles for faction {faction}", ConsoleColor.Green);
             }
 
             return vehicles;
@@ -312,7 +354,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
         public static string getFactionName(int faction)
             => Enum.GetNames(typeof(Factions))[faction];
-
+        
         public static (Factions, int) getClosestVehiclePoint(Player player)
         {
             int garageId = -1;
@@ -353,15 +395,9 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
                 if (point.Value == null) return;
 
-                FactionVehSpawn spawn = null;
-
-                foreach (FactionVehSpawn targetSpawn in point.Value)
-                {
-                    if(targetSpawn.garageId == targetVehicle.vehicle_garage_id)
-                    {
-                        spawn = targetSpawn;
-                    }
-                }
+                FactionVehSpawn spawn = point.Value
+                    .Where(p => p.garageId == targetVehicle.vehicle_garage_id)
+                    .FirstOrDefault();
 
                 if (spawn == null || spawn != null && Vector3.Distance(player.Position, spawn.spawnPos) > 12) return;
 
@@ -369,6 +405,35 @@ namespace CloudRP.PlayerSystems.FactionSystems
                 player.SetIntoVehicle(spawnedVehicle, 0);
                 uiHandling.resetRouter(player);
             }
+        }
+
+        public static void handleVehicleImport(Player player, int vehicleId)
+        {
+            if (!player.checkIsWithinCoord(vehicleImportArea, 2f) || vehicleId == -1) return;
+
+            DbCharacter character = player.getPlayerCharacterData();
+
+            Factions playerFaction = (Factions)character.faction_duty_status;
+
+            List<string> allowedVehicles = loadFactionVehicles(playerFaction);
+
+            if(vehicleId < 0 || vehicleId >= allowedVehicles.Count) return;
+
+            if(VehicleSystem.checkVehInSpot(spawnVehicleArea, 5) != null)
+            {
+                uiHandling.sendPushNotifError(player, "There is a vehicle blocking the import spot.", 6600);
+                return;
+            }
+
+            string spawnVehicle = allowedVehicles[vehicleId];
+
+            (Vehicle veh, DbVehicle data) = VehicleSystem.buildVehicle(spawnVehicle, spawnVehicleArea, spawnVehicleRot, -1, 1, 1, "N/A", playerFaction);
+
+            if (veh == null || data == null) return;
+
+            uiHandling.resetRouter(player);
+            CommandUtils.successSay(player, $"You have imported a new faction vehicle ({data.vehicle_display_name}) for your faction {playerFaction}.");
+            MarkersAndLabels.addBlipForClient(player, 4, "Faction Vehicle", spawnVehicleArea, 2, 10);
         }
 
         #endregion
@@ -482,9 +547,22 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
             if (vehicle.faction_owner_id != (int)faction) return;
 
+            if(!player.hasFactionPermission(faction, GeneralRankPerms.ViewFactionParking))
+            {
+                uiHandling.sendPushNotifError(player, "Your faction rank doesn't have access to this.", 6600);
+                return;
+            }
+
             player.Vehicle.parkVehicle(player, garageId);
         }
         #endregion
+    }
+
+    public enum GeneralRankPerms
+    {
+        ImportVehicles,
+        ViewFactionParking,
+        CanGoOnDuty
     }
 
     public enum Factions

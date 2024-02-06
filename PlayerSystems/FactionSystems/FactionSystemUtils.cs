@@ -23,6 +23,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
     public class RankPermissions
     {
+        public int[] general { get; set; }
         public int[] uniforms { get; set; }
         public string[] vehicles { get; set; }
         public string[] weapons { get; set; }

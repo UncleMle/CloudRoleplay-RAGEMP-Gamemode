@@ -164,7 +164,7 @@ namespace CloudRP.GeneralSystems.SpeedCameras
 
                         player.setPlayerCharacterData(characterData, false, true);
 
-                        player.SendChatMessage(ChatUtils.info + $"You have been fined in excess of ${closest.finePrice.ToString("N0")} for speeding ({speed}KMH in a {cameraData.speedLimit}KMH Zone). " +
+                        player.SendChatMessage(ChatUtils.info + $"You have been fined in excess of ${closest.finePrice.ToString("N0")} for speeding ({speed.ToString("N0")}KMH in a {cameraData.speedLimit}KMH Zone). " +
                             $"Please go to a police station and pay your fine or it will end in further legal action being taken.");
                     }
                 }
