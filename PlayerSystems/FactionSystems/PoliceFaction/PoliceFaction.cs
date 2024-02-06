@@ -12,27 +12,6 @@ namespace CloudRP.PlayerSystems.FactionSystems.PoliceFaction
 {
     public class PoliceFaction : Script
     {
-        private static List<string> allowedVehicles = new List<string>();
-        public static Dictionary<string, Vector3> policePrecincts = new Dictionary<string, Vector3>
-        {
-            {
-                "Mission Row - PD", new Vector3(451.8, -981.4, 43.7)
-            }
-        };
-
-        public PoliceFaction()
-        {
-            Main.resourceStart += () =>
-            {
-                allowedVehicles = FactionSystem.loadFactionVehicles(Factions.LSPD);
-            };
-
-            foreach (KeyValuePair<string, Vector3> item in policePrecincts)
-            {
-                NAPI.Blip.CreateBlip(60, item.Value, 1f, 4, item.Key, 255, 1f, true, 0, 0);
-            }
-        }
-
         #region Global Methods 
         #endregion
 

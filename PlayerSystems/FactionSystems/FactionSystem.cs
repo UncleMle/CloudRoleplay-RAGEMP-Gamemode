@@ -32,7 +32,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
         public static string[] factionColours = new string[] {
             "",
-            "#135DD8",
+            "#5998ff",
             "#7bb089",
             "#f25130",
             "#baffe6"
@@ -75,6 +75,31 @@ namespace CloudRP.PlayerSystems.FactionSystems
             }
         };
 
+        public static List<FactionBlip> factionBlips = new List<FactionBlip>
+        {
+            new FactionBlip
+            {
+                blipColour = 4,
+                blipType = 60,
+                blipName = "Mission Row - PD",
+                blipPos =  new Vector3(451.8, -981.4, 43.7)
+            },
+            new FactionBlip
+            {
+                blipColour = 4,
+                blipType = 459,
+                blipName = "Weazel News",
+                blipPos = new Vector3(-583.5, -924.9, 36.8)
+            },
+            new FactionBlip
+            {
+                blipColour = 11,
+                blipType = 60,
+                blipName = "San Andreas Sherrifs Department",
+                blipPos = new Vector3(-446.3, 6007.9, 40.4)
+            }
+        };
+
         public FactionSystem()
         {
             KeyPressEvents.keyPress_Y += handleKeyInteraction;
@@ -86,6 +111,11 @@ namespace CloudRP.PlayerSystems.FactionSystems
             MarkersAndLabels.setTextLabel(vehicleImportArea, "Vehicle Import Area\nUse ~y~Y~w~ to interact", 5f);
             NAPI.Marker.CreateMarker(36, vehicleImportArea, new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
             NAPI.Blip.CreateBlip(524, vehicleImportArea, 1f, 17, "Vehicle Imports", 255, 1f, true, 0, 0);
+
+            foreach (FactionBlip blip in factionBlips)
+            {
+                NAPI.Blip.CreateBlip(blip.blipType, blip.blipPos, 1f, blip.blipColour, blip.blipName, 255, 1f, true, 0, 0);
+            }
 
             foreach (KeyValuePair<Factions, List<Vector3>> area in onDutyAreas)
             {
@@ -505,7 +535,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
             }
 
             string factionColour = "!{" + factionColours[(int)faction] + "}";
-            string factionMessage = $"[F] ({faction}) {character.character_name} {ChatUtils.grey}says: {factionColour}(({ChatUtils.White} {message} {factionColour}))";
+            string factionMessage = $"[{faction}] {character.character_name} {ChatUtils.grey}says: {factionColour}(({ChatUtils.White} {message} {factionColour}))";
 
             Dictionary<Player, User> onlineStaff = AdminUtils.gatherStaff();
 

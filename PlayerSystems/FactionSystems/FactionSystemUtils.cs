@@ -34,4 +34,12 @@ namespace CloudRP.PlayerSystems.FactionSystems
         public int faction { get; set; }
         public int rankId { get; set; }
     }
+
+    public class FactionBlip
+    {
+        public string blipName { get; set; }
+        public int blipType { get; set; }
+        public byte blipColour { get; set; }
+        public Vector3 blipPos { get; set; }
+    }
 }
