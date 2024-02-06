@@ -413,7 +413,8 @@ namespace CloudRP.PlayerSystems.FactionSystems
             {
                 targetVehicle = dbContext.vehicles.
                     Where(veh => veh.vehicle_dimension == VehicleDimensions.Garage &&
-                    veh.faction_owner_id != (int)Factions.None)
+                    veh.faction_owner_id != (int)Factions.None &&
+                    veh.vehicle_id == vehicleId)
                     .FirstOrDefault();
             }
 
