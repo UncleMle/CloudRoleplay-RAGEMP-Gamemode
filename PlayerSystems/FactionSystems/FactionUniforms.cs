@@ -30,6 +30,17 @@ namespace CloudRP.PlayerSystems.FactionSystems
                     top = 8,
                     undershirt = 15,
                 }
+            },
+            new FactionUniform
+            {
+                uniformName = "Patrol Sherrif",
+                uniformId = 3,
+                faction = Factions.SASD,
+                uniform = new CharacterClothing
+                {
+                    top = 8,
+                    undershirt = 15,
+                }
             }
         };
 

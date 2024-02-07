@@ -50,5 +50,6 @@ namespace CloudRP.PlayerSystems.FactionSystems
         public int remoteId { get; set; }
         public int blipType { get; set; }
         public float heading { get; set; }
+        public int blipColour { get; set; }
     }
 }

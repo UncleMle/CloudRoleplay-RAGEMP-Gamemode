@@ -6,7 +6,8 @@ export default class FactionSystem {
     public static LocalPlayer: PlayerMp = mp.players.local;
     public static TrackerBlips: Map<number, TrackVehicles> = new Map<number, TrackVehicles>();
     public static TrackingUnit: BlipMp;
-    public static readonly defaultBlipColour: number = 3;
+    public static defaultBlipColour: number = 4;
+    public static readonly trackerBlipColour: number = 46;
 
     constructor() {
         mp.events.add({
@@ -30,7 +31,7 @@ export default class FactionSystem {
 
         FactionSystem.TrackingUnit = tracker.blip;
 
-        FactionSystem.TrackingUnit.setColour(1);
+        FactionSystem.TrackingUnit.setColour(FactionSystem.trackerBlipColour);
         FactionSystem.TrackingUnit.setRoute(true);
     }
 
@@ -101,6 +102,8 @@ export default class FactionSystem {
                     blipData.blip.setRotation(blipData.heading);
                     return;
                 }
+
+                FactionSystem.defaultBlipColour = veh.blipColour;
 
                 veh.blip = mp.blips.new(veh.blipType, targetPos, {
                     name: "Unit " + veh.numberPlate,

@@ -40,12 +40,23 @@ namespace CloudRP.PlayerSystems.FactionSystems
             "#baffe6"
         };
 
+        public static int[] trackerBlipColours = new int[]
+        {
+            0, 3, 43, 59, 51
+        };
+
         public static Dictionary<Factions, List<Vector3>> onDutyAreas = new Dictionary<Factions, List<Vector3>>
         {
             {
                 Factions.LSPD, new List<Vector3>
                 {
                     new Vector3(452.0, -987.0, 30.7)
+                }
+            },
+            {
+                Factions.SASD, new List<Vector3>
+                {
+                    new Vector3(-442.4, 6011.9, 31.7)
                 }
             }
         };
@@ -72,6 +83,29 @@ namespace CloudRP.PlayerSystems.FactionSystems
                         garageId = 3,
                         vehicleRot = 92.1f,
                         spawnPos = new Vector3(449.1, -980.9, 43.7)
+                    },
+                    new FactionVehSpawn
+                    {
+                        garageId = 4,
+                        vehicleRot = -91.9f,
+                        spawnPos = new Vector3(481.6, -982.6, 41.0)
+                    }
+                }
+            },
+            {
+                Factions.SASD, new List<FactionVehSpawn>
+                {
+                    new FactionVehSpawn
+                    {
+                        garageId = 1,
+                        vehicleRot = -50.3f,
+                        spawnPos = new Vector3(-467.7, 6020.9, 31.3)
+                    },
+                    new FactionVehSpawn
+                    {
+                        garageId = 2,
+                        vehicleRot = -41.7f,
+                        spawnPos = new Vector3(-475.3, 5988.5, 31.3)
                     }
                 }
             }
@@ -224,6 +258,10 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
             DbCharacter character = player.getPlayerCharacterData();
 
+            if(character == null) return;
+
+            if (character.faction_duty_status != -1 && character.faction_duty_status != (int)targetFaction) return;
+
             List<DbFactionRank> ranks = player.getFactionRanks();
 
             int targetRankId = -1;
@@ -307,7 +345,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
                     vehicle_fuel = 100,
                     CreatedDate = DateTime.Now,
                     vehicle_id = vehicles.IndexOf(veh),
-                    vehicle_display_name = VehicleSystem.getVehiclesDisplayNameAndClass(veh).Item1,
+                    vehicle_display_name = veh,
                     vehicle_name = veh
                 });
             });
@@ -510,7 +548,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
                     {
                         DbVehicle vehicleData = veh.getData();
 
-                        if (vehicleData != null && vehicleData.faction_owner_id == factionDuty)
+                        if (vehicleData != null && vehicleData.faction_owner_id != -1 && vehicleData.faction_owner_id == factionDuty)
                         {
                             int blipType = 672;
 
@@ -538,7 +576,8 @@ namespace CloudRP.PlayerSystems.FactionSystems
                                 position = veh.Position,
                                 remoteId = veh.Id,
                                 heading = veh.Heading,
-                                blipType = blipType
+                                blipType = blipType,
+                                blipColour = trackerBlipColours[vehicleData.faction_owner_id]
                             });
                         }
                     });
@@ -569,7 +608,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
             DbCharacter character = player.getPlayerCharacterData();
             Factions targetFaction = Factions.None;
 
-            if (character == null) return;
+            if (character == null || character != null && character.faction_duty_status != -1) return;
 
             foreach (KeyValuePair<Factions, List<Vector3>> area in onDutyAreas)
             {
@@ -610,7 +649,20 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
             if (character == null) return;
 
-            player.setOffFactionDuty();
+            Factions targetFaction = Factions.None;
+
+            foreach (KeyValuePair<Factions, List<Vector3>> area in onDutyAreas)
+            {
+                area.Value.ForEach(spot =>
+                {
+                    if (player.checkIsWithinCoord(spot, 2f) && player.isPartOfFaction(area.Key))
+                    {
+                        targetFaction = area.Key;
+                    }
+                });
+            }
+
+            if(character.faction_duty_status == (int)targetFaction) player.setOffFactionDuty();
         }
         #endregion
 

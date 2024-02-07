@@ -496,4 +496,5 @@ interface TrackVehicles {
 	blip: BlipMp;
 	heading: number;
 	blipType: number;
+	blipColour: number;
 }
