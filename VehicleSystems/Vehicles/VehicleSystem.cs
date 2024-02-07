@@ -12,8 +12,6 @@ using CloudRP.VehicleSystems.VehicleInsurance;
 using CloudRP.VehicleSystems.VehicleModification;
 using CloudRP.VehicleSystems.VehicleParking;
 using GTANetworkAPI;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.Extensions.Logging.Console;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

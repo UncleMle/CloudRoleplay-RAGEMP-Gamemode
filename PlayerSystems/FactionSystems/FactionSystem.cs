@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Timers;
 
 namespace CloudRP.PlayerSystems.FactionSystems
 {
@@ -135,6 +136,18 @@ namespace CloudRP.PlayerSystems.FactionSystems
                     NAPI.Marker.CreateMarker(36, marker.spawnPos, new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
                 });
             }
+
+            NAPI.Task.Run(() =>
+            {
+                Timer updateTracking = new Timer
+                {
+                    AutoReset = true,
+                    Enabled = true,
+                    Interval = 10
+                };
+
+                updateTracking.Elapsed += handleVehicleTracking;
+            });
         }
 
         private static void initFactionRanks()
@@ -585,6 +598,39 @@ namespace CloudRP.PlayerSystems.FactionSystems
             }
 
             player.Vehicle.parkVehicle(player, garageId);
+        }
+        #endregion
+
+        #region Server Events 
+        public void handleVehicleTracking(object source, ElapsedEventArgs e)
+        {
+            NAPI.Task.Run(() =>
+            {
+                NAPI.Pools.GetAllPlayers().ForEach(p =>
+                {
+                    DbCharacter character = p.getPlayerCharacterData();
+
+                    if(character == null) return;
+
+                    int factionDuty = character.faction_duty_status;
+
+                    List<TrackVehicle> vehicles = new List<TrackVehicle>();
+
+                    NAPI.Pools.GetAllVehicles().ForEach(veh =>
+                    {
+                        if(veh.getData()?.faction_owner_id == factionDuty)
+                        {
+                            vehicles.Add(new TrackVehicle
+                            {
+                                numberPlate = veh.NumberPlate,
+                                position = veh.Position
+                            });
+                        }
+                    });
+
+                    p.TriggerEvent("c::faction:tracking:update", JsonConvert.SerializeObject(vehicles));
+                });
+            });
         }
         #endregion
     }

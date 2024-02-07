@@ -15,6 +15,10 @@ declare global {
 		testMethod: () => UserData;
 	}
 
+	interface EntityMp {
+		trackerBlip: BlipMp
+	}
+
 	interface PedMp {
 		corpseId: number;
 		corpseCharacterId: number;
@@ -477,9 +481,13 @@ interface AnimationData {
 	flag: number;
 }
 
-interface FactionVehSpawn
-{
+interface FactionVehSpawn {
     garageId: number;
     vehicleRot: number;
     spawnPos: Vector3;
+}
+
+interface TrackVehicles {
+	numberPlate: string;
+	position: Vector3;
 }

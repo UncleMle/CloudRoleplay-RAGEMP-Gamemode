@@ -42,4 +42,10 @@ namespace CloudRP.PlayerSystems.FactionSystems
         public byte blipColour { get; set; }
         public Vector3 blipPos { get; set; }
     }
+
+    public class TrackVehicle
+    {
+        public string numberPlate { get; set; }
+        public Vector3 position { get; set; }
+    }
 }
