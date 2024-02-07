@@ -148,6 +148,8 @@ namespace CloudRP.VehicleSystems.VehicleRefueling
                     Vehicle findVeh = foundVeh.Key;
                     DbVehicle foundVehData = foundVeh.Value;
 
+                    if(characterData.faction_duty_status > 0) fuelPrice = 0;
+
                     if (foundVehData.vehicle_locked || foundVehData.engine_status)
                     {
                         endPlayerRefuellingCycle(player, "Ensure the vehicle is unlocked and the engine is off.");
