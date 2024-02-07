@@ -41,6 +41,28 @@ namespace CloudRP.PlayerSystems.FactionSystems
                     top = 8,
                     undershirt = 15,
                 }
+            },
+            new FactionUniform
+            {
+                uniformName = "Smart Dress",
+                uniformId = 4,
+                faction = Factions.Weazel_News,
+                uniform = new CharacterClothing
+                {
+                    top = 10,
+                    undershirt = 15,
+                }
+            },
+            new FactionUniform
+            {
+                uniformName = "Ems",
+                uniformId = 5,
+                faction = Factions.LSMD,
+                uniform = new CharacterClothing
+                {
+                    top = 15,
+                    undershirt = 15,
+                }
             }
         };
 

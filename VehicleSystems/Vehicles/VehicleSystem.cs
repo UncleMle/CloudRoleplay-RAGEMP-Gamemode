@@ -411,6 +411,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                 Vehicle veh = NAPI.Vehicle.CreateVehicle(vehicleHash, position, rotation, colourOne, colourTwo, vehiclePlate, 255, false, true, 0);
 
                 veh.setVehicleData(vehicleData, true, true);
+                veh.setDirtLevel(0);
                 vehicle = veh;
                 vehData = vehicleData;
             }
@@ -451,6 +452,8 @@ namespace CloudRP.VehicleSystems.Vehicles
                             owner_id = playerData.character_id,
                             vehicle_fuel = 100,
                         });
+
+                        volatileVeh.setDirtLevel(0);
                     }
                 }
             }

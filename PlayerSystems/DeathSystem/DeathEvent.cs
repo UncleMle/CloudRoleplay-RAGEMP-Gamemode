@@ -19,7 +19,7 @@ namespace CloudRP.PlayerSystems.DeathSystem
         public delegate void DeathEventEventHandler(Player player);
         public static event DeathEventEventHandler onDeath;
         public static List<Hospital> hospitalList = new List<Hospital> {
-            new Hospital { name = "Paleto Hospital", position = new Vector3(-381.1, 6119.7, 31.5) },
+            new Hospital { name = "Strawberry Hospital", position = new Vector3(341.3, -1396.7, 32.5) },
             new Hospital { name = "Pillbox Hill Hospital Back", position = new Vector3(360.8, -585.3, 28.8) },
             new Hospital { name = "Pillbox Hill Hospital Front", position = new Vector3(297.7, -583.6, 43.3) },
             new Hospital { name = "Mount Zonah", position = new Vector3(-497.3, -336.3, 34.5) },

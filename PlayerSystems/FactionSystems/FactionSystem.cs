@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Timers;
 
@@ -57,6 +58,22 @@ namespace CloudRP.PlayerSystems.FactionSystems
                 Factions.SASD, new List<Vector3>
                 {
                     new Vector3(-442.4, 6011.9, 31.7)
+                }
+            },
+            {
+                Factions.Weazel_News, new List<Vector3>
+                {
+                    new Vector3(-598.3, -930.0, 23.9)
+                }
+            },
+            {
+                Factions.LSMD, new List<Vector3>
+                {
+                    new Vector3(-507.3, -349.9, 35.3),
+                    new Vector3(355.5, -596.5, 28.8),
+                    new Vector3(299.2, -584.7, 43.3),
+                    new Vector3(389.9, -1432.9, 29.4),
+                    new Vector3(-366.7, 6103.7, 35.4)
                 }
             }
         };
@@ -106,6 +123,23 @@ namespace CloudRP.PlayerSystems.FactionSystems
                         garageId = 2,
                         vehicleRot = -41.7f,
                         spawnPos = new Vector3(-475.3, 5988.5, 31.3)
+                    }
+                }
+            },
+            {
+                Factions.Weazel_News, new List<FactionVehSpawn>
+                {
+                    new FactionVehSpawn
+                    {
+                        garageId = 1,
+                        vehicleRot = -165.4f, 
+                        spawnPos = new Vector3(-551.5, -894.4, 24.7)
+                    },
+                    new FactionVehSpawn
+                    {
+                        garageId = 2,
+                        vehicleRot = 85.4f,
+                        spawnPos = new Vector3(-583.5, -930.5, 36.8)
                     }
                 }
             }
@@ -384,7 +418,10 @@ namespace CloudRP.PlayerSystems.FactionSystems
                     .Where(fac => fac.faction_name == Enum.GetNames(typeof(Factions))[(int)faction])
                     .FirstOrDefault();
 
-                vehicles = JsonConvert.DeserializeObject<List<string>>(findFaction.faction_allowed_vehicles);
+                if(findFaction != null)
+                {
+                    vehicles = JsonConvert.DeserializeObject<List<string>>(findFaction.faction_allowed_vehicles);
+                }
             }
 
             return vehicles;
@@ -638,7 +675,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
             FactionRank rank = player.getFactionRankViaFaction(targetFaction);
 
-            uiHandling.sendNotification(player, $"Your now ~g~on duty~w~ for faction {targetFaction}. As a {rank.rank_name}", false);
+            uiHandling.sendNotification(player, $"Your now ~g~on duty~w~ for faction {targetFaction.ToString().Replace("_", " ")}. As a {rank.rank_name}", false);
             uiHandling.resetRouter(player);
         }
 
