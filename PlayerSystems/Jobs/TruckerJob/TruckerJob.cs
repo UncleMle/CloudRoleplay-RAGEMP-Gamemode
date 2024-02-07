@@ -131,9 +131,9 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
                     jobName = jobName
                 });
 
-                MarkersAndLabels.addBlipForClient(player, 477, "You work truck", spawnPosition.position, 5, 255, 18, false);
+                MarkersAndLabels.addBlipForClient(player, 477, "Your work truck", spawnPosition.position, 5, 255, 18, false);
 
-                player.SendChatMessage(ChatUtils.freelanceJobs + $"You work truck has been spawned in and marked on the minimap for. Get in the truck to start the job.");
+                player.SendChatMessage(ChatUtils.freelanceJobs + $"Your work truck has been spawned in and marked on the minimap for. Get in the truck to start the job.");
             }
 
             return spawnedTruck;

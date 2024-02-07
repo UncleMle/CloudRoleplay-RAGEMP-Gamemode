@@ -1,4 +1,5 @@
 ﻿using CloudRP.PlayerSystems.Character;
+using CloudRP.PlayerSystems.FactionSystems;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
@@ -144,7 +145,19 @@ namespace CloudRP.GeneralSystems.SpeedCameras
             {
                 double speed = vehicleSpeed * 3.6;
 
-                if (player.Vehicle.getData()?.vehicle_class_id == 18) return;
+                DbVehicle vehicleData = player.Vehicle.getData();
+
+                if (vehicleData == null) return;
+
+                Factions[] exemptFactions = new Factions[]
+                {
+                    Factions.LSPD,
+                    Factions.LSMD,
+                    Factions.SASD
+                };
+
+                if (exemptFactions.Contains((Factions)vehicleData.faction_owner_id)) return;
+
 
                 if (speed > speedFines[0].speed && speed > cameraData.speedLimit && player.VehicleSeat == 0)
                 {
