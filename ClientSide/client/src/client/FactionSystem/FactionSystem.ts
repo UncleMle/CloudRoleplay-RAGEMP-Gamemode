@@ -87,7 +87,8 @@ export default class FactionSystem {
                 veh.blip = mp.blips.new(veh.blipType, targetPos, {
                     name: "Unit " + veh.numberPlate,
                     alpha: 255,
-                    color: 3
+                    color: 3,
+                    scale: 0.5
                 });
 
                 FactionSystem.TrackerBlips.set(veh.remoteId, veh);
