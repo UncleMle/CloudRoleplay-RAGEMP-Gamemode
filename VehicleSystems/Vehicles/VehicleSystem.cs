@@ -21,10 +21,38 @@ using System.Timers;
 
 namespace CloudRP.VehicleSystems.Vehicles
 {
+    public enum VehicleClasses
+    {
+        Compacts,
+        Sedans,
+        SUVs,
+        Coupes,
+        Muscle,
+        SportsClassics,
+        Sports,
+        Super,
+        Motorcycles,
+        OffRoad,
+        Industrial,
+        Utility,
+        Vans,
+        Cycles,
+        Boats,
+        Helicopters,
+        Planes,
+        Service,
+        Emergency,
+        Military,
+        Commercial,
+        Trains,
+        OpenWheels
+    }
+
     public class VehicleSystem : Script
     {
         public delegate void VehicleSystemEventsHandler(Vehicle vehicle, DbVehicle vehicleData);
         public static event VehicleSystemEventsHandler vehicleDeath;
+        public static event VehicleSystemEventsHandler vehiclePark;
 
         public static readonly string _vehicleSharedDataIdentifier = "VehicleData";
         public static readonly string _vehicleSharedModData = "VehicleModData";
@@ -797,6 +825,9 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             return vehicles;
         }
+
+        public static void handleVehiclePark(Vehicle veh, DbVehicle data) => vehiclePark(veh, data);
+        public static void handleVehicleDeath(Vehicle veh, DbVehicle data) => vehicleDeath(veh, data);
 
         public static void handleDefaultUnpark(Player player, int vehicleId)
         {

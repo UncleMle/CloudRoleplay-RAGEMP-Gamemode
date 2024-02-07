@@ -93,6 +93,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
             character.characterClothing = CharacterSystem.getClothingViaCharacterId(character.character_id);
 
             player.setPlayerCharacterData(character, true);
+            FactionSystem.clearTracker(player);
 
             uiHandling.resetRouter(player);
 

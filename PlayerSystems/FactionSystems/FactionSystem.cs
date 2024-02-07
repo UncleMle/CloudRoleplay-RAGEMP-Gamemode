@@ -107,6 +107,8 @@ namespace CloudRP.PlayerSystems.FactionSystems
             Main.resourceStart += initFactionRanks;
             VehicleParking.onVehicleUnpark += handleFactionUnpark;
             VehicleParking.onVehicleUnpark += handleVehicleImport;
+            VehicleSystem.vehiclePark += handleTrackerDestroyed;
+            VehicleSystem.vehicleDeath += handleTrackerDestroyed;
 
             MarkersAndLabels.setPlaceMarker(vehicleImportArea);
             MarkersAndLabels.setTextLabel(vehicleImportArea, "Vehicle Import Area\nUse ~y~Y~w~ to interact", 5f);
@@ -143,7 +145,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
                 {
                     AutoReset = true,
                     Enabled = true,
-                    Interval = 10
+                    Interval = 700
                 };
 
                 updateTracking.Elapsed += handleVehicleTracking;
@@ -480,6 +482,78 @@ namespace CloudRP.PlayerSystems.FactionSystems
             MarkersAndLabels.addBlipForClient(player, 4, "Faction Vehicle", spawnVehicleArea, 2, 10);
         }
 
+        public static void handleTrackerDestroyed(Vehicle veh, DbVehicle data)
+        {
+            if (data.faction_owner_id == (int)Factions.None) return;
+
+            removeTrackedVehicle(veh.Id);
+        }
+
+        public void handleVehicleTracking(object source, ElapsedEventArgs e)
+        {
+            NAPI.Task.Run(() =>
+            {
+                NAPI.Pools.GetAllPlayers().ForEach(p =>
+                {
+                    DbCharacter character = p.getPlayerCharacterData();
+
+                    if (character == null) return;
+
+                    int factionDuty = character.faction_duty_status;
+
+                    List<TrackVehicle> vehicles = new List<TrackVehicle>();
+
+                    NAPI.Pools.GetAllVehicles().ForEach(veh =>
+                    {
+                        DbVehicle vehicleData = veh.getData();
+
+                        if (vehicleData != null && vehicleData.faction_owner_id == factionDuty)
+                        {
+                            int blipType = 672;
+
+                            switch(vehicleData.vehicle_class_id)
+                            {
+                                case (int)VehicleClasses.Helicopters: {
+                                        blipType = 43;
+                                        break;
+                                }
+                                case (int)VehicleClasses.Sports:
+                                {
+                                        blipType = 724;
+                                        break;        
+                                }
+                                case (int)VehicleClasses.Boats:
+                                {
+                                        blipType = 427;
+                                        break;        
+                                }
+                            }
+
+                            vehicles.Add(new TrackVehicle
+                            {
+                                numberPlate = veh.NumberPlate,
+                                position = veh.Position,
+                                remoteId = veh.Id,
+                                heading = veh.Heading,
+                                blipType = blipType
+                            });
+                        }
+                    });
+
+                    updateTracking(p, JsonConvert.SerializeObject(vehicles));
+                });
+            });
+        }
+
+        public static void updateTracking(Player player, string data) 
+            => player.TriggerEvent("c::faction:tracking:update", data);
+        
+        public static void clearTracker(Player player) 
+            => player.TriggerEvent("c::faction:tracking:clear");
+        
+        public static void removeTrackedVehicle(int vehicleId)
+            => NAPI.ClientEvent.TriggerClientEventForAll("c::faction:tracking:remove", vehicleId);
+
         #endregion
 
         #region Remote Events
@@ -598,39 +672,6 @@ namespace CloudRP.PlayerSystems.FactionSystems
             }
 
             player.Vehicle.parkVehicle(player, garageId);
-        }
-        #endregion
-
-        #region Server Events 
-        public void handleVehicleTracking(object source, ElapsedEventArgs e)
-        {
-            NAPI.Task.Run(() =>
-            {
-                NAPI.Pools.GetAllPlayers().ForEach(p =>
-                {
-                    DbCharacter character = p.getPlayerCharacterData();
-
-                    if(character == null) return;
-
-                    int factionDuty = character.faction_duty_status;
-
-                    List<TrackVehicle> vehicles = new List<TrackVehicle>();
-
-                    NAPI.Pools.GetAllVehicles().ForEach(veh =>
-                    {
-                        if(veh.getData()?.faction_owner_id == factionDuty)
-                        {
-                            vehicles.Add(new TrackVehicle
-                            {
-                                numberPlate = veh.NumberPlate,
-                                position = veh.Position
-                            });
-                        }
-                    });
-
-                    p.TriggerEvent("c::faction:tracking:update", JsonConvert.SerializeObject(vehicles));
-                });
-            });
         }
         #endregion
     }

@@ -229,7 +229,8 @@ export interface VehicleData {
 	dealership_price: number;
 	dealership_description: string;
 	vehicle_class_id: number;
-	vehicle_display_name: string
+	vehicle_display_name: string;
+	faction_owner_id: number;	
 }
 
 export interface RenderKeys {
@@ -482,12 +483,17 @@ interface AnimationData {
 }
 
 interface FactionVehSpawn {
-    garageId: number;
-    vehicleRot: number;
-    spawnPos: Vector3;
+	garageId: number;
+	vehicleRot: number;
+	spawnPos: Vector3;
 }
 
 interface TrackVehicles {
+	renderTracked: boolean;
 	numberPlate: string;
 	position: Vector3;
+	remoteId: number;
+	blip: BlipMp;
+	heading: number;
+	blipType: number;
 }

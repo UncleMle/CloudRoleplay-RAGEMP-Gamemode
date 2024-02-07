@@ -44,11 +44,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                 vehicleData.vehicle_fuel = 100;
                 vehicleData.vehicle_health = 1000;
 
-                using (DefaultDbContext dbContext = new DefaultDbContext())
-                {
-                    dbContext.vehicles.Update(vehicleData);
-                    dbContext.SaveChanges();
-                }
+                vehicle.saveVehicleData(vehicleData, true);
 
                 if(sendMessageToOwner)
                 {
@@ -61,6 +57,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                     });
                 }
 
+                VehicleSystem.handleVehicleDeath(vehicle, vehicleData);
                 vehicle.Delete();
                 ChatUtils.formatConsolePrint($"Vehicle #{vehicleData.vehicle_id} ({vehicleData.vehicle_name}) was saved to {closestInsuranceToDeath.insuranceName}.");
             }
@@ -335,6 +332,8 @@ namespace CloudRP.VehicleSystems.Vehicles
             vehicleData.vehicle_garage_id = garageId;
 
             vehicle.saveVehicleData(vehicleData, true);
+
+            VehicleSystem.handleVehiclePark(vehicle, vehicleData);
 
             CommandUtils.successSay(player, $"You parked your vehicle [{vehicleData.numberplate}]");
             vehicle.Delete();

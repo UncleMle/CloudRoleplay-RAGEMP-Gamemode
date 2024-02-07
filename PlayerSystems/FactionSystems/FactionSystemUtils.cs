@@ -47,5 +47,8 @@ namespace CloudRP.PlayerSystems.FactionSystems
     {
         public string numberPlate { get; set; }
         public Vector3 position { get; set; }
+        public int remoteId { get; set; }
+        public int blipType { get; set; }
+        public float heading { get; set; }
     }
 }

@@ -291,7 +291,12 @@ namespace CloudRP.PlayerSystems.DMV
         {
             NAPI.Pools.GetAllVehicles().ForEach(veh =>
             {
-                if(veh.GetData<DmvLicenseVehicle>(_VehicleDmvDataKey)?.characterOwnerId == player.getPlayerCharacterData()?.character_id)
+                DmvLicenseVehicle dmvVeh = veh.GetData<DmvLicenseVehicle>(_VehicleDmvDataKey);
+                DbCharacter character = player.getPlayerCharacterData();
+
+                if (dmvVeh == null || character == null) return;
+
+                if (dmvVeh.characterOwnerId == character.character_id)
                 {
                     veh.Delete();
                 }
