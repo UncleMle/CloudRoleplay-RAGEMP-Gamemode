@@ -7,7 +7,7 @@ import getUserCharacterData from '@/PlayerMethods/getUserCharacterData';
 
 export default class VehicleInteraction {
 	public static LocalPlayer: PlayerMp = mp.players.local;
-	public static bones: string[] = ['door_dside_f', 'door_pside_f', 'door_dside_r', 'door_pside_r', 'bonnet', 'boot'];
+	public static bones: string[] = ['handle_dside_f', 'handle_pside_f', 'handle_dside_r', 'handle_pside_r', 'bonnet', 'boot'];
 	public static names: string[] = ['door', 'door', 'door', 'door', 'hood', 'trunk', 'trunk'];
 	public static boneTarget: BoneData;
 	private static wheelMenuPosition: number = 0;
@@ -70,7 +70,7 @@ export default class VehicleInteraction {
 				let dist: number = distBetweenCoords(VehicleInteraction.LocalPlayer.position, bonePos);
 
 				renderText.forEach((text, idx) => {
-					let textSelected: string = VehicleInteraction.wheelMenuPosition == idx ? "~g~[E]~w~" : "~c~";
+					let textSelected: string = VehicleInteraction.wheelMenuPosition == idx ? "[E]" : "~c~";
 
 					mp.game.graphics.drawText(textSelected + text, [bonePos.x, bonePos.y, bonePos.z - (idx > 0 ? idx / 7 : 0)], {
 						scale: [0.3, 0.3],
