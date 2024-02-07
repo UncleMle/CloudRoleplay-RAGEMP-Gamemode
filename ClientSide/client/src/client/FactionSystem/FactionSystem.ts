@@ -5,6 +5,8 @@ import getVehicleData from "@/PlayerMethods/getVehicleData";
 export default class FactionSystem {
     public static LocalPlayer: PlayerMp = mp.players.local;
     public static TrackerBlips: Map<number, TrackVehicles> = new Map<number, TrackVehicles>();
+    public static TrackingUnit: BlipMp;
+    public static readonly defaultBlipColour: number = 3;
 
     constructor() {
         mp.events.add({
@@ -12,8 +14,24 @@ export default class FactionSystem {
             "entityStreamOut": (ent: EntityMp) => FactionSystem.handleStreamInOut(ent, false),
             "c::faction:tracking:update": FactionSystem.handleTrackingUpdate,
             "c::faction:tracking:remove": FactionSystem.handleTrackingRemove,
-            "c::faction:tracking:clear": FactionSystem.clearAll
+            "c::faction:tracking:clear": FactionSystem.clearAll,
+            "c::faction:tracking:trackUnit": FactionSystem.handleUnitTrack
         });
+    }
+
+    private static handleUnitTrack(vehicleId: number) {
+        let tracker: TrackVehicles | undefined = FactionSystem.TrackerBlips.get(vehicleId);
+
+        if (!tracker || tracker && !mp.blips.atHandle(tracker.blip.handle)) return;
+
+        if (FactionSystem.TrackingUnit && mp.blips.exists(FactionSystem.TrackingUnit)) {
+            FactionSystem.TrackingUnit.setColour(FactionSystem.defaultBlipColour);
+        }
+
+        FactionSystem.TrackingUnit = tracker.blip;
+
+        FactionSystem.TrackingUnit.setColour(1);
+        FactionSystem.TrackingUnit.setRoute(true);
     }
 
     private static async handleStreamInOut(entity: EntityMp, toggle: boolean) {
@@ -42,14 +60,14 @@ export default class FactionSystem {
     private static handleTrackingRemove(vehicleId: number) {
         let tracker: TrackVehicles | undefined = FactionSystem.TrackerBlips.get(vehicleId);
 
-        if (tracker && mp.blips.atHandle(tracker.blip.handle)) tracker.blip.destroy();
+        if (tracker && mp.blips.exists(tracker.blip)) tracker.blip.destroy();
 
         FactionSystem.TrackerBlips.delete(vehicleId);
     }
 
     private static clearAll() {
         FactionSystem.TrackerBlips.forEach(blip => {
-            if (blip && mp.blips.atHandle(blip.blip.handle)) blip.blip.destroy();
+            if (blip && mp.blips.exists(blip.blip)) blip.blip.destroy();
         });
 
         FactionSystem.TrackerBlips.clear();
@@ -59,7 +77,7 @@ export default class FactionSystem {
         mp.vehicles.forEachInStreamRange(trackVeh => {
             let tracker: TrackVehicles | undefined = FactionSystem.TrackerBlips.get(trackVeh.remoteId);
 
-            if (tracker && mp.blips.atHandle(tracker.blip.handle)) {
+            if (tracker && mp.blips.exists(tracker.blip)) {
                 tracker.renderTracked = true;
                 tracker.blip.position = trackVeh.position;
                 tracker.blip.setRotation(trackVeh.getHeading());
@@ -78,7 +96,7 @@ export default class FactionSystem {
 
                 if (blipData?.renderTracked) return;
 
-                if (blipData && mp.blips.atHandle(blipData.blip.handle)) {
+                if (blipData && mp.blips.exists(blipData.blip)) {
                     blipData.blip.position = targetPos;
                     blipData.blip.setRotation(blipData.heading);
                     return;
@@ -87,8 +105,7 @@ export default class FactionSystem {
                 veh.blip = mp.blips.new(veh.blipType, targetPos, {
                     name: "Unit " + veh.numberPlate,
                     alpha: 255,
-                    color: 3,
-                    scale: 0.5
+                    color: FactionSystem.defaultBlipColour
                 });
 
                 FactionSystem.TrackerBlips.set(veh.remoteId, veh);

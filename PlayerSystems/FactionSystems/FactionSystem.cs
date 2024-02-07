@@ -8,6 +8,7 @@ using CloudRP.VehicleSystems.VehicleParking;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Query;
 using Newtonsoft.Json;
 using System;
@@ -501,6 +502,8 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
                     int factionDuty = character.faction_duty_status;
 
+                    if(factionDuty == (int)Factions.None) return;
+
                     List<TrackVehicle> vehicles = new List<TrackVehicle>();
 
                     NAPI.Pools.GetAllVehicles().ForEach(veh =>
@@ -550,7 +553,10 @@ namespace CloudRP.PlayerSystems.FactionSystems
         
         public static void clearTracker(Player player) 
             => player.TriggerEvent("c::faction:tracking:clear");
-        
+
+        public static void trackUnit(Player player, int vehicleId)
+            => player.TriggerEvent("c::faction:tracking:trackUnit", vehicleId);
+
         public static void removeTrackedVehicle(int vehicleId)
             => NAPI.ClientEvent.TriggerClientEventForAll("c::faction:tracking:remove", vehicleId);
 
@@ -609,6 +615,57 @@ namespace CloudRP.PlayerSystems.FactionSystems
         #endregion
 
         #region Commands
+        [Command("trackunit", "~y~Use: ~w~/trackunit [unit]")]
+        public void unitTrackCommand(Player player, string plate)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if(character == null) return;
+
+            int vehicleId = -1;
+
+            NAPI.Pools.GetAllVehicles().ForEach(veh =>
+            {
+                DbVehicle data = veh.getData();
+
+                if(data != null && data.faction_owner_id == character.faction_duty_status && data.numberplate.Replace("_", " ").ToUpper() == plate.Replace("_", " ").ToUpper())
+                {
+                    vehicleId = veh.Id;
+                } 
+            });
+
+            if(vehicleId == -1)
+            {
+                CommandUtils.errorSay(player, "Unit wasn't found.");
+                return;
+            }
+
+            if(player.IsInVehicle)
+            {
+                Player frontPassenger = null;
+
+                NAPI.Pools.GetAllPlayers().ForEach(p =>
+                {
+                    if(p.IsInVehicle && p.Vehicle.Equals(player.Vehicle) && p.VehicleSeat == 1)
+                    {
+                        DbCharacter pasChar = p.getPlayerCharacterData();
+
+                        if (pasChar == null || pasChar != null && pasChar.faction_duty_status != character.faction_duty_status) return;
+
+                        frontPassenger = p;
+                    }
+                });
+
+                if(frontPassenger != null)
+                {
+                    trackUnit(frontPassenger, vehicleId);
+                }
+
+            }
+
+            trackUnit(player, vehicleId);
+        }
+
         [Command("factionchat", "~y~Use:~w~ /factionchat [faction] [message]", Alias = "f,fc", GreedyArg = true)]
         public void factionChatCommand(Player player, Factions faction, string message)
         {
@@ -689,6 +746,6 @@ namespace CloudRP.PlayerSystems.FactionSystems
         LSPD,
         SASD,
         LSMD,
-        Weazel
+        Weazel_News
     }
 }
