@@ -278,6 +278,61 @@ namespace CloudRP.VehicleSystems.VehicleRefueling
                         position = new Vector3(48.5, 2779.0, 58.0)
                     },
                 }
+            },
+            new RefuelStation
+            {
+                name = "Strawberry Gas",
+                station_id = 8,
+                position = new Vector3(265.1, -1259.6, 35.9),
+                pricePerLitre = 23,
+                pumps = new List<RefuelPump>
+                {
+                    new RefuelPump
+                    {
+                        owner_id = 8,
+                        position = new Vector3(273.3, -1268.6, 29.3)
+                    },
+                    new RefuelPump
+                    {
+                        owner_id = 8,
+                        position = new Vector3(273.3, -1261.2, 29.3)
+                    },
+                    new RefuelPump
+                    {
+                        owner_id = 8,
+                        position = new Vector3(273.2, -1253.5, 29.3)
+                    },
+                    new RefuelPump
+                    {
+                        owner_id = 8,
+                        position = new Vector3(264.5, -1253.5, 29.3)
+                    },
+                    new RefuelPump
+                    {
+                        owner_id = 8,
+                        position = new Vector3(264.5, -1261.3, 29.3)
+                    },
+                    new RefuelPump
+                    {
+                        owner_id = 8,
+                        position = new Vector3(264.5, -1268.6, 29.3)
+                    },
+                    new RefuelPump
+                    {
+                        owner_id = 8,
+                        position = new Vector3(255.8, -1253.5, 29.3)
+                    },
+                    new RefuelPump
+                    {
+                        owner_id = 8,
+                        position = new Vector3(255.8, -1261.3, 29.3)
+                    },
+                    new RefuelPump
+                    {
+                        owner_id = 8,
+                        position = new Vector3(255.8, -1268.4, 29.3)
+                    }
+                }
             }
         };
     }
