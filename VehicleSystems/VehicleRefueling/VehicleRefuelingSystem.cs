@@ -20,7 +20,7 @@ namespace CloudRP.VehicleSystems.VehicleRefueling
 
             VehicleRefuelStations.refuelingStations.ForEach(refuelStation =>
             {
-                NAPI.Blip.CreateBlip(361, refuelStation.position, 1.0f, 75, refuelStation.name, 255, 20f, true, 0, 0);
+                NAPI.Blip.CreateBlip(361, refuelStation.position, 1.0f, 75, "Gas Station", 255, 20f, true, 0, 0);
 
                 refuelStation.pumps.ForEach(pump =>
                 {

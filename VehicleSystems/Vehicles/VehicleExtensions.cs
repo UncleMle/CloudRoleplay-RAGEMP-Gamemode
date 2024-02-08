@@ -352,6 +352,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                 return;
             }
 
+            VehicleSystem.handleVehicleDeath(vehicle, vehicleData);
             CommandUtils.successSay(player, $"You've scrapped your vehicle [{vehicleData.vehicle_display_name}] ({vehicleData.numberplate})");
 
             using (DefaultDbContext dbContext = new DefaultDbContext())

@@ -333,6 +333,46 @@ namespace CloudRP.VehicleSystems.VehicleRefueling
                         position = new Vector3(255.8, -1268.4, 29.3)
                     }
                 }
+            },
+            new RefuelStation
+            {
+                name = "Paleto Gas",
+                station_id = 9,
+                pricePerLitre = 9,
+                position = new Vector3(155.1, 6629.5, 31.8),
+                pumps = new List<RefuelPump>
+                {
+                    new RefuelPump
+                    { 
+                        owner_id = 9,
+                        position = new Vector3(155.8, 6628.7, 31.8)
+                    },
+                    new RefuelPump
+                    { 
+                        owner_id = 9,
+                        position = new Vector3(154.1, 6630.4, 31.8)
+                    },
+                }
+            },
+            new RefuelStation
+            {
+                name = "Senora Gas",
+                position = new Vector3(2680.8, 3265.5, 60.8),
+                pricePerLitre = 14,
+                station_id = 10,
+                pumps = new List<RefuelPump>
+                {
+                    new RefuelPump
+                    {
+                        owner_id = 10,
+                        position = new Vector3(2679.2, 3262.1, 55.4)
+                    },
+                    new RefuelPump
+                    {
+                        owner_id = 10,
+                        position = new Vector3(2681.6, 3266.0, 55.4)
+                    }
+                }
             }
         };
     }

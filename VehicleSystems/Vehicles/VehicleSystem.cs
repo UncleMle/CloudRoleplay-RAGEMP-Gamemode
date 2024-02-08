@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Timers;
 
 namespace CloudRP.VehicleSystems.Vehicles
@@ -1072,7 +1073,7 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             DbVehicle vehicleData = player.Vehicle.getData();
 
-            if (!vehicleData.engine_status) return;
+            if (vehicleData == null || vehicleData != null && !vehicleData.engine_status) return;
 
             Dictionary<int, double> fuelMultipliers = FuelMultipliers.fuelMultipliers;
 

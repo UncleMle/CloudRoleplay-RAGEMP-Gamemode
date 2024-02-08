@@ -123,18 +123,20 @@ namespace CloudRP.PlayerSystems.Jobs
         public static void deleteFreeLanceVehs(Player player, bool sendMsg = false)
         {
             DbCharacter characterData = player.getPlayerCharacterData();
-            
+            bool foundVeh = false;
+
             if(characterData != null)
             {
                 NAPI.Pools.GetAllVehicles().ForEach(veh =>
                 {
                     if (veh.getFreelanceJobData() != null && veh.getFreelanceJobData().characterOwnerId == characterData.character_id)
                     {
+                        foundVeh = true;
                         veh.Delete();
                     }
                 });
 
-                if(sendMsg)
+                if(sendMsg && foundVeh)
                 {
                     player.SendChatMessage(ChatUtils.freelanceJobs + "Your truck has been returned to your employer.");
                 }

@@ -18,11 +18,15 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
         public static List<Factions> getPlayerFactions(this Player player)
         {
+            List<Factions> factions = new List<Factions>();
             DbCharacter character = player.getPlayerCharacterData();
 
-            if (character == null || character.character_faction_data == null) return null;
+            if (character != null && character.character_faction_data != null)
+            {
+                factions = JsonConvert.DeserializeObject<List<Factions>>(character.character_faction_data);
+            }
 
-            return JsonConvert.DeserializeObject<List<Factions>>(character.character_faction_data);
+            return factions;
         }
 
         public static void addPlayerFaction(this Player player, Factions faction)

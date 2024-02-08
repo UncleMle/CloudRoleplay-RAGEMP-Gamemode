@@ -130,7 +130,123 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
                 },
                 viewPosition = new Vector3(-202.1, -1158.6, 23.8),
                 viewRange = 1f
-            }
+            },
+            new DealerShip
+            {
+                dealerShipId = 2,
+                dealershipName = "Benefactor",
+                position = new Vector3(-1261.0, -348.8, 36.8),
+                spawnPosition = new Vector3(-1265.0, -341.3, 36.7),
+                vehicles = new List<DealerVehicle>{
+                    new DealerVehicle
+                    {
+                        spawnName = "schafter",
+                        price = 40000
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "schafter2",
+                        price = 1235
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "schafter3",
+                        price = 8546345
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "schafter4",
+                        price = 6000
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "schwarzer",
+                        price = 600000
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "feltzer",
+                        price = 4300
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "xls",
+                        price = 89000
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "xls2",
+                        price = 45000
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "surano",
+                        price = 56000
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "dubsta",
+                        price = 56000
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "dubsta3",
+                        price = 56000
+                    },
+                    new DealerVehicle
+                    {
+                        spawnName = "panto",
+                        price = 56000
+                    }
+                },
+                viewPosition = new Vector3(-1261.0, -348.8, 36.8),
+                viewRange = 1f
+            },
+            new DealerShip
+            {
+                dealerShipId = 3,
+                dealershipName = "Offroad Dealer",
+                position = new Vector3(-223.2, 6243.1, 31.5),
+                spawnPosition = new Vector3(-232.9, 6251.9, 31.5),
+                vehicles = new List<DealerVehicle>{
+                      new DealerVehicle { spawnName = "bfinjection", price = 1235 },
+                      new DealerVehicle { spawnName = "bifta", price = 1235 },
+                      new DealerVehicle { spawnName = "blazer", price = 1235 },
+                      new DealerVehicle { spawnName = "blazer5", price = 1235 },
+                      new DealerVehicle { spawnName = "blazer2", price = 1235 },
+                      new DealerVehicle { spawnName = "blazer3", price = 1235 },
+                      new DealerVehicle { spawnName = "bodhi2", price = 1235 },
+                      new DealerVehicle { spawnName = "brawler", price = 1235 },
+                      new DealerVehicle { spawnName = "dune", price = 1235 },
+                      new DealerVehicle { spawnName = "dune2", price = 1235 },
+                      new DealerVehicle { spawnName = "dubsta3", price = 1235 },
+                      new DealerVehicle { spawnName = "dloader", price = 1235 },
+                      new DealerVehicle { spawnName = "everon", price = 1235 },
+                      new DealerVehicle { spawnName = "freecrawler", price = 1235 },
+                      new DealerVehicle { spawnName = "guardian", price = 1235 },
+                      new DealerVehicle { spawnName = "insurgent", price = 1235 },
+                      new DealerVehicle { spawnName = "insurgent2", price = 1235 },
+                      new DealerVehicle { spawnName = "insurgent3", price = 1235 },
+                      new DealerVehicle { spawnName = "kamacho", price = 1235 },
+                      new DealerVehicle { spawnName = "marshall", price = 1235 },
+                      new DealerVehicle { spawnName = "menacer", price = 1235 },
+                      new DealerVehicle { spawnName = "mesa", price = 1235 },
+                      new DealerVehicle { spawnName = "mesa3", price = 1235 },
+                      new DealerVehicle { spawnName = "monster", price = 1235 },
+                      new DealerVehicle { spawnName = "nightshark", price = 1235 },
+                      new DealerVehicle { spawnName = "outlaw", price = 1235 },
+                      new DealerVehicle { spawnName = "patriot", price = 1235 },
+                      new DealerVehicle { spawnName = "patriot2", price = 1235 },
+                      new DealerVehicle { spawnName = "rampbuggy", price = 1235 },
+                      new DealerVehicle { spawnName = "rcbandito", price = 1235 },
+                      new DealerVehicle { spawnName = "riata", price = 1235 },
+                      new DealerVehicle { spawnName = "rebel", price = 1235 },
+                      new DealerVehicle { spawnName = "sandking", price = 1235 }
+                },
+                viewPosition = new Vector3(-223.3, 6243.1, 31.5),
+                viewRange = 1f
+            },
+
         };
 
         public VehicleDealershipSystem()
@@ -142,7 +258,7 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
                 ColShape viewingCol = NAPI.ColShape.CreateSphereColShape(dealerShip.viewPosition, dealerShip.viewRange, 0);
 
                 viewingCol.SetData(_dealershipIdentifer, dealerShip);
-                MarkersAndLabels.setTextLabel(dealerShip.viewPosition, $"{dealerShip.dealershipName} ~y~Y~w~ to interact", dealerShip.viewRange);
+                MarkersAndLabels.setTextLabel(dealerShip.viewPosition, $"{dealerShip.dealershipName}\n Use ~y~Y~w~ to interact", dealerShip.viewRange);
                 MarkersAndLabels.setPlaceMarker(dealerShip.viewPosition);
                 NAPI.Blip.CreateBlip(595, dealerShip.position, 1.0f, 7, dealerShip.dealershipName, 255, 1.0f, true, 0, 0);
 
@@ -237,6 +353,7 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
 
                 player.TriggerEvent("dealers:closeDealership");
                 CommandUtils.successSay(player, $"You purchased a new {vehicleData.vehicle_display_name} for {ChatUtils.moneyGreen}${findDealerVeh.price.ToString("N0")}{ChatUtils.White}. Your vehicle ~y~has been marked on the map~w~.");
+                player.SendChatMessage(ChatUtils.info + $"Make sure to {ChatUtils.red}insure{ChatUtils.White} your vehicle. Or you will have to pay 2x in costs to retrieve it from insurance.");
 
                 MarkersAndLabels.addBlipForClient(player, 523, $"Your new vehicle [{vehicleData.numberplate}]", playerDealerData.spawnPosition, 70, 255);
                 ChatUtils.formatConsolePrint($"{charData.character_name} purchased a new {vehicleData.vehicle_display_name} with id #{vehicleData.vehicle_id}", ConsoleColor.Blue);

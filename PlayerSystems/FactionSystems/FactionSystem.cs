@@ -946,17 +946,20 @@ namespace CloudRP.PlayerSystems.FactionSystems
         }
 
         [FactionCommand(true)]
-        [Command("salary")]
+        [Command("salary", "~y~Use:~w~ /salary")]
         public void factionSalaryCommand(Player player)
         {
-            FactionRank rank = player.getFactionRankViaFaction((Factions)player.getPlayerCharacterData().faction_duty_status);
+            Factions faction = (Factions)player.getPlayerCharacterData().faction_duty_status;
+
+            FactionRank rank = player.getFactionRankViaFaction(faction);
 
             if (rank == null) return;
 
             int timeRemaining = 60 - TimeSystem.min;
 
             player.SendChatMessage(ChatUtils.CloudBlue + "------------------------------------");
-            player.SendChatMessage($"[Salary] {ChatUtils.moneyGreen}${rank.rank_salary.ToString("N0")}{ChatUtils.White} [Next Paycheck] {ChatUtils.moneyGreen}{timeRemaining} minutes{ChatUtils.White}");
+            player.SendChatMessage($"[Faction] {getFactionName((int)faction)} [Rank] {rank.rank_name}");
+            player.SendChatMessage($"[Salary] {ChatUtils.moneyGreen}${rank.rank_salary.ToString("N0")}{ChatUtils.White} [Next Paycheck] {ChatUtils.moneyGreen}{timeRemaining} {(timeRemaining == 1 ? "minute" : "minutes")}{ChatUtils.White}");
             player.SendChatMessage(ChatUtils.CloudBlue + "------------------------------------");
         }
 

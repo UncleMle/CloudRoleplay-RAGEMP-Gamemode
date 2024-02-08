@@ -91,7 +91,7 @@ export default class FactionSystem {
             if (tracker && mp.blips.exists(tracker.blip)) {
                 tracker.renderTracked = true;
                 tracker.blip.position = trackVeh.position;
-                
+
                 tracker.blip.setCoords(trackVeh.position);
                 tracker.blip.setRotation(trackVeh.getHeading());
             }
@@ -114,7 +114,7 @@ export default class FactionSystem {
                     blipData.blip.setRotation(blipData.heading);
                     blipData.blip.setCoords(targetPos);
 
-                    if(blipData.beingTracked) {
+                    if (blipData.beingTracked) {
                         blipData.blip.setRoute(false);
                         blipData.blip.setRoute(true);
                     }
@@ -127,7 +127,8 @@ export default class FactionSystem {
                 veh.blip = mp.blips.new(veh.blipType, targetPos, {
                     name: "Unit " + veh.numberPlate,
                     alpha: 255,
-                    color: FactionSystem.defaultBlipColour
+                    color: FactionSystem.defaultBlipColour,
+                    shortRange: true
                 });
 
                 FactionSystem.TrackerBlips.set(veh.remoteId, veh);
