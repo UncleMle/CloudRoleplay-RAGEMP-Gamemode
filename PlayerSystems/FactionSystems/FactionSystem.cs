@@ -37,6 +37,37 @@ namespace CloudRP.PlayerSystems.FactionSystems
         public static readonly float spawnVehicleRot = -88.8f;
         public static readonly float maxInviteRange = 5.5f;
 
+        public class FactionCommand : CommandConditionAttribute
+        {
+            bool _checkForDuty;
+
+            public FactionCommand(bool checkForDuty)
+            {
+                _checkForDuty = checkForDuty;
+            }
+
+            public override bool Check(Player player, string cmdName, string cmdText)
+            {
+                DbCharacter character = player.getPlayerCharacterData();
+
+                if (character == null) return false;
+
+                if(player.getPlayerFactions().Count == 0)
+                {
+                    CommandUtils.errorSay(player, $"You must be part of a faction to use this command.");
+                    return false;
+                }
+
+                if (_checkForDuty && character.faction_duty_status == -1)
+                {
+                    CommandUtils.errorSay(player, "You must be on faction duty to use this command.");
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
         public static string[] factionColours = new string[] {
             "", // Factions.None
             "#5998ff", // Factions.LSPD
@@ -913,6 +944,22 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
             findPlayer.SendChatMessage(ChatUtils.info + $"You have been added to the faction {getFactionName((int)playerFaction)} by {character.character_name}.");
         }
+
+        [FactionCommand(true)]
+        [Command("salary")]
+        public void factionSalaryCommand(Player player)
+        {
+            FactionRank rank = player.getFactionRankViaFaction((Factions)player.getPlayerCharacterData().faction_duty_status);
+
+            if (rank == null) return;
+
+            int timeRemaining = 60 - TimeSystem.min;
+
+            player.SendChatMessage(ChatUtils.CloudBlue + "------------------------------------");
+            player.SendChatMessage($"[Salary] {ChatUtils.moneyGreen}${rank.rank_salary.ToString("N0")}{ChatUtils.White} [Next Paycheck] {ChatUtils.moneyGreen}{timeRemaining} minutes{ChatUtils.White}");
+            player.SendChatMessage(ChatUtils.CloudBlue + "------------------------------------");
+        }
+
         #endregion
     }
 
