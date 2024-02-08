@@ -220,7 +220,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
             VehicleParking.onVehicleUnpark += handleVehicleImport;
             VehicleSystem.vehiclePark += handleTrackerDestroyed;
             VehicleSystem.vehicleDeath += handleTrackerDestroyed;
-            TimeSystem.hourPassed += payFactionSalaries;
+            TimeSystem.realHourPassed += payFactionSalaries;
 
             MarkersAndLabels.setPlaceMarker(vehicleImportArea);
             MarkersAndLabels.setTextLabel(vehicleImportArea, "Vehicle Import Area\nUse ~y~Y~w~ to interact", 5f);
@@ -955,7 +955,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
             if (rank == null) return;
 
-            int timeRemaining = 60 - TimeSystem.min;
+            int timeRemaining = TimeSystem.getMinuteDifferenceToHour();
 
             player.SendChatMessage(ChatUtils.CloudBlue + "------------------------------------");
             player.SendChatMessage($"[Faction] {getFactionName((int)faction)} [Rank] {rank.rank_name}");

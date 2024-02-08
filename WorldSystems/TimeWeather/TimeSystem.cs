@@ -15,7 +15,8 @@ namespace CloudRP.World.TimeWeather
         public delegate void TimeSystemEventsHandler();
 
         #region Event Handlers
-        public static event TimeSystemEventsHandler hourPassed;
+        public static event TimeSystemEventsHandler serverHourPassed;
+        public static event TimeSystemEventsHandler realHourPassed;
         #endregion
 
         private static Timer syncTime;
@@ -36,8 +37,11 @@ namespace CloudRP.World.TimeWeather
                 syncTime.AutoReset = true;
                 syncTime.Enabled = true;
             });
+
+            Main.tick += handleEveryHour;
         }
 
+        #region Global Methods
         public void syncWorldTime(object source = null, ElapsedEventArgs e = null)
         {
             NAPI.Task.Run(() =>
@@ -46,7 +50,7 @@ namespace CloudRP.World.TimeWeather
                 {
                     if (min == 59)
                     {
-                        hourPassed();
+                        serverHourPassed();
 
                         min = 0;
 
@@ -72,6 +76,22 @@ namespace CloudRP.World.TimeWeather
             return $"{(hour < 10 ? "0" : "")}{hour}:{(min < 10 ? "0" : "")}{min}";
         }
 
+        public static void handleEveryHour()
+        {
+            DateTime now = DateTime.Now;
+
+            if(now.Minute == 0 && now.Second == 0 && now.Millisecond == 0)
+            {
+                realHourPassed();
+            }
+        }
+
+        public static int getMinuteDifferenceToHour()
+            => 60 - DateTime.Now.Minute;
+
+        #endregion
+
+        #region Commands
         [Command("tsync", "~r~/tsync")]
         public void toggleTimeSync(Player player)
         {
@@ -99,7 +119,7 @@ namespace CloudRP.World.TimeWeather
                 NAPI.World.SetTime(h, m, s);
             }
             else AdminUtils.sendNoAuth(player);
-
         }
+        #endregion
     }
 }

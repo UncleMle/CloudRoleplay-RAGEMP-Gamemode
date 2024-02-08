@@ -105,6 +105,26 @@ namespace CloudRP.VehicleSystems.VehicleParking
                 parkPosRange = 2.5f,
                 retrievePosRange = 1f
             },
+            new ParkingLot
+            {
+                name = "Sandy Parking",
+                parkingId = 5,
+                spawnVehiclesAt = new Vector3(1522.7, 3758.3, 34.1),
+                park = new ParkCol
+                {
+                    owner_id = 5,
+                    name = "Sandy",
+                    position = new Vector3(1515.3, 3757.0, 34.0)
+                },
+                retrieve = new RetrieveCol
+                {
+                    name = "Sandy",
+                    owner_id = 5,
+                    position = new Vector3(1526.4, 3770.6, 34.5)
+                },
+                parkPosRange = 2.5f,
+                retrievePosRange = 1f
+            }
         };
 
         public VehicleParking()

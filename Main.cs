@@ -21,6 +21,7 @@ namespace CloudRP
     {
         public delegate void MainEventsHandler();
         public static event MainEventsHandler resourceStart;
+        public static event MainEventsHandler tick;
 
         public static string ProductionBuild = "";
         public static string JsonDirectory = "";
@@ -81,6 +82,9 @@ namespace CloudRP
 
             ChatUtils.formatConsolePrint($"{prod} Gamemode has started. (Loaded {Commands.loadedCommands.Count()} total commands)", ConsoleColor.Cyan);
         }
+
+        [ServerEvent(Event.Update)]
+        public void handleUpdateTick() => tick();
 
         public void logException(UnhandledExceptionEventArgs exception)
         {
