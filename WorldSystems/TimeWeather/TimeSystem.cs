@@ -1,6 +1,7 @@
 ﻿using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Admin;
 using CloudRP.ServerSystems.Utils;
+using CloudRP.VehicleSystems.Vehicles;
 using GTANetworkAPI;
 using System;
 using System.Security.Cryptography;
@@ -11,6 +12,12 @@ namespace CloudRP.World.TimeWeather
 {
     class TimeSystem : Script
     {
+        public delegate void TimeSystemEventsHandler();
+
+        #region Event Handlers
+        public static event TimeSystemEventsHandler hourPassed;
+        #endregion
+
         private static Timer syncTime;
         private static int timerInterval_seconds = 20;
         public static int hour = 7;
@@ -39,6 +46,8 @@ namespace CloudRP.World.TimeWeather
                 {
                     if (min == 59)
                     {
+                        hourPassed();
+
                         min = 0;
 
                         if (hour == 23)

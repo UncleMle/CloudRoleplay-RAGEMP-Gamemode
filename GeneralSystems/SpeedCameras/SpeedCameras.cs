@@ -149,15 +149,7 @@ namespace CloudRP.GeneralSystems.SpeedCameras
 
                 if (vehicleData == null) return;
 
-                Factions[] exemptFactions = new Factions[]
-                {
-                    Factions.LSPD,
-                    Factions.LSMD,
-                    Factions.SASD
-                };
-
-                if (exemptFactions.Contains((Factions)vehicleData.faction_owner_id)) return;
-
+                if (FactionSystem.emergencyFactions.Contains((Factions)vehicleData.faction_owner_id)) return;
 
                 if (speed > speedFines[0].speed && speed > cameraData.speedLimit && player.VehicleSeat == 0)
                 {

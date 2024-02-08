@@ -1897,7 +1897,7 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_Developer)]
-        [Command("addfrank")]
+        [Command("addfrank", "~r~/addfrank [faction] [salary] [rankName]")]
         public void addFactionRankCommand(Player player, Factions faction, int salary, string rankName)
         {
             using(DefaultDbContext dbContext = new DefaultDbContext())
@@ -1923,7 +1923,7 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_Developer)]
-        [Command("givefrank")]
+        [Command("givefrank", "~r~/givefrank [nameOrId] [faction] [rankId]")]
         public void addFactionRankCommand(Player player, string nameOrId, Factions faction, int rankId)
         {
             Player target = CommandUtils.getPlayerFromNameOrId(nameOrId);
@@ -1944,6 +1944,45 @@ namespace CloudRP.ServerSystems.Admin
 
             player.addFactionRank(faction, rankId);
             AdminUtils.staffSay(player, $"You gave {character.character_name} faction rank {rankId} for faction {faction}");
+        }
+
+        [AdminCommand(AdminRanks.Admin_HeadAdmin)]
+        [Command("setfleader", "~r~/setfleader [nameOrId] [faction]")]
+        public void setFactionLeaderCommand(Player player, string nameOrId, Factions faction)
+        {
+            Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+            if(findPlayer == null)
+            {
+                CommandUtils.notFound(player);
+                return;
+            }
+
+            DbCharacter targetCharacter = findPlayer.getPlayerCharacterData();
+
+            if (targetCharacter == null) return;
+
+            string name = FactionSystem.getFactionName((int)faction);
+
+            if (!findPlayer.isPartOfFaction(faction))
+            {
+                CommandUtils.errorSay(player, $"Player isn't part of the faction {name}.");
+                return;
+            }
+
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                Faction findFaction = dbContext.factions.Where(fac => fac.faction_name == name.Replace(" ", "_"))
+                    .FirstOrDefault();
+
+                if(findFaction != null)
+                {
+                    findFaction.owner_id = targetCharacter.character_id;
+                    dbContext.Update(findFaction);
+                    dbContext.SaveChanges();
+                }
+            }
+
         }
     }
 }

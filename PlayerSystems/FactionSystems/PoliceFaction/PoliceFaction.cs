@@ -6,6 +6,7 @@ using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace CloudRP.PlayerSystems.FactionSystems.PoliceFaction
@@ -26,13 +27,14 @@ namespace CloudRP.PlayerSystems.FactionSystems.PoliceFaction
             DbCharacter characterData = player.getPlayerCharacterData();
             if (characterData == null) return;
 
-
-            if (vehicle != null && vehicle.Class == 0 || player.IsInVehicle && player.Vehicle.Class == 0)
+            if (vehicle != null || player.IsInVehicle)
             {
                 DbVehicle vehicleData = vehicle.getData();
 
                 if (vehicleData != null)
                 {
+                    if (!FactionSystem.emergencyFactions.Contains((Factions)vehicleData.faction_owner_id)) return;
+
                     if (!player.IsInVehicle && !vehicleData.vehicle_doors[0])
                     {
                         CommandUtils.errorSay(player, "The vehicles driver side door must be open to use this command outside of a vehicle");

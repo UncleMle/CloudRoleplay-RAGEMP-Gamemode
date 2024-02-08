@@ -25,6 +25,8 @@ export default class FactionSystem {
 
         if (!tracker || tracker && !mp.blips.atHandle(tracker.blip.handle)) return;
 
+        FactionSystem.removePrevTracked();
+
         if (FactionSystem.TrackingUnit && mp.blips.exists(FactionSystem.TrackingUnit)) {
             FactionSystem.TrackingUnit.setColour(FactionSystem.defaultBlipColour);
         }
@@ -33,6 +35,14 @@ export default class FactionSystem {
 
         FactionSystem.TrackingUnit.setColour(FactionSystem.trackerBlipColour);
         FactionSystem.TrackingUnit.setRoute(true);
+
+        tracker.beingTracked = true;
+    }
+
+    private static removePrevTracked() {
+        FactionSystem.TrackerBlips.forEach(blip => {
+            blip.beingTracked = false;
+        });
     }
 
     private static async handleStreamInOut(entity: EntityMp, toggle: boolean) {
@@ -81,6 +91,8 @@ export default class FactionSystem {
             if (tracker && mp.blips.exists(tracker.blip)) {
                 tracker.renderTracked = true;
                 tracker.blip.position = trackVeh.position;
+                
+                tracker.blip.setCoords(trackVeh.position);
                 tracker.blip.setRotation(trackVeh.getHeading());
             }
         });
@@ -100,6 +112,13 @@ export default class FactionSystem {
                 if (blipData && mp.blips.exists(blipData.blip)) {
                     blipData.blip.position = targetPos;
                     blipData.blip.setRotation(blipData.heading);
+                    blipData.blip.setCoords(targetPos);
+
+                    if(blipData.beingTracked) {
+                        blipData.blip.setRoute(false);
+                        blipData.blip.setRoute(true);
+                    }
+
                     return;
                 }
 

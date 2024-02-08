@@ -51,8 +51,11 @@ namespace CloudRP.VehicleSystems.Vehicles
     public class VehicleSystem : Script
     {
         public delegate void VehicleSystemEventsHandler(Vehicle vehicle, DbVehicle vehicleData);
+
+        #region Event Handlers
         public static event VehicleSystemEventsHandler vehicleDeath;
         public static event VehicleSystemEventsHandler vehiclePark;
+        #endregion
 
         public static readonly string _vehicleSharedDataIdentifier = "VehicleData";
         public static readonly string _vehicleSharedModData = "VehicleModData";
@@ -962,14 +965,14 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             if (player.VehicleSeat != 0) return;
 
-            if (NAPI.Vehicle.GetVehicleBodyHealth(player.Vehicle) <= 0 || player.Vehicle.isStalled())
+            DbVehicle vehicleData = player.Vehicle.getData();
+            if (vehicleData == null) return;
+
+            if (NAPI.Vehicle.GetVehicleBodyHealth(player.Vehicle) <= 0 || player.Vehicle.isStalled() || vehicleData.vehicle_fuel <= 0)
             {
                 uiHandling.sendNotification(player, "~r~Engine fails to start", false, true, "Fails to start engine");
                 return;
             }
-
-            DbVehicle vehicleData = player.Vehicle.getData();
-            if (vehicleData == null) return;
 
             vehicleData.engine_status = !vehicleData.engine_status;
 
@@ -1085,6 +1088,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                     if (vehicleData.vehicle_fuel <= 0)
                     {
                         vehicleData.vehicle_fuel = 0;
+                        vehicleData.engine_status = false;
                     }
 
                     completedRemoval = true;

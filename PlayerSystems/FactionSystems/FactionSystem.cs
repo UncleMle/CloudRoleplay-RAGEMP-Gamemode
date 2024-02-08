@@ -7,14 +7,17 @@ using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.VehicleParking;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
+using CloudRP.World.TimeWeather;
 using GTANetworkAPI;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore.Storage.Internal;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Timers;
 
@@ -32,6 +35,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
         public static readonly Vector3 vehicleImportArea = new Vector3(858.7, -3202.6, 6.0);
         public static readonly Vector3 spawnVehicleArea = new Vector3(854.0, -3218.3, 5.9);
         public static readonly float spawnVehicleRot = -88.8f;
+        public static readonly float maxInviteRange = 5.5f;
 
         public static string[] factionColours = new string[] {
             "",
@@ -44,6 +48,13 @@ namespace CloudRP.PlayerSystems.FactionSystems
         public static int[] trackerBlipColours = new int[]
         {
             0, 3, 43, 59, 51
+        };
+
+        public static Factions[] emergencyFactions = new Factions[]
+        {
+            Factions.LSPD,
+            Factions.LSMD,
+            Factions.SASD
         };
 
         public static Dictionary<Factions, List<Vector3>> onDutyAreas = new Dictionary<Factions, List<Vector3>>
@@ -178,6 +189,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
             VehicleParking.onVehicleUnpark += handleVehicleImport;
             VehicleSystem.vehiclePark += handleTrackerDestroyed;
             VehicleSystem.vehicleDeath += handleTrackerDestroyed;
+            TimeSystem.hourPassed += payFactionSalaries;
 
             MarkersAndLabels.setPlaceMarker(vehicleImportArea);
             MarkersAndLabels.setTextLabel(vehicleImportArea, "Vehicle Import Area\nUse ~y~Y~w~ to interact", 5f);
@@ -359,6 +371,25 @@ namespace CloudRP.PlayerSystems.FactionSystems
             });
         }
 
+        public static List<Player> getAllOnDutyFactionMembers()
+        {
+            List<Player> onlineMembers = new List<Player>();
+
+            NAPI.Pools.GetAllPlayers().ForEach(p =>
+            {
+                DbCharacter character = p.getPlayerCharacterData();
+
+                if (character == null) return;
+
+                if(character.faction_duty_status != -1)
+                {
+                    onlineMembers.Add(p);
+                }
+            });
+
+            return onlineMembers;
+        }
+
         public static void handleVehicleImportArea(Player player)
         {
             DbCharacter character = player.getPlayerCharacterData();
@@ -474,7 +505,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
             .FirstOrDefault();
 
         public static string getFactionName(int faction)
-            => Enum.GetNames(typeof(Factions))[faction];
+            => Enum.GetNames(typeof(Factions))[faction].ToString().Replace("_", " ");
         
         public static (Factions, int) getClosestVehiclePoint(Player player)
         {
@@ -635,6 +666,31 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
         public static void removeTrackedVehicle(int vehicleId)
             => NAPI.ClientEvent.TriggerClientEventForAll("c::faction:tracking:remove", vehicleId);
+
+        public static void payFactionSalaries()
+        {
+            List<Player> onDutyFactionMembers = getAllOnDutyFactionMembers();
+
+            if (onDutyFactionMembers.Count == 0) return;
+
+            onDutyFactionMembers.ForEach(factionMem =>
+            {
+                DbCharacter character = factionMem.getPlayerCharacterData();
+
+                if (character == null) return;
+
+                Factions faction = (Factions)character.faction_duty_status;
+
+                FactionRank rank = factionMem.getFactionRankViaFaction(faction);
+
+                if (rank == null) return;
+
+                character.money_amount += rank.rank_salary;
+                factionMem.setPlayerCharacterData(character, false, true);
+
+                factionMem.SendChatMessage(ChatUtils.factions + $"You've recieved your salary of {ChatUtils.moneyGreen}${rank.rank_salary.ToString("N0")}{ChatUtils.White} from faction {getFactionName((int)faction)}. As rank {rank.rank_name}.");
+            });
+        }
 
         #endregion
 
@@ -819,6 +875,40 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
             player.Vehicle.parkVehicle(player, garageId);
         }
+
+        [Command("finvite", "~y~Use: /finvite")]
+        public void factionInviteCommand(Player player, string nameOrId)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if (character == null) return;
+
+            if(character.faction_duty_status == -1)
+            {
+                CommandUtils.errorSay(player, "You must be on faction duty to use this command.");
+                return;
+            }
+
+            Factions playerFaction = (Factions)character.faction_duty_status;
+
+            Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+            if(findPlayer == null || findPlayer != null && Vector3.Distance(player.Position, findPlayer.Position) > maxInviteRange)
+            {
+                CommandUtils.errorSay(player, "Player couldn't be found. (Are you within distance?)");
+                return;
+            }
+
+            if(findPlayer.isPartOfFaction(playerFaction))
+            {
+                CommandUtils.errorSay(player, "Player is already a part of this faction.");
+                return;
+            }
+
+            findPlayer.addPlayerFaction(playerFaction);
+
+            findPlayer.SendChatMessage(ChatUtils.info + $"You have been added to the faction {getFactionName((int)playerFaction)} by {character.character_name}.");
+        }
         #endregion
     }
 
@@ -826,7 +916,8 @@ namespace CloudRP.PlayerSystems.FactionSystems
     {
         ImportVehicles,
         ViewFactionParking,
-        CanGoOnDuty
+        CanGoOnDuty,
+        CanInviteMembers
     }
 
     public enum Factions

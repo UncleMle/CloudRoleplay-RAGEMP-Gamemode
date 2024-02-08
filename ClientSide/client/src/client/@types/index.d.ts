@@ -497,4 +497,5 @@ interface TrackVehicles {
 	heading: number;
 	blipType: number;
 	blipColour: number;
+	beingTracked: boolean;
 }

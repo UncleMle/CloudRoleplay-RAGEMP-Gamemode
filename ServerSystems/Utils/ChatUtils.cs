@@ -34,6 +34,7 @@ namespace CloudRP.ServerSystems.Utils
         public static readonly string freelanceJobs = CloudBlue + "[Freelance Jobs] " + White;
         public static readonly string dmv = yellow + "[Dmv] " + White;
         public static readonly string darkGreen = "!{#7bb089}";
+        public static readonly string factions = $"{CloudBlue}[Faction System]{White} ";
 
         public static void sendWithNickName(Player player, Player target, string prefix, string suffix, bool checkDims = true)
         {
