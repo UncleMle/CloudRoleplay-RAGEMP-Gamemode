@@ -38,11 +38,11 @@ namespace CloudRP.PlayerSystems.FactionSystems
         public static readonly float maxInviteRange = 5.5f;
 
         public static string[] factionColours = new string[] {
-            "",
-            "#5998ff",
-            "#7bb089",
-            "#f25130",
-            "#baffe6"
+            "", // Factions.None
+            "#5998ff", // Factions.LSPD
+            "#7bb089", // Factions.SASD
+            "#f25130", // Factions.LSMD
+            "#baffe6" // Factions.Weazel_News
         };
 
         public static int[] trackerBlipColours = new int[]
@@ -488,8 +488,6 @@ namespace CloudRP.PlayerSystems.FactionSystems
                 {
                     character.characterClothing = findUniform.uniform;
                     player.setPlayerCharacterData(character, true);
-
-                    ChatUtils.formatConsolePrint($"Loaded faction uniform for {character.character_name}.");
                 }
             }
         }
@@ -616,22 +614,24 @@ namespace CloudRP.PlayerSystems.FactionSystems
                     {
                         DbVehicle vehicleData = veh.getData();
 
-                        if (vehicleData != null && vehicleData.faction_owner_id != -1 && vehicleData.faction_owner_id == factionDuty)
+                        if (vehicleData == null) return;
+
+                        if (vehicleData.faction_owner_id != -1 && vehicleData.faction_owner_id == factionDuty || emergencyFactions.Contains((Factions)factionDuty) && emergencyFactions.Contains((Factions)vehicleData.faction_owner_id))
                         {
                             int blipType = 672;
 
-                            switch(vehicleData.vehicle_class_id)
+                            switch((VehicleClasses)vehicleData.vehicle_class_id)
                             {
-                                case (int)VehicleClasses.Helicopters: {
+                                case VehicleClasses.Helicopters: {
                                         blipType = 43;
                                         break;
                                 }
-                                case (int)VehicleClasses.Sports:
+                                case VehicleClasses.Sports:
                                 {
                                         blipType = 724;
                                         break;        
                                 }
-                                case (int)VehicleClasses.Boats:
+                                case VehicleClasses.Boats:
                                 {
                                         blipType = 427;
                                         break;        
@@ -670,8 +670,6 @@ namespace CloudRP.PlayerSystems.FactionSystems
         public static void payFactionSalaries()
         {
             List<Player> onDutyFactionMembers = getAllOnDutyFactionMembers();
-
-            if (onDutyFactionMembers.Count == 0) return;
 
             onDutyFactionMembers.ForEach(factionMem =>
             {
@@ -890,6 +888,12 @@ namespace CloudRP.PlayerSystems.FactionSystems
             }
 
             Factions playerFaction = (Factions)character.faction_duty_status;
+
+            if (!player.hasFactionPermission(playerFaction, GeneralRankPerms.CanInviteMembers))
+            {
+                CommandUtils.errorSay(player, "You don't have permission to do this.");
+                return;
+            }
 
             Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
 

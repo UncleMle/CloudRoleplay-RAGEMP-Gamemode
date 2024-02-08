@@ -339,5 +339,34 @@ namespace CloudRP.VehicleSystems.Vehicles
             vehicle.Delete();
         }
 
+        public static void scrapVehicle(this Vehicle vehicle, Player player)
+        {
+            DbVehicle vehicleData = vehicle.getData();
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if (vehicleData == null || character == null) return;
+
+            if (vehicleData.owner_id != character.character_id)
+            {
+                CommandUtils.errorSay(player, "You must be the owner of the vehicle to scrap it.");
+                return;
+            }
+
+            CommandUtils.successSay(player, $"You've scrapped your vehicle [{vehicleData.vehicle_display_name}] ({vehicleData.numberplate})");
+
+            using (DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                dbContext.vehicles.Remove(vehicleData);
+                dbContext.vehicle_mods.Remove(vehicleData.vehicle_mods);
+
+                vehicleData.vehicle_key_holders?.ForEach(keyHolder =>
+                {
+                    dbContext.vehicle_keys.Remove(keyHolder);
+                });
+
+                dbContext.SaveChanges();
+            }
+            vehicle.Delete();
+        }
     }
 }

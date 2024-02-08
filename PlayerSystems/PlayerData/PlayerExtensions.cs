@@ -155,6 +155,18 @@ namespace CloudRP.PlayerSystems.PlayerData
 
             return adminStatus;
         }
+        
+        public static bool adminDuty(this Player player)
+        {
+            bool aduty = false;
+
+            if (player.getPlayerAccountData().adminDuty)
+            {
+                aduty = true;
+            }
+
+            return aduty;
+        }
 
         public static void banPlayer(this Player banPlayer, int time, User adminUserData, User banPlayerUserData, string reason)
         {

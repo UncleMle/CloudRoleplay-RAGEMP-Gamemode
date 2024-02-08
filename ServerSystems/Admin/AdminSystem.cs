@@ -30,10 +30,10 @@ namespace CloudRP.ServerSystems.Admin
     internal class AdminSystem : Script
     {
         public static List<Report> activeReports = new List<Report>();
-        public static Dictionary<int, Vector3> adminAdutyPositions = new Dictionary<int, Vector3>();
         public static int _maxReports = 2;
         public static int _maxAdminMarkers = 20;
         public static string defaultAdminPed = "ig_abigail";
+        public static readonly string _adminLastPositionKey = "adminDuty:system:positionKey";
 
         public class AdminCommand : CommandConditionAttribute
         {
@@ -77,36 +77,6 @@ namespace CloudRP.ServerSystems.Admin
         public AdminSystem()
         {
             KeyPressEvents.keyPress_F4 += fly;
-        }
-
-        [ServerEvent(Event.PlayerDisconnected)]
-        public void OnPlayerDisconnect(Player player, DisconnectionType type, string reason)
-        {
-            User userData = player.getPlayerAccountData();
-
-            if (userData != null)
-            {
-                foreach (KeyValuePair<int, Vector3> adminPos in adminAdutyPositions)
-                {
-                    if (adminPos.Key == userData.account_id)
-                    {
-                        adminAdutyPositions.Remove(adminPos.Key);
-                    }
-                }
-            }
-        }
-
-        public static void saveAdutyPosition(User userData, Vector3 pos)
-        {
-            if(userData != null)
-            {
-                if (adminAdutyPositions.ContainsKey(userData.account_id))
-                {
-                    adminAdutyPositions.Remove(userData.account_id);
-                }
-
-                adminAdutyPositions.Add(userData.account_id, pos);
-            }
         }
 
         [ServerEvent(Event.PlayerConnected)]
@@ -385,25 +355,24 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]
-        [Command("goback", "~r~/goback", Group = "admin")]
+        [Command("goback", "~r~/goback", Alias = "gotob, gb", Group = "admin")]
         public static void goAdminBack(Player player)
         {
-            User userData = player.getPlayerAccountData();
+            User user = player.getPlayerAccountData();
 
-            KeyValuePair<int, Vector3> savedAdminPosition = adminAdutyPositions
-                .Where(savePos => savePos.Key == userData.account_id)
-                .FirstOrDefault();
+            Vector3 lastPos = player.GetData<Vector3>(_adminLastPositionKey);
 
-            if (savedAdminPosition.Value == null)
+            if (lastPos == null)
             {
-                CommandUtils.errorSay(player, "You have not been on admin duty yet.");
+                CommandUtils.errorSay(player, "Your position hasn't been saved yet.");
                 return;
             }
 
-            player.Position = savedAdminPosition.Value;
+            player.Position = lastPos;
 
-            uiHandling.sendNotification(player, "~r~Teleported to last admin duty position", false);
-            AdminUtils.staffSay(player, "Returned to admin duty position.");
+            ChatUtils.formatConsolePrint($"{user.admin_name} teleported to last saved position");
+            uiHandling.sendNotification(player, "~r~Teleported to last saved position", false);
+            AdminUtils.staffSay(player, "Returned to last position.");
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator, checkForAduty = false)]
@@ -819,9 +788,17 @@ namespace CloudRP.ServerSystems.Admin
         {
             User userData = player.getPlayerAccountData();
 
-            saveAdutyPosition(userData, player.Position);
+            player.SetData(_adminLastPositionKey, player.Position);
             ChatUtils.formatConsolePrint($"{userData.admin_name} teleported to way point.");
             player.TriggerEvent("admin:events:teleportWay");
+        }
+
+        [AdminCommand(AdminRanks.Admin_Moderator)]
+        [Command("spos", "~r~/spos")]
+        public void saveAdminPositionCommand(Player player)
+        {
+            player.SetData(_adminLastPositionKey, player.Position);
+            AdminUtils.staffSay(player, $"You saved your current admin position. Use /gotob to return to it.");
         }
 
         [AdminCommand(AdminRanks.Admin_Founder)]
@@ -1892,7 +1869,7 @@ namespace CloudRP.ServerSystems.Admin
 
             findPlayer.addPlayerFaction(faction);
 
-            AdminUtils.staffSay(player, $"You've added {player.getPlayerCharacterData().character_name} to the {faction} faction.");
+            AdminUtils.staffSay(player, $"You've added {findPlayer.getPlayerCharacterData().character_name} to the {faction} faction.");
             AdminUtils.staffSay(findPlayer, $"You've been added to the {faction} by admin {player.getPlayerAccountData().admin_name}.");
         }
 
@@ -1982,7 +1959,6 @@ namespace CloudRP.ServerSystems.Admin
                     dbContext.SaveChanges();
                 }
             }
-
         }
     }
 }

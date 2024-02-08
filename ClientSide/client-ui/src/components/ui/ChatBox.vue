@@ -8,6 +8,9 @@
             </ul>
             <input class="border-l-2 border-gray-500 resize" v-show="inputFieldShowing" v-model="userText" ref="input"
                 id="chat_msg" type="text" />
+            <span v-if="inputFieldShowing && userText.length > 0">
+                {{ userText.length > maxLen ? maxLen : userText.length }} / {{ maxLen }}
+            </span>
         </div>
     </div>
 </template>
@@ -31,7 +34,8 @@ export default {
             chatIteration: -1,
             inactiveTimer: 15000,
             closeInterval: null,
-            closeTimeout: null
+            closeTimeout: null,
+            maxLen: 200
         };
     },
     computed: {
@@ -70,6 +74,8 @@ export default {
             }
 
             if (e.keyCode == this.KEYBIND_ENTER) {
+                if (this.userText.length > this.maxLen) return;
+
                 this.inputFieldShowing = false;
                 this.chatIteration = -1;
 
@@ -228,24 +234,21 @@ html {
 
 #chat {
     width: 800px;
-    line-height: 24px;
     font-weight: 700;
-    text-shadow: -33px -33px 2 #000, 33px -33px 2 #000, -33px 33px 2 #000, 33px 33px 2 #000;
     text-shadow: 0 0 5px #000000, 0 0 6px #000000;
-    font-family: "Arial", sans-serif;
     font-size: 16px;
     margin-left: 15px;
 }
 
 @media screen and (min-height: 1080px) {
     #chat {
-        font-size: 18px !important;
+        font-size: 12px !important;
         font-weight: 700;
     }
 }
 
 #chat ul#chat_messages {
-    height: 285px;
+    height: 300px;
     margin-top: 1vh;
     transform: rotate(180deg);
     padding: 10px 20px;

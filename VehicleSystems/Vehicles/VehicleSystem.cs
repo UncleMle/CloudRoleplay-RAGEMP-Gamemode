@@ -1065,11 +1065,10 @@ namespace CloudRP.VehicleSystems.Vehicles
         [RemoteEvent("server:updateVehicleFuel")]
         public void removeVehicleFuel(Player player, double vehicleSpeed)
         {
+            if (player.adminDuty()) return;
+
             Vehicle vehicle = player.Vehicle;
             if (vehicle == null) return;
-
-            User userData = player.getPlayerAccountData();
-            if (userData != null && userData.adminDuty) return;
 
             DbVehicle vehicleData = player.Vehicle.getData();
 
@@ -1271,6 +1270,8 @@ namespace CloudRP.VehicleSystems.Vehicles
         [RemoteEvent("server:stallVehicle")]
         public void beginVehicleStall(Player player, int stallType)
         {
+            if (player.adminDuty()) return;
+
             if(player.IsInVehicle && player.VehicleSeat == 0 && !player.Vehicle.isStalled() && player.Vehicle.getData() != null)
             {
                 DbVehicle vehicleData = player.Vehicle.getData();

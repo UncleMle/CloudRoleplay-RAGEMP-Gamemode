@@ -31,7 +31,7 @@ namespace CloudRP.ServerSystems.Admin
 
                 if (userData.adminDuty)
                 {
-                    AdminSystem.saveAdutyPosition(userData, player.Position);
+                    player.SetData(AdminSystem._adminLastPositionKey, player.Position);
                 }
                 else
                 {
