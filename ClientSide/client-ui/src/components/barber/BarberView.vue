@@ -2,7 +2,7 @@
     <main class="relative">
         <div class="absolute right-[3%] text-white">
 
-            <div class="relative mt-52 bg-black/70 p-3 rounded-xl">
+            <div class="relative mt-20 bg-black/70 p-3 rounded-xl">
                 <h1 class="font-bold text-2xl pl-4">
                     <i class="fa-solid fa-scissors text-gray-400"></i> Barber Shop
                 </h1>
@@ -17,7 +17,7 @@
                         <div class="relative w-full h-fit pb-2 rounded-lg border border-gray-900 ">
 
 
-                            <div v-for="(item, idx) in Object.keys(barberData)" :key="idx" class="mt-2">
+                            <div v-for="(item, idx) in Object.keys(barberData)" :key="idx">
 
                                 <div class="ml-10 mr-10 p-2">
 

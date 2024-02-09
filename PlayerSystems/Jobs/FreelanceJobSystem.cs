@@ -6,6 +6,7 @@ using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
+using CloudRP.World.TimeWeather;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
@@ -15,12 +16,19 @@ namespace CloudRP.PlayerSystems.Jobs
     public class FreelanceJobSystem : Script
     {
         public delegate void FreelanceJobSystemEventsHandler(Player player, FreeLanceJobData job);
+
+        #region Event Handlers
         public static event FreelanceJobSystemEventsHandler quitJob;
+        #endregion
+
+        public static readonly int baseSalaryPay = 50;
         public static readonly string _FreelanceJobDataIdentifier = "FreeLanceJobData";
         public static readonly string _FreelanceJobVehicleDataIdentifier = "FreeLanceJobVehicleData";
-        
+
         public FreelanceJobSystem()
         {
+            TimeSystem.realHourPassed += handlePayBaseSalary;
+
             DeathEvent.onDeath += (player) =>
             {
                 if(player.getFreelanceJobData() != null)
@@ -57,6 +65,21 @@ namespace CloudRP.PlayerSystems.Jobs
 
                 vehicle.Delete();
             }
+        }
+
+        public static void handlePayBaseSalary()
+        {
+            NAPI.Pools.GetAllPlayers().ForEach(p =>
+            {
+                DbCharacter character = p.getPlayerCharacterData();
+
+                if (character == null || character != null && character.faction_duty_status != -1) return;
+
+                character.salary_amount += baseSalaryPay;
+
+                p.setPlayerCharacterData(character, false, true);
+                p.SendChatMessage(ChatUtils.salary + $"You have recieved your benefit salary of {ChatUtils.moneyGreen}${baseSalaryPay.ToString("N0")}{ChatUtils.White}.");
+            });
         }
 
         public static bool hasFreeLanceVehicle(Player player)

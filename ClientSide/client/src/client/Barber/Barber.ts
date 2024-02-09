@@ -13,8 +13,6 @@ export default class Barber {
         try {
             let barber: BarberData = JSON.parse(data);
 
-            mp.console.logInfo(data + " data");
-
             Barber.LocalPlayer.setComponentVariation(2, parseInt(barber.hairStyle), 0, 0);
             Barber.LocalPlayer.setHairColor(parseInt(barber.hairColour), parseInt(barber.hairHighlights));
             Barber.LocalPlayer.setHeadOverlay(1, parseInt(barber.facialHairStyle), 1.0, parseInt(barber.facialHairColour), 0);

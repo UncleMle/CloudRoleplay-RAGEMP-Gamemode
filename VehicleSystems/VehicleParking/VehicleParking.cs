@@ -124,6 +124,26 @@ namespace CloudRP.VehicleSystems.VehicleParking
                 },
                 parkPosRange = 2.5f,
                 retrievePosRange = 1f
+            },
+            new ParkingLot
+            {
+                name = "Pillbox Parking",
+                parkingId = 6,
+                spawnVehiclesAt = new Vector3(-284.5, -901.8, 31.1),
+                park = new ParkCol
+                {
+                    owner_id = 6,
+                    name = "Pillbox",
+                    position = new Vector3(-274.9, -891.9, 31.3)
+                },
+                retrieve = new RetrieveCol
+                {
+                    name = "Pillbox",
+                    owner_id = 6,
+                    position = new Vector3(-281.4, -888.8, 31.3)
+                },
+                parkPosRange = 2.5f,
+                retrievePosRange = 1f
             }
         };
 
