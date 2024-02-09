@@ -45,7 +45,6 @@ namespace CloudRP.ServerSystems.Utils
                         string lname = findPlayerCharacterName.Split("_")[1];
                         string fname = findPlayerCharacterName.Split("_")[0];
 
-
                         if (nameFind == fname || nameFind == lname)
                         {
                             returnPlayer = findPlayer;

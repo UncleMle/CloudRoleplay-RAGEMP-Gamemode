@@ -49,7 +49,6 @@ namespace CloudRP.VehicleSystems.Vehicles
         OpenWheels
     }
 
-
     public class VehicleSystem : Script
     {
         public delegate void VehicleSystemEventsHandler(Vehicle vehicle, DbVehicle vehicleData);

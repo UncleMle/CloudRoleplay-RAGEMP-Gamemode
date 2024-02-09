@@ -246,7 +246,63 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
                 viewPosition = new Vector3(-223.3, 6243.1, 31.5),
                 viewRange = 1f
             },
-
+            new DealerShip
+            {
+                dealerShipId = 4,
+                dealershipName = "Strawberry Wheelin' deals",
+                position = new Vector3(-43.6, -1661.8, 29.5),
+                spawnPosition = new Vector3(-47.8, -1682.9, 29.5),
+                viewPosition = new Vector3(-43.6, -1661.8, 29.5),
+                vehicles = new List<DealerVehicle> {
+                    new DealerVehicle { spawnName = "BLISTA", price = 1235 },
+                    new DealerVehicle { spawnName = "DILETT", price = 1235 },
+                    new DealerVehicle { spawnName = "ISSI", price = 1235 },
+                    new DealerVehicle { spawnName = "PANTO", price = 1235 },
+                    new DealerVehicle { spawnName = "PRAIRIE", price = 1235 },
+                    new DealerVehicle { spawnName = "RHAPSODY", price = 1235 },
+                    new DealerVehicle { spawnName = "BJXL", price = 1235 },
+                    new DealerVehicle { spawnName = "BISON", price = 1235 },
+                    new DealerVehicle { spawnName = "BOBCATXL", price = 1235 },
+                    new DealerVehicle { spawnName = "BODHI", price = 1235 },
+                    new DealerVehicle { spawnName = "DUBSTA2", price = 1235 },
+                    new DealerVehicle { spawnName = "DUNE", price = 1235 },
+                    new DealerVehicle { spawnName = "EMPTR", price = 1235 },
+                    new DealerVehicle { spawnName = "EMPTR2", price = 1235 },
+                    new DealerVehicle { spawnName = "FAGGIO", price = 1235 },
+                    new DealerVehicle { spawnName = "FAGGIO2", price = 1235 },
+                    new DealerVehicle { spawnName = "FUGITIVE", price = 1235 },
+                    new DealerVehicle { spawnName = "GRANGER", price = 1235 },
+                    new DealerVehicle { spawnName = "INGOT", price = 1235 },
+                    new DealerVehicle { spawnName = "INTRUDER", price = 1235 }
+                },
+                viewRange = 1f
+            },
+            new DealerShip
+            {
+                dealerShipId = 5,
+                dealershipName = "Sanders Motorcycles",
+                position = new Vector3(268.7, -1155.5, 29.3),
+                spawnPosition = new Vector3(256.1, -1150.3, 29.3),
+                viewPosition = new Vector3(268.7, -1155.5, 29.3),
+                vehicles = new List<DealerVehicle>
+                {
+                    new DealerVehicle { spawnName = "BAGGER", price = 1235 },
+                    new DealerVehicle { spawnName = "BATI", price = 1235 },
+                    new DealerVehicle { spawnName = "BATI2", price = 1235 },
+                    new DealerVehicle { spawnName = "DAEMON", price = 1235 },
+                    new DealerVehicle { spawnName = "DOUBLE", price = 1235 },
+                    new DealerVehicle { spawnName = "FAGGIO", price = 1235 },
+                    new DealerVehicle { spawnName = "FAGGIO2", price = 1235 },
+                    new DealerVehicle { spawnName = "HEXER", price = 1235 },
+                    new DealerVehicle { spawnName = "LECTRO", price = 1235 },
+                    new DealerVehicle { spawnName = "NEMESIS", price = 1235 },
+                    new DealerVehicle { spawnName = "PCJ", price = 1235 },
+                    new DealerVehicle { spawnName = "RUFFIAN", price = 1235 },
+                    new DealerVehicle { spawnName = "SOVEREIGN", price = 1235 },
+                    new DealerVehicle { spawnName = "VADER", price = 1235 }
+                },
+                viewRange = 1f
+            }
         };
 
         public VehicleDealershipSystem()

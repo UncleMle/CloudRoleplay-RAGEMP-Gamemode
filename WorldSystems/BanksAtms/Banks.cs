@@ -48,6 +48,24 @@ namespace CloudRP.World.BanksAtms
                     new Vector3(-112.7, 6468.6, 31.6),
                     new Vector3(-111.6, 6467.5, 31.6)
                 }
+            },
+            new Bank
+            {
+                blipPos = new Vector3(149.4, -1040.6, 29.4),
+                tellers = new List<Vector3>
+                {
+                    new Vector3(150.1, -1040.2, 29.4),
+                    new Vector3(148.6, -1039.6, 29.4)
+                }
+            },
+            new Bank
+            {
+                blipPos = new Vector3(-2962.6, 482.1, 15.7),
+                tellers = new List<Vector3>
+                {
+                    new Vector3(-2963.1, 483.0, 15.7),
+                    new Vector3(-2963.3, 481.3, 15.7)
+                }
             }
         };
 

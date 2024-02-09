@@ -100,7 +100,6 @@ namespace CloudRP.PlayerSystems.ChatSystem
             {
                 AdminUtils.sendMessageToAllStaff($"Admin {user.admin_name} has disconnected from the server.", 0, true);
             }
-
         }
 
         #endregion
