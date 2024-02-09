@@ -216,10 +216,10 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
 
                 if(characterData != null && selectedJob != null && jobData.jobLevel == 2)
                 {
-                    characterData.money_amount += selectedJob.jobPay;
+                    characterData.salary_amount += selectedJob.jobPay;
                     player.setPlayerCharacterData(characterData, false, true);
 
-                    player.SendChatMessage(ChatUtils.freelanceJobs + $"You have finished the trucker job {selectedJob.jobName} and have been payed {ChatUtils.moneyGreen}${selectedJob.jobPay}");
+                    player.SendChatMessage(ChatUtils.freelanceJobs + $"You have finished the trucker job {selectedJob.jobName} and {ChatUtils.moneyGreen}${selectedJob.jobPay.ToString("N0")}{ChatUtils.White} has been paid into your salary.");
                     FreelanceJobSystem.deleteFreeLanceVehs(player);
                     MarkersAndLabels.removeClientBlip(player);
                 }

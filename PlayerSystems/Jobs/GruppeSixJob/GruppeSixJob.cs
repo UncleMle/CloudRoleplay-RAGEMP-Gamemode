@@ -161,11 +161,11 @@ namespace CloudRP.PlayerSystems.Jobs.GruppeSixJob
             MarkersAndLabels.removeClientBlip(player);
             FreelanceJobSystem.deleteFreeLanceVehs(player);
 
-            character.money_amount += selectJob.jobPay;
+            character.salary_amount += selectJob.jobPay;
 
             player.setPlayerCharacterData(character, false, true);
 
-            player.SendChatMessage(ChatUtils.freelanceJobs + $"You have finished the {jobName} Job ({selectJob.name}) and have been payed {ChatUtils.moneyGreen}${selectJob.jobPay.ToString("N0")}");
+            player.SendChatMessage(ChatUtils.freelanceJobs + $"You have finished the {jobName} Job ({selectJob.name}) and {ChatUtils.moneyGreen}${selectJob.jobPay.ToString("N0")}{ChatUtils.White} has been paid into your salary.");
         }
         #endregion
 

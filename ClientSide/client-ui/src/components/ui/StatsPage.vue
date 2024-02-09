@@ -30,6 +30,12 @@
                                         characterStats.cash_amount.toLocaleString("en-US") }}</span>
                                 </div>
                                 <div class="relative w-full mt-4">
+                                    <span class="left-0 top-0 "><i class="fa-solid fa-money-bill pr-2"></i>Salary
+                                        Amount</span>
+                                    <span class="absolute right-0 top-0 text-green-400">${{
+                                        characterStats.salary_amount.toLocaleString("en-US") }}</span>
+                                </div>
+                                <div class="relative w-full mt-4">
                                     <span class="left-0 top-0 "><i class="fa-solid fa-star pr-2"></i>Experience</span>
                                     <span class="absolute right-0 top-0">{{
                                         characterStats.player_exp.toLocaleString("en-US") }}</span>
@@ -45,8 +51,7 @@
                                         Count</span>
                                     <span v-if="characterStats.character_faction_data" class="absolute right-0 top-0">{{
                                         JSON.parse(characterStats.character_faction_data).length }}</span>
-                                    <span v-else
-                                        class="absolute right-0 top-0">0</span>
+                                    <span v-else class="absolute right-0 top-0">0</span>
                                 </div>
 
                                 <div class="relative w-full mt-4">

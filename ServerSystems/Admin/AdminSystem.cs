@@ -1960,5 +1960,27 @@ namespace CloudRP.ServerSystems.Admin
                 }
             }
         }
+
+        [AdminCommand(AdminRanks.Admin_HeadAdmin)]
+        [Command("giveasalary", "~r~/giveasalary [nameOrId] [amount]")]
+        public void adminGiveSalaryCommand(Player player, string nameOrId, long amount)
+        {
+            User user = player.getPlayerAccountData();
+            Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+            if (findPlayer == null)
+            {
+                CommandUtils.notFound(player);
+                return;
+            }
+
+            DbCharacter findPlayerData = findPlayer.getPlayerCharacterData();
+
+            findPlayerData.salary_amount += amount;
+            findPlayer.setPlayerCharacterData(findPlayerData, false, true);
+
+            AdminUtils.staffSay(player, $"You put ${amount.ToString("N0")} into {findPlayerData.character_name} salary.");
+            AdminUtils.staffSay(findPlayer, $"{user.admin_name} has placed ${amount.ToString("N0")} into your salary.");
+        }
     }
 }

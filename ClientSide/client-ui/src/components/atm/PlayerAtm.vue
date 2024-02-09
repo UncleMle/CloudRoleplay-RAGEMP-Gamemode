@@ -26,8 +26,8 @@
                                     <button @click="browserView = 'withdraw'"
                                         class="border p-3 rounded-xl border-gray-600 bg-black/50 hover:text-green-400 duration-300 w-full">Withdraw</button>
                                 </div>
-                                <div>
-                                    <button
+                                <div v-if="playerData.atm_data.isBank">
+                                    <button @click="browserView = 'salary'"
                                         class="border p-3 rounded-xl border-gray-600 bg-black/50 hover:text-green-400 duration-300 w-full">Retrieve
                                         Salary</button>
                                 </div>
@@ -53,6 +53,9 @@
                                 <p class="mt-6">Your current balance in cash is <font
                                         class=" p-2 rounded-lg text-green-400">${{
                                             playerData.atm_data.balanceCash.toLocaleString("en-US") }}</font>
+                                </p>
+                                <p class="mt-6">Your current salary is <font class=" p-2 rounded-lg text-green-400">${{
+                                    playerData.atm_data.balanceSalary.toLocaleString("en-US") }}</font>
                                 </p>
                             </div>
 
@@ -125,6 +128,24 @@
                                 </div>
                             </div>
 
+                            <div v-if="browserView == 'salary'" class="text-center mt-4">
+                                <div>
+                                    <p>Your current salary balance is <font class="p-2 rounded-lg text-green-400">${{
+                                        playerData.atm_data.balanceSalary.toLocaleString("en-US") }}</font>
+                                    </p>
+                                </div>
+
+                                <div class="mt-6 mr-[15%] ml-[15%] space-y-5">
+                                    <button @click="retrieveSalary"
+                                        :disabled="serverLoading || playerData.atm_data.balanceSalary == 0"
+                                        class="w-full border p-3.5 rounded-lg border-gray-600 bg-black/50 duration-300"
+                                        :class="playerData.atm_data.balanceSalary == 0 ? 'hover:text-red-400' : 'hover:text-green-400'">
+                                        <LoadingSpinner v-if="serverLoading" />
+                                        <span v-else>Retrieve</span>
+                                    </button>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -174,6 +195,10 @@ export default {
                 recieverName: this.transferCashName,
                 transferAmount: this.transferCashAmount
             }));
+        },
+        retrieveSalary() {
+            this.$store.state.uiStates.serverLoading = true;
+            sendToServer("server:bank:retrieveSalary");
         }
     }
 }

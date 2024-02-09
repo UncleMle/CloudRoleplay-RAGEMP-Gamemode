@@ -9,13 +9,13 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace CloudRP.World.BanksAtms
 {
     public class Banks : Script
     {
-        public static string _tellerColshapeDataIdentifier = "bankTellerColshapeData";
         public static int bankCloseHour = 22;
         public static int bankOpenHour = 8;
         public static List<Bank> banks = new List<Bank>
@@ -55,71 +55,82 @@ namespace CloudRP.World.BanksAtms
         {
             KeyPressEvents.keyPress_Y += openBankEvent;
 
-            NAPI.Task.Run(() =>
+            banks.ForEach(bank =>
             {
-                banks.ForEach(bank =>
+                NAPI.Blip.CreateBlip(374, bank.blipPos, 1.0f, 5, "Bank", 255, 1.0f, true, 0, 0);
+
+                bank.tellers.ForEach(teller =>
                 {
-                    NAPI.Blip.CreateBlip(374, bank.blipPos, 1.0f, 5, "Bank", 255, 1.0f, true, 0, 0);
-
-                    bank.tellers.ForEach(teller =>
-                    {
-                        ColShape tellerCol = NAPI.ColShape.CreateSphereColShape(teller, 1.0f, 0);
-                        tellerCol.SetData(_tellerColshapeDataIdentifier, bank);
-                        MarkersAndLabels.setTextLabel(teller, $"Use ~y~Y~w~ to interact with bank. (Open - {bankOpenHour}:00 to {bankCloseHour}:00)", 5f);
-                        MarkersAndLabels.setPlaceMarker(teller);
-
-                        Bank bankData = tellerCol.GetData<Bank>(_tellerColshapeDataIdentifier);
-
-                        tellerCol.OnEntityEnterColShape += (shape, player) =>
-                        {
-                            if (bankData != null)
-                            {
-                                player.SetData(_tellerColshapeDataIdentifier, bankData);
-                                player.SetSharedData(_tellerColshapeDataIdentifier, bankData);
-                            }
-                        };
-
-                        tellerCol.OnEntityExitColShape += (shape, player) =>
-                        {
-                            if (shape.GetData<Bank>(_tellerColshapeDataIdentifier) != null)
-                            {
-                                player.ResetData(_tellerColshapeDataIdentifier);
-                                player.ResetSharedData(_tellerColshapeDataIdentifier);
-                            }
-                        };
-                    });
+                    MarkersAndLabels.setTextLabel(teller, $"Use ~y~Y~w~ to interact with bank.\n(Open - {bankOpenHour}:00 to {bankCloseHour}:00)", 5f);
+                    MarkersAndLabels.setPlaceMarker(teller);
                 });
             });
         }
 
+        #region Global Methods
+        public static bool closeToBankTeller(Player player)
+        {
+            bool close = false;
+
+            banks.ForEach(bank =>
+            {
+                Vector3 closeTeller = bank.tellers
+                .Where(teller => player.checkIsWithinCoord(teller, 2f))
+                .FirstOrDefault();
+
+                if (closeTeller != null) close = true;
+            });
+
+            return close;
+        }
+
         public void openBankEvent(Player player)
         {
-            Bank bankData = player.GetData<Bank>(_tellerColshapeDataIdentifier);
+            if (!closeToBankTeller(player)) return;
+
             DbCharacter characterData = player.getPlayerCharacterData();
 
-            if (bankData != null && characterData != null)
+            if (characterData != null)
             {
                 if(isBankOpen(player))
                 {
-                    uiHandling.handleObjectUiMutation(player, MutationKeys.AtmData, new AtmUiData
-                    {
-                        isBank = true,
-                        balanceMoney = characterData.money_amount,
-                        balanceCash = characterData.cash_amount,
-                    });
-
-                    uiHandling.pushRouterToClient(player, Browsers.Atm, true);
+                    sendAtmUIData(player, characterData);
                 }
             }
         }
 
+        public static void sendAtmUIData(Player player, DbCharacter character)
+        {
+            uiHandling.handleObjectUiMutation(player, MutationKeys.AtmData, new AtmUiData
+            {
+                isBank = closeToBankTeller(player),
+                balanceMoney = character.money_amount,
+                balanceCash = character.cash_amount,
+                balanceSalary = character.salary_amount
+            });
+
+            uiHandling.pushRouterToClient(player, Browsers.Atm, true);
+        }
+
+        public static bool isBankOpen(Player player)
+        {
+            if (TimeSystem.hour > bankCloseHour - 1 || TimeSystem.hour < bankOpenHour)
+            {
+                uiHandling.sendPushNotifError(player, $"The bank is currently closed. Come back at {bankOpenHour}{(bankOpenHour > 12 ? "PM" : "AM")}", 5500);
+                return false;
+            }
+
+            return true;
+        }
+        #endregion
+
+        #region Remote Events
         [RemoteEvent("server:bankDepositCash")]
         public void bankDepositEvent(Player player, string amount)
         {
-            Bank bankData = player.GetData<Bank>(_tellerColshapeDataIdentifier);
             DbCharacter characterData = player.getPlayerCharacterData();
 
-            if (bankData != null && characterData != null && isBankOpen(player))
+            if (closeToBankTeller(player) && characterData != null && isBankOpen(player))
             {
                 try
                 {
@@ -144,7 +155,7 @@ namespace CloudRP.World.BanksAtms
                     uiHandling.sendNotification(player, $"~g~Deposited ${cashDepo.ToString("N0")}.", false, true, "Deposits cash.");
 
                     uiHandling.setLoadingState(player, false);
-                    uiHandling.pushRouterToClient(player, Browsers.None);
+                    sendAtmUIData(player, characterData);
                 }
                 catch
                 {
@@ -160,11 +171,10 @@ namespace CloudRP.World.BanksAtms
         [RemoteEvent("server:bankTransferSomeone")]
         public void bankTransferEvent(Player player, string data)
         {
-            Bank bankData = player.GetData<Bank>(_tellerColshapeDataIdentifier);
             DbCharacter characterData = player.getPlayerCharacterData();
             BankTransfer bankTransfer = JsonConvert.DeserializeObject<BankTransfer>(data);
 
-            if (bankData != null && characterData != null && bankTransfer != null && isBankOpen(player))
+            if (closeToBankTeller(player) && characterData != null && bankTransfer != null && isBankOpen(player))
             {
                 try
                 {
@@ -209,6 +219,7 @@ namespace CloudRP.World.BanksAtms
                                 p.SendChatMessage(ChatUtils.info + $"You have just been bank transferred ${transferAmount.ToString("N0")}.");
                                 CommandUtils.successSay(player, $"You successfully bank transferred {targetCharData.character_name} ${transferAmount.ToString("N0")}");
                                 uiHandling.setLoadingState(player, false);
+                                sendAtmUIData(player, characterData);
                             }
                         });
                     }
@@ -225,15 +236,24 @@ namespace CloudRP.World.BanksAtms
             }
         }
 
-        public static bool isBankOpen(Player player)
+        [RemoteEvent("server:bank:retrieveSalary")]
+        public void retrievePlayerSalary(Player player)
         {
-            if (TimeSystem.hour > bankCloseHour - 1 || TimeSystem.hour < bankOpenHour)
-            {
-                uiHandling.sendPushNotifError(player, $"The bank is currently closed. Come back at {bankOpenHour}{(bankOpenHour > 12 ? "PM" : "AM")}", 5500);
-                return false;
-            }
+            DbCharacter character = player.getPlayerCharacterData();
 
-            return true;
+            if (character == null || character != null && character.salary_amount == 0) return;
+
+            long salary = character.salary_amount;
+
+            character.money_amount += salary;
+            character.salary_amount = 0;
+            player.setPlayerCharacterData(character, false, true);
+
+            uiHandling.setLoadingState(player, false);
+            sendAtmUIData(player, character);
+
+            CommandUtils.successSay(player, $"You have successfully deposited {ChatUtils.moneyGreen}${salary.ToString("N0")}{ChatUtils.White} from your salary into your bank account.");
         }
+        #endregion
     }
 }

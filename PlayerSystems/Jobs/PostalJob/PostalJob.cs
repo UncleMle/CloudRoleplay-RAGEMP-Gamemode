@@ -156,7 +156,7 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
                 FreelanceJobSystem.deleteFreeLanceVehs(player);
                 MarkersAndLabels.removeClientBlip(player);
 
-                characterData.money_amount += postal.selectedJob.jobPay;
+                characterData.salary_amount += postal.selectedJob.jobPay;
 
                 player.setPlayerCharacterData(characterData, false, true);
                 player.SendChatMessage(ChatUtils.freelanceJobs + $"You have finished your postal route ({postal.selectedJob.name}) and earned {ChatUtils.moneyGreen}${postal.selectedJob.jobPay}");

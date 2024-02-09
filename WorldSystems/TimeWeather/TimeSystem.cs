@@ -15,7 +15,6 @@ namespace CloudRP.World.TimeWeather
         public delegate void TimeSystemEventsHandler();
 
         #region Event Handlers
-        public static event TimeSystemEventsHandler serverHourPassed;
         public static event TimeSystemEventsHandler realHourPassed;
         #endregion
 
@@ -50,8 +49,6 @@ namespace CloudRP.World.TimeWeather
                 {
                     if (min == 59)
                     {
-                        serverHourPassed();
-
                         min = 0;
 
                         if (hour == 23)

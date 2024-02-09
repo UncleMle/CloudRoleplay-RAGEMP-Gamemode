@@ -1,43 +1,30 @@
 <template>
     <main>
-        <div class="fixed inset-0 w-full text-white text-lg">
-            <div class="container flex items-center mx-auto mt-52">
 
-                <div class="w-full">
-                    <div class="flex justify-center w-full">
-                        <div
-                            class="rounded-xl text-white w-[50%] bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
-
-                            <div>
-                                <div class="p-1 text-xl pb-4 font-medium">
-                                    <h2>Inventory Items ({{ playerData.inventory_items.length }} KG)</h2>
-                                </div>
-
-                                <div class="grid grid-cols-6 w-full">
-                                    <div v-for="i in 24" :key="i" class="border h-32 w-full">
-                                        <div :id="'invenItem' + i" v-if="playerData.inventory_items[i - 1]"
-                                            class="h-full w-full relative">
-
-                                            <img :src="getItemImg(playerData.inventory_items[i - 1].name)"
-                                                class="scale-[55%] absolute bottom-2" />
-
-                                            <div class="absolute bottom-0 bg-black/70 w-full">
-                                                <p
-                                                    class="text-center max-h-7 max-w-xs overflow-hidden text-ellipsis whitespace-nowrap font-medium text-gray-300">
-                                                    {{ playerData.inventory_items[i - 1].displayName }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div v-else :id="'invenContainer' + i" class="h-full">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+        <div class="inv-whole">
+            <div class="p-1 text-xl pb-4 font-medium">
+                <h2>Inventory Items ({{ playerData.inventory_items.length }} KG)</h2>
             </div>
+
+            <div class="inventory" id="inventory-main">
+
+                <div class="cell item" cellid="2">item</div>
+                <div class="cell" cellid="2"></div>
+                <div class="cell" cellid="2"></div>
+                <div class="cell" cellid="2"></div>
+                <div class="cell" cellid="2"></div>
+                <div class="cell" cellid="2"></div>
+                <div class="cell" cellid="2"></div>
+                <div class="cell" cellid="2"></div>
+                <div class="cell" cellid="2"></div>
+                <div class="cell" cellid="2"></div>
+                <div class="cell" cellid="2"></div>
+                <div class="cell" cellid="2"></div>
+                <div class="cell" cellid="2"></div>
+                <div class="cell" cellid="2"></div>
+                <div class="cell" cellid="2"></div>
+            </div>
+
         </div>
     </main>
 </template>
@@ -87,10 +74,36 @@ export default {
         document.addEventListener("contextmenu", this.startContextMenu);
     },
     mounted() {
+        dragular([document.getElementById("inventory-main"), document.getElementById("item")], {
+            moves: (el) => {
+                return el.className !== "cell";
+            }
+        })
+            .on('drag', (el) => {
 
-        for (let i = 0; i < 24; i++) {
-            dragular([document.getElementById(`invenItem${i}`), document.getElementById(`invenContainer${i}`)]);
-        }
+                if (el.className == "cell") return true;
+
+                console.log(el.cellid + " cellid");
+
+                el.className = el.className.replace('ex-moved', '');
+
+                return false;
+            }).on('drop', (el) => {
+                el.className += ' ex-moved';
+
+                return false;
+            }).on('over', (el, container) => {
+
+
+                container.className += ' ex-over';
+                return false
+            }).on('out', (el, container) => {
+                container.className = container.className.replace('ex-over', '');
+                return false;
+
+            });
     }
 }
 </script>
+
+<style></style>

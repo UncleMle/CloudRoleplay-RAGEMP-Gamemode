@@ -183,10 +183,10 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                             jobData.jobLevel = -1;
                             player.setFreelanceJobData(jobData);
 
-                            characterData.money_amount += selectedRoute.routePay;
+                            characterData.salary_amount += selectedRoute.routePay;
                             player.setPlayerCharacterData(characterData, false, true);
 
-                            player.SendChatMessage(ChatUtils.freelanceJobs + $"You have been payed {ChatUtils.moneyGreen}${selectedRoute.routePay}{ChatUtils.White} for completeting the {selectedRoute.routeName} route.");
+                            player.SendChatMessage(ChatUtils.freelanceJobs + $"{ChatUtils.moneyGreen}${selectedRoute.routePay}{ChatUtils.White} has been paid into your salary for completeting the {selectedRoute.routeName} route.");
                             player.Vehicle.Delete();
                         }
                     }

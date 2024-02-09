@@ -40,6 +40,7 @@ namespace CloudRP.World.BanksAtms
             new Vector3(33.2f, -1348.2, 29.5),
             new Vector3(-1827.2, 784.9, 138.3),
             new Vector3(380.9, 323.4, 103.6),
+            new Vector3(380.9, 323.4, 103.6),
             new Vector3(1686.8, 4815.8, 42.0),
             new Vector3(1702.9, 4933.5, 42.1),
             new Vector3(2682.9, 3286.7, 55.2),
@@ -58,7 +59,11 @@ namespace CloudRP.World.BanksAtms
             new Vector3(2558.8, 351.1, 108.6),
             new Vector3(2558.4, 389.4, 108.6),
             new Vector3(228.2, 338.5, 105.6),
-            new Vector3(356.9, 173.6, 103.1)
+            new Vector3(356.9, 173.6, 103.1),
+            new Vector3(-165.1, 234.9, 94.9),
+            new Vector3(-165.1, 232.8, 94.9),
+            new Vector3(1153.7, -326.8, 69.2),
+            new Vector3(158.7, 234.2, 106.6)
         };
 
         public AtmSystem()
@@ -96,23 +101,16 @@ namespace CloudRP.World.BanksAtms
 
             if (characterData != null)
             {
-                uiHandling.handleObjectUiMutation(player, MutationKeys.AtmData, new AtmUiData
-                {
-                    balanceMoney = characterData.money_amount,
-                    balanceCash = characterData.cash_amount
-                });
-
-                uiHandling.pushRouterToClient(player, Browsers.Atm, true);
+                Banks.sendAtmUIData(player, characterData);
             }
         }
 
         [RemoteEvent("server:atmWithdrawCash")]
         public void atmWithdrawCash(Player player, string amount)
         {
-            Bank bankData = player.GetData<Bank>(Banks._tellerColshapeDataIdentifier);
             DbCharacter characterData = player.getPlayerCharacterData();
 
-            if ((checkIsByAtm(player) || bankData != null) && characterData != null)
+            if ((checkIsByAtm(player) || Banks.closeToBankTeller(player)) && characterData != null)
             {
                 if (amount == null || string.IsNullOrWhiteSpace(amount))
                 {
@@ -124,7 +122,7 @@ namespace CloudRP.World.BanksAtms
                 {
                     int withdrawAmount = int.Parse(amount);
 
-                    if (withdrawAmount > 0 && withdrawAmount < 200000)
+                    if (withdrawAmount > 0 && withdrawAmount <= 200000)
                     {
                         if (characterData.money_amount - withdrawAmount < 0)
                         {
@@ -137,8 +135,8 @@ namespace CloudRP.World.BanksAtms
 
                         player.setPlayerCharacterData(characterData, false, true);
                         uiHandling.sendNotification(player, $"~g~You withdrew ${withdrawAmount.ToString("N0")}.", false, true, "Withdraws cash.");
-                        uiHandling.pushRouterToClient(player, Browsers.None);
                         uiHandling.setLoadingState(player, false);
+                        Banks.sendAtmUIData(player, characterData);
                     }
                     else
                     {
