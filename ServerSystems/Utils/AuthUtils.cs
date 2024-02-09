@@ -160,7 +160,7 @@ namespace CloudRP.ServerSystems.Utils
 
         public static string firstCharToUpper(string input)
         {
-            return string.Concat(input[0].ToString().ToUpper(), input.AsSpan(1));
+            return string.Concat(input[0].ToString().ToUpper(), input.AsSpan(1).ToString().ToLower());
         }
 
         public static bool registerDetailsValid(Player player, Register registeringData)

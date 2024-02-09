@@ -288,7 +288,7 @@ namespace CloudRP.VehicleSystems.Vehicles
 
                 AdminUtils.staffSay(player, "Class: " + ChatUtils.red + vehicleData.vehicle_class_id + AdminUtils.staffSuffixColour + " Insurance Status: " + (vehicleData.insurance_status ? ChatUtils.moneyGreen + "Insured" : ChatUtils.red + "Not insured"));
                 
-                if(vehicleData.faction_owner_id != (int)Factions.None)
+                if(vehicleData.faction_owner_id != -1)
                 {
                     AdminUtils.staffSay(player, $"Faction Vehicle: {ChatUtils.red}{FactionSystem.getFactionName(vehicleData.faction_owner_id)} Faction");
                 }

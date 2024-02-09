@@ -138,6 +138,12 @@ namespace CloudRP.PlayerSystems.FactionSystems
                 {
                     new Vector3(-354.5, -128.2, 39.4)
                 }
+            },
+            {
+                Factions.DCC, new List<Vector3>
+                {
+                    new Vector3(894.9, -179.1, 74.7)
+                }
             }
         };
         
@@ -227,6 +233,17 @@ namespace CloudRP.PlayerSystems.FactionSystems
                         spawnPos = new Vector3(-371.4, -107.6, 38.7)
                     }
                 }
+            },
+            {
+                Factions.DCC, new List<FactionVehSpawn>
+                {
+                    new FactionVehSpawn
+                    {
+                        garageId = 1,
+                        vehicleRot = -122.9f, 
+                        spawnPos = new Vector3(908.3, -176.5, 74.2)
+                    }
+                }
             }
         };
 
@@ -252,6 +269,13 @@ namespace CloudRP.PlayerSystems.FactionSystems
                 blipType = 60,
                 blipName = "San Andreas Sherrifs Department",
                 blipPos = new Vector3(-446.3, 6007.9, 40.4)
+            },
+            new FactionBlip
+            {
+                blipColour = 60,
+                blipType = 198,
+                blipName = "Downtown Cab Co",
+                blipPos = new Vector3(899.4, -159.6, 83.0)
             }
         };
 
@@ -1040,6 +1064,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
         LSMD,
         Weazel_News,
         Bayview,
-        LS_Customs
+        LS_Customs,
+        DCC
     }
 }

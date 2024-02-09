@@ -85,6 +85,17 @@ namespace CloudRP.PlayerSystems.FactionSystems
                     top = 10,
                     undershirt = 15,
                 }
+            },
+            new FactionUniform
+            {
+                uniformName = "Sr. Driver",
+                uniformId = 7,
+                faction = Factions.DCC,
+                uniform = new CharacterClothing
+                {
+                    top = 10,
+                    undershirt = 15,
+                }
             }
         };
 

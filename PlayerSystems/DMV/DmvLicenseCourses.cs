@@ -18,7 +18,7 @@ namespace CloudRP.PlayerSystems.DMV
                 coursePrice = 60,
                 vehicleName = "asbo",
                 vehicleSpawn = new Vector3(780.4, -2980.3, 5.8),
-                vehicleSpawnRot = 70.9f,
+                vehicleSpawnRot = 70.9f, 
                 stops = new List<Vector3>
                 {
                     new Vector3(758.8, -2993.0, 5.8),
@@ -30,7 +30,7 @@ namespace CloudRP.PlayerSystems.DMV
                     new Vector3(180.8, -797.4, 31.3),
                     new Vector3(392.2, -859.7, 29.3),
                     new Vector3(1150.6, -853.2, 54.8),
-                    new Vector3(816.0, -1438.5, 27.3),
+                    new Vector3(794.2, -1417.8, 27.2),
                     new Vector3(768.5, -2041.7, 29.2),
                     new Vector3(1092.0, -3330.0, 5.9),
                     new Vector3(806.9, -3110.0, 5.9),
