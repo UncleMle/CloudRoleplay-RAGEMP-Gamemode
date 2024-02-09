@@ -23,18 +23,18 @@ namespace CloudRP.PlayerSystems.DMV
                 {
                     new Vector3(758.8, -2993.0, 5.8),
                     new Vector3(753.2, -2485.0, 20.1),
-                    new Vector3(838.6, -1773.6, 30.0),
-                    new Vector3(804.1, -1162.7, 30.3),
-                    new Vector3(620.8, -373.3, 44.1),
+                    new Vector3(838.6, -1773.6, 29.1),
+                    new Vector3(804.1, -1162.6, 28.8),
+                    new Vector3(620.8, -373.3, 43.5),
                     new Vector3(333.5, -389.2, 45.3),
-                    new Vector3(180.8, -797.4, 31.9),
-                    new Vector3(392.2, -859.7, 30.4),
+                    new Vector3(180.8, -797.4, 31.3),
+                    new Vector3(392.2, -859.7, 29.3),
                     new Vector3(1150.6, -853.2, 54.8),
-                    new Vector3(816.0, -1438.5, 27.7),
-                    new Vector3(768.5, -2041.7, 29.9),
-                    new Vector3(1092.0, -3330.0, 6.4),
-                    new Vector3(806.9, -3110.0, 6.1),
-                    new Vector3(765.0, -2992.0, 6.7)
+                    new Vector3(816.0, -1438.5, 27.3),
+                    new Vector3(768.5, -2041.7, 29.2),
+                    new Vector3(1092.0, -3330.0, 5.9),
+                    new Vector3(806.9, -3110.0, 5.9),
+                    new Vector3(765.0, -2992.0, 5.8)
                 }
             },
             new DmvLicenseCourse {
@@ -47,11 +47,11 @@ namespace CloudRP.PlayerSystems.DMV
                 vehicleSpawnRot = -179.4f,
                 stops = new List<Vector3>
                 {
-                    new Vector3(753.5, -2483.8, 21.6),
-                    new Vector3(1028.1, -2470.7, 29.7),
+                    new Vector3(753.5, -2483.8, 20.1),
+                    new Vector3(1028.1, -2470.7, 28.5),
                     new Vector3(1105.4, -2087.4, 38.5),
-                    new Vector3(1188.1, -2587.2, 38.6),
-                    new Vector3(1978.6, -926.1, 79.7)
+                    new Vector3(1188.1, -2587.2, 37.3),
+                    new Vector3(1978.6, -926.1, 79.2)
                 }
             }
         };
