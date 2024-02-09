@@ -75,7 +75,7 @@ namespace CloudRP.PlayerSystems.DeathSystem
                     }
                     else
                     {
-                        NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.info + "You have been injured.");
+                        player.SendChatMessage(ChatUtils.info + $"You have been injured. You will bleed out in {(_deathTimer_seconds / 60).ToString("N1")} minutes. Upon death you will lose all inventory items and cash.");
                         updateAndSetInjuredState(player, characterData);
                     }
                 }
@@ -86,16 +86,15 @@ namespace CloudRP.PlayerSystems.DeathSystem
         {
             DbCharacter playerCharacterData = player.getPlayerCharacterData();
 
+            if(playerCharacterData == null) return;
+
             onDeath(player);
 
-            if (playerCharacterData != null)
-            {
-                player.Dimension = 0;
-                playerCharacterData.player_dimension = 0;
-                playerCharacterData.injured_timer = 0;
+            player.Dimension = 0;
+            playerCharacterData.player_dimension = 0;
+            playerCharacterData.injured_timer = 0;
 
-                player.setPlayerCharacterData(playerCharacterData, false, true);
-            }
+            player.setPlayerCharacterData(playerCharacterData, false, true);
 
             player.TriggerEvent("client:moveSkyCamera", "up", 1, false);
 
@@ -122,7 +121,10 @@ namespace CloudRP.PlayerSystems.DeathSystem
 
             NAPI.Player.SpawnPlayer(player, closestHospital.hospital.position);
 
-            NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.hospital + "You recieved medial treatment at " + closestHospital.hospital.name);
+            playerCharacterData.cash_amount = 0;
+            player.setPlayerCharacterData(playerCharacterData, false, true);
+
+            player.SendChatMessage(ChatUtils.hospital + "You recieved medial treatment at " + closestHospital.hospital.name);
             player.TriggerEvent("client:moveSkyCamera", "down");
             player.TriggerEvent("injured:removeStatus");
         }
