@@ -60,6 +60,20 @@ namespace CloudRP.GeneralSystems.Stores
                 name = "Discount Grapeseed",
                 position = new Vector3(1693.9, 4822.6, 42.1)
             });
+            
+            clothingStores.Add(new ClothingStore
+            {
+                displayName = "Discount Clothing",
+                name = "Discount Vespucci",
+                position = new Vector3(-822.1, -1073.9, 11.3)
+            });
+            
+            clothingStores.Add(new ClothingStore
+            {
+                displayName = "Discount Clothing",
+                name = "Discount Zancudo",
+                position = new Vector3(-1102.2, 2710.7, 19.1)
+            });
 
             for (int i = 0; i < clothingStores.Count; i++)
             {

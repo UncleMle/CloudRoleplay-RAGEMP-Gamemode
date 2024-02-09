@@ -14,6 +14,7 @@ namespace CloudRP.VehicleSystems.VehicleParking
         public int parkingId { get; set; }
         public float parkPosRange { get; set; }
         public float retrievePosRange { get; set; }
+        public bool forAircraft {  get; set; }
     }
 
     public class ParkCol

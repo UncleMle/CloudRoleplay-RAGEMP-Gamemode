@@ -21,6 +21,11 @@ namespace CloudRP.VehicleSystems.VehicleParking
 
         public static event VehicleParkingEventsHandler onVehicleUnpark;
 
+        public static VehicleClasses[] aircraftClasses = new VehicleClasses[]
+        {
+            VehicleClasses.Helicopters, VehicleClasses.Planes
+        };
+
         public static string _parkingLotIdentifier = "parkingLotData";
         public static string _retrievalIdentifier = "retreivalParkingData";
         public static List<ParkingLot> parkingLots = new List<ParkingLot>
@@ -144,6 +149,67 @@ namespace CloudRP.VehicleSystems.VehicleParking
                 },
                 parkPosRange = 2.5f,
                 retrievePosRange = 1f
+            },
+            new ParkingLot
+            {
+                name = "Grapeseed Aircraft Hangar",
+                parkingId = 7,
+                spawnVehiclesAt = new Vector3(2125.3, 4804.1, 41.1),
+                park = new ParkCol
+                {
+                    owner_id = 7,
+                    name = "Grapeseed",
+                    position = new Vector3(2133.0, 4783.5, 41.0)
+                },
+                retrieve = new RetrieveCol
+                {
+                    name = "Grapeseed",
+                    owner_id = 7,
+                    position = new Vector3(2133.0, 4783.5, 41.0)
+                },
+                parkPosRange = 8f,
+                retrievePosRange = 1f,
+                forAircraft = true
+            },
+            new ParkingLot
+            {
+                name = "Senora Aircraft Hangar",
+                parkingId = 8,
+                spawnVehiclesAt = new Vector3(1743.7, 3266.8, 41.2),
+                retrieve = new RetrieveCol {
+                    name = "Senora",
+                    owner_id = 8,
+                    position = new Vector3(1732.2, 3308.6, 41.2)
+                },
+                park = new ParkCol
+                {
+                    owner_id = 8,
+                    name = "Senora",
+                    position = new Vector3(1733.2, 3304.0, 41.2)
+                },
+                retrievePosRange = 1f,
+                parkPosRange = 8f,
+                forAircraft = true
+            },
+            new ParkingLot
+            {
+                name = "LSIA Aircraft Hangar",
+                parkingId = 9,
+                retrieve = new RetrieveCol
+                {
+                    name = "LSIA",
+                    owner_id = 9,
+                    position = new Vector3(-1277.4, -3390.1, 13.9)
+                },
+                park = new ParkCol
+                {
+                    name = "LSIA",
+                    owner_id = 9,
+                    position = new Vector3(-1281.7, -3398.2, 13.9)
+                },
+                parkPosRange = 8f,
+                retrievePosRange = 1f,
+                forAircraft = true
             }
         };
 
@@ -165,7 +231,7 @@ namespace CloudRP.VehicleSystems.VehicleParking
                     retrieveCol.SetData(_retrievalIdentifier, pLot.retrieve);
                     retrieveCol.SetSharedData(_retrievalIdentifier, pLot.retrieve);
 
-                    NAPI.TextLabel.CreateTextLabel($"{pLot.name} ~y~Y~w~ to interact", pLot.retrieve.position, 10f, 1.0f, 4, new Color(255, 255, 255, 255), true);
+                    NAPI.TextLabel.CreateTextLabel($"{pLot.name}\nUse ~y~Y~w~ to interact", pLot.retrieve.position, 10f, 1.0f, 4, new Color(255, 255, 255, 255), true);
                     NAPI.Blip.CreateBlip(831, pLot.park.position, 1.0f, 39, pLot.name, 255, 1.0f, true, 0, 0);
                     NAPI.Marker.CreateMarker(27, new Vector3(pLot.retrieve.position.X, pLot.retrieve.position.Y, pLot.retrieve.position.Z - 0.9), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
                     NAPI.Marker.CreateMarker(36, new Vector3(pLot.park.position.X, pLot.park.position.Y, pLot.park.position.Z), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
@@ -224,6 +290,11 @@ namespace CloudRP.VehicleSystems.VehicleParking
 
             if (parkCol != null && charData != null)
             {
+                ParkingLot targetLot = parkingLots.Where(lot => lot.parkingId == parkCol.owner_id)
+                    .FirstOrDefault();
+
+                if (targetLot == null) return; 
+
                 if (!player.IsInVehicle)
                 {
                     CommandUtils.errorSay(player, "You must be in a vehicle to use this command.");
@@ -232,16 +303,21 @@ namespace CloudRP.VehicleSystems.VehicleParking
                 Vehicle pVeh = player.Vehicle;
                 DbVehicle pVehData = pVeh.getData();
 
+                if (pVehData == null) return;
+
                 if (pVehData.owner_id != charData.character_id)
                 {
                     CommandUtils.errorSay(player, "You must be the owner of the vehicle to park it.");
                     return;
                 }
 
-                if (pVehData != null)
+                if(targetLot.forAircraft && !aircraftClasses.Contains((VehicleClasses)pVehData.vehicle_class_id))
                 {
-                    player.Vehicle.parkVehicle(player, parkCol.owner_id);
+                    CommandUtils.errorSay(player, "Only aircraft can be parked here.");
+                    return;
                 }
+
+                 player.Vehicle.parkVehicle(player, parkCol.owner_id);
             }
             else
             {

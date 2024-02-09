@@ -18,14 +18,26 @@ namespace CloudRP.VehicleSystems.VehicleWashing
             new VehicleWash
             {
                 position = new Vector3(-699.8, -933.4, 19.0),
-                vehicleWashName = "Weazel Washes",
+                vehicleWashName = "Weazel Car Wash",
                 washPrice = 23
             },
             new VehicleWash
             {
                 position = new Vector3(18.7, -1392.0, 29.3),
-                vehicleWashName = "Strawberry Washes",
+                vehicleWashName = "Strawberry Car Wash",
                 washPrice = 57
+            },
+            new VehicleWash
+            {
+                position = new Vector3(-223.0, -1393.9, 31.3),
+                vehicleWashName = "Innocence Car Wash",
+                washPrice = 12
+            },
+            new VehicleWash
+            {
+                position = new Vector3(1373.2, 3619.0, 34.9),
+                vehicleWashName = "Sandy Car Wash",
+                washPrice = 20
             }
         };
 
