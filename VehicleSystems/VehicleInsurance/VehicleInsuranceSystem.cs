@@ -146,7 +146,7 @@ namespace CloudRP.VehicleSystems.VehicleInsurance
             character.money_amount -= insureVehicleFee;
             player.setPlayerCharacterData(character, false, true);
 
-            string newPlate = VehicleSystem.genUniquePlate(vehicleData.vehicle_id, true);
+            string newPlate = VehicleSystem.genUniquePlate(vehicleData.vehicle_id, vehicleData.vehicle_class_id, true);
 
             vehicleData.numberplate = newPlate;
             vehicleData.insurance_status = true;

@@ -21,11 +21,6 @@ namespace CloudRP.VehicleSystems.VehicleParking
 
         public static event VehicleParkingEventsHandler onVehicleUnpark;
 
-        public static VehicleClasses[] aircraftClasses = new VehicleClasses[]
-        {
-            VehicleClasses.Helicopters, VehicleClasses.Planes
-        };
-
         public static string _parkingLotIdentifier = "parkingLotData";
         public static string _retrievalIdentifier = "retreivalParkingData";
         public static List<ParkingLot> parkingLots = new List<ParkingLot>
@@ -207,6 +202,7 @@ namespace CloudRP.VehicleSystems.VehicleParking
                     owner_id = 9,
                     position = new Vector3(-1281.7, -3398.2, 13.9)
                 },
+                spawnVehiclesAt = new Vector3(-1244.6, -3331.8, 13.9),
                 parkPosRange = 8f,
                 retrievePosRange = 1f,
                 forAircraft = true
@@ -311,7 +307,7 @@ namespace CloudRP.VehicleSystems.VehicleParking
                     return;
                 }
 
-                if(targetLot.forAircraft && !aircraftClasses.Contains((VehicleClasses)pVehData.vehicle_class_id))
+                if(targetLot.forAircraft && !VehicleSystem.aircraftClasses.Contains((VehicleClasses)pVehData.vehicle_class_id))
                 {
                     CommandUtils.errorSay(player, "Only aircraft can be parked here.");
                     return;

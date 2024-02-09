@@ -49,6 +49,7 @@ namespace CloudRP.VehicleSystems.Vehicles
         OpenWheels
     }
 
+
     public class VehicleSystem : Script
     {
         public delegate void VehicleSystemEventsHandler(Vehicle vehicle, DbVehicle vehicleData);
@@ -65,6 +66,11 @@ namespace CloudRP.VehicleSystems.Vehicles
         private static int _timerInterval_seconds = 10;
         private static Timer saveVehicleTimer;
         public static readonly int[] blockedSeatbeltClasses = { 13, 14, 15, 16, 21, 8 };
+
+        public static VehicleClasses[] aircraftClasses = new VehicleClasses[]
+        {
+            VehicleClasses.Helicopters, VehicleClasses.Planes
+        };
 
         #region Init
         public VehicleSystem()
@@ -392,7 +398,8 @@ namespace CloudRP.VehicleSystems.Vehicles
                     dbContext.SaveChanges();
 
                     DbVehicle findJustInserted = dbContext.vehicles.Find(vehicleInsert.vehicle_id);
-                    vehiclePlate = genUniquePlate(vehicleInsert.vehicle_id, faction != Factions.None);
+                    
+                    vehiclePlate = genUniquePlate(vehicleInsert.vehicle_id, classId, faction != Factions.None);
 
                     findJustInserted.numberplate = vehiclePlate;
 
@@ -714,7 +721,7 @@ namespace CloudRP.VehicleSystems.Vehicles
             });
         }
 
-        public static string genUniquePlate(int vehicleId, bool insured = false)
+        public static string genUniquePlate(int vehicleId, int classId, bool insured = false)
         {
             string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -738,6 +745,11 @@ namespace CloudRP.VehicleSystems.Vehicles
                 rArr[0] = vehicleId.ToString();
 
                 return string.Join("", rArr).ToUpper();
+            }
+
+            if (aircraftClasses.Contains((VehicleClasses)classId))
+            {
+                return "AIR" + vehicleId;
             }
 
             return "V" + vehicleId; 
