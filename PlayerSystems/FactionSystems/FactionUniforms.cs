@@ -89,7 +89,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
             new FactionUniform
             {
                 uniformName = "Sr. Driver",
-                uniformId = 7,
+                uniformId = 8,
                 faction = Factions.DCC,
                 uniform = new CharacterClothing
                 {

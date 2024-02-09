@@ -23,9 +23,17 @@
                 </button>
 
                 <div v-if="currentApp != ''" class="flex w-full h-full">
+
+
                     <div v-if="currentApp == 'My Cars'" class="flex w-full h-full">
                         <MyCarsApp />
                     </div>
+
+                    <div v-if="currentApp == 'DCC'" class="flex w-full h-full">
+                        <DCCApp />
+                    </div>
+
+
                 </div>
 
                 <div v-else>
@@ -49,11 +57,14 @@
             <div v-if="currentApp == ''" class="absolute bottom-1 w-full">
                 <div class="flex justify-center text-center w-full p-4 rounded-2xl">
                     <div class="grid grid-cols-3 w-full p-3 rounded-2xl backdrop-blur-2xl">
-                        <button class="rounded-xl bg-[url('https://i.imgur.com/UEbUqV3.png')] bg-contain bg-no-repeat h-[3rem] w-[3rem]">
+                        <button
+                            class="rounded-xl bg-[url('https://i.imgur.com/UEbUqV3.png')] bg-contain bg-no-repeat h-[3rem] w-[3rem]">
                         </button>
-                        <button class="rounded-xl bg-[url('https://i.imgur.com/R6rAT5m.png')] bg-contain bg-no-repeat h-[3rem] w-[3rem]">
+                        <button
+                            class="rounded-xl bg-[url('https://i.imgur.com/R6rAT5m.png')] bg-contain bg-no-repeat h-[3rem] w-[3rem]">
                         </button>
-                        <button class="rounded-xl bg-[url('https://i.imgur.com/LiDybTZ.png')] bg-contain bg-no-repeat h-[3rem] w-[3rem]">
+                        <button
+                            class="rounded-xl bg-[url('https://i.imgur.com/LiDybTZ.png')] bg-contain bg-no-repeat h-[3rem] w-[3rem]">
                         </button>
                     </div>
                 </div>
@@ -72,23 +83,25 @@
 <script>
 import { mapGetters } from 'vuex';
 import MyCarsApp from './MyCarsApp.vue';
+import DCCApp from './DCCApp.vue';
 import { sendToServer } from '@/helpers';
 
 export default {
     data() {
         return {
             appBaseStyle: "rounded-t-[2rem] " + this.phoneOpen ? 'rounded-b-[2rem]' : '',
-            currentApp: "",
+            currentApp: "DCC",
             basePhoneBg: "bg-[url('https://i.imgur.com/C8nWb8y.jpg')]",
             phoneBg: "bg-[url('https://i.imgur.com/C8nWb8y.jpg')]",
             topPhoneStyle: "bottom-16",
-            phoneOpen: false,
+            phoneOpen: true,
             spaceOrTabPressed: false,
             textShadow: "text-shadow: rgba(0, 0, 0, 0.563) 1px 0 10px;",
             availableApps: [
                 { name: "My Cars", img: "https://i.imgur.com/iXN6nMI.png", bg: "bg-[#0b0b0b]" },
                 { name: "Rob App", img: "https://i.imgur.com/XqotRh0.png" },
                 { name: "Settings", img: "https://i.imgur.com/4NIL7l1.png" },
+                { name: "DCC", img: "https://i.imgur.com/msg2Ffi.png" },
             ]
         }
     },
@@ -98,7 +111,8 @@ export default {
         })
     },
     components: {
-        MyCarsApp
+        MyCarsApp,
+        DCCApp
     },
     methods: {
         openPhone() {
@@ -112,7 +126,7 @@ export default {
             sendToServer("server:togglePhoneStatus");
         },
         homeButton() {
-            if(!this.spaceOrTabPressed) {
+            if (!this.spaceOrTabPressed) {
                 this.phoneBg = this.basePhoneBg;
                 this.currentApp = "";
             }

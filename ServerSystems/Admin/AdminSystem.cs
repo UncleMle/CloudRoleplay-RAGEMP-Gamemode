@@ -652,7 +652,7 @@ namespace CloudRP.ServerSystems.Admin
                         {
                             ChatUtils.formatConsolePrint($"{userData.admin_name} v brought {findVehicle.NumberPlate} to them.");
                             findVehicle.Position = player.Position.Around(5);
-                            AdminUtils.staffSay(player, $"Vehicle [{findVehicle.NumberPlate}] was brought to you.");
+                            AdminUtils.staffSay(player, $"Vehicle {vehicleData.vehicle_display_name} [{findVehicle.NumberPlate}] was brought to you.");
 
                             if (setIntoVeh)
                             {

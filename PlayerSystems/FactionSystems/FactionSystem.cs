@@ -82,12 +82,13 @@ namespace CloudRP.PlayerSystems.FactionSystems
             "#f25130", // Factions.LSMD
             "#baffe6", // Factions.Weazel_News
             "#878787", // Factions.Bayview
-            "#878787" // Factions.LS_Customs
+            "#878787", // Factions.LS_Customs
+            "#f0cb58" // Factions.DCC
         };
 
         public static int[] trackerBlipColours = new int[]
         {
-            0, 3, 43, 59, 51, 62, 62
+            0, 3, 43, 59, 51, 62, 62, 60
         };
 
         public static Factions[] emergencyFactions = new Factions[]
