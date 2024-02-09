@@ -32,8 +32,15 @@ namespace CloudRP.PlayerSystems.FactionSystems
         public static event FactionSystemEventsHandler vehicleAreaPress;
         #endregion
 
-        public static readonly Vector3 vehicleImportArea = new Vector3(858.7, -3202.6, 6.0);
-        public static readonly Vector3 spawnVehicleArea = new Vector3(854.0, -3218.3, 5.9);
+        public static readonly List<Vector3> vehicleImportAreas = new List<Vector3> {
+            new Vector3(858.7, -3202.6, 6.0),
+            new Vector3(-55.0, 6392.5, 31.6)
+        };
+        public static readonly List<Vector3> vehicleSpawnAreas = new List<Vector3>
+        {
+            new Vector3(854.0, -3218.3, 5.9),
+            new Vector3(-61.8, 6397.4, 31.5)
+        };
         public static readonly float spawnVehicleRot = -88.8f;
         public static readonly float maxInviteRange = 5.5f;
 
@@ -73,12 +80,14 @@ namespace CloudRP.PlayerSystems.FactionSystems
             "#5998ff", // Factions.LSPD
             "#7bb089", // Factions.SASD
             "#f25130", // Factions.LSMD
-            "#baffe6" // Factions.Weazel_News
+            "#baffe6", // Factions.Weazel_News
+            "#878787", // Factions.Bayview
+            "#878787" // Factions.LS_Customs
         };
 
         public static int[] trackerBlipColours = new int[]
         {
-            0, 3, 43, 59, 51
+            0, 3, 43, 59, 51, 62, 62
         };
 
         public static Factions[] emergencyFactions = new Factions[]
@@ -116,6 +125,18 @@ namespace CloudRP.PlayerSystems.FactionSystems
                     new Vector3(299.2, -584.7, 43.3),
                     new Vector3(389.9, -1432.9, 29.4),
                     new Vector3(-366.7, 6103.7, 35.4)
+                }
+            },
+            {
+                Factions.Bayview, new List<Vector3>
+                {
+                    new Vector3(119.0, 6640.0, 31.9)
+                }
+            },
+            {
+                Factions.LS_Customs, new List<Vector3>
+                {
+                    new Vector3(-354.5, -128.2, 39.4)
                 }
             }
         };
@@ -184,6 +205,28 @@ namespace CloudRP.PlayerSystems.FactionSystems
                         spawnPos = new Vector3(-583.5, -930.5, 36.8)
                     }
                 }
+            },
+            {
+                Factions.Bayview , new List<FactionVehSpawn>
+                {
+                    new FactionVehSpawn
+                    {
+                        garageId = 1,
+                        vehicleRot = -93.0f, 
+                        spawnPos = new Vector3(114.7, 6606.8, 31.9)
+                    }
+                }
+            },
+            {
+                Factions.LS_Customs, new List<FactionVehSpawn>
+                {
+                    new FactionVehSpawn
+                    {
+                        garageId = 1,
+                        vehicleRot = 69.8f, 
+                        spawnPos = new Vector3(-371.4, -107.6, 38.7)
+                    }
+                }
             }
         };
 
@@ -222,10 +265,13 @@ namespace CloudRP.PlayerSystems.FactionSystems
             VehicleSystem.vehicleDeath += handleTrackerDestroyed;
             TimeSystem.realHourPassed += payFactionSalaries;
 
-            MarkersAndLabels.setPlaceMarker(vehicleImportArea);
-            MarkersAndLabels.setTextLabel(vehicleImportArea, "Vehicle Import Area\nUse ~y~Y~w~ to interact", 5f);
-            NAPI.Marker.CreateMarker(36, vehicleImportArea, new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
-            NAPI.Blip.CreateBlip(524, vehicleImportArea, 1f, 17, "Vehicle Imports", 255, 1f, true, 0, 0);
+            vehicleImportAreas.ForEach(area =>
+            {
+                MarkersAndLabels.setPlaceMarker(area);
+                MarkersAndLabels.setTextLabel(area, "Vehicle Import Area\nUse ~y~Y~w~ to interact", 5f);
+                NAPI.Marker.CreateMarker(36, area, new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
+                NAPI.Blip.CreateBlip(524, area, 1f, 17, "Vehicle Imports", 255, 1f, true, 0, 0);
+            });
 
             foreach (FactionBlip blip in factionBlips)
             {
@@ -326,7 +372,10 @@ namespace CloudRP.PlayerSystems.FactionSystems
                 });
             }
 
-            if (player.checkIsWithinCoord(vehicleImportArea, 2f)) handleVehicleImportArea(player);
+            vehicleImportAreas.ForEach(area =>
+            {
+                if (player.checkIsWithinCoord(area, 5f)) handleVehicleImportArea(player);
+            });
         }
 
         public static void handleDutyArea(Player player, Factions targetFaction)
@@ -591,7 +640,14 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
         public static void handleVehicleImport(Player player, int vehicleId)
         {
-            if (!player.checkIsWithinCoord(vehicleImportArea, 2f) || vehicleId == -1) return;
+            int isInAreaIdx = -1;
+
+            vehicleImportAreas.ForEach(area =>
+            {
+                if (player.checkIsWithinCoord(area, 5f)) isInAreaIdx = vehicleImportAreas.IndexOf(area);
+            });
+
+            if (isInAreaIdx == -1 || vehicleId == -1) return;
 
             DbCharacter character = player.getPlayerCharacterData();
 
@@ -601,7 +657,9 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
             if(vehicleId < 0 || vehicleId >= allowedVehicles.Count) return;
 
-            if(VehicleSystem.checkVehInSpot(spawnVehicleArea, 5) != null)
+            Vector3 spawnPos = vehicleSpawnAreas[isInAreaIdx];
+
+            if (VehicleSystem.checkVehInSpot(spawnPos, 5) != null)
             {
                 uiHandling.sendPushNotifError(player, "There is a vehicle blocking the import spot.", 6600);
                 return;
@@ -609,13 +667,13 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
             string spawnVehicle = allowedVehicles[vehicleId];
 
-            (Vehicle veh, DbVehicle data) = VehicleSystem.buildVehicle(spawnVehicle, spawnVehicleArea, spawnVehicleRot, -1, 1, 1, "N/A", playerFaction);
+            (Vehicle veh, DbVehicle data) = VehicleSystem.buildVehicle(spawnVehicle, spawnPos, spawnVehicleRot, -1, 1, 1, "N/A", playerFaction);
 
             if (veh == null || data == null) return;
 
             uiHandling.resetRouter(player);
-            CommandUtils.successSay(player, $"You have imported a new faction vehicle ({data.vehicle_display_name}) for your faction {playerFaction}.");
-            MarkersAndLabels.addBlipForClient(player, 4, "Faction Vehicle", spawnVehicleArea, 2, 10);
+            CommandUtils.successSay(player, $"You have imported a new faction vehicle ({data.vehicle_display_name}) for your faction {getFactionName((int)playerFaction)}.");
+            MarkersAndLabels.addBlipForClient(player, 4, "Faction Vehicle", spawnPos, 2, 10);
         }
 
         public static void handleTrackerDestroyed(Vehicle veh, DbVehicle data)
@@ -760,7 +818,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
             FactionRank rank = player.getFactionRankViaFaction(targetFaction);
 
-            uiHandling.sendNotification(player, $"Your now ~g~on duty~w~ for faction {targetFaction.ToString().Replace("_", " ")}. As a {rank.rank_name}", false);
+            uiHandling.sendNotification(player, $"Your now ~g~on duty~w~ for faction {targetFaction.ToString().Replace("_", " ")}. As a {rank.rank_name.Replace("_", " ")}", false);
             uiHandling.resetRouter(player);
         }
 
@@ -958,7 +1016,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
             int timeRemaining = TimeSystem.getMinuteDifferenceToHour();
 
             player.SendChatMessage(ChatUtils.CloudBlue + "------------------------------------");
-            player.SendChatMessage($"[Faction] {getFactionName((int)faction)} [Rank] {rank.rank_name}");
+            player.SendChatMessage($"[Faction] {getFactionName((int)faction)} [Rank] {rank.rank_name.Replace("_", " ")}");
             player.SendChatMessage($"[Salary] {ChatUtils.moneyGreen}${rank.rank_salary.ToString("N0")}{ChatUtils.White} [Next Paycheck] {ChatUtils.moneyGreen}{timeRemaining} {(timeRemaining == 1 ? "minute" : "minutes")}{ChatUtils.White}");
             player.SendChatMessage(ChatUtils.CloudBlue + "------------------------------------");
         }
@@ -980,6 +1038,8 @@ namespace CloudRP.PlayerSystems.FactionSystems
         LSPD,
         SASD,
         LSMD,
-        Weazel_News
+        Weazel_News,
+        Bayview,
+        LS_Customs
     }
 }

@@ -63,7 +63,8 @@ namespace CloudRP.World.BanksAtms
             new Vector3(-165.1, 234.9, 94.9),
             new Vector3(-165.1, 232.8, 94.9),
             new Vector3(1153.7, -326.8, 69.2),
-            new Vector3(158.7, 234.2, 106.6)
+            new Vector3(158.7, 234.2, 106.6),
+            new Vector3(155.9, 6642.7, 31.6)
         };
 
         public AtmSystem()

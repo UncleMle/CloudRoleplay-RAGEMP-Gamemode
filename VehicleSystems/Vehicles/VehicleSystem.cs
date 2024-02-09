@@ -69,7 +69,6 @@ namespace CloudRP.VehicleSystems.Vehicles
         #region Init
         public VehicleSystem()
         {
-            KeyPressEvents.keyPress_Y += handleToggleEngine;
             VehicleParking.VehicleParking.onVehicleUnpark += handleDefaultUnpark;
 
             NAPI.Task.Run(() =>
@@ -972,6 +971,12 @@ namespace CloudRP.VehicleSystems.Vehicles
             if (NAPI.Vehicle.GetVehicleBodyHealth(player.Vehicle) <= 0 || player.Vehicle.isStalled() || vehicleData.vehicle_fuel <= 0)
             {
                 uiHandling.sendNotification(player, "~r~Engine fails to start", false, true, "Fails to start engine");
+                return;
+            }
+
+            if(FactionSystem.emergencyFactions.Contains((Factions)vehicleData.faction_owner_id) && !player.isPartOfFaction((Factions)vehicleData.faction_owner_id))
+            {
+                uiHandling.sendNotification(player, "~r~You fail to start the engine.", false, true, "Fails to start engine");
                 return;
             }
 

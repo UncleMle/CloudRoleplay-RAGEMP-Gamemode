@@ -63,6 +63,28 @@ namespace CloudRP.PlayerSystems.FactionSystems
                     top = 15,
                     undershirt = 15,
                 }
+            },
+            new FactionUniform
+            {
+                uniformName = "Jr. Mechanic",
+                uniformId = 6,
+                faction = Factions.Bayview,
+                uniform = new CharacterClothing
+                {
+                    top = 10,
+                    undershirt = 15,
+                }
+            },
+            new FactionUniform
+            {
+                uniformName = "Jr. Mechanic",
+                uniformId = 7,
+                faction = Factions.LS_Customs,
+                uniform = new CharacterClothing
+                {
+                    top = 10,
+                    undershirt = 15,
+                }
             }
         };
 

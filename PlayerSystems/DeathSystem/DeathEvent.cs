@@ -43,6 +43,7 @@ namespace CloudRP.PlayerSystems.DeathSystem
             }
         }
 
+        #region Server Events
         [ServerEvent(Event.PlayerDeath)]
         public void OnPlayerDeath(Player player, Player killer, uint reason)
         {
@@ -75,13 +76,15 @@ namespace CloudRP.PlayerSystems.DeathSystem
                     }
                     else
                     {
-                        player.SendChatMessage(ChatUtils.info + $"You have been injured. You will bleed out in {(_deathTimer_seconds / 60).ToString("N1")} minutes. Upon death you will lose all inventory items and cash.");
+                        player.SendChatMessage(ChatUtils.info + $"You have been injured. You will bleed out in {(_deathTimer_seconds / 60).ToString("N0")} minutes. Upon death you will lose all inventory items and cash.");
                         updateAndSetInjuredState(player, characterData);
                     }
                 }
             });
         }
+        #endregion
 
+        #region Global Methods
         public static void respawnAtHospital(Player player)
         {
             DbCharacter playerCharacterData = player.getPlayerCharacterData();
@@ -220,6 +223,7 @@ namespace CloudRP.PlayerSystems.DeathSystem
 
             addCorpseToClients(playerCorpse);
         }
+        #endregion
 
         #region Events
         [RemoteEvent("sync:corpseValidation")]

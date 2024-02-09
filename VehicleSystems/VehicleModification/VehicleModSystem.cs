@@ -23,7 +23,14 @@ namespace CloudRP.VehicleSystems.VehicleModification
                 position = new Vector3(-375.8, -124.8, 38.6),
                 size = 60f,
                 name = "Los Santos Customs"
-            }
+            },
+            new CustomArea
+            {
+                custom_id = 1,
+                position = new Vector3(142.2, 6610.2, 31.8),
+                size = 80f,
+                name = "Bayview"
+            },
         };
 
         public VehicleModSystem()
