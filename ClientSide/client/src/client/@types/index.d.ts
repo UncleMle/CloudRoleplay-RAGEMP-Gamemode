@@ -499,3 +499,14 @@ interface TrackVehicles {
 	blipColour: number;
 	beingTracked: boolean;
 }
+
+interface BarberData {
+	hairStyle: string;
+	hairColour: string;
+	hairHighlights: string;
+	facialHairStyle: string;
+	facialHairColour: string;
+	chestHairStyle: string;
+	eyebrowsStyle: string;
+	eyebrowsColour: string;
+}

@@ -115,9 +115,18 @@ namespace CloudRP.PlayerSystems.PlayerData
             player.SetCustomSharedData(PlayersData._characterClothesKey, clothes);
         }
 
-        public static void setCharacterModel(this Player player, CharacterModel model)
+        public static void setCharacterModel(this Player player, CharacterModel model, bool updateDb = false)
         {
             player.SetCustomSharedData(PlayersData._characterModelKey, model);
+        
+            if(updateDb)
+            {
+                using (DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    dbContext.character_models.Update(model);
+                    dbContext.SaveChanges();
+                }
+            }
         }
 
         public static User getPlayerAccountData(this Player player)

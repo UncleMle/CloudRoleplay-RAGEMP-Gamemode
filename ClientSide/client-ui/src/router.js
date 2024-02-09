@@ -23,6 +23,7 @@ import GruppeSixJobView from './components/jobs/GruppeSix/GruppeSixJobView.vue';
 import LicensePage from './components/ui/LicensePage.vue';
 import DmvRouteView from './components/dmv/DmvRouteView.vue';
 import UniformView from './components/factionSystem/UniformView.vue';
+import BarberView from './components/barber/BarberView.vue';
 
 export default new Router({
     routes: [
@@ -45,6 +46,7 @@ export default new Router({
         { path: '/gruppesixview', component: GruppeSixJobView },
         { path: '/licenseview', component: LicensePage },
         { path: '/dmvcourseview', component: DmvRouteView },
-        { path: '/factionuniform', component: UniformView }
+        { path: '/factionuniform', component: UniformView },
+        { path: '/barbershop', component: BarberView }
     ]
 });

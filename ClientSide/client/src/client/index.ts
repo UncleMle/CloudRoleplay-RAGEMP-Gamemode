@@ -52,6 +52,7 @@ import TruckerJob from "./Jobs/TruckerJob/TruckerJobs";
 import AttachmentSync from "./PlayerSyncSystems/AttachmentSync";
 import AnimationSync from "./PlayerSyncSystems/AnimationSync";
 import FactionSystem from "./FactionSystem/FactionSystem";
+import Barber from "./Barber/Barber";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -108,3 +109,4 @@ new TruckerJob();
 new AttachmentSync();
 new AnimationSync();
 new FactionSystem();
+new Barber();
