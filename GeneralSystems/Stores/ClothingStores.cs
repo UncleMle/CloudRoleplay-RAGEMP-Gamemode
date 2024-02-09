@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CloudRP.ServerSystems.Utils;
+using CloudRP.World.MarkersLabels;
 
 namespace CloudRP.GeneralSystems.Stores
 {
@@ -72,7 +73,7 @@ namespace CloudRP.GeneralSystems.Stores
             {
                 displayName = "Discount Clothing",
                 name = "Discount Zancudo",
-                position = new Vector3(-1102.2, 2710.7, 19.1)
+                position = new Vector3(-1101.0, 2710.4, 19.1)
             });
 
             for (int i = 0; i < clothingStores.Count; i++)
@@ -83,7 +84,8 @@ namespace CloudRP.GeneralSystems.Stores
                 string dispName = clothingStores[i].displayName;
 
                 ColShape clothingColShape = NAPI.ColShape.CreateCylinderColShape(pos, 1.0f, 1.0f);
-                NAPI.TextLabel.CreateTextLabel($"{dispName} ~y~Y~w~ to interact", pos, 10f, 1.0f, 4, new Color(255, 255, 255, 255), true);
+                NAPI.TextLabel.CreateTextLabel($"{dispName}\nUse ~y~Y~w~ to interact", pos, 10f, 1.0f, 4, new Color(255, 255, 255, 255), true);
+                MarkersAndLabels.setPlaceMarker(pos);
 
                 NAPI.Blip.CreateBlip(73, pos, 1.0f, 63, name, 255, 1.0f, true, 0, 0);
                 NAPI.Marker.CreateMarker(27, new Vector3(pos.X, pos.Y, pos.Z - 1), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);

@@ -30,24 +30,4 @@ namespace CloudRP.VehicleSystems.VehicleParking
         public int owner_id { get; set; }
         public Vector3 position { get; set; }
     }
-
-    public class VehicleParkingUtils
-    {
-        public static bool checkIfVehicleInVector(Vector3 pos)
-        {
-            bool isInVector = false;
-
-            List<Vehicle> onlineVehs = NAPI.Pools.GetAllVehicles();
-
-            foreach (Vehicle vehicle in onlineVehs)
-            {
-                if (vehicle.Position.X >= pos.X - 2 && vehicle.Position.X <= pos.X + 2 && vehicle.Position.Y >= pos.Y - 2 && vehicle.Position.Y <= pos.Y + 2)
-                {
-                    isInVector = true;
-                }
-            }
-
-            return isInVector;
-        }
-    }
 }

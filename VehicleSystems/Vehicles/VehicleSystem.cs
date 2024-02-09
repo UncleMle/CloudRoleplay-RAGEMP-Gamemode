@@ -845,7 +845,7 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             if (characterData != null && parkingLot != null && Vector3.Distance(player.Position, retrievalCol.position) < 2)
             {
-                if (VehicleParkingUtils.checkIfVehicleInVector(parkingLot.spawnVehiclesAt))
+                if (checkVehInSpot(parkingLot.spawnVehiclesAt, 5) != null)
                 {
                     uiHandling.sendPushNotifError(player, "There is a vehicle blocking the spawn point!", 5500);
                     return;

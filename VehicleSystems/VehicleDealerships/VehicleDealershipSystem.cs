@@ -337,8 +337,8 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
                     return;
                 }
 
-                if (VehicleParkingUtils.checkIfVehicleInVector(playerDealerData.spawnPosition))
-                {
+                if (VehicleSystem.checkVehInSpot(playerDealerData.spawnPosition, 5) != null)
+                {  
                     uiHandling.sendPushNotifError(player, "There is a vehicle blocking the spawn point!", 6600, true);
                     return;
                 }
