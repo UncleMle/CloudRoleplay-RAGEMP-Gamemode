@@ -14,6 +14,7 @@ namespace CloudRP.ServerSystems.CustomEvents
         #region Event Handlers
         public static event KeyPressEventsEventHandler keyPress_Y;
         public static event KeyPressEventsEventHandler keyPress_F4;
+        public static event KeyPressEventsEventHandler keyPress_F3;
         public static event KeyPressEventsEventHandler keyPress_CTRL_D;
         #endregion
 
@@ -35,6 +36,11 @@ namespace CloudRP.ServerSystems.CustomEvents
                         keyPress_CTRL_D(player);
                         break;
                 }
+                case KeyType.KEY_F3:
+                {
+                        keyPress_F3(player);
+                        break;
+                }
             }
         }
 
@@ -44,6 +50,7 @@ namespace CloudRP.ServerSystems.CustomEvents
         {
             KEY_Y,
             KEY_F4,
+            KEY_F3,
             KEY_CTRL_D
         }
     }

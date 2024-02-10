@@ -1,4 +1,5 @@
-﻿using CloudRP.PlayerSystems.AnimationSync;
+﻿using CloudRP.GeneralSystems.GeneralCommands;
+using CloudRP.PlayerSystems.AnimationSync;
 using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.FactionSystems;
 using CloudRP.PlayerSystems.Jobs;
@@ -63,6 +64,7 @@ namespace CloudRP.VehicleSystems.Vehicles
         public static readonly string _vehicleDirtLevelIdentifier = "VehicleDirtLevel";
         public static readonly string _seatBeltIdentifier = "playerIsWearingSeatBelt";
         private static int _timerInterval_seconds = 10;
+        private static int vipLockDelay_seconds = 6;
         private static Timer saveVehicleTimer;
         public static readonly int[] blockedSeatbeltClasses = { 13, 14, 15, 16, 21, 8 };
 
@@ -822,6 +824,30 @@ namespace CloudRP.VehicleSystems.Vehicles
             return vehicles;
         }
 
+        public static bool canToggleLock(Player player, Vehicle vehicle)
+        {
+            bool canToggle = false;
+
+            DbCharacter character = player.getPlayerCharacterData();
+            User user = player.getPlayerAccountData();
+            DbVehicle vehData = vehicle.getData();
+
+            if(user != null && character != null && vehData != null)
+            {
+                VehicleKey vehicleKey = vehData.vehicle_key_holders
+                        .Where(holder => holder.target_character_id == character.character_id && holder.vehicle_id == vehData.vehicle_id)
+                .FirstOrDefault();
+
+                if (vehicleKey != null || character.character_id == vehData.owner_id || user.adminDuty || player.isPartOfFaction((Factions)vehData.faction_owner_id))
+                {
+                    canToggle = true;
+                }
+
+            }
+
+            return canToggle;
+        }
+
         public static List<DbVehicle> getPlayerUninsuredVehicles(Player player)
         {
             List<DbVehicle> vehicles = new List<DbVehicle>();
@@ -1128,12 +1154,8 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             if (vehicleData == null || charData == null) return;
 
-            VehicleKey vehicleKey = vehicleData.vehicle_key_holders
-                    .Where(holder => holder.target_character_id == charData.character_id && holder.vehicle_id == vehicleData.vehicle_id)
-                    .FirstOrDefault();
-
-            if (vehicleKey == null && charData.character_id != vehicleData.owner_id && !playerData.adminDuty && !player.isPartOfFaction((Factions)vehicleData.faction_owner_id)) return;
-
+            if (!canToggleLock(player, vehicle)) return;
+            
             vehicle.toggleLock(!vehicleData.vehicle_locked);
 
             string lockUnlockText = $"{(playerData.adminDuty ? "~r~[Staff]" : "")} You {(vehicleData.vehicle_locked ? "locked" : "unlocked")} vehicle.";
@@ -1329,6 +1351,28 @@ namespace CloudRP.VehicleSystems.Vehicles
             if (vehicleData != null && !vehicleData.engine_status && player.VehicleSeat == 0)
             {
                 uiHandling.sendNotification(player, "~w~Use ~y~Y~w~ to start the engine.", false);
+            }
+        }
+
+        [ServerEvent(Event.PlayerExitVehicle)]
+        public void handleVehicleLeave(Player player, Vehicle vehicle)
+        {
+            User user = player.getPlayerAccountData();
+
+            if (user.vip_status && canToggleLock(player, vehicle))
+            {
+                if (vehicle.Locked) return;
+                uiHandling.sendPushNotif(player, $"[VIP] Your vehicle will be locked in {vipLockDelay_seconds} seconds.", 6000, false, false);
+
+                NAPI.Task.Run(() =>
+                {
+                    if (!vehicle.Exists) return;
+
+                    if (vehicle.Locked) return;
+                    
+                    vehicle.toggleLock(true);
+                    uiHandling.sendPushNotif(player, $"[VIP] Your vehicle has been locked.", 6000, false, false);
+                }, vipLockDelay_seconds * 1000);
             }
         }
 

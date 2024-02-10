@@ -24,7 +24,7 @@ namespace CloudRP.ServerSystems.Authentication
         public string auto_login_key { get; set; }
         public int auto_login { get; set; }
         public int admin_status { get; set; }
-        public int vip_status { get; set; }
+        public bool vip_status { get; set; }
         public string admin_name { get; set; }
         public string admin_ped { get; set; }
         public string client_serial { get; set; }
@@ -33,6 +33,7 @@ namespace CloudRP.ServerSystems.Authentication
         public int max_characters { get; set; }
         public bool admin_esp { get; set; }
         public bool has_first_login { get; set; }
+        public long vip_unix_set { get; set; }
 
         [NotMapped]
         public bool adminDuty { get; set; }

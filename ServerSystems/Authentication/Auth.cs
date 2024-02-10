@@ -511,7 +511,6 @@ namespace CloudRP.ServerSystems.Authentication
                     UpdatedDate = DateTime.Now,
                     username = registeringData.registerUsername.ToLower(),
                     user_ip = player.Address,
-                    vip_status = 0,
                     admin_status = (int)AdminRanks.Admin_None,
                     auto_login_key = "",
                     max_characters = 2,

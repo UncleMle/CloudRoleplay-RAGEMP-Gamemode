@@ -82,6 +82,13 @@ namespace CloudRP.GeneralSystems.Stores
                 name = "Discount Zancudo",
                 position = new Vector3(-1101.1, 2710.4, 19.1)
             });
+            
+            clothingStores.Add(new ClothingStore
+            {
+                displayName = "Surburban Clothing",
+                name = "Surburban Del Perro",
+                position = new Vector3(-1188.7, -765.7, 17.3)
+            });
 
             for (int i = 0; i < clothingStores.Count; i++)
             {

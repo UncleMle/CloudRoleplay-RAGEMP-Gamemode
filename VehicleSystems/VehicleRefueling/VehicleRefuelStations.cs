@@ -373,6 +373,36 @@ namespace CloudRP.VehicleSystems.VehicleRefueling
                         position = new Vector3(2681.6, 3266.0, 55.4)
                     }
                 }
+            },
+            new RefuelStation
+            {
+                name = "El Burro Heights",
+                position = new Vector3(1207.7, -1403.4, 43.6),
+                pricePerLitre = 7,
+                station_id = 11,
+                pumps = new List<RefuelPump>
+                {
+                    new RefuelPump 
+                    { 
+                        owner_id = 11,
+                        position = new Vector3(1209.7, -1406.5, 35.4)
+                    },
+                    new RefuelPump
+                    {
+                        owner_id = 11,
+                        position = new Vector3(1212.5, -1403.6, 35.4)
+                    },
+                    new RefuelPump
+                    {
+                        owner_id = 11,
+                        position = new Vector3(1207.4, -1398.6, 35.4)
+                    },
+                    new RefuelPump
+                    { 
+                        owner_id = 11,
+                        position = new Vector3(1204.6, -1401.4, 35.4)
+                    }
+                }
             }
         };
     }

@@ -60,5 +60,6 @@ namespace CloudRP.PlayerSystems.FactionSystems
         public Vector3 location { get; set; }
         public Factions forFaction { get; set; }
         public List<string> units { get; set; } = new List<string>();
+        public long createdAt { get; set; }
     }
 }

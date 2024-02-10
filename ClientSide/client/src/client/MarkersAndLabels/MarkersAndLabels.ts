@@ -12,6 +12,11 @@ export default class MarkersAndLabels {
 
         mp.events.add("clientBlip:addClientBlip", MarkersAndLabels.addClientBlip);
         mp.events.add("clientBlip:removeClientBlip", MarkersAndLabels.removeClientBlip);
+        mp.events.add("clientBlip:setWaypoint", MarkersAndLabels.setWaypoint);
+    }
+
+    public static setWaypoint(coords: Vector3) {
+        mp.game.ui.setNewWaypoint(coords.x,  coords.y);
     }
 
     public static removeNorthBlip() {

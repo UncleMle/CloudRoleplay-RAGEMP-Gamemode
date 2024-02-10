@@ -58,6 +58,7 @@ export const _control_ids = {
 	RELOADBIND: 0x52,
 	NBIND: 78,
 	F4: 115,
+	F3: 114,
 	F9: 120,
 	F10: 121
 };

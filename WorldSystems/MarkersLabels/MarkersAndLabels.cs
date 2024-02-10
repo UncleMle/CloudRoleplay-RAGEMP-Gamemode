@@ -27,5 +27,8 @@ namespace CloudRP.World.MarkersLabels
         {
             player.TriggerEvent("clientBlip:removeClientBlip");
         }
+
+        public static void setClientWaypoint(Player player, Vector3 pos)
+            => player.TriggerEvent("clientBlip:setWaypoint", pos);
     }
 }

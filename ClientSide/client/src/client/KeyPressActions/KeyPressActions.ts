@@ -11,16 +11,9 @@ export default class KeyPressActions {
     private static cooldown: boolean;
 
     constructor() {
-        setInterval(() => {
-
-            if(mp.keys.isDown(_control_ids.LCtrlBind) && mp.keys.isDown(_control_ids.DBIND)) {
-                KeyPressActions.handleKeyPressed(KeyType.KEY_CTRL_D);
-            }
-
-        }, 100);
-
         mp.keys.bind(_control_ids.Y, false, () => KeyPressActions.handleKeyPressed(KeyType.KEY_Y));
         mp.keys.bind(_control_ids.F4, false, () => KeyPressActions.handleKeyPressed(KeyType.KEY_F4));
+        mp.keys.bind(_control_ids.F3, false, () => KeyPressActions.handleKeyPressed(KeyType.KEY_F3));
     }
 
     private static getArgs(): boolean[] {

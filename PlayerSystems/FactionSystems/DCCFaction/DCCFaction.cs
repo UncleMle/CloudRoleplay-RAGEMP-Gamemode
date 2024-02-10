@@ -56,7 +56,7 @@ namespace CloudRP.PlayerSystems.FactionSystems.DCCFaction
                 return;
             }
 
-            FactionSystem.addDispatchCall(player, Factions.DCC, $"Requests service {service.Value}");
+            FactionSystem.addDispatchCall(player, Factions.DCC, $"requests {service.Value}");
 
             uiHandling.sendNotification(player, $"~g~Requested service {service.Value}.", false);
         }

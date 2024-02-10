@@ -292,7 +292,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
         public FactionSystem()
         {
             KeyPressEvents.keyPress_Y += handleKeyInteraction;
-            KeyPressEvents.keyPress_CTRL_D += handleDispatchToggle;
+            KeyPressEvents.keyPress_F3 += handleDispatchToggle;
             
             Main.resourceStart += initFactionRanks;
             Main.playerDisconnect += removeDispatchCall;
@@ -702,12 +702,14 @@ namespace CloudRP.PlayerSystems.FactionSystems
                 forFaction = faction,
                 callDesc = desc,
                 characterName = character.character_name.Replace("_", " "),
-                location = player.Position
+                location = player.Position,
+                createdAt = CommandUtils.generateUnix()
             });
 
             sendMessageToOndutyFactionMembers($"{ChatUtils.factions}{character.character_name} makes a new call to dispatch", faction);
             resyncDispatchMenu();
         }
+
         public static (Factions, int) getClosestVehiclePoint(Player player)
         {
             int garageId = -1;
@@ -984,9 +986,16 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
             if (call.Value == null) return;
 
+            if (call.Value.units.Contains(character.character_name)) return;
+
             call.Value.units.Add(character.character_name);
+            resyncDispatchMenu();
 
             sendMessageToOndutyFactionMembers($"{ChatUtils.factions}{character.character_name} responds to call #{call.Key}.", (Factions)character.faction_duty_status);
+
+            MarkersAndLabels.setClientWaypoint(player, call.Value.location);
+
+            player.SendChatMessage(ChatUtils.info + "The call location has been marked on your GPS.");
         }
 
         [RemoteEvent("server:factionSystem:dispatch:endCall")]

@@ -234,6 +234,7 @@ namespace CloudRP.ServerSystems.Utils
         public int admin_status { get; set; }
         public bool adminDuty { get; set; } = false;
         public string admin_name { get; set; }
+        public bool vip_status { get; set; }
         public string email_address { get; set; }
         public string admin_ped { get; set; }
         public bool isFlying { get; set; }

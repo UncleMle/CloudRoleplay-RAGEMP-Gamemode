@@ -103,6 +103,11 @@ namespace CloudRP.PlayerSystems.ChatSystem
             player.SendChatMessage(ChatUtils.CloudRP + $"For server commands and general help view {ChatUtils.CloudBlueLight}/help{ChatUtils.White}.");
             player.SendChatMessage(ChatUtils.CloudRP + $"Visit {ChatUtils.CloudBlueLight}cloudrp.net{ChatUtils.White} for server information{ChatUtils.White}.");
 
+            if(user.vip_status)
+            {
+                player.SendChatMessage(ChatUtils.vip + $"You have VIP status is enabled.");
+            }
+
             if (user.admin_status > (int)AdminRanks.Admin_None)
             {
                 string colouredRank = AdminUtils.getColouredAdminRank(user);
