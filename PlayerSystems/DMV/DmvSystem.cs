@@ -24,6 +24,7 @@ namespace CloudRP.PlayerSystems.DMV
         public DmvSystem()
         {
             KeyPressEvents.keyPress_Y += viewDmvMenu;
+            Main.playerDisconnect += removeDmvVehicle;
 
             VehicleSystem.vehicleDeath += (vehicle, vehicleData) =>
             {
@@ -286,8 +287,7 @@ namespace CloudRP.PlayerSystems.DMV
             }
         }
 
-        [ServerEvent(Event.PlayerDisconnected)]
-        public void removeDmvVehicle(Player player, DisconnectionType type, string reason)
+        public void removeDmvVehicle(Player player)
         {
             NAPI.Pools.GetAllVehicles().ForEach(veh =>
             {

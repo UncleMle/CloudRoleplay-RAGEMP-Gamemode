@@ -6,6 +6,7 @@
             <PlayerHud />
             <InventoryHud v-if="uiStates.inventory" />
             <PlayerPhone class="absolute" />
+            <DispatchMenu v-if="uiStates.dispatchMenuState" />
         </div>
         <RefuelMeter class="absolute" v-if="uiStates.refuelUi" />
         <PushNotification class="bg-red-200" ref="notification" />
@@ -22,6 +23,7 @@ import PlayerHud from "./components/hud/PlayerHud.vue";
 import VehicleSpeedo from "./components/hud/VehicleSpeedo.vue";
 import RefuelMeter from "./components/ui/RefuelMeter.vue";
 import PlayerPhone from './components/phone/PlayerPhone.vue';
+import DispatchMenu from "./components/factionSystem/DispatchMenu.vue";
 import { mapGetters } from "vuex";
 
 export default {
@@ -33,7 +35,8 @@ export default {
         PlayerHud,
         InventoryHud,
         RefuelMeter,
-        PlayerPhone
+        PlayerPhone,
+        DispatchMenu
     },
     computed: {
         ...mapGetters({

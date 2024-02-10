@@ -42,7 +42,8 @@ const store = new Vuex.Store({
 			dmv_courses: [],
 			faction_uniforms: [],
 			barber_data: {},
-			dcc_data: {}
+			dcc_data: {},
+			faction_dispatch_calls: []
 		},
 		uiStates: {
 			characterSelection: false,
@@ -56,6 +57,7 @@ const store = new Vuex.Store({
 			vehicleSpeedoData: {},
 			vehicleRadarData: {},
 			vehRadarLastTracked: false,
+			dispatchMenuState: false,
 			renderKeys: {},
 			phoneState: false,
 			inventory: false

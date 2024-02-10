@@ -11,13 +11,7 @@ namespace CloudRP.PlayerSystems.FactionSystems.DCCFaction
 {
     public class DCCFaction : Script
     {
-        public static Dictionary<int, ServiceData> activeServiceRequests = new Dictionary<int, ServiceData>();
-
         #region Global Methods 
-        public static ServiceData getPlayersService(int characterId)
-            => activeServiceRequests
-            .Where(req => req.Key == characterId)
-            .FirstOrDefault().Value;
         #endregion
 
         #region Remote Events
@@ -40,7 +34,6 @@ namespace CloudRP.PlayerSystems.FactionSystems.DCCFaction
 
             uiHandling.handleObjectUiMutation(player, MutationKeys.DCCPhone, new DCCFactionUIData
             {
-                activeService = getPlayersService(character.character_id),
                 onDutyMembers = cabDrivers,
                 services = DCCServices.services
             });
@@ -57,42 +50,20 @@ namespace CloudRP.PlayerSystems.FactionSystems.DCCFaction
 
             if (service.Value == null) return;
 
-            if(getPlayersService(character.character_id) != null)
+            if(FactionSystem.hasDispatchCall(player))
             {
                 uiHandling.sendPushNotifError(player, "You already have an active service request. Use /cancelservice to cancel it.", 6600);
                 return;
             }
 
-            activeServiceRequests.Add(character.character_id, new ServiceData
-            {
-                createdAt = CommandUtils.generateUnix(),
-                service = service.Key
-            });
+            FactionSystem.addDispatchCall(player, Factions.DCC, $"Requests service {service.Value}");
 
             uiHandling.sendNotification(player, $"~g~Requested service {service.Value}.", false);
         }
         #endregion
 
 
-        #region Commands 
-        [Command("cancelservice", "~y~Use: ~w~/cancelservice")]
-        public void cancelTaxiServiceCommand(Player player)
-        {
-            DbCharacter character = player.getPlayerCharacterData();
-
-            if (character == null) return;
-
-            ServiceData service = getPlayersService(character.character_id);
-
-            if (service != null)
-            {
-                activeServiceRequests.Remove(character.character_id);
-                CommandUtils.successSay(player, "You have cancelled your taxi service request.");
-            } else
-            {
-                CommandUtils.errorSay(player, "You don't have an active service.");
-            }
-        }
+        #region Commands
         #endregion
     }
 }

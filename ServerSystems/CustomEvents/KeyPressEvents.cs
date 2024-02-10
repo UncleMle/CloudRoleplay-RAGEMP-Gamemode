@@ -14,27 +14,27 @@ namespace CloudRP.ServerSystems.CustomEvents
         #region Event Handlers
         public static event KeyPressEventsEventHandler keyPress_Y;
         public static event KeyPressEventsEventHandler keyPress_F4;
+        public static event KeyPressEventsEventHandler keyPress_CTRL_D;
         #endregion
 
         #region Remote Events
         [RemoteEvent("server:handleKeyPress")]
         public void handleKeyPress(Player player, int key)
         {
-            switch (key)
+            switch ((KeyType)key)
             {
-                case (int)KeyType.KEY_F4: {
+                case KeyType.KEY_F4: {
                         keyPress_F4(player);
                         break;
                 }
-                case (int)KeyType.KEY_Y: {
+                case KeyType.KEY_Y: {
                         keyPress_Y(player);
                         break;
                 }
-                default:
-                    {
-                        ChatUtils.formatConsolePrint("Key not found " + key);
+                case KeyType.KEY_CTRL_D: {
+                        keyPress_CTRL_D(player);
                         break;
-                    }
+                }
             }
         }
 
@@ -44,6 +44,7 @@ namespace CloudRP.ServerSystems.CustomEvents
         {
             KEY_Y,
             KEY_F4,
+            KEY_CTRL_D
         }
     }
 }

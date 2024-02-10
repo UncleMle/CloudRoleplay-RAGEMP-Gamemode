@@ -20,32 +20,19 @@ namespace CloudRP.PlayerSystems.ChatSystem
         public static readonly double _chatRadius = 30.0;
         public static readonly double _adminChatRadius = 52.0;
         public static readonly string _typingStateIdentifier = "playerIsTypingState";
+
         public static readonly List<ChatDistanceColour> distanceColours = new List<ChatDistanceColour>
         {
-            new ChatDistanceColour
-            {
-                distance = 0,
-                colour = "white"
-            },
-            new ChatDistanceColour
-            {
-                distance = 10,
-                colour = "#a6a6a6"
-            },
-            new ChatDistanceColour
-            {
-                distance = 20,
-                colour = "#757474"
-            },
-            new ChatDistanceColour
-            {
-                distance = 25,
-                colour = "#424242"
-            }
+            new ChatDistanceColour { distance = 0, colour = "white" },
+            new ChatDistanceColour { distance = 10, colour = "#a6a6a6" },
+            new ChatDistanceColour { distance = 20, colour = "#757474" },
+            new ChatDistanceColour { distance = 25, colour = "#424242" }
         };
 
         public Chat()
         {
+            Main.playerDisconnect += disconnectMessage;
+
             NAPI.Server.SetGlobalServerChat(false);
         }
 
@@ -90,8 +77,7 @@ namespace CloudRP.PlayerSystems.ChatSystem
             });
         }
 
-        [ServerEvent(Event.PlayerDisconnected)]
-        public void onPlayerDisconect(Player player, DisconnectionType type, string reason)
+        public void disconnectMessage(Player player)
         {
             User user = player.getPlayerAccountData();
             DbCharacter character = player.getPlayerCharacterData();

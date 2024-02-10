@@ -1,4 +1,5 @@
 import { TrackVehicles } from "@/@types";
+import BrowserSystem from "@/BrowserSystem/BrowserSystem";
 import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
 import getVehicleData from "@/PlayerMethods/getVehicleData";
 
@@ -16,8 +17,16 @@ export default class FactionSystem {
             "c::faction:tracking:update": FactionSystem.handleTrackingUpdate,
             "c::faction:tracking:remove": FactionSystem.handleTrackingRemove,
             "c::faction:tracking:clear": FactionSystem.clearAll,
-            "c::faction:tracking:trackUnit": FactionSystem.handleUnitTrack
+            "c::faction:tracking:trackUnit": FactionSystem.handleUnitTrack,
+            "c::faction:dispatch:toggle": FactionSystem.toggleDispatchMenu
         });
+    }
+
+    private static toggleDispatchMenu(toggle: boolean) {
+        BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
+            _stateKey: "dispatchMenuState",
+            status: ${toggle}
+        })`);
     }
 
     private static handleUnitTrack(vehicleId: number) {

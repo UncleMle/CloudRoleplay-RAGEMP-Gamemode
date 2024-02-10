@@ -1,4 +1,5 @@
 ﻿using CloudRP.PlayerSystems.Character;
+using CloudRP.PlayerSystems.FactionSystems.DCCFaction;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Admin;
 using CloudRP.ServerSystems.CustomEvents;
@@ -15,6 +16,7 @@ using Microsoft.EntityFrameworkCore.Storage.Internal;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
@@ -26,10 +28,13 @@ namespace CloudRP.PlayerSystems.FactionSystems
     public class FactionSystem : Script
     {
         public delegate void FactionSystemEventsHandler(Player player, Factions faction);
+        public delegate void DispatchEventsHandler(int characterId, DispatchCall call);
 
         #region Event Handlers
         public static event FactionSystemEventsHandler onDutyAreaPress;
         public static event FactionSystemEventsHandler vehicleAreaPress;
+
+        public static event DispatchEventsHandler dispatchCallCreated;
         #endregion
 
         public static readonly List<Vector3> vehicleImportAreas = new List<Vector3> {
@@ -41,8 +46,12 @@ namespace CloudRP.PlayerSystems.FactionSystems
             new Vector3(854.0, -3218.3, 5.9),
             new Vector3(-61.8, 6397.4, 31.5)
         };
+
+        public static readonly string _dispatchMenuOpen = "factionSystem:dispatch:menu:state";
         public static readonly float spawnVehicleRot = -88.8f;
         public static readonly float maxInviteRange = 5.5f;
+
+        public static Dictionary<int, DispatchCall> dispatchCalls = new Dictionary<int, DispatchCall>();
 
         public class FactionCommand : CommandConditionAttribute
         {
@@ -283,11 +292,17 @@ namespace CloudRP.PlayerSystems.FactionSystems
         public FactionSystem()
         {
             KeyPressEvents.keyPress_Y += handleKeyInteraction;
+            KeyPressEvents.keyPress_CTRL_D += handleDispatchToggle;
+            
             Main.resourceStart += initFactionRanks;
+            Main.playerDisconnect += removeDispatchCall;
+
             VehicleParking.onVehicleUnpark += handleFactionUnpark;
             VehicleParking.onVehicleUnpark += handleVehicleImport;
+            
             VehicleSystem.vehiclePark += handleTrackerDestroyed;
             VehicleSystem.vehicleDeath += handleTrackerDestroyed;
+            
             TimeSystem.realHourPassed += payFactionSalaries;
 
             vehicleImportAreas.ForEach(area =>
@@ -403,6 +418,49 @@ namespace CloudRP.PlayerSystems.FactionSystems
             });
         }
 
+        public static void handleDispatchToggle(Player player)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if (character == null || character != null && character.faction_duty_status == -1) return;
+
+            bool menuState = !player.GetData<bool>(_dispatchMenuOpen);
+
+            player.SetCustomData(_dispatchMenuOpen, menuState);
+
+            toggleDispatchMenu(player, menuState);    
+            loadDispatchMenuUi(player, character);
+        }
+
+        public static void resyncDispatchMenu()
+        {
+            NAPI.Pools.GetAllPlayers().ForEach(p =>
+            {
+                DbCharacter character = p.getPlayerCharacterData();
+
+                if(p.GetData<bool>(_dispatchMenuOpen) && character != null && character.faction_duty_status != -1)
+                {
+                    loadDispatchMenuUi(p, character);       
+                }
+            });
+        }
+
+        public static void loadDispatchMenuUi(Player player, DbCharacter character)
+        {
+            if (character.faction_duty_status == -1) return;
+
+            List<KeyValuePair<int, DispatchCall>> calls = dispatchCalls
+                .Where(call => call.Value.forFaction.Equals((Factions)character.faction_duty_status))
+                .ToList();
+
+            uiHandling.resetMutationPusher(player, MutationKeys.FactionDispatch);
+
+            foreach (KeyValuePair<int, DispatchCall> call in calls)
+            {
+                uiHandling.handleObjectUiMutationPush(player, MutationKeys.FactionDispatch, call);
+            }
+        }
+
         public static void handleDutyArea(Player player, Factions targetFaction)
         {
             if (!player.hasFactionPermission(targetFaction, GeneralRankPerms.CanGoOnDuty)) return;
@@ -454,6 +512,17 @@ namespace CloudRP.PlayerSystems.FactionSystems
                 uiHandling.handleObjectUiMutationPush(player, MutationKeys.FactionUniforms, uniform);
             });
         }
+
+        public static void sendMessageToOndutyFactionMembers(string message, Factions faction)
+            => NAPI.Pools.GetAllPlayers().ForEach(p =>
+            {
+                DbCharacter character = p.getPlayerCharacterData();
+
+                if(character != null && character.faction_duty_status == (int)faction)
+                {
+                    p.SendChatMessage(message);
+                }
+            });
 
         public static void handleVehiclePoint(Player player, Factions targetFaction, int garageId)
         {
@@ -609,7 +678,36 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
         public static string getFactionName(int faction)
             => Enum.GetNames(typeof(Factions))[faction].ToString().Replace("_", " ");
-        
+
+        public static bool hasDispatchCall(Player player)
+            => player.getPlayerCharacterData() != null && dispatchCalls.ContainsKey(player.getPlayerCharacterData().character_id);
+
+        public static void removeDispatchCall(Player player)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if (character == null) return;
+
+            dispatchCalls.Remove(character.character_id);
+        }
+
+        public static void addDispatchCall(Player player, Factions faction, string desc)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if (character == null || hasDispatchCall(player)) return;
+
+            dispatchCalls.Add(character.character_id, new DispatchCall
+            {
+                forFaction = faction,
+                callDesc = desc,
+                characterName = character.character_name.Replace("_", " "),
+                location = player.Position
+            });
+
+            sendMessageToOndutyFactionMembers($"{ChatUtils.factions}{character.character_name} makes a new call to dispatch", faction);
+            resyncDispatchMenu();
+        }
         public static (Factions, int) getClosestVehiclePoint(Player player)
         {
             int garageId = -1;
@@ -778,6 +876,9 @@ namespace CloudRP.PlayerSystems.FactionSystems
         public static void trackUnit(Player player, int vehicleId)
             => player.TriggerEvent("c::faction:tracking:trackUnit", vehicleId);
 
+        public static void toggleDispatchMenu(Player player, bool toggle)
+            => player.TriggerEvent("c::faction:dispatch:toggle", toggle);
+
         public static void removeTrackedVehicle(int vehicleId)
             => NAPI.ClientEvent.TriggerClientEventForAll("c::faction:tracking:remove", vehicleId);
 
@@ -868,6 +969,43 @@ namespace CloudRP.PlayerSystems.FactionSystems
             }
 
             if(character.faction_duty_status == (int)targetFaction) player.setOffFactionDuty();
+        }
+
+        [RemoteEvent("server:factionSystem:dispatch:answerCall")]
+        public void answerDispatchCall(Player player, int key)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if (character == null || character.faction_duty_status == -1) return;
+
+            KeyValuePair<int, DispatchCall> call = dispatchCalls
+                .Where(k => k.Key == key)
+                .FirstOrDefault();
+
+            if (call.Value == null) return;
+
+            call.Value.units.Add(character.character_name);
+
+            sendMessageToOndutyFactionMembers($"{ChatUtils.factions}{character.character_name} responds to call #{call.Key}.", (Factions)character.faction_duty_status);
+        }
+
+        [RemoteEvent("server:factionSystem:dispatch:endCall")]
+        public void disposeDispatchCall(Player player, int key)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if (character == null || character.faction_duty_status == -1) return;
+
+            KeyValuePair<int, DispatchCall> call = dispatchCalls
+                .Where(k => k.Key == key)
+                .FirstOrDefault();
+
+            if (call.Value == null) return;
+
+            dispatchCalls.Remove(key);
+            resyncDispatchMenu();
+
+            sendMessageToOndutyFactionMembers($"{ChatUtils.factions}{character.character_name} closes a call to dispatch.", (Factions)character.faction_duty_status);
         }
         #endregion
 
@@ -1046,6 +1184,18 @@ namespace CloudRP.PlayerSystems.FactionSystems
             player.SendChatMessage(ChatUtils.CloudBlue + "------------------------------------");
         }
 
+        [Command("cancelcall", "~y~Use: ~w~/cancelcall")]
+        public void cancelTaxiServiceCommand(Player player)
+        {
+            if(!hasDispatchCall(player))
+            {
+                CommandUtils.errorSay(player, "You don't have a pending call to dispatch.");
+                return;
+            }
+
+            removeDispatchCall(player);
+            CommandUtils.successSay(player, "You have remove your call to dispatch.");
+        }
         #endregion
     }
 

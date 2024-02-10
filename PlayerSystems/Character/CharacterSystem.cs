@@ -25,6 +25,8 @@ namespace CloudRP.PlayerSystems.Character
 
         public CharacterSystem()
         {
+            Main.playerDisconnect += saveData;
+
             NAPI.Task.Run(() =>
             {
                 saveCharactersTimer = new Timer();
@@ -37,8 +39,7 @@ namespace CloudRP.PlayerSystems.Character
         }
 
         #region Server Events
-        [ServerEvent(Event.PlayerDisconnected)]
-        public void onPlayerDisconect(Player player, DisconnectionType type, string reason)
+        public void saveData(Player player)
         {
             saveCharacterData(player);
 

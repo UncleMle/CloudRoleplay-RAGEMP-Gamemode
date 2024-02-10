@@ -85,6 +85,9 @@ namespace CloudRP.World.TimeWeather
 
         public static int getMinuteDifferenceToHour()
             => 60 - DateTime.Now.Minute;
+        
+        public static int getServerMinuteDifferenceToHour()
+            => 60 - min;
 
         #endregion
 

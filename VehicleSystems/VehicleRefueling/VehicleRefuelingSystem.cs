@@ -17,6 +17,7 @@ namespace CloudRP.VehicleSystems.VehicleRefueling
         public VehicleRefuelingSystem()
         {
             KeyPressEvents.keyPress_Y += startVehicleRefuel;
+            Main.playerDisconnect += removeRefuellingPlayerFromVehicle;
 
             VehicleRefuelStations.refuelingStations.ForEach(refuelStation =>
             {
@@ -52,12 +53,6 @@ namespace CloudRP.VehicleSystems.VehicleRefueling
                     };
                 });
             });
-        }
-
-        [ServerEvent(Event.PlayerDisconnected)]
-        public void OnPlayerDisconnect(Player player, DisconnectionType type, string reason)
-        {
-            removeRefuellingPlayerFromVehicle(player);
         }
 
         public void startVehicleRefuel(Player player)

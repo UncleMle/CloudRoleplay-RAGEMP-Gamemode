@@ -26,51 +26,15 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
                 position = new Vector3(-40.5, -1095.5, 35.2),
                 spawnPosition = new Vector3(-44.3, -1097.0, 26.4),
                 vehicles = new List<DealerVehicle>{
-                    new DealerVehicle
-                    {
-                        spawnName = "kamacho",
-                        price = 40000
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "sultan3",
-                        price = 1235
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "blista",
-                        price = 8546345
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "panto",
-                        price = 6000
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "hakuchou2",
-                        price = 600000
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "issi2",
-                        price = 4300
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "baller8",
-                        price = 89000
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "baller3",
-                        price = 45000
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "dominator3",
-                        price = 56000
-                    }
+                    new DealerVehicle { spawnName = "kamacho", price = 40000 },
+                    new DealerVehicle { spawnName = "sultan3", price = 1235 },
+                    new DealerVehicle { spawnName = "blista", price = 8546345 },
+                    new DealerVehicle { spawnName = "panto", price = 6000 },
+                    new DealerVehicle { spawnName = "hakuchou2", price = 600000 },
+                    new DealerVehicle { spawnName = "issi2", price = 4300 },
+                    new DealerVehicle { spawnName = "baller8", price = 89000 },
+                    new DealerVehicle { spawnName = "baller3", price = 45000 },
+                    new DealerVehicle { spawnName = "dominator3", price = 56000 }
                 },
                 viewPosition = new Vector3(-30.0, -1104.8, 26.4),
                 viewRange = 1f
@@ -82,51 +46,15 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
                 position = new Vector3(-202.1, -1158.6, 23.8),
                 spawnPosition = new Vector3(-223.6, -1162.2, 23.0),
                 vehicles = new List<DealerVehicle>{
-                    new DealerVehicle
-                    {
-                        spawnName = "kamacho",
-                        price = 40000
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "sultan3",
-                        price = 1235
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "blista",
-                        price = 8546345
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "panto",
-                        price = 6000
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "hakuchou2",
-                        price = 600000
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "issi2",
-                        price = 4300
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "baller8",
-                        price = 89000
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "baller3",
-                        price = 45000
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "dominator3",
-                        price = 56000
-                    }
+                    new DealerVehicle { spawnName = "kamacho", price = 40000 },
+                    new DealerVehicle { spawnName = "sultan3", price = 1235 },
+                    new DealerVehicle { spawnName = "blista", price = 8546345 },
+                    new DealerVehicle { spawnName = "panto", price = 6000 },
+                    new DealerVehicle { spawnName = "hakuchou2", price = 600000 },
+                    new DealerVehicle { spawnName = "issi2", price = 4300 },
+                    new DealerVehicle { spawnName = "baller8", price = 89000 },
+                    new DealerVehicle { spawnName = "baller3", price = 45000 },
+                    new DealerVehicle { spawnName = "dominator3", price = 56000 }
                 },
                 viewPosition = new Vector3(-202.1, -1158.6, 23.8),
                 viewRange = 1f
@@ -138,66 +66,18 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
                 position = new Vector3(-1261.0, -348.8, 36.8),
                 spawnPosition = new Vector3(-1265.0, -341.3, 36.7),
                 vehicles = new List<DealerVehicle>{
-                    new DealerVehicle
-                    {
-                        spawnName = "schafter",
-                        price = 40000
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "schafter2",
-                        price = 1235
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "schafter3",
-                        price = 8546345
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "schafter4",
-                        price = 6000
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "schwarzer",
-                        price = 600000
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "feltzer",
-                        price = 4300
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "xls",
-                        price = 89000
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "xls2",
-                        price = 45000
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "surano",
-                        price = 56000
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "dubsta",
-                        price = 56000
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "dubsta3",
-                        price = 56000
-                    },
-                    new DealerVehicle
-                    {
-                        spawnName = "panto",
-                        price = 56000
-                    }
+                    new DealerVehicle { spawnName = "schafter", price = 40000 },
+                    new DealerVehicle { spawnName = "schafter2", price = 1235 },
+                    new DealerVehicle { spawnName = "schafter3", price = 8546345 },
+                    new DealerVehicle { spawnName = "schafter4", price = 6000 },
+                    new DealerVehicle { spawnName = "schwarzer", price = 600000 },
+                    new DealerVehicle { spawnName = "feltzer", price = 4300 },
+                    new DealerVehicle { spawnName = "xls", price = 89000 },
+                    new DealerVehicle { spawnName = "xls2", price = 45000 },
+                    new DealerVehicle { spawnName = "surano", price = 56000 },
+                    new DealerVehicle { spawnName = "dubsta", price = 56000 },
+                    new DealerVehicle { spawnName = "dubsta3", price = 56000 },
+                    new DealerVehicle { spawnName = "panto", price = 56000 }
                 },
                 viewPosition = new Vector3(-1261.0, -348.8, 36.8),
                 viewRange = 1f

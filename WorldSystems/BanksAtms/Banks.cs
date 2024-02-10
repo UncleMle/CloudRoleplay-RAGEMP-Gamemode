@@ -257,6 +257,8 @@ namespace CloudRP.World.BanksAtms
         [RemoteEvent("server:bank:retrieveSalary")]
         public void retrievePlayerSalary(Player player)
         {
+            if (!closeToBankTeller(player) || !isBankOpen(player)) return;
+
             DbCharacter character = player.getPlayerCharacterData();
 
             if (character == null || character != null && character.salary_amount == 0) return;

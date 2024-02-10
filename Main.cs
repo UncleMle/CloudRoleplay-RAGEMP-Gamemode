@@ -19,9 +19,13 @@ namespace CloudRP
 {
     public class Main : Script
     {
-        public delegate void MainEventsHandler();
-        public static event MainEventsHandler resourceStart;
-        public static event MainEventsHandler tick;
+        public delegate void PrimaryEventsHandler();
+        public delegate void PlayerEventsHandler(Player player);
+
+        public static event PrimaryEventsHandler resourceStart;
+        public static event PrimaryEventsHandler tick;
+
+        public static event PlayerEventsHandler playerDisconnect;
 
         public static string ProductionBuild = "";
         public static string JsonDirectory = "";
@@ -83,9 +87,7 @@ namespace CloudRP
             ChatUtils.formatConsolePrint($"{prod} Gamemode has started. (Loaded {Commands.loadedCommands.Count()} total commands)", ConsoleColor.Cyan);
         }
 
-        [ServerEvent(Event.Update)]
-        public void handleUpdateTick() => tick();
-
+        #region Global Methods
         public void logException(UnhandledExceptionEventArgs exception)
         {
             using var stream = File.AppendText("exceptions.txt");
@@ -93,5 +95,12 @@ namespace CloudRP
             stream.WriteLine("exception object: " + exception.ExceptionObject);
             stream.Close();
         }
+        #endregion
+
+        #region Server Events
+        [ServerEvent(Event.PlayerDisconnected)]
+        public void OnPlayerDisconnect(Player player, DisconnectionType type, string reason) 
+            => playerDisconnect(player); 
+        #endregion
     }
 }

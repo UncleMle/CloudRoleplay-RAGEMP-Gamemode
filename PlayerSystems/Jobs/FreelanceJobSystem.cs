@@ -28,6 +28,7 @@ namespace CloudRP.PlayerSystems.Jobs
         public FreelanceJobSystem()
         {
             TimeSystem.realHourPassed += handlePayBaseSalary;
+            Main.playerDisconnect += removeLeavePlayerVehicles;
 
             DeathEvent.onDeath += (player) =>
             {
@@ -192,8 +193,7 @@ namespace CloudRP.PlayerSystems.Jobs
         #endregion
 
         #region Server Events
-        [ServerEvent(Event.PlayerDisconnected)]
-        public void removeLeavePlayerVehicles(Player player, DisconnectionType type, string reason)
+        public void removeLeavePlayerVehicles(Player player)
         {
             if(player.getFreelanceJobData() != null)
             {

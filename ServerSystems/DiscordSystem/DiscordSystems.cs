@@ -39,6 +39,8 @@ namespace CloudRP.ServerSystems.DiscordSystem
             Main.resourceStart += () => {
                 initDiscordSystem();
             };
+
+            Main.playerDisconnect += handleReportDisconnect;
         }
 
         private static async Task initDiscordSystem()
@@ -362,8 +364,7 @@ namespace CloudRP.ServerSystems.DiscordSystem
             await DiscordIntegration.SendEmbed(channelId, builder);
         }
 
-        [ServerEvent(Event.PlayerDisconnected)]
-        public void handleReportDisconnect(Player player, DisconnectionType type, string reason)
+        public void handleReportDisconnect(Player player)
         {
             Report findRep = AdminSystem.activeReports.Where(rep => rep.playerReporting.Equals(player)).FirstOrDefault();
             Report isHandling = AdminSystem.activeReports.Where(rep => rep.adminsHandling.ContainsKey(player)).FirstOrDefault();

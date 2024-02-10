@@ -187,5 +187,6 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string UninsuredVehicles = "uninsured_vehicle_data";
         public static readonly string Barber = "barber_data";
         public static readonly string DCCPhone = "dcc_data";
+        public static readonly string FactionDispatch = "faction_dispatch_calls";
     }
 }
