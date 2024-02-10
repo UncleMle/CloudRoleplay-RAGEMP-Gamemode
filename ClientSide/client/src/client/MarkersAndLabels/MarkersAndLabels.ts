@@ -4,6 +4,7 @@ export default class MarkersAndLabels {
     private static createBlip: BlipMp | undefined;
     private static createMarker: MarkerMp | undefined;
     private static deleteInterval: ReturnType<typeof setInterval> | undefined;
+    private static blips: Map<Vector3, BlipMp> = new Map<Vector3, BlipMp>();
 
     constructor() {
         MarkersAndLabels.LocalPlayer = mp.players.local;
@@ -13,6 +14,42 @@ export default class MarkersAndLabels {
         mp.events.add("clientBlip:addClientBlip", MarkersAndLabels.addClientBlip);
         mp.events.add("clientBlip:removeClientBlip", MarkersAndLabels.removeClientBlip);
         mp.events.add("clientBlip:setWaypoint", MarkersAndLabels.setWaypoint);
+        mp.events.add("clientBlip:addArrayOfBlips", MarkersAndLabels.addArrayOfBlips);
+        mp.events.add("clientBlip:handleBlipDelete", MarkersAndLabels.deleteFromBlipArray);
+        mp.events.add("clientBlip:flushBlipArray", MarkersAndLabels.flushBlipArray);
+    }
+
+    private static flushBlipArray() {
+        MarkersAndLabels.blips.forEach(blip => {
+            if(blip && mp.blips.exists(blip)) {
+                blip.destroy();
+            }
+        });
+
+        MarkersAndLabels.blips.clear();
+    }
+
+    private static addArrayOfBlips(blips: Vector3[], blipType: number, blipColour: number, name: string) {
+        blips.forEach(blip => {
+            let created: BlipMp = mp.blips.new(blipType, blip, {
+                color: blipColour,
+                name: name
+            });
+
+            MarkersAndLabels.blips.set(blip, created);
+        })    
+    }
+
+    private static deleteFromBlipArray(position: string) {
+        let val: BlipMp | undefined = MarkersAndLabels.blips.get(JSON.parse(position));
+        
+        mp.gui.chat.push(position + " __ " + val);
+
+        if(val && mp.blips.exists(val)) {
+            val.destroy();
+
+            MarkersAndLabels.blips.delete(JSON.parse(position));
+        }
     }
 
     public static setWaypoint(coords: Vector3) {

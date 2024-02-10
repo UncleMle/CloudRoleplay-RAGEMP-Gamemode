@@ -206,6 +206,27 @@ namespace CloudRP.VehicleSystems.VehicleParking
                 parkPosRange = 8f,
                 retrievePosRange = 1f,
                 forAircraft = true
+            },
+            new ParkingLot
+            {
+                name = "Subway Parking",
+                parkingId = 10,
+                retrieve = new RetrieveCol
+                {
+                    name = "Subway",
+                    owner_id = 10,
+                    position = new Vector3(-924.7, -163.9, 41.9)
+                },
+                park = new ParkCol
+                {
+                    name = "Subway",
+                    owner_id = 10,
+                    position = new Vector3(-924.7, -163.9, 41.9)
+                },
+                parkPosRange = 2f,
+                retrievePosRange = 1f,
+                spawnVehiclesAt = new Vector3(-937.5, -166.7, 41.9)
+
             }
         };
 

@@ -10,6 +10,7 @@ using CloudRP.World.TimeWeather;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
+using System.Security.Cryptography;
 
 namespace CloudRP.PlayerSystems.Jobs
 {
@@ -167,6 +168,30 @@ namespace CloudRP.PlayerSystems.Jobs
 
             }
         }
+
+        public static void createFreelanceVehicle(Player player, string spawnName, Vector3 spawnCoords, float rot, int jobId, string jobName, string plateIdent)
+        {
+            if (!hasFreeLanceVehicle(player))
+            {
+                DbCharacter character = player.getPlayerCharacterData();
+
+                Vehicle workVehicle = VehicleSystem.buildVolatileVehicle(player, spawnName, spawnCoords, rot, plateIdent + character.character_id, 1, 1);
+
+                if (workVehicle == null) return;
+
+                workVehicle.setFreelanceJobData(new FreeLanceJobVehicleData
+                {
+                    characterOwnerId = character.character_id,
+                    destroyOnLeave = true,
+                    jobId = jobId,
+                    jobName = jobName
+                });
+
+                MarkersAndLabels.addBlipForClient(player, 67, "Work Truck", spawnCoords, 50, 255, 20);
+
+                player.SendChatMessage(ChatUtils.freelanceJobs + $"Enter your freelance work vehicle marked on the map.");
+            }
+        }
         #endregion
 
         #region Commands
@@ -208,7 +233,8 @@ namespace CloudRP.PlayerSystems.Jobs
         BusJob,
         TruckerJob,
         PostalJob,
-        GruppeSix
+        GruppeSix,
+        GarbageJob
     }
 
     public class FreeLanceJobData

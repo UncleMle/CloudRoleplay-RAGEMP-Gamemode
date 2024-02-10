@@ -14,6 +14,7 @@ export default class KeyPressActions {
         mp.keys.bind(_control_ids.Y, false, () => KeyPressActions.handleKeyPressed(KeyType.KEY_Y));
         mp.keys.bind(_control_ids.F4, false, () => KeyPressActions.handleKeyPressed(KeyType.KEY_F4));
         mp.keys.bind(_control_ids.F3, false, () => KeyPressActions.handleKeyPressed(KeyType.KEY_F3));
+        mp.keys.bind(_control_ids.EBIND, false, () => KeyPressActions.handleKeyPressed(KeyType.KEY_E));
     }
 
     private static getArgs(): boolean[] {
@@ -64,9 +65,7 @@ export default class KeyPressActions {
 
             let args: boolean[] = KeyPressActions.getArgs();
 
-            if (!args.find(arg => arg)) {
-                mp.events.callRemote(KeyPressActions.KeyEvent, key);
-            }
+            mp.events.callRemote(KeyPressActions.KeyEvent, key, args.find(arg => arg) ? false : true);
         }
     }
 }
