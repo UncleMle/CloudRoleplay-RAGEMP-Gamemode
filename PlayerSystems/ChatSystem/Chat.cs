@@ -70,7 +70,7 @@ namespace CloudRP.PlayerSystems.ChatSystem
                 {
                     float dist = Vector3.Distance(player.Position, p.Position);
 
-                    string chatColour = "!{"+distanceColours.OrderBy(item => Math.Abs(dist - item.distance)).First()?.colour+ "}";
+                    string chatColour = "!{" + distanceColours.OrderBy(item => Math.Abs(dist - item.distance)).First()?.colour + "}";
 
                     ChatUtils.sendWithNickName(p, player, chatColour, chatColour + suffix + chatColour + message);
                 }
@@ -105,7 +105,7 @@ namespace CloudRP.PlayerSystems.ChatSystem
 
             if(user.vip_status)
             {
-                player.SendChatMessage(ChatUtils.vip + $"You have VIP status is enabled.");
+                player.SendChatMessage(ChatUtils.vip + $"Your VIP status is {ChatUtils.moneyGreen}enabled{ChatUtils.White}. You have {ChatUtils.yellow}{Auth.getVipDaysLeft(user)}{ChatUtils.White} days remaining.");
             }
 
             if (user.admin_status > (int)AdminRanks.Admin_None)

@@ -244,6 +244,7 @@ namespace CloudRP.ServerSystems.Utils
         public bool admin_esp { get; set; } = true;
         public string redeem_code { get; set; }
         public bool showAdminPed { get; set; } = false;
+        public int vip_unix_expires { get; set; }
     }
 
     class SharedDataAccount

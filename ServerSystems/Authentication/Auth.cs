@@ -14,6 +14,7 @@ using CloudRP.ServerSystems.Utils;
 using CloudRP.PlayerSystems.Jobs;
 using CloudRP.ServerSystems.Middlewares;
 using CloudRP.PlayerSystems.FactionSystems;
+using CloudRP.Migrations;
 
 namespace CloudRP.ServerSystems.Authentication
 {
@@ -91,11 +92,13 @@ namespace CloudRP.ServerSystems.Authentication
                     }
 
                     setUserToCharacterSelection(player, user);
+                    checkVipStatus(player, user);
 
                     if (userCredentials.rememberMe)
                     {
                         setUpAutoLogin(player, findAccount);
                     }
+
 
                     ChatUtils.formatConsolePrint($"User {findAccount.username} (#{findAccount.account_id}) has logged in.", ConsoleColor.Green);
                 }
@@ -530,6 +533,27 @@ namespace CloudRP.ServerSystems.Authentication
                 setUserToCharacterSelection(player, userData);
             }
         }
+
+        public static void checkVipStatus(Player player, User user)
+        {
+            if (!user.vip_status) return;
+
+            long difference = user.vip_unix_expires - CommandUtils.generateUnix();
+
+            if(difference <= 0)
+            {
+                user.vip_status = false;
+                player.setPlayerAccountData(user);
+            }
+        }
+
+        public static int getVipDaysLeft(User user)
+        {
+            long secondsDiff = user.vip_unix_expires - CommandUtils.generateUnix();
+
+            return (int)secondsDiff / 86400;
+        }
+
         #endregion
 
         #region Server Events

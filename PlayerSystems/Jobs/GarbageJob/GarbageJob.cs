@@ -26,7 +26,7 @@ namespace CloudRP.PlayerSystems.Jobs.GarbageJob
         public static readonly string jobName = "Garbage Job";
         public static readonly string spawnName = "trash";
         public static readonly string _garbageJobDataKey = "jobs:garbage:stopsDone";
-        public static readonly Vector3 finishJob = new Vector3();
+        public static readonly Vector3 finishJob = new Vector3(-345.7, -1562.7, 25.2);
 
         public static List<Vector3> stops = new List<Vector3>
         {
@@ -92,8 +92,6 @@ namespace CloudRP.PlayerSystems.Jobs.GarbageJob
             if (job == null) return;
 
             if (job.jobId != jobId || job.jobLevel == -1) return;
-
-            Console.WriteLine(job.jobLevel + " " + stops.Count);
 
             if(job.jobLevel == (stops.Count - 1))
             {
