@@ -52,7 +52,7 @@ namespace CloudRP.PlayerSystems.FactionSystems.DCCFaction
 
             if(FactionSystem.hasDispatchCall(player))
             {
-                uiHandling.sendPushNotifError(player, "You already have an active service request. Use /cancelservice to cancel it.", 6600);
+                uiHandling.sendPushNotifError(player, "You already have an active service request. Use /cancelcall to cancel it.", 6600);
                 return;
             }
 

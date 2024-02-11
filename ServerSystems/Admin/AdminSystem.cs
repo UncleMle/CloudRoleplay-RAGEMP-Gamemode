@@ -1982,5 +1982,31 @@ namespace CloudRP.ServerSystems.Admin
             AdminUtils.staffSay(player, $"You put ${amount.ToString("N0")} into {findPlayerData.character_name} salary.");
             AdminUtils.staffSay(findPlayer, $"{user.admin_name} has placed ${amount.ToString("N0")} into your salary.");
         }
+
+        [AdminCommand(AdminRanks.Admin_HeadAdmin)]
+        [Command("givevip", "~r~/givevip [nameOrId] [days]")]
+        public void giveVipCommand(Player player, string nameOrId, int days)
+        {
+            User playerUser = player.getPlayerAccountData();
+
+            Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+            if (findPlayer == null)
+            {
+                CommandUtils.notFound(player);
+                return;
+            }
+
+            DbCharacter character = findPlayer.getPlayerCharacterData();
+
+            User targetUser = findPlayer.getPlayerAccountData();
+            targetUser.vip_status = true;
+            targetUser.vip_unix_expires = CommandUtils.generateUnix() + days * 86400;
+
+            findPlayer.setPlayerAccountData(targetUser, false, true);
+
+            AdminUtils.staffSay(player, $"You gave {character.character_name} VIP status for {days} days.");
+            AdminUtils.staffSay(findPlayer, $"{playerUser.admin_name} gave you VIP status for {days} days.");
+        }
     }
 }

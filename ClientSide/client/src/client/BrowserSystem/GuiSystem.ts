@@ -19,7 +19,7 @@ export default class GuiSystem {
 
 		mp.events.add("render", GuiSystem.fillGuiRenderValues);
 		mp.events.add("gui:toggleHudComplete", GuiSystem.toggleHudComplete);
-		mp.keys.bind(_control_ids.F10, false, GuiSystem.toggleHud);
+		mp.keys.bind(_control_ids.F10, false, () => getUserCharacterData() && GuiSystem.toggleHud);
 	}
 
 	public static toggleHud() {

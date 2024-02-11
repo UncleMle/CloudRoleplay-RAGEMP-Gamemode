@@ -1,17 +1,25 @@
 <template>
     <div id="app">
         <ChatBox class="absolute" ref="chatsys" />
-        <div ref="guisystems" v-if="uiStates.guiEnabled">
-            <VehicleSpeedo />
-            <PlayerHud />
-            <InventoryHud v-if="uiStates.inventory" />
-            <PlayerPhone class="absolute" />
-            <DispatchMenu v-if="uiStates.dispatchMenuState" />
-        </div>
+
+        <Transition name="fade">
+
+            <div ref="guisystems" v-if="uiStates.guiEnabled">
+                <VehicleSpeedo />
+                <PlayerHud />
+                <InventoryHud v-if="uiStates.inventory" />
+                <PlayerPhone class="absolute" />
+                <DispatchMenu v-if="uiStates.dispatchMenuState" />
+            </div>
+        </Transition>
+
         <RefuelMeter class="absolute" v-if="uiStates.refuelUi" />
         <PushNotification class="bg-red-200" ref="notification" />
-        <router-view class="absolute" ref="routers">
-        </router-view>
+
+        <Transition name="fade">
+            <router-view class="absolute" ref="routers">
+            </router-view>
+        </Transition>
     </div>
 </template>
 
@@ -73,5 +81,15 @@ export default {
 .slide-fade-enter,
 .slide-fade-leave-active {
     opacity: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity .3s
+}
+
+.fade-enter,
+.fade-leave-to {
+    opacity: 0
 }
 </style>

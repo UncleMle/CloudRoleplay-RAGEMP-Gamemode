@@ -119,6 +119,19 @@ namespace CloudRP.PlayerSystems.PlayerData
                 resetRouter(player);
             }
         }
+        
+        public static void sendPrompt(Player player, string icon, string title, string message, string callBackEvent)
+        {
+            pushRouterToClient(player, Browsers.PromptScreen, true);
+
+            handleObjectUiMutation(player, MutationKeys.PromptData, new PromptUiData
+            {
+                icon = icon,
+                callBackEvent = callBackEvent,
+                message = message,
+                title = title
+            });
+        }
     }
     
     public static class HintKeys
@@ -149,6 +162,7 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string DmvCourseView = "/dmvcourseview";
         public static readonly string FactionUniforms = "/factionuniform";
         public static readonly string BarberShop = "/barbershop";
+        public static readonly string PromptScreen = "/promptscreen";
     }
 
     public static class AuthStates
@@ -188,5 +202,14 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string Barber = "barber_data";
         public static readonly string DCCPhone = "dcc_data";
         public static readonly string FactionDispatch = "faction_dispatch_calls";
+        public static readonly string PromptData = "player_prompt_data";
+    }
+
+    public class PromptUiData
+    {
+        public string icon { get; set; }
+        public string title { get; set; }
+        public string message { get; set; }
+        public string callBackEvent { get; set; }
     }
 }

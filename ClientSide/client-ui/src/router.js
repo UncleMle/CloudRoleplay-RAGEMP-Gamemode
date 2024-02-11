@@ -24,6 +24,7 @@ import LicensePage from './components/ui/LicensePage.vue';
 import DmvRouteView from './components/dmv/DmvRouteView.vue';
 import UniformView from './components/factionSystem/UniformView.vue';
 import BarberView from './components/barber/BarberView.vue';
+import PromptMenu from './components/PromptMenu/PromptMenu.vue';
 
 export default new Router({
     routes: [
@@ -47,6 +48,7 @@ export default new Router({
         { path: '/licenseview', component: LicensePage },
         { path: '/dmvcourseview', component: DmvRouteView },
         { path: '/factionuniform', component: UniformView },
-        { path: '/barbershop', component: BarberView }
+        { path: '/barbershop', component: BarberView },
+        { path: '/promptscreen', component: PromptMenu }
     ]
 });

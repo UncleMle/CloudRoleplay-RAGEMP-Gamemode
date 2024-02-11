@@ -108,6 +108,11 @@ namespace CloudRP.PlayerSystems.ChatSystem
                 player.SendChatMessage(ChatUtils.vip + $"Your VIP status is {ChatUtils.moneyGreen}enabled{ChatUtils.White}. You have {ChatUtils.yellow}{Auth.getVipDaysLeft(user)}{ChatUtils.White} days remaining.");
             }
 
+            if(!user.vip_status && user.vip_unix_expires != 0)
+            {
+                player.SendChatMessage(ChatUtils.vip + $"Your VIP status is {ChatUtils.red}disabled{ChatUtils.White} and ran out {ChatUtils.red}{Auth.getDaysSinceVip(user)} days ago{ChatUtils.White}.");
+            }
+
             if (user.admin_status > (int)AdminRanks.Admin_None)
             {
                 string colouredRank = AdminUtils.getColouredAdminRank(user);

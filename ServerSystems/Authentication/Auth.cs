@@ -15,6 +15,7 @@ using CloudRP.PlayerSystems.Jobs;
 using CloudRP.ServerSystems.Middlewares;
 using CloudRP.PlayerSystems.FactionSystems;
 using CloudRP.Migrations;
+using Discord;
 
 namespace CloudRP.ServerSystems.Authentication
 {
@@ -92,8 +93,6 @@ namespace CloudRP.ServerSystems.Authentication
                     }
 
                     setUserToCharacterSelection(player, user);
-                    checkVipStatus(player, user);
-
                     if (userCredentials.rememberMe)
                     {
                         setUpAutoLogin(player, findAccount);
@@ -415,6 +414,7 @@ namespace CloudRP.ServerSystems.Authentication
             if (player.checkPlayerIsBanned() != null) return;
 
             player.setPlayerAccountData(userData);
+            checkVipStatus(player, userData);
 
             ChatUtils.formatConsolePrint($"{userData.username} (#{userData.account_id}) has entered character selection process.", ConsoleColor.Yellow);
 
@@ -540,6 +540,8 @@ namespace CloudRP.ServerSystems.Authentication
 
             long difference = user.vip_unix_expires - CommandUtils.generateUnix();
 
+            Console.WriteLine(difference);
+
             if(difference <= 0)
             {
                 user.vip_status = false;
@@ -550,6 +552,13 @@ namespace CloudRP.ServerSystems.Authentication
         public static int getVipDaysLeft(User user)
         {
             long secondsDiff = user.vip_unix_expires - CommandUtils.generateUnix();
+
+            return (int)secondsDiff / 86400;
+        }
+        
+        public static int getDaysSinceVip(User user)
+        {
+            long secondsDiff = CommandUtils.generateUnix() - user.vip_unix_expires;
 
             return (int)secondsDiff / 86400;
         }

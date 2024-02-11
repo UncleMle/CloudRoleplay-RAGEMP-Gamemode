@@ -144,8 +144,7 @@ namespace CloudRP.VehicleSystems.VehicleRefueling
                     Vehicle findVeh = foundVeh.Key;
                     DbVehicle foundVehData = foundVeh.Value;
 
-                    if(characterData.faction_duty_status > 0) fuelPrice = 0;
-                    if (player.hasVip()) fuelPrice /= 2;
+                    if(characterData.faction_duty_status == foundVehData.faction_owner_id || player.hasVip()) fuelPrice = 0;
 
                     if (foundVehData.vehicle_locked || foundVehData.engine_status)
                     {
@@ -179,7 +178,7 @@ namespace CloudRP.VehicleSystems.VehicleRefueling
                     uiHandling.handleObjectUiMutation(player, MutationKeys.VehicleFuelData, new UiFuelData
                     {
                         fuel_literage = foundVehData.vehicle_fuel,
-                        price = foundVehData.vehicle_fuel_purchase_price
+                        price = foundVehData.vehicle_fuel_purchase_price == -1 ? 0 : foundVehData.vehicle_fuel_purchase_price
                     });
 
                     uiHandling.sendNotification(player, $"{(player.hasVip() ? "[VIP]" : "")} ~w~You spent ~g~${fuelPrice}~w~ on fuel.", false);
