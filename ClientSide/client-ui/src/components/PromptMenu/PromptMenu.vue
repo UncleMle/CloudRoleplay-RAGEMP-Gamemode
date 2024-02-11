@@ -32,7 +32,7 @@
             </div>
 
             <div>
-                <button @click="sendToServer(playerData.player_prompt_data.callBackEvent)"
+                <button @click="server(playerData.player_prompt_data.callBackEvent)"
                     class="border-2 border-green-400/60 bg-black/70 shadow-black shadow-2xl p-3 w-40 rounded-lg duration-300 hover:border-green-400">
                     Accept</button>
             </div>
@@ -52,9 +52,13 @@ export default {
         })
     },
     methods: {
-        sendToServer,
         close() {
             window.mp.trigger("browser:resetRouter");
+        },
+        server(callBack) {
+            this.close();
+
+            sendToServer(callBack);
         }
     }
 }

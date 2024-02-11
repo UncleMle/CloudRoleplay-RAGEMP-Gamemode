@@ -540,8 +540,6 @@ namespace CloudRP.ServerSystems.Authentication
 
             long difference = user.vip_unix_expires - CommandUtils.generateUnix();
 
-            Console.WriteLine(difference);
-
             if(difference <= 0)
             {
                 user.vip_status = false;

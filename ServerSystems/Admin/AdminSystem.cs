@@ -1785,8 +1785,6 @@ namespace CloudRP.ServerSystems.Admin
             NAPI.Object.CreateObject(NAPI.Util.GetHashKey(objName), new Vector3(player.Position.X, player.Position.Y, player.Position.Z-1), new Vector3(0, 0, player.Rotation.Z), 255);
             AdminUtils.staffSay(player, $"You spawned in a object {ChatUtils.yellow}{objName}{ChatUtils.White}");
 
-            Console.WriteLine(player.Rotation.Z);
-
             List<Vector3> positions = null;
             
             using(StreamReader sr = new StreamReader(Main.JsonDirectory + "objectpositions.json"))

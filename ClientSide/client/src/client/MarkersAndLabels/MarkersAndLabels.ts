@@ -24,7 +24,8 @@ export default class MarkersAndLabels {
     private static addArrayOfBlips(blips: ClientBlip[]) {
         blips.forEach(blip => {
             blip.blip = mp.blips.new(blip.type, blip.pos, {
-                name: blip.name
+                name: blip.name,
+                color: blip.colour
             });
 
             if (blip.setMarker) {

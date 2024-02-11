@@ -236,7 +236,8 @@ namespace CloudRP.PlayerSystems.Jobs
         TruckerJob,
         PostalJob,
         GruppeSix,
-        GarbageJob
+        GarbageJob,
+        LawnMower
     }
 
     public class FreeLanceJobData
