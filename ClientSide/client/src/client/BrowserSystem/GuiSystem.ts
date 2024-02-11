@@ -23,7 +23,7 @@ export default class GuiSystem {
 	}
 
 	public static toggleHud() {
-		if(!validateKeyPress()) return;
+		if (!validateKeyPress()) return;
 
 		GuiSystem.hudToggle = !GuiSystem.hudToggle;
 
@@ -31,12 +31,12 @@ export default class GuiSystem {
 	}
 
 	public static toggleHudComplete(toggle: boolean, notif: boolean = false, checkForScaleFormAndSwitch: boolean = true) {
-		if(checkForScaleFormAndSwitch && (mp.game.invoke(_IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE) ||  ScaleForm.isActive())) return;
+		if (checkForScaleFormAndSwitch && (mp.game.invoke(_IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE) || ScaleForm.isActive())) return;
 
 		let browser: BrowserMp = BrowserSystem._browserInstance;
 		GuiSystem.hudToggle = toggle;
 
-		if(browser) {
+		if (browser) {
 			mp.game.ui.displayRadar(toggle);
 			GuiSystem.LocalPlayer.guiState = toggle;
 			toggleChat(toggle);
@@ -46,14 +46,14 @@ export default class GuiSystem {
 				status: ${toggle}
 			})`);
 
-			if(notif) {
+			if (notif) {
 				NotificationSystem.createNotification(`You turned your HUD ${toggle ? "on" : "off"}`);
 			}
 		}
 	}
 
 	public static fillGuiRenderValues() {
-		if(ScaleForm.isActive()) {
+		if (ScaleForm.isActive()) {
 			GuiSystem.toggleHudComplete(false, false, false);
 			return;
 		}
@@ -76,11 +76,11 @@ export default class GuiSystem {
 			voiceMuted: mp.voiceChat.muted
 		}
 
-		if(mp.game.invoke(IS_RADAR_ENABLED) && !mp.game.invoke(IS_RADAR_HIDDEN)) {
+		if (mp.game.invoke(IS_RADAR_ENABLED) && !mp.game.invoke(IS_RADAR_HIDDEN)) {
 
 			let hungerAndThirst: Hunger | undefined = getWaterAndHungerData(GuiSystem.LocalPlayer);
 
-			if(hungerAndThirst) {
+			if (hungerAndThirst) {
 				BrowserSystem.handleObjectToBrowser("player_water", hungerAndThirst.water);
 				BrowserSystem.handleObjectToBrowser("player_hunger", hungerAndThirst.hunger);
 				BrowserSystem.handleObjectToBrowser("player_data_gui", guiData);

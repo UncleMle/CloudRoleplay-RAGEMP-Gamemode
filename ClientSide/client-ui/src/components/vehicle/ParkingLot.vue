@@ -37,13 +37,15 @@
                                             Select
                                         </button>
                                         <div class="mt-3">
-                                            <div v-if="item.vehicle_distance > 0" class="absolute right-4 bottom-1 font-medium text-gray-300">
+                                            <div v-if="item.vehicle_distance > 0"
+                                                class="absolute right-4 bottom-1 font-medium text-gray-300">
                                                 <p><i class="fa-solid fa-gauge"></i> {{ (item.vehicle_distance /
                                                     1000).toFixed(0) }}km </p>
                                             </div>
                                             <div v-if="item.vehicle_distance / 1609 > 0"
                                                 class="absolute right-4 bottom-7 font-medium text-gray-300">
-                                                <p><i class="fa-solid fa-gas-pump"></i> {{ item.vehicle_fuel.toFixed(0) }}%</p>
+                                                <p><i class="fa-solid fa-gas-pump"></i> {{ item.vehicle_fuel.toFixed(0) }}%
+                                                </p>
                                             </div>
                                         </div>
                                     </div>

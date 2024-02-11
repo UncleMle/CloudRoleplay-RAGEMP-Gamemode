@@ -1,5 +1,7 @@
 import getVehicleData from "@/PlayerMethods/getVehicleData";
 import { StallTypes } from "@/enums";
+import VehicleSystems from "./VehicleSystem";
+import isFlipped from "../PlayerMethods/getIfVehicleIsFlipped";
 
 export default class VehicleStall {
     public static LocalPlayer: PlayerMp = mp.players.local;
@@ -8,6 +10,7 @@ export default class VehicleStall {
     public static readonly beginStallEvent: string = "server:stallVehicle";
     public static readonly isStalledKey: string = "vehicleIsStalledDataKey";
     public static checkInterval: ReturnType<typeof setInterval> | undefined;
+    public static onAllWheelsTimer: number = 0;
 
     constructor() {
         mp.events.add({
@@ -15,6 +18,21 @@ export default class VehicleStall {
             "playerLeaveVehicle": VehicleStall.handlePlayerLeaveVeh,
             "render": VehicleStall.handleRender
         });
+
+        setInterval(async () => {
+            if(!VehicleStall.LocalPlayer.vehicle) return;
+            
+            if (!VehicleStall.LocalPlayer.vehicle.isOnAllWheels()) {
+                VehicleStall.onAllWheelsTimer++;
+            } else VehicleStall.onAllWheelsTimer = 0;
+
+            if(VehicleStall.onAllWheelsTimer > 3 && !isFlipped(VehicleStall.LocalPlayer.vehicle)) {
+                VehicleStall.beginStall(StallTypes.Medium);
+                
+                await mp.game.waitAsync(500);
+            }
+
+        }, 600);
     }
 
     private static handleRender() {

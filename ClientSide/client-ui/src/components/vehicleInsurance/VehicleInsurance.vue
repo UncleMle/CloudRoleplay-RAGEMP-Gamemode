@@ -61,7 +61,8 @@
                                                 Select Vehicle
                                             </button>
 
-                                            <button v-if="!item.insurance_status" class="ml-2 mt-2 bg-red-500/50 p-1 font-medium rounded-lg pr-4 pl-4">
+                                            <button v-if="!item.insurance_status"
+                                                class="ml-2 mt-2 bg-red-500/50 p-1 font-medium rounded-lg pr-4 pl-4">
                                                 Uninsured
                                             </button>
 
