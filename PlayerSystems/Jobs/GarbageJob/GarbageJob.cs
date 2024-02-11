@@ -32,7 +32,14 @@ namespace CloudRP.PlayerSystems.Jobs.GarbageJob
         public static List<Vector3> stops = new List<Vector3>
         {
             new Vector3(-848.8, 463.7, 87.3),
-            new Vector3(-862.9, 519.5, 89.4)
+            new Vector3(-862.9, 519.5, 89.4),
+            new Vector3(-1093.8, 587.9, 102.9),
+            new Vector3(-1253.5, 484.8, 94.2),
+            new Vector3(-1414.4, 467.1, 109.0),
+            new Vector3(-1444.4, 532.7, 119.5),
+            new Vector3(-1416.4, 557.2, 124.0),
+            new Vector3(-1359.2, 557.3, 129.0),
+            new Vector3(-1359.3, 601.2, 133.7)
         };
 
         public GarbageJob()
@@ -41,7 +48,7 @@ namespace CloudRP.PlayerSystems.Jobs.GarbageJob
             KeyPressEvents.keyPress_E += iterateJobState;
 
             MarkersAndLabels.setPlaceMarker(startJob);
-            MarkersAndLabels.setTextLabel(startJob, $"Garbage Job\nUse ~y~Y~w~ to interact\nJob Pay ~g~${jobPay.ToString("N0")}", 5f);
+            MarkersAndLabels.setTextLabel(startJob, $"Garbage Job\nUse ~y~Y~w~ to interact\nJob Pay ~g~${jobPay.ToString("N0")}\nStops ~y~{stops.Count}", 5f);
 
             NAPI.Blip.CreateBlip(318, startJob, 1f, 81, "Garbage Job", 255, 0, true, 0, 0);
 
