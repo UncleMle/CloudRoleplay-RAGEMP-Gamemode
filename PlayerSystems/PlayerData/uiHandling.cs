@@ -120,7 +120,7 @@ namespace CloudRP.PlayerSystems.PlayerData
             }
         }
         
-        public static void sendPrompt(Player player, string icon, string title, string message, string callBackEvent)
+        public static void sendPrompt(Player player, string icon, string title, string message, string callBackEvent, object callBackObject = null, string callBackRoute = null)
         {
             pushRouterToClient(player, Browsers.PromptScreen, true);
 
@@ -129,7 +129,9 @@ namespace CloudRP.PlayerSystems.PlayerData
                 icon = icon,
                 callBackEvent = callBackEvent,
                 message = message,
-                title = title
+                title = title,
+                callBackObject = callBackObject,
+                callBackRoute = callBackRoute
             });
         }
     }
@@ -212,5 +214,7 @@ namespace CloudRP.PlayerSystems.PlayerData
         public string title { get; set; }
         public string message { get; set; }
         public string callBackEvent { get; set; }
+        public object callBackObject { get; set; }
+        public string callBackRoute { get; set; }
     }
 }

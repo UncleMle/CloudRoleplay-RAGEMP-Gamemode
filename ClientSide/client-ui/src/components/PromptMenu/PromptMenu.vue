@@ -53,12 +53,18 @@ export default {
     },
     methods: {
         close() {
+            if (this.playerData.player_prompt_data.callBackRoute) {
+                window.mp.trigger("browser:pushRouter", this.playerData.player_prompt_data.callBackRoute);
+                this.$store.state.uiStates.serverLoading = false;
+                return;
+            }
+
             window.mp.trigger("browser:resetRouter");
         },
         server(callBack) {
             this.close();
 
-            sendToServer(callBack);
+            sendToServer(callBack, JSON.stringify(this.playerData.player_prompt_data.callBackObject));
         }
     }
 }

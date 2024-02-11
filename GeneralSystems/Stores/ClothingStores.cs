@@ -114,7 +114,7 @@ namespace CloudRP.GeneralSystems.Stores
 
                 if (clothingStores[i].maskStore)
                 {
-                    NAPI.Blip.CreateBlip(78, pos, 1.0f, 4, name, 255, 1.0f, true, 0, 0);
+                    NAPI.Blip.CreateBlip(362, pos, 1.0f, 4, name, 255, 1.0f, true, 0, 0);
                 }
                 else
                 {
