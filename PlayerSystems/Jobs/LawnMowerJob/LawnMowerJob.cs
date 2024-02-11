@@ -4,6 +4,7 @@ using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
     {
         public static readonly string mowerSpawnName = "mower";
         public static readonly string _currentMowerJobKey = "server:jobs:lawnMower:currentJob";
+        public static readonly string _mowerJobsDoneKey = "server:jobs:lawnMower:jobsDone";
         public static readonly int jobId = (int)FreelanceJobs.LawnMower;
         public static readonly string jobName = "Lawn Mower";
         public static List<Vector3> startPositions = new List<Vector3>
@@ -27,18 +29,38 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
         public static List<Vector3> mowerSpawns = new List<Vector3>
         {
             new Vector3(-1350.8, 132.6, 56.2),
-            new Vector3()
+            new Vector3(1831.1, 4939.2, 46.1)
         };
 
         public static List<MowableLawn> lawns = new List<MowableLawn>
         {
             new MowableLawn
             {
-                pay = 300,
+                pay = 2700,
                 stops = new List<Vector3>
                 {
                     new Vector3(-1311.6, 98.4, 55.8),
-                    new Vector3(-1304.4, 135.1, 58.2)
+                    new Vector3(-1304.4, 135.1, 58.2),
+                    new Vector3(-1347.8, 153.5, 57.3),
+                    new Vector3(-1298.4, 177.2, 59.3),
+                    new Vector3(-1245.1, 160.6, 59.3),
+                    new Vector3(-1240.4, 135.7, 58.3),
+                    new Vector3(-1238.9, 29.9, 47.9),
+                    new Vector3(-1316.0, 41.3, 53.5)
+                }
+            },
+            new MowableLawn
+            {
+                pay = 1800,
+                stops = new List<Vector3>
+                {
+                    new Vector3(1850.4, 4957.0, 50.7),
+                    new Vector3(1858.7, 4935.4, 47.8),
+                    new Vector3(1842.9, 4916.1, 44.6),
+                    new Vector3(1815.0, 4913.2, 43.6),
+                    new Vector3(1810.6, 4923.0, 43.7),
+                    new Vector3(1871.3, 4916.2, 46.3),
+                    new Vector3(1848.7, 4900.4, 43.9)
                 }
             }
         };
@@ -125,10 +147,11 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
         {
             FreeLanceJobData job = player.getFreelanceJobData();
             MowableLawn lawn = player.GetData<MowableLawn>(_currentMowerJobKey);
+            List<Vector3> stopsDone = player.GetData<List<Vector3>>(_mowerJobsDoneKey);
 
-            if (job == null || lawn == null || !FreelanceJobSystem.checkValidFreelanceVeh(player, FreelanceJobs.LawnMower)) return;
+            if (job == null || lawn == null || stopsDone == null || !FreelanceJobSystem.checkValidFreelanceVeh(player, FreelanceJobs.LawnMower)) return;
 
-            if (lawn.stopsDone.Contains(pos)) return;
+            if (stopsDone.Contains(pos)) return;
 
             uiHandling.sendNotification(player, "~g~Mowed grass", false, true, "Mows grass...");
             MarkersAndLabels.deleteClientBlip(player, lawn.stops.IndexOf(pos));
@@ -143,11 +166,11 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
                 return;
             }
 
-            lawn.stopsDone.Add(pos);
+            stopsDone.Add(pos);
             job.jobLevel++;
 
             player.setFreelanceJobData(job);
-            player.SetCustomData(_currentMowerJobKey, lawn);
+            player.SetCustomData(_mowerJobsDoneKey, stopsDone);
         }
 
         #endregion
@@ -197,6 +220,7 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
                 MarkersAndLabels.loadClientBlips(player, lawn.stops, "Lawn Mowing", 1, 2, true);
                 player.SendChatMessage(ChatUtils.freelanceJobs + "Head to all positions marked on the GPS. You will get paid once the mowing job is complete.");
                 player.setFreelanceJobData(job);
+                player.SetCustomData(_mowerJobsDoneKey, new List<Vector3>());
             }
         }
         #endregion
