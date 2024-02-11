@@ -1,4 +1,5 @@
-﻿using CloudRP.PlayerSystems.PlayerData;
+﻿using CloudRP.PlayerSystems.Character;
+using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
@@ -39,6 +40,7 @@ namespace CloudRP.VehicleSystems.VehicleScrapyards
             });
         }
 
+        #region Commands
         [Command("scrap", "~y~Use: ~w~/scrap")]
         public void scrapVehicleCommand(Player player)
         {
@@ -52,13 +54,46 @@ namespace CloudRP.VehicleSystems.VehicleScrapyards
                 .Where(scrap => player.checkIsWithinCoord(scrap.position, 5f))
                 .FirstOrDefault();
 
+            DbVehicle vehicleData = player.Vehicle.getData();
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if (vehicleData == null || character == null) return;
+
             if(targetScrap == null)
             {
                 CommandUtils.errorSay(player, "You must be within a scrapyard to use this command.");
                 return;
             }
 
+            if(vehicleData.owner_id != character.character_id)
+            {
+                CommandUtils.errorSay(player, "You must be the owner of the vehicle to scrap it.");
+                return;
+            }
+
+            uiHandling.sendPrompt(player, "fa-solid fa-car", "Vehicle Scrapyard", $"Are you sure you want to scrap your {vehicleData.vehicle_display_name} for ${scrapPrice.ToString("N0")}?", "server:vehicleSystem:scrapVehicle");
+        }
+        #endregion
+
+        #region Remote Events
+        [RemoteEvent("server:vehicleSystem:scrapVehicle")]
+        public void scrapPlayersVehicle(Player player)
+        {
+            DbVehicle vehicleData = player.Vehicle.getData();
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if (vehicleData == null || character == null) return;
+
+            if (vehicleData.owner_id != character.character_id) return;
+
+            VehicleScrapyard targetScrap = vehicleScrapyards
+            .Where(scrap => player.checkIsWithinCoord(scrap.position, 5f))
+            .FirstOrDefault();
+
+            if (targetScrap == null) return;
+
             player.Vehicle.scrapVehicle(player);
         }
+        #endregion
     }
 }
