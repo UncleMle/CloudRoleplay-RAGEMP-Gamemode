@@ -1,4 +1,6 @@
-﻿using GTANetworkAPI;
+﻿using CloudRP.WorldSystems.MarkersLabels;
+using GTANetworkAPI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -30,5 +32,30 @@ namespace CloudRP.World.MarkersLabels
 
         public static void setClientWaypoint(Player player, Vector3 pos)
             => player.TriggerEvent("clientBlip:setWaypoint", pos);
+
+        public static void loadClientBlips(Player player, List<Vector3> targetBlips, string name, int blipType, int blipColour, bool setMarker)
+        {
+            List<ClientBlip> blips = new List<ClientBlip>();
+
+            targetBlips.ForEach(blip =>
+            {
+                blips.Add(new ClientBlip
+                {
+                    blipId = targetBlips.IndexOf(blip),
+                    colour = blipColour,
+                    name = name,
+                    pos = blip,
+                    setMarker = setMarker
+                });
+            });
+
+            player.TriggerEvent("clientBlip:addArrayOfBlips", blips);
+        }
+
+        public static void deleteClientBlip(Player player, int blipId)
+            => player.TriggerEvent("clientBlip:handleBlipDelete", blipId);
+
+        public static void flushClientBlips(Player player)
+            => player.TriggerEvent("clientBlip:flushBlipArray");
     }
 }

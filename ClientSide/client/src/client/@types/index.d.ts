@@ -510,3 +510,15 @@ interface BarberData {
 	eyebrowsStyle: string;
 	eyebrowsColour: string;
 }
+
+interface ClientBlip
+{
+	blipId: number;
+	pos: Vector3;
+	type: number;
+	colour: number;
+	name: string;
+	blip: BlipMp;
+	setMarker: boolean;
+	marker: MarkerMp;
+}   

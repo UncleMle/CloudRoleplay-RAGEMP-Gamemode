@@ -72,7 +72,7 @@ namespace CloudRP.PlayerSystems.PlayerBarber
         }
         #endregion
 
-        #region
+        #region Remote Events
         [RemoteEvent("server:barbers:handlePurchase")]
         public void handleBarberPurchase(Player player, string data)
         {

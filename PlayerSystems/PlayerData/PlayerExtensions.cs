@@ -343,5 +343,19 @@ namespace CloudRP.PlayerSystems.PlayerData
         {
             return player.Position.DistanceToSquared(coord) < range;
         }
+
+        public static bool hasVip(this Player player)
+        {
+            bool hasVip = false;    
+
+            User user = player.getPlayerAccountData();
+
+            if(user != null && user.vip_status)
+            {
+                hasVip = true;
+            }
+
+            return hasVip;
+        }
     }
 }

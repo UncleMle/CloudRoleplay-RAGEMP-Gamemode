@@ -209,8 +209,10 @@ namespace CloudRP.PlayerSystems.Jobs
                 player.SendChatMessage(ChatUtils.freelanceJobs + "You have quit your freelance job as a " + jobName + ".");
                 player.resetFreeLanceJobData();
                 MarkersAndLabels.removeClientBlip(player);
+                MarkersAndLabels.flushClientBlips(player);
 
-            } else
+            }
+            else
             {
                 CommandUtils.errorSay(player, "You don't have any freelance jobs to quit.");
             }

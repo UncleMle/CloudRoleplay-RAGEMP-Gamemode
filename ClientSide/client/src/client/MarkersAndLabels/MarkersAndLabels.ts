@@ -1,10 +1,12 @@
+import { ClientBlip } from "@/@types";
+
 export default class MarkersAndLabels {
     public static LocalPlayer: PlayerMp;
     public static readonly defaultBlipTimeout_seconds: number = 30;
     private static createBlip: BlipMp | undefined;
     private static createMarker: MarkerMp | undefined;
     private static deleteInterval: ReturnType<typeof setInterval> | undefined;
-    private static blips: Map<Vector3, BlipMp> = new Map<Vector3, BlipMp>();
+    private static blips: Map<number, ClientBlip> = new Map<number, ClientBlip>();
 
     constructor() {
         MarkersAndLabels.LocalPlayer = mp.players.local;
@@ -19,41 +21,52 @@ export default class MarkersAndLabels {
         mp.events.add("clientBlip:flushBlipArray", MarkersAndLabels.flushBlipArray);
     }
 
-    private static flushBlipArray() {
-        MarkersAndLabels.blips.forEach(blip => {
-            if(blip && mp.blips.exists(blip)) {
-                blip.destroy();
-            }
-        });
-
-        MarkersAndLabels.blips.clear();
-    }
-
-    private static addArrayOfBlips(blips: Vector3[], blipType: number, blipColour: number, name: string) {
+    private static addArrayOfBlips(blips: ClientBlip[]) {
         blips.forEach(blip => {
-            let created: BlipMp = mp.blips.new(blipType, blip, {
-                color: blipColour,
-                name: name
+            blip.blip = mp.blips.new(blip.type, blip.pos, {
+                name: blip.name
             });
 
-            MarkersAndLabels.blips.set(blip, created);
-        })    
+            if (blip.setMarker) {
+                blip.marker = mp.markers.new(1, new mp.Vector3(blip.pos.x, blip.pos.y, blip.pos.z - 1), 2, {
+                    color: [0, 255, 0, 30],
+                    dimension: 0
+                });
+            }
+
+            MarkersAndLabels.blips.set(blip.blipId, blip);
+        });
     }
 
-    private static deleteFromBlipArray(position: string) {
-        let val: BlipMp | undefined = MarkersAndLabels.blips.get(JSON.parse(position));
-        
-        mp.gui.chat.push(position + " __ " + val);
+    private static deleteFromBlipArray(blipId: number) {
+        let blip: ClientBlip | undefined = MarkersAndLabels.blips.get(blipId);
 
-        if(val && mp.blips.exists(val)) {
-            val.destroy();
+        if (!blip) return;
 
-            MarkersAndLabels.blips.delete(JSON.parse(position));
+        if (mp.blips.exists(blip.blip)) {
+            blip.blip.destroy();
+
+            if(blip.setMarker && mp.markers.exists(blip.marker)) blip.marker.destroy();
+
+            MarkersAndLabels.blips.delete(blipId);
         }
     }
 
+    private static flushBlipArray() {
+        MarkersAndLabels.blips.forEach(blip => {
+            if (blip.blip && mp.blips.exists(blip.blip)) {
+                blip.blip.destroy();
+
+                if(blip.setMarker && mp.markers.exists(blip.marker)) blip.marker.destroy(); 
+
+                MarkersAndLabels.blips.delete(blip.blipId);
+            }
+        });
+
+    }
+
     public static setWaypoint(coords: Vector3) {
-        mp.game.ui.setNewWaypoint(coords.x,  coords.y);
+        mp.game.ui.setNewWaypoint(coords.x, coords.y);
     }
 
     public static removeNorthBlip() {

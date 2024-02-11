@@ -1,6 +1,7 @@
 ﻿using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.CustomEvents;
+using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
@@ -144,6 +145,7 @@ namespace CloudRP.VehicleSystems.VehicleRefueling
                     DbVehicle foundVehData = foundVeh.Value;
 
                     if(characterData.faction_duty_status > 0) fuelPrice = 0;
+                    if (player.hasVip()) fuelPrice /= 2;
 
                     if (foundVehData.vehicle_locked || foundVehData.engine_status)
                     {
@@ -180,7 +182,7 @@ namespace CloudRP.VehicleSystems.VehicleRefueling
                         price = foundVehData.vehicle_fuel_purchase_price
                     });
 
-                    uiHandling.sendNotification(player, $"~w~You spent ~g~${fuelPrice}~w~ on fuel.", false);
+                    uiHandling.sendNotification(player, $"{(player.hasVip() ? "[VIP]" : "")} ~w~You spent ~g~${fuelPrice}~w~ on fuel.", false);
                 }
                 else
                 {

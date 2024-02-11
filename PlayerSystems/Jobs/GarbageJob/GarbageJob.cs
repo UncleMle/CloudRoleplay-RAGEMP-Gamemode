@@ -4,6 +4,7 @@ using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
+using CloudRP.WorldSystems.MarkersLabels;
 using GTANetworkAPI;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Update;
@@ -71,15 +72,6 @@ namespace CloudRP.PlayerSystems.Jobs.GarbageJob
             player.ResetData(_garbageJobDataKey);
         }
 
-        private static void initClientBlips(Player player, List<Vector3> blips, int type, int colour, string name)
-            => player.TriggerEvent("clientBlip:addArrayOfBlips", blips, type, colour, name);
-        
-        private static void removeBlip(Player player, Vector3 pos)
-            => player.TriggerEvent("clientBlip:handleBlipDelete", JsonConvert.SerializeObject(pos));
-
-        private static void clearBlips(Player player)
-            => player.TriggerEvent("clientBlip:flushBlipArray");
-
         private static void iterateJobState(Player player)
         {
             Vector3 stop = stops.Where(s => player.checkIsWithinCoord(s, 2f))
@@ -105,7 +97,7 @@ namespace CloudRP.PlayerSystems.Jobs.GarbageJob
             player.setFreelanceJobData(job);
             player.SetCustomData(_garbageJobDataKey, stopsDone);
 
-            removeBlip(player, stop);
+            MarkersAndLabels.deleteClientBlip(player, stops.IndexOf(stop));
             uiHandling.sendNotification(player, "~g~Removed ~g~Garbage", false, true, "Removes garbage...");
         }
 
@@ -115,8 +107,7 @@ namespace CloudRP.PlayerSystems.Jobs.GarbageJob
             player.setFreelanceJobData(job);
 
             player.SendChatMessage(ChatUtils.freelanceJobs + "You have finished the garbage job. Head back to the HQ to get paid.");
-            clearBlips(player);
-
+            MarkersAndLabels.flushClientBlips(player);
             MarkersAndLabels.addBlipForClient(player, 1, "Finish Job", finishJob, 2, 255, -1, true, true);
         }
 
@@ -159,7 +150,7 @@ namespace CloudRP.PlayerSystems.Jobs.GarbageJob
 
             MarkersAndLabels.setClientWaypoint(player, stops.First());
 
-            initClientBlips(player, stops, 1, 43, "Garbage Stop");
+            MarkersAndLabels.loadClientBlips(player, stops, "Garbage Stop", 1, 3, true);
 
             player.SetCustomData(_garbageJobDataKey, new List<Vector3>());
         }
