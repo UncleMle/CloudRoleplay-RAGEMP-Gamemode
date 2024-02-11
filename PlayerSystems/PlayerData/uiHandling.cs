@@ -203,6 +203,7 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string DCCPhone = "dcc_data";
         public static readonly string FactionDispatch = "faction_dispatch_calls";
         public static readonly string PromptData = "player_prompt_data";
+        public static readonly string MaskStoreState = "in_mask_store";
     }
 
     public class PromptUiData

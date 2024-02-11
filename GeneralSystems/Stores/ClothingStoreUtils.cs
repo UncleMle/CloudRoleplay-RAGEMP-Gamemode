@@ -7,9 +7,10 @@ namespace CloudRP.GeneralSystems.Stores
 {
     public class ClothingStore
     {
-        public Vector3 position;
-        public string name;
-        public int id;
-        public string displayName;
+        public Vector3 position {  get; set; }
+        public string name {  get; set; }
+        public int id {  get; set; }
+        public string displayName {  get; set; }
+        public bool maskStore { get; set; }
     }
 }

@@ -44,7 +44,8 @@ const store = new Vuex.Store({
 			barber_data: {},
 			dcc_data: {},
 			faction_dispatch_calls: [],
-			player_prompt_data: {}
+			player_prompt_data: {},
+			in_mask_store: false
 		},
 		uiStates: {
 			characterSelection: false,

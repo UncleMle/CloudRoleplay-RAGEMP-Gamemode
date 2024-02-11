@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.World.MarkersLabels;
+using CloudRP.ServerSystems.CustomEvents;
 
 namespace CloudRP.GeneralSystems.Stores
 {
@@ -20,6 +21,8 @@ namespace CloudRP.GeneralSystems.Stores
 
         public ClothingStores()
         {
+            KeyPressEvents.keyPress_Y += checkForMaskStore;
+
             clothingStores.Add(new ClothingStore
             {
                 displayName = "Binco Clothing",
@@ -90,6 +93,14 @@ namespace CloudRP.GeneralSystems.Stores
                 position = new Vector3(-1188.7, -765.7, 17.3)
             });
 
+            clothingStores.Add(new ClothingStore
+            {
+                displayName = "Vespucci Mask Store",
+                name = "Vespucci Mask Store",
+                position = new Vector3(-1339.0, -1280.5, 4.8),
+                maskStore = true
+            });
+
             for (int i = 0; i < clothingStores.Count; i++)
             {
                 clothingStores[i].id = i;
@@ -101,11 +112,29 @@ namespace CloudRP.GeneralSystems.Stores
                 NAPI.TextLabel.CreateTextLabel($"{dispName}\nUse ~y~Y~w~ to interact", pos, 10f, 1.0f, 4, new Color(255, 255, 255, 255), true);
                 MarkersAndLabels.setPlaceMarker(pos);
 
-                NAPI.Blip.CreateBlip(73, pos, 1.0f, 63, name, 255, 1.0f, true, 0, 0);
-                NAPI.Marker.CreateMarker(27, new Vector3(pos.X, pos.Y, pos.Z - 1), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
+                if (clothingStores[i].maskStore)
+                {
+                    NAPI.Blip.CreateBlip(78, pos, 1.0f, 4, name, 255, 1.0f, true, 0, 0);
+                }
+                else
+                {
+                    NAPI.Blip.CreateBlip(73, pos, 1.0f, 63, name, 255, 1.0f, true, 0, 0);
+                }
 
                 setColShapeData(clothingColShape, clothingStores[i]);
             }
+        }
+
+        public void checkForMaskStore(Player player)
+        {
+            ClothingStore store = clothingStores.Where(store => player.checkIsWithinCoord(store.position, 3) && store.maskStore)
+                .FirstOrDefault();
+
+            if(store != null)
+            {
+                uiHandling.handleObjectUiMutation(player, MutationKeys.MaskStoreState, true);
+            }
+
         }
 
         [ServerEvent(Event.PlayerEnterColshape)]
@@ -130,6 +159,7 @@ namespace CloudRP.GeneralSystems.Stores
                 DbCharacter charData = player.getPlayerCharacterData();
                 if (charData != null)
                 {
+                    uiHandling.handleObjectUiMutation(player, MutationKeys.MaskStoreState, false);
                     player.setCharacterClothes(charData.characterClothing);
                 }
             }

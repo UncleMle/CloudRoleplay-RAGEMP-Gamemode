@@ -51,7 +51,7 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
             },
             new MowableLawn
             {
-                pay = 1800,
+                pay = 500,
                 stops = new List<Vector3>
                 {
                     new Vector3(1850.4, 4957.0, 50.7),
@@ -60,7 +60,8 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
                     new Vector3(1815.0, 4913.2, 43.6),
                     new Vector3(1810.6, 4923.0, 43.7),
                     new Vector3(1871.3, 4916.2, 46.3),
-                    new Vector3(1848.7, 4900.4, 43.9)
+                    new Vector3(1848.7, 4900.4, 43.9),
+                    new Vector3(1827.3, 4831.0, 43.9)
                 }
             }
         };
@@ -74,7 +75,7 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
                 NAPI.Blip.CreateBlip(351, start, 1f, 2, "Lawn Mower Job", 255, 0, true, 0, 0);
 
                 MarkersAndLabels.setPlaceMarker(start);
-                MarkersAndLabels.setTextLabel(start, "Lawn Mower Job\nUse ~y~Y~w~ to interact.", 2f);
+                MarkersAndLabels.setTextLabel(start, "Lawn Mower Job\nUse ~y~Y~w~ to interact.", 6f);
             });
 
             lawns.ForEach(lawn =>
