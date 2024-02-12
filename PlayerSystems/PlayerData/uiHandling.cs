@@ -169,6 +169,7 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string FactionUniforms = "/factionuniform";
         public static readonly string BarberShop = "/barbershop";
         public static readonly string PromptScreen = "/promptscreen";
+        public static readonly string JobCenter = "/jobcenter";
     }
 
     public static class AuthStates
@@ -210,6 +211,7 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string FactionDispatch = "faction_dispatch_calls";
         public static readonly string PromptData = "player_prompt_data";
         public static readonly string MaskStoreState = "in_mask_store";
+        public static readonly string JobCenterJobs = "job_center_jobs";
     }
 
     public class PromptUiData

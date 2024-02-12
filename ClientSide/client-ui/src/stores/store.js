@@ -45,7 +45,8 @@ const store = new Vuex.Store({
 			dcc_data: {},
 			faction_dispatch_calls: [],
 			player_prompt_data: {},
-			in_mask_store: false
+			in_mask_store: false,
+			job_center_jobs: []
 		},
 		uiStates: {
 			characterSelection: false,

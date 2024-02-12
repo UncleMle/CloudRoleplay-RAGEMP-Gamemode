@@ -343,6 +343,18 @@ namespace CloudRP.PlayerSystems.PlayerData
         {
             return player.Position.DistanceToSquared(coord) < range;
         }
+        
+        public static bool checkIsWithinOneCoords(this Player player, List<Vector3> coords, float range)
+        {
+            bool isWithin = false;
+
+            coords.ForEach(coord =>
+            {
+                if (player.Position.DistanceToSquared(coord) < range && !isWithin) isWithin = true;
+            });
+
+            return isWithin;
+        }
 
         public static bool hasVip(this Player player)
         {
