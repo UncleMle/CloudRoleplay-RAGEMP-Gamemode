@@ -1,6 +1,5 @@
 import getVehicleData from "@/PlayerMethods/getVehicleData";
 import { StallTypes } from "@/enums";
-import VehicleSystems from "./VehicleSystem";
 import isFlipped from "../PlayerMethods/getIfVehicleIsFlipped";
 
 export default class VehicleStall {
@@ -28,8 +27,6 @@ export default class VehicleStall {
                 return;
             } 
 
-            VehicleStall.LocalPlayer.vehicle.addUpsidedownCheck()
-            
             if (!VehicleStall.LocalPlayer.vehicle.isOnAllWheels() && VehicleStall.jumpBlockedClasses.indexOf(VehicleStall.LocalPlayer.vehicle.getClass()) === -1) {
                 VehicleStall.onAllWheelsTimer++;
             } else VehicleStall.onAllWheelsTimer = 0;
