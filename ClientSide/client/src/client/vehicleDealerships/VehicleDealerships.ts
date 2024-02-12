@@ -9,7 +9,7 @@ export default class VehicleDealerShips {
 	public static LocalPlayer: PlayerMp = mp.players.local;
 	public static _dealershipIdentifer: string = 'vehicleDealership';
 	public static _closeDealerEvent: string = 'server:closeDealership';
-	public static _dealerPurchaseEvent: string = 'server:purchaseVehicle';
+	public static _dealerPurchaseEvent: string = 'server:purchaseVehicleConfirm';
 	public static dealerCam: CameraMp;
 	public static dealerCamPos: Vector3 = new mp.Vector3(234.7, -997.9, -98.2);
 	public static dealerSelectedVehicle: VehicleMp;

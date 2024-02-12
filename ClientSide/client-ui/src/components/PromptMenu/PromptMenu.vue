@@ -15,6 +15,7 @@
                             <div class="p-2 text-center mt-3 text-xl overflow-auto">
 
                                 {{ playerData.player_prompt_data.message }}
+
                             </div>
                         </div>
                     </div>
@@ -48,23 +49,28 @@ import { sendToServer } from '@/helpers';
 export default {
     computed: {
         ...mapGetters({
-            playerData: 'getPlayerInfo'
+            playerData: 'getPlayerInfo',
         })
     },
     methods: {
         close() {
+            this.$store.state.uiStates.serverLoading = false;
+
             if (this.playerData.player_prompt_data.callBackRoute) {
                 window.mp.trigger("browser:pushRouter", this.playerData.player_prompt_data.callBackRoute);
-                this.$store.state.uiStates.serverLoading = false;
                 return;
             }
 
             window.mp.trigger("browser:resetRouter");
         },
         server(callBack) {
-            this.close();
+            if (!this.playerData.player_prompt_data.callBackRoute) this.close();
 
-            sendToServer(callBack, JSON.stringify(this.playerData.player_prompt_data.callBackObject));
+            if (typeof this.playerData.player_prompt_data.callBackObject === "object") {
+                this.playerData.player_prompt_data.callBackObject = JSON.stringify(this.playerData.player_prompt_data.callBackObject);
+            }
+
+            sendToServer(callBack, this.playerData.player_prompt_data.callBackObject);
         }
     }
 }

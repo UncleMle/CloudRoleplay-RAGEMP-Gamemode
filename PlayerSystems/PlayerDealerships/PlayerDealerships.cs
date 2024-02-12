@@ -151,15 +151,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                         return;
                     }
 
-                    long dealerMinSellPrice = 0;
-
-                    if(dealer.type == DealershipType.highEnd)
-                    {
-                        dealerMinSellPrice = highEndMinSellPrice;
-                    } else if(dealer.type == DealershipType.lowEnd)
-                    {
-                        dealerMinSellPrice = lowEndMinSellPrice;
-                    }
+                    long dealerMinSellPrice = dealer.type == DealershipType.highEnd ? highEndMinSellPrice : lowEndMinSellPrice;
 
                     bool foundSpot = false;
 

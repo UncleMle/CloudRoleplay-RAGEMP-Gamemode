@@ -131,11 +131,6 @@ export default {
     components: {
         LoadingSpinner
     },
-    watch: {
-        targetVehicleData() {
-            console.log(JSON.stringify(this.targetVehicleData));
-        }
-    },
     methods: {
         getCarImagePath,
         viewVehicleData(vehicleId) {

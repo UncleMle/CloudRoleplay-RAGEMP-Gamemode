@@ -1,4 +1,4 @@
-import { BrowserEnv } from '../enums';
+import { BrowserEnv, Browsers } from '../enums';
 import { F2 } from './ClientButtons';
 import { _REMOVE_TIMER_NATIVE } from '../Constants/Constants';
 import getUserCharacterData from '@/PlayerMethods/getUserCharacterData';
@@ -33,6 +33,7 @@ export default class BrowserSystem {
 		mp.events.add('browser:sendNotif', BrowserSystem.sendNotif);
 		mp.events.add('browser:setAuthState', BrowserSystem.setAuthState);
 		mp.events.add('browser:clearChat', BrowserSystem.clearChat);
+		mp.events.add('browser:playerFrontendSound', BrowserSystem.playFrontendSound);
 
 		mp.keys.bind(F2, false, function () {
 			isFunctionPressed = !isFunctionPressed;
@@ -42,6 +43,10 @@ export default class BrowserSystem {
 				mp.gui.cursor.show(false, false);
 			}
 		});
+	}
+
+	private static playFrontendSound(soundName: string, soundSetName: string) {
+		mp.game.audio.playSoundFrontend(-1, soundName, soundSetName, true);
 	}
 
 	public static clearChat() {
@@ -68,7 +73,7 @@ export default class BrowserSystem {
 
 		let characterData: CharacterData | undefined = getUserCharacterData();
 
-		if (characterData?.routeIsFrozen && BrowserSystem.LocalPlayer.browserRouter != "/") {
+		if (characterData?.routeIsFrozen && BrowserSystem.LocalPlayer.browserRouter != "/" || BrowserSystem.LocalPlayer.browserRouter === Browsers.PromptMenu) {
 			mp.gui.cursor.show(true, true);
 		}
 	}
@@ -98,6 +103,9 @@ export default class BrowserSystem {
 
 	public static handleObjectToBrowser(_mutationKey: string, data: any) {
 		if (!BrowserSystem._browserInstance) return;
+
+		if (typeof data === "string") data = JSON.parse(data);
+
 		BrowserSystem._browserInstance.execute(`appSys.commit("playerMutationSetter", {
 			_mutationKey: "${_mutationKey}",
 			data: ${JSON.stringify(data)}

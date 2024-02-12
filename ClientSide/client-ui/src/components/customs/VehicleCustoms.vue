@@ -250,6 +250,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import { promptMenu } from '@/helpers';
 
 export default {
     data() {
@@ -476,7 +477,7 @@ export default {
             if (!this.playerData.is_in_player_dealer) {
                 window.mp.trigger("browser:sendObject", "server:vehicleModsSave", JSON.stringify(this.vehicleData));
             } else {
-                window.mp.trigger("browser:sendObject", "server:purchasePlayerDealerVehicle");
+                promptMenu("fa-solid fa-car", "Purchase Market Vehicle", `Are you sure you want to purchase ${this.uiStates.vehicleSpeedoData.displayName}?`, "server:purchasePlayerDealerVehicle", null, "/vehiclemods");
             }
 
             window.mp.trigger("gui:toggleHudComplete", true);

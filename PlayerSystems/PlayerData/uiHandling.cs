@@ -1,5 +1,6 @@
 ﻿using GTANetworkAPI;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -124,7 +125,7 @@ namespace CloudRP.PlayerSystems.PlayerData
         {
             pushRouterToClient(player, Browsers.PromptScreen, true);
 
-            handleObjectUiMutation(player, MutationKeys.PromptData, new PromptUiData
+            handleObjectUiMutation(player, MutationKeys.PromptData, JsonConvert.SerializeObject(new PromptUiData
             {
                 icon = icon,
                 callBackEvent = callBackEvent,
@@ -132,8 +133,11 @@ namespace CloudRP.PlayerSystems.PlayerData
                 title = title,
                 callBackObject = callBackObject,
                 callBackRoute = callBackRoute
-            });
+            }));
         }
+
+        public static void sendSound(Player player, string soundName, string soundSetName)
+            => player.TriggerEvent("browser:playerFrontendSound", soundName, soundSetName);
     }
     
     public static class HintKeys

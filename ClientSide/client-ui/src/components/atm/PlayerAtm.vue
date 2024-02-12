@@ -69,7 +69,8 @@
                                 <div class="mt-6 mr-[15%] ml-[15%] space-y-5">
                                     <div class="p-3 rounded-lg bg-black/60">
                                         <i class="fa-solid fa-dollar-sign"></i>
-                                        <input v-model="withdrawCash" class="pr-3 pl-2 pb-3 pt-3 w-[90%] bg-transparent"
+                                        <input type="number" min="0" max="200000" v-model="withdrawCash"
+                                            class="pr-3 pl-2 pb-3 pt-3 w-[90%] bg-transparent"
                                             placeholder="Enter an amount to withdraw" />
                                     </div>
                                     <button @click="withdrawPlayerCash" :disabled="serverLoading"
@@ -95,7 +96,7 @@
                                     </div>
                                     <div class="p-3 rounded-lg bg-black/60">
                                         <i class="fa-solid fa-dollar-sign"></i>
-                                        <input v-model="transferCashAmount"
+                                        <input type="number" min="0" max="200000" v-model="transferCashAmount"
                                             class="pr-3 pl-2 pb-3 pt-3 w-[90%] bg-transparent"
                                             placeholder="Enter an amount to withdraw" />
                                     </div>
@@ -117,7 +118,8 @@
                                 <div class="mt-6 mr-[15%] ml-[15%] space-y-5">
                                     <div class="p-3 rounded-lg bg-black/60">
                                         <i class="fa-solid fa-dollar-sign"></i>
-                                        <input v-model="depositAmount" class="pr-3 pl-2 pb-3 pt-3 w-[90%] bg-transparent"
+                                        <input type="number" min="0" max="200000" v-model="depositAmount"
+                                            class="pr-3 pl-2 pb-3 pt-3 w-[90%] bg-transparent"
                                             placeholder="Enter an amount to deposit" />
                                     </div>
                                     <button @click="depositPlayerCash" :disabled="serverLoading"
@@ -158,7 +160,7 @@
 import CloseButton from '../ui/CloseButton.vue';
 import LoadingSpinner from '../ui/LoadingSpinner.vue';
 import { mapGetters } from 'vuex';
-import { sendToServer } from '@/helpers';
+import { promptMenu } from '@/helpers';
 
 export default {
     data() {
@@ -183,22 +185,25 @@ export default {
     methods: {
         withdrawPlayerCash() {
             this.$store.state.uiStates.serverLoading = true;
-            sendToServer("server:atmWithdrawCash", this.withdrawCash);
+
+            promptMenu("fa-solid fa-bank", "Withdraw Cash", `Are you sure you want to withdraw $${parseInt(this.withdrawCash).toLocaleString("en-US")}?`, "server:atmWithdrawCash", parseInt(this.withdrawCash), "/atm");
         },
         depositPlayerCash() {
             this.$store.state.uiStates.serverLoading = true;
-            sendToServer("server:bankDepositCash", this.depositAmount);
+
+            promptMenu("fa-solid fa-bank", "Deposit Cash", `Are you sure you want to deposit $${parseInt(this.depositAmount).toLocaleString("en-US")}?`, "server:bankDepositCash", parseInt(this.depositAmount), "/atm");
         },
         transferCash() {
             this.$store.state.uiStates.serverLoading = true;
-            sendToServer("server:bankTransferSomeone", JSON.stringify({
+
+            promptMenu("fa-solid fa-bank", "Transfer Money", `Are you sure you want to transfer $${parseInt(this.transferCashAmount).toLocaleString("en-US")}?`, "server:bankTransferSomeone", JSON.stringify({
                 recieverName: this.transferCashName,
                 transferAmount: this.transferCashAmount
-            }));
+            }), "/atm");
         },
         retrieveSalary() {
             this.$store.state.uiStates.serverLoading = true;
-            sendToServer("server:bank:retrieveSalary");
+            promptMenu("fa-solid fa-bank", "Retrieve Salary", `Are you sure you want to retrieve your $${this.playerData.atm_data.balanceSalary.toLocaleString("en-US")} in salary?`, "server:bank:retrieveSalary", null, "/atm");
         }
     }
 }

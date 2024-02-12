@@ -212,7 +212,7 @@ export default {
         purchaseVehicle() {
             if (!this.selectedVehicle) return;
             this.$store.state.uiStates.serverLoading = true;
-            window.mp.trigger("dealers:purchaseVehicle", this.selectedVehicle, this.selectedColour)
+            window.mp.trigger("dealers:purchaseVehicle", this.selectedVehicle, this.selectedColour);
         }
     }
 }

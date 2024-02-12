@@ -20,34 +20,53 @@
             </div>
         </div>
 
-        <div class="absolute left-[16.5%] w-[20%] rounded-xl bottom-[14%] text-white font-medium text-xl h-[3.4%] p-1">
+        <div
+            class="guiMain absolute left-[16.5%] w-[25%] bottom-[15%] rounded-xl text-white font-medium text-xl h-[3.4%] p-1">
+
             <div>
                 <font>
                     <i class="fa-solid fa-compass text-4xl text-gray-400"></i>
                     <span class="text-4xl font-bold ml-2">{{ playerData.player_data_gui.direction }}</span>
                 </font>
             </div>
-            <div class="mt-4">
-                <font>
-                    <span>{{ playerData.player_data_gui.playerId }} | {{ playerData.player_data_gui.unix }} | FPS {{
-                        playerData.player_data_gui.fps }}</span>
-                </font>
+
+            <div class="mt-4 rounded-xl">
+                <i
+                    class="bg-black/40 min-w-[1.5vw] text-center shadow-black shadow-2l border border-gray-700 p-2 fa-solid fa-user rounded-xl">
+                </i>
+                {{ playerData.player_data_gui.playerId }}
             </div>
-            <div>
-                <font>
-                    <span>{{ playerData.player_data_gui.zoneName }} {{ playerData.player_data_gui.zoneNameTwo ? "/ " +
-                        playerData.player_data_gui.zoneNameTwo : "" }}</span>
-                </font>
+
+            <div class="mt-2 rounded-xl w-full w-full">
+                <i
+                    class="bg-black/40 min-w-[1.5vw] text-center shadow-black shadow-2l border border-gray-700 p-2 fa-solid fa-location-dot rounded-xl">
+                </i>
+                {{ playerData.player_data_gui.zoneName }}
+
+                <span v-if="playerData.player_data_gui.zoneNameTwo" class="text-yellow-400 text-lg">
+                    - {{ playerData.player_data_gui.zoneNameTwo }}
+                </span>
             </div>
-            <div>
+
+            <div class="mt-2 rounded-xl">
+                <i
+                    class="bg-black/40 min-w-[1.5vw] text-center shadow-black shadow-2l border border-gray-700 p-2 fa-solid fa-computer rounded-xl">
+                </i>
+                {{ playerData.player_data_gui.fps }} FPS
+            </div>
+
+
+            <div class="mt-2">
                 <font>
                     <span>
-                        <i v-if="playerData.player_data_gui.voiceMuted" class="fa-solid fa-microphone-slash text-red-400"></i>
+                        <i v-if="playerData.player_data_gui.voiceMuted"
+                            class="fa-solid fa-microphone-slash text-red-400"></i>
                         <i v-if="!playerData.player_data_gui.voiceMuted" class="fa-solid fa-microphone text-green-400"></i>
                         <i class="fa-solid fa-walkie-talkie text-red-400 ml-2"></i>
                     </span>
                 </font>
             </div>
+
         </div>
     </div>
 </template>
@@ -64,3 +83,13 @@ export default {
     }
 }
 </script>
+
+<style>
+/* Instead of having to declare a custom media query with tailwind D; */
+@media only screen and (max-width: 2000px) {
+    .guiMain {
+        font-size: 15px;
+        bottom: 18%;
+    }
+}
+</style>

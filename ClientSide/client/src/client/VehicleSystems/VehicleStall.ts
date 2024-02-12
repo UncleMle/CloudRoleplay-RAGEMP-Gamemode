@@ -11,6 +11,9 @@ export default class VehicleStall {
     public static readonly isStalledKey: string = "vehicleIsStalledDataKey";
     public static checkInterval: ReturnType<typeof setInterval> | undefined;
     public static onAllWheelsTimer: number = 0;
+    public static jumpBlockedClasses: number[] = [
+        13, 8, 14, 16, 4
+    ]
 
     constructor() {
         mp.events.add({
@@ -20,9 +23,14 @@ export default class VehicleStall {
         });
 
         setInterval(async () => {
-            if(!VehicleStall.LocalPlayer.vehicle) return;
+            if(!VehicleStall.LocalPlayer.vehicle) {
+                VehicleStall.onAllWheelsTimer = 0; 
+                return;
+            } 
+
+            VehicleStall.LocalPlayer.vehicle.addUpsidedownCheck()
             
-            if (!VehicleStall.LocalPlayer.vehicle.isOnAllWheels()) {
+            if (!VehicleStall.LocalPlayer.vehicle.isOnAllWheels() && VehicleStall.jumpBlockedClasses.indexOf(VehicleStall.LocalPlayer.vehicle.getClass()) === -1) {
                 VehicleStall.onAllWheelsTimer++;
             } else VehicleStall.onAllWheelsTimer = 0;
 

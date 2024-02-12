@@ -1,5 +1,5 @@
 export enum BrowserEnv {
-	development = "192.168.1.188:3000/?#/", //"package://dist/index.html",
+	development = "package://dist/index.html", //"package://dist/index.html",
 	production = "package://dist/index.html#/" // 192.168.1.188:3000/?#/
 }
 
@@ -58,6 +58,7 @@ export class Browsers {
 	public static readonly Insurance: string = "/insurance";
 	public static readonly Atm: string = "/atm";
 	public static readonly ViewBusRoutes: string = "/busroutes";
+	public static readonly PromptMenu: string = "/promptscreen";
 }
 
 export class InteractMenu {

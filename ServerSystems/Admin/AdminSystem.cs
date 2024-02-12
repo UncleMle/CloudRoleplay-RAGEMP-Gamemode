@@ -2006,5 +2006,14 @@ namespace CloudRP.ServerSystems.Admin
             AdminUtils.staffSay(player, $"You gave {character.character_name} VIP status for {days} days.");
             AdminUtils.staffSay(findPlayer, $"{playerUser.admin_name} gave you VIP status for {days} days.");
         }
+
+        [AdminCommand(AdminRanks.Admin_Developer)]
+        [Command("sound", "~r~/sound [soudName] [soundSet]")]
+        public void soundPlay(Player player, string soundName, string soundSet)
+        {
+            uiHandling.sendSound(player, soundName, soundSet);
+
+            AdminUtils.staffSay(player, $"{soundName} __ {soundSet}");
+        }
     }
 }

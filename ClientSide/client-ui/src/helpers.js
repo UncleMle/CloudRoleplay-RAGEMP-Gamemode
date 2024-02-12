@@ -40,6 +40,21 @@ export function sendToClient(eventName, value) {
     }
 }
 
+export function promptMenu(icon, title, message, callBackEvent, callBackObject = null, callBackRoute = null) {
+    window.mp.trigger("browser:pushRouter", "/promptscreen");
+
+    window.mp.trigger("browser:handlePlayerObjectMutation", "player_prompt_data",
+        JSON.stringify({
+            icon,
+            callBackEvent,
+            message,
+            title,
+            callBackObject,
+            callBackRoute
+        })
+    );
+}
+
 export function getStaffRanks() {
     let adminRanksList = ["None", "Support", "Senior Support", "Moderator", "Senior Moderator", "Administrator", "Senior Administrator", "Head Administrator", "Founder", "Developer"];
     let adminRanksStyles = [
