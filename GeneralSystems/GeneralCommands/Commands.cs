@@ -110,8 +110,8 @@ namespace CloudRP.GeneralSystems.GeneralCommands
             DbCharacter character = player.getPlayerCharacterData();
             if (character == null) return;
 
-            string prefix = _oocColour + "((" + "!{white} ";
-            string suffix = " !{grey}says:!{white} " + oocChat + " !{white}" + _oocColour + "))";
+            string prefix = ChatUtils.grey + "((" + "!{white} ";
+            string suffix = " !{grey}says:!{white} " + oocChat + " !{white}" + ChatUtils.grey + "))";
 
             CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_commands_radius);
         }
