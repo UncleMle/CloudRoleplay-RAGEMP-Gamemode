@@ -47,6 +47,7 @@ namespace CloudRP.PlayerSystems.Character
 
             if (characterData != null)
             {
+                ChatUtils.formatConsolePrint($"{characterData.character_name} has disconnected from the server.", ConsoleColor.Blue);
                 DiscordUtils.creationConnection(player, characterData, LogCreation.Leave);
             }
         }
