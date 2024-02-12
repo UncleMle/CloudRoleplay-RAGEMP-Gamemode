@@ -17,6 +17,11 @@
                     <i class="fa-solid fa-burger text-xl ml-3 text-orange-300"></i>
                     <font class="mr-2 ml-2 text-gray-200 text-md">{{ playerData.player_hunger.toFixed(0) }}%</font>
                 </span>
+
+                <span>
+                    <i class="fa-solid fa-clock text-xl ml-3"></i>
+                    <font class="mr-2 ml-2 text-md">{{ Math.floor(Date.now() / 1000) }}</font>
+                </span>
             </div>
         </div>
 
