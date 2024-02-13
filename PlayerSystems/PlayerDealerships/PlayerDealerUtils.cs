@@ -23,6 +23,12 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
         public DbVehicle vehInSpot { get; set; }
     }
 
+    public class DealerSellData
+    {
+        public long price { get; set; }
+        public string desc { get; set; }
+    }
+
     public enum DealershipType
     {
         lowEnd,

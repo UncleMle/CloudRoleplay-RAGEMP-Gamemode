@@ -10,6 +10,7 @@ using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using static System.Net.Mime.MediaTypeNames;
@@ -128,104 +129,33 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
         [Command("sellveh", "~y~Use: ~w~/sellveh [price] [description]", GreedyArg = true)]
         public void sellVehicleCommand(Player player, long price, string desc)
         {
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if (character == null) return;
+
             KeyValuePair<string, Dealer> dealerData = player.GetData<KeyValuePair<string, Dealer>>(_dealerColDataIdentifier);
 
-            if (dealerData.Value != null)
+            if (dealerData.Value == null) return;
+
+            if (!player.IsInVehicle)
             {
-                if(!player.IsInVehicle)
-                {
-                    CommandUtils.errorSay(player, "You must be in a vehicle to use this command.");
-                    return;
-                }
-
-                DbCharacter characterData = player.getPlayerCharacterData();
-                Dealer dealer = dealerData.Value;
-                Vehicle targetVehicle = player.Vehicle;
-                DbVehicle targetVehicleData = player.Vehicle.getData();
-
-                if(dealer.vehiclePositions?.Count > 0 && targetVehicleData != null && targetVehicleData.vehicle_id != -1 && characterData != null)
-                {
-                    if(characterData.character_id != targetVehicleData.owner_id && player.getAdmin() < (int)AdminRanks.Admin_Developer)
-                    {
-                        CommandUtils.errorSay(player, "You must be the owner of this vehicle to sell it.");
-                        return;
-                    }
-
-                    long dealerMinSellPrice = dealer.type == DealershipType.highEnd ? highEndMinSellPrice : lowEndMinSellPrice;
-
-                    bool foundSpot = false;
-
-                    foreach (DealerVehPos vehPosition in dealer.vehiclePositions)
-                    {
-                        if(vehPosition.vehInSpot == null)
-                        {
-                            foundSpot = true;
-
-                            if(price > maxSellPrice || price < dealerMinSellPrice)
-                            {
-                                CommandUtils.errorSay(player, $"Sell price must be between ${dealerMinSellPrice} and ${maxSellPrice}");
-                                return;
-                            }
-
-                            if(!AuthUtils.validateNick(desc))
-                            {
-                                CommandUtils.errorSay(player, "Dealer descriptions cannot have certain special characters.");
-                                return;
-                            }
-
-                            if(desc.Length > 256)
-                            {
-                                CommandUtils.errorSay(player, "Dealer descriptions cannot be longer than 256 characters.");
-                                return;
-                            }
-
-                            Vehicle blockingSpot = VehicleSystem.checkVehInSpot(vehPosition.vehPos, 8);
-
-                            if (blockingSpot != null && blockingSpot.getData() != null && blockingSpot.getData().dealership_id == -1)
-                            {
-                                blockingSpot.sendVehicleToInsurance();
-                            }
-
-                            NAPI.Pools.GetAllPlayers().ForEach(p =>
-                            {
-                                if(p.IsInVehicle && p.Vehicle.Equals(targetVehicle))
-                                {
-                                    p.WarpOutOfVehicle();
-                                }
-                            });
-
-                            CommandUtils.successSay(player, $"You have sold your vehicle for {ChatUtils.moneyGreen}${price}{ChatUtils.White}!");
-
-                            targetVehicle.Position = vehPosition.vehPos;
-                            targetVehicle.Rotation = new Vector3(0, 0, vehPosition.vehRot);
-                            targetVehicle.Locked = false;
-
-                            targetVehicleData.rotation = (float)vehPosition.vehRot;
-                            targetVehicleData.dealership_id = dealer.dealerId;
-                            targetVehicleData.dealership_price = price;
-                            targetVehicleData.dealership_description = desc;
-                            targetVehicleData.dealership_spot_id = vehPosition.spotId;
-                            targetVehicleData.dynamic_dealer_spot_id = vehPosition.spotId;
-                            targetVehicleData.vehicle_locked = false;
-
-                            vehPosition.vehInSpot = targetVehicleData;
-
-                            targetVehicle.saveVehicleData(targetVehicleData, true);
-
-                            targetVehicle.SetSharedData(_playerVehicleDealerDataIdentifier, true);
-                            targetVehicle.SetData(_playerVehicleDealerDataIdentifier, true);
-                            
-                            setSpotActiveWithVehicle(targetVehicleData, vehPosition.spotId);
-                            break;
-                        }
-                    }
-
-                    if(!foundSpot)
-                    {
-                        CommandUtils.errorSay(player, "There are no free spots left in this player dealership.");
-                    }
-                }
+                CommandUtils.errorSay(player, "You must be in a vehicle to use this command.");
+                return;
             }
+
+            DbVehicle vehicleData = player.Vehicle.getData();
+
+            if(vehicleData == null || vehicleData != null && vehicleData.owner_id != character.character_id && player.getAdmin() < (int)AdminRanks.Admin_Developer)
+            {
+                CommandUtils.errorSay(player, $"You must be the owner the vehicle to sell it.");
+                return;
+            }
+
+            uiHandling.sendPrompt(player, "fa-solid fa-car", "Sell Vehicle", $"Are you sure you want to sell your {vehicleData.vehicle_display_name} for ${price.ToString("N0")}?", "server:sellPlayerVehicle", new DealerSellData
+            {
+                desc = desc,
+                price = price,
+            });
         }
 
         [Command("getbackveh", "~y~Use: ~w~/getbackveh")]
@@ -281,6 +211,109 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                 {
                     vehicle.Position = vehSpot.vehPos;
                     vehicle.Rotation = new Vector3(0, 0, vehSpot.vehRot);
+                }
+            }
+        }
+
+        [RemoteEvent("server:sellPlayerVehicle")]
+        public void sellPlayerVehicle(Player player, string vehicleSellData)
+        {
+            KeyValuePair<string, Dealer> dealerData = player.GetData<KeyValuePair<string, Dealer>>(_dealerColDataIdentifier);
+            DealerSellData data = JsonConvert.DeserializeObject<DealerSellData>(vehicleSellData);
+
+            if (dealerData.Value != null)
+            {
+                if (!player.IsInVehicle)
+                {
+                    CommandUtils.errorSay(player, "You must be in a vehicle to use this command.");
+                    return;
+                }
+
+                DbCharacter characterData = player.getPlayerCharacterData();
+                Dealer dealer = dealerData.Value;
+                Vehicle targetVehicle = player.Vehicle;
+                DbVehicle targetVehicleData = player.Vehicle.getData();
+
+                if (dealer.vehiclePositions?.Count > 0 && targetVehicleData != null && targetVehicleData.vehicle_id != -1 && characterData != null)
+                {
+                    if (characterData.character_id != targetVehicleData.owner_id && player.getAdmin() < (int)AdminRanks.Admin_Developer)
+                    {
+                        CommandUtils.errorSay(player, "You must be the owner of this vehicle to sell it.");
+                        return;
+                    }
+
+                    long dealerMinSellPrice = dealer.type == DealershipType.highEnd ? highEndMinSellPrice : lowEndMinSellPrice;
+
+                    bool foundSpot = false;
+
+                    foreach (DealerVehPos vehPosition in dealer.vehiclePositions)
+                    {
+                        if (vehPosition.vehInSpot == null)
+                        {
+                            foundSpot = true;
+
+                            if (data.price > maxSellPrice || data.price < dealerMinSellPrice)
+                            {
+                                uiHandling.sendPushNotifError(player, $"Sell price must be between ${dealerMinSellPrice} and ${maxSellPrice}", 6600);
+                                return;
+                            }
+
+                            if (!AuthUtils.validateNick(data.desc))
+                            {
+                                uiHandling.sendPushNotifError(player, "Dealer descriptions cannot have certain special characters.", 6600);
+                                return;
+                            }
+
+                            if (data.desc.Length > 256)
+                            {
+                                uiHandling.sendPushNotifError(player, "Dealer descriptions cannot be longer than 256 characters.", 6600);
+                                return;
+                            }
+
+                            Vehicle blockingSpot = VehicleSystem.checkVehInSpot(vehPosition.vehPos, 8);
+
+                            if (blockingSpot != null && blockingSpot.getData() != null && blockingSpot.getData().dealership_id == -1)
+                            {
+                                blockingSpot.sendVehicleToInsurance();
+                            }
+
+                            NAPI.Pools.GetAllPlayers().ForEach(p =>
+                            {
+                                if (p.IsInVehicle && p.Vehicle.Equals(targetVehicle))
+                                {
+                                    p.WarpOutOfVehicle();
+                                }
+                            });
+                            CommandUtils.successSay(player, $"You have sold your vehicle for {ChatUtils.moneyGreen}${data.price.ToString("N0")}{ChatUtils.White}!");
+
+                            targetVehicle.Position = vehPosition.vehPos;
+                            targetVehicle.Rotation = new Vector3(0, 0, vehPosition.vehRot);
+                            targetVehicle.Locked = false;
+
+                            targetVehicleData.rotation = (float)vehPosition.vehRot;
+                            targetVehicleData.dealership_id = dealer.dealerId;
+                            targetVehicleData.dealership_price = data.price;
+                            targetVehicleData.dealership_description = data.desc;
+                            targetVehicleData.dealership_spot_id = vehPosition.spotId;
+                            targetVehicleData.dynamic_dealer_spot_id = vehPosition.spotId;
+                            targetVehicleData.vehicle_locked = false;
+
+                            vehPosition.vehInSpot = targetVehicleData;
+
+                            targetVehicle.saveVehicleData(targetVehicleData, true);
+
+                            targetVehicle.SetSharedData(_playerVehicleDealerDataIdentifier, true);
+                            targetVehicle.SetData(_playerVehicleDealerDataIdentifier, true);
+
+                            setSpotActiveWithVehicle(targetVehicleData, vehPosition.spotId);
+                            break;
+                        }
+                    }
+
+                    if (!foundSpot)
+                    {
+                        uiHandling.sendPushNotifError(player, "There are no free spots left in this dealership", 6600);
+                    }
                 }
             }
         }

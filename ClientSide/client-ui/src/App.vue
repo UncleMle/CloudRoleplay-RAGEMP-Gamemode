@@ -3,11 +3,10 @@
         <ChatBox class="absolute" ref="chatsys" />
 
         <Transition name="fade">
-
             <div ref="guisystems" v-if="uiStates.guiEnabled">
                 <VehicleSpeedo />
                 <PlayerHud />
-                <InventoryHud v-if="uiStates.inventory" />
+                <InventoryHud class="absolute" v-if="uiStates.inventory" />
                 <PlayerPhone class="absolute" />
                 <DispatchMenu v-if="uiStates.dispatchMenuState" />
             </div>

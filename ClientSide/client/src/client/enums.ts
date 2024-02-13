@@ -1,5 +1,5 @@
 export enum BrowserEnv {
-	development = "package://dist/index.html", //"package://dist/index.html",
+	development = "localhost:3000", //"package://dist/index.html",
 	production = "package://dist/index.html#/" // 192.168.1.188:3000/?#/
 }
 
@@ -28,8 +28,7 @@ export enum StallTypes {
 	Medium = 1,
 }
 
-export enum KeyType
-{
+export enum KeyType {
 	KEY_Y,
 	KEY_F4,
 	KEY_F3,

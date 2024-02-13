@@ -1,28 +1,60 @@
 <template>
-    <main>
+    <main class="absolute bg-black/50 w-full h-full">
 
-        <div class="inv-whole">
-            <div class="p-1 text-xl pb-4 font-medium">
-                <h2>Inventory Items ({{ playerData.inventory_items.length }} KG)</h2>
+        <div class="absolute mt-[19%] ml-[10%]">
+
+            <div class="grid grid-cols-4 w-full">
+
+                <div :class="cellStyle"></div>
+                <div :class="cellStyle"></div>
+                <div :class="cellStyle"></div>
+                <div :class="cellStyle"></div>
+                <div :class="cellStyle"></div>
+                <div :class="cellStyle"></div>
+                <div :class="cellStyle"></div>
+                <div :class="cellStyle"></div>
+                <div :class="cellStyle"></div>
+                <div :class="cellStyle"></div>
+                <div :class="cellStyle"></div>
+                <div :class="cellStyle"></div>
+                <div :class="cellStyle"></div>
+                <div :class="cellStyle"></div>
+                <div :class="cellStyle"></div>
+                <div :class="cellStyle"></div>
+
+
             </div>
+        </div>
 
-            <div class="inventory" id="inventory-main">
+        <div class="flex justify-center mt-[20%]">
 
-                <div class="cell item" cellid="2">item</div>
-                <div class="cell" cellid="2"></div>
-                <div class="cell" cellid="2"></div>
-                <div class="cell" cellid="2"></div>
-                <div class="cell" cellid="2"></div>
-                <div class="cell" cellid="2"></div>
-                <div class="cell" cellid="2"></div>
-                <div class="cell" cellid="2"></div>
-                <div class="cell" cellid="2"></div>
-                <div class="cell" cellid="2"></div>
-                <div class="cell" cellid="2"></div>
-                <div class="cell" cellid="2"></div>
-                <div class="cell" cellid="2"></div>
-                <div class="cell" cellid="2"></div>
-                <div class="cell" cellid="2"></div>
+            <div class="grid grid-cols-7 full" id="player-inventory">
+
+                <div class="baseCell" :class="cellStyle">
+                    <p class="subtext">Pistol .50</p>
+                </div>
+                <div class="cell" :class="cellStyle"></div>
+                <div class="cell" :class="cellStyle"></div>
+                <div class="cell" :class="cellStyle"></div>
+                <div class="cell" :class="cellStyle"></div>
+                <div class="cell" :class="cellStyle"></div>
+                <div class="cell" :class="cellStyle"></div>
+                <div class="cell" :class="cellStyle"></div>
+                <div class="cell" :class="cellStyle"></div>
+                <div class="cell" :class="cellStyle"></div>
+                <div class="cell" :class="cellStyle"></div>
+                <div class="cell" :class="cellStyle"></div>
+                <div class="cell" :class="cellStyle"></div>
+                <div class="cell" :class="cellStyle"></div>
+                <div class="cell" :class="cellStyle"></div>
+                <div class="cell" :class="cellStyle"></div>
+                <div class="cell" :class="cellStyle"></div>
+                <div class="cell" :class="cellStyle"></div>
+                <div class="cell" :class="cellStyle"></div>
+                <div class="cell" :class="cellStyle"></div>
+                <div class="cell" :class="cellStyle"></div>
+
+
             </div>
 
         </div>
@@ -37,6 +69,7 @@ export default {
     /* eslint-disable */
     data() {
         return {
+            cellStyle: "border w-[90px] h-[90px] border-gray-400",
             contextMenuState: false,
             inventoryItems: [
             ],
@@ -74,7 +107,7 @@ export default {
         document.addEventListener("contextmenu", this.startContextMenu);
     },
     mounted() {
-        dragular([document.getElementById("inventory-main"), document.getElementById("item")], {
+        dragular([document.getElementById("player-inventory"), document.getElementsByClassName("baseCell")], {
             moves: (el) => {
                 return el.className !== "cell";
             }
@@ -106,4 +139,22 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.baseCell {
+    background-image: url("../../assets/img/inventory/pistol50.png");
+    background-size: 50px 50px;
+    background-repeat: no-repeat;
+    background-position: center 10px;
+    text-align: center;
+    position: relative;
+}
+
+.subtext {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.451);
+    bottom: 0;
+    color: white;
+    min-width: 89px;
+    font-weight: 500;
+}
+</style>

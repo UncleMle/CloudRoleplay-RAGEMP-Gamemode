@@ -25,6 +25,7 @@ namespace CloudRP.ServerSystems.Authentication
         public static uint _startDimension = 20;
         public static string _startAdminPed = "ig_mp_agent14";
         public static string _otpStoreKey = "registering_otp";
+        public static string _accountCreatedKey = "authentication:player:accountCreated";
 
         public Auth()
         {
@@ -255,7 +256,8 @@ namespace CloudRP.ServerSystems.Authentication
             if (playerOtpStore.otpTries > 15)
             {
                 uiHandling.setAuthState(player, AuthStates.login);
-
+                uiHandling.pushRouterToClient(player, Browsers.None);
+                uiHandling.pushRouterToClient(player, Browsers.LoginPage);
                 uiHandling.sendPushNotifError(player, "You entered the wrong OTP code too many times.", 7500);
                 return;
             }
@@ -496,6 +498,8 @@ namespace CloudRP.ServerSystems.Authentication
 
         public static void createAccount(Player player, Register registeringData)
         {
+            if (player.GetData<bool>(_accountCreatedKey)) return;
+
             string passwordHash = AuthUtils.hashPasword(registeringData.registerPassword);
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
@@ -531,6 +535,7 @@ namespace CloudRP.ServerSystems.Authentication
                 User userData = createUser(creatingAccount);
 
                 setUserToCharacterSelection(player, userData);
+                player.SetCustomData(_accountCreatedKey, true);
             }
         }
 

@@ -6,7 +6,8 @@
             </font>
         </div>
 
-        <div class="absolute left-[1.6%] w-[14%] rounded-xl bottom-[19%] text-white font-medium h-[3.4%] p-1">
+        <div
+            class="textResponsive absolute left-[1.6%] w-[14%] rounded-xl bottom-[19%] text-white font-medium h-[3.4%] p-1">
             <div class="ml-2">
                 <span>
                     <i class="fa-solid fa-bottle-water text-xl text-blue-400"></i>
@@ -25,8 +26,7 @@
             </div>
         </div>
 
-        <div
-            class="guiMain absolute left-[16.5%] w-[25%] bottom-[15%] rounded-xl text-white font-medium text-xl h-[3.4%] p-1">
+        <div class="guiMain absolute left-[16.5%] w-[25%] bottom-[16%] rounded-xl text-white font-medium h-[3.4%] p-1">
 
             <div>
                 <font>
@@ -94,7 +94,10 @@ export default {
 @media only screen and (max-width: 2000px) {
     .guiMain {
         font-size: 15px;
-        bottom: 18%;
+    }
+
+    .textResponsive {
+        font-size: 12px;
     }
 }
 </style>
