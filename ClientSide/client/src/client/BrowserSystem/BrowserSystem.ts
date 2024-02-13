@@ -7,15 +7,11 @@ import { CharacterData } from '@/@types';
 let isFunctionPressed: boolean;
 
 export default class BrowserSystem {
-	public _browserBaseUrl: string = BrowserEnv.development;
-	public static _browserInstance: BrowserMp;
+	public static _browserInstance: BrowserMp = mp.browsers.new(BrowserEnv.development);
 	public static IdleDate: Date = new Date();
-	public static LocalPlayer: PlayerMp;
+	public static LocalPlayer: PlayerMp = mp.players.local;
 
 	constructor() {
-		BrowserSystem._browserInstance = mp.browsers.new(this._browserBaseUrl);
-		BrowserSystem.LocalPlayer = mp.players.local;
-
 		BrowserSystem.LocalPlayer.browserInstance = BrowserSystem._browserInstance;
 		BrowserSystem.LocalPlayer.browserRouter = '/';
 

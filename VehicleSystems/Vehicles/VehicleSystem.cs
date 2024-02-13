@@ -375,6 +375,8 @@ namespace CloudRP.VehicleSystems.Vehicles
 
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
+                    bool insured = faction != Factions.None || aircraftClasses.Contains((VehicleClasses)classId);
+
                     DbVehicle vehicleInsert = new DbVehicle
                     {
                         CreatedDate = DateTime.Now,
@@ -392,7 +394,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                         numberplate = "null",
                         vehicle_dimension = VehicleDimensions.World,
                         faction_owner_id = (int)faction,
-                        insurance_status = faction != Factions.None
+                        insurance_status = insured
                     };
 
                     dbContext.vehicles.Add(vehicleInsert);
@@ -400,7 +402,7 @@ namespace CloudRP.VehicleSystems.Vehicles
 
                     DbVehicle findJustInserted = dbContext.vehicles.Find(vehicleInsert.vehicle_id);
                     
-                    vehiclePlate = genUniquePlate(vehicleInsert.vehicle_id, classId, faction != Factions.None);
+                    vehiclePlate = genUniquePlate(vehicleInsert.vehicle_id, classId, insured);
 
                     findJustInserted.numberplate = vehiclePlate;
 

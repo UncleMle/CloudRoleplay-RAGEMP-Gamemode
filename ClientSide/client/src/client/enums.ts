@@ -1,6 +1,6 @@
 export enum BrowserEnv {
-	development = "localhost:3000", //"package://dist/index.html",
-	production = "package://dist/index.html#/" // 192.168.1.188:3000/?#/
+	development = "http://package2/index.html", //"package://dist/index.html",
+	production = "http://package2/index.html" // 192.168.1.188:3000/?#/
 }
 
 export enum AdminRanks {

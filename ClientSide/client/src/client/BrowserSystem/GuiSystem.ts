@@ -19,11 +19,11 @@ export default class GuiSystem {
 
 		mp.events.add("render", GuiSystem.fillGuiRenderValues);
 		mp.events.add("gui:toggleHudComplete", GuiSystem.toggleHudComplete);
-		mp.keys.bind(_control_ids.F10, false, () => getUserCharacterData() && GuiSystem.toggleHud);
+		mp.keys.bind(_control_ids.F10, false, () => GuiSystem.toggleHud);
 	}
 
 	public static toggleHud() {
-		if (!validateKeyPress()) return;
+		if (!validateKeyPress() || !getUserCharacterData()) return;
 
 		GuiSystem.hudToggle = !GuiSystem.hudToggle;
 
@@ -69,7 +69,6 @@ export default class GuiSystem {
 			direction: GuiSystem.getCompassDirection(),
 			isFrozen: PlayerData.isFrozen,
 			playerId: GuiSystem.LocalPlayer.remoteId,
-			unix: getTimeUnix(),
 			zoneName: streetData.zoneName,
 			zoneNameTwo: streetData.zoneTwo,
 			fps: GuiSystem.LocalPlayer.fps,

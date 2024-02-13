@@ -14,7 +14,7 @@
                             <div class="font-medium text-medium p-4">
                                 <div class="relative w-full mt-4">
                                     <span class="left-0 top-0 "><i class="fa-solid fa-user pr-2"></i>Name</span>
-                                    <span class="absolute right-0 top-0">{{ characterStats.character_name.replace("_", " ")
+                                    <span class="absolute right-0 top-0">{{ characterStats.character_name?.replace("_", " ")
                                     }}</span>
                                 </div>
                                 <div class="relative w-full mt-4">

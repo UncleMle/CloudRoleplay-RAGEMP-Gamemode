@@ -108,6 +108,7 @@ export default class PlayerAuthentication {
 	}
 
 	public static handleLoginStart() {
+		PlayerAuthentication.handleCameraStart();
 		mp.events.callRemote("server:handlePlayerJoining", PlayerAuthentication.LocalStorage.data[_storage_key]);
 	}
 

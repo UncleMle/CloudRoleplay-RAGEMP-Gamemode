@@ -11,7 +11,7 @@ namespace CloudRP.ServerSystems.Authentication
 {
     public static class PlayerExtensions
     {
-        public static void setPlayerToLoginScreen(this Player player)
+        public static void setPlayerToLoginScreen(this Player player, bool resetCam = true)
         {
             User userData = player.getPlayerAccountData();
 
@@ -23,7 +23,12 @@ namespace CloudRP.ServerSystems.Authentication
             player.Position = PlayersData.defaultLoginPosition;
 
             player.Dimension = Auth._startDimension;
-            player.TriggerEvent("client:loginCameraStart");
+
+            if (resetCam)
+            {
+                player.TriggerEvent("client:loginCameraStart");
+            }
+
             uiHandling.pushRouterToClient(player, Browsers.LoginPage);
 
             player.flushUserAndCharacterData(new string[]{

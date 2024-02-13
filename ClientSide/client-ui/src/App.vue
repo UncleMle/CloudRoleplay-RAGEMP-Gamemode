@@ -2,7 +2,7 @@
     <div id="app">
         <ChatBox class="absolute" ref="chatsys" />
 
-        <Transition name="fade">
+        <Transition name="fade" v-if="uiStates.guiEnabled">
             <div ref="guisystems" v-if="uiStates.guiEnabled">
                 <VehicleSpeedo />
                 <PlayerHud />

@@ -572,7 +572,7 @@ namespace CloudRP.ServerSystems.Authentication
         [ServerEvent(Event.PlayerConnected)]
         public void onPlayerConnected(Player player)
         {
-            player.setPlayerToLoginScreen();
+            player.setPlayerToLoginScreen(false);
         }
         #endregion
     }
