@@ -12,6 +12,7 @@ using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.VehicleInsurance;
 using CloudRP.VehicleSystems.VehicleModification;
 using CloudRP.VehicleSystems.VehicleParking;
+using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
@@ -1334,6 +1335,28 @@ namespace CloudRP.VehicleSystems.Vehicles
                 }, timeOut_seconds * 1000);
 
             }
+        }
+
+        [RemoteEvent("server:gps:syncPointForPlayers")]
+        public void syncWaypointForOccupants(Player player, Vector3 waypoint)
+        {
+            if (!player.IsInVehicle) return;
+
+            player.Vehicle.Occupants.ForEach(occ =>
+            {
+                if (occ.Type == EntityType.Player && occ.Id != player.Id) MarkersAndLabels.setClientWaypoint((Player)occ, waypoint);
+            });
+        }
+        
+        [RemoteEvent("server:gps:removePointForPlayers")]
+        public void removeWaypointForPlayers(Player player, Vector3 waypoint)
+        {
+            if (!player.IsInVehicle) return;
+
+            player.Vehicle.Occupants.ForEach(occ =>
+            {
+                if (occ.Type == EntityType.Player && occ.Id != player.Id) MarkersAndLabels.removeClientWaypoint((Player)occ);
+            });
         }
         #endregion
 

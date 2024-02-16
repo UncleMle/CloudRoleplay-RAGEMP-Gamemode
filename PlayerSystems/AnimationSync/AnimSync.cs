@@ -4,6 +4,7 @@ using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Transactions;
 
 namespace CloudRP.PlayerSystems.AnimationSync
 {
@@ -43,31 +44,27 @@ namespace CloudRP.PlayerSystems.AnimationSync
         #endregion
 
         #region Global Methods
-        public static void playSyncAnimation(Player player, string animName, string animDict, int flag, int duration = -1)
+        public static void playSyncAnimation(Player player, int flag, string dict, string anim, int duration = -1)
         {
             player.SetCustomSharedData(_animationDataKey, new AnimationData
             {
-                animName = animName,
+                anim = anim,
                 flag = flag,
-                propName = animDict
+                dict = dict
             });
 
             if(duration != -1)
             {
                 NAPI.Task.Run(() =>
                 {
-                    if(NAPI.Player.IsPlayerConnected(player))
-                    {
-                        stopSyncAnimation(player);
-                    }
-                }, duration);
+                    stopSyncAnimation(player);
+                }, delayTime: duration);
             }
         }
 
         public static void stopSyncAnimation(Player player)
         {
             player.ResetSharedData(_animationDataKey);
-            player.StopAnimation();
         }
 
         #endregion

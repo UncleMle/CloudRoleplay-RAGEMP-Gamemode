@@ -76,11 +76,12 @@ export default class VehicleRadar {
 						BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
                             _stateKey: "vehicleRadarData",
                             status: ${JSON.stringify({
-								ownerName: targetVehicleData.owner_name,
-								speed: targetV.getSpeed(),
-								numberplate: targetVehicleData.numberplate,
-								vehicleName: targetVehicleData.vehicle_display_name
-							})}
+							ownerName: targetVehicleData.owner_name,
+							speed: targetV.getSpeed(),
+							numberplate: targetVehicleData.numberplate,
+							vehicleName: targetVehicleData.vehicle_display_name,
+							insured: targetVehicleData.insurance_status
+						})}
                         })`);
 					}
 				}
@@ -96,25 +97,25 @@ export default class VehicleRadar {
 	}
 
 	public static toggleRadarOn(veh: VehicleMp, tog: boolean) {
-        VehicleRadar.resetRadarData();
+		VehicleRadar.resetRadarData();
 
-        if (veh && veh.getClass() == VehicleRadar.emergencyVehicleClass) {
+		if (veh && veh.getClass() == VehicleRadar.emergencyVehicleClass) {
 			BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
                 _stateKey: "vehicleRadar",
                 status: ${tog}
             })`);
 		} else {
-            BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
+			BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
                 _stateKey: "vehicleRadar",
                 status: false
             })`);
-        }
+		}
 	}
 
-    public static resetRadarData() {
-        BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
+	public static resetRadarData() {
+		BrowserSystem._browserInstance.execute(`appSys.commit("setUiState", {
             _stateKey: "vehicleRadarData",
             status: {}
         })`);
-    }
+	}
 }

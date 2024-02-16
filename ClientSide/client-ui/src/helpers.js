@@ -32,9 +32,9 @@ export function sendToServer(eventName, value) {
     }
 }
 
-export function sendToClient(eventName, value) {
+export function sendToClient(eventName, ...value) {
     if (window.mp) {
-        window.mp.trigger(eventName, value);
+        window.mp.trigger(eventName, ...value);
     } else {
         console.log(`[Client] MP EVENT | ${eventName} |  ${value}`);
     }

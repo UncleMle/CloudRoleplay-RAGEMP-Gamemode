@@ -18,7 +18,7 @@ export default {
   methods: {
     showNotification(text, progbar, dragbl, timeout, iconpic) {
       this.$toast(text, {
-        toastClassName: ["pmrp"],
+        toastClassName: ["crp"],
         position: "top-right",
         timeout: timeout,
         closeOnClick: progbar,
@@ -40,7 +40,7 @@ export default {
     },
     sendError(msg, time) {
       this.$toast.error(msg, {
-        toastClassName: ["pmrperror"],
+        toastClassName: ["crperror"],
         position: "bottom-center",
         timeout: time,
       });

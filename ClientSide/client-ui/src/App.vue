@@ -65,11 +65,11 @@ export default {
 @tailwind components;
 @tailwind utilities;
 
-.pmrp {
+.crp {
     background: rgba(0, 0, 0, 0.6)
 }
 
-.pmrperror {
+.crperror {
     background: rgba(255, 0, 0, 0.6);
 }
 

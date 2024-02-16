@@ -307,7 +307,7 @@ namespace CloudRP.GeneralSystems.GeneralCommands
             CommandUtils.sendMessageToPlayersInRadius(player, prefix, suffix, CommandUtils._rp_commands_radius_low);
         }
 
-        [Command("ame", "~y~Use: ~w~/ame [message]", GreedyArg = true, Description = "testaisdj aiosdjaio sdjioj")]
+        [Command("ame", "~y~Use: ~w~/ame [message]", GreedyArg = true)]
         public void onAmeCommand(Player player, string ameText)
         {
             if (!AuthUtils.validateNick(ameText))
@@ -578,7 +578,6 @@ namespace CloudRP.GeneralSystems.GeneralCommands
             uiHandling.pushRouterToClient(targetPlayer, Browsers.LicensePage);
             uiHandling.handleObjectUiMutation(targetPlayer, MutationKeys.PlayerStats, JsonConvert.DeserializeObject<LicenseData>(JsonConvert.SerializeObject(character)));
         }
-
         #endregion
 
         #region Remote Events

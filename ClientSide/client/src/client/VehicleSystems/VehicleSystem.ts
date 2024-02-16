@@ -8,6 +8,8 @@ export default class VehicleSystems {
 	public static beltToggle: boolean;
 	public static vehicleOldPos: Vector3;
 	public static updateVehicleDistEvent: string = "server:updateVehicleDistance";
+	public static syncGpsWaypointEvent: string = "server:gps:syncPointForPlayers";
+	public static removeGpsWaypoint: string = "server:gps:removePointForPlayers";
 	public static toggleSeatBeltEvent: string = "vehicle:toggleSeatBelt";
 	public static _seatBeltIdentifier: string = "playerIsWearingSeatBelt";
 	public static updateDistInteral_seconds: number = 20;
@@ -21,6 +23,8 @@ export default class VehicleSystems {
 		mp.events.add("playerLeaveVehicle", (veh: VehicleMp) => VehicleSystems.beltToggle ? VehicleSystems.toggleSeatBelt(veh) : null);
 		mp.events.add("playerEnterVehicle", VehicleSystems.handlePlayerEnterVehicle);
 		mp.events.add("playerLeaveVehicle", VehicleSystems.handleExitDistCalc);
+		mp.events.add("playerCreateWaypoint", VehicleSystems.handleWaypointCreate);
+		mp.events.add("playerRemoveWaypoint", VehicleSystems.handleWaypointRemove);
 		mp.events.add("vehicleSystem:freezePlayerVehicle", VehicleSystems.freezePlayerVehicle);
 		mp.keys.bind(_control_ids.F, false, VehicleSystems.stopWindowBreaking);
 		mp.keys.bind(_control_ids.J, false, VehicleSystems.toggleSeatBelt);
@@ -32,6 +36,18 @@ export default class VehicleSystems {
 		}, VehicleSystems.updateDistInteral_seconds * 1000);
 	}
 
+	private static handleWaypointCreate(position: Vector3) {
+		if(!VehicleSystems.LocalPlayer.vehicle) return; 
+		
+		mp.events.callRemote(VehicleSystems.syncGpsWaypointEvent, position);
+		
+	}
+
+	private static handleWaypointRemove() {
+		if(!VehicleSystems.LocalPlayer.vehicle) return;
+		
+		mp.events.callRemote(VehicleSystems.removeGpsWaypoint);
+	}
 
 	public static handlePlayerEnterVehicle(vehicle: VehicleMp, seat: number) {
 		if(!vehicle) return;

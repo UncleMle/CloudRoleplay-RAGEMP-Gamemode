@@ -5,6 +5,7 @@ using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Database;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using CloudRP.PlayerSystems.FactionSystems;
 
 namespace CloudRP.PlayerSystems.Character
 {
@@ -49,6 +50,10 @@ namespace CloudRP.PlayerSystems.Character
         public bool loggingOut { get; set; }
         [NotMapped]
         public bool routeIsFrozen { get; set; }
+        [NotMapped]
+        public FactionRank onDutyRank { get; set; }
+        [NotMapped]
+        public CharacterClothing cachedClothes { get; set; }
     }
 
 }

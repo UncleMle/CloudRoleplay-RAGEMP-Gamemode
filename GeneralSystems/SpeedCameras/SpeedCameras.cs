@@ -85,20 +85,11 @@ namespace CloudRP.GeneralSystems.SpeedCameras
         List<SpeedFine> speedFines = new List<SpeedFine>
         {
             new SpeedFine
-            {
-                finePrice = 400,
-                speed = 82
-            },
+            { finePrice = 400, speed = 82 },
             new SpeedFine
-            {
-                finePrice = 800,
-                speed = 120
-            },
+            { finePrice = 800, speed = 120 },
             new SpeedFine
-            {
-                finePrice = 2500,
-                speed = 200
-            },
+            { finePrice = 2500, speed = 200 }
         };
 
         public SpeedCameras()

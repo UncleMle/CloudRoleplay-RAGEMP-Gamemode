@@ -1,4 +1,5 @@
 import { ClientBlip } from "@/@types";
+import { _GET_NORTH_RADAR_BLIP } from "@/Constants/Constants";
 
 export default class MarkersAndLabels {
     public static LocalPlayer: PlayerMp;
@@ -14,6 +15,7 @@ export default class MarkersAndLabels {
         mp.events.add("render", MarkersAndLabels.removeNorthBlip);
 
         mp.events.add("clientBlip:addClientBlip", MarkersAndLabels.addClientBlip);
+        mp.events.add("clientBlip:removeWaypoint", MarkersAndLabels.removeWaypoint);
         mp.events.add("clientBlip:removeClientBlip", MarkersAndLabels.removeClientBlip);
         mp.events.add("clientBlip:setWaypoint", MarkersAndLabels.setWaypoint);
         mp.events.add("clientBlip:addArrayOfBlips", MarkersAndLabels.addArrayOfBlips);
@@ -66,13 +68,11 @@ export default class MarkersAndLabels {
 
     }
 
-    public static setWaypoint(coords: Vector3) {
-        mp.game.ui.setNewWaypoint(coords.x, coords.y);
-    }
+    public static setWaypoint = (coords: Vector3) => mp.game.ui.setNewWaypoint(coords.x, coords.y);
 
-    public static removeNorthBlip() {
-        mp.game.ui.setBlipAlpha(mp.game.invoke("0x3F0CF9CB7E589B88"), 0);
-    }
+    public static removeNorthBlip = () => mp.game.ui.setBlipAlpha(mp.game.invoke(_GET_NORTH_RADAR_BLIP), 0);
+
+    public static removeWaypoint = () => mp.game.ui.deleteWaypoint();
 
     public static addClientBlip(blipSprite: number, name: string, position: Vector3, blipColour: number, alpha: number = 255, timeout: number = MarkersAndLabels.defaultBlipTimeout_seconds, setRoute: boolean = false, setMarker: boolean = false) {
         MarkersAndLabels.removeClientBlip();

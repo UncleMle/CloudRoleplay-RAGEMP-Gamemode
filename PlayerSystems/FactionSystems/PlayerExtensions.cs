@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -75,14 +76,21 @@ namespace CloudRP.PlayerSystems.FactionSystems
             return isPart;
         }
 
-        public static void setFactionDuty(this Player player, Factions faction)
+        public static FactionRank setFactionDuty(this Player player, Factions faction, bool loadUniform = false)
         {
             DbCharacter character = player.getPlayerCharacterData();
+            FactionRank rank = player.getFactionRankViaFaction(faction);
+            
+            if (character != null && rank != null)
+            {
+                character.faction_duty_status = (int)faction;
+                character.onDutyRank = rank;
+                player.setPlayerCharacterData(character, false, true);
 
-            if (character == null) return;
+                if (loadUniform) FactionSystem.loadFactionUniform(player);
+            }
 
-            character.faction_duty_status = (int)faction;
-            player.setPlayerCharacterData(character, false, true);
+            return rank;
         }
 
         public static void setOffFactionDuty(this Player player)
@@ -94,7 +102,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
             character.faction_duty_status = -1;
             character.faction_duty_uniform = -1;
 
-            character.characterClothing = CharacterSystem.getClothingViaCharacterId(character.character_id);
+            character.characterClothing = character.cachedClothes;
 
             player.setPlayerCharacterData(character, true);
             FactionSystem.clearTracker(player);

@@ -135,7 +135,6 @@ export interface Gui {
 	playerId: number;
 	direction: string;
 	isFrozen: boolean;
-	unix: number;
 	zoneName: string;
 	zoneNameTwo: string;
 	fps: number;
@@ -230,7 +229,8 @@ export interface VehicleData {
 	dealership_description: string;
 	vehicle_class_id: number;
 	vehicle_display_name: string;
-	faction_owner_id: number;	
+	faction_owner_id: number;
+	insurance_status: boolean;	
 }
 
 export interface RenderKeys {
@@ -477,9 +477,9 @@ interface AttachmentData {
 }
 
 interface AnimationData {
-	animName: string;
-	propName: string;
-	flag: number;
+	anim: string;
+	dict: string;
+	flag: string;
 }
 
 interface FactionVehSpawn {

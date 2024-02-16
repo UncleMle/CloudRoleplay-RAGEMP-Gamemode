@@ -101,14 +101,6 @@ namespace CloudRP.ServerSystems.Admin
             }
         }
 
-        [AdminCommand(AdminRanks.Admin_Developer)]
-        [Command("aaa", "~r~/aaa [aName] [aDict] [flag]")]
-        public void playAdminAnimation(Player player, string aName, string aDict, int flag)
-        {
-            AnimSync.playSyncAnimation(player, aName, aDict, flag);
-            AdminUtils.staffSay(player, "Started animation.");
-        }
-
         [Command("report", "~y~Use: ~w~/report [description]", GreedyArg = true)]
         public async Task onReport(Player player, string desc)
         {
@@ -2014,6 +2006,36 @@ namespace CloudRP.ServerSystems.Admin
             uiHandling.sendSound(player, soundName, soundSet);
 
             AdminUtils.staffSay(player, $"{soundName} __ {soundSet}");
+        }
+
+
+        [AdminCommand(AdminRanks.Admin_Developer)]
+        [Command("gyatt", "~y~Use: ~w~/gyatt [size]")]
+        public void gyattCommandForMichel(Player player, int gyattSize)
+        {
+            if(gyattSize > 100)
+            {
+                CommandUtils.errorSay(player, "You can only spawn in 100 gyatts at a time!");
+                return;
+            }
+
+            User user = player.getPlayerAccountData();
+
+            for(int i = 0; i < gyattSize; i++)
+            {
+                NAPI.Ped.CreatePed(PedHash.Abigail, player.Position.Around(2), player.Rotation.Z, 0);
+            }
+
+            uiHandling.sendNotification(player, $"SPAWNED in {gyattSize} gyatts!!!", false, true, $"Spawns in {gyattSize} GYATTTs");
+            AdminUtils.sendMessageToAllStaff($"{user.admin_name} SPAWNED in {gyattSize} gyatts!!!.", 0, true);
+        }
+
+        [AdminCommand(AdminRanks.Admin_Developer)]
+        [Command("aaa", "~r~/aaa [dict] [name]")]
+        public void animTestCommand(Player player, string dict, string name)
+        {
+            player.TriggerEvent("anim:testClient", dict, name);
+            player.SendChatMessage($"dict {dict} | name {name}");
         }
     }
 }

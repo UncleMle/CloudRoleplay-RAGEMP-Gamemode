@@ -22,6 +22,7 @@ namespace CloudRP.ServerSystems.Authentication
     internal class Auth : Script
     {
         public static Dictionary<Player, string> collectedAutoLoginKeys = new Dictionary<Player, string>();
+        public static string autoLoginDataKey = "server:auth:autoLoginAllowedUsername";
         public static uint _startDimension = 20;
         public static string _startAdminPed = "ig_mp_agent14";
         public static string _otpStoreKey = "registering_otp";
@@ -44,70 +45,77 @@ namespace CloudRP.ServerSystems.Authentication
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
-                Account findAccount = dbContext.accounts
-                    .Where(b => b.username == userCredentials.username.ToLower() || b.email_address == userCredentials.username)
-                    .FirstOrDefault();
+                Account findAccount = null;
+                string autoLoginUser = player.GetData<string>(autoLoginDataKey);
 
-                if (findAccount != null && AuthUtils.comparePassword(findAccount.password, userCredentials.password))
+                if (autoLoginUser != null)
                 {
-                    Player findIsOnline = checkInGame(findAccount.account_id);
-
-                    if (findIsOnline != null)
-                    {
-                        Ban ban = new Ban
-                        {
-                            account_id = -1,
-                            admin = "System",
-                            username = "N/A",
-                            ban_reason = $"Attempting to breach accounts. REFID #{findAccount.account_id}",
-                            ip_address = player.Address,
-                            lift_unix_time = -1,
-                            social_club_id = player.SocialClubId,
-                            social_club_name = player.SocialClubName,
-                            client_serial = player.Serial,
-                            CreatedDate = DateTime.Now,
-                            UpdatedDate = DateTime.Now,
-                            issue_unix_date = CommandUtils.generateUnix(),
-                        };
-
-                        dbContext.bans.Add(ban);
-
-                        AuthUtils.sendEmail(findAccount.email_address, "Authentication Warning", $"Our systems detected a third party attempting to gain access to your account (<b>{findAccount.username}</b>). We have blocked the login attempt. Please reset all related passwords immediately.");
-                        NAPI.Chat.SendChatMessageToPlayer(findIsOnline, ChatUtils.red + "~h~[AUTHENTICATION WARNING] " + ChatUtils.White + "A third party attempted to login into your account. Please reset your account password immediately.");
-                        player.KickSilent();
-                        return;
-                    }
-
-                    User user = createUser(findAccount);
-
-                    findAccount.client_serial = player.Serial;
-                    findAccount.user_ip = player.Address;
-                    findAccount.UpdatedDate = DateTime.Now;
-
-                    dbContext.Update(findAccount);
-                    dbContext.SaveChanges();
-
-                    if (findAccount.ban_status == 1)
-                    {
-                        player.banPlayer(-1, user, user, "Logging into banned accounts.");
-                        return;
-                    }
-
-                    setUserToCharacterSelection(player, user);
-                    if (userCredentials.rememberMe)
-                    {
-                        setUpAutoLogin(player, findAccount);
-                    }
-
-
-                    ChatUtils.formatConsolePrint($"User {findAccount.username} (#{findAccount.account_id}) has logged in.", ConsoleColor.Green);
-                }
+                    findAccount = dbContext.accounts.Where(user => user.username == autoLoginUser.ToLower())
+                        .FirstOrDefault();
+                } 
                 else
                 {
-                    uiHandling.sendPushNotifError(player, "Incorrect account credentials", 4000, true);
+                    findAccount = dbContext.accounts
+                                .Where(b => b.username == userCredentials.username.ToLower() || b.email_address == userCredentials.username)
+                                .FirstOrDefault();
+                }
+
+                if(findAccount == null || findAccount != null && autoLoginUser == null && !AuthUtils.comparePassword(findAccount.password, userCredentials.password))
+                {
+                    uiHandling.sendPushNotifError(player, "Account wasn't found.", 4000, true);
                     return;
                 }
 
+                Player findIsOnline = checkInGame(findAccount.account_id);
+
+                if (findIsOnline != null)
+                {
+                    Ban ban = new Ban
+                    {
+                        account_id = -1,
+                        admin = "System",
+                        username = "N/A",
+                        ban_reason = $"Attempting to breach accounts. REFID #{findAccount.account_id}",
+                        ip_address = player.Address,
+                        lift_unix_time = -1,
+                        social_club_id = player.SocialClubId,
+                        social_club_name = player.SocialClubName,
+                        client_serial = player.Serial,
+                        CreatedDate = DateTime.Now,
+                        UpdatedDate = DateTime.Now,
+                        issue_unix_date = CommandUtils.generateUnix(),
+                    };
+
+                    dbContext.bans.Add(ban);
+
+                    AuthUtils.sendEmail(findAccount.email_address, "Authentication Warning", $"Our systems detected a third party attempting to gain access to your account (<b>{findAccount.username}</b>). We have blocked the login attempt. Please reset all related passwords immediately.");
+                    NAPI.Chat.SendChatMessageToPlayer(findIsOnline, ChatUtils.red + "~h~[AUTHENTICATION WARNING] " + ChatUtils.White + "A third party attempted to login into your account. Please reset your account password immediately.");
+                    player.KickSilent();
+                    return;
+                }
+
+                User user = createUser(findAccount);
+
+                findAccount.client_serial = player.Serial;
+                findAccount.user_ip = player.Address;
+                findAccount.UpdatedDate = DateTime.Now;
+
+                dbContext.Update(findAccount);
+                dbContext.SaveChanges();
+
+                if (findAccount.ban_status == 1)
+                {
+                    player.banPlayer(-1, user, user, "Logging into banned accounts.");
+                    return;
+                }
+
+                setUserToCharacterSelection(player, user);
+
+                if (userCredentials.rememberMe)
+                {
+                    setUpAutoLogin(player, findAccount);
+                }
+                ChatUtils.formatConsolePrint($"User {findAccount.username} (#{findAccount.account_id}) has logged in.", ConsoleColor.Green);
             }
         }
 
@@ -335,16 +343,16 @@ namespace CloudRP.ServerSystems.Authentication
                             player.setFreelanceJobData(data);
                         }
 
+                        if (character.faction_duty_status != -1) player.setFactionDuty((Factions)character.faction_duty_status, true);
+
                         if (character.faction_duty_uniform == -1)
                         {
                             character.characterClothing = charClothing;
-                            player.setPlayerCharacterData(character, true);
-                        }
-                        else
-                        {
-                            FactionSystem.loadFactionUniform(player);
                         }
 
+                        character.cachedClothes = charClothing;
+
+                        player.setPlayerCharacterData(character, true);
                         welcomeAndSpawnPlayer(player);
                     }
                 }
@@ -372,9 +380,19 @@ namespace CloudRP.ServerSystems.Authentication
                         .Where(acc => acc.user_ip == player.Address && acc.auto_login == 1 && acc.auto_login_key == autoLoginKey && acc.client_serial == player.Serial && acc.ban_status == 0)
                         .FirstOrDefault();
 
-
                     if (findAccount == null) return;
 
+                    player.SetData(autoLoginDataKey, findAccount.username);
+
+                    uiHandling.handleObjectUiMutation(player, MutationKeys.AutoLogin, new AutoAuth
+                    {
+                        email = findAccount.email_address,
+                        username = findAccount.username,
+                    });
+
+                    uiHandling.sendPushNotif(player, $"Auto login was found for account {findAccount.username}.", 5000);
+
+                    /*
                     User user = createUser(findAccount);
 
                     findAccount.client_serial = player.Serial;
@@ -386,6 +404,7 @@ namespace CloudRP.ServerSystems.Authentication
 
                     uiHandling.resetMutationPusher(player, MutationKeys.PlayerCharacters);
                     setUserToCharacterSelection(player, user);
+                    */
                 }
             }
         }

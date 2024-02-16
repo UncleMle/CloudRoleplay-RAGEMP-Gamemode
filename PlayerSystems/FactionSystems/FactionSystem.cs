@@ -660,6 +660,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
                 if(findUniform != null)
                 {
+                    character.cachedClothes = character.characterClothing;
                     character.characterClothing = findUniform.uniform;
                     player.setPlayerCharacterData(character, true);
                 }
@@ -942,9 +943,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
             if(uniform == null) return;
 
             player.setFactionUniform(uniform);
-            player.setFactionDuty(targetFaction);
-
-            FactionRank rank = player.getFactionRankViaFaction(targetFaction);
+            FactionRank rank = player.setFactionDuty(targetFaction);
 
             uiHandling.sendNotification(player, $"Your now ~g~on duty~w~ for faction {targetFaction.ToString().Replace("_", " ")}. As a {rank.rank_name.Replace("_", " ")}", false);
             uiHandling.resetRouter(player);

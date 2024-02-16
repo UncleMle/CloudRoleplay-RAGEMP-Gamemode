@@ -20,7 +20,7 @@ const app = new Vue({
 		...mapActions([
 		]),
 	},
-}).$mount('#app')
+}).$mount('#app');
 
 global.chat = app.$chat
 global.appSys = app.$store;

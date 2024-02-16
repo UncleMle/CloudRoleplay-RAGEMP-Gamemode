@@ -6,6 +6,13 @@ export default class AnimationSync {
     constructor() {
         mp.events.add("entityStreamIn", AnimationSync.handleStreamIn);
 
+        mp.events.add("anim:testClient", (dict, anim) => {
+            mp.game.streaming.requestAnimDict(dict);
+            mp.players.local.taskPlayAnim(dict, anim, 8.0, 1.0, -1, 1, 1.0, false, false, false);
+
+            mp.gui.chat.push(`${dict} | ${anim}`);
+        });
+
         mp.events.addDataHandler(AnimationSync._animationDataKey, AnimationSync.handleDataHandler);
     }
 
@@ -17,19 +24,28 @@ export default class AnimationSync {
         }
     }
 
-    private static handleDataHandler(entity: PlayerMp, anim: AnimationData) {
-        if (!anim || entity.type != "player") return;
-        AnimationSync.playAnimation(entity, anim);
+    private static handleDataHandler(entity: PlayerMp, value: AnimationData | null, oldValue: AnimationData) {
+        if (entity.type != "player") return;
+        AnimationSync.playAnimation(entity, value, oldValue);
     }
 
-    private static async playAnimation(entity: PlayerMp, anim: AnimationData) {
-        mp.game.streaming.requestAnimDict(anim.animName);
+    private static async playAnimation(entity: PlayerMp, anim: AnimationData | null, old: AnimationData | null = null) {
+        if (anim) {
+            mp.game.streaming.requestAnimDict(anim.dict);
 
-        while(!mp.game.streaming.hasAnimDictLoaded(anim.animName)) {
-            await mp.game.waitAsync(10);
+            await mp.game.waitAsync(100);
+
+            mp.gui.chat.push("Static " + JSON.stringify(anim));
+
+            entity.taskPlayAnim(anim.dict, anim.anim, 1.0, 1.0, -1, 0 + 32 + 16, 0.0, false, false, false)
+            entity.setDynamic(true);
+            return;
         }
 
-        entity.taskPlayAnim(anim.animName, anim.propName, 1, 0, -1, anim.flag, 1.0, false, false, false);
-        entity.setDynamic(true);
+        if (!old) return;
+
+        mp.gui.chat.push("Old " + JSON.stringify(old));
+
+        //entity.stopAnimTask(old.dict, old.anim, parseInt(old.flag));
     }
 }

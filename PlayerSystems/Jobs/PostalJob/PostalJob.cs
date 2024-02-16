@@ -227,7 +227,7 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
             if (currentPostalData.hasPackage) return;
 
             AttachmentSync.AttachmentSync.addAttachmentForPlayer(player, 6286, "prop_cs_package_01", new Vector3(0, -0.18, -0.18), new Vector3(0, 0, 0));
-            AnimationSync.AnimSync.playSyncAnimation(player, "anim@heists@box_carry@", "idle", 49);
+            //AnimationSync.AnimSync.playSyncAnimation(player, "anim@heists@box_carry@", "idle", 49);
 
             currentPostalData.hasPackage = true;
             player.SetData(postalJobDataKey, currentPostalData);

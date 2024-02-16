@@ -4,7 +4,6 @@ import getUserCharacterData from '../PlayerMethods/getUserCharacterData';
 import getUserData from '../PlayerMethods/getUserData';
 import BrowserSystem from './BrowserSystem';
 import { getWaterAndHungerData } from '@/PlayerMethods/getWaterAndHungerData';
-import getTimeUnix from '@/PlayerMethods/getTimeUnix';
 import NotificationSystem from '@/NotificationSystem/NotificationSystem';
 import ScaleForm from '@/Scaleform/ScaleformMessages';
 import toggleChat from '@/PlayerMethods/ToggleChat';

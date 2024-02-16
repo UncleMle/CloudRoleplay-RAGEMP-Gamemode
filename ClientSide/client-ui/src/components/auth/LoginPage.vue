@@ -441,6 +441,13 @@ export default {
     },
     created() {
         document.addEventListener("keydown", this.handleKeyDown);
+
+        if (Object.keys(this.characters.auto_auth_data).length > 0) {
+            this.rememberMe = true;
+
+            this.username = this.characters.auto_auth_data.username;
+            this.password = "**********";
+        }
     },
     methods: {
         login(btn) {

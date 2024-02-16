@@ -212,6 +212,7 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string PromptData = "player_prompt_data";
         public static readonly string MaskStoreState = "in_mask_store";
         public static readonly string JobCenterJobs = "job_center_jobs";
+        public static readonly string AutoLogin = "auto_auth_data";
     }
 
     public class PromptUiData
@@ -222,5 +223,11 @@ namespace CloudRP.PlayerSystems.PlayerData
         public string callBackEvent { get; set; }
         public object callBackObject { get; set; }
         public string callBackRoute { get; set; }
+    }
+
+    public class AutoAuth
+    {
+        public string username { get; set; }
+        public string email { get; set; }
     }
 }

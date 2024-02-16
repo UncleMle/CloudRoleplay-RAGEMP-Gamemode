@@ -53,7 +53,7 @@ export default class PlayerAuthentication {
 	}
 
 	public static handleLogoutHandler(entity: PlayerMp, val: boolean) {
-		if(entity.type == "player" && val) {
+		if (entity.type == "player" && val) {
 			entity.freezePosition(true);
 		} else {
 			entity.freezePosition(false);
@@ -101,10 +101,8 @@ export default class PlayerAuthentication {
 	public static setBackToCharacterSelection() {
 		PlayerAuthentication.LoginCamera?.delete();
 
-
 		PlayerAuthentication.freezeAndBlurClient();
 		PlayerAuthentication.handleCameraStart();
-
 	}
 
 	public static handleLoginStart() {

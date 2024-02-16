@@ -33,6 +33,9 @@ namespace CloudRP.World.MarkersLabels
         public static void setClientWaypoint(Player player, Vector3 pos)
             => player.TriggerEvent("clientBlip:setWaypoint", pos);
 
+        public static void removeClientWaypoint(Player player)
+            => player.TriggerEvent("clientBlip:removeWaypoint");
+
         public static void loadClientBlips(Player player, List<Vector3> targetBlips, string name, int blipType, int blipColour, bool setMarker)
         {
             List<ClientBlip> blips = new List<ClientBlip>();

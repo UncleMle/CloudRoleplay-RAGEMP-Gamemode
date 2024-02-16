@@ -11,9 +11,6 @@ export default class SwitchCamera {
 	}
 
 	public static async moveCameraFromAir(moveTo: string, switchType: number) {
-		GuiSystem.toggleHudComplete(true, false, false);
-		
-		/*
 		mp.gui.cursor.show(false, false);
 		mp.game.cam.doScreenFadeOut(0);
 		switch (moveTo) {
@@ -31,20 +28,17 @@ export default class SwitchCamera {
 		await mp.game.waitAsync(2500);
 
 		mp.game.cam.doScreenFadeIn(500);
-		*/
 	}
 
 	public static async checkCamInAir() {
-		/*
 		if (mp.game.invoke(_IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE)) {
 
 			GuiSystem.toggleHudComplete(false, false, false);
 
-			await mp.game.waitAsync(40);
+			await mp.game.waitAsync(100);
 			SwitchCamera.checkCamInAir();
 		} else {
 			GuiSystem.toggleHudComplete(true, false, false);
 		}
-		*/
 	}
 }

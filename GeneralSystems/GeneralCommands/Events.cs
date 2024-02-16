@@ -29,7 +29,7 @@ namespace CloudRP.GeneralSystems.GeneralCommands
                 int numOne = ran.Next(1, afkMaxCalcNum);
                 int numTwo = ran.Next(1, afkMaxCalcNum);
 
-                player.SetData(_afkKeyIdentifier, new AfkData
+                player.SetCustomData(_afkKeyIdentifier, new AfkData
                 {
                     afkStartPos = player.Position,
                     calcAnswer = numOne + numTwo,
