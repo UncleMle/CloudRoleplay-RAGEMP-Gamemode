@@ -4,15 +4,13 @@ import { _REMOVE_TIMER_NATIVE } from '../Constants/Constants';
 import getUserCharacterData from '@/PlayerMethods/getUserCharacterData';
 import { CharacterData } from '@/@types';
 
-let isFunctionPressed: boolean;
-
 export default class BrowserSystem {
 	public static _browserInstance: BrowserMp = mp.browsers.new(BrowserEnv.development);
 	public static IdleDate: Date = new Date();
 	public static LocalPlayer: PlayerMp = mp.players.local;
+	public static f2Cursor: boolean = false;
 
 	constructor() {
-		BrowserSystem.LocalPlayer.browserInstance = BrowserSystem._browserInstance;
 		BrowserSystem.LocalPlayer.browserRouter = '/';
 
 		mp.events.add('guiReady', BrowserSystem.onGuiReady);
@@ -32,8 +30,8 @@ export default class BrowserSystem {
 		mp.events.add('browser:playerFrontendSound', BrowserSystem.playFrontendSound);
 
 		mp.keys.bind(F2, false, function () {
-			isFunctionPressed = !isFunctionPressed;
-			if (isFunctionPressed && !mp.game.ui.isPauseMenuActive()) {
+			BrowserSystem.f2Cursor = !BrowserSystem.f2Cursor;
+			if (BrowserSystem.f2Cursor && !mp.game.ui.isPauseMenuActive()) {
 				mp.gui.cursor.show(true, true);
 			} else {
 				mp.gui.cursor.show(false, false);
@@ -64,8 +62,8 @@ export default class BrowserSystem {
 	}
 
 	public static handleRender() {
-		BrowserSystem.disableAfkTimer();
-		BrowserSystem.disableDefaultGuiElements();
+		//BrowserSystem.disableAfkTimer();
+		//BrowserSystem.disableDefaultGuiElements();
 
 		let characterData: CharacterData | undefined = getUserCharacterData();
 
@@ -116,7 +114,7 @@ export default class BrowserSystem {
 		})`);
 	}
 
-	public static resetMutationPusher = (_mutationKey: string) => {
+	public static resetMutationPusher(_mutationKey: string) {
 		if (!BrowserSystem._browserInstance) return;
 		BrowserSystem._browserInstance.execute(`appSys.commit('setLoadingState', {
 			toggle: false

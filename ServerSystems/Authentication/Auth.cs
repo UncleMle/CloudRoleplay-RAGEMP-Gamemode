@@ -412,10 +412,7 @@ namespace CloudRP.ServerSystems.Authentication
 
         #region Global Methods
         public static User createUser(Account accountData)
-        {
-            User newUser = JsonConvert.DeserializeObject<User>(JsonConvert.SerializeObject(accountData));
-            return newUser;
-        }
+           => JsonConvert.DeserializeObject<User>(JsonConvert.SerializeObject(accountData));
 
         void welcomeAndSpawnPlayer(Player player)
         {

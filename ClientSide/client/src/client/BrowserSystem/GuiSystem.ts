@@ -16,7 +16,7 @@ export default class GuiSystem {
 	constructor() {
 		GuiSystem.LocalPlayer = mp.players.local;
 
-		mp.events.add("render", GuiSystem.fillGuiRenderValues);
+		//mp.events.add("render", GuiSystem.fillGuiRenderValues);
 		mp.events.add("gui:toggleHudComplete", GuiSystem.toggleHudComplete);
 		mp.keys.bind(_control_ids.F10, false, () => GuiSystem.toggleHud);
 	}
@@ -52,6 +52,8 @@ export default class GuiSystem {
 	}
 
 	public static fillGuiRenderValues() {
+		if(!getUserCharacterData()) return;
+
 		if (ScaleForm.isActive()) {
 			GuiSystem.toggleHudComplete(false, false, false);
 			return;

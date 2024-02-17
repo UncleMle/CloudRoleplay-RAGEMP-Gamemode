@@ -84,7 +84,7 @@ export default class PlayerDealership {
 
     private static reseatVehiclePosition(vehicle: VehicleMp) {
         while(!vehicle.isOnAllWheels()) {
-            mp.game.wait(0);
+            //mp.game.wait(0);
         }
 
         vehicle.freezePosition(true);

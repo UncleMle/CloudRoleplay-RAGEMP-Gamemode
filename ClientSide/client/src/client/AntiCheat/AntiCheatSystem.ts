@@ -67,9 +67,9 @@ export default class AntiCheat {
 	}
 
 	public static handleWeaponShot() {
-		let userData: UserData | undefined= getUserData();
+		let userData: UserData | undefined = getUserData();
 
-		if(userData && (userData.adminDuty || userData.admin_status > AdminRanks.Admin_HeadAdmin)) return;
+		if (userData && (userData.adminDuty || userData.admin_status > AdminRanks.Admin_HeadAdmin)) return;
 
 		if (AntiCheat.checkWeaponhash()) {
 			AntiCheat.alertAdmins(AcExceptions.disallowedWeapon, "Disallowed weapon");

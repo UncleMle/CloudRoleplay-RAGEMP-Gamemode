@@ -110,7 +110,7 @@ class BasicScaleform {
 
     constructor(scaleformName: string) {
         BasicScaleform.handle = mp.game.graphics.requestScaleformMovie(scaleformName);
-        while (!mp.game.graphics.hasScaleformMovieLoaded(BasicScaleform.handle)) mp.game.wait(0);
+        //while (!mp.game.graphics.hasScaleformMovieLoaded(BasicScaleform.handle)) mp.game.wait(0);
     }
 
     callFunction(functionName: string, ...args: any[]) {

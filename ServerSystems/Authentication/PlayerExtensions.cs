@@ -21,7 +21,6 @@ namespace CloudRP.ServerSystems.Authentication
             }
 
             player.Position = PlayersData.defaultLoginPosition;
-
             player.Dimension = Auth._startDimension;
 
             if (resetCam)
@@ -31,9 +30,9 @@ namespace CloudRP.ServerSystems.Authentication
 
             uiHandling.pushRouterToClient(player, Browsers.LoginPage);
 
-            player.flushUserAndCharacterData(new string[]{
-                PlayersData._sharedAccountDataIdentifier
-            });
+            //player.flushUserAndCharacterData(new string[]{
+             //   PlayersData._sharedAccountDataIdentifier
+            //});
 
             player.ResetData(Commands._logoutIdentifier);
             player.ResetSharedData(Commands._logoutIdentifier);

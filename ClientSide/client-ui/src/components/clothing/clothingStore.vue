@@ -204,7 +204,6 @@ export default {
         window.mp.trigger("clothes:setClothingData", this.playerData.clothing_data, true);
         this.clothingDataOld = this.playerData.clothing_data_old;
         this.clothingData = this.playerData.clothing_data;
-        console.log(JSON.stringify(this.playerData.clothing_data));
     }
 }
 </script>

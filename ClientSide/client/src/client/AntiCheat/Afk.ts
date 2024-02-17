@@ -4,17 +4,13 @@ import getUserData from "@/PlayerMethods/getUserData";
 import { AdminRanks } from "@/enums";
 
 export default class Afk {
-    public static LocalPlayer: PlayerMp;
+    public static LocalPlayer: PlayerMp = mp.players.local;
     public static _updateInterval: ReturnType<typeof setInterval> | undefined;
     public static updateIntervalTime_seconds: number = 200;
-    public static oldPlayerPos: Vector3;
+    public static oldPlayerPos: Vector3 = Afk.LocalPlayer.position;
     public static serverEvent: string = "server:beginAfk";
 
     constructor() {
-        Afk.LocalPlayer = mp.players.local;
-
-        Afk.oldPlayerPos = Afk.LocalPlayer.position;
-
         Afk.init();
     }
 

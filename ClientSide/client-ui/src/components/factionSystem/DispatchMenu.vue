@@ -31,11 +31,13 @@
                                         </div>
 
                                         <div class="mt-4">
-                                            <button class="bg-red-400/30 w-[50%]" @click="handleDispatchCall(item.Key, true)">
+                                            <button class="bg-red-400/30 w-[50%]"
+                                                @click="handleDispatchCall(item.Key, true)">
                                                 Close
                                             </button>
-                                            <button class="bg-green-400/30 w-[50%]" @click="handleDispatchCall(item.Key, false)">
-                                                Accept 
+                                            <button class="bg-green-400/30 w-[50%]"
+                                                @click="handleDispatchCall(item.Key, false)">
+                                                Accept
                                             </button>
                                         </div>
 
@@ -78,7 +80,7 @@ export default {
 
             let hours = time.getHours();
             let minutes = time.getMinutes();
-            
+
             return `${hours < 10 ? "0" + hours : hours}:${minutes < 10 ? "0" + minutes : minutes}`;
         }
     }

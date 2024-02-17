@@ -63,8 +63,8 @@ export default class PlayerAuthentication {
 	public static handleUnauthed() {
 		if (!getUserCharacterData()) {
 			PlayerAuthentication.LocalPlayer.freezePosition(true);
-			toggleChat(false);
-			setGuiState(false);
+			//toggleChat(false);
+			//setGuiState(false);
 			mp.game.ui.displayRadar(false);
 		}
 	}

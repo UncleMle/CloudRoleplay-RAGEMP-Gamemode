@@ -116,12 +116,14 @@ namespace CloudRP.GeneralSystems.WeaponSystem
             */
         }
 
+        /*
         [ServerEvent(Event.PlayerConnected)]
         public void setBodyWeaponData(Player player)
         {
             player.SetCustomData(_attachmentDataIdentifier, new string[] { });
             //player.TriggerEvent("registerWeaponAttachments", JsonConvert.SerializeObject(weaponAttachmentData));
         }
+        */
 
         [ServerEvent(Event.PlayerWeaponSwitch)]
         public void OnPlayerWeaponSwitch(Player player, uint oldWeapon, uint newWeapon)
