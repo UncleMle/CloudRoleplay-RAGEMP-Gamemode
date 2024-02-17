@@ -6,6 +6,7 @@ using CloudRP.PlayerSystems.Jobs;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.PlayerSystems.PlayerDealerships;
 using CloudRP.ServerSystems.Admin;
+using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
@@ -78,6 +79,7 @@ namespace CloudRP.VehicleSystems.Vehicles
         public VehicleSystem()
         {
             VehicleParking.VehicleParking.onVehicleUnpark += handleDefaultUnpark;
+            Main.resourceStop += saveAllVehicleDataToDb;
 
             NAPI.Task.Run(() =>
             {
@@ -112,7 +114,9 @@ namespace CloudRP.VehicleSystems.Vehicles
             {
                 saveVehicleTimer = new Timer();
                 saveVehicleTimer.Interval = _timerInterval_seconds * 1000;
-                saveVehicleTimer.Elapsed += saveAllVehicleDataToDb;
+                saveVehicleTimer.Elapsed += (object source, ElapsedEventArgs e) => {
+                    saveAllVehicleDataToDb();
+                };
 
                 saveVehicleTimer.AutoReset = true;
                 saveVehicleTimer.Enabled = true;
@@ -324,7 +328,7 @@ namespace CloudRP.VehicleSystems.Vehicles
             return findVehicle;
         }
 
-        public static void saveAllVehicleDataToDb(object source, ElapsedEventArgs e)
+        public static void saveAllVehicleDataToDb()
         {
             NAPI.Task.Run(() =>
             {

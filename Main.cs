@@ -23,6 +23,7 @@ namespace CloudRP
         public delegate void PlayerEventsHandler(Player player);
 
         public static event PrimaryEventsHandler resourceStart;
+        public static event PrimaryEventsHandler resourceStop;
         public static event PrimaryEventsHandler tick;
 
         public static event PlayerEventsHandler playerDisconnect;
@@ -100,7 +101,11 @@ namespace CloudRP
         #region Server Events
         [ServerEvent(Event.PlayerDisconnected)]
         public void OnPlayerDisconnect(Player player, DisconnectionType type, string reason) 
-            => playerDisconnect(player); 
+            => playerDisconnect(player);
+
+        [ServerEvent(Event.ResourceStopEx)]
+        public void OnServerStop()
+            => resourceStop();
         #endregion
     }
 }

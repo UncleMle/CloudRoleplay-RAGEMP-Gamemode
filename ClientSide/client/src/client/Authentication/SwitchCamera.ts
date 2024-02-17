@@ -2,11 +2,9 @@ import GuiSystem from '@/BrowserSystem/GuiSystem';
 import { _SWITCH_OUT_PLAYER_NATIVE, _SWITCH_IN_PLAYER_NATIVE, _IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE } from 'Constants/Constants';
 
 export default class SwitchCamera {
-	public static LocalPlayer: PlayerMp;
+	public static LocalPlayer: PlayerMp = mp.players.local;
 
 	constructor() {
-		SwitchCamera.LocalPlayer = mp.players.local;
-
 		mp.events.add("client:moveSkyCamera", SwitchCamera.moveCameraFromAir);
 	}
 

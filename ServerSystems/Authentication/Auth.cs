@@ -27,6 +27,7 @@ namespace CloudRP.ServerSystems.Authentication
         public static string _startAdminPed = "ig_mp_agent14";
         public static string _otpStoreKey = "registering_otp";
         public static string _accountCreatedKey = "authentication:player:accountCreated";
+        public static readonly int autoLoginValid_seconds = 300;
 
         public Auth()
         {
@@ -46,12 +47,16 @@ namespace CloudRP.ServerSystems.Authentication
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
                 Account findAccount = null;
-                string autoLoginUser = player.GetData<string>(autoLoginDataKey);
+                AutoLoginData autoLogin = player.GetData<AutoLoginData>(autoLoginDataKey);
 
-                if (autoLoginUser != null)
+                if (autoLogin != null)
                 {
-                    findAccount = dbContext.accounts.Where(user => user.username == autoLoginUser.ToLower())
-                        .FirstOrDefault();
+                    long differenceMinutes = (CommandUtils.generateUnix() - autoLogin.createdAt) / 60;
+
+                    if (differenceMinutes > autoLoginValid_seconds / 60) uiHandling.sendNotification(player, $"Your autologin for account {autoLogin.targetUsername} has expired {differenceMinutes.ToString("N1")} minutes ago.");
+                    else findAccount = dbContext.accounts
+                            .Where(user => user.account_id == autoLogin.targetAccountId)
+                            .FirstOrDefault();
                 } 
                 else
                 {
@@ -60,7 +65,7 @@ namespace CloudRP.ServerSystems.Authentication
                                 .FirstOrDefault();
                 }
 
-                if(findAccount == null || findAccount != null && autoLoginUser == null && !AuthUtils.comparePassword(findAccount.password, userCredentials.password))
+                if(findAccount == null || findAccount != null && autoLogin == null && !AuthUtils.comparePassword(findAccount.password, userCredentials.password))
                 {
                     uiHandling.sendPushNotifError(player, "Account wasn't found.", 4000, true);
                     return;
@@ -283,8 +288,8 @@ namespace CloudRP.ServerSystems.Authentication
             }
         }
 
-        [RemoteEvent("server:recieveCharacterName")]
-        public void onEnterCharacterName(Player player, string name)
+        [RemoteEvent("server:recieveCharacterId")]
+        public void onEnterCharacterName(Player player, int characterId)
         {
             User userData = player.getPlayerAccountData();
 
@@ -293,7 +298,7 @@ namespace CloudRP.ServerSystems.Authentication
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
                     DbCharacter character = dbContext.characters
-                        .Where(b => b.character_name == name && b.owner_id == userData.account_id)
+                        .Where(b => b.character_id == characterId && b.owner_id == userData.account_id)
                         .FirstOrDefault();
                     if (character == null || character?.character_isbanned == 1) return;
                     CharacterModel charModel = dbContext.character_models
@@ -354,6 +359,7 @@ namespace CloudRP.ServerSystems.Authentication
 
                         player.setPlayerCharacterData(character, true);
                         welcomeAndSpawnPlayer(player);
+                        uiHandling.setLoadingState(player, false);
                     }
                 }
             };
@@ -377,12 +383,20 @@ namespace CloudRP.ServerSystems.Authentication
                     }
 
                     findAccount = dbContext.accounts
-                        .Where(acc => acc.user_ip == player.Address && acc.auto_login == 1 && acc.auto_login_key == autoLoginKey && acc.client_serial == player.Serial && acc.ban_status == 0)
+                        .Where(acc => acc.user_ip == player.Address && 
+                        acc.auto_login == 1 && 
+                        acc.auto_login_key == autoLoginKey && 
+                        acc.client_serial == player.Serial && 
+                        acc.ban_status == 0)
                         .FirstOrDefault();
 
                     if (findAccount == null) return;
 
-                    player.SetData(autoLoginDataKey, findAccount.username);
+                    player.SetData(autoLoginDataKey, new AutoLoginData
+                    {
+                        targetAccountId = findAccount.account_id,
+                        targetUsername = findAccount.username
+                    });
 
                     uiHandling.handleObjectUiMutation(player, MutationKeys.AutoLogin, new AutoAuth
                     {
@@ -390,21 +404,7 @@ namespace CloudRP.ServerSystems.Authentication
                         username = findAccount.username,
                     });
 
-                    uiHandling.sendPushNotif(player, $"Auto login was found for account {findAccount.username}.", 5000);
-
-                    /*
-                    User user = createUser(findAccount);
-
-                    findAccount.client_serial = player.Serial;
-                    findAccount.user_ip = player.Address;
-                    findAccount.UpdatedDate = DateTime.Now;
-
-                    dbContext.Update(findAccount);
-                    dbContext.SaveChanges();
-
-                    uiHandling.resetMutationPusher(player, MutationKeys.PlayerCharacters);
-                    setUserToCharacterSelection(player, user);
-                    */
+                    uiHandling.sendPushNotif(player, $"Auto login was found for account {findAccount.username}. And is valid for {autoLoginValid_seconds / 60} minutes.", 5000);
                 }
             }
         }

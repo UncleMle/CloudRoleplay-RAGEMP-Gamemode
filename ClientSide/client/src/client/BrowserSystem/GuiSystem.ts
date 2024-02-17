@@ -10,15 +10,17 @@ import toggleChat from '@/PlayerMethods/ToggleChat';
 import validateKeyPress from '@/PlayerMethods/validateKeyPress';
 
 export default class GuiSystem {
-	public static LocalPlayer: PlayerMp;
+	public static LocalPlayer: PlayerMp = mp.players.local;
 	public static hudToggle: boolean = true;
 
 	constructor() {
-		GuiSystem.LocalPlayer = mp.players.local;
-
-		//mp.events.add("render", GuiSystem.fillGuiRenderValues);
+		mp.events.add('guiReady', () => GuiSystem.toggleHudComplete(false));
 		mp.events.add("gui:toggleHudComplete", GuiSystem.toggleHudComplete);
 		mp.keys.bind(_control_ids.F10, false, () => GuiSystem.toggleHud);
+
+		setInterval(() => {
+			GuiSystem.fillGuiRenderValues();
+		}, 700);
 	}
 
 	public static toggleHud() {
@@ -52,7 +54,7 @@ export default class GuiSystem {
 	}
 
 	public static fillGuiRenderValues() {
-		if(!getUserCharacterData()) return;
+		if (!getUserCharacterData()) return;
 
 		if (ScaleForm.isActive()) {
 			GuiSystem.toggleHudComplete(false, false, false);

@@ -3,6 +3,7 @@ import { F2 } from './ClientButtons';
 import { _REMOVE_TIMER_NATIVE } from '../Constants/Constants';
 import getUserCharacterData from '@/PlayerMethods/getUserCharacterData';
 import { CharacterData } from '@/@types';
+import GuiSystem from './GuiSystem';
 
 export default class BrowserSystem {
 	public static _browserInstance: BrowserMp = mp.browsers.new(BrowserEnv.development);
@@ -62,8 +63,8 @@ export default class BrowserSystem {
 	}
 
 	public static handleRender() {
-		//BrowserSystem.disableAfkTimer();
-		//BrowserSystem.disableDefaultGuiElements();
+		BrowserSystem.disableAfkTimer();
+		BrowserSystem.disableDefaultGuiElements();
 
 		let characterData: CharacterData | undefined = getUserCharacterData();
 

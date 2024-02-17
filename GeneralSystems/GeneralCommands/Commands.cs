@@ -578,6 +578,36 @@ namespace CloudRP.GeneralSystems.GeneralCommands
             uiHandling.pushRouterToClient(targetPlayer, Browsers.LicensePage);
             uiHandling.handleObjectUiMutation(targetPlayer, MutationKeys.PlayerStats, JsonConvert.DeserializeObject<LicenseData>(JsonConvert.SerializeObject(character)));
         }
+
+        [Command("longdo", "~y~Use:~w~ /longdo [nameOrId] [message]", Alias = "ldo", GreedyArg = true)]
+        public void longDoCommand(Player player, string nameOrId, string message)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if (character == null) return;
+
+            Player targetPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+            if(targetPlayer == null)
+            {
+                CommandUtils.notFound(player);
+                return;
+            }
+
+            if(targetPlayer.Equals(player))
+            {
+                CommandUtils.errorSay(player, "You cannot use this command on yourself.");
+                return;
+            }
+
+            string prefix = $"{ChatUtils.longDo}* [Long Do] {message} (( ";
+            string playerPrefix = $"{ChatUtils.longDo}* [Long Do] {message} (( to ";
+            
+            string suffix = $" ))";
+            
+            ChatUtils.sendWithNickName(targetPlayer, player, prefix, suffix, true);
+            ChatUtils.sendWithNickName(player, targetPlayer, playerPrefix, suffix, true);
+        }
         #endregion
 
         #region Remote Events

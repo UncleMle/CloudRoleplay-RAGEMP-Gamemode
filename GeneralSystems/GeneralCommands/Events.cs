@@ -1,6 +1,7 @@
 ﻿using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Admin;
+using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.Utils;
 using GTANetworkAPI;
 using System;

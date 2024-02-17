@@ -26,12 +26,16 @@ namespace CloudRP.PlayerSystems.Character
         public CharacterSystem()
         {
             Main.playerDisconnect += saveData;
+            Main.resourceStop += saveCharData;
 
             NAPI.Task.Run(() =>
             {
                 saveCharactersTimer = new Timer();
                 saveCharactersTimer.Interval = _timerInterval;
-                saveCharactersTimer.Elapsed += saveCharData;
+                saveCharactersTimer.Elapsed += (object source, ElapsedEventArgs e) =>
+                {
+                    saveCharData();
+                };
 
                 saveCharactersTimer.AutoReset = true;
                 saveCharactersTimer.Enabled = true;
@@ -54,7 +58,7 @@ namespace CloudRP.PlayerSystems.Character
         #endregion
 
         #region Global Methods
-        public static void saveCharData(object source, ElapsedEventArgs e)
+        public static void saveCharData()
         {
             List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
 

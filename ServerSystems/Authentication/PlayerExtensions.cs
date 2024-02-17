@@ -1,7 +1,6 @@
 ﻿using CloudRP.GeneralSystems.GeneralCommands;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Admin;
-using CloudRP.ServerSystems.Utils;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
@@ -30,9 +29,9 @@ namespace CloudRP.ServerSystems.Authentication
 
             uiHandling.pushRouterToClient(player, Browsers.LoginPage);
 
-            //player.flushUserAndCharacterData(new string[]{
-             //   PlayersData._sharedAccountDataIdentifier
-            //});
+            player.flushUserAndCharacterData(new string[]{
+                PlayersData._sharedAccountDataIdentifier
+            });
 
             player.ResetData(Commands._logoutIdentifier);
             player.ResetSharedData(Commands._logoutIdentifier);

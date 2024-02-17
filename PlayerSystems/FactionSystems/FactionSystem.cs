@@ -2,6 +2,7 @@
 using CloudRP.PlayerSystems.FactionSystems.DCCFaction;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Admin;
+using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;

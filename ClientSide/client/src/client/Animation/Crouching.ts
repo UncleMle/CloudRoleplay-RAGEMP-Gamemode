@@ -26,7 +26,7 @@ export default class Crouching {
     }
 
     private static handleKeyPress() {
-        if(validateKeyPress(true, true, true)) {
+        if (validateKeyPress(true, true, true)) {
             mp.events.callRemote(Crouching.remoteEvent);
         }
     }

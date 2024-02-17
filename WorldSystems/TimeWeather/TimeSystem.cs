@@ -1,5 +1,6 @@
 ﻿using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Admin;
+using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using GTANetworkAPI;

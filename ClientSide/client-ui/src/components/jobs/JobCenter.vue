@@ -6,7 +6,7 @@
                     <div class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black select-none">
                         <div class="relative w-full h-fit py-4 rounded-lg">
                             <h1 class="font-bold text-2xl border-b-2 pb-2 border-gray-500 pl-4"><i
-                                    class="fa-solid fa-briefcase text-gray-400"></i> Job Center</h1>
+                                    class="fa-solid fa-briefcase text-gray-400"></i> Job Center ({{ playerData.job_center_jobs.length }} available jobs)</h1>
                             <CloseButton />
 
                             <div class="overflow-x-hidden overflow-y-scroll max-h-[30vw]">

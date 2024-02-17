@@ -12,10 +12,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Runtime.InteropServices;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.PlayerSystems.Character;
-using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.Database;
+using CloudRP.ServerSystems.Utils;
 
-namespace CloudRP.ServerSystems.Utils
+namespace CloudRP.ServerSystems.Authentication
 {
     internal class AuthUtils : Script
     {
@@ -300,6 +300,12 @@ namespace CloudRP.ServerSystems.Utils
         public string passwordConfirm { get; set; }
     }
 
+    public class AutoLoginData
+    {
+        public int targetAccountId { get; set; }
+        public long createdAt { get; set; } = CommandUtils.generateUnix();
+        public string targetUsername { get; set; }
+    }
 
     public static class DefaultSpawn
     {

@@ -6,7 +6,7 @@
                 <li v-for="(item, i) in chatMessages" :key="i" v-html="item.toString()">
                 </li>
             </ul>
-            <input class="border-l-2 border-gray-500 resize" v-show="inputFieldShowing" v-model="userText" ref="input"
+            <input class="border-l-4 border-black/60 resize" v-show="inputFieldShowing" v-model="userText" ref="input"
                 id="chat_msg" type="text" />
             <span v-if="inputFieldShowing && userText.length > 0">
                 {{ userText.length > maxLen ? maxLen : userText.length }} / {{ maxLen }}

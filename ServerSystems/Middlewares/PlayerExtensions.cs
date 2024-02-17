@@ -1,6 +1,6 @@
 ﻿using CloudRP.GeneralSystems.GeneralCommands;
 using CloudRP.PlayerSystems.PlayerData;
-using CloudRP.ServerSystems.Utils;
+using CloudRP.ServerSystems.Authentication;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;

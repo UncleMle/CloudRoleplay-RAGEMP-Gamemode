@@ -1,5 +1,5 @@
 <template>
-    <div v-if="uiStates.guiEnabled" style="text-shadow: rgba(0, 0, 0, 0.563) 1px 0 10px;">
+    <div v-if="uiStates.guiEnabled && playerData.player_data_gui.direction" style="text-shadow: rgba(0, 0, 0, 0.563) 1px 0 10px;">
         <div class="absolute bottom-[25%] left-[2%]" v-if="playerData.player_data_gui.isFrozen">
             <font>
                 <span class="font-bold text-3xl text-red-500">You have been frozen.</span>
