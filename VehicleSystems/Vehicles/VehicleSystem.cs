@@ -514,6 +514,18 @@ namespace CloudRP.VehicleSystems.Vehicles
             return mods;
         }
 
+        public static DbVehicle findVehicleByIdFromDb(int vehicleId)
+        {
+            DbVehicle findVeh = null;
+
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                findVeh = dbContext.vehicles.Find(vehicleId);
+            }
+
+            return findVeh;
+        }
+
         public static DbVehicle getVehicleDataById(int vehicleId)
         {
             Vehicle vehicle = findVehicleById(vehicleId);

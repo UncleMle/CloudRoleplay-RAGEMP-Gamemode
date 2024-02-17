@@ -255,14 +255,12 @@ namespace CloudRP.VehicleSystems.Vehicles
             }, 1000);
         }
 
-        public static void sayInfoAboutVehicle(this Vehicle vehicle, Player player)
+        public static void sayInfoAboutVehicle(this DbVehicle vehicleData, Player player)
         {
             User userData = player.getPlayerAccountData();
-            DbVehicle vehicleData = vehicle.getData();
 
             if (userData != null && vehicleData != null)
             {
-
                 player.SendChatMessage(ChatUtils.yellow + "-----------------------------------------------------------");
                 AdminUtils.staffSay(player, "Vehicle id: " + ChatUtils.red + (vehicleData.vehicle_id == -1 ? "N/A" : $"{vehicleData.vehicle_id}") + AdminUtils.staffSuffixColour + " VehName: " + ChatUtils.red + vehicleData.vehicle_name);
                 AdminUtils.staffSay(player, "Vehicle Display Name: " + ChatUtils.red + vehicleData.vehicle_display_name + AdminUtils.staffSuffixColour + " Doors: " + ChatUtils.red + JsonConvert.SerializeObject(vehicleData.vehicle_doors));

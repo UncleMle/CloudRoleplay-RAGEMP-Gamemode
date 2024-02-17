@@ -835,24 +835,39 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator, checkForAduty = false)]
-        [Command("gcv", "~r~/gcv")]
-        public void getVehicleInfo(Player player)
+        [Command("gcv", "~r~/gcv [id (optional)]")]
+        public void getVehicleInfo(Player player, int id = -1)
         {
-            Vehicle findVeh = VehicleSystem.getClosestVehicleToPlayer(player);
+            Vehicle findVeh = null;
 
-            if (findVeh != null)
+            if (id == -1)
             {
-                DbVehicle currentVehicleData = findVeh.getData();
+                findVeh = VehicleSystem.getClosestVehicleToPlayer(player);
+            }
 
-                if (currentVehicleData != null)
-                {
-                    findVeh.sayInfoAboutVehicle(player);
-                }
-            }
-            else
+            if(findVeh == null && id == -1)
             {
-                AdminUtils.staffSay(player, "Vehicle couldn't be found.");
+                CommandUtils.errorSay(player, $"Vehicle wasn't found. Go close to a vehicle or use specifiy a vehicle id.");
+                return;
             }
+
+            if(findVeh != null)
+            {
+                DbVehicle vehicleData = findVeh.getData();
+                if (vehicleData == null) return;
+
+                vehicleData.sayInfoAboutVehicle(player);
+            }
+
+            DbVehicle fromDb = VehicleSystem.findVehicleByIdFromDb(id);
+
+            if (fromDb == null)
+            {
+                CommandUtils.errorSay(player, "Specified vehicle with ID " + id + " wasn't found.");
+                return;
+            }
+
+            fromDb.sayInfoAboutVehicle(player);
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]

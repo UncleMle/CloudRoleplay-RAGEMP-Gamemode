@@ -180,7 +180,7 @@ namespace CloudRP.GeneralSystems.GeneralCommands
             player.SendChatMessage($"{charData.character_name} {ChatUtils.yellow}whispers:{ChatUtils.White} {message}");
         }
 
-        [Command("vlow", "~y~Use:~w~/vlow [message]", Alias = "vehiclelow", GreedyArg = true)]
+        [Command("vlow", "~y~Use:~w~ /vlow [message]", Alias = "vehiclelow", GreedyArg = true)]
         public void vehicleLowCommand(Player player, string message)
         {
             if (!player.IsInVehicle)
