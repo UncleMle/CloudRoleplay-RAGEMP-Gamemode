@@ -522,3 +522,10 @@ interface ClientBlip
 	setMarker: boolean;
 	marker: MarkerMp;
 }   
+
+interface InteractionPed
+{
+	pedHeadName: string;
+	ped: PedMp;
+	raycastMenuItems: string[];
+}

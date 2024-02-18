@@ -13,5 +13,6 @@ namespace CloudRP.PlayerSystems.RentableVehicles
         public Vector3 npcSpawn { get; set; }
         public float npcHeading { get; set; }
         public PedHash npcPed { get; set; }
+        public int npcId { get; set; }
     }
 }

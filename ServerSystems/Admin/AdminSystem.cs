@@ -847,7 +847,7 @@ namespace CloudRP.ServerSystems.Admin
 
             if(findVeh == null && id == -1)
             {
-                CommandUtils.errorSay(player, $"Vehicle wasn't found. Go close to a vehicle or use specifiy a vehicle id.");
+                CommandUtils.errorSay(player, $"Vehicle wasn't found. Go close to a vehicle or specifiy a vehicle id.");
                 return;
             }
 
@@ -857,6 +857,7 @@ namespace CloudRP.ServerSystems.Admin
                 if (vehicleData == null) return;
 
                 vehicleData.sayInfoAboutVehicle(player);
+                return;
             }
 
             DbVehicle fromDb = VehicleSystem.findVehicleByIdFromDb(id);

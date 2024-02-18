@@ -13,6 +13,8 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
         public float busStartRotation { get; set; }
         public Vector3 busStartPosition { get; set; }
         public List<string> buses { get; set; } = new List<string>();
+        public Vector3 npcPosition { get; set; }
+        public float npcHeading { get; set; }
     }
 
     public class BusRoute

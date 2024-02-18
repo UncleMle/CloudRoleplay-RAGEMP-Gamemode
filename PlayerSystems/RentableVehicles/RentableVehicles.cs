@@ -1,4 +1,5 @@
 ﻿using CloudRP.World.MarkersLabels;
+using CloudRP.WorldSystems.NpcInteractions;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
@@ -33,15 +34,26 @@ namespace CloudRP.PlayerSystems.RentableVehicles
 
         public RentableVehicles()
         {
+            NpcInteractions.onNpcInteract += handleNpcInteraction;
+
             rentPoints.ForEach(point =>
             {
-                NAPI.Ped.CreatePed((uint)point.npcPed, point.npcSpawn, point.npcHeading, false, true, true, true, 0);
+                point.npcId = NpcInteractions.buildPed(PedHash.AnitaCutscene, point.npcSpawn, point.npcHeading, "Sophie - Rent a vehicle", new string[]
+                {
+                    "Rent a car",
+                    "Rent a motorbike"
+                });
+
                 MarkersAndLabels.setPlaceMarker(point.rentStartPos);
                 MarkersAndLabels.setTextLabel(point.rentStartPos, $"Rental Vehicle Point\nUse ~y~Y~w~ to interact", 5f);
 
                 NAPI.Blip.CreateBlip(810, point.rentStartPos, 1f, 4, "Rental Vehicle Location", 255, 1f, true, 0, 0);
             });
+        }
 
+        private static void handleNpcInteraction(Player player, int npcId, string raycastOption)
+        {
+            Console.WriteLine($"{npcId} || {raycastOption}");
         }
 
     }
