@@ -53,7 +53,6 @@ namespace CloudRP.PlayerSystems.RentableVehicles
 
         private static void handleNpcInteraction(Player player, int npcId, string raycastOption)
         {
-            Console.WriteLine($"{npcId} || {raycastOption}");
         }
 
     }

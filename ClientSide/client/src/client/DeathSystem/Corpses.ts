@@ -23,9 +23,6 @@ export default class Corpses {
 				if (!corpseData) return;
 
                 Corpses.initPed(ped, corpseData);
-				if ((getTimeUnix() - corpseData.unixCreated) > Corpses._pedTimeout_seconds) {
-					mp.events.callRemote(Corpses.corpseValEvent, corpseData.corpseId);
-				}
 			});
 		}, 5000);
 	}

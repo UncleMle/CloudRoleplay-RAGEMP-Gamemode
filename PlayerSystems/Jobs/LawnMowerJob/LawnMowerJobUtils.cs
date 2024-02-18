@@ -7,6 +7,7 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
 {
     public class MowableLawn
     {
+        public int npc { get; set; }
         public int pay { get; set; }
         public List<Vector3> stops { get; set; }
         public List<Vector3> stopsDone { get; set; } = new List<Vector3>();

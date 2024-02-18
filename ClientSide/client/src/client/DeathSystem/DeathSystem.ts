@@ -71,10 +71,6 @@ export default class DeathSystem {
 
             characterData.injured_timer <= 0 && DeathSystem._saveInterval ? (clearInterval(DeathSystem._saveInterval), DeathSystem._saveInterval = undefined) : DeathSystem.injuredTimer--;
         }, 1000);
-
-        DeathSystem._injuredInterval = setInterval(() => {
-            mp.events.callRemote(DeathSystem.saveInjuredEvent);
-        }, DeathSystem._injuredIntervalUpdate_seconds * 1000);
     }
 
     private static handleRender() {

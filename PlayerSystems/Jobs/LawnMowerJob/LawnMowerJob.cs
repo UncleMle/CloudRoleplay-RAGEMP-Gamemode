@@ -3,7 +3,9 @@ using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.World.MarkersLabels;
+using CloudRP.WorldSystems.NpcInteractions;
 using GTANetworkAPI;
+using Microsoft.EntityFrameworkCore.Internal;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -20,11 +22,6 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
         public static readonly string _mowerJobsDoneKey = "server:jobs:lawnMower:jobsDone";
         public static readonly int jobId = (int)FreelanceJobs.LawnMower;
         public static readonly string jobName = "Lawn Mower";
-        public static List<Vector3> startPositions = new List<Vector3>
-        {
-            new Vector3(-1353.6, 140.7, 56.3),
-            new Vector3(1825.3, 4944.3, 46.0)
-        };
         
         public static List<Vector3> mowerSpawns = new List<Vector3>
         {
@@ -32,10 +29,23 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
             new Vector3(1831.1, 4939.2, 46.1)
         };
 
+        public static int[] mowerNpcs = new int[]
+        {
+            NpcInteractions.buildPed(PedHash.Ammucity01SMY, new Vector3(-1353.6, 140.7, 56.3), 20f, "John - Mower Company", new string[]
+            {
+                "Start Mowing Job"
+            }),
+            NpcInteractions.buildPed(PedHash.Ammucity01SMY, new Vector3(1825.3, 4944.3, 46.0), 20f, "John - Mower Company", new string[]
+            {
+                "Start Mowing Job"
+            })
+        };
+
         public static List<MowableLawn> lawns = new List<MowableLawn>
         {
             new MowableLawn
             {
+                npc = mowerNpcs[0],
                 pay = 2700,
                 stops = new List<Vector3>
                 {
@@ -51,6 +61,7 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
             },
             new MowableLawn
             {
+                npc = mowerNpcs[1],
                 pay = 500,
                 stops = new List<Vector3>
                 {
@@ -68,15 +79,16 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
 
         public LawnMowerJob()
         {
-            KeyPressEvents.keyPress_Y += showJobPrompt;
-
-            startPositions.ForEach(start =>
+            NpcInteractions.onNpcInteract += (Player player, int npcId, string raycastOption) =>
             {
-                NAPI.Blip.CreateBlip(351, start, 1f, 2, "Lawn Mower Job", 255, 0, true, 0, 0);
+                bool isNpc = mowerNpcs.Contains(npcId);
 
-                MarkersAndLabels.setPlaceMarker(start);
-                MarkersAndLabels.setTextLabel(start, "Lawn Mower Job\nUse ~y~Y~w~ to interact.", 6f);
-            });
+                Console.WriteLine(isNpc);
+
+                if (!isNpc) return;
+
+                showJobPrompt(player, npcId);
+            };
 
             lawns.ForEach(lawn =>
             {
@@ -90,13 +102,13 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
         }
 
         #region Global Methods
-        private static void showJobPrompt(Player player)
+        private static void showJobPrompt(Player player, int npcId)
         {
-            Vector3 start = startPositions.Where(s => player.checkIsWithinCoord(s, 2)).FirstOrDefault();
+            MowableLawn lawn = lawns
+                .Where(l => l.npc == npcId)
+                .FirstOrDefault();
 
-            if (start == null) return;
-
-            MowableLawn lawn = lawns[startPositions.IndexOf(start)];
+            if (lawn == null) return;
 
             uiHandling.sendPrompt(player, "fa-solid fa-briefcase", "Lawnmower Job", $"Are you sure you want to start the lawn mower job? You will get paid ${lawn.pay.ToString("N0")}.", "server:jobs:lawnMower:start");
         }
@@ -182,14 +194,14 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
         {
             if (FreelanceJobSystem.hasAJob(player, jobId) || FreelanceJobSystem.hasFreeLanceVehicle(player)) return;
 
-            Vector3 start = startPositions.Where(s => player.checkIsWithinCoord(s, 2)).FirstOrDefault();
+            int npcId = NpcInteractions.getClosestPedByRange(player, 4f);
 
-            if (start == null) return;
+            MowableLawn lawn = lawns
+                .Where(lawn => lawn.npc == npcId).FirstOrDefault();
 
-            int idx = startPositions.IndexOf(start);
+            if(lawn == null) return;
 
-            MowableLawn lawn = lawns[idx];
-            Vector3 spawnPos = mowerSpawns[idx];
+            Vector3 spawnPos = mowerSpawns[lawns.IndexOf(lawn)];
 
             player.SetCustomData(_currentMowerJobKey, lawn);
 

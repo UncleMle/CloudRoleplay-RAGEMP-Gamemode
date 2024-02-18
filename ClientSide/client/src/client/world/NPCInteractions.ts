@@ -1,5 +1,6 @@
 import { InteractionPed } from "@/@types";
 import { _control_ids } from "@/Constants/Constants";
+import validateKeyPress from "@/PlayerMethods/validateKeyPress";
 
 export default class NpcInteractions {
     public static LocalPlayer: PlayerMp = mp.players.local;
@@ -20,6 +21,18 @@ export default class NpcInteractions {
 
     private static handleRender() {
         NpcInteractions.streamedNpcPeds.forEach(ped => {
+            let pedPos: Vector3 = ped.ped.position;
+
+            if (mp.game.gameplay.getDistanceBetweenCoords(
+                pedPos.x,
+                pedPos.y,
+                pedPos.z,
+                NpcInteractions.LocalPlayer.position.x,
+                NpcInteractions.LocalPlayer.position.y,
+                NpcInteractions.LocalPlayer.position.z,
+                true
+            ) > 6) return;
+
             let startBoneCoords: Vector3 = ped.ped.getBoneCoords(0, 0, 0, 0);
             let headPos: Vector3 = ped.ped.getBoneCoords(12844, 0, 0, 0);
 
@@ -31,7 +44,7 @@ export default class NpcInteractions {
 
                 if (!headDraw) return;
 
-                mp.game.graphics.drawText(ped.pedHeadName, [headDraw.x, headDraw.y - 0.047], {
+                mp.game.graphics.drawText(ped.pedHeadName, [headDraw.x, headDraw.y - 0.057], {
                     scale: [0.3, 0.3],
                     outline: false,
                     color: [255, 255, 255, 255],
@@ -42,7 +55,7 @@ export default class NpcInteractions {
             let secondPoint: Vector3 = NpcInteractions.LocalPlayer.getBoneCoords(0, 0, 0, 0);
             if (!secondPoint) return;
 
-            let target: RaycastResult | null = NpcInteractions.getLocalNpc();
+            let target: RaycastResult | undefined = NpcInteractions.getLocalNpc();
 
             if (!target) return;
 
@@ -55,7 +68,7 @@ export default class NpcInteractions {
                 NpcInteractions.LocalPlayer.position.x,
                 NpcInteractions.LocalPlayer.position.y,
                 NpcInteractions.LocalPlayer.position.z,
-                false
+                true
             );
 
             if (dist > 3) return;
@@ -76,11 +89,13 @@ export default class NpcInteractions {
     }
 
     private static getLocalNpc() {
+        if (!validateKeyPress(true, true, true)) return;
+
         let startPosition = NpcInteractions.LocalPlayer.getBoneCoords(12844, 0.5, 0, 0);
         const res = mp.game.graphics.getScreenActiveResolution(1, 1);
         const coord: Vector3 = new mp.Vector3(res.x / 2, res.y / 2, 2 | 4 | 8);
         const secondPoint = mp.game.graphics.screen2dToWorld3d(coord);
-        if (!secondPoint) return null;
+        if (!secondPoint) return;
 
         startPosition.z -= 0.3;
         const target = mp.raycasting.testPointToPoint(startPosition, secondPoint, NpcInteractions.LocalPlayer, 2 | 4 | 8 | 16);
@@ -98,7 +113,6 @@ export default class NpcInteractions {
             ) < 3
         )
             return target;
-        return null;
     }
 
     private static handleInteraction() {
@@ -130,7 +144,7 @@ export default class NpcInteractions {
         let interactionData: InteractionPed | undefined = entity.getVariable(NpcInteractions._npcSharedDataKey);
         if (entity.type !== "ped" || !interactionData) return;
 
-        NpcInteractions.streamedNpcPeds.delete(interactionData.ped.id);
+        NpcInteractions.streamedNpcPeds.delete(interactionData.ped.remoteId);
     }
 
     private static handleStreamIn(entity: EntityMp) {

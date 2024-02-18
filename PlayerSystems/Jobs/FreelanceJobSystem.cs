@@ -205,16 +205,31 @@ namespace CloudRP.PlayerSystems.Jobs
             {
                 string jobName = jobData.jobName;
                 quitJob(player, jobData);
-
-                player.SendChatMessage(ChatUtils.freelanceJobs + "You have quit your freelance job as a " + jobName + ".");
-                player.resetFreeLanceJobData();
-                MarkersAndLabels.removeClientBlip(player);
-                MarkersAndLabels.flushClientBlips(player);
-
+                uiHandling.sendPrompt(player, "fa-solid fa-briefcase", "Quit job", $"Are you sure you want to quit your freelance job as a {jobName}?", "server:freelanceJobs:quitJob");
             }
             else
             {
                 CommandUtils.errorSay(player, "You don't have any freelance jobs to quit.");
+            }
+        }
+        #endregion
+
+        #region Remote Events
+        [RemoteEvent("server:freelanceJobs:quitJob")]
+        public void remoteEventQuitJob(Player player)
+        {
+            DbCharacter characterData = player.getPlayerCharacterData();
+            FreeLanceJobData jobData = player.getFreelanceJobData();
+
+            if (jobData != null && characterData != null)
+            {
+                string jobName = jobData.jobName;
+                quitJob(player, jobData);
+                player.resetFreeLanceJobData();
+                MarkersAndLabels.removeClientBlip(player);
+                MarkersAndLabels.flushClientBlips(player);
+
+                player.SendChatMessage(ChatUtils.freelanceJobs + "You have quit your freelance job as a " + jobName + ".");
             }
         }
         #endregion

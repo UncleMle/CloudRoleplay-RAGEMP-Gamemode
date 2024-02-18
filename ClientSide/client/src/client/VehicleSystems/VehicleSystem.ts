@@ -103,8 +103,6 @@ export default class VehicleSystems {
 			const vehicle = mp.vehicles.atHandle(vehHandle);
 			if (!vehicle) return;
 
-			mp.console.logInfo("Window break");
-
 			if (vehicle.getDoorLockStatus() === 2) {
 				let seat = -1;
 				let e = 0;

@@ -1,4 +1,5 @@
 ﻿using CloudRP.PlayerSystems.Character;
+using CloudRP.PlayerSystems.Jobs;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Utils;
@@ -65,7 +66,7 @@ namespace CloudRP.VehicleSystems.VehicleScrapyards
                 return;
             }
 
-            if(vehicleData.owner_id != character.character_id)
+            if(vehicleData.owner_id != character.character_id || vehicleData.vehicle_id == -1)
             {
                 CommandUtils.errorSay(player, "You must be the owner of the vehicle to scrap it.");
                 return;

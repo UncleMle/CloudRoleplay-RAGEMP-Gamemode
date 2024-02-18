@@ -1,4 +1,5 @@
-﻿using CloudRP.PlayerSystems.Character;
+﻿using CloudRP.GeneralSystems.GeneralCommands;
+using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Admin;
 using CloudRP.ServerSystems.AntiCheat;
@@ -10,6 +11,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Timers;
 using static CloudRP.ServerSystems.CustomEvents.KeyPressEvents;
 
 namespace CloudRP.PlayerSystems.DeathSystem
@@ -18,6 +21,13 @@ namespace CloudRP.PlayerSystems.DeathSystem
     {
         public delegate void DeathEventEventHandler(Player player);
         public static event DeathEventEventHandler onDeath;
+        public static List<Corpse> corpses = new List<Corpse>();
+        public static int _respawnTimeout_seconds = 3;
+        public const int _deathTimer_seconds = 600;
+        public static string corpseSharedKey = "corpsePed";
+        public static int _pedTimeout_seconds = 300;
+        public static Dictionary<int, Timer> injuredTimers = new Dictionary<int, Timer>();
+
         public static List<Hospital> hospitalList = new List<Hospital> {
             new Hospital { name = "Strawberry Hospital", position = new Vector3(341.3, -1396.7, 32.5) },
             new Hospital { name = "Pillbox Hill Hospital Back", position = new Vector3(360.8, -585.3, 28.8) },
@@ -26,14 +36,12 @@ namespace CloudRP.PlayerSystems.DeathSystem
             new Hospital { name = "Sandy Hospital", position = new Vector3(1821.3, 3684.9, 34.3) },
             new Hospital { name = "Paleto Hospital", position = new Vector3(-381.1, 6119.7, 31.5) }
         };
-        public static List<Corpse> corpses = new List<Corpse>();
-        public static int _respawnTimeout_seconds = 3;
-        public const int _deathTimer_seconds = 600;
-        public static string corpseSharedKey = "corpsePed";
-        public static int _pedTimeout_seconds = 300;
 
         public DeathEvent()
         {
+            Main.playerDisconnect += removeServerInjuredTimer;
+            Commands.loggingOut += (player, character) => removeServerInjuredTimer(player);
+
             NAPI.Server.SetAutoRespawnAfterDeath(false);
             NAPI.Server.SetAutoSpawnOnConnect(false);
 
@@ -139,15 +147,22 @@ namespace CloudRP.PlayerSystems.DeathSystem
             characterData.injured_timer = time;
             characterData.character_health = 100;
 
-            using (DefaultDbContext dbContext = new DefaultDbContext())
-            {
-                dbContext.characters.Update(characterData);
-                dbContext.SaveChanges();
-            }
-
-            player.setPlayerCharacterData(characterData);
-
+            player.setPlayerCharacterData(characterData, false, true);
             player.TriggerEvent("injured:startInterval", time);
+
+            Timer injuredTimer = new Timer
+            {
+                AutoReset = true,
+                Enabled = true,
+                Interval = 10 * 1000
+            };
+
+            injuredTimer.Elapsed += (object source, ElapsedEventArgs e) =>
+            {
+                NAPI.Task.Run(() => saveInjuredTime(player));
+            };
+
+            injuredTimers.Add(characterData.character_id, injuredTimer);
         }
 
         public static void removeInjuredStatus(Player player, DbCharacter character, bool respawn = true)
@@ -161,11 +176,43 @@ namespace CloudRP.PlayerSystems.DeathSystem
             {
                 respawnAtHospital(player);
             }
+        }
 
+        public static void removeServerInjuredTimer(Player player)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if(character == null) return;
+
+            Timer timer = injuredTimers.Where(k => k.Key == character.character_id)
+                .FirstOrDefault().Value;
+
+            if (timer == null) return;
+
+            timer.Dispose();
+
+            injuredTimers.Remove(character.character_id);
+        }
+
+        public static void saveInjuredTime(Player player)
+        {
+            DbCharacter characterData = player.getPlayerCharacterData();
+            if (characterData == null || characterData != null && characterData.injured_timer == 0) return;
+
+            if (characterData.injured_timer - 10 <= 0)
+            {
+                removeInjuredStatus(player, characterData);
+                return;
+            }
+
+            characterData.injured_timer -= 10;
+            player.setPlayerCharacterData(characterData, false, true);
         }
 
         public static void resetTimer(Player player, DbCharacter character)
         {
+            removeServerInjuredTimer(player);
+
             character.injured_timer = 0;
             player.setPlayerCharacterData(character, false, true);
             player.TriggerEvent("injured:removeStatus");
@@ -222,41 +269,11 @@ namespace CloudRP.PlayerSystems.DeathSystem
             playerCorpse.corpseId = corpses.IndexOf(playerCorpse);
 
             addCorpseToClients(playerCorpse);
-        }
-        #endregion
 
-        #region Events
-        [RemoteEvent("sync:corpseValidation")]
-        public static void validatePed(Player player, int corpseId)
-        {
-            Corpse selectedCorpse = corpses
-                .Where(corpse => corpse.corpseId == corpseId)
-                .FirstOrDefault();
-
-            if (selectedCorpse != null)
+            NAPI.Task.Run(() =>
             {
-                if (CommandUtils.generateUnix() - selectedCorpse.unixCreated > _pedTimeout_seconds)
-                {
-                    removeCorpse(selectedCorpse);
-                }
-            }
-
-        }
-
-        [RemoteEvent("server:saveInjuredTime")]
-        public static void saveInjuredTime(Player player)
-        {
-            DbCharacter characterData = player.getPlayerCharacterData();
-            if (characterData == null || characterData != null && characterData.injured_timer == 0) return;
-
-            if (characterData.injured_timer - 10 <= 0)
-            {
-                removeInjuredStatus(player, characterData);
-                return;
-            }
-
-            characterData.injured_timer -= 10;
-            player.setPlayerCharacterData(characterData, false, true);
+                removeCorpse(playerCorpse);
+            }, _pedTimeout_seconds * 1000);
         }
         #endregion
     }

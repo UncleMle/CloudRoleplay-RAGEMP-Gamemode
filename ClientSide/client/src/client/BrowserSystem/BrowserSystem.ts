@@ -3,7 +3,6 @@ import { F2 } from './ClientButtons';
 import { _REMOVE_TIMER_NATIVE } from '../Constants/Constants';
 import getUserCharacterData from '@/PlayerMethods/getUserCharacterData';
 import { CharacterData } from '@/@types';
-import GuiSystem from './GuiSystem';
 
 export default class BrowserSystem {
 	public static _browserInstance: BrowserMp = mp.browsers.new(BrowserEnv.development);
@@ -30,14 +29,20 @@ export default class BrowserSystem {
 		mp.events.add('browser:clearChat', BrowserSystem.clearChat);
 		mp.events.add('browser:playerFrontendSound', BrowserSystem.playFrontendSound);
 
-		mp.keys.bind(F2, false, function () {
-			BrowserSystem.f2Cursor = !BrowserSystem.f2Cursor;
-			if (BrowserSystem.f2Cursor && !mp.game.ui.isPauseMenuActive()) {
-				mp.gui.cursor.show(true, true);
-			} else {
-				mp.gui.cursor.show(false, false);
-			}
-		});
+		mp.keys.bind(F2, false, BrowserSystem.handleF2Press);
+
+		setInterval(() => {
+			BrowserSystem.disableAfkTimer();
+		}, 12000);
+	}
+
+	private static handleF2Press() {
+		BrowserSystem.f2Cursor = !BrowserSystem.f2Cursor;
+		if (BrowserSystem.f2Cursor && !mp.game.ui.isPauseMenuActive()) {
+			mp.gui.cursor.show(true, true);
+		} else {
+			mp.gui.cursor.show(false, false);
+		}
 	}
 
 	private static playFrontendSound(soundName: string, soundSetName: string) {
@@ -63,7 +68,6 @@ export default class BrowserSystem {
 	}
 
 	public static handleRender() {
-		BrowserSystem.disableAfkTimer();
 		BrowserSystem.disableDefaultGuiElements();
 
 		let characterData: CharacterData | undefined = getUserCharacterData();

@@ -146,7 +146,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
 
             DbVehicle vehicleData = player.Vehicle.getData();
 
-            if(vehicleData == null || vehicleData != null && vehicleData.owner_id != character.character_id && player.getAdmin() < (int)AdminRanks.Admin_Developer)
+            if(vehicleData == null || vehicleData != null && vehicleData.owner_id != character.character_id || vehicleData != null && vehicleData.vehicle_id == -1)
             {
                 CommandUtils.errorSay(player, $"You must be the owner the vehicle to sell it.");
                 return;

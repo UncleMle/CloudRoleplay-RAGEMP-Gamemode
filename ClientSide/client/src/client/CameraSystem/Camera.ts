@@ -23,7 +23,7 @@ export default class Camera {
 		mp.events.add("render", Camera.handleCameraMovement);
     }
 
-	public static handleCameraMovement() {
+	private static handleCameraMovement() {
 		if (Camera.Current_Cam === null || !Camera.Current_Cam.isMoving) return;
 		let position = Camera.Current_Cam.camera.getCoord();
 

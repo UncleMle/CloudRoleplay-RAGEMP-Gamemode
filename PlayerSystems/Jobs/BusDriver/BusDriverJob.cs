@@ -4,6 +4,7 @@ using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
+using CloudRP.WorldSystems.NpcInteractions;
 using GTANetworkAPI;
 using Microsoft.EntityFrameworkCore.Internal;
 using Newtonsoft.Json;

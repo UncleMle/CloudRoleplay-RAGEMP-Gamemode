@@ -36,6 +36,20 @@ namespace CloudRP.WorldSystems.NpcInteractions
 
             return npcPed.Id;
         }
+
+        public static int getClosestPedByRange(Player player, float range)
+        {
+            int pedId = -1;
+
+            foreach (KeyValuePair<int, InteractionPed> npc in npcPeds)
+            {
+                Vector3 pos = npc.Value.ped.Position;
+
+                if(pos.DistanceToSquared(player.Position) < range) pedId = npc.Key;
+            }
+
+            return pedId;
+        }
         #endregion
 
         #region Remote Events
