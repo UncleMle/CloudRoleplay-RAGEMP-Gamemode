@@ -34,7 +34,7 @@ export default class GuiSystem {
 	public static toggleHudComplete(toggle: boolean, notif: boolean = false, checkForScaleFormAndSwitch: boolean = true) {
 		if (checkForScaleFormAndSwitch && (mp.game.invoke(_IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE) || ScaleForm.isActive())) return;
 
-		let browser: BrowserMp = BrowserSystem._browserInstance;
+		let browser: BrowserMp | null = BrowserSystem._browserInstance;
 		GuiSystem.hudToggle = toggle;
 
 		if (browser) {

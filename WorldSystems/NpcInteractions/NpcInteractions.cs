@@ -22,7 +22,6 @@ namespace CloudRP.WorldSystems.NpcInteractions
         public static int buildPed(PedHash ped, Vector3 position, float heading, string headName, string[] raycastMenuItems)
         {
             Ped npcPed = NAPI.Ped.CreatePed((uint)ped, position, heading, false, true, true, true, 0);
-            MarkersAndLabels.setPlaceMarker(position);
 
             InteractionPed interactionPed = new InteractionPed
             {

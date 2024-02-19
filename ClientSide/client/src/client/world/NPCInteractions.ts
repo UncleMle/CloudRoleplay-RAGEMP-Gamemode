@@ -1,6 +1,7 @@
 import { InteractionPed } from "@/@types";
 import { _control_ids } from "@/Constants/Constants";
 import validateKeyPress from "@/PlayerMethods/validateKeyPress";
+import RaycastUtils from "@/RaycastUtils/RaycastUtils";
 
 export default class NpcInteractions {
     public static LocalPlayer: PlayerMp = mp.players.local;
@@ -55,11 +56,11 @@ export default class NpcInteractions {
             let secondPoint: Vector3 = NpcInteractions.LocalPlayer.getBoneCoords(0, 0, 0, 0);
             if (!secondPoint) return;
 
-            let target: RaycastResult | undefined = NpcInteractions.getLocalNpc();
+            let raycast: RaycastResult | undefined = RaycastUtils.getInFrontOfPlayer();
 
-            if (!target) return;
+            if (!raycast || raycast && ped.ped.remoteId != (raycast.entity as EntityMp).remoteId) return;
 
-            let pos: Vector3 = target.position;
+            let pos: Vector3 = raycast.position;
 
             let dist: number = mp.game.gameplay.getDistanceBetweenCoords(
                 pos.x,
@@ -88,36 +89,15 @@ export default class NpcInteractions {
         });
     }
 
-    private static getLocalNpc() {
-        if (!validateKeyPress(true, true, true)) return;
-
-        let startPosition = NpcInteractions.LocalPlayer.getBoneCoords(12844, 0.5, 0, 0);
-        const res = mp.game.graphics.getScreenActiveResolution(1, 1);
-        const coord: Vector3 = new mp.Vector3(res.x / 2, res.y / 2, 2 | 4 | 8);
-        const secondPoint = mp.game.graphics.screen2dToWorld3d(coord);
-        if (!secondPoint) return;
-
-        startPosition.z -= 0.3;
-        const target = mp.raycasting.testPointToPoint(startPosition, secondPoint, NpcInteractions.LocalPlayer, 2 | 4 | 8 | 16);
-
-        if (
-            target &&
-            mp.game.gameplay.getDistanceBetweenCoords(
-                target.position.x,
-                target.position.y,
-                target.position.z,
-                NpcInteractions.LocalPlayer.position.x,
-                NpcInteractions.LocalPlayer.position.y,
-                NpcInteractions.LocalPlayer.position.z,
-                false
-            ) < 3
-        )
-            return target;
-    }
-
     private static handleInteraction() {
-        if (NpcInteractions.getLocalNpc()) {
-            mp.events.callRemote("server:npcPeds:recieveInteraction", NpcInteractions.raycastMenu[NpcInteractions.wheelPosition]);
+        let raycast: RaycastResult | undefined = RaycastUtils.getInFrontOfPlayer();
+
+        if (raycast) {
+            let rayEntityId: number = (raycast.entity as EntityMp).remoteId;
+
+            if (NpcInteractions.streamedNpcPeds.get(rayEntityId)) {
+                mp.events.callRemote("server:npcPeds:recieveInteraction", NpcInteractions.raycastMenu[NpcInteractions.wheelPosition]);
+            }
         }
     }
 

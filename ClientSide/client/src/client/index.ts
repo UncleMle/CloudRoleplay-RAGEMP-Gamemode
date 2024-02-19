@@ -54,6 +54,7 @@ import AnimationSync from "./PlayerSyncSystems/AnimationSync";
 import FactionSystem from "./FactionSystem/FactionSystem";
 import Barber from "./Barber/Barber";
 import NpcInteractions from "./world/NPCInteractions";
+import RouletteTables from "./CasinoSystems/RouletteTables";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -112,3 +113,4 @@ new AnimationSync();
 new FactionSystem();
 new Barber();
 new NpcInteractions();
+new RouletteTables();

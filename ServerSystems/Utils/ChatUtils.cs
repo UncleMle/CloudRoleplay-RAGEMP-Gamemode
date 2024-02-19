@@ -39,6 +39,7 @@ namespace CloudRP.ServerSystems.Utils
         public static readonly string vip = "!{#ebc034}[!{#ebdf34}V!{#cdeb34}I!{#abeb34}P!{#93eb34}] " + White;
         public static readonly string dcc = "!{#f0cb58}[DCC] " + White;
         public static readonly string longDo = "!{#bb53ff}";
+        public static readonly string rentalVehicles = darkGreen + "[Rental Vehicles] " + White;
 
         public static void sendWithNickName(Player player, Player target, string prefix, string suffix, bool checkDims = true)
         {

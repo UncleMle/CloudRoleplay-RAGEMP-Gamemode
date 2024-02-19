@@ -8,6 +8,7 @@ using GTANetworkAPI;
 using Microsoft.EntityFrameworkCore.Internal;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -83,8 +84,6 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
             {
                 bool isNpc = mowerNpcs.Contains(npcId);
 
-                Console.WriteLine(isNpc);
-
                 if (!isNpc) return;
 
                 showJobPrompt(player, npcId);
@@ -97,6 +96,7 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
 
             mowerSpawns.ForEach(spawn =>
             {
+                NAPI.Blip.CreateBlip(351, spawn, 1f, 2, "Lawn Mower Job", 255, 0, true, 0, 0);
                 initMowerSpawn(spawn);
             });
         }

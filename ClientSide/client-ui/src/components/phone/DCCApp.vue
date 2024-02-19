@@ -35,6 +35,11 @@ import { sendToServer } from '@/helpers';
 import { mapGetters } from 'vuex';
 
 export default {
+    data() {
+        return {
+            rentals: null
+        }
+    },
     computed: {
         ...mapGetters({
             playerData: 'getPlayerInfo'
@@ -46,6 +51,8 @@ export default {
     methods: {
         requestService(name) {
             sendToServer("server:dcc:requestService", name);
+        },
+        getDataaa() {
         }
     }
 }

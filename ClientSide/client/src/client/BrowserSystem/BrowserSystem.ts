@@ -28,12 +28,17 @@ export default class BrowserSystem {
 		mp.events.add('browser:setAuthState', BrowserSystem.setAuthState);
 		mp.events.add('browser:clearChat', BrowserSystem.clearChat);
 		mp.events.add('browser:playerFrontendSound', BrowserSystem.playFrontendSound);
+		mp.events.add('browser:callServerProc', BrowserSystem.handleServerProc);
 
 		mp.keys.bind(F2, false, BrowserSystem.handleF2Press);
 
 		setInterval(() => {
 			BrowserSystem.disableAfkTimer();
-		}, 12000);
+		}, 6000);
+	}
+
+	private static async handleServerProc(procedureName: string): Promise<any> {
+		return await mp.events.callRemoteProc(procedureName);
 	}
 
 	private static handleF2Press() {
@@ -130,11 +135,11 @@ export default class BrowserSystem {
 	};
 
 	public static sendErrorPushNotif(message: string, time: number) {
-		BrowserSystem._browserInstance.execute(`gui.notify.sendError("${message}", ${time});`);
+		BrowserSystem._browserInstance?.execute(`gui.notify.sendError("${message}", ${time});`);
 	}
 
 	public static sendNotif(message: string, progbar: boolean, dragbl: boolean, time: number) {
-		BrowserSystem._browserInstance.execute(`gui.notify.showNotification("${message}", ${progbar}, ${dragbl}, ${time});`);
+		BrowserSystem._browserInstance?.execute(`gui.notify.showNotification("${message}", ${progbar}, ${dragbl}, ${time});`);
 	}
 
 	public static handleBrowserObject(eventName: string, _object: object) {

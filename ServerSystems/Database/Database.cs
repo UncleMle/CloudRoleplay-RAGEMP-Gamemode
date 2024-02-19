@@ -2,6 +2,8 @@
 using CloudRP.GeneralSystems.GeneralCommands;
 using CloudRP.GeneralSystems.HousingSystem;
 using CloudRP.GeneralSystems.InventorySystem;
+using CloudRP.PlayerSystems.CasinoSystems;
+using CloudRP.PlayerSystems.CasinoSystems.Roulette;
 using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.FactionSystems;
 using CloudRP.ServerSystems.Admin;
@@ -51,6 +53,7 @@ namespace CloudRP.ServerSystems.Database
         public DbSet<InventoryItem> inventory_items { get; set; }
         public DbSet<Faction> factions { get; set; }
         public DbSet<FactionRank> faction_ranks { get; set; }
+        public DbSet<RouletteTable> roulette_tables { get; set; }
     }
 
     public class BaseEntity

@@ -23,6 +23,10 @@ declare global {
 		corpseId: number;
 		corpseCharacterId: number;
 	}
+
+	interface ObjectMp {
+		ballObject: ObjectMp;
+	}
 }
 
 export interface UserData {
@@ -528,4 +532,15 @@ interface InteractionPed
 	pedHeadName: string;
 	ped: PedMp;
 	raycastMenuItems: string[];
+}
+
+interface RouletteTable {
+	roulette_table_id: number;
+	heading: number;
+	pos_x: number;
+	pos_y: number;
+	pos_z: number;
+	position: Vector3;
+	beingRolled: boolean;
+	tableObject: ObjectMp;
 }

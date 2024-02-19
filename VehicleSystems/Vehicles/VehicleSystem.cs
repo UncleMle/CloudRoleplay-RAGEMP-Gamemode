@@ -5,6 +5,7 @@ using CloudRP.PlayerSystems.FactionSystems;
 using CloudRP.PlayerSystems.Jobs;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.PlayerSystems.PlayerDealerships;
+using CloudRP.PlayerSystems.RentableVehicles;
 using CloudRP.ServerSystems.Admin;
 using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.CustomEvents;
@@ -467,7 +468,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                             engine_status = true,
                             numberplate = plate,
                             owner_name = playerData.character_name,
-                            owner_id = playerData.character_id,
+                            owner_id = -1,
                             vehicle_fuel = 100,
                         });
 
@@ -862,6 +863,11 @@ namespace CloudRP.VehicleSystems.Vehicles
                     canToggle = true;
                 }
 
+                RentVehicleData rental = vehicle.GetData<RentVehicleData>(RentableVehicles._spawnedRentVehicleKey);
+
+                FreeLanceJobVehicleData freelance = vehicle.getFreelanceJobData();
+
+                if (freelance != null && freelance.characterOwnerId == character.character_id || rental != null && rental.characterOwnerId == character.character_id) canToggle = true;
             }
 
             return canToggle;

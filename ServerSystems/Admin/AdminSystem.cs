@@ -1,6 +1,8 @@
 ﻿using CloudRP.GeneralSystems.GeneralCommands;
 using CloudRP.GeneralSystems.WeaponSystem;
 using CloudRP.PlayerSystems.AnimationSync;
+using CloudRP.PlayerSystems.CasinoSystems;
+using CloudRP.PlayerSystems.CasinoSystems.Roulette;
 using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.DeathSystem;
 using CloudRP.PlayerSystems.FactionSystems;
@@ -2052,6 +2054,30 @@ namespace CloudRP.ServerSystems.Admin
         {
             player.TriggerEvent("anim:testClient", dict, name);
             player.SendChatMessage($"dict {dict} | name {name}");
+        }
+
+        [AdminCommand(AdminRanks.Admin_Founder)]
+        [Command("rtable", "~r~/rtable")]
+        public void spawnInRouletteTable(Player player)
+        {
+            Vector3 tableP = new Vector3(player.Position.X, player.Position.Y, player.Position.Z - 1);
+
+            RouletteTable createdTable = RouletteTable.addTable(tableP, player.Rotation.Z);
+
+            AdminUtils.staffSay(player, $"Created roulette table with id #{createdTable.roulette_table_id}.");
+        }
+        
+        [AdminCommand(AdminRanks.Admin_Founder)]
+        [Command("delrtable", "~r~/delrtable [tableId]")]
+        public void deleteRouletteTableById(Player player, int tableId)
+        {
+            if(RouletteTable.deleteTableById(tableId))
+            {
+                AdminUtils.staffSay(player, $"Deleted roulette table with id {tableId}.");
+                return;
+            }
+
+            CommandUtils.errorSay(player, $"Roulette table with id {tableId} wasn't found.");
         }
     }
 }
