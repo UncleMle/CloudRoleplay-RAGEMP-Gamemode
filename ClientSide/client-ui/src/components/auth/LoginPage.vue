@@ -318,6 +318,33 @@
                                 </div>
                             </div>
 
+                            <div v-if="uiStates.authenticationState == 'accountOtp'" class="p-8">
+                                <div>
+                                    <label class="block">
+                                        <span class="font-medium">Enter the OTP sent to your email address</span>
+                                        <div class="mt-2 rounded-lg">
+                                            <div class="mt-2 rounded-lg bg-gradient-to-l from-black/30 to-black/40">
+                                                <i
+                                                    class="fa-solid fa-lock absolute pt-3 pl-3 h-11 border-gray-400 text-gray-400"></i>
+                                                <input maxlength="20" v-model="accountOtp" type="text"
+                                                    class="ml-8 p-2 block w-full rounded-lg bg-transparent outline-none" />
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <div class="font-medium text-sm mt-3 text-gray-300">
+                                        Our systems detected login from a new location. Please enter the OTP code sent to
+                                        the email address associated with your account.
+                                    </div>
+
+                                    <div class="inline-flex w-full mt-4 space-x-10 font-medium">
+                                        <button @click="sendAccountOtp()"
+                                            class="w-full rounded-xl p-3 bg-gradient-to-r from-black/30 to-black/40 duration-300 hover:bg-black/20 duration-300 hover:bg-black/20">Login
+                                            <i class="fa-solid fa-book text-gray-400"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+
 
                             <div v-if="uiStates.authenticationState == 'passwordReset'" class="p-8">
                                 <div>
@@ -521,6 +548,11 @@ export default {
             this.passResetPass = "";
             this.passResetPassConfirm = "";
         },
+        sendAccountOtp() {
+            this.$store.state.uiStates.serverLoading = true;
+
+            sendToServer("server:authentication:recieveAccountOtp", this.accountOtp);
+        },  
         getStaffData(rankId) {
             let { adminRanksList, adminRanksStyles } = getStaffRanks();
 
@@ -562,6 +594,11 @@ export default {
                 case 'resettingPassword':
                     {
                         this.resetPassword();
+                        break;
+                    }
+                case 'accountOtp':
+                    {
+                        this.sendAccountOtp();
                         break;
                     }
                 default: break;

@@ -179,6 +179,7 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string passReset = "passwordReset";
         public static readonly string resettingPassword = "resettingPassword";
         public static readonly string characterSelection = "charSelect";
+        public static readonly string accountOtpState = "accountOtp";
     }
 
     public static class MutationKeys

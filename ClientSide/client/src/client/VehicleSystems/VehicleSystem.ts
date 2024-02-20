@@ -26,48 +26,60 @@ export default class VehicleSystems {
 		mp.events.add("playerCreateWaypoint", VehicleSystems.handleWaypointCreate);
 		mp.events.add("playerRemoveWaypoint", VehicleSystems.handleWaypointRemove);
 		mp.events.add("vehicleSystem:freezePlayerVehicle", VehicleSystems.freezePlayerVehicle);
+		mp.events.add("vehicleSystem:handleAutoDriveStart", VehicleSystems.handleAutoDriveStart);
 		mp.keys.bind(_control_ids.F, false, VehicleSystems.stopWindowBreaking);
 		mp.keys.bind(_control_ids.J, false, VehicleSystems.toggleSeatBelt);
 
 		setInterval(() => {
-			if(!VehicleSystems.LocalPlayer.vehicle) return;
+			if (!VehicleSystems.LocalPlayer.vehicle) return;
 			mp.events.callRemote(VehicleSystems.updateVehicleDistEvent, JSON.stringify(VehicleSystems.vehicleOldPos));
 			VehicleSystems.vehicleOldPos = VehicleSystems.LocalPlayer.vehicle.position;
 		}, VehicleSystems.updateDistInteral_seconds * 1000);
 	}
 
 	private static handleWaypointCreate(position: Vector3) {
-		if(!VehicleSystems.LocalPlayer.vehicle) return; 
-		
+		if (!VehicleSystems.LocalPlayer.vehicle) return;
+
 		mp.events.callRemote(VehicleSystems.syncGpsWaypointEvent, position);
-		
+	}
+
+	private static handleAutoDriveStart() {
+		if (VehicleSystems.LocalPlayer?.vehicle?.getPedInSeat(-1) !== VehicleSystems.LocalPlayer.handle) return;
+
+		const waypoint: number = mp.game.ui.getFirstBlipInfoId(8);
+		if (!mp.game.ui.doesBlipExist(waypoint)) return NotificationSystem.createNotification("~r~You do not have a waypoint set.", false);
+		const pos: Vector3 = mp.game.ui.getBlipInfoIdCoord(waypoint);
+
+		VehicleSystems.LocalPlayer.taskVehicleDriveToCoord(VehicleSystems.LocalPlayer.vehicle.handle, pos.x, pos.y, pos.z, 40, 1, VehicleSystems.LocalPlayer.vehicle.model, 4 | 16 | 32, 2, 0);
 	}
 
 	private static handleWaypointRemove() {
-		if(!VehicleSystems.LocalPlayer.vehicle) return;
-		
+		if (!VehicleSystems.LocalPlayer.vehicle) return;
+
+		VehicleSystems.LocalPlayer.vehicle
+
 		mp.events.callRemote(VehicleSystems.removeGpsWaypoint);
 	}
 
 	public static handlePlayerEnterVehicle(vehicle: VehicleMp, seat: number) {
-		if(!vehicle) return;
+		if (!vehicle) return;
 		VehicleSystems.vehicleOldPos = vehicle.position;
 	}
 
 	public static handleExitDistCalc(vehicle: VehicleMp) {
-		if(!vehicle) return;
+		if (!vehicle) return;
 		mp.events.callRemote(VehicleSystems.updateVehicleDistEvent, JSON.stringify(VehicleSystems.vehicleOldPos))
 	}
 
 	public static toggleSeatBelt(vehicle: VehicleMp) {
-		if(VehicleSystems.LocalPlayer.isTypingInTextChat) return;
+		if (VehicleSystems.LocalPlayer.isTypingInTextChat) return;
 
-		if(!vehicle) {
+		if (!vehicle) {
 			vehicle = VehicleSystems.LocalPlayer.vehicle;
 		}
 
-		if(vehicle) {
-			if(VehicleSystems.blockVehicleSeatBelts.indexOf(vehicle.getClass()) !== -1) {
+		if (vehicle) {
+			if (VehicleSystems.blockVehicleSeatBelts.indexOf(vehicle.getClass()) !== -1) {
 				NotificationSystem.createNotification("~r~This vehicle doesn't have a seatbelt!", false);
 				return;
 			}
@@ -83,7 +95,7 @@ export default class VehicleSystems {
 	}
 
 	public static handleRender() {
-		if(VehicleSystems.LocalPlayer.vehicle && VehicleSystems.LocalPlayer.vehicle.getHealth() <= 0) {
+		if (VehicleSystems.LocalPlayer.vehicle && VehicleSystems.LocalPlayer.vehicle.getHealth() <= 0) {
 			VehicleSystems.LocalPlayer.vehicle.setUndriveable(true);
 		}
 
@@ -134,7 +146,7 @@ export default class VehicleSystems {
 	}
 
 	public static freezePlayerVehicle(toggle: boolean) {
-		if(VehicleSystems.LocalPlayer.vehicle) {
+		if (VehicleSystems.LocalPlayer.vehicle) {
 			VehicleSystems.LocalPlayer.vehicle.freezePosition(toggle);
 		}
 	}

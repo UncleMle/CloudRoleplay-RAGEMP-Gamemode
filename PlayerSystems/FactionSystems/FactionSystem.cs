@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Timers;
@@ -450,13 +451,11 @@ namespace CloudRP.PlayerSystems.FactionSystems
         {
             if (character.faction_duty_status == -1) return;
 
-            List<KeyValuePair<int, DispatchCall>> calls = dispatchCalls
-                .Where(call => call.Value.forFaction.Equals((Factions)character.faction_duty_status))
-                .ToList();
+            if (!dispatchCalls.ContainsKey(character.faction_duty_status)) return;
 
             uiHandling.resetMutationPusher(player, MutationKeys.FactionDispatch);
 
-            foreach (KeyValuePair<int, DispatchCall> call in calls)
+            foreach (KeyValuePair<int, DispatchCall> call in dispatchCalls)
             {
                 uiHandling.handleObjectUiMutationPush(player, MutationKeys.FactionDispatch, call);
             }
@@ -745,15 +744,11 @@ namespace CloudRP.PlayerSystems.FactionSystems
                     .FirstOrDefault();
             }
 
-            if(targetVehicle != null)
+            if(targetVehicle != null && vehicleSpawnPoints.ContainsKey((Factions)targetVehicle.faction_owner_id))
             {
-                KeyValuePair<Factions, List<FactionVehSpawn>> point = vehicleSpawnPoints
-                    .Where(spawnPoint => (int)spawnPoint.Key == targetVehicle.faction_owner_id)
-                    .FirstOrDefault();
+                List<FactionVehSpawn> points = vehicleSpawnPoints[(Factions)targetVehicle.faction_owner_id];
 
-                if (point.Value == null) return;
-
-                FactionVehSpawn spawn = point.Value
+                FactionVehSpawn spawn = points
                     .Where(p => p.garageId == targetVehicle.vehicle_garage_id)
                     .FirstOrDefault();
 

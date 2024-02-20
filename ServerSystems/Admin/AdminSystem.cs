@@ -62,11 +62,9 @@ namespace CloudRP.ServerSystems.Admin
                         return false;
                     }
 
-                    if(checkForAduty && player.getPlayerAccountData() != null && player.getPlayerAccountData().adminDuty)
+                    if(checkForAduty && player.getPlayerAccountData() != null && player.getPlayerAccountData().adminDuty || !checkForAduty)
                     {
-                        return true;
-                    } else if(!checkForAduty)
-                    {
+
                         return true;
                     }
                 }

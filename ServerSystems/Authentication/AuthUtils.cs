@@ -293,6 +293,16 @@ namespace CloudRP.ServerSystems.Authentication
         public long unixMade { get; set; }
     }
 
+    class AccountOtpStore
+    {
+        public int accountId { get; set; }
+        public string username { get; set; }
+        public long createdAt { get; set; }
+        public int otpTries { get; set; }
+        public string otpCode { get; set; }
+        public bool rememberMe { get; set; }
+    }
+
     class ResetPass
     {
         public string password { get; set; }

@@ -935,6 +935,9 @@ namespace CloudRP.VehicleSystems.Vehicles
             }
         }
 
+        public static void startAutoDrive(Player player)
+            => player.TriggerEvent("vehicleSystem:handleAutoDriveStart");
+
         #endregion
 
         #region Commands
@@ -1016,6 +1019,26 @@ namespace CloudRP.VehicleSystems.Vehicles
                     CommandUtils.errorSay(player, "Enter a valid speed limit.");
                 }
             }
+        }
+
+        [Command("adrive", "~y~Use:~w~ /adrive")]
+        public void startAutoDriveCommand(Player player)
+        {
+            if (!player.IsInVehicle || player.IsInVehicle && player.VehicleSeat != 0)
+            {
+                CommandUtils.errorSay(player, "You must be driving a vehicle to use this command.");
+                return;
+            }
+
+            DbVehicle vehicleData = player.Vehicle.getData();
+
+            if (vehicleData == null || vehicleData != null && vehicleData.engine_status)
+            {
+                CommandUtils.errorSay(player, $"Engine must be turned on to use this command.");
+                return;
+            }
+
+            startAutoDrive(player);
         }
         #endregion
 

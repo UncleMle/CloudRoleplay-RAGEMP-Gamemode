@@ -16,6 +16,7 @@ using CloudRP.ServerSystems.Middlewares;
 using CloudRP.PlayerSystems.FactionSystems;
 using CloudRP.Migrations;
 using Discord;
+using Microsoft.EntityFrameworkCore;
 
 namespace CloudRP.ServerSystems.Authentication
 {
@@ -25,7 +26,8 @@ namespace CloudRP.ServerSystems.Authentication
         public static string autoLoginDataKey = "server:auth:autoLoginAllowedUsername";
         public static uint _startDimension = 20;
         public static string _startAdminPed = "ig_mp_agent14";
-        public static string _otpStoreKey = "registering_otp";
+        public static string _otpRegisterStoreKey = "auth_registering_otp";
+        public static string _otpAccountStoreKey = "auth_account_otp";
         public static string _accountCreatedKey = "authentication:player:accountCreated";
         public static readonly int autoLoginValid_seconds = 300;
 
@@ -49,19 +51,23 @@ namespace CloudRP.ServerSystems.Authentication
                 Account findAccount = null;
                 AutoLoginData autoLogin = player.GetData<AutoLoginData>(autoLoginDataKey);
 
-                if (autoLogin != null)
+                if (autoLogin != null && player.GetData<AccountOtpStore>(_otpAccountStoreKey) == null)
                 {
                     long differenceMinutes = (CommandUtils.generateUnix() - autoLogin.createdAt) / 60;
 
                     if (differenceMinutes > autoLoginValid_seconds / 60) uiHandling.sendNotification(player, $"Your autologin for account {autoLogin.targetUsername} has expired {differenceMinutes.ToString("N1")} minutes ago.");
                     else findAccount = dbContext.accounts
-                            .Where(user => user.account_id == autoLogin.targetAccountId)
+                            .Where(user => user.account_id == autoLogin.targetAccountId &&
+                             user.ban_status == 0)
                             .FirstOrDefault();
                 } 
                 else
                 {
                     findAccount = dbContext.accounts
-                                .Where(b => b.username == userCredentials.username.ToLower() || b.email_address == userCredentials.username)
+                                .Where(b => 
+                                (b.username == userCredentials.username.ToLower() || b.email_address == userCredentials.username)
+                                && b.ban_status == 0
+                                )
                                 .FirstOrDefault();
                 }
 
@@ -71,56 +77,38 @@ namespace CloudRP.ServerSystems.Authentication
                     return;
                 }
 
-                Player findIsOnline = checkInGame(findAccount.account_id);
+                if (checkInGame(player, findAccount.email_address, findAccount.username, findAccount.account_id)) return;
 
-                if (findIsOnline != null)
+                if(
+                   findAccount.user_ip != player.Address ||
+                   findAccount.client_serial != player.Serial ||
+                   findAccount.social_club_id != player.SocialClubId
+                )
                 {
-                    Ban ban = new Ban
+                    string otp = AuthUtils.generateString(5);
+
+                    player.SetData(_otpAccountStoreKey, new AccountOtpStore
                     {
-                        account_id = -1,
-                        admin = "System",
-                        username = "N/A",
-                        ban_reason = $"Attempting to breach accounts. REFID #{findAccount.account_id}",
-                        ip_address = player.Address,
-                        lift_unix_time = -1,
-                        social_club_id = player.SocialClubId,
-                        social_club_name = player.SocialClubName,
-                        client_serial = player.Serial,
-                        CreatedDate = DateTime.Now,
-                        UpdatedDate = DateTime.Now,
-                        issue_unix_date = CommandUtils.generateUnix(),
-                    };
+                        accountId = findAccount.account_id,
+                        createdAt = CommandUtils.generateUnix(),
+                        otpCode = otp,
+                        username = findAccount.username,
+                        rememberMe = userCredentials.rememberMe
+                    });
 
-                    dbContext.bans.Add(ban);
+                    AuthUtils.sendEmail(
+                        findAccount.email_address, 
+                        $"OTP Code for {findAccount.username}", 
+                        $"The OTP code for your account {findAccount.username} is <b>{otp}</b>."
+                    );
 
-                    AuthUtils.sendEmail(findAccount.email_address, "Authentication Warning", $"Our systems detected a third party attempting to gain access to your account (<b>{findAccount.username}</b>). We have blocked the login attempt. Please reset all related passwords immediately.");
-                    NAPI.Chat.SendChatMessageToPlayer(findIsOnline, ChatUtils.red + "~h~[AUTHENTICATION WARNING] " + ChatUtils.White + "A third party attempted to login into your account. Please reset your account password immediately.");
-                    player.KickSilent();
+                    uiHandling.setLoadingState(player, false);
+                    uiHandling.setAuthState(player, AuthStates.accountOtpState);
+                    uiHandling.sendPushNotif(player, "Our systems have detected login from a new location. Please enter the OTP code sent to your email address.", 6600);
                     return;
                 }
 
-                User user = createUser(findAccount);
-
-                findAccount.client_serial = player.Serial;
-                findAccount.user_ip = player.Address;
-                findAccount.UpdatedDate = DateTime.Now;
-
-                dbContext.Update(findAccount);
-                dbContext.SaveChanges();
-
-                if (findAccount.ban_status == 1)
-                {
-                    player.banPlayer(-1, user, user, "Logging into banned accounts.");
-                    return;
-                }
-
-                setUserToCharacterSelection(player, user);
-
-                if (userCredentials.rememberMe)
-                {
-                    setUpAutoLogin(player, findAccount);
-                }
-                ChatUtils.formatConsolePrint($"User {findAccount.username} (#{findAccount.account_id}) has logged in.", ConsoleColor.Green);
+                loginInToAccount(player, findAccount, userCredentials.rememberMe);
             }
         }
 
@@ -194,7 +182,7 @@ namespace CloudRP.ServerSystems.Authentication
         public void resetPassword(Player player, string data)
         {
             if (data == null) return;
-            OtpStore playerOtpData = player.GetData<OtpStore>(_otpStoreKey);
+            OtpStore playerOtpData = player.GetData<OtpStore>(_otpRegisterStoreKey);
             ResetPass passReset = JsonConvert.DeserializeObject<ResetPass>(data);
 
             if (passReset.otpCode.Length == 0 || passReset.password.Length == 0 || passReset.passwordConfirm.Length == 0)
@@ -241,7 +229,6 @@ namespace CloudRP.ServerSystems.Authentication
 
                     find.password = newHash;
 
-
                     uiHandling.sendPushNotif(player, "You have reset your password!", 6000, false, false, true);
                     uiHandling.setAuthState(player, "");
                     dbContext.Update(find);
@@ -254,21 +241,20 @@ namespace CloudRP.ServerSystems.Authentication
         public void recieveAuthOtp(Player player, string otpCode)
         {
             uiHandling.setLoadingState(player, false);
-            OtpStore playerOtpStore = player.GetData<OtpStore>(_otpStoreKey);
+            OtpStore playerOtpStore = player.GetData<OtpStore>(_otpRegisterStoreKey);
             if (playerOtpStore == null || playerOtpStore.registeringData == null)
             {
                 uiHandling.setAuthState(player, AuthStates.otp);
-
                 return;
             }
 
             playerOtpStore.otpTries++;
 
-            player.SetCustomData(_otpStoreKey, playerOtpStore);
+            player.SetCustomData(_otpRegisterStoreKey, playerOtpStore);
 
-            if (playerOtpStore.otpTries > 15)
+            if (playerOtpStore.otpTries >= 10)
             {
-                uiHandling.setAuthState(player, AuthStates.login);
+                uiHandling.setAuthState(player, "");
                 uiHandling.pushRouterToClient(player, Browsers.None);
                 uiHandling.pushRouterToClient(player, Browsers.LoginPage);
                 uiHandling.sendPushNotifError(player, "You entered the wrong OTP code too many times.", 7500);
@@ -368,25 +354,17 @@ namespace CloudRP.ServerSystems.Authentication
         [RemoteEvent("server:handlePlayerJoining")]
         public void onPlayerJoin(Player player, string autoLoginKey)
         {
-            if (autoLoginKey != null && player.getPlayerAccountData() == null)
+            if (autoLoginKey != null && player.getPlayerAccountData() == null && player.GetData<AccountOtpStore>(_otpAccountStoreKey) == null && player.GetData<OtpStore>(_otpRegisterStoreKey) == null)
             {
-                Account findAccount = null;
-
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
-                    Account validateKey = dbContext.accounts
-                        .Where(acc => acc.auto_login_key == autoLoginKey).FirstOrDefault();
-
-                    if (validateKey != null && !collectedAutoLoginKeys.ContainsKey(player))
-                    {
-                        collectedAutoLoginKeys.Add(player, autoLoginKey);
-                    }
-
-                    findAccount = dbContext.accounts
-                        .Where(acc => acc.user_ip == player.Address && 
-                        acc.auto_login == 1 && 
-                        acc.auto_login_key == autoLoginKey && 
-                        acc.client_serial == player.Serial && 
+                    Account findAccount = dbContext.accounts
+                        .Where(acc =>
+                        acc.auto_login_key == autoLoginKey &&
+                        acc.user_ip == player.Address &&
+                        acc.social_club_id == player.SocialClubId &&
+                        acc.auto_login == 1 &&
+                        acc.client_serial == player.Serial &&
                         acc.ban_status == 0)
                         .FirstOrDefault();
 
@@ -408,9 +386,104 @@ namespace CloudRP.ServerSystems.Authentication
                 }
             }
         }
+
+        [RemoteEvent("server:authentication:recieveAccountOtp")]
+        public void recieveAccountOtp(Player player, string otp)
+        {
+            AccountOtpStore accountOtpStore = player.GetData<AccountOtpStore>(_otpAccountStoreKey);
+
+            if (accountOtpStore == null || player.getPlayerAccountData() != null) return;
+
+            if((accountOtpStore.createdAt + 280) < CommandUtils.generateUnix())
+            {
+                uiHandling.setAuthState(player, "");
+                uiHandling.sendPushNotifError(player, "Your OTP status is no longer valid. Try logging in again.", 6600, true);
+                player.ResetData(_otpAccountStoreKey);
+                return;
+            }
+
+            if(accountOtpStore.otpTries >= 10)
+            {
+                uiHandling.setAuthState(player, "");
+                uiHandling.sendPushNotifError(player, "You entered the wrong OTP code too many times.", 6600, true);
+                player.ResetData(_otpAccountStoreKey);
+                return;
+            }
+
+            accountOtpStore.otpTries++;
+            player.SetData(_otpAccountStoreKey, accountOtpStore);
+            
+            if(accountOtpStore.otpCode != otp)
+            {
+                uiHandling.sendPushNotifError(player, $"The entered OTP code is invalid.", 6600, true);
+                return;
+            }
+
+            Account find = getAccountById(accountOtpStore.accountId);
+
+            if (find == null)
+            {
+                uiHandling.sendPushNotifError(player, "An error occured logging you into this account.", 6600, true);
+                return;
+            }
+
+            loginInToAccount(player, find, accountOtpStore.rememberMe);
+        }
         #endregion
 
         #region Global Methods
+        public void loginInToAccount(Player player, Account findAccount, bool rememberMe)
+        {
+            if (checkInGame(player, findAccount.email_address, findAccount.username, findAccount.account_id)) return;
+
+            using (DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                player.ResetData(_otpAccountStoreKey);
+                player.ResetData(_otpRegisterStoreKey);
+
+                uiHandling.setLoadingState(player, false);
+                User user = createUser(findAccount);
+
+                findAccount.user_ip = player.Address;
+                findAccount.client_serial = player.Serial;
+                findAccount.user_ip = player.Address;
+                findAccount.UpdatedDate = DateTime.Now;
+                findAccount.social_club_id = player.SocialClubId;
+
+                dbContext.Update(findAccount);
+                dbContext.SaveChanges();
+
+                if (findAccount.ban_status == 1)
+                {
+                    player.banPlayer(-1, user, user, "Logging into banned accounts.");
+                    return;
+                }
+
+                setUserToCharacterSelection(player, user);
+
+                if (rememberMe)
+                {
+                    setUpAutoLogin(player, findAccount);
+                }
+
+                ChatUtils.formatConsolePrint($"User {findAccount.username} (#{findAccount.account_id}) has logged in.", ConsoleColor.Green);
+            }
+        }
+
+        public static Account getAccountById(int accountId)
+        {
+            Account find = null;
+
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                find = dbContext.accounts
+                    .Where(acc => acc.account_id == accountId && acc.ban_status == 0)
+                    .FirstOrDefault();
+            }
+
+            return find;
+        }
+
         public static User createUser(Account accountData)
            => JsonConvert.DeserializeObject<User>(JsonConvert.SerializeObject(accountData));
 
@@ -455,10 +528,10 @@ namespace CloudRP.ServerSystems.Authentication
             player.TriggerEvent("client:setAuthKey", randomString);
         }
 
-        public Player checkInGame(int accountId)
+        public bool checkInGame(Player player, string emailAddress, string username, int accountId)
         {
+            bool found = false;
             List<Player> onlinePlayers = NAPI.Pools.GetAllPlayers();
-
             Player wasFound = null;
 
             foreach (Player p in onlinePlayers)
@@ -470,8 +543,37 @@ namespace CloudRP.ServerSystems.Authentication
                     wasFound = p;
                 }
             }
+            
+            if(wasFound != null)
+            {
+                using(DefaultDbContext dbContext = new DefaultDbContext())
+                {
+                    Ban ban = new Ban
+                    {
+                        account_id = -1,
+                        admin = "System",
+                        username = "N/A",
+                        ban_reason = $"Attempting to breach accounts. REFID #{accountId}",
+                        ip_address = player.Address,
+                        lift_unix_time = -1,
+                        social_club_id = player.SocialClubId,
+                        social_club_name = player.SocialClubName,
+                        client_serial = player.Serial,
+                        CreatedDate = DateTime.Now,
+                        UpdatedDate = DateTime.Now,
+                        issue_unix_date = CommandUtils.generateUnix(),
+                    };
 
-            return wasFound;
+                    dbContext.bans.Add(ban);
+
+                    AuthUtils.sendEmail(emailAddress, "Authentication Warning", $"Our systems detected a third party attempting to gain access to your account (<b>{username}</b>). We have blocked the login attempt. Please reset all related passwords immediately.");
+                    wasFound.SendChatMessage(ChatUtils.red + "~h~[AUTHENTICATION WARNING] " + ChatUtils.White + "A third party attempted to login into your account. Please reset your account password immediately.");
+                    player.KickSilent();
+                    found = true;
+                }
+            }
+
+            return found;
         }
         
         public Player checkInGameCharacter(int characterId)
@@ -497,9 +599,9 @@ namespace CloudRP.ServerSystems.Authentication
         {
             uiHandling.setAuthState(player, AuthStates.otp);
 
-            string otp = AuthUtils.generateString(4, true);
+            string otp = AuthUtils.generateString(4);
 
-            player.SetCustomData(_otpStoreKey, new OtpStore
+            player.SetCustomData(_otpRegisterStoreKey, new OtpStore
             {
                 otp = otp,
                 otpTries = 0,
