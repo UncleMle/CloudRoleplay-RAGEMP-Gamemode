@@ -1209,7 +1209,7 @@ namespace CloudRP.VehicleSystems.Vehicles
             string lockUnlockText = $"{(playerData.adminDuty ? "~r~[Staff]" : "")} You {(vehicleData.vehicle_locked ? "locked" : "unlocked")} vehicle.";
             uiHandling.sendNotification(player, lockUnlockText, !playerData.adminDuty, !playerData.adminDuty, (vehicleData.vehicle_locked ? "Locks" : "Unlocks") + " vehicle.");
 
-            // AnimSync.playSyncAnimation(player, "anim@mp_player_intmenu@key_fob@", "fob_click_fp", 49, 5);
+            AnimSync.playSyncAnimation(player, 49, "anim@mp_player_intmenu@key_fob@", "fob_click_fp", 5);
         }
 
         [RemoteEvent("vehicle:toggleSeatBelt")]

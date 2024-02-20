@@ -65,9 +65,11 @@ namespace CloudRP.PlayerSystems.RentableVehicles
             Main.playerDisconnect += (player) => removeRentalVehicle(player);
             VehicleSystem.vehicleDeath += (Vehicle vehicle, DbVehicle vehicleData) =>
             {
-                int characterId = vehicle.GetData<int>(_spawnedRentVehicleKey);
+                RentVehicleData rental = vehicle.GetData<RentVehicleData>(_spawnedRentVehicleKey);
 
-                CharacterSystem.sendMessageViaCharacterId(characterId, $"{ChatUtils.rentalVehicles} Your rental vehicle has been destroyed and sent back to the insurance.");
+                if (rental == null) return;
+
+                CharacterSystem.sendMessageViaCharacterId(rental.characterOwnerId, $"{ChatUtils.rentalVehicles}Your rental vehicle has been destroyed and sent back to the insurance.");
             };
 
             TimeSystem.serverHourPassed += chargePlayerForRentals;

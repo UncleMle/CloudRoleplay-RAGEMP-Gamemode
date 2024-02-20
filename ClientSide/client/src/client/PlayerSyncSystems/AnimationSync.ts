@@ -9,8 +9,6 @@ export default class AnimationSync {
         mp.events.add("anim:testClient", (dict, anim) => {
             mp.game.streaming.requestAnimDict(dict);
             mp.players.local.taskPlayAnim(dict, anim, 8.0, 1.0, -1, 1, 1.0, false, false, false);
-
-            mp.gui.chat.push(`${dict} | ${anim}`);
         });
 
         mp.events.addDataHandler(AnimationSync._animationDataKey, AnimationSync.handleDataHandler);
@@ -35,8 +33,6 @@ export default class AnimationSync {
 
             await mp.game.waitAsync(100);
 
-            mp.gui.chat.push("Static " + JSON.stringify(anim));
-
             entity.taskPlayAnim(anim.dict, anim.anim, 1.0, 1.0, -1, 0 + 32 + 16, 0.0, false, false, false)
             entity.setDynamic(true);
             return;
@@ -44,8 +40,6 @@ export default class AnimationSync {
 
         if (!old) return;
 
-        mp.gui.chat.push("Old " + JSON.stringify(old));
-
-        //entity.stopAnimTask(old.dict, old.anim, parseInt(old.flag));
+        entity.stopAnimTask(old.dict, old.anim, parseInt(old.flag));
     }
 }

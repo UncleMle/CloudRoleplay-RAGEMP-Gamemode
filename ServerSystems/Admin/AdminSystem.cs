@@ -1072,6 +1072,12 @@ namespace CloudRP.ServerSystems.Admin
             User userData = player.getPlayerAccountData();
             if (userData == null) return;
 
+            if(!WeaponList.serverWeapons.ContainsKey(weaponName))
+            {
+                CommandUtils.errorSay(player, $"Weapon {weaponName} wasn't found on the server.");
+                return;
+            }
+
             NAPI.Player.GivePlayerWeapon(player, weaponName, ammo);
 
             ChatUtils.formatConsolePrint($"{userData.admin_name} spawned in a {weaponName} with {ammo} ammo");
