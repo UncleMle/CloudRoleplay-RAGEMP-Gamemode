@@ -182,8 +182,7 @@ namespace CloudRP.PlayerSystems.DeathSystem
         {
             DbCharacter character = player.getPlayerCharacterData();
 
-            if(character == null || character != null && injuredTimers.ContainsKey(character.character_id)) return;
-
+            if(character == null || character != null && !injuredTimers.ContainsKey(character.character_id)) return;
 
             Timer timer = injuredTimers[character.character_id];
 
