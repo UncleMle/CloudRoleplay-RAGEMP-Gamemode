@@ -2,9 +2,9 @@
     <main class="relative">
         <div class="absolute right-[3%] text-white">
 
-            <div class="relative mt-52 bg-black/70 p-3 rounded-xl">
+            <div class="relative mt-52 bg-black/70 p-3 rounded-xl shadow-2xl shadow-black border-b-4 border-t-4 border-purple-400/50">
                 <h1 class="font-bold text-2xl pl-4">
-                    <i class="fa-solid fa-car text-gray-400"></i> Vehicle's
+                    <i class="fa-solid fa-car text-gray-300"></i> Vehicle List
                 </h1>
                 <CloseButton />
             </div>
@@ -12,9 +12,9 @@
             <div class="container flex items-center w-[25vw] mx-auto mt-6">
 
                 <div class="flex justify-center w-full">
-                    <div class="rounded-xl w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
+                    <div class="rounded-xl w-full bg-black/70 border-t-4 border-b-4 border-purple-400/50 shadow-2xl shadow-black select-none">
 
-                        <div class="relative w-full h-fit pb-2 rounded-lg border border-gray-900 ">
+                        <div class="relative w-full h-fit pb-2 rounded-lg">
                             <div class="max-h-[30vw] overflow-scroll overflow-x-hidden">
                                 <div v-for="item in playerData.parked_vehicles" :key="item.key_uuid">
                                     <div class="border-t-2 w-full mt-6 relative p-6 border-b-2 border-gray-500">
@@ -52,7 +52,7 @@
                                 </div>
                             </div>
 
-                            <div class="p-3" v-if="playerData.parked_vehicles == 0">
+                            <div class="p-3 font-medium text-gray-300 text-center" v-if="playerData.parked_vehicles == 0">
                                 You don't have any vehicles parked here.
                             </div>
 

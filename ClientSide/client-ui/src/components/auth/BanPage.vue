@@ -1,10 +1,10 @@
 <template>
     <main>
         <div class="fixed inset-0 z-10 w-full text-white text-lg">
-            <div class="container flex items-center max-w-3xl mx-auto mt-52 border rounded-lg border-gray-400">
+            <div class="container flex items-center max-w-3xl mx-auto mt-52 rounded-lg">
                 <div
-                    class="relative bg-[#0b0b0b]/70 w-full h-fit py-4 rounded-lg border border-gray-900 shadow-2xl shadow-black p-4 ">
-                    <h1 class="font-bold text-2xl border-b-2 pb-2 border-gray-500"><i
+                    class="relative bg-[#0b0b0b]/70 w-full h-fit py-4 border-b-4 border-t-4 border-red-400/50 rounded-xl shadow-2xl shadow-black p-4 ">
+                    <h1 class="font-bold text-2xl border-b-4 pb-2 border-gray-400/50"><i
                             class="fa-solid fa-shield text-red-400"></i> You are banned.</h1>
 
                     <div v-if="banData.username" class="font-medium text-medium">

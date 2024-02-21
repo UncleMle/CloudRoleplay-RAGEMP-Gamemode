@@ -4,14 +4,18 @@
             <div class="container flex items-center max-w-3xl mx-auto mt-52">
                 <div class="flex justify-center w-full">
                     <div
-                        class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
+                        class="rounded-xl text-white w-full bg-black/70 border-t-4 border-b-4 border-purple-400/50 shadow-2xl shadow-black border-gray-500 select-none">
 
                         <div class="relative w-full h-fit py-4 rounded-lg duration-300 text-xl text-gray-200 font-medium">
-                            <h1 class="font-bold text-2xl border-b-2 pb-2 border-gray-500 pl-4"><i
-                                    v-if="!playerData.atm_data.isBank" class="fa-solid fa-money-bill text-gray-400"></i>
+                            <h1 class="font-bold text-2xl pb-2 pl-4"><i
+                                    v-if="!playerData.atm_data.isBank" class="fa-solid fa-money-bill text-gray-300"></i>
                                 <i v-else class="fa-solid fa-building-columns text-gray-400"></i>
                                 {{ playerData.atm_data.isBank ? "Bank" : "Atm" }} Management
                             </h1>
+
+                            <div class="border-b-4 mr-4 ml-4 border-gray-400/50">
+
+                            </div>
                             <CloseButton />
 
                             <button @click="browserView = 'home'" v-if="browserView != 'home'"
@@ -24,24 +28,24 @@
 
                                 <div>
                                     <button @click="browserView = 'withdraw'"
-                                        class="border p-3 rounded-xl border-gray-600 bg-black/50 hover:text-green-400 duration-300 w-full">Withdraw</button>
+                                        class="p-3 rounded-xl hover:text-purple-400 duration-300 w-full border-2 bg-black/20 border-purple-400/50">Withdraw</button>
                                 </div>
                                 <div v-if="playerData.atm_data.isBank">
                                     <button @click="browserView = 'salary'"
-                                        class="border p-3 rounded-xl border-gray-600 bg-black/50 hover:text-green-400 duration-300 w-full">Retrieve
+                                        class="p-3 rounded-xl hover:text-purple-400 duration-300 w-full border-2 bg-black/20 border-purple-400/50">Retrieve
                                         Salary</button>
                                 </div>
                                 <div v-if="playerData.atm_data.isBank">
                                     <button @click="browserView = 'transfer'"
-                                        class="border p-3 rounded-xl border-gray-600 bg-black/50 hover:text-green-400 duration-300 w-full">Transfer</button>
+                                        class="p-3 rounded-xl hover:text-purple-400 duration-300 w-full border-2 bg-black/20 border-purple-400/50">Transfer</button>
                                 </div>
                                 <div v-if="playerData.atm_data.isBank">
                                     <button @click="browserView = 'deposit'"
-                                        class="border p-3 rounded-xl border-gray-600 bg-black/50 hover:text-green-400 duration-300 w-full">Deposit</button>
+                                        class="p-3 rounded-xl hover:text-purple-400 duration-300 w-full border-2 bg-black/20 border-purple-400/50">Deposit</button>
                                 </div>
                                 <div>
                                     <button @click="browserView = 'viewBal'"
-                                        class="border p-3 rounded-xl border-gray-500 bg-black/50 hover:text-green-400 duration-300 w-full">View
+                                        class="p-3 rounded-xl hover:text-purple-400 duration-300 w-full border-2 bg-black/20 border-purple-400/50">View
                                         Balance</button>
                                 </div>
                             </div>

@@ -1,10 +1,10 @@
 <template>
-    <body class="w-full text-white font-medium">
+    <body class="vignette w-full text-white font-medium">
         <div v-if="!loadingState" class="flex justify-center mt-6">
             <div v-if="!playerData.is_in_player_dealer" class="p-2 text-center w-[40%] relative">
-                <div class="absolute w-full rounded-xl shadow-2xl shadow-black bg-black/70 p-2">
+                <div class="absolute w-full rounded-xl shadow-2xl shadow-black border-t-4 border-b-4 border-purple-400/50 bg-black/70 p-2">
                     <font class="text-3xl font-bold">
-                        <i class="fa-solid fa-car text-gray-400"></i>
+                        <i class="fa-solid fa-car text-gray-300"></i>
                         Vehicle Customs
                     </font>
                 </div>
@@ -14,7 +14,7 @@
         <main v-if="!loadingState" class="relative">
             <div class="absolute left-[3%] top-20">
 
-                <div class="bg-black/70 shadow-2xl shadow-black rounded-xl">
+                <div class="bg-black/70 shadow-2xl shadow-black rounded-xl border-t-4 border-b-4 border-purple-400/50">
                     <ui class="flex justify-center space-x-5 border-gray-500 p-4">
                         <button @click="browsingType = 'general'" class="hover:text-white">
                             <i class="fa-solid fa-car text-2xl text-gray-300"></i><br />
@@ -36,12 +36,12 @@
                 <div class="container flex items-center w-[24vw] mx-auto mt-14">
                     <div class="flex justify-center w-full">
                         <div
-                            class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
+                            class="rounded-xl text-white w-full border-t-4 border-b-4 border-purple-400/50 bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
 
                             <div
                                 class="relative w-full h-fit rounded-lg border border-gray-900 text-center max-h-[37vw] overflow-scroll overflow-x-hidden">
 
-                                <div class="p-4">
+                                <div class="p-4" v-if="vehicleData">
 
                                     <Transition name="slide-fade">
                                         <div v-if="browsingType == 'general'">
@@ -53,7 +53,7 @@
                                                             formatMod(vehicleData[item.dbName]) }})</label>
                                                     <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
                                                         :min="getMinIdx(item.name)" :max="getMaxIdx(item.name)"
-                                                        class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                                        class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
                                                     <div v-if="!playerData.is_in_player_dealer">
                                                         <button
                                                             @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
@@ -82,7 +82,7 @@
                                                             formatMod(vehicleData[item.dbName]) }})</label>
                                                     <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
                                                         :min="getMinIdx(item.name)" :max="getMaxIdx(item.name)"
-                                                        class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                                        class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
                                                     <div v-if="!playerData.is_in_player_dealer">
                                                         <button
                                                             @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
@@ -113,7 +113,7 @@
                                                     <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
                                                         :min="item.name == 'Colour One' || item.name == 'Colour Two' ? 0 : getMinIdx(item.name)"
                                                         :max="item.maxIdx ? item.maxIdx : getMaxIdx(item.name)"
-                                                        class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                                        class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
                                                     <div v-if="!playerData.is_in_player_dealer">
                                                         <button
                                                             @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
@@ -140,7 +140,7 @@
 
             <div class="absolute right-[3%] top-20">
 
-                <div class="bg-black/70 shadow-2xl shadow-black p-4 rounded-xl relative w-[24vw]">
+                <div class="bg-black/70 border-t-4 border-b-4 border-purple-400/50 shadow-2xl shadow-black p-4 rounded-xl relative w-[24vw]">
                     <div v-if="getCarImagePath" class="h-20">
                         <div class="float-left">
                             <font class="font-bold text-xl">
@@ -164,15 +164,19 @@
                 <div v-if="!playerData.is_in_player_dealer" class="container flex items-center w-[24vw] mx-auto mt-14">
                     <div class="flex justify-center w-full">
                         <div
-                            class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none max-h-[34vw]">
+                            class="rounded-xl text-white w-full bg-black/70 border-t-4 border-b-4 border-purple-400/50 shadow-2xl shadow-black border-gray-500 select-none max-h-[34vw]">
 
-                            <div class="relative border-b-2 p-4 border-gray-500">
+                            <div class="relative p-4">
                                 <h1 class="font-bold text-2xl pl-4"><i class="fa-solid fa-cart-shopping text-gray-400"></i>
                                     Your basket
 
                                     <font class="text-green-500 absolute right-10">${{
                                         getBasketPrice().toFixed(0).toLocaleString('en-US') }}</font>
                                 </h1>
+                            </div>
+
+                            <div class="mr-4 ml-4 border-gray-400/50 border-b-4">
+
                             </div>
 
                             <div
@@ -184,7 +188,7 @@
                                     </div>
 
                                     <div v-for="item in basketItems" :key="basketItems.indexOf(item)"
-                                        class="bg-gray-500/40 p-4 rounded-lg"
+                                        class="bg-purple-400/30 border border-black/40/40 p-4 rounded-lg"
                                         :class="basketItems.indexOf(item) == 0 ? '' : 'mt-4'">
 
                                         <div>
@@ -212,11 +216,11 @@
             <div class="fixed bottom-4 space-x-16 text-2xl w-full">
                 <div class="flex justify-center space-x-16">
                     <button @click="close"
-                        class="w-[250px] duration-300 hover:text-red-400 shadow-black shadow-2xl p-2 rounded-lg bg-black/70 border-gray-500">
+                        class="w-[250px] duration-300 hover:text-red-400 border-t-4 border-b-4 shadow-black shadow-2xl p-2 rounded-lg bg-black/70 border-red-400/50">
                         Close <i class="fa-solid fa-rotate-left text-red-400"></i>
                     </button>
                     <button @click="purchase"
-                        class="w-[250px] duration-300 p-2 rounded-lg hover:text-green-400 shadow-black shadow-2xl bg-black/70 border-gray-500">
+                        class="w-[250px] duration-300 p-2 rounded-lg hover:text-purple-400 shadow-black shadow-2xl bg-black/70 border-b-4 border-t-4 border-purple-400/50">
 
                         <span v-if="playerData.is_in_player_dealer">
                             Purchase Vehicle
@@ -225,7 +229,7 @@
                             Purchase
                         </span>
 
-                        <i class="fa-solid fa-dollar-sign text-green-400"></i>
+                        <i class="fa-solid fa-dollar-sign text-purple-400"></i>
                     </button>
                 </div>
             </div>

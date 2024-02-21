@@ -1,10 +1,10 @@
 <template>
-    <main class="relative">
-        <div class="absolute right-[3%] text-white">
+    <main class="flex justify-center w-full">
+        <div class="text-white">
 
-            <div class="relative mt-52 bg-black/70 p-3 rounded-xl">
+            <div class="relative mt-52 bg-black/70 border-b-4 border-t-4 border-purple-400/50 p-3 rounded-xl">
                 <h1 class="font-bold text-2xl pl-4">
-                    <i class="fa-solid fa-car text-gray-400"></i> Vehicle Insurance
+                    <i class="fa-solid fa-car text-gray-300"></i> Vehicle Insurance
                 </h1>
                 <CloseButton />
             </div>
@@ -12,9 +12,9 @@
             <div class="container flex items-center w-[25vw] mx-auto mt-6">
 
                 <div class="flex justify-center w-full">
-                    <div class="rounded-xl w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
+                    <div class="rounded-xl w-full bg-black/70 border-t-4 border-b-4 border-purple-400/50 shadow-2xl shadow-black select-none">
 
-                        <div class="relative w-full h-fit pb-2 rounded-lg border border-gray-900 ">
+                        <div class="relative w-full h-fit pb-2 rounded-xl">
                             <div class="max-h-[30vw] overflow-scroll overflow-x-hidden">
 
                                 <button @click="currentView = 'home'" v-if="currentView !== 'home'" class="mt-2 ml-2">
@@ -27,11 +27,11 @@
                                     <div class="w-full text-xl">
 
                                         <button @click="currentView = 'insurance'"
-                                            class="p-4 border w-full rounded-lg border-gray-500 duration-300 hover:text-gray-300">View
+                                            class="p-4 border-2 rounded-xl w-full border-purple-400/50 duration-300 hover:text-purple-400">View
                                             Insurance</button>
 
                                         <button @click="currentView = 'insure'"
-                                            class="p-4 border w-full mt-4 rounded-lg border-gray-500 duration-300 hover:text-gray-300">
+                                        class="p-4 border-2 rounded-xl w-full border-purple-400/50 duration-300 hover:text-purple-400 mt-4">
                                             Insure
                                             Vehicles</button>
                                     </div>
@@ -83,7 +83,7 @@
 
 
 
-                                    <div class="p-3 text-center border-t border-b pb-4 pt-4 border-gray-500"
+                                    <div class="p-3 text-center pb-4 pt-4"
                                         v-if="playerData.insurance_vehicle_data == 0">
                                         You don't have any vehicles in this insurance.
                                     </div>
@@ -128,7 +128,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="p-3 text-center border-t border-b pb-4 pt-4 border-gray-500"
+                                    <div class="p-3 text-center pb-4 pt-4 "
                                         v-if="playerData.uninsured_vehicle_data.length == 0">
                                         You don't have any vehicles valid for insurance. Ensure the vehicles are parked
                                         next

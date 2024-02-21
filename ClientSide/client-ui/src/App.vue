@@ -100,4 +100,54 @@ export default {
     height: 100%;
     box-shadow: 0 0 200px rgba(0, 0, 0, 0.9) inset;
 }
-</style>
+
+.colourBackground {
+    background: linear-gradient(130deg, rgba(1, 1, 1, 0.6), rgba(1, 1, 1, 0.84), rgba(1, 1, 1, 0.6));
+    background-size: 200% 200%;
+
+    -webkit-animation: Animation 4s ease infinite;
+    -moz-animation: Animation 5s ease infinite;
+    animation: Animation 5s ease infinite;
+}
+
+@-webkit-keyframes Animation {
+    0% {
+        background-position: 10% 0%
+    }
+
+    50% {
+        background-position: 91% 100%
+    }
+
+    100% {
+        background-position: 10% 0%
+    }
+}
+
+@-moz-keyframes Animation {
+    0% {
+        background-position: 10% 0%
+    }
+
+    50% {
+        background-position: 91% 100%
+    }
+
+    100% {
+        background-position: 10% 0%
+    }
+}
+
+@keyframes Animation {
+    0% {
+        background-position: 10% 0%
+    }
+
+    50% {
+        background-position: 91% 100%
+    }
+
+    100% {
+        background-position: 10% 0%
+    }
+}</style>

@@ -1,9 +1,9 @@
 <template>
     <main>
         <div class="fixed inset-0 z-10 w-full text-white text-lg">
-            <div class="container flex items-center max-w-5xl mx-auto mt-52 border rounded-lg border-gray-400">
+            <div class="container flex items-center max-w-5xl mx-auto mt-52 rounded-lg border-gray-400">
                 <div
-                    class="relative bg-[#0b0b0b]/70 w-full h-fit py-4 rounded-lg border border-gray-900 shadow-2xl shadow-black text-xl font-medium">
+                    class="relative bg-[#0b0b0b]/70 w-full h-fit py-4 rounded-lg border-b-4 border-t-4 border-purple-400/50 shadow-2xl shadow-black text-xl font-medium">
 
                     <h1 class="font-bold text-2xl pb-2 pl-4"><i class="text-gray-400"></i><i
                             class="fa-solid fa-shield text-gray-400"></i> Active Reports</h1>

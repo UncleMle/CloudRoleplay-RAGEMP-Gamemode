@@ -4,12 +4,16 @@
             <div class="container flex items-center max-w-3xl mx-auto mt-52">
                 <div class="flex justify-center w-full">
                     <div
-                        class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
+                        class="rounded-xl text-white w-full bg-black/70 border-t-4 border-b-4 shadow-2xl shadow-black border-purple-400/50 select-none">
 
                         <div class="relative w-full h-fit py-4 rounded-lg">
-                            <h1 class="font-bold text-2xl border-b-2 pb-2 border-gray-500 pl-4"><i
-                                    class="fa-solid fa-bus text-gray-400"></i> Available Routes</h1>
+                            <h1 class="font-bold text-2xl pb-2 pl-4"><i
+                                    class="fa-solid fa-bus text-gray-300"></i> Available Routes</h1>
                             <CloseButton />
+
+                            <div class="border-2 ml-4 mr-4 border-gray-400/50">
+
+                            </div>
 
                             <div class="max-h-[20vw] overflow-y-scroll">
                                 <div v-for="(item, idx) in playerData.player_bus_job_routes" :key="idx" class="p-3">

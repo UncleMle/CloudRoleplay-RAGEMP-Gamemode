@@ -4,45 +4,56 @@
             <div class="container flex items-center max-w-3xl mx-auto mt-52">
                 <div class="flex justify-center w-full">
                     <div
-                        class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
+                        class="rounded-xl text-white w-full bg-black/70 border-t-4 border-b-4 shadow-2xl shadow-black border-purple-400/50 select-none">
 
                         <div class="relative w-full h-fit py-4 rounded-lg">
-                            <h1 class="font-bold text-2xl pl-4"><i class="fa-solid fa-circle-info text-gray-400"></i> Help
+                            <h1 class="font-bold text-2xl pl-4 absolute"><i class="fa-solid fa-question text-gray-300"></i> Help
                             </h1>
                             <CloseButton />
 
-                            <ui class="flex justify-center mt-2 space-x-10 border-b-2 pb-2 border-gray-500">
-                                <button @click="browseView = 'commands'" class="hover:text-white">
+                            <ui class="flex justify-center mt-2 space-x-10 pb-2">
+                                <button @click="browseView = 'commands'" class="hover:text-purple-400">
                                     <i class="fa-solid fa-terminal pr-2"></i>
                                     <span class="text-gray-300 hover:text-white duration-300 font-medium">Commands</span>
                                 </button>
 
-                                <button @click="browseView = 'keybinds'" class="duration-300 hover:text-white">
+                                <button @click="browseView = 'keybinds'" class="duration-300 hover:text-purple-400">
                                     <i class="fa-solid fa-key pr-2"></i>
                                     <span class="text-gray-300 hover:text-white duration-300 font-medium">Keybinds</span>
                                 </button>
                             </ui>
 
+                            <div class="border-b-4 mr-4 ml-4 border-gray-400/50">
+
+                            </div>
+
                             <div class="p-3 text-center max-h-[30vw] overflow-y-scroll">
 
                                 <div v-if="browseView == 'commands'">
                                     <div v-for="(item, i) in commands" :key="i" class="pt-3 pb-3">
-                                        <div class="border-2 p-3 rounded-lg pb-5 border-gray-500">
+                                        <div class="border-2 p-3 rounded-lg pb-5 border-gray-400/30">
                                             <p class="pb-4 font-medium text-gray-300">{{ item.info }}</p>
-                                            <font class="bg-gray-500/50 p-2 text-xl rounded-lg font-bold">/{{ item.name }}
 
-                                                <font v-if="item.arguments.length > 0" class="text-yellow-300/80">[{{
-                                                    item.arguments.join(', ') }}]</font>
-                                            </font>
+                                            <div class="flex justify-center">
+                                                <div
+                                                    class="bg-purple-400/30 min-w-60 border border-black/40 p-2 text-xl rounded-lg font-bold">
+                                                    /{{ item.name }}
+
+                                                    <font v-if="item.arguments.length > 0" class="text-gray-300/80">[{{
+                                                        item.arguments.join(', ') }}]</font>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div v-if="browseView == 'keybinds'">
                                     <div v-for="(item, i) in keybinds" :key="i" class="pt-3 pb-3">
-                                        <div class="border-2 p-3 rounded-lg pb-5 border-gray-500">
+                                        <div class="border-2 p-3 rounded-lg pb-5 border-gray-400/30">
                                             <p class="pb-4 font-medium text-gray-300">{{ item.info }}</p>
-                                            <font class="bg-gray-500/50 p-2 text-xl rounded-lg font-bold">{{ item.bind }}
+                                            <font
+                                                class="bg-purple-400/30 border border-black/40 p-2 text-xl rounded-lg font-bold">
+                                                {{ item.bind }}
 
                                             </font>
                                         </div>
@@ -208,6 +219,16 @@ export default {
                     name: "logout",
                     arguments: [],
                     info: "Logs you out."
+                },
+                {
+                    name: "longdo",
+                    arguments: ["nameOrId", "message"],
+                    info: "Sends a long do statement to the given player."
+                },
+                {
+                    name: "licenses",
+                    arguments: [],
+                    info: "Shows you all your licenses."   
                 }
             ]
         }

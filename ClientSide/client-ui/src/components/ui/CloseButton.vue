@@ -1,6 +1,6 @@
 <template>
     <button @click="resetRouter()" class="absolute top-1 right-4">
-        <i class="fa-solid fa-xmark duration-300 hover:text-red-500"></i>
+        <i class="fa-solid fa-xmark duration-300 hover:text-purple-500"></i>
     </button>
 </template>
 

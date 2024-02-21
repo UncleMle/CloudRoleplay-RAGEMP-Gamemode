@@ -1,17 +1,17 @@
 <template>
-    <main>
+    <main class="vignette">
         <div class="fixed inset-0 w-full text-white text-lg">
             <div class="max-w-xl ml-10 mt-10">
                 <div
-                    class="rounded-xl font-medium text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
-                    <div class="flex border-b-2 border-gray-500">
+                    class="rounded-xl border-b-4 border-t-4 border-purple-400/50 font-medium text-white w-full bg-black/70 shadow-2xl shadow-black select-none">
                         <div class="p-3 text-xl">
-
                             <i class="fa-solid fa-person-half-dress text-gray-400 pr-2"></i>Character Creation
                         </div>
+
+                    <div class="border-b-2 mr-4 ml-4 border-gray-400/50">
                     </div>
 
-                    <ui class="flex justify-center mt-2 space-x-10 border-b-2 pb-2 border-gray-500">
+                    <ui class="flex justify-center mt-2 space-x-10 pb-2 border-gray-500">
                         <button @click="browsingType = 'General'" class="hover:text-green-500 duration-300"><i
                                 class="fa-solid fa-gear text-gray-400"></i><br /><span
                                 class="text-gray-400">General</span></button>
@@ -26,6 +26,8 @@
                                 class="text-gray-400">Other</span></button>
                     </ui>
 
+                    <div class="border-b-2 mr-4 ml-4 border-gray-400/50">
+                    </div>
 
                     <div :class="getCurrentHeight" class="duration-300">
 
@@ -72,20 +74,20 @@
                                 <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Mother</label>
                                 <input id="steps-range" v-model="characterData.model.firstHeadShape" type="range" min=0
                                     max=40 value=0
-                                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
                                 <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Father</label>
                                 <input id="steps-range" v-model="characterData.model.secondHeadShape" type="range" min="0"
                                     max="40" value="0"
-                                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                                 <label for="steps-range"
                                     class="block mb-2 text-sm font-medium  text-white mt-4 border-t-2 pt-4 border-gray-500">Mother
                                     / Father Mix</label>
                                 <input id="steps-range" v-model="characterData.model.headMix" type="range" min="0" max="100"
-                                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
                                 <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Skin Mix</label>
                                 <input id="steps-range" v-model="characterData.model.skinMix" type="range" min="0" max="100"
-                                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                             </div>
                         </div>
@@ -95,124 +97,124 @@
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Nose Width</label>
                             <input id="steps-range" v-model="characterData.model.noseWidth" type="range" min="-10" max="10"
                                 value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Nose Length</label>
                             <input id="steps-range" v-model="characterData.model.noseLength" type="range" min="-10" max="10"
                                 value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Nose Tip</label>
                             <input id="steps-range" v-model="characterData.model.noseTip" type="range" min="-10" max="10"
                                 value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Brow Height</label>
                             <input id="steps-range" v-model="characterData.model.browHeight" type="range" min="-10" max="10"
                                 value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Cheekbone
                                 Height</label>
                             <input id="steps-range" v-model="characterData.model.cheekBoneHeight" type="range" min="-10"
                                 max="10" value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Cheeks Width</label>
                             <input id="steps-range" v-model="characterData.model.cheeksWidth" type="range" min="-10"
                                 max="10" value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Lip Type</label>
                             <input id="steps-range" v-model="characterData.model.lips" type="range" min="-10" max="10"
                                 value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Jaw Height</label>
                             <input id="steps-range" v-model="characterData.model.jawHeight" type="range" min="-10" max="10"
                                 value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Chin
                                 Position</label>
                             <input id="steps-range" v-model="characterData.model.chinPosition" type="range" min="-10"
                                 max="10" value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Chin Shape</label>
                             <input id="steps-range" v-model="characterData.model.chinShape" type="range" min="-10" max="10"
                                 value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Nose Height</label>
                             <input id="steps-range" v-model="characterData.model.noseHeight" type="range" min="-10" max="10"
                                 value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Nose Bridge</label>
                             <input id="steps-range" v-model="characterData.model.noseBridge" type="range" min="-10" max="10"
                                 value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Nose Bridge
                                 Shift</label>
                             <input id="steps-range" v-model="characterData.model.noseBridgeShift" type="range" min="-10"
                                 max="10" value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Brow Width</label>
                             <input id="steps-range" v-model="characterData.model.browWidth" type="range" min="-10" max="10"
                                 value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Cheekbone
                                 Width</label>
                             <input id="steps-range" v-model="characterData.model.cheekBoneWidth" type="range" min="-10"
                                 max="10" value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Eye Type</label>
                             <input id="steps-range" v-model="characterData.model.eyes" type="range" min="-10" max="10"
                                 value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Jaw Width</label>
                             <input id="steps-range" v-model="characterData.model.jawWidth" type="range" min="-10" max="10"
                                 value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Chin Length</label>
                             <input id="steps-range" v-model="characterData.model.chinLength" type="range" min="-10" max="10"
                                 value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Chin Width</label>
                             <input id="steps-range" v-model="characterData.model.chinWidth" type="range" min="-10" max="10"
                                 value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Neck Width</label>
                             <input id="steps-range" v-model="characterData.model.neckWidth" type="range" min="-10" max="10"
                                 value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
 
                         </div>
@@ -221,82 +223,82 @@
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Hair Style</label>
                             <input id="steps-range" v-model="characterData.model.hairStyle" type="range" min="0" max="76"
                                 value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Hair Colour</label>
                             <input id="steps-range" v-model="characterData.model.hairColour" type="range" min="0" max="63"
                                 value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Eyebrows
                                 Style</label>
                             <input id="steps-range" v-model="characterData.model.eyebrowsStyle" type="range" min="0"
                                 max="40" value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Facial Hair
                                 Style</label>
                             <input id="steps-range" v-model="characterData.model.facialHairStyle" type="range" min="0"
                                 max="63" value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Hair
                                 Highlights</label>
                             <input id="steps-range" v-model="characterData.model.hairHighlights" type="range" min="0"
                                 max="63" value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Eyebrows Colour
                             </label>
                             <input id="steps-range" v-model="characterData.model.eyebrowsColour" type="range" min="0"
                                 max="63" value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Facial Hair
                                 Colour</label>
                             <input id="steps-range" v-model="characterData.model.facialHairColour" type="range" min="0"
                                 max="63" value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Chest hair
                                 style</label>
                             <input id="steps-range" v-model="characterData.model.chestHairStyle" type="range" min="0"
                                 max="16" value="0"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                         </div>
 
                         <div v-if="browsingType == 'Other'" class="mr-10 ml-10 mt-4">
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Blemishes</label>
                             <input id="steps-range" v-model="characterData.model.blemishes" type="range" min="-1" max="12"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Ageing</label>
                             <input id="steps-range" v-model="characterData.model.ageing" type="range" min="-1" max="14"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Complexion</label>
                             <input id="steps-range" v-model="characterData.model.complexion" type="range" min="-1" max="11"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Sundamage</label>
                             <input id="steps-range" v-model="characterData.model.sunDamage" type="range" min="-1" max="16"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Moles /
                                 Freckles</label>
                             <input id="steps-range" v-model="characterData.model.molesFreckles" type="range" min="-1"
                                 max="18"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Makeup</label>
                             <input id="steps-range" v-model="characterData.model.makeup" type="range" min="-1" max="100"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
 
                             <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Blush Style</label>
                             <input id="steps-range" v-model="characterData.model.blushStyle" type="range" min="-1" max="100"
-                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                         </div>
 
@@ -304,17 +306,17 @@
                     </div>
 
                 </div>
-                <div class="flex justify-center mt-4 bg-black/70 rounded-lg shadow-2xl shadow-black font-medium">
+                <div class="flex justify-center mt-4 bg-black/70 border-b-4 border-t-4 border-purple-400/50 rounded-lg shadow-2xl shadow-black font-medium">
                     <div class="w-full mr-10 ml-10 p-3 text-center">
                         <label for="steps-range" class="block mb-2 text-sm font-medium text-white">Rotation {{
-                            characterData.model.rotation }}</label>
+                            characterData.model.rotation }}°</label>
                         <input id="steps-range" v-model="characterData.model.rotation" type="range" min="0" max="360"
-                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
                     </div>
                 </div>
                 <div class="flex justify-center mt-4">
                     <button @click="createCharacter"
-                        class="p-2 w-full hover:text-green-400 bg-black/70 font-medium rounded-lg shadow-2xl shadow-black duration-300">Create
+                        class="p-2 w-full border-t-4 border-b-4 border-purple-400/50 hover:text-purple-400 bg-black/70 font-medium rounded-lg shadow-2xl shadow-black duration-300">Create
                         Character</button>
                 </div>
             </div>

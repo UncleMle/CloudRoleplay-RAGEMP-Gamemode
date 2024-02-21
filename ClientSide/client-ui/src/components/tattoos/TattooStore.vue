@@ -4,14 +4,18 @@
             <div class="container flex items-center w-[18vw] mx-auto mt-52">
                 <div class="flex justify-center w-full">
                     <div
-                        class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
+                        class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-b-4 border-t-4 border-purple-400/50 select-none">
 
                         <div class="relative w-full h-fit py-4 rounded-lg">
-                            <h1 class="font-bold text-2xl border-b-2 pb-2 border-gray-500 pl-4"><i
+                            <h1 class="font-bold text-2xl pb-2 pl-4"><i
                                     class="fa-solid fa-shirt text-gray-400"></i> Tattoo Store</h1>
                             <CloseButton :callback="close" />
 
-                            <ui class="flex justify-center mt-2 space-x-10 border-b-2 pb-2 border-gray-500">
+                            <div class="border-b-2 mr-4 ml-4 border-gray-400/50">
+
+                            </div>
+
+                            <ui class="flex justify-center mt-2 space-x-10 pb-2">
                                 <button v-if="armRight.length > 0" @click="browsingType = 'armRight'" class="hover:text-white">
                                     <span class="text-gray-300 hover:text-white duration-300">Right Arm</span>
                                 </button>
@@ -28,6 +32,10 @@
                                     <span class="text-gray-300 hover:text-white duration-300">Neck</span>
                                 </button>
                             </ui>
+
+                            <div class="border-b-2 ml-4 mr-4 border-gray-400/50">
+
+                            </div>
 
                             <div class="p-6 max-h-[20vw] overflow-x-hidden overflow-scroll">
                                 <div v-if="browsingType == 'armRight'">
@@ -137,18 +145,18 @@
                     </div>
                 </div>
             </div>
-            <div class="text-center mt-5 text-white font-medium bg-black/50 p-3 rounded-lg">
-                <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Rotation ({{ rotation
-                }})</label>
+            <div class="text-center mt-5 text-white font-medium bg-black/70 shadow-2xl shadow-black border-t-4 border-b-4 border-purple-400/50 p-3 rounded-lg">
+                <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Rotation {{ rotation
+                }}°</label>
                 <input id="steps-range" v-model="rotation" type="range" min="0" max="360"
-                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
             </div>
 
             <div class="text-center mt-5 text-white font-medium">
                 <button @click="purchaseTat" v-if="!loadingState" :disabled="loadingState"
-                    class="bg-black/60 w-full p-3 rounded-xl duration-300 hover:text-green-400"><i
-                        class="fa-solid fa-cart-shopping"></i> Purchase Tattoos</button>
-                <LoadingSpinner class="bg-black/60 w-full p-3 rounded-xl" v-if="loadingState" />
+                    class="bg-black/70 shadow-2xl shadow-black w-full p-3 duration-300 hover:text-purple-400 rounded-xl border-t-4 border-b-4 border-purple-400/50"><i
+                        class="fa-solid fa-cart-shopping text-purple-400"></i> Purchase Tattoos</button>
+                <LoadingSpinner class="bg-black/70 w-full p-3 rounded-xl  border-t-4 border-b-4 border-purple-400/50" v-if="loadingState" />
             </div>
         </div>
     </main>

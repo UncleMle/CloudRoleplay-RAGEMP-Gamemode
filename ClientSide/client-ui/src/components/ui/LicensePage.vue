@@ -4,14 +4,18 @@
             <div class="container max-w-xl mx-auto mt-[10%]">
                 <div class="flex justify-center w-full">
                     <div
-                        class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
+                        class="colourBackground rounded-xl text-white w-full bg-black/70 border-t-4 border-b-4 border-purple-400/50 shadow-2xl shadow-black border-gray-500 select-none">
 
                         <div class="relative w-full h-fit py-4 rounded-lg">
-                            <h1 class="font-bold text-2xl border-b-2 pb-2 border-gray-500 pl-4"><i
-                                    class="fa-solid fa-id-card text-gray-400"></i> {{ licenses.character_name }}'s Licenses
+                            <h1 class="font-bold text-2xl pb-2 pl-4"><i
+                                    class="fa-solid fa-id-card text-gray-300"></i> {{ licenses.character_name }}'s Licenses
                             </h1>
 
                             <CloseButton />
+
+                            <div class="border-b-4 border-gray-400/50 ml-4 mr-4">
+
+                            </div>
 
                             <div class="flex justify-center mt-4 font-medium text-xl"
                                 v-if="!licenses.character_license_data">
@@ -20,7 +24,7 @@
 
 
                             <div v-else>
-                                <div class="relative border mr-10 ml-10 mt-5 h-20 border-gray-500 rounded-lg font-medium"
+                                <div class="relative border-2 mr-10 ml-10 mt-5 h-20 border-purple-400/50 rounded-lg font-medium"
                                     v-for="(item, idx) in JSON.parse(licenses.character_license_data)" :key="idx">
 
                                     <font class="absolute left-4 top-3">{{ licenseData[item.license] }}</font>

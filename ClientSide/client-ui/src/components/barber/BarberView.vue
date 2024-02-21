@@ -26,7 +26,7 @@
                                     }}</label>
                                     <input id="steps-range" v-model="barberData[item]" type="range" min="-1"
                                         :max="maxIndexs[idx]" value="0"
-                                        class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                        class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                                 </div>
                             </div>
@@ -44,7 +44,7 @@
                     <span class="pb-2">Rotation ({{ rotation }}°)</span>
 
                     <input id="steps-range" v-model="rotation" type="range" min="0" max="360" value="0"
-                        class="w-full h-4 mt-3 rounded-lg appearance-none cursor-pointer bg-gray-500 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                        class="w-full h-4 mt-3 rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
                 </div>
 
             </div>

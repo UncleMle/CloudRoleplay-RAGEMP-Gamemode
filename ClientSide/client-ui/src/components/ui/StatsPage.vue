@@ -4,12 +4,16 @@
             <div class="container flex items-center max-w-3xl mx-auto mt-52">
                 <div class="flex justify-center w-full">
                     <div
-                        class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
+                        class="rounded-xl text-white w-full bg-black/70 border-b-4 border-t-4 border-purple-400/50 shadow-2xl shadow-black border-gray-500 select-none">
 
                         <div class="relative w-full h-fit py-4 rounded-lg">
-                            <h1 class="font-bold text-2xl border-b-2 pb-2 border-gray-500 pl-4"><i
+                            <h1 class="font-bold text-2xl pb-2 pl-4"><i
                                     class="fa-solid fa-list text-gray-400"></i> Player Stats</h1>
                             <CloseButton />
+
+                            <div class="border-b-4 mr-4 ml-4 border-gray-400/50">
+
+                            </div>
 
                             <div class="font-medium text-medium p-4">
                                 <div class="relative w-full mt-4">
@@ -21,24 +25,24 @@
                                     <span class="left-0 top-0 "><i class="fa-solid fa-money-bill pr-2"></i>Money
                                         Amount</span>
                                     <span class="absolute right-0 top-0 text-green-400">${{
-                                        characterStats.money_amount.toLocaleString("en-US") }}</span>
+                                        characterStats.money_amount?.toLocaleString("en-US") }}</span>
                                 </div>
                                 <div class="relative w-full mt-4">
                                     <span class="left-0 top-0 "><i class="fa-solid fa-money-bill pr-2"></i>Cash
                                         Amount</span>
                                     <span class="absolute right-0 top-0 text-green-400">${{
-                                        characterStats.cash_amount.toLocaleString("en-US") }}</span>
+                                        characterStats.cash_amount?.toLocaleString("en-US") }}</span>
                                 </div>
                                 <div class="relative w-full mt-4">
                                     <span class="left-0 top-0 "><i class="fa-solid fa-money-bill pr-2"></i>Salary
                                         Amount</span>
                                     <span class="absolute right-0 top-0 text-green-400">${{
-                                        characterStats.salary_amount.toLocaleString("en-US") }}</span>
+                                        characterStats.salary_amount?.toLocaleString("en-US") }}</span>
                                 </div>
                                 <div class="relative w-full mt-4">
                                     <span class="left-0 top-0 "><i class="fa-solid fa-star pr-2"></i>Experience</span>
                                     <span class="absolute right-0 top-0">{{
-                                        characterStats.player_exp.toLocaleString("en-US") }}</span>
+                                        characterStats.player_exp?.toLocaleString("en-US") }}</span>
                                 </div>
                                 <div class="relative w-full mt-4">
                                     <span class="left-0 top-0 "><i class="fa-solid fa-clock pr-2"></i>Play Time</span>
