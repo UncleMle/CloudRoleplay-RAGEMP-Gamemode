@@ -91,16 +91,6 @@ namespace CloudRP.ServerSystems.Admin
 
         }
 
-        [AdminCommand(AdminRanks.Admin_SeniorSupport, checkForAduty = false)]
-        [Command("ahelp", "~r~/ahelp", Group = "admin")]
-        public void adminHelpCommand(Player player)
-        {
-            for (int i = 0; i < NAPI.Resource.GetResourceCommands("CloudRP").Length; i++)
-            {
-                AdminUtils.staffSay(player, " /" + NAPI.Resource.GetResourceCommands("CloudRP")[i]);
-            }
-        }
-
         [Command("report", "~y~Use: ~w~/report [description]", GreedyArg = true)]
         public async Task onReport(Player player, string desc)
         {
@@ -162,7 +152,7 @@ namespace CloudRP.ServerSystems.Admin
             NAPI.Chat.SendChatMessageToAll(annMessage);
         }
 
-        [AdminCommand(AdminRanks.Admin_SeniorModerator)]
+        [AdminCommand(AdminRanks.Admin_Moderator)]
         [Command("aesp", "~r~/asep", Group = "admin")]
         public void adminEspToggle(Player player)
         {
@@ -1644,26 +1634,6 @@ namespace CloudRP.ServerSystems.Admin
             else AdminUtils.playerNotFound(player);
         }
 
-
-        [AdminCommand(AdminRanks.Admin_Developer)]
-        [Command("atruck", "~r~/atruck [truckName] [trailerName]")]
-        public void spawnInAdminTruck(Player player, string truckName, string trailerName)
-        {
-            DbCharacter characterData = player.getPlayerCharacterData();
-
-            if(characterData != null)
-            {
-                 (Vehicle veh, DbVehicle data) = VehicleSystem.buildVehicle(truckName, player.Position, 0, characterData.character_id, 111, 111, characterData.character_name);
-
-                if(veh != null)
-                {
-                    veh.addSyncedTrailer(trailerName);
-                }
-
-                AdminUtils.staffSay(player, "Spawned in truck.");
-            }
-        }
-
         [AdminCommand(AdminRanks.Admin_Moderator)]
         [Command("slay", "~r~/slay [nameOrId]")]
         public void slayCommand(Player player, string nameOrId)
@@ -1828,7 +1798,7 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_Founder)]
-        [Command("agivel", "~r~/agivel [nameOrId] [licenseId (0 - 1)]")]
+        [Command("agivel", "~r~/agivel [nameOrId] [license]")]
         public void giveAlicenseCommand(Player player, string nameOrId, Licenses license)
         {
             User user = player.getPlayerAccountData();
@@ -2019,45 +1989,6 @@ namespace CloudRP.ServerSystems.Admin
 
             AdminUtils.staffSay(player, $"You gave {character.character_name} VIP status for {days} days.");
             AdminUtils.staffSay(findPlayer, $"{playerUser.admin_name} gave you VIP status for {days} days.");
-        }
-
-        [AdminCommand(AdminRanks.Admin_Developer)]
-        [Command("sound", "~r~/sound [soudName] [soundSet]")]
-        public void soundPlay(Player player, string soundName, string soundSet)
-        {
-            uiHandling.sendSound(player, soundName, soundSet);
-
-            AdminUtils.staffSay(player, $"{soundName} __ {soundSet}");
-        }
-
-
-        [AdminCommand(AdminRanks.Admin_Developer)]
-        [Command("gyatt", "~y~Use: ~w~/gyatt [size]")]
-        public void gyattCommandForMichel(Player player, int gyattSize)
-        {
-            if(gyattSize > 100)
-            {
-                CommandUtils.errorSay(player, "You can only spawn in 100 gyatts at a time!");
-                return;
-            }
-
-            User user = player.getPlayerAccountData();
-
-            for(int i = 0; i < gyattSize; i++)
-            {
-                NAPI.Ped.CreatePed(PedHash.Abigail, player.Position.Around(2), player.Rotation.Z, 0);
-            }
-
-            uiHandling.sendNotification(player, $"SPAWNED in {gyattSize} gyatts!!!", false, true, $"Spawns in {gyattSize} GYATTTs");
-            AdminUtils.sendMessageToAllStaff($"{user.admin_name} SPAWNED in {gyattSize} gyatts!!!.", 0, true);
-        }
-
-        [AdminCommand(AdminRanks.Admin_Developer)]
-        [Command("aaa", "~r~/aaa [dict] [name]")]
-        public void animTestCommand(Player player, string dict, string name)
-        {
-            player.TriggerEvent("anim:testClient", dict, name);
-            player.SendChatMessage($"dict {dict} | name {name}");
         }
 
         [AdminCommand(AdminRanks.Admin_Founder)]

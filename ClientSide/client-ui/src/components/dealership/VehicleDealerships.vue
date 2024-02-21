@@ -2,7 +2,8 @@
     <body class="w-full text-white font-medium">
         <div v-if="!loadingState" class="flex justify-center mt-6">
             <div class="p-2 text-center w-[40%] relative">
-                <div class="absolute w-full rounded-xl shadow-2xl shadow-black bg-black/70 p-2 border-b-4 border-t-4 border-purple-400/50">
+                <div
+                    class="absolute w-full rounded-xl shadow-2xl shadow-black colourBackground p-2 border-b-4 border-t-4 border-purple-400/50">
                     <font class="text-2xl font-bold">
                         <i class="fa-solid fa-car text-gray-300"></i>
                         Vehicle Dealership
@@ -14,8 +15,8 @@
         <main v-if="!loadingState" class="relative">
             <div class="absolute left-[1%] top-20">
 
-                <div class="bg-black/70 border-b-4 border-t-4 border-purple-400/50 shadow-2xl shadow-black rounded-xl">
-                    <ui class="flex justify-center space-x-5 border-gray-500 p-4">
+                <div class="colourBackground border-b-4 border-t-4 border-purple-400/50 shadow-2xl shadow-black rounded-xl">
+                    <ui class="flex justify-center space-x-5 border-gray-400/40 p-4">
                         Choose a vehicle
                     </ui>
                 </div>
@@ -32,14 +33,16 @@
                                         :key="playerData.vehicle_dealer_data.vehicles.indexOf(item)">
 
 
-                                        <div class="bg-black/70 border-b-4 border-t-4 border-purple-400/50 shadow-md shadow-black/70 h-32 p-4 rounded-xl relative"
+                                        <div class="colourBackground border-b-4 border-t-4 border-purple-400/50 shadow-md shadow-black/70 h-32 p-4 rounded-xl relative"
                                             :class="playerData.vehicle_dealer_data.vehicles.indexOf(item) == 0 ? '' : 'mt-6'">
                                             <div class="relative w-full">
                                                 <img :src="getCarImagePath(item.spawnName)" alt="Car Image"
                                                     class="absolute rounded-xl w-40 h-24" />
 
                                                 <font class="absolute font-bold text-2xl">
-                                                    {{ playerData.vehicle_dealer_data.vehDispNames[playerData.vehicle_dealer_data.vehicles.indexOf(item)] }}
+                                                    {{
+                                                        playerData.vehicle_dealer_data.vehDispNames[playerData.vehicle_dealer_data.vehicles.indexOf(item)]
+                                                    }}
                                                 </font>
 
                                             </div>
@@ -63,7 +66,7 @@
 
             <div class="absolute right-[1%] top-20">
                 <div v-if="playerData.vehicle_performance_data"
-                    class="bg-black/70 shadow-2xl shadow-black p-4 rounded-xl relative h-full w-[24vw] font-medium border-b-4 border-t-4 border-purple-400/50">
+                    class="colourBackground shadow-2xl shadow-black p-4 rounded-xl relative h-full w-[24vw] font-medium border-b-4 border-t-4 border-purple-400/50">
                     <div class="w-full">
                         <div class=" w-full duration-300">
 
@@ -87,14 +90,15 @@
                     </div>
                 </div>
 
-                <div class="bg-black/70 shadow-2xl shadow-black rounded-xl border-t-4 border-b-4 border-purple-400/50"
+                <div class="colourBackground shadow-2xl shadow-black rounded-xl border-t-4 border-b-4 border-purple-400/50"
                     :class="playerData.vehicle_performance_data ? 'mt-14' : ''">
                     <ui class="flex justify-center space-x-5 p-4">
                         Choose your vehicle's colour
                     </ui>
                 </div>
 
-                <div class="bg-black/70 border-b-4 border-t-4 border-purple-400/50 shadow-2xl shadow-black p-4 rounded-xl relative h-full w-[24vw] mt-14">
+                <div
+                    class="colourBackground border-b-4 border-t-4 border-purple-400/50 shadow-2xl shadow-black p-4 rounded-xl relative h-full w-[24vw] mt-14">
                     <div class="grid grid-cols-4 gap-4">
                         <div class="text-center" v-for="item in possibleVehicleColours"
                             :key="possibleVehicleColours.indexOf(item)">
@@ -110,22 +114,23 @@
             <div class="fixed bottom-4 text-2xl w-full">
 
                 <div class="flex justify-center ">
-                    <div class="w-[450px] bg-black/70 border-b-4 border-t-4 border-purple-400/50 shadow-2xl shadow-black/60 pr-4 pl-4 pt-1 pb-2 rounded-lg">
+                    <div
+                        class="w-[450px] colourBackground border-b-4 border-t-4 border-purple-400/50 shadow-2xl shadow-black/60 pr-4 pl-4 pt-1 pb-2 rounded-lg">
                         <label for="steps-range" class="block mb-2 text-sm font-medium  text-white text-center">Rotation {{
-                            rotation }}</label>
+                            rotation }}°</label>
                         <input id="steps-range" v-model="rotation" type="range" min="0" max="360"
-                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-gray-400/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
                     </div>
                 </div>
 
                 <div class="flex justify-center mt-6 space-x-16">
 
                     <button @click="close"
-                    class="w-[250px] duration-300 hover:text-red-400 border-t-4 border-b-4 shadow-black shadow-2xl p-2 rounded-lg bg-black/70 border-red-400/50">
+                        class="w-[250px] duration-300 hover:text-red-400 border-t-4 border-b-4 shadow-black shadow-2xl p-2 rounded-lg colourBackground border-red-400/50">
                         Close <i class="fa-solid fa-rotate-left text-red-400"></i>
                     </button>
                     <button @click="purchaseVehicle"
-                    class="w-[250px] duration-300 p-2 rounded-lg hover:text-purple-400 shadow-black shadow-2xl bg-black/70 border-b-4 border-t-4 border-purple-400/50">
+                        class="w-[250px] duration-300 p-2 rounded-lg hover:text-purple-400 shadow-black shadow-2xl colourBackground border-b-4 border-t-4 border-purple-400/50">
                         Purchase
                         <i class="fa-solid fa-dollar-sign text-purple-400"></i>
                     </button>
@@ -133,7 +138,7 @@
             </div>
         </main>
 
-        <div v-if="loadingState" class="flex bg-black/70 h-screen items-center justify-center">
+        <div v-if="loadingState" class="flex colourBackground h-screen items-center justify-center">
             <b role="status" class="flex justify-center">
                 <svg class="h-20 w-20 animate-spin text-gray-500 fill-black/30" viewBox="0 0 100 101" fill="none"
                     xmlns="http://www.w3.org/2000/svg">

@@ -4,7 +4,7 @@
             <div class="container flex items-center max-w-3xl mx-auto mt-52">
                 <div class="flex justify-center w-full">
                     <div
-                        class="rounded-xl text-white w-full bg-black/70 border-t-4 border-b-4 border-purple-400/50 shadow-2xl shadow-black select-none">
+                        class="colourBackground rounded-xl text-white w-full colourBackground border-t-4 border-b-4 border-purple-400/50 shadow-2xl shadow-black select-none">
 
                         <div class="relative w-full h-fit py-4 rounded-lg">
                             <h1 class="font-bold text-2xl pb-2 pl-4"><i
@@ -32,7 +32,7 @@
                                     <div class="absolute w-full bottom-0">
                                         <div class="flex justify-center">
                                             <button @click="startCourse(item.courseId)"
-                                                class="w-full w-[40%] p-1.5 bg-black/40 rounded-lg border-gray-500 duration-300 hover:text-green-400 hover:border-green-400">
+                                                class="w-full w-[40%] p-1.5 bg-black/40 rounded-lg border-gray-400/40 duration-300 hover:text-green-400 hover:border-green-400">
                                                 <i class="fa-solid fa-play"></i>
                                             </button>
                                         </div>

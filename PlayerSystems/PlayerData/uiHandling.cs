@@ -214,6 +214,7 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string MaskStoreState = "in_mask_store";
         public static readonly string JobCenterJobs = "job_center_jobs";
         public static readonly string AutoLogin = "auto_auth_data";
+        public static readonly string Admin = "admin_data";
     }
 
     public class PromptUiData

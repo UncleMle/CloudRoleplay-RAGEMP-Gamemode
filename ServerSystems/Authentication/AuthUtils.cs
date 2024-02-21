@@ -5,7 +5,6 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using VisualStudioConfiguration;
 using System.Linq;
 using GTANetworkAPI;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;

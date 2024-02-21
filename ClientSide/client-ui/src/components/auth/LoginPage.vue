@@ -48,7 +48,7 @@
                 <div class="duration-300 container flex items-center max-w-lg mx-auto mt-14 absolute left-10">
                     <div class="flex justify-center w-full">
                         <div
-                            class="rounded-xl text-white w-full bg-black/70 border-b-4 border-t-4 border-purple-400/50 shadow-2xl shadow-black select-none duration-300">
+                            class="rounded-xl text-white w-full colourBackground border-b-4 border-t-4 border-purple-400/50 shadow-2xl shadow-black select-none duration-300">
                             <div class="border-gray-400 p-3">
                                 <i class="fa-solid fa-shield absolute mt-1.5 text-gray-400"></i>
                                 <h1 class="flex justify-start text-xl font-bold ml-8">Account</h1>
@@ -198,7 +198,7 @@
 
                                 <div v-for="(item, i) in characters.player_characters" :key="i">
 
-                                    <div class="p-6 font-medium border rounded-3xl border-gray-500 mt-2 shadow-2xl">
+                                    <div class="p-6 font-medium border rounded-3xl border-gray-400/40 mt-2 shadow-2xl">
 
                                         <div v-if="item.character_isbanned"
                                             class="flex justify-center bg-red-500/40 p-3 rounded-lg shadow-xl shadow-red-500/10">
@@ -241,7 +241,7 @@
                                         </table>
                                         <button :disabled="item.character_isbanned == 1 || uiStates.serverLoading"
                                             @click="playCharacter(item.character_id)"
-                                            class="border p-2 w-full mt-10 rounded-lg border-gray-500 duration-300"
+                                            class="border p-2 w-full mt-10 rounded-lg border-gray-400/40 duration-300"
                                             :class="item.character_isbanned == 1 ? 'hover:border-red-500' : 'hover:border-green-500'">
                                             <i v-if="item.character_isbanned == 1"
                                                 class="fa-solid fa-xmark text-red-500"></i>

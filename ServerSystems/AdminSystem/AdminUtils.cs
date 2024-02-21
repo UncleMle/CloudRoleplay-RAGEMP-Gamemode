@@ -1,15 +1,15 @@
 ﻿using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
-using CloudRP.ServerSystems.Admin;
 using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.Database;
+using CloudRP.ServerSystems.Utils;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CloudRP.ServerSystems.Utils
+namespace CloudRP.ServerSystems.Admin
 {
     internal class AdminUtils : Script
     {
@@ -243,5 +243,11 @@ namespace CloudRP.ServerSystems.Utils
         public int playerId { get; set; }
         public int reportId { get; set; }
         public string description { get; set; }
+    }
+
+    public class AdminUiData
+    {
+        public string rankName { get; set; }
+        public int rankId { get; set; }
     }
 }

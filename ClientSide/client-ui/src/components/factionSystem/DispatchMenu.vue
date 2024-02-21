@@ -4,10 +4,10 @@
             <div class="container flex items-center w-[22vw] mx-auto mt-52">
                 <div class="flex justify-center w-full">
                     <div
-                        class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
+                        class="rounded-xl text-white w-full colourBackground shadow-2xl shadow-black border-gray-400/40 select-none">
 
                         <div class="relative w-full h-fit py-4 rounded-lg ">
-                            <h1 class="font-bold text-2xl border-b-2 pb-2 border-gray-500 pl-4"><i
+                            <h1 class="font-bold text-2xl border-b-2 pb-2 border-gray-400/40 pl-4"><i
                                     class="fa-solid fa-list text-gray-400"></i> Dispatch Menu</h1>
                             <CloseButton />
 
@@ -19,7 +19,7 @@
 
                                 <div v-for="(item, idx) in playerData.faction_dispatch_calls" :key="idx">
 
-                                    <div class="border-b-2 border-t-2 pb-2 border-gray-500 p-4 font-medium">
+                                    <div class="border-b-2 border-t-2 pb-2 border-gray-400/40 p-4 font-medium">
 
                                         {{ item.Value.characterName }} {{ item.Value.callDesc }}.
 

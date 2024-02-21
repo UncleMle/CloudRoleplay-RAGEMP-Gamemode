@@ -2,7 +2,7 @@
     <main class="flex justify-center w-full">
         <div class="text-white">
 
-            <div class="relative mt-52 bg-black/70 border-b-4 border-t-4 border-purple-400/50 p-3 rounded-xl">
+            <div class="relative mt-52 colourBackground border-b-4 border-t-4 border-purple-400/50 p-3 rounded-xl">
                 <h1 class="font-bold text-2xl pl-4">
                     <i class="fa-solid fa-car text-gray-300"></i> Vehicle Insurance
                 </h1>
@@ -12,7 +12,7 @@
             <div class="container flex items-center w-[25vw] mx-auto mt-6">
 
                 <div class="flex justify-center w-full">
-                    <div class="rounded-xl w-full bg-black/70 border-t-4 border-b-4 border-purple-400/50 shadow-2xl shadow-black select-none">
+                    <div class="rounded-xl w-full colourBackground border-t-4 border-b-4 border-purple-400/50 shadow-2xl shadow-black select-none">
 
                         <div class="relative w-full h-fit pb-2 rounded-xl">
                             <div class="max-h-[30vw] overflow-scroll overflow-x-hidden">
@@ -41,7 +41,7 @@
 
                                 <div v-if="currentView === 'insurance'">
                                     <div v-for="(item, i) in playerData.insurance_vehicle_data" :key="i">
-                                        <div class="border-t-2 w-full mt-6 relative p-6 border-b-2 border-gray-500">
+                                        <div class="border-t-2 w-full mt-6 relative p-6 border-b-2 border-gray-400/40">
                                             <div v-if="getCarImagePath(item.vehicle_name)" class="absolute right-3">
                                                 <img :src="getCarImagePath(item.vehicle_name)" alt="Car Image"
                                                     class="w-30 h-20 rounded-xl" />
@@ -93,7 +93,7 @@
                                 <div v-if="currentView === 'insure'">
 
                                     <div v-for="(item, i) in playerData.uninsured_vehicle_data" :key="i">
-                                        <div class="border-t-2 w-full mt-6 relative p-6 border-b-2 border-gray-500">
+                                        <div class="border-t-2 w-full mt-6 relative p-6 border-b-2 border-gray-400/40">
 
                                             <div v-if="getCarImagePath(item.vehicle_name)" class="absolute right-3">
                                                 <img :src="getCarImagePath(item.vehicle_name)" alt="Car Image"

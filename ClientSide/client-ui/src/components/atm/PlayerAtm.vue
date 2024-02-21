@@ -4,11 +4,11 @@
             <div class="container flex items-center max-w-3xl mx-auto mt-52">
                 <div class="flex justify-center w-full">
                     <div
-                        class="rounded-xl text-white w-full bg-black/70 border-t-4 border-b-4 border-purple-400/50 shadow-2xl shadow-black border-gray-500 select-none">
+                        class="rounded-xl text-white w-full colourBackground border-t-4 border-b-4 border-purple-400/50 shadow-2xl shadow-black border-gray-400/40 select-none">
 
                         <div class="relative w-full h-fit py-4 rounded-lg duration-300 text-xl text-gray-200 font-medium">
-                            <h1 class="font-bold text-2xl pb-2 pl-4"><i
-                                    v-if="!playerData.atm_data.isBank" class="fa-solid fa-money-bill text-gray-300"></i>
+                            <h1 class="font-bold text-2xl pb-2 pl-4"><i v-if="!playerData.atm_data.isBank"
+                                    class="fa-solid fa-money-bill text-gray-300"></i>
                                 <i v-else class="fa-solid fa-building-columns text-gray-400"></i>
                                 {{ playerData.atm_data.isBank ? "Bank" : "Atm" }} Management
                             </h1>
@@ -19,7 +19,7 @@
                             <CloseButton />
 
                             <button @click="browserView = 'home'" v-if="browserView != 'home'"
-                                class="absolute left-2 text-2xl duration-300 hover:text-red-400">
+                                class="absolute left-2 text-2xl duration-300 hover:text-purple-400">
                                 <i class="fa-solid fa-arrow-left"></i>
                             </button>
 
@@ -78,7 +78,7 @@
                                             placeholder="Enter an amount to withdraw" />
                                     </div>
                                     <button @click="withdrawPlayerCash" :disabled="serverLoading"
-                                        class="w-full border p-3.5 rounded-lg border-gray-600 bg-black/50 duration-300 hover:text-green-400">
+                                        class="w-full border-2 p-3.5 rounded-lg border-purple-400/50 duration-300 hover:text-purple-400">
                                         <LoadingSpinner v-if="serverLoading" />
                                         <span v-else>Withdraw</span>
                                     </button>
@@ -105,7 +105,7 @@
                                             placeholder="Enter an amount to withdraw" />
                                     </div>
                                     <button @click="transferCash" :disabled="serverLoading"
-                                        class="w-full border p-3.5 rounded-lg border-gray-600 bg-black/50 duration-300 hover:text-green-400">
+                                        class="w-full border-2 p-3.5 rounded-lg border-purple-400/50 duration-300 hover:text-purple-400">
                                         <LoadingSpinner v-if="serverLoading" />
                                         <span v-else>Transfer</span>
                                     </button>
@@ -127,7 +127,7 @@
                                             placeholder="Enter an amount to deposit" />
                                     </div>
                                     <button @click="depositPlayerCash" :disabled="serverLoading"
-                                        class="w-full border p-3.5 rounded-lg border-gray-600 bg-black/50 duration-300 hover:text-green-400">
+                                        class="w-full border-2 p-3.5 rounded-lg border-purple-400/50 duration-300 hover:text-purple-400">
                                         <LoadingSpinner v-if="serverLoading" />
                                         <span v-else>Deposit</span>
                                     </button>
@@ -144,8 +144,8 @@
                                 <div class="mt-6 mr-[15%] ml-[15%] space-y-5">
                                     <button @click="retrieveSalary"
                                         :disabled="serverLoading || playerData.atm_data.balanceSalary == 0"
-                                        class="w-full border p-3.5 rounded-lg border-gray-600 bg-black/50 duration-300"
-                                        :class="playerData.atm_data.balanceSalary == 0 ? 'hover:text-red-400' : 'hover:text-green-400'">
+                                        class="w-full border-2 p-3.5 rounded-lg border-purple-400/50 duration-300"
+                                        :class="playerData.atm_data.balanceSalary == 0 ? 'hover:text-red-400' : 'hover:text-purple-400'">
                                         <LoadingSpinner v-if="serverLoading" />
                                         <span v-else>Retrieve</span>
                                     </button>
@@ -188,16 +188,22 @@ export default {
     },
     methods: {
         withdrawPlayerCash() {
+            if (this.withdrawCash.length === 0) return;
+
             this.$store.state.uiStates.serverLoading = true;
 
             promptMenu("fa-solid fa-bank", "Withdraw Cash", `Are you sure you want to withdraw $${parseInt(this.withdrawCash).toLocaleString("en-US")}?`, "server:atmWithdrawCash", parseInt(this.withdrawCash), "/atm");
         },
         depositPlayerCash() {
+            if (this.depositAmount.length === 0) return;
+
             this.$store.state.uiStates.serverLoading = true;
 
             promptMenu("fa-solid fa-bank", "Deposit Cash", `Are you sure you want to deposit $${parseInt(this.depositAmount).toLocaleString("en-US")}?`, "server:bankDepositCash", parseInt(this.depositAmount), "/atm");
         },
         transferCash() {
+            if (this.transferCashAmount.length === 0) return;
+
             this.$store.state.uiStates.serverLoading = true;
 
             promptMenu("fa-solid fa-bank", "Transfer Money", `Are you sure you want to transfer $${parseInt(this.transferCashAmount).toLocaleString("en-US")}?`, "server:bankTransferSomeone", JSON.stringify({
@@ -207,6 +213,7 @@ export default {
         },
         retrieveSalary() {
             this.$store.state.uiStates.serverLoading = true;
+
             promptMenu("fa-solid fa-bank", "Retrieve Salary", `Are you sure you want to retrieve your $${this.playerData.atm_data.balanceSalary.toLocaleString("en-US")} in salary?`, "server:bank:retrieveSalary", null, "/atm");
         }
     }

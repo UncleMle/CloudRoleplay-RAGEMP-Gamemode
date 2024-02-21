@@ -2,7 +2,7 @@
     <div v-if="uiStates.speedoUi" class="text-white font-medium">
         <div v-if="uiStates.vehicleRadar" class="absolute left-[1%] bottom-[28.5%]">
             <div class="rounded-xl w-[20rem] bg-black/40">
-                <div class="text-xl border-b-2 border-gray-500 p-2">
+                <div class="text-xl border-b-2 border-gray-400/40 p-2">
                     <i class="fa-solid fa-satellite-dish text-gray-400"></i> Police Radar <font
                         class="text-sm text-red-400">{{ Object.entries(uiStates.vehicleRadarData).length > 0 &&
                             uiStates.vehRadarLastTracked ? "- Last locked on" : "" }}</font>
@@ -103,7 +103,7 @@
                 <div
                     class="bg-black/50 rounded-b-xl flex justify-center h-[3vw] mt-2 items-center border-t-2 shadow-2xl shadow-black/50 border-gray-600 overflow-hidden">
                     <div class="rounded-lg text-gray-300" v-for="num in getMileageArr()" :key="num.key">
-                        <font id="odometer" class="border-1 p-2.5 bg-black/70 border border-gray-900/50"
+                        <font id="odometer" class="border-1 p-2.5 colourBackground border border-gray-900/50"
                             :class="num.key == getMileageArr().length - 1 ? 'rounded-r-lg' : num.key == 0 ? 'rounded-l-lg' : ''">
                             {{ num.num }}</font>
                     </div>

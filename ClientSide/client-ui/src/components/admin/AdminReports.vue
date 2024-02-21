@@ -14,19 +14,19 @@
                         <table class="border-separate border-spacing-4 w-full font-normal h-20">
                             <thead>
                                 <tr>
-                                    <th class="border-b-2 border-gray-500">Player</th>
-                                    <th class="border-b-2 border-gray-500">Report ID</th>
-                                    <th class="border-b-2 border-gray-500">Description</th>
-                                    <th class="border-b-2 border-gray-500">Action</th>
+                                    <th class="border-b-2 border-gray-400/40">Player</th>
+                                    <th class="border-b-2 border-gray-400/40">Report ID</th>
+                                    <th class="border-b-2 border-gray-400/40">Description</th>
+                                    <th class="border-b-2 border-gray-400/40">Action</th>
                                 </tr>
                             </thead>
                             <tbody class="text-center">
                                 <tr v-for="(item, i) in reportData" :key="i" class="max-h-10">
-                                    <td class="border-b-2 border-gray-500">Player [{{ item.playerId }}]</td>
-                                    <td class="border-b-2 border-gray-500">Report [{{ item.reportId }}]</td>
-                                    <td class="border-b-2 border-gray-500 max-w-xs overflow-hidden text-ellipsis text-sm">{{
+                                    <td class="border-b-2 border-gray-400/40">Player [{{ item.playerId }}]</td>
+                                    <td class="border-b-2 border-gray-400/40">Report [{{ item.reportId }}]</td>
+                                    <td class="border-b-2 border-gray-400/40 max-w-xs overflow-hidden text-ellipsis text-sm">{{
                                         item.description }}</td>
-                                    <td class="border-b-2 border-gray-500 max-w-xs overflow-hidden text-ellipsis">
+                                    <td class="border-b-2 border-gray-400/40 max-w-xs overflow-hidden text-ellipsis">
                                         <button @click="accept(item.reportId)" class="p-2 mr-2"><i
                                                 class="fa-solid fa-check text-green-400"></i></button>
                                         <button @click="close(item.reportId)" class="p-2"><i

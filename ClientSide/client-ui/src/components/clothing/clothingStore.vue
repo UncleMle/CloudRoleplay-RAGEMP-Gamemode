@@ -4,10 +4,10 @@
             <div class="container flex items-center w-[18vw] mx-auto mt-52">
                 <div class="flex justify-center w-full">
                     <div
-                        class="rounded-xl text-white w-full bg-black/70 shadow-2xl border-b-4 border-t-4 border-purple-400/50 shadow-black border-gray-500 select-none">
+                        class="rounded-xl text-white w-full colourBackground shadow-2xl border-b-4 border-t-4 border-purple-400/50 shadow-black border-gray-400/40 select-none">
 
                         <div class="relative w-full h-fit py-4 rounded-lg ">
-                            <h1 class="font-bold text-2xl pb-2 border-gray-500 pl-4"><i
+                            <h1 class="font-bold text-2xl pb-2 border-gray-400/40 pl-4"><i
                                     class="fa-solid fa-shirt text-gray-400"></i> Clothing Store</h1>
                             <CloseButton />
 
@@ -49,13 +49,13 @@
                                     <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Masks ({{
                                         clothingData.mask }})</label>
                                     <input id="steps-range" v-model="clothingData.mask" type="range" min="0" max="196"
-                                        class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                        class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-gray-400/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                                     <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Masks
                                         Variant ({{ clothingData.mask_texture }})</label>
                                     <input id="steps-range" v-model="clothingData.mask_texture" type="range" min="0"
                                         max="10"
-                                        class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                        class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-gray-400/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
                                 </div>
 
                                 <div v-else>
@@ -64,34 +64,34 @@
                                         <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Top ({{
                                             clothingData.top }})</label>
                                         <input id="steps-range" v-model="clothingData.top" type="range" min="0" max="392"
-                                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-gray-400/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                                         <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Top
                                             Variant
                                             ({{ clothingData.top_texture }})</label>
                                         <input id="steps-range" v-model="clothingData.top_texture" type="range" min="0"
                                             max="10"
-                                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-gray-400/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                                         <label for="steps-range"
                                             class="block mb-2 text-sm font-medium  text-white">Undershirt
                                             ({{ clothingData.undershirt == -1 ? 0 : clothingData.undershirt }})</label>
                                         <input id="steps-range" v-model="clothingData.undershirt" type="range" min="-1"
                                             max="188"
-                                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-gray-400/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                                         <label for="steps-range"
                                             class="block mb-2 text-sm font-medium  text-white">Undershirt
                                             Variant ({{ clothingData.undershirt_texture }})</label>
                                         <input id="steps-range" v-model="clothingData.undershirt_texture" type="range"
                                             min="0" max="10"
-                                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-gray-400/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                                         <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Torso
                                             ({{
                                                 clothingData.torso }})</label>
                                         <input id="steps-range" v-model="clothingData.torso" type="range" min="0" max="196"
-                                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-gray-400/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                                     </div>
 
@@ -101,13 +101,13 @@
                                             ({{
                                                 clothingData.leg }})</label>
                                         <input id="steps-range" v-model="clothingData.leg" type="range" min="0" max="143"
-                                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-gray-400/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                                         <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Pants
                                             Variant ({{ clothingData.leg_texture }})</label>
                                         <input id="steps-range" v-model="clothingData.leg_texture" type="range" min="0"
                                             max="10"
-                                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-gray-400/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                                     </div>
 
@@ -117,13 +117,13 @@
                                             ({{
                                                 clothingData.shoes }})</label>
                                         <input id="steps-range" v-model="clothingData.shoes" type="range" min="0" max="101"
-                                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-gray-400/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                                         <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Shoes
                                             Variant ({{ clothingData.shoes_texture }})</label>
                                         <input id="steps-range" v-model="clothingData.shoes_texture" type="range" min="0"
                                             max="10"
-                                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-gray-400/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
 
                                     </div>
                                 </div>
@@ -142,7 +142,7 @@
                 <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Rotation {{ rotation
                 }}°</label>
                 <input id="steps-range" v-model="rotation" type="range" min="0" max="360"
-                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-gray-400/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
             </div>
 
             <div class="text-center mt-5 text-white font-medium">

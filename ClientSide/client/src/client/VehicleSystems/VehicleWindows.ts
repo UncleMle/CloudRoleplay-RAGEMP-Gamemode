@@ -11,7 +11,7 @@ export default class VehicleWindows {
 	}
 
 	private static handleDataHandler(entity: VehicleMp, data: VehicleData) {
-		if(entity.type === "vehicle" && data !== undefined) {
+		if (entity.type === "vehicle" && data !== undefined) {
 			let vehicleData: VehicleData | undefined = getVehicleData(entity as VehicleMp);
 
 			if (!vehicleData || !vehicleData.vehicle_windows) return;
@@ -21,7 +21,7 @@ export default class VehicleWindows {
 	}
 
 	private static handleStreamIn(entity: EntityMp) {
-		if(entity.type === "vehicle") {
+		if (entity.type === "vehicle") {
 			let vehicleData: VehicleData | undefined = getVehicleData(entity as VehicleMp);
 
 			if (!vehicleData || !vehicleData.vehicle_windows) return;

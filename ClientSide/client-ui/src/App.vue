@@ -102,40 +102,12 @@ export default {
 }
 
 .colourBackground {
-    background: linear-gradient(130deg, rgba(1, 1, 1, 0.6), rgba(1, 1, 1, 0.84), rgba(1, 1, 1, 0.6));
+    background: linear-gradient(130deg, rgba(1, 1, 1, 0.7), rgba(1, 1, 1, 0.68), rgba(1, 1, 1, 0.62));
     background-size: 200% 200%;
 
     -webkit-animation: Animation 4s ease infinite;
     -moz-animation: Animation 5s ease infinite;
     animation: Animation 5s ease infinite;
-}
-
-@-webkit-keyframes Animation {
-    0% {
-        background-position: 10% 0%
-    }
-
-    50% {
-        background-position: 91% 100%
-    }
-
-    100% {
-        background-position: 10% 0%
-    }
-}
-
-@-moz-keyframes Animation {
-    0% {
-        background-position: 10% 0%
-    }
-
-    50% {
-        background-position: 91% 100%
-    }
-
-    100% {
-        background-position: 10% 0%
-    }
 }
 
 @keyframes Animation {
@@ -144,10 +116,54 @@ export default {
     }
 
     50% {
-        background-position: 91% 100%
+        background-position: 100% 100%
     }
 
     100% {
         background-position: 10% 0%
     }
-}</style>
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(1126, 96, 156, 0);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #b1a1ff;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #838383;
+}
+
+::-webkit-scrollbar {
+    width: 0.4vw;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.425);
+    border-radius: 20px;
+}
+
+.v-enter-active,
+.v-leave-active {
+    transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+    opacity: 0;
+}
+
+* {
+    user-select: none;
+}
+
+*:focus {
+    outline: none;
+}
+</style>

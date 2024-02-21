@@ -7,7 +7,6 @@ using GTANetworkAPI;
 using System;
 using System.Security.Cryptography;
 using System.Timers;
-using VisualStudioConfiguration;
 
 namespace CloudRP.World.TimeWeather
 {

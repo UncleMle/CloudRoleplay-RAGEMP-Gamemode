@@ -8,6 +8,7 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
 	state: {
 		playerInfo: {
+			admin_data: {},
 			player_stats: {},
 			player_data_server: {},
 			player_data_gui: {},

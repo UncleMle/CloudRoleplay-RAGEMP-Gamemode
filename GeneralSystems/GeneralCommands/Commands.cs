@@ -2,6 +2,7 @@
 using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.ChatSystem;
 using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.ServerSystems.Admin;
 using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
@@ -328,6 +329,16 @@ namespace CloudRP.GeneralSystems.GeneralCommands
         [Command("help", "~y~Use: ~w~/help")]
         public void onHelpCommand(Player player)
         {
+            User user = player.getPlayerAccountData();
+
+            if (user == null) return;
+
+            uiHandling.handleObjectUiMutation(player, MutationKeys.Admin, new AdminUiData
+            {
+                rankId = user.admin_status,
+                rankName = RankList.adminRanksList[user.admin_status]
+            });
+
             uiHandling.pushRouterToClient(player, Browsers.Help);
         }
 

@@ -4,7 +4,7 @@
             <div class="container flex items-center w-[18vw] mx-auto mt-52">
                 <div class="flex justify-center w-full">
                     <div
-                        class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-b-4 border-t-4 border-purple-400/50 select-none">
+                        class="rounded-xl text-white w-full colourBackground shadow-2xl shadow-black border-b-4 border-t-4 border-purple-400/50 select-none">
 
                         <div class="relative w-full h-fit py-4 rounded-lg">
                             <h1 class="font-bold text-2xl pb-2 pl-4"><i
@@ -49,7 +49,7 @@
                                                 <button :disabled="checkIfAlreadyHave(item.HashNameMale, item.HashNameFemale)"
                                                     v-if="!checkIfSelectedContains(item.HashNameMale, item.HashNameFemale)"
                                                     @click="addTat(item.HashNameMale, item.HashNameFemale)"
-                                                    :class="checkIfAlreadyHave(item.HashNameMale, item.HashNameFemale) ? 'text-gray-400 border-gray-500' : 'border-green-400/40'"
+                                                    :class="checkIfAlreadyHave(item.HashNameMale, item.HashNameFemale) ? 'text-gray-400 border-gray-400/40' : 'border-green-400/40'"
                                                     class="border p-1 w-44 rounded-xl font-medium">
                                                     <i v-if="!checkIfAlreadyHave(item.HashNameMale, item.HashNameFemale)"
                                                         class="fa-solid fa-check-to-slot text-green-400"></i>
@@ -75,7 +75,7 @@
                                                 <button :disabled="checkIfAlreadyHave(item.HashNameMale, item.HashNameFemale)"
                                                     v-if="!checkIfSelectedContains(item.HashNameMale, item.HashNameFemale)"
                                                     @click="addTat(item.HashNameMale, item.HashNameFemale)"
-                                                    :class="checkIfAlreadyHave(item.HashNameMale, item.HashNameFemale) ? 'text-gray-400 border-gray-500' : 'border-green-400/40'"
+                                                    :class="checkIfAlreadyHave(item.HashNameMale, item.HashNameFemale) ? 'text-gray-400 border-gray-400/40' : 'border-green-400/40'"
                                                     class="border p-1 w-44 rounded-xl font-medium">
                                                     <i v-if="!checkIfAlreadyHave(item.HashNameMale, item.HashNameFemale)"
                                                         class="fa-solid fa-check-to-slot text-green-400"></i>
@@ -100,7 +100,7 @@
                                                 <button :disabled="checkIfAlreadyHave(item.HashNameMale, item.HashNameFemale)"
                                                     v-if="!checkIfSelectedContains(item.HashNameMale, item.HashNameFemale)"
                                                     @click="addTat(item.HashNameMale, item.HashNameFemale)"
-                                                    :class="checkIfAlreadyHave(item.HashNameMale, item.HashNameFemale) ? 'text-gray-400 border-gray-500' : 'border-green-400/40'"
+                                                    :class="checkIfAlreadyHave(item.HashNameMale, item.HashNameFemale) ? 'text-gray-400 border-gray-400/40' : 'border-green-400/40'"
                                                     class="border p-1 w-44 rounded-xl font-medium">
                                                     <i v-if="!checkIfAlreadyHave(item.HashNameMale, item.HashNameFemale)"
                                                         class="fa-solid fa-check-to-slot text-green-400"></i>
@@ -125,7 +125,7 @@
                                                 <button :disabled="checkIfAlreadyHave(item.HashNameMale, item.HashNameFemale)"
                                                     v-if="!checkIfSelectedContains(item.HashNameMale, item.HashNameFemale)"
                                                     @click="addTat(item.HashNameMale, item.HashNameFemale)"
-                                                    :class="checkIfAlreadyHave(item.HashNameMale, item.HashNameFemale) ? 'text-gray-400 border-gray-500' : 'border-green-400/40'"
+                                                    :class="checkIfAlreadyHave(item.HashNameMale, item.HashNameFemale) ? 'text-gray-400 border-gray-400/40' : 'border-green-400/40'"
                                                     class="border p-1 w-44 rounded-xl font-medium">
                                                     <i v-if="!checkIfAlreadyHave(item.HashNameMale, item.HashNameFemale)"
                                                         class="fa-solid fa-check-to-slot text-green-400"></i>
@@ -145,18 +145,18 @@
                     </div>
                 </div>
             </div>
-            <div class="text-center mt-5 text-white font-medium bg-black/70 shadow-2xl shadow-black border-t-4 border-b-4 border-purple-400/50 p-3 rounded-lg">
+            <div class="text-center mt-5 text-white font-medium colourBackground shadow-2xl shadow-black border-t-4 border-b-4 border-purple-400/50 p-3 rounded-lg">
                 <label for="steps-range" class="block mb-2 text-sm font-medium  text-white">Rotation {{ rotation
                 }}°</label>
                 <input id="steps-range" v-model="rotation" type="range" min="0" max="360"
-                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                    class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-gray-400/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
             </div>
 
             <div class="text-center mt-5 text-white font-medium">
                 <button @click="purchaseTat" v-if="!loadingState" :disabled="loadingState"
-                    class="bg-black/70 shadow-2xl shadow-black w-full p-3 duration-300 hover:text-purple-400 rounded-xl border-t-4 border-b-4 border-purple-400/50"><i
+                    class="colourBackground shadow-2xl shadow-black w-full p-3 duration-300 hover:text-purple-400 rounded-xl border-t-4 border-b-4 border-purple-400/50"><i
                         class="fa-solid fa-cart-shopping text-purple-400"></i> Purchase Tattoos</button>
-                <LoadingSpinner class="bg-black/70 w-full p-3 rounded-xl  border-t-4 border-b-4 border-purple-400/50" v-if="loadingState" />
+                <LoadingSpinner class="colourBackground w-full p-3 rounded-xl  border-t-4 border-b-4 border-purple-400/50" v-if="loadingState" />
             </div>
         </div>
     </main>

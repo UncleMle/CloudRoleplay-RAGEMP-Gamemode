@@ -54,6 +54,7 @@ namespace CloudRP
             {
                 logException(eventArgs);
             };
+
         }
 
         [ServerEvent(Event.ResourceStart)]

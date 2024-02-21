@@ -1,11 +1,12 @@
 <template>
     <body class="vignette w-full text-white font-medium">
         <div v-if="!loadingState" class="flex justify-center mt-6">
-            <div v-if="!playerData.is_in_player_dealer" class="p-2 text-center w-[40%] relative">
-                <div class="absolute w-full rounded-xl shadow-2xl shadow-black border-t-4 border-b-4 border-purple-400/50 bg-black/70 p-2">
+            <div class="p-2 text-center w-[40%] relative">
+                <div
+                    class="absolute w-full rounded-xl shadow-2xl shadow-black border-t-4 border-b-4 border-purple-400/50 colourBackground p-2">
                     <font class="text-3xl font-bold">
                         <i class="fa-solid fa-car text-gray-300"></i>
-                        Vehicle Customs
+                        {{ playerData.is_in_player_dealer ? "Market Vehicle" : "Vehicle Customs" }}
                     </font>
                 </div>
             </div>
@@ -14,8 +15,8 @@
         <main v-if="!loadingState" class="relative">
             <div class="absolute left-[3%] top-20">
 
-                <div class="bg-black/70 shadow-2xl shadow-black rounded-xl border-t-4 border-b-4 border-purple-400/50">
-                    <ui class="flex justify-center space-x-5 border-gray-500 p-4">
+                <div class="colourBackground shadow-2xl shadow-black rounded-xl border-t-4 border-b-4 border-purple-400/50">
+                    <ui class="flex justify-center space-x-5 border-gray-400/40 p-4">
                         <button @click="browsingType = 'general'" class="hover:text-white">
                             <i class="fa-solid fa-car text-2xl text-gray-300"></i><br />
                             <span class="text-gray-300 hover:text-white duration-300">General</span>
@@ -36,7 +37,7 @@
                 <div class="container flex items-center w-[24vw] mx-auto mt-14">
                     <div class="flex justify-center w-full">
                         <div
-                            class="rounded-xl text-white w-full border-t-4 border-b-4 border-purple-400/50 bg-black/70 shadow-2xl shadow-black border-gray-500 select-none">
+                            class="rounded-xl text-white w-full border-t-4 border-b-4 border-purple-400/50 colourBackground shadow-2xl shadow-black border-gray-400/40 select-none">
 
                             <div
                                 class="relative w-full h-fit rounded-lg border border-gray-900 text-center max-h-[37vw] overflow-scroll overflow-x-hidden">
@@ -53,17 +54,17 @@
                                                             formatMod(vehicleData[item.dbName]) }})</label>
                                                     <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
                                                         :min="getMinIdx(item.name)" :max="getMaxIdx(item.name)"
-                                                        class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                                        class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-gray-400/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
                                                     <div v-if="!playerData.is_in_player_dealer">
                                                         <button
                                                             @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
                                                             v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
-                                                            class="border duration-300 w-[20%] mr-4 p-0.5 mt-2 rounded-lg border-gray-500 hover:text-red-500">
+                                                            class="border-b-2 border-red-400 duration-300 w-[20%] mr-4 p-0.5 mt-2 hover:scale-105">
                                                             Reset <i class="fa-solid fa-rotate-left text-red-500"></i>
                                                         </button>
                                                         <button @click="addToBasket(item.name, vehicleData[item.dbName])"
                                                             v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
-                                                            class="border duration-300 w-[20%] p-0.5 mt-2 rounded-lg border-gray-500 hover:text-green-500">
+                                                            class="border-b-2 border-green-400 duration-300 w-[20%] mr-4 p-0.5 mt-2 hover:scale-105">
                                                             Add <i class="fa-solid fa-plus text-green-500"></i>
                                                         </button>
                                                     </div>
@@ -82,17 +83,17 @@
                                                             formatMod(vehicleData[item.dbName]) }})</label>
                                                     <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
                                                         :min="getMinIdx(item.name)" :max="getMaxIdx(item.name)"
-                                                        class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                                        class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-gray-400/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
                                                     <div v-if="!playerData.is_in_player_dealer">
                                                         <button
                                                             @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
                                                             v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
-                                                            class="border duration-300 w-[20%] mr-4 p-0.5 mt-2 rounded-lg border-gray-500 hover:text-red-500">
+                                                            class="border-b-2 border-red-400 duration-300 w-[20%] mr-4 p-0.5 mt-2 hover:scale-105">
                                                             Reset <i class="fa-solid fa-rotate-left text-red-500"></i>
                                                         </button>
                                                         <button @click="addToBasket(item.name, vehicleData[item.dbName])"
                                                             v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
-                                                            class="border duration-300 w-[20%] p-0.5 mt-2 rounded-lg border-gray-500 hover:text-green-500">
+                                                            class="border-b-2 border-green-400 duration-300 w-[20%] mr-4 p-0.5 mt-2 hover:scale-105">
                                                             Add <i class="fa-solid fa-plus text-green-500"></i>
                                                         </button>
                                                     </div>
@@ -113,17 +114,17 @@
                                                     <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
                                                         :min="item.name == 'Colour One' || item.name == 'Colour Two' ? 0 : getMinIdx(item.name)"
                                                         :max="item.maxIdx ? item.maxIdx : getMaxIdx(item.name)"
-                                                        class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-black/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                                                        class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-gray-400/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
                                                     <div v-if="!playerData.is_in_player_dealer">
                                                         <button
                                                             @click="vehicleData[item.dbName] = vehicleDataOld[item.dbName]"
                                                             v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
-                                                            class="border duration-300 w-[20%] mr-4 p-0.5 mt-2 rounded-lg border-gray-500 hover:text-red-500">
+                                                            class="border-b-2 border-red-400 duration-300 w-[20%] mr-4 p-0.5 mt-2 hover:scale-105">
                                                             Reset <i class="fa-solid fa-rotate-left text-red-500"></i>
                                                         </button>
                                                         <button @click="addToBasket(item.name, vehicleData[item.dbName])"
                                                             v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
-                                                            class="border duration-300 w-[20%] p-0.5 mt-2 rounded-lg border-gray-500 hover:text-green-500">
+                                                            class="border-b-2 border-green-400 duration-300 w-[20%] mr-4 p-0.5 mt-2 hover:scale-105">
                                                             Add <i class="fa-solid fa-plus text-green-500"></i>
                                                         </button>
                                                     </div>
@@ -140,7 +141,8 @@
 
             <div class="absolute right-[3%] top-20">
 
-                <div class="bg-black/70 border-t-4 border-b-4 border-purple-400/50 shadow-2xl shadow-black p-4 rounded-xl relative w-[24vw]">
+                <div
+                    class="colourBackground border-t-4 border-b-4 border-purple-400/50 shadow-2xl shadow-black p-4 rounded-xl relative w-[24vw]">
                     <div v-if="getCarImagePath" class="h-20">
                         <div class="float-left">
                             <font class="font-bold text-xl">
@@ -164,10 +166,10 @@
                 <div v-if="!playerData.is_in_player_dealer" class="container flex items-center w-[24vw] mx-auto mt-14">
                     <div class="flex justify-center w-full">
                         <div
-                            class="rounded-xl text-white w-full bg-black/70 border-t-4 border-b-4 border-purple-400/50 shadow-2xl shadow-black border-gray-500 select-none max-h-[34vw]">
+                            class="rounded-xl text-white w-full colourBackground border-t-4 border-b-4 border-purple-400/50 shadow-2xl shadow-black border-gray-400/40 select-none max-h-[34vw]">
 
                             <div class="relative p-4">
-                                <h1 class="font-bold text-2xl pl-4"><i class="fa-solid fa-cart-shopping text-gray-400"></i>
+                                <h1 class="font-bold text-2xl pl-4"><i class="fa-solid fa-cart-shopping text-gray-300"></i>
                                     Your basket
 
                                     <font class="text-green-500 absolute right-10">${{
@@ -188,7 +190,7 @@
                                     </div>
 
                                     <div v-for="item in basketItems" :key="basketItems.indexOf(item)"
-                                        class="bg-purple-400/30 border border-black/40/40 p-4 rounded-lg"
+                                        class="border-2 border-purple-400/50 p-4 rounded-lg"
                                         :class="basketItems.indexOf(item) == 0 ? '' : 'mt-4'">
 
                                         <div>
@@ -198,7 +200,7 @@
 
                                                 <div class="absolute right-5 bottom-0">
                                                     <button @click="removeFromBasket(item.name, item.val)"
-                                                        class="bg-red-500/40 p-2 pr-3 pl-3 rounded-lg"><i
+                                                        class="bg-red-500/40 p-2 pr-3 pl-3 rounded-lg duration-300 hover:scale-125"><i
                                                             class="fa-solid fa-trash"></i></button>
                                                 </div>
                                             </div>
@@ -216,11 +218,11 @@
             <div class="fixed bottom-4 space-x-16 text-2xl w-full">
                 <div class="flex justify-center space-x-16">
                     <button @click="close"
-                        class="w-[250px] duration-300 hover:text-red-400 border-t-4 border-b-4 shadow-black shadow-2xl p-2 rounded-lg bg-black/70 border-red-400/50">
+                        class="w-[250px] duration-300 hover:text-red-400 border-t-4 border-b-4 shadow-black shadow-2xl p-2 rounded-lg colourBackground border-red-400/50">
                         Close <i class="fa-solid fa-rotate-left text-red-400"></i>
                     </button>
                     <button @click="purchase"
-                        class="w-[250px] duration-300 p-2 rounded-lg hover:text-purple-400 shadow-black shadow-2xl bg-black/70 border-b-4 border-t-4 border-purple-400/50">
+                        class="w-[250px] duration-300 p-2 rounded-lg hover:text-purple-400 shadow-black shadow-2xl colourBackground border-b-4 border-t-4 border-purple-400/50">
 
                         <span v-if="playerData.is_in_player_dealer">
                             Purchase Vehicle
@@ -235,7 +237,7 @@
             </div>
         </main>
 
-        <div v-if="loadingState" class="flex bg-black/70 h-screen items-center justify-center">
+        <div v-if="loadingState" class="flex colourBackground h-screen items-center justify-center">
             <b role="status" class="flex justify-center">
                 <svg class="h-20 w-20 animate-spin text-gray-500 fill-black/30" viewBox="0 0 100 101" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
@@ -477,6 +479,7 @@ export default {
         },
         purchase() {
             this.$store.state.uiStates.serverLoading = true;
+            window.mp.trigger("vehicle:setAttachments", JSON.stringify(this.playerData.vehicle_mod_data_old), true);
 
             if (!this.playerData.is_in_player_dealer) {
                 window.mp.trigger("browser:sendObject", "server:vehicleModsSave", JSON.stringify(this.vehicleData));

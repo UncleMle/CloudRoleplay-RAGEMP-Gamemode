@@ -1,5 +1,5 @@
 export enum BrowserEnv {
-	development = "192.168.1.188:3000", //"package://dist/index.html",
+	development = "192.168.1.188:3001", //"package://dist/index.html",
 	production = "http://package2/index.html" // 192.168.1.188:3000/?#/
 }
 

@@ -4,13 +4,17 @@
             <div class="container flex items-center max-w-[25vw] mx-auto mt-52">
                 <div class="flex justify-center w-full">
                     <div
-                        class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none font-medium">
+                        class="rounded-xl text-white w-full colourBackground shadow-2xl border-t-4 border-b-4 shadow-black border-purple-500/50 select-none font-medium">
 
                         <div class="relative w-full py-4 rounded-lg ">
-                            <h1 class="font-bold text-2xl border-b-2 pb-2 border-gray-500 pl-4"><i
+                            <h1 class="font-bold text-2xl pb-2 pl-4"><i
                                     :class="playerData.player_prompt_data.icon + ' text-gray-400'"></i> {{
                                         playerData.player_prompt_data.title }}
                             </h1>
+
+                            <div class="border-2 ml-4 mr-4 border-gray-400/50"> 
+
+                            </div>
 
                             <div class="p-2 text-center mt-3 text-xl overflow-auto">
 
@@ -28,13 +32,13 @@
 
             <div>
                 <button @click="close"
-                    class="border-2 border-red-400/60 bg-black/70 shadow-black shadow-2xl p-3 w-40 mr-28 rounded-lg duration-300 hover:border-red-400">
+                    class="border-b-4 border-red-400/60 colourBackground shadow-black shadow-2xl p-3 w-40 mr-28 rounded-lg duration-300 hover:border-red-400 hover:scale-105">
                     Close</button>
             </div>
 
             <div>
                 <button @click="server(playerData.player_prompt_data.callBackEvent)"
-                    class="border-2 border-green-400/60 bg-black/70 shadow-black shadow-2xl p-3 w-40 rounded-lg duration-300 hover:border-green-400">
+                    class="border-b-4 border-green-400/60 colourBackground shadow-black shadow-2xl p-3 w-40 rounded-lg duration-300 hover:border-green-400 hover:scale-105">
                     Accept</button>
             </div>
 

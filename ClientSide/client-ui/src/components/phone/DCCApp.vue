@@ -12,7 +12,7 @@
                 playerData.dcc_data.onDutyMembers == 1 ? "driver" : "drivers" }} on shift.</span>
         </div>
 
-        <div class="flex justify-center h-14 mt-4 border ml-2 mr-2 p-2 rounded-lg border-gray-500"
+        <div class="flex justify-center h-14 mt-4 border ml-2 mr-2 p-2 rounded-lg border-gray-400/40"
             v-for="(item, idx) in playerData.dcc_data.services" :key="idx">
 
             <div class="relative w-full">
