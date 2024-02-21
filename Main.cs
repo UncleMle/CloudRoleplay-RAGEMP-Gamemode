@@ -28,6 +28,7 @@ namespace CloudRP
 
         public static event PlayerEventsHandler playerDisconnect;
 
+        public static readonly string serverName = "cloud-rp.net";
         public static string ProductionBuild = "";
         public static string JsonDirectory = "";
         public static string _dbHost = "";

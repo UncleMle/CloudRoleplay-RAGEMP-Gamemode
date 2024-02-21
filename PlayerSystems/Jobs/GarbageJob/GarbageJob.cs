@@ -5,9 +5,10 @@ using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
 using CloudRP.WorldSystems.MarkersLabels;
+using CloudRP.WorldSystems.NpcInteractions;
 using GTANetworkAPI;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.EntityFrameworkCore.Update;
+using Microsoft.EntityFrameworkCore.Update;  
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,8 @@ namespace CloudRP.PlayerSystems.Jobs.GarbageJob
         public static readonly string spawnName = "trash";
         public static readonly string _garbageJobDataKey = "jobs:garbage:stopsDone";
         public static readonly Vector3 finishJob = new Vector3(-345.7, -1562.7, 25.2);
+        public static int npcId = -1;
+        public static readonly float npcHeading = -85.0f; 
 
         public static List<Vector3> stops = new List<Vector3>
         {
@@ -44,11 +47,24 @@ namespace CloudRP.PlayerSystems.Jobs.GarbageJob
 
         public GarbageJob()
         {
-            KeyPressEvents.keyPress_Y += startGarbageJob;
+            NpcInteractions.onNpcInteract += (Player player, int targetNpc, string raycastOption) =>
+            {
+                if (npcId == targetNpc)
+                {
+                    uiHandling.sendPrompt(player,
+                        "fa-solid fa-briefcase",
+                        "Garbage Job Start",
+                        $"Are you sure you want to start this job for the pay of ${jobPay.ToString("N0")} with a total of {stops.Count} stops",
+                        "server:jobs:garbageJob:start"
+                     );
+                }
+            };
             KeyPressEvents.keyPress_E += iterateJobState;
 
-            MarkersAndLabels.setPlaceMarker(startJob);
-            MarkersAndLabels.setTextLabel(startJob, $"Garbage Job\nUse ~y~Y~w~ to interact\nJob Pay ~g~${jobPay.ToString("N0")}\nStops ~y~{stops.Count}", 5f);
+            npcId = NpcInteractions.buildPed(PedHash.GarbageSMY, startJob, npcHeading, "Darren - Little Pricks", new string[]
+            {
+                "Start Garbage Job"
+            });
 
             NAPI.Blip.CreateBlip(318, startJob, 1f, 81, "Garbage Job", 255, 0, true, 0, 0);
 
@@ -61,24 +77,6 @@ namespace CloudRP.PlayerSystems.Jobs.GarbageJob
         }
 
         #region Global Methods
-        private static void startGarbageJob(Player player)
-        {
-            if (!player.checkIsWithinCoord(startJob, 2f) || FreelanceJobSystem.hasAJob(player, jobId) || FreelanceJobSystem.hasFreeLanceVehicle(player)) return;
-
-            player.setFreelanceJobData(new FreeLanceJobData
-            {
-                jobId = jobId,
-                jobName = jobName,
-                jobLevel = -1,
-                jobStartedUnix = CommandUtils.generateUnix()
-            });
-
-            FreelanceJobSystem.createFreelanceVehicle(player, spawnName, spawnVehiclesAt, spawnVehiclesRot, jobId, jobName, "GBG");
-
-            uiHandling.sendNotification(player, "Started job.", false);
-            player.ResetData(_garbageJobDataKey);
-        }
-
         private static void iterateJobState(Player player)
         {
             Vector3 stop = stops.Where(s => player.checkIsWithinCoord(s, 2f))
@@ -160,6 +158,27 @@ namespace CloudRP.PlayerSystems.Jobs.GarbageJob
             MarkersAndLabels.loadClientBlips(player, stops, "Garbage Stop", 1, 3, true);
 
             player.SetCustomData(_garbageJobDataKey, new List<Vector3>());
+        }
+        #endregion
+
+        #region Remote Events
+        [RemoteEvent("server:jobs:garbageJob:start")]
+        private static void startGarbageJob(Player player)
+        {
+            if (!player.checkIsWithinCoord(startJob, 2f) || FreelanceJobSystem.hasAJob(player, jobId) || FreelanceJobSystem.hasFreeLanceVehicle(player)) return;
+
+            player.setFreelanceJobData(new FreeLanceJobData
+            {
+                jobId = jobId,
+                jobName = jobName,
+                jobLevel = -1,
+                jobStartedUnix = CommandUtils.generateUnix()
+            });
+
+            FreelanceJobSystem.createFreelanceVehicle(player, spawnName, spawnVehiclesAt, spawnVehiclesRot, jobId, jobName, "GBG");
+
+            uiHandling.sendNotification(player, "Started job.", false);
+            player.ResetData(_garbageJobDataKey);
         }
         #endregion
     }

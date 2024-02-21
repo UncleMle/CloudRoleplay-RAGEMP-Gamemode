@@ -1,6 +1,6 @@
 <template>
-    <main class="w-full">
-        <div v-if="uiStates.serverLoading" class="bg-black/70 w-full h-screen flex justify-center">
+    <main class="vignette w-full bg-black/40 bg-blend-multiply w-full h-full">
+        <div v-if="uiStates.serverLoading" class="w-full h-screen flex justify-center">
             <svg class="h-20 w-20 animate-spin text-gray-500 fill-black/30 mt-[20%]" viewBox="0 0 100 101" fill="none"
                 xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -12,17 +12,50 @@
             </svg>
         </div>
 
+        <img src="https://i.imgur.com/EiCnXu9.png" class="absolute right-4 top-4 w-24 h-24">
+
+        <div v-if="uiStates.authenticationState !== 'charSelect'"
+            class="absolute left-4 top-4 w-[19.5vw] border-b-4 border-t-4 border-purple-400/50 text-white text-center bg-black/60 p-5 font-medium text-xl rounded-xl">
+            <div class="relative h-full text-center">
+                <div class="text-center left-0 right-0">
+
+                    <span class="bg-black/20 p-2 text-[15px] rounded-xl">
+                        https://cloud-rp.net/ucp
+                    </span>
+
+                    <p class="text-xs mt-2 text-gray-300">Login and manage your account on the UCP.
+                    </p>
+                </div>
+
+                <div class="text-center left-0 right-0 mt-4">
+                    <span class="bg-black/20 p-2 text-[15px] rounded-xl">
+                        https://cloud-rp.net/discord
+                    </span>
+
+                    <p class="text-xs mt-2 text-gray-300">Interact with the community on our discord
+                        server.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
         <body v-if="!uiStates.serverLoading">
+
 
             <div v-if="uiStates.authenticationState == 'charSelect'"
                 class="fixed inset-0 w-full text-white text-lg duration-300 font-medium">
                 <div class="duration-300 container flex items-center max-w-lg mx-auto mt-14 absolute left-10">
                     <div class="flex justify-center w-full">
                         <div
-                            class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none duration-300">
-                            <div class="border-b-2 border-gray-400 p-3">
+                            class="rounded-xl text-white w-full bg-black/70 border-b-4 border-t-4 border-purple-400/50 shadow-2xl shadow-black select-none duration-300">
+                            <div class="border-gray-400 p-3">
                                 <i class="fa-solid fa-shield absolute mt-1.5 text-gray-400"></i>
                                 <h1 class="flex justify-start text-xl font-bold ml-8">Account</h1>
+                            </div>
+
+                            <div class="border-b-4 mr-4 ml-4 border-gray-400/50">
+
                             </div>
 
                             <div class="p-5 pb-8 text-lg">
@@ -79,7 +112,7 @@
                 <div class="duration-300 container flex items-center max-w-3xl mx-auto" :class="baseStyle">
                     <div class="flex justify-center w-full">
                         <div
-                            class="rounded-xl text-white w-full bg-black/70 shadow-2xl shadow-black border-gray-500 select-none duration-300">
+                            class="rounded-xl text-white w-full bg-black/60 border-b-4 border-t-4 shadow-2xl shadow-black border-purple-400/50 select-none duration-300">
 
                             <div class="text-2xl">
                                 <div class="p-4 relative h-14">
@@ -92,7 +125,7 @@
                                         <span v-else>
                                             <i class="fa-solid fa-person absolute mt-1.5 text-gray-400"></i>
                                             <i class="fa-solid fa-person-dress absolute mt-1.5 ml-3 text-gray-400"></i>
-                                            <h1 class="flex justify-start text-xl font-bold ml-8">Character Selection</h1>
+                                            <h1 class="flex justify-start text-xl font-bold ml-9">Character Selection</h1>
                                         </span>
                                     </div>
 
@@ -101,7 +134,9 @@
                                         Add new character <i class="fa-solid fa-plus"></i>
                                     </button>
                                 </div>
+                            </div>
 
+                            <div class="border-b-4 mr-4 ml-4 mt-2 border-gray-400/50">
                             </div>
 
                             <div v-if="uiStates.authenticationState == ''" class="p-8">
@@ -163,7 +198,7 @@
 
                                 <div v-for="(item, i) in characters.player_characters" :key="i">
 
-                                    <div class="p-6 font-medium border rounded-3xl border-gray-500 mt-6 shadow-2xl">
+                                    <div class="p-6 font-medium border rounded-3xl border-gray-500 mt-2 shadow-2xl">
 
                                         <div v-if="item.character_isbanned"
                                             class="flex justify-center bg-red-500/40 p-3 rounded-lg shadow-xl shadow-red-500/10">
@@ -462,7 +497,9 @@ export default {
             resetEmail: "",
             passResetEmail: "",
             passResetPass: "",
-            passResetPassConfirm: ""
+            passResetPassConfirm: "",
+            clipboardActive: false,
+            discordLink: "https://discord.gg/NMc5ybQw5X"
         };
     },
     components: {
@@ -552,7 +589,7 @@ export default {
             this.$store.state.uiStates.serverLoading = true;
 
             sendToServer("server:authentication:recieveAccountOtp", this.accountOtp);
-        },  
+        },
         getStaffData(rankId) {
             let { adminRanksList, adminRanksStyles } = getStaffRanks();
 
@@ -571,6 +608,16 @@ export default {
         formatDate(dateString) {
             const dateTime = new Date(dateString);
             return dateTime.toLocaleDateString();
+        },
+        copyToClipboard(text) {
+            this.clipboardActive = true;
+
+            console.log("copy");
+            navigator.clipboard.writeText(text);
+
+            setTimeout(() => {
+                this.clipboardActive = false;
+            }, 5000);
         },
         handleKeyDown(e) {
             if (e.keyCode !== 13) return;

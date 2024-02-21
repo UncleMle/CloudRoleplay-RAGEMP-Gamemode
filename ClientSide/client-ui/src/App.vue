@@ -91,4 +91,13 @@ export default {
 .fade-leave-to {
     opacity: 0;
 }
+
+.vignette {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 0 200px rgba(0, 0, 0, 0.9) inset;
+}
 </style>

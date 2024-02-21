@@ -1032,7 +1032,7 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             DbVehicle vehicleData = player.Vehicle.getData();
 
-            if (vehicleData == null || vehicleData != null && vehicleData.engine_status)
+            if (vehicleData == null || vehicleData != null && !vehicleData.engine_status)
             {
                 CommandUtils.errorSay(player, $"Engine must be turned on to use this command.");
                 return;
@@ -1394,7 +1394,7 @@ namespace CloudRP.VehicleSystems.Vehicles
         }
         
         [RemoteEvent("server:gps:removePointForPlayers")]
-        public void removeWaypointForPlayers(Player player, Vector3 waypoint)
+        public void removeWaypointForPlayers(Player player)
         {
             if (!player.IsInVehicle) return;
 

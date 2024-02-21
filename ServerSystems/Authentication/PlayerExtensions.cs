@@ -39,14 +39,7 @@ namespace CloudRP.ServerSystems.Authentication
 
         public static bool isLoggingOut(this Player player)
         {
-            bool isLogging = false;
-
-            if (player.GetData<bool>(Commands._logoutIdentifier))
-            {
-                isLogging = true;
-            }
-
-            return isLogging;
+            return player.GetData<bool>(Commands._logoutIdentifier);
         }
     }
 

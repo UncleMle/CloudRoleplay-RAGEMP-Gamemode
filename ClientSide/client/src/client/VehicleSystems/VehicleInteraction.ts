@@ -7,8 +7,8 @@ import getUserCharacterData from '@/PlayerMethods/getUserCharacterData';
 
 export default class VehicleInteraction {
 	public static LocalPlayer: PlayerMp = mp.players.local;
-	public static bones: string[] = ['handle_dside_f', 'handle_pside_f', 'handle_dside_r', 'handle_pside_r', 'bonnet', 'boot'];
-	public static names: string[] = ['door', 'door', 'door', 'door', 'hood', 'trunk', 'trunk'];
+	public static bones: string[] = ["handle_dside_f", "handle_pside_f", "handle_dside_r", "handle_pside_r", "bonnet", "boot"];
+	public static names: string[] = ["door", "door", "door", "door", "hood", "boot"];
 	public static boneTarget: BoneData;
 	private static wheelMenuPosition: number = 0;
 	private static renderedMenu: string[];
@@ -29,6 +29,56 @@ export default class VehicleInteraction {
 		VehicleInteraction.LocalPlayer.setConfigFlag(_config_flags.PED_FLAG_STOP_ENGINE_TURNING, true);
 
 		if (VehicleInteraction.checkInteractionRender()) {
+			let vehicleList: VehicleMp[] = mp.vehicles.getClosest(VehicleInteraction.LocalPlayer.position, 1);
+
+			if (vehicleList.length == 0) return;
+
+			let veh: VehicleMp = vehicleList[0];
+
+			if(getVehicleData(veh)?.vehicle_locked) return;
+
+			let pPos: Vector3 = VehicleInteraction.LocalPlayer.position;
+
+			let dist: number = mp.game.gameplay.getDistanceBetweenCoords(
+				pPos.x,
+				pPos.y,
+				pPos.z,
+				veh.position.x,
+				veh.position.y,
+				veh.position.z,
+				true
+			);
+
+			if (dist > 6) return;
+
+			VehicleInteraction.bones.forEach((bone, idx) => {
+				let boneRenderPos: Vector3 = veh.getWorldPositionOfBone(veh.getBoneIndexByName(bone));
+				if (!boneRenderPos) return;
+
+				if (mp.game.gameplay.getDistanceBetweenCoords(
+					pPos.x,
+					pPos.y,
+					pPos.z,
+					boneRenderPos.x,
+					boneRenderPos.y,
+					boneRenderPos.z,
+					true
+				) > 2) return;
+
+				let name = VehicleInteraction.names[idx];
+
+				mp.game.graphics.drawText(
+					name[0].toUpperCase() + name.substring(1),
+					[boneRenderPos.x, boneRenderPos.y, boneRenderPos.z + 0.09],
+					{
+						font: 4,
+						color: [198, 163, 255, 160],
+						scale: [0.325, 0.325],
+						outline: false
+					}
+				);
+			});
+
 			const raycast: RaycastResult | null = VehicleInteraction.getLocalTargetVehicle();
 			if (raycast == null || (raycast.entity as EntityMp).type != 'vehicle') return;
 			VehicleInteraction.boneTarget = VehicleInteraction.getClosestBone(raycast);
@@ -87,17 +137,26 @@ export default class VehicleInteraction {
 		VehicleInteraction.renderedMenu = renderArr;
 		mp.game.ui.weaponWheelIgnoreSelection();
 
-		if (renderArr.length === 1) return VehicleInteraction.wheelMenuPosition = 0;
+		if (renderArr.length === 1) {
+			VehicleInteraction.wheelMenuPosition = 0;
+			return;
+		}
 
 		let wheelDown = mp.game.controls.isControlPressed(0, 14);
 		let wheelUp = mp.game.controls.isControlPressed(0, 15);
 
 		if (wheelUp) {
-			if (VehicleInteraction.wheelMenuPosition >= renderArr.length - 1) return VehicleInteraction.wheelMenuPosition = renderArr.length - 1;
+			if (VehicleInteraction.wheelMenuPosition >= renderArr.length - 1) {
+				VehicleInteraction.wheelMenuPosition = renderArr.length - 1;
+				return;
+			}
 			VehicleInteraction.wheelMenuPosition++;
 		}
 		if (wheelDown) {
-			if (VehicleInteraction.wheelMenuPosition <= 0) return VehicleInteraction.wheelMenuPosition = 0;
+			if (VehicleInteraction.wheelMenuPosition <= 0) {
+				VehicleInteraction.wheelMenuPosition = 0;
+				return;
+			}
 			VehicleInteraction.wheelMenuPosition--;
 		}
 	}

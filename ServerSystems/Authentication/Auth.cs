@@ -17,6 +17,7 @@ using CloudRP.PlayerSystems.FactionSystems;
 using CloudRP.Migrations;
 using Discord;
 using Microsoft.EntityFrameworkCore;
+using System.Timers;
 
 namespace CloudRP.ServerSystems.Authentication
 {
@@ -30,11 +31,21 @@ namespace CloudRP.ServerSystems.Authentication
         public static string _otpAccountStoreKey = "auth_account_otp";
         public static string _accountCreatedKey = "authentication:player:accountCreated";
         public static readonly int autoLoginValid_seconds = 300;
+        public static Vector3 spawnPos = new Vector3(DefaultSpawn.pos_x, DefaultSpawn.pos_y, DefaultSpawn.pos_z);
 
         public Auth()
         {
-            Vector3 spawnPos = new Vector3(DefaultSpawn.pos_x, DefaultSpawn.pos_y, DefaultSpawn.pos_z);
             NAPI.Server.SetDefaultSpawnLocation(spawnPos, 0);
+
+            Timer timer = new Timer
+            {
+                AutoReset = true,
+                Interval = 5000,
+                Enabled = true
+            };
+
+            timer.Elapsed += (object source, ElapsedEventArgs e) => 
+            NAPI.Task.Run(() => handleNonAuthenticated());
         }
 
         #region Remote Events
@@ -156,28 +167,6 @@ namespace CloudRP.ServerSystems.Authentication
             }
         }
 
-        [RemoteEvent("server:togglePlayerAutoLogin")]
-        public void togglePlayerAutoLogin(Player player)
-        {
-            User userData = player.getPlayerAccountData();
-
-            if (userData != null)
-            {
-                if (userData.auto_login == 1)
-                {
-                    userData.auto_login = 0;
-                }
-                else
-                {
-                    userData.auto_login = 1;
-                }
-
-                player.setPlayerAccountData(userData, false, true);
-
-                uiHandling.sendPushNotif(player, $"You {(userData.auto_login == 1 ? "enabled" : "disabled")} autologin.", 6600, true, true, true);
-            }
-        }
-
         [RemoteEvent("server:resetPassword")]
         public void resetPassword(Player player, string data)
         {
@@ -216,7 +205,9 @@ namespace CloudRP.ServerSystems.Authentication
 
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
-                    Account find = dbContext.accounts.Where(acc => acc.email_address == playerOtpData.registeringData.registerEmail).FirstOrDefault();
+                    Account find = dbContext.accounts
+                        .Where(acc => acc.email_address == playerOtpData.registeringData.registerEmail)
+                        .FirstOrDefault();
 
                     if (find == null)
                     {
@@ -432,6 +423,17 @@ namespace CloudRP.ServerSystems.Authentication
         #endregion
 
         #region Global Methods
+        public void handleNonAuthenticated()
+        {
+            NAPI.Pools.GetAllPlayers().ForEach(player =>
+            {
+                if(player.getPlayerCharacterData() == null)
+                {
+                    player.Position = spawnPos;
+                };
+            });
+        }
+
         public void loginInToAccount(Player player, Account findAccount, bool rememberMe)
         {
             if (checkInGame(player, findAccount.email_address, findAccount.username, findAccount.account_id)) return;
@@ -690,6 +692,7 @@ namespace CloudRP.ServerSystems.Authentication
         [ServerEvent(Event.PlayerConnected)]
         public void onPlayerConnected(Player player)
         {
+            player.Name = Main.serverName;
             player.setPlayerToLoginScreen(false);
         }
         #endregion

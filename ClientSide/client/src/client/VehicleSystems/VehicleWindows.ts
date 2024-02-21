@@ -30,14 +30,10 @@ export default class VehicleWindows {
 		}
 	}
 
-	private static syncWindowState(entity: VehicleMp, vehicleData: VehicleData) {
+	private static async syncWindowState(entity: VehicleMp, vehicleData: VehicleData) {
 		vehicleData.vehicle_windows.forEach((state: string, index: number) => {
 			if (state) entity.rollDownWindow(index);
 			else if (!state) {
-				if (entity.isWindowIntact(index)) {
-					entity.fixWindow(index);
-				}
-
 				entity.rollUpWindow(index);
 			}
 		});
