@@ -278,6 +278,7 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
             {
                 long currentMoney = charData.money_amount;
                 DealerVehicle findDealerVeh = playerDealerData.vehicles.Where(veh => veh.spawnName == vehiclePurchase.vehName).FirstOrDefault();
+                
                 if (findDealerVeh == null)
                 {
                     uiHandling.sendPushNotifError(player, "Vehicle wasn't found.", 6600, true);

@@ -368,5 +368,21 @@ namespace CloudRP.VehicleSystems.Vehicles
             }
             vehicle.Delete();
         }
+
+        public static List<int> getUsedSeats(this Vehicle vehicle)
+        {
+            List<int> usedSeats = new List<int>();
+
+            vehicle.Occupants.ForEach(occ =>
+            {
+                if (occ.Type != EntityType.Player) return;
+
+                Player playerOcc = (Player)occ;
+
+                usedSeats.Add(playerOcc.VehicleSeat);
+            });
+
+            return usedSeats;
+        }
     }
 }

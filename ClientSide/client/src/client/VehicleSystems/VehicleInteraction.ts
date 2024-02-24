@@ -167,7 +167,7 @@ export default class VehicleInteraction {
 			if (!vehicleData) return;
 
 			vehicleData.vehicle_doors.forEach((state: string, index: number) => {
-				if (state) vehicle.setDoorOpen(index, false, true);
+				if (state) vehicle.setDoorOpen(index, false, false);
 				else vehicle.setDoorShut(index, true);
 			});
 		});

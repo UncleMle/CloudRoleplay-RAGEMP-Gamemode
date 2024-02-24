@@ -104,7 +104,7 @@ import { mapGetters } from 'vuex';
 export default {
     data() {
         return {
-            browseView: "admin",
+            browseView: "commands",
             admin: [
                 {
                     name: "aduty",

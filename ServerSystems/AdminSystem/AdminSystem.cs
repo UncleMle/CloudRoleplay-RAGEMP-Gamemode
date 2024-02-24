@@ -979,7 +979,7 @@ namespace CloudRP.ServerSystems.Admin
 
                 pedName = pedName.ToLower();
 
-                findPlayer.setPlayerAccountData(findPlayerData, true, true);
+                findPlayer.setPlayerAccountData(findPlayerData, findPlayerData.adminDuty, true);
 
                 AdminUtils.staffSay(player, $"You set {userData.admin_name}'s admin ped to {pedName}");
             } else
@@ -1114,18 +1114,58 @@ namespace CloudRP.ServerSystems.Admin
 
         [AdminCommand(AdminRanks.Admin_Moderator)]
         [Command("stv", "~r~/stv [seatId]", Alias = "setintovehicle")]
-        public void setIntoVehicle(Player player, int seatId = 0)
+        public void setIntoVehicle(Player player, string idOrPlate = null, int seatId = 0)
         {
-            Vehicle findVeh = VehicleSystem.getClosestVehicleToPlayer(player, 20);
-
-            if (findVeh == null)
+            if(player.IsInVehicle)
             {
-                CommandUtils.errorSay(player, "There are no vehicles within range to enter");
+                CommandUtils.errorSay(player, "You're already in a vehicle.");
                 return;
             }
 
-            uiHandling.sendNotification(player, $"~r~Entered vehicle.", false);
-            player.SetIntoVehicle(findVeh, seatId);
+            Vehicle findVeh = null;
+
+            if(idOrPlate == null)
+            {
+                findVeh = VehicleSystem.getClosestVehicleToPlayer(player, 20);
+
+                if (findVeh == null)
+                {
+                    CommandUtils.errorSay(player, "There are no vehicles within range to enter");
+                    return;
+                }
+
+                if (findVeh.getUsedSeats().Contains(seatId))
+                {
+                    CommandUtils.errorSay(player, "Vehicle seat is occupied.");
+                    return;
+                }
+
+                uiHandling.sendNotification(player, $"~r~Entered vehicle.", false);
+                player.SetIntoVehicle(findVeh, seatId);
+                return;
+            }
+
+            findVeh = VehicleSystem.vehicleIdOrPlate(idOrPlate);
+
+            if(findVeh == null)
+            {
+                CommandUtils.errorSay(player, "Target vehicle wasn't found.");
+                return;
+            }
+
+            if (findVeh.getUsedSeats().Contains(seatId))
+            {
+                CommandUtils.errorSay(player, "Vehicle seat is occupied.");
+                return;
+            }
+
+            player.Position = findVeh.Position;
+
+            NAPI.Task.Run(() =>
+            {
+                uiHandling.sendNotification(player, $"~r~Entered vehicle.", false);
+                player.SetIntoVehicle(findVeh, seatId);
+            }, 1000);
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]
@@ -1306,30 +1346,6 @@ namespace CloudRP.ServerSystems.Admin
             }
         }
 
-        [AdminCommand(AdminRanks.Admin_Moderator)]
-        [Command("gotov", "~r~/gotov [idOrPlate]")]
-        public void goToVehicle(Player player, string idOrPlate)
-        {
-            User userData = player.getPlayerAccountData();
-
-            Vehicle findVehicle = VehicleSystem.vehicleIdOrPlate(idOrPlate);
-
-            if (findVehicle != null)
-            {
-                player.Position = findVehicle.Position.Around(5);
-
-                ChatUtils.formatConsolePrint($"{userData.admin_name} teleported to vehicle {idOrPlate}");
-                AdminUtils.staffSay(player, "Teleported to vehicle " + idOrPlate);
-
-                uiHandling.sendNotification(player, $"~r~Teleported to vehicle", false);
-            }
-            else
-            {
-                CommandUtils.errorSay(player, "Vehicle couldn't be found within the world.");
-            }
-        }
-
-        [AdminCommand(AdminRanks.Admin_HeadAdmin, checkForAduty = false)]
         [Command("ha", "~r~/headadmin [message]", Alias = "headadmin", GreedyArg = true)]
         public void headAdminChat(Player player, string message)
         {
@@ -1603,7 +1619,7 @@ namespace CloudRP.ServerSystems.Admin
 
             if (units > 8000 || units < 0)
             {
-                CommandUtils.errorSay(player, "Enter a valid unit amount between 0 and 800.");
+                CommandUtils.errorSay(player, "Enter a valid unit amount between 0 and 8000.");
                 return;
             }
 

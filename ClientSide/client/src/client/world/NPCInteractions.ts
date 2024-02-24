@@ -1,6 +1,5 @@
 import { InteractionPed } from "@/@types";
 import { _control_ids } from "@/Constants/Constants";
-import validateKeyPress from "@/PlayerMethods/validateKeyPress";
 import RaycastUtils from "@/RaycastUtils/RaycastUtils";
 
 export default class NpcInteractions {
@@ -52,6 +51,17 @@ export default class NpcInteractions {
                     font: 4
                 });
             }
+
+            mp.game.graphics.drawText(
+                "Interact",
+                [startBoneCoords.x, startBoneCoords.y, startBoneCoords.z + 0.13],
+                {
+                    font: 4,
+                    color: [198, 163, 255, 160],
+                    scale: [0.325, 0.325],
+                    outline: false
+                }
+            );
 
             let secondPoint: Vector3 = NpcInteractions.LocalPlayer.getBoneCoords(0, 0, 0, 0);
             if (!secondPoint) return;
