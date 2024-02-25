@@ -187,6 +187,12 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
             }
         };
 
+        class RaycastMenuOptions
+        {
+            public const string viewDealerVehicles = "View vehicle dealership vehicles";
+            public const string viewDealerVehiclesAmount = "View stock quantity";
+        }
+
         public VehicleDealershipSystem()
         {
             foreach (DealerShip dealerShip in dealerships)
@@ -196,7 +202,7 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
                 RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
                 {
                     menuTitle = "Vehicle Dealership",
-                    raycastMenuItems = new string[] { "View vehicle dealership vehicles" },
+                    raycastMenuItems = new string[] { RaycastMenuOptions.viewDealerVehicles, RaycastMenuOptions.viewDealerVehiclesAmount },
                     raycastMenuPosition = dealerShip.viewPosition,
                     targetMethod = serverViewDealerVehicles
                 });
@@ -233,12 +239,26 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
             DealerShip dealerData = player.GetData<DealerShip>(_dealershipIdentifer);
             bool dealerActive = player.GetData<bool>(_dealerActiveIdentifier);
 
-            if (dealerData != null && !dealerActive)
+            if (dealerData == null || dealerActive) return;
+
+            switch (rayOption)
             {
-                player.SetCustomData(_dealerActiveIdentifier, true);
-                player.TriggerEvent("dealers:initDealership");
-                player.Dimension = (uint)player.Id + 1;
+                case RaycastMenuOptions.viewDealerVehicles:
+                    {
+                        player.SetCustomData(_dealerActiveIdentifier, true);
+                        player.TriggerEvent("dealers:initDealership");
+                        player.Dimension = (uint)player.Id + 1;
+                        break;
+                    }
+                case RaycastMenuOptions.viewDealerVehiclesAmount:
+                    {
+                        int vehCount = dealerData.vehicles.Count;
+                        uiHandling.sendNotification(player, $"~w~The dealership ~c~{dealerData.dealershipName}~w~ currently has {vehCount} vehicles in stock.", false, true, "Views dealership stock quantity.");
+                        break;
+                    }
+
             }
+
         }
 
         [RemoteEvent("server:closeDealership")]

@@ -13,28 +13,44 @@ export default class BrowserSystem {
 	constructor() {
 		BrowserSystem.LocalPlayer.browserRouter = '/';
 
-		mp.events.add('guiReady', BrowserSystem.onGuiReady);
-		mp.events.add('render', BrowserSystem.handleRender);
-		mp.events.add('client:recieveUiMutation', BrowserSystem.handleMutationChange);
-		mp.events.add('browser:sendObject', BrowserSystem.handleBrowserObject);
-		mp.events.add('browser:sendString', BrowserSystem.handleBrowserString);
-		mp.events.add('browser:pushRouter', BrowserSystem.pushRouter);
-		mp.events.add('browser:handlePlayerObjectMutation', BrowserSystem.handleObjectToBrowser);
-		mp.events.add('browser:handlePlayerObjectMutationPush', BrowserSystem.handleObjectToBrowserPush);
-		mp.events.add('browser:resetRouter', BrowserSystem.handleReset);
-		mp.events.add('browser:resetMutationPusher', BrowserSystem.resetMutationPusher);
-		mp.events.add('browser:sendErrorPushNotif', BrowserSystem.sendErrorPushNotif);
-		mp.events.add('browser:sendNotif', BrowserSystem.sendNotif);
-		mp.events.add('browser:setAuthState', BrowserSystem.setAuthState);
-		mp.events.add('browser:clearChat', BrowserSystem.clearChat);
-		mp.events.add('browser:playerFrontendSound', BrowserSystem.playFrontendSound);
-		mp.events.add('browser:callServerProc', BrowserSystem.handleServerProc);
+		mp.events.add({
+			"guiReady": BrowserSystem.onGuiReady,
+			"render": BrowserSystem.handleRender,
+			"playerQuit": BrowserSystem.handleExit,
+			"browserLoadingFailed": BrowserSystem.handleLoadFail,
+			"client:recieveUiMutation": BrowserSystem.handleMutationChange,
+			"browser:sendObject": BrowserSystem.handleBrowserObject,
+			"browser:sendString": BrowserSystem.handleBrowserString,
+			"browser:pushRouter": BrowserSystem.pushRouter,
+			"browser:handlePlayerObjectMutation": BrowserSystem.handleObjectToBrowser,
+			"browser:handlePlayerObjectMutationPush": BrowserSystem.handleObjectToBrowserPush,
+			"browser:resetRouter": BrowserSystem.handleReset,
+			"browser:resetMutationPusher": BrowserSystem.resetMutationPusher,
+			"browser:sendErrorPushNotif": BrowserSystem.sendErrorPushNotif,
+			"browser:sendNotif": BrowserSystem.sendNotif,
+			"browser:setAuthState": BrowserSystem.setAuthState,
+			"browser:clearChat": BrowserSystem.clearChat,
+			"browser:playerFrontendSound": BrowserSystem.playFrontendSound,
+			"browser:callServerProc": BrowserSystem.handleServerProc
+		});
 
 		mp.keys.bind(F2, false, BrowserSystem.handleF2Press);
 
 		setInterval(() => {
 			BrowserSystem.disableAfkTimer();
 		}, 6000);
+	}
+
+	private static handleLoadFail() {
+		mp.console.logInfo("Main browser load failed reloading...");
+
+		if (mp.browsers.exists(BrowserSystem._browserInstance)) BrowserSystem._browserInstance.destroy();
+
+		BrowserSystem._browserInstance = mp.browsers.new(BrowserEnv.development);
+	}
+
+	private static handleExit() {
+		BrowserSystem._browserInstance.destroy();
 	}
 
 	private static async handleServerProc(procedureName: string): Promise<any> {

@@ -59,17 +59,6 @@ export default class RaycastInteractions {
 
             let getRayMenu: RaycastResult | undefined = RaycastUtils.getInFrontOfPlayer();
 
-            mp.game.graphics.drawText(
-                JSON.stringify(getRayMenu) + " raycast",
-                [0.5, 0.5],
-                {
-                    font: 4,
-                    color: [198, 163, 255, 160],
-                    scale: [0.325, 0.325],
-                    outline: false
-                }
-            );
-
             if (!getRayMenu) return;
 
             let targetPed: PedMp = mp.peds.atHandle((getRayMenu.entity as PedMp).handle);
@@ -79,8 +68,6 @@ export default class RaycastInteractions {
             let interactId: number = targetPed.getVariable(RaycastInteractions.pedRaycastSharedKey);
 
             if (!targetPed.doesExist() || targetPed.doesExist() && targetPed.getVariable(RaycastInteractions.pedRaycastSharedKey) === undefined) return;
-
-            mp.gui.chat.push(`${RaycastInteractions.raycastInteractionPoints.indexOf(interactionPoint)} || ${interactId}`);
 
             if (RaycastInteractions.raycastInteractionPoints.indexOf(interactionPoint) !== interactId) return;
 

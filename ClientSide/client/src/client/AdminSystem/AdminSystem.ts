@@ -17,7 +17,13 @@ export default class AdminSystem {
 
 		mp.events.add("render", AdminSystem.renderTextOnScreen);
 		mp.events.add("entityStreamIn", AdminSystem.handleEntityStream);
+		mp.events.add("playerRuleTriggered", AdminSystem.handleRuleCheck);
 		mp.events.addDataHandler(_sharedAccountDataIdentifier, AdminSystem.handleFlyStart);
+	}
+
+	public static handleRuleCheck(rule: string, counter: number) {
+		mp.gui.chat.push(`Rule ${rule} (${counter}) ~r~FAILED`);
+		mp.console.logInfo(`Rule ${rule} (${counter}) FAILED`);
 	}
 
 	public static viewActiveReports() {
