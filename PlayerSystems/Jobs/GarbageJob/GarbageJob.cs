@@ -48,23 +48,18 @@ namespace CloudRP.PlayerSystems.Jobs.GarbageJob
 
         public GarbageJob()
         {
-            NpcInteractions.onNpcInteract += (Player player, int targetNpc, string raycastOption) =>
-            {
-                if (npcId == targetNpc)
-                {
-                    uiHandling.sendPrompt(player,
-                        "fa-solid fa-briefcase",
-                        "Garbage Job Start",
-                        $"Are you sure you want to start this job for the pay of ${jobPay.ToString("N0")} with a total of {stops.Count} stops",
-                        "server:jobs:garbageJob:start"
-                     );
-                }
-            };
             KeyPressEvents.keyPress_E += iterateJobState;
 
-            npcId = NpcInteractions.buildPed(PedHash.GarbageSMY, startJob, npcHeading, "Darren - Little Pricks", new string[]
+            NpcInteractions.buildPed(PedHash.GarbageSMY, startJob, npcHeading, "Darren - Little Pricks", new string[]
             {
                 "Start Garbage Job"
+            }, (player, rayoption) =>
+            {
+                uiHandling.sendPrompt(player,
+                    "fa-solid fa-briefcase",
+                    "Garbage Job Start",
+                    $"Are you sure you want to start this job for the pay of ${jobPay.ToString("N0")} with a total of {stops.Count} stops",
+                    "server:jobs:garbageJob:start");
             });
 
             NAPI.Blip.CreateBlip(318, startJob, 1f, 81, "Garbage Job", 255, 0, true, 0, 0);

@@ -61,7 +61,6 @@ namespace CloudRP.PlayerSystems.RentableVehicles
 
         public RentableVehicles()
         {
-            NpcInteractions.onNpcInteract += handleNpcInteraction;
             Main.playerDisconnect += (player) => removeRentalVehicle(player);
             VehicleSystem.vehicleDeath += (Vehicle vehicle, DbVehicle vehicleData) =>
             {
@@ -76,11 +75,14 @@ namespace CloudRP.PlayerSystems.RentableVehicles
 
             rentPoints.ForEach(point =>
             {
-                point.npcId = NpcInteractions.buildPed(PedHash.AnitaCutscene, point.npcSpawn, point.npcHeading, "Sophie - Rent a vehicle", new string[]
+                NpcInteractions.buildPed(PedHash.AnitaCutscene, point.npcSpawn, point.npcHeading, "Sophie - Rent a vehicle", new string[]
                 {
                     MenuItems.RentCar,
                     MenuItems.RentBike,
                     MenuItems.ReturnVehicle,
+                }, (player, rayOption) =>
+                {
+                    handleNpcInteraction(player, rayOption, point);
                 });
 
                 NAPI.Marker.CreateMarker(36, point.spawnVehicles, new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
@@ -205,13 +207,8 @@ namespace CloudRP.PlayerSystems.RentableVehicles
             if (found && sendMsg) CharacterSystem.sendMessageViaCharacterId(character.character_id, $"{ChatUtils.rentalVehicles}Your rental vehicle {vehicleName} has been returned.");
         }
 
-        private static void handleNpcInteraction(Player player, int npcId, string raycastOption)
+        private static void handleNpcInteraction(Player player, string raycastOption, RentableVehiclePoint point)
         {
-            RentableVehiclePoint point = rentPoints.Where(p => p.npcId == npcId)
-                .FirstOrDefault();
-
-            if (point == null) return;
-
             if (raycastOption != MenuItems.ReturnVehicle && hasRentedVehicle(player))
             {
                 uiHandling.sendPushNotifError(player, $"You already have a rental vehicle. Return it before getting another one.", 6600);

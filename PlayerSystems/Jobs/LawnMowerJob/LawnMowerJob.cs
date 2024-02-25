@@ -30,23 +30,11 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
             new Vector3(1831.1, 4939.2, 46.1)
         };
 
-        public static int[] mowerNpcs = new int[]
-        {
-            NpcInteractions.buildPed(PedHash.Ammucity01SMY, new Vector3(-1353.6, 140.7, 56.3), 20f, "John - Mower Company", new string[]
-            {
-                "Start Mowing Job"
-            }),
-            NpcInteractions.buildPed(PedHash.Ammucity01SMY, new Vector3(1825.3, 4944.3, 46.0), 20f, "John - Mower Company", new string[]
-            {
-                "Start Mowing Job"
-            })
-        };
-
         public static List<MowableLawn> lawns = new List<MowableLawn>
         {
             new MowableLawn
             {
-                npc = mowerNpcs[0],
+                startPos = new Vector3(-1353.6, 140.7, 56.3),
                 pay = 2700,
                 stops = new List<Vector3>
                 {
@@ -62,7 +50,7 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
             },
             new MowableLawn
             {
-                npc = mowerNpcs[1],
+                startPos = new Vector3(1825.3, 4944.3, 46.0),
                 pay = 500,
                 stops = new List<Vector3>
                 {
@@ -80,18 +68,16 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
 
         public LawnMowerJob()
         {
-            NpcInteractions.onNpcInteract += (Player player, int npcId, string raycastOption) =>
-            {
-                bool isNpc = mowerNpcs.Contains(npcId);
-
-                if (!isNpc) return;
-
-                showJobPrompt(player, npcId);
-            };
-
             lawns.ForEach(lawn =>
             {
                 initLawnPositions(lawn.stops);
+                NpcInteractions.buildPed(PedHash.BallaEast01GMY, lawn.startPos, 20f, "John - Lawn Mower Services", new string[]
+                {
+                    "Start mowing job"
+                }, (player, rayOption) =>
+                {
+                    showJobPrompt(player, lawn);
+                });
             });
 
             mowerSpawns.ForEach(spawn =>
@@ -105,14 +91,8 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
         }
 
         #region Global Methods
-        private static void showJobPrompt(Player player, int npcId)
+        private static void showJobPrompt(Player player, MowableLawn lawn)
         {
-            MowableLawn lawn = lawns
-                .Where(l => l.npc == npcId)
-                .FirstOrDefault();
-
-            if (lawn == null) return;
-
             uiHandling.sendPrompt(player, "fa-solid fa-briefcase", "Lawnmower Job", $"Are you sure you want to start the lawn mower job? You will get paid ${lawn.pay.ToString("N0")}.", "server:jobs:lawnMower:start");
         }
 
@@ -197,12 +177,9 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
         {
             if (FreelanceJobSystem.hasAJob(player, jobId) || FreelanceJobSystem.hasFreeLanceVehicle(player)) return;
 
-            int npcId = NpcInteractions.getClosestPedByRange(player, 4f);
+            MowableLawn lawn = lawns.Where(l => player.checkIsWithinCoord(l.startPos, 3f)).FirstOrDefault();
 
-            MowableLawn lawn = lawns
-                .Where(lawn => lawn.npc == npcId).FirstOrDefault();
-
-            if(lawn == null) return;
+            if(lawn == null) return;    
 
             Vector3 spawnPos = mowerSpawns[lawns.IndexOf(lawn)];
 

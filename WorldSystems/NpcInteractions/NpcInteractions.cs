@@ -12,9 +12,6 @@ namespace CloudRP.WorldSystems.NpcInteractions
 {
     public class NpcInteractions : Script
     {
-        public delegate void NpcInteractionsEventHandler(Player player, int npcId, string raycastOption);
-        public static event NpcInteractionsEventHandler onNpcInteract;
-
         public static readonly string _npcPedSharedDataKey = "npcs:peds:sharedDataKey";
         public static Dictionary<int, InteractionPed> npcPeds = new Dictionary<int, InteractionPed>();
         public static float maxNpcDist = 4.0f;
@@ -25,7 +22,7 @@ namespace CloudRP.WorldSystems.NpcInteractions
         }
 
         #region Global Methods
-        public static int buildPed(PedHash ped, Vector3 position, float heading, string headName, string[] raycastMenuItems)
+        public static int buildPed(PedHash ped, Vector3 position, float heading, string headName, string[] raycastMenuItems, Action<Player, string> targetMethod)
         {
             Ped npcPed = NAPI.Ped.CreatePed((uint)ped, position, heading, false, true, true, true, 0);
 
@@ -33,7 +30,8 @@ namespace CloudRP.WorldSystems.NpcInteractions
             {
                 ped = npcPed,
                 pedHeadName = headName,
-                raycastMenuItems = raycastMenuItems
+                raycastMenuItems = raycastMenuItems,
+                targetMethod = targetMethod
             };
 
             npcPed.SetSharedData(_npcPedSharedDataKey, interactionPed);
@@ -66,7 +64,7 @@ namespace CloudRP.WorldSystems.NpcInteractions
 
             if (targetPed.Value == null || Vector3.Distance(player.Position, targetPed.Value.ped.Position) > maxNpcDist) return;
 
-            onNpcInteract(player, targetPed.Value.ped.Id, raycastMenu);
+            targetPed.Value.targetMethod(player, raycastMenu);
         }
         #endregion
     }

@@ -10,5 +10,6 @@ namespace CloudRP.WorldSystems.NpcInteractions
         public string pedHeadName { get; set; }
         public Ped ped { get; set; }
         public string[] raycastMenuItems { get; set; }
+        public Action<Player, string> targetMethod { get; set; }
     }
 }
