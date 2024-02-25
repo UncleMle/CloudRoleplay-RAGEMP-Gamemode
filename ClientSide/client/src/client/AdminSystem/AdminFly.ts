@@ -41,6 +41,9 @@ export default class AdminFly {
 		if (localUserData?.admin_status > AdminRanks.Admin_SeniorSupport) {
 			AdminFly.LocalPlayer.freezePosition(true);
 			AdminFly.LocalPlayer.setInvincible(true);
+			AdminFly.LocalPlayer.setCollision(false, false);
+			AdminFly.LocalPlayer.setCanBeTargetted(false);
+			AdminFly.LocalPlayer.setCanRagdoll(false);
 		}
 	}
 
@@ -48,6 +51,10 @@ export default class AdminFly {
 		AdminFly.LocalPlayer.setAlpha(255);
 		AdminFly.LocalPlayer.freezePosition(false);
 		AdminFly.LocalPlayer.setInvincible(false);
+
+		AdminFly.LocalPlayer.setCollision(true, true);
+		AdminFly.LocalPlayer.setCanBeTargetted(true);
+		AdminFly.LocalPlayer.setCanRagdoll(true);
 
 		mp.vehicles.forEach(veh => {
 			veh.setNoCollision(AdminFly.LocalPlayer.handle, true);

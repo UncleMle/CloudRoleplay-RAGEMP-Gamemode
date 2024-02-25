@@ -7,6 +7,7 @@ namespace CloudRP.WorldSystems.RaycastInteractions
 {
     public class RaycastInteraction
     {
+        public string menuTitle { get; set; } = "Interaction Point";
         public string[] raycastMenuItems = new string[] { };
 	    public Vector3 raycastMenuPosition;
         public Action<Player, string?> targetMethod;
@@ -14,6 +15,7 @@ namespace CloudRP.WorldSystems.RaycastInteractions
     
     public class RaycastInteractionClient
     {
+        public string menuTitle { get; set; }
         public string[] raycastMenuItems = new string[] { };
 	    public Vector3 raycastMenuPosition;
     }

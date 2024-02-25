@@ -31,6 +31,7 @@ namespace CloudRP.PlayerSystems.Jobs.GruppeSixJob
         {
             RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
             {
+                menuTitle = "Gruppe Six Job",
                 raycastMenuItems = new string[] { "Start gruppe six job" },
                 raycastMenuPosition = jobStartPosition,
                 targetMethod = startGruppeSixJob
@@ -60,10 +61,9 @@ namespace CloudRP.PlayerSystems.Jobs.GruppeSixJob
                 {
                     initAtm(stop);
                 });
-
             });
 
-            Main.resourceStart += () => ChatUtils.startupPrint($"Garbage driver job has loaded.");
+            Main.resourceStart += () => ChatUtils.startupPrint($"Gruppe six job has loaded.");
         }
 
         #region Global Methods

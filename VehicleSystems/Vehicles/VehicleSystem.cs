@@ -104,7 +104,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                     }
                 };
 
-                ChatUtils.formatConsolePrint($"A total of {totalSpawned} vehicles where loaded into the world.", ConsoleColor.Cyan);
+                ChatUtils.startupPrint($"A total of {totalSpawned} vehicles where loaded into the world");
                 beginSaveInterval();
             });
         }
@@ -122,6 +122,8 @@ namespace CloudRP.VehicleSystems.Vehicles
                 saveVehicleTimer.AutoReset = true;
                 saveVehicleTimer.Enabled = true;
             });
+
+            ChatUtils.startupPrint($"Began saving vehicles");
         }
         #endregion
 

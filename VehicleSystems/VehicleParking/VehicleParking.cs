@@ -238,7 +238,6 @@ namespace CloudRP.VehicleSystems.VehicleParking
                 for (int i = 0; i < parkingLots.Count; i++)
                 {
                     ParkingLot pLot = parkingLots[i];
-
                     ColShape parkCol = NAPI.ColShape.CreateSphereColShape(pLot.park.position, pLot.parkPosRange, 0);
                     ColShape retrieveCol = NAPI.ColShape.CreateSphereColShape(pLot.retrieve.position, pLot.retrievePosRange, 0);
 
@@ -246,13 +245,16 @@ namespace CloudRP.VehicleSystems.VehicleParking
                     
                     retrieveCol.SetData(_retrievalIdentifier, pLot.retrieve);
                     retrieveCol.SetSharedData(_retrievalIdentifier, pLot.retrieve);
-
                     RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
                     {
+                        menuTitle = "Vehicle Parking",
                         raycastMenuItems = new string[] { "View parked vehicles" },
                         raycastMenuPosition = pLot.retrieve.position,
                         targetMethod = viewParkedVehicles
                     });
+
+                    NAPI.Blip.CreateBlip(831, pLot.park.position, 1.0f, (byte)(pLot.forAircraft ? 11 : 39), pLot.name, 255, 1.0f, true, 0, 0);
+                    NAPI.Marker.CreateMarker(36, new Vector3(pLot.park.position.X, pLot.park.position.Y, pLot.park.position.Z), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
                 }
             });
 
@@ -267,7 +269,6 @@ namespace CloudRP.VehicleSystems.VehicleParking
 
             if (retrievalCol != null)
             {
-                uiHandling.sendPushNotif(player, "Use Y to interact with the parking lot.", 6600);
                 player.SetCustomData(_retrievalIdentifier, retrievalCol);
                 player.SetCustomSharedData(_retrievalIdentifier, retrievalCol);
                 return;

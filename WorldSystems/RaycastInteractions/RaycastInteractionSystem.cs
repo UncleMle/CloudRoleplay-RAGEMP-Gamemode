@@ -12,6 +12,7 @@ namespace CloudRP.WorldSystems.RaycastInteractions
     public class RaycastInteractionSystem : Script
     {
         public static List<RaycastInteraction> raycastPoints = new List<RaycastInteraction>();
+        private static readonly string pedRaycastSharedKey = "server:raycastMenuSystems:pedKey";
         private static float maxInteractionDist = 4.5f;
 
         public RaycastInteractionSystem()
@@ -20,9 +21,20 @@ namespace CloudRP.WorldSystems.RaycastInteractions
 
             Main.resourceStart += () =>
             {
-                ChatUtils.formatConsolePrint($"Loaded {raycastPoints.Count} raycast interaction points", ConsoleColor.Green);
+                NAPI.Task.Run(() =>
+                {
+                    ChatUtils.formatConsolePrint($"Loaded {raycastPoints.Count} raycast interaction points", ConsoleColor.Green);
 
-                raycastPoints.ForEach(p => MarkersAndLabels.setPlaceMarker(p.raycastMenuPosition));
+                    raycastPoints.ForEach(p =>
+                    {
+                        Ped rayPed = NAPI.Ped.CreatePed((uint)PedHash.Hacker, p.raycastMenuPosition, 0, true, true, true, true, 0);
+                        rayPed.Transparency = 100;
+
+                        rayPed.SetSharedData(pedRaycastSharedKey, true);
+
+                        MarkersAndLabels.setPlaceMarker(p.raycastMenuPosition);
+                    });
+                }, 6 * 1000);
             };
         }
 
@@ -34,7 +46,7 @@ namespace CloudRP.WorldSystems.RaycastInteractions
 
             raycastPoints.ForEach(p =>
             {
-                points.Add(new RaycastInteractionClient { raycastMenuItems = p.raycastMenuItems, raycastMenuPosition = p.raycastMenuPosition });
+                points.Add(new RaycastInteractionClient { menuTitle = p.menuTitle, raycastMenuItems = p.raycastMenuItems, raycastMenuPosition = p.raycastMenuPosition });
             });
 
             player.TriggerEvent("client::raycastInteractions:loadPoints", JsonConvert.SerializeObject(points));

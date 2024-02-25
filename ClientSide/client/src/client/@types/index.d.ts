@@ -22,6 +22,7 @@ declare global {
 	interface PedMp {
 		corpseId: number;
 		corpseCharacterId: number;
+		isRaymenuPed: boolean;
 	}
 
 	interface ObjectMp {
@@ -546,7 +547,8 @@ interface RouletteTable {
 }
 
 interface RaycastInteraction {
+	menuTitle: string;
 	raycastMenuItems: string[];
 	raycastMenuPosition: Vector3;
-	object: ObjectMp;
+	raycastNpc: PedMp;
 }

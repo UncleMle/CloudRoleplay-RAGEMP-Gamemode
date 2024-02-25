@@ -7,8 +7,9 @@ export default class RaycastInteractions {
     public static LocalPlayer: PlayerMp = mp.players.local;
     public static raycastInteractionPoints: RaycastInteraction[] = [];
     private static interactionServerEvent: string = "server:raycastInteractions:pointInteraction";
+    private static readonly pedRaycastSharedKey: string = "server:raycastMenuSystems:pedKey";
     private static lookingAtInteractionPoint: RaycastInteraction | null = null;
-    private static readonly targetDist: number = 7;
+    public static pedsalterted: number[] = [];
 
     constructor() {
         mp.events.add({
@@ -27,6 +28,16 @@ export default class RaycastInteractions {
     }
 
     private static handleRaycastRender() {
+        if (RaycastInteractions.LocalPlayer.dimension != 0) return;
+
+        mp.peds.forEachInStreamRange(p => {
+            if (p.doesExist() && p.getVariable(RaycastInteractions.pedRaycastSharedKey)) {
+                p.setAlpha(0, true);
+                p.setAsEnemy(false);
+                p.setCanBeTargetted(false);
+            }
+        });
+
         RaycastInteractions.raycastInteractionPoints.forEach(interactionPoint => {
             let targetPos: Vector3 = interactionPoint.raycastMenuPosition;
             let menuItems: string[] = interactionPoint.raycastMenuItems;
@@ -36,7 +47,7 @@ export default class RaycastInteractions {
             if (distBetweenCoords(RaycastInteractions.LocalPlayer.position, targetPos) > 10) return;
 
             mp.game.graphics.drawText(
-                "Interaction Point",
+                interactionPoint.menuTitle,
                 [targetPos.x, targetPos.y, targetPos.z + 0.13],
                 {
                     font: 4,
@@ -46,18 +57,26 @@ export default class RaycastInteractions {
                 }
             );
 
-            const camera: CameraMp = mp.cameras.new("gameplay");
+            let getRayMenu: RaycastResult | undefined = RaycastUtils.getInFrontOfPlayer();
 
-            let position: Vector3 = camera.getCoord();
+            mp.game.graphics.drawText(
+                JSON.stringify(getRayMenu) + " raycast",
+                [0.5, 0.5],
+                {
+                    font: 4,
+                    color: [198, 163, 255, 160],
+                    scale: [0.325, 0.325],
+                    outline: false
+                }
+            );
 
-            let direction: Vector3 = camera.getDirection();
+            if (!getRayMenu) return;
 
-            let farAway = new mp.Vector3((direction.x * RaycastInteractions.targetDist) + (position.x), (direction.y * RaycastInteractions.targetDist) + (position.y), (direction.z * RaycastInteractions.targetDist) + (position.z));
+            let targetPed: PedMp = mp.peds.atHandle((getRayMenu.entity as PedMp).handle);
 
-            if (distBetweenCoords(farAway, targetPos) > 1.5) {
-                RaycastInteractions.lookingAtInteractionPoint = null;
-                return;
-            }
+            if (!targetPed) return;
+
+            if (!targetPed.doesExist() || targetPed.doesExist() && !targetPed.getVariable(RaycastInteractions.pedRaycastSharedKey)) return;
 
             RaycastInteractions.lookingAtInteractionPoint = interactionPoint;
 

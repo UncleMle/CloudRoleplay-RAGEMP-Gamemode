@@ -33,6 +33,26 @@ export default class RaycastUtils {
             return target;
     }
 
+    public static getRaycastInFront(): {
+        adjustedRotation: Vector3, direction: Vector3
+    } {
+        let rot: Vector3 = RaycastUtils.LocalPlayer.getRotation(1);
+
+        let adjustedRotation: Vector3 = new mp.Vector3(
+            (Math.PI / 180) * rot.x,
+            (Math.PI / 180) * rot.y,
+            (Math.PI / 180) * rot.z
+        );
+
+        let direction: Vector3 = new mp.Vector3(
+            -Math.sin(adjustedRotation.z) * Math.abs(Math.cos(adjustedRotation.x)),
+            Math.cos(adjustedRotation.z) * Math.abs(Math.cos(adjustedRotation.x)),
+            Math.sin(adjustedRotation.x)
+        )
+
+        return { adjustedRotation, direction };
+    }
+
     public static handleWheelMenu(rayMenu: string[]) {
         RaycastUtils.rayMenu = rayMenu;
         mp.game.ui.weaponWheelIgnoreSelection();

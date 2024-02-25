@@ -12,6 +12,11 @@ namespace CloudRP.GeneralSystems.InventorySystem
 {
     public class InventorySystem : Script
     {
+        public InventorySystem()
+        {
+            Main.resourceStart += () => ChatUtils.startupPrint($"Loaded in {Items.inventoryItems.Count} inventory items.");
+        }
+
         [RemoteEvent("server:inventory:resyncItems")]
         public void resyncInventory(Player player)
         {

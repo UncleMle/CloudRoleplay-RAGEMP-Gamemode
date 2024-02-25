@@ -195,6 +195,7 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
 
                 RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
                 {
+                    menuTitle = "Vehicle Dealership",
                     raycastMenuItems = new string[] { "View vehicle dealership vehicles" },
                     raycastMenuPosition = dealerShip.viewPosition,
                     targetMethod = serverViewDealerVehicles

@@ -1,4 +1,5 @@
-﻿using GTANetworkAPI;
+﻿using CloudRP.ServerSystems.Utils;
+using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -23,6 +24,8 @@ namespace CloudRP.GeneralSystems.Stores
 
                 NAPI.Blip.CreateBlip(59, store.position, 1.0f, 4, "Store", 255, 1.0f, true, 0, 0);
             });
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"Loaded in {ConvienceStoreData.convienceStores.Count} convience stores.");
         }
 
     }

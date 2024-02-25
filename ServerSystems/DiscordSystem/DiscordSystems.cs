@@ -42,6 +42,8 @@ namespace CloudRP.ServerSystems.DiscordSystem
             };
 
             Main.playerDisconnect += handleReportDisconnect;
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"Started discord systems");
         }
 
         private static async Task initDiscordSystem()

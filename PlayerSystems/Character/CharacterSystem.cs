@@ -39,6 +39,8 @@ namespace CloudRP.PlayerSystems.Character
                 saveCharactersTimer.AutoReset = true;
                 saveCharactersTimer.Enabled = true;
             });
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"Started character system and began saving character data every {_timerInterval / 1000} seconds.");
         }
 
         #region Server Events

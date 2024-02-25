@@ -17,20 +17,20 @@ export default class Corpses {
 		mp.events.add('corpse:add', Corpses.addCorpsePed);
 		mp.events.add('corpse:removeCorpse', Corpses.spliceCorpsePed);
 
-        setInterval(() => {
+		setInterval(() => {
 			mp.peds.forEachInStreamRange((ped) => {
 				let corpseData: Corpse | undefined = Corpses.corpses.find(corpse => corpse.corpseId == ped.corpseId);
 				if (!corpseData) return;
 
-                Corpses.initPed(ped, corpseData);
+				Corpses.initPed(ped, corpseData);
 			});
 		}, 5000);
 	}
 
 	public static renderCorpses() {
 		mp.peds.forEachInStreamRange(ped => {
-			if(ped.corpseId !== undefined) {
-				if(Corpses.corpses[ped.corpseId]) {
+			if (ped.corpseId !== undefined) {
+				if (Corpses.corpses[ped.corpseId]) {
 					let rootBone: Vector3 = ped.getBoneCoords(0, 0, 0, 0);
 
 					let rootDrawCoords: { x: number, y: number } = mp.game.graphics.world3dToScreen2d(new mp.Vector3(rootBone.x, rootBone.y, rootBone.z));
@@ -47,13 +47,13 @@ export default class Corpses {
 	}
 
 	public static async handleStreamIn(entity: PedMp) {
-        if (entity.type != 'ped') return;
+		if (entity.type != 'ped') return;
 
-        let corpseData: Corpse | null = Corpses.getCorpseData(entity.corpseId);
-        if (!corpseData) return;
+		let corpseData: Corpse | null = Corpses.getCorpseData(entity.corpseId);
+		if (!corpseData) return;
 
-        Corpses.initPed(entity, corpseData);
-        Corpses.disableVehCollision(entity);
+		Corpses.initPed(entity, corpseData);
+		Corpses.disableVehCollision(entity);
 	}
 
 	public static disableVehCollision(entity: PedMp) {
@@ -83,7 +83,7 @@ export default class Corpses {
 	public static spliceCorpsePed(corpseId: number) {
 		let findCorpse: Corpse | undefined = Corpses.corpses.find(cor => cor.corpseId == corpseId);
 
-		if(findCorpse) {
+		if (findCorpse) {
 			Corpses.corpses.splice(Corpses.corpses.indexOf(findCorpse), 1);
 		}
 

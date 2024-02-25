@@ -34,6 +34,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
         {
             RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
             {
+                menuTitle = "Trucking Job",
                 raycastMenuItems = new string[] { "Start trucking job" },
                 raycastMenuPosition = truckerJobStart,
                 targetMethod = startTruckerJob

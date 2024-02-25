@@ -46,6 +46,8 @@ namespace CloudRP.ServerSystems.Authentication
 
             timer.Elapsed += (object source, ElapsedEventArgs e) => 
             NAPI.Task.Run(() => handleNonAuthenticated());
+
+            Main.resourceStart += () => ChatUtils.startupPrint("Started checking for non-authenticated users.");
         }
 
         #region Remote Events
@@ -66,7 +68,7 @@ namespace CloudRP.ServerSystems.Authentication
                 {
                     long differenceMinutes = (CommandUtils.generateUnix() - autoLogin.createdAt) / 60;
 
-                    if (differenceMinutes > autoLoginValid_seconds / 60) uiHandling.sendNotification(player, $"Your autologin for account {autoLogin.targetUsername} has expired {differenceMinutes.ToString("N1")} minutes ago.");
+                    if (differenceMinutes > autoLoginValid_seconds / 60) uiHandling.sendPushNotifError(player, $"Your autologin for account {autoLogin.targetUsername} has expired {differenceMinutes.ToString("N0")} minutes ago.", 5500);
                     else findAccount = dbContext.accounts
                             .Where(user => user.account_id == autoLogin.targetAccountId &&
                              user.ban_status == 0)
@@ -202,7 +204,6 @@ namespace CloudRP.ServerSystems.Authentication
 
             if (playerOtpData.registeringData.registerEmail != null && passReset.password != null && passReset.passwordConfirm != null)
             {
-
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
                     Account find = dbContext.accounts

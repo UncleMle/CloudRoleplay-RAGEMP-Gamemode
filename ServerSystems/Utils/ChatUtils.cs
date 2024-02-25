@@ -41,6 +41,8 @@ namespace CloudRP.ServerSystems.Utils
         public static readonly string longDo = "!{#bb53ff}";
         public static readonly string rentalVehicles = darkGreen + "[Rental Vehicles] " + White;
 
+        private static ConsoleColor lastColour = ConsoleColor.Green;
+
         public static void sendWithNickName(Player player, Player target, string prefix, string suffix, bool checkDims = true)
         {
             if (!checkDims)
@@ -68,13 +70,12 @@ namespace CloudRP.ServerSystems.Utils
         
         public static void startupPrint(string message)
         {
-            ConsoleColor[] startColours = new ConsoleColor[] { ConsoleColor.Yellow, ConsoleColor.Green };
-
-            ConsoleColor targetColour = startColours[new Random().Next(startColours.Length)];
+            if (lastColour == ConsoleColor.Green) lastColour = ConsoleColor.Yellow;
+            else lastColour = ConsoleColor.Green;
 
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.Write(getTimeString());
-            Console.ForegroundColor = targetColour;
+            Console.ForegroundColor = lastColour;
             Console.Write(_c_Server + message);
             Console.ForegroundColor = ConsoleColor.White;
 

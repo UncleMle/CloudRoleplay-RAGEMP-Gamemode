@@ -76,6 +76,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
 
                 RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
                 {
+                    menuTitle = "Bus Depot",
                     raycastMenuItems = new string[] { "Start Bus Job" },
                     raycastMenuPosition = busDepo.depoStartPosition,
                     targetMethod = startBusJob

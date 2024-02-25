@@ -1,5 +1,6 @@
 ﻿using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Database;
+using CloudRP.ServerSystems.Utils;
 using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
 using Microsoft.EntityFrameworkCore;
@@ -52,6 +53,8 @@ namespace CloudRP.PlayerSystems.Character
                 tattoCol.OnEntityEnterColShape += setTattoData;
                 tattoCol.OnEntityExitColShape += removeTattooData;
             }
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"Loaded in a total of {tattooStore.Count} tattoo stores.");
         }
 
         public void setTattoData(ColShape colshape, Player player)

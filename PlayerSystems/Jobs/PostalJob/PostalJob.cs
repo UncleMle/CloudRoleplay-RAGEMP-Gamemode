@@ -26,6 +26,7 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
         {
             RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
             {
+                menuTitle = "Postal Job",
                 raycastMenuItems = new string[] { "Start Postal Job" },
                 raycastMenuPosition = jobStartPosition,
                 targetMethod = startPostalJob
