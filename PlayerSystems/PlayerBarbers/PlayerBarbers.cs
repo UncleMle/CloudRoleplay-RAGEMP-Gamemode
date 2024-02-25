@@ -4,6 +4,7 @@ using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.World.MarkersLabels;
+using CloudRP.WorldSystems.RaycastInteractions;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
@@ -30,14 +31,20 @@ namespace CloudRP.PlayerSystems.PlayerBarber
 
         public PlayerBarbers()
         {
-            KeyPressEvents.keyPress_Y += openBarberShop;
-
+            
             barberShops.ForEach(shop =>
             {
-                MarkersAndLabels.setPlaceMarker(shop);
-                MarkersAndLabels.setTextLabel(shop, "Barber Shop\nUse ~y~Y~w~ to interact", 5f);
+                RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
+                {
+                    raycastMenuItems = new string[] { "Open barber menu" },
+                    raycastMenuPosition = shop,
+                    targetMethod = openBarberShop
+                });
+                
                 NAPI.Blip.CreateBlip(71, shop, 1f, 4, "Barber Shop", 255, 1f, true, 0, 0);
             });
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"A total of {barberShops.Count} barbershops were loaded.");
         }
 
         #region Global Methods
@@ -46,7 +53,7 @@ namespace CloudRP.PlayerSystems.PlayerBarber
             .FirstOrDefault() == null ? false : true;
 
 
-        public void openBarberShop(Player player)
+        public void openBarberShop(Player player, string rayOption)
         {
             if (!isInBarberShop(player)) return;
 

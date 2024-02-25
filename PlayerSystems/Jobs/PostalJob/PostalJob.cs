@@ -4,6 +4,7 @@ using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
+using CloudRP.WorldSystems.RaycastInteractions;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
@@ -23,11 +24,14 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
 
         public PostalJob()
         {
-            KeyPressEvents.keyPress_Y += startPostalJob; 
+            RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
+            {
+                raycastMenuItems = new string[] { "Start Postal Job" },
+                raycastMenuPosition = jobStartPosition,
+                targetMethod = startPostalJob
+            });
 
             NAPI.Blip.CreateBlip(837, jobStartPosition, 1f, 62, "Postal OP", 255, 5f, true, 0, 0);
-            MarkersAndLabels.setPlaceMarker(jobStartPosition);
-            MarkersAndLabels.setTextLabel(jobStartPosition, "Postal OP\n Use ~y~Y~w~ to interact.", 5f);
 
             ColShape finishJob = NAPI.ColShape.CreateSphereColShape(jobVehicleSpawn, 5f, 0);
 
@@ -46,6 +50,8 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
                     initDelieveryStop(stop);
                 });
             });
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"A total of {AvailableJobs.availablePostalJobs.Count} postal jobs were loaded.");
         }
 
         #region Methods
@@ -64,7 +70,7 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
             });
         }
 
-        void startPostalJob(Player player)
+        void startPostalJob(Player player, string rayMenu)
         {
             if (!player.checkIsWithinCoord(jobStartPosition, 2f) || FreelanceJobSystem.hasAJob(player, jobId)) return;
 

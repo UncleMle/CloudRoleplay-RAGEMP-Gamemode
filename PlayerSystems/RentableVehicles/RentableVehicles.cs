@@ -86,6 +86,8 @@ namespace CloudRP.PlayerSystems.RentableVehicles
                 NAPI.Marker.CreateMarker(36, point.spawnVehicles, new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
                 NAPI.Blip.CreateBlip(810, point.npcSpawn, 1f, 4, "Rental Vehicle Location", 255, 1f, true, 0, 0);
             });
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"A total of {rentPoints.Count} rental vehicle points were loaded.");
         }
 
         #region Global Methods

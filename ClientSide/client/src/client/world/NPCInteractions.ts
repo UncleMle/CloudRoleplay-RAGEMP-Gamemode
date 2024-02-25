@@ -6,8 +6,6 @@ export default class NpcInteractions {
     public static LocalPlayer: PlayerMp = mp.players.local;
     public static streamedNpcPeds: Map<number, InteractionPed> = new Map<number, InteractionPed>();
     public static readonly _npcSharedDataKey: string = "npcs:peds:sharedDataKey";
-    public static raycastMenu: string[];
-    public static wheelPosition: number = 0;
 
     constructor() {
         mp.events.add({
@@ -84,10 +82,10 @@ export default class NpcInteractions {
 
             if (dist > 3) return;
 
-            NpcInteractions.handleWheelMenu(ped.raycastMenuItems);
+            RaycastUtils.handleWheelMenu(ped.raycastMenuItems);
 
             ped.raycastMenuItems.forEach((rayItem, idx) => {
-                let textSelected: string = NpcInteractions.wheelPosition == idx ? "[E] " : "~c~";
+                let textSelected: string = RaycastUtils.wheelPosition === idx ? "[E] " : "~c~";
 
                 mp.game.graphics.drawText(textSelected + rayItem, [startBoneCoords.x, startBoneCoords.y, startBoneCoords.z - (idx > 0 ? idx / 7 : 0)], {
                     scale: [0.3, 0.3],
@@ -106,27 +104,8 @@ export default class NpcInteractions {
             let rayEntityId: number = (raycast.entity as EntityMp).remoteId;
 
             if (NpcInteractions.streamedNpcPeds.get(rayEntityId)) {
-                mp.events.callRemote("server:npcPeds:recieveInteraction", NpcInteractions.raycastMenu[NpcInteractions.wheelPosition]);
+                mp.events.callRemote("server:npcPeds:recieveInteraction", RaycastUtils.rayMenu[RaycastUtils.wheelPosition]);
             }
-        }
-    }
-
-    private static handleWheelMenu(rayMenu: string[]) {
-        NpcInteractions.raycastMenu = rayMenu;
-        mp.game.ui.weaponWheelIgnoreSelection();
-
-        if (rayMenu.length === 1) return NpcInteractions.wheelPosition = 0;
-
-        let wheelDown = mp.game.controls.isControlPressed(0, 14);
-        let wheelUp = mp.game.controls.isControlPressed(0, 15);
-
-        if (wheelUp) {
-            if (NpcInteractions.wheelPosition >= rayMenu.length - 1) return NpcInteractions.wheelPosition = rayMenu.length - 1;
-            NpcInteractions.wheelPosition++;
-        }
-        if (wheelDown) {
-            if (NpcInteractions.wheelPosition <= 0) return NpcInteractions.wheelPosition = 0;
-            NpcInteractions.wheelPosition--;
         }
     }
 

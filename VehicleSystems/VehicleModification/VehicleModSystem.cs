@@ -57,6 +57,8 @@ namespace CloudRP.VehicleSystems.VehicleModification
                     }
                 };
             }
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"A total of {customsAreas.Count} customs areas were loaded.");
         }
 
         [Command("mods", "~y~Use: ~w~/mods")]

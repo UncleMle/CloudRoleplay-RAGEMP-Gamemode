@@ -5,6 +5,7 @@ using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
 using CloudRP.WorldSystems.NpcInteractions;
+using CloudRP.WorldSystems.RaycastInteractions;
 using GTANetworkAPI;
 using Microsoft.EntityFrameworkCore.Internal;
 using Newtonsoft.Json;
@@ -53,8 +54,6 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
 
         public BusDriverJob()
         {
-            KeyPressEvents.keyPress_Y += startBusJob;
-
             foreach (KeyValuePair<float, Vector3> stop in BusDriverRoutes.customBusStops)
             {
                 NAPI.Object.CreateObject(NAPI.Util.GetHashKey("prop_busstop_02"), stop.Value, new Vector3(0, 0, stop.Key), 255);
@@ -74,8 +73,13 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                 .ToList();
 
                 NAPI.Blip.CreateBlip(513, busDepo.depoStartPosition, 1.0f, 46, busDepo.depoName, 255, 2f, true, 0, 0);
-                MarkersAndLabels.setPlaceMarker(busDepo.depoStartPosition);
-                MarkersAndLabels.setTextLabel(busDepo.depoStartPosition, $"Use ~y~Y~w~ to start the {JobName} job.\n"+busDepo.depoName, 5.0f);
+
+                RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
+                {
+                    raycastMenuItems = new string[] { "Start Bus Job" },
+                    raycastMenuPosition = busDepo.depoStartPosition,
+                    targetMethod = startBusJob
+                });
 
                 ColShape depoCol = NAPI.ColShape.CreateSphereColShape(busDepo.depoStartPosition, 2f, 0);
                 ColShape busStartCol = NAPI.ColShape.CreateSphereColShape(busDepo.busStartPosition, 8f, 0);
@@ -106,6 +110,8 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                     });
                 }
             });
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"A total of {busDepos.Count} bus depots were loaded.");
         }
         #endregion
 
@@ -133,7 +139,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
             return newBus;
         }
 
-        public void startBusJob(Player player)
+        public void startBusJob(Player player, string rayMenuOption)
         {
             BusDepo depoData = player.GetData<BusDepo>(_busDepoColShapeData);
 

@@ -1,4 +1,5 @@
 ﻿using CloudRP.PlayerSystems.Character;
+using CloudRP.PlayerSystems.Jobs.BusDriver;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Utils;
@@ -74,6 +75,8 @@ namespace CloudRP.PlayerSystems.Jobs.GarbageJob
             {
                 if (col.Equals(finish)) handleJobPay(player);
             };
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"Garbage driver job has loaded.");
         }
 
         #region Global Methods

@@ -77,7 +77,7 @@ namespace CloudRP.PlayerSystems.Character
         }
 
         [RemoteEvent("server:purchaseTattoos")]
-        public async Task purchaseTattoos(Player player, string tatLib, string tatData)
+        public async void purchaseTattoos(Player player, string tatLib, string tatData)
         {
             TattooShop shopData = player.GetData<TattooShop>(_tattoStoreIdentifier);
             DbCharacter characterData = player.getPlayerCharacterData();

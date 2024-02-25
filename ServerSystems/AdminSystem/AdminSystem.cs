@@ -36,6 +36,7 @@ namespace CloudRP.ServerSystems.Admin
         public static int _maxAdminMarkers = 20;
         public static string defaultAdminPed = "ig_abigail";
         public static readonly string _adminLastPositionKey = "adminDuty:system:positionKey";
+        public static int totalAdminCommands = 0;
 
         public class AdminCommand : CommandConditionAttribute
         {
@@ -45,6 +46,7 @@ namespace CloudRP.ServerSystems.Admin
             public AdminCommand(AdminRanks adminRank)
             {
                 _adminRank = (int)adminRank;
+                AdminSystem.totalAdminCommands++;
             }
 
             public override bool Check(Player player, string cmdName, string cmdText)
@@ -77,6 +79,8 @@ namespace CloudRP.ServerSystems.Admin
         public AdminSystem()
         {
             KeyPressEvents.keyPress_F4 += fly;
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"A total of {totalAdminCommands} admin commands were loaded.");
         }
 
         [ServerEvent(Event.PlayerConnected)]
@@ -88,11 +92,10 @@ namespace CloudRP.ServerSystems.Admin
             {
                 player.setPlayerToBanScreen(checkIsBanned);
             }
-
         }
 
         [Command("report", "~y~Use: ~w~/report [description]", GreedyArg = true)]
-        public async Task onReport(Player player, string desc)
+        public async void onReport(Player player, string desc)
         {
             User userData = player.getPlayerAccountData();
             DbCharacter characterData = player.getPlayerCharacterData();
@@ -265,7 +268,7 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [RemoteEvent("server:closeReport")]
-        public async Task closeReport(Player player, int reportId)
+        public async void closeReport(Player player, int reportId)
         {
             User userData = player.getPlayerAccountData();
             DbCharacter characterData = player.getPlayerCharacterData();
@@ -292,7 +295,7 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [Command("rr", "~r~Use: ~w~/rr [message]", GreedyArg = true, Alias = "reportrespond")]
-        public async Task reportResponse(Player player, string message)
+        public async void reportResponse(Player player, string message)
         {
             User userData = player.getPlayerAccountData();
             DbCharacter characterData = player.getPlayerCharacterData();

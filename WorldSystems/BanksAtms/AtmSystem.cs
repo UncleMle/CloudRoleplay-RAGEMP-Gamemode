@@ -105,6 +105,8 @@ namespace CloudRP.World.BanksAtms
                 MarkersAndLabels.setTextLabel(atm, "Use ~y~Y~w~ to interact with this ATM", 2f);
                 MarkersAndLabels.setPlaceMarker(atm);
             });
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"A total of {Atms.Count} atms were loaded in."); 
         }
 
         public static bool checkIsByAtm(Player player)

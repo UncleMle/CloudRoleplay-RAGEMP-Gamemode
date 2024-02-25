@@ -101,6 +101,9 @@ namespace CloudRP.World.BanksAtms
                     MarkersAndLabels.setPlaceMarker(teller);
                 });
             });
+
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"A total of {banks.Count} banks were loaded in.");
         }
 
         #region Global Methods

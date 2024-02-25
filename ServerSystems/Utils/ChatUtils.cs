@@ -65,6 +65,21 @@ namespace CloudRP.ServerSystems.Utils
 
             Console.WriteLine();
         }
+        
+        public static void startupPrint(string message)
+        {
+            ConsoleColor[] startColours = new ConsoleColor[] { ConsoleColor.Yellow, ConsoleColor.Green };
+
+            ConsoleColor targetColour = startColours[new Random().Next(startColours.Length)];
+
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.Write(getTimeString());
+            Console.ForegroundColor = targetColour;
+            Console.Write(_c_Server + message);
+            Console.ForegroundColor = ConsoleColor.White;
+
+            Console.WriteLine();
+        }
 
         public static string getTimeString()
         {

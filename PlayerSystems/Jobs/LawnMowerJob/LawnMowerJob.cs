@@ -99,6 +99,9 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
                 NAPI.Blip.CreateBlip(351, spawn, 1f, 2, "Lawn Mower Job", 255, 0, true, 0, 0);
                 initMowerSpawn(spawn);
             });
+
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"A total of {lawns.Count} mowable lawns were loaded.");
         }
 
         #region Global Methods

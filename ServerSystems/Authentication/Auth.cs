@@ -692,7 +692,7 @@ namespace CloudRP.ServerSystems.Authentication
         [ServerEvent(Event.PlayerConnected)]
         public void onPlayerConnected(Player player)
         {
-            player.Name = Main.serverName;
+            player.Name = NAPI.Server.GetServerName();
             player.setPlayerToLoginScreen(false);
         }
         #endregion

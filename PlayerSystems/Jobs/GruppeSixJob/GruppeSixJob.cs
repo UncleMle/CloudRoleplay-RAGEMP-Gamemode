@@ -4,6 +4,7 @@ using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
+using CloudRP.WorldSystems.RaycastInteractions;
 using GTANetworkAPI;
 using Microsoft.EntityFrameworkCore.Internal;
 using Newtonsoft.Json;
@@ -28,10 +29,13 @@ namespace CloudRP.PlayerSystems.Jobs.GruppeSixJob
 
         public GruppeSixJob()
         {
-            KeyPressEvents.keyPress_Y += startGruppeSixJob;
-
-            MarkersAndLabels.setPlaceMarker(jobStartPosition);
-            MarkersAndLabels.setTextLabel(jobStartPosition, jobName + "\nUse ~y~Y~w~ to interact", 5f);
+            RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
+            {
+                raycastMenuItems = new string[] { "Start gruppe six job" },
+                raycastMenuPosition = jobStartPosition,
+                targetMethod = startGruppeSixJob
+            });
+            
             NAPI.Blip.CreateBlip(67, jobStartPosition, 1f, 2, jobName, 255, 5f, true, 0, 0);
 
             ColShape endCol = NAPI.ColShape.CreateSphereColShape(vehicleSpawn, 2f, 0);
@@ -58,10 +62,12 @@ namespace CloudRP.PlayerSystems.Jobs.GruppeSixJob
                 });
 
             });
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"Garbage driver job has loaded.");
         }
 
         #region Global Methods
-        private static void startGruppeSixJob(Player player)
+        private static void startGruppeSixJob(Player player, string rayOption)
         {
             if (!player.checkIsWithinCoord(jobStartPosition, 2f) || FreelanceJobSystem.hasAJob(player, jobId)) return;
             uiHandling.resetMutationPusher(player, MutationKeys.GruppeSixJobs);

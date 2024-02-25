@@ -125,6 +125,8 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                     };
                 });
             }
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"A total of {playerDealerships.Count} player dealerships were loaded.");
         }
 
         [Command("sellveh", "~y~Use: ~w~/sellveh [price] [description]", GreedyArg = true)]

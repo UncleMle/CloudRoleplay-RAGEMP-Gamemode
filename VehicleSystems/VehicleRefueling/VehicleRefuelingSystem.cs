@@ -54,6 +54,8 @@ namespace CloudRP.VehicleSystems.VehicleRefueling
                     };
                 });
             });
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"A total of {VehicleRefuelStations.refuelingStations.Count} refuelling stations were loaded.");
         }
 
         public void startVehicleRefuel(Player player)

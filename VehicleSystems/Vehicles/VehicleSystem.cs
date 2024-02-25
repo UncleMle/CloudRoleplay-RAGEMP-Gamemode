@@ -1427,8 +1427,6 @@ namespace CloudRP.VehicleSystems.Vehicles
         [ServerEvent(Event.PlayerExitVehicle)]
         public void handleVehicleLeave(Player player, Vehicle vehicle)
         {
-            Console.WriteLine("triggerd " + player.Id);
-
             User user = player.getPlayerAccountData();
 
             if (user.vip_status && canToggleLock(player, vehicle))

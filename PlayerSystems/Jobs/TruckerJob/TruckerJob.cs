@@ -4,6 +4,7 @@ using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
+using CloudRP.WorldSystems.RaycastInteractions;
 using GTANetworkAPI;
 using System;
 using System.Linq;
@@ -31,6 +32,13 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
         #region Init
         public TruckerJob()
         {
+            RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
+            {
+                raycastMenuItems = new string[] { "Start trucking job" },
+                raycastMenuPosition = truckerJobStart,
+                targetMethod = startTruckerJob
+            });
+
             FreelanceJobSystem.quitJob += (player, job) =>
             {
                 if(job.jobId == (int)FreelanceJobs.TruckerJob)
@@ -73,15 +81,13 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
             });
 
             NAPI.Blip.CreateBlip(477, truckerJobStart, 1f, 41, "Trucker Job", 255, 1f, true, 0, 0);
-            MarkersAndLabels.setPlaceMarker(truckerJobStart);
-            MarkersAndLabels.setTextLabel(truckerJobStart, "Use ~y~Y~w~ to view available jobs.", 3f);
 
-            KeyPressEvents.keyPress_Y += startTruckerJob;
+            Main.resourceStart += () => ChatUtils.startupPrint($"A total of {AvailableJobs.availableJobs.Count} trucker jobs were loaded.");
         }
         #endregion
 
         #region Global Methods
-        private static void startTruckerJob(Player player)
+        private static void startTruckerJob(Player player, string rayOption)
         {
             if (!player.checkIsWithinCoord(truckerJobStart, 2f) || FreelanceJobSystem.hasAJob(player, jobId)) return;
 

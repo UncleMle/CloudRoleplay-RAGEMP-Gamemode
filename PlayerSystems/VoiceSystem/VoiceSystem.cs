@@ -1,11 +1,17 @@
 ﻿using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.ServerSystems.Utils;
 using GTANetworkAPI;
 
 namespace CloudRP.PlayerSystems.VoiceSystem
 {
     class VoiceSystem : Script
     {
+        public VoiceSystem()
+        {
+            Main.resourceStart += () => ChatUtils.startupPrint($"Loaded voice system");
+        }
+
         [RemoteEvent("server:voiceAddVoiceListener")]
         public void addListener(Player player, Player target)
         {

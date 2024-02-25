@@ -55,6 +55,7 @@ import FactionSystem from "./FactionSystem/FactionSystem";
 import Barber from "./Barber/Barber";
 import NpcInteractions from "./world/NPCInteractions";
 import RouletteTables from "./CasinoSystems/RouletteTables";
+import RaycastInteractions from "./world/RaycastInteractions";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -114,3 +115,4 @@ new FactionSystem();
 new Barber();
 new NpcInteractions();
 new RouletteTables();
+new RaycastInteractions();

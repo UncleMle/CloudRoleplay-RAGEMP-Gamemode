@@ -5,6 +5,7 @@ using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
+using CloudRP.WorldSystems.RaycastInteractions;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
@@ -42,15 +43,18 @@ namespace CloudRP.VehicleSystems.VehicleInsurance
 
         public VehicleInsuranceSystem()
         {
-            KeyPressEvents.keyPress_Y += viewServerInsuranceVehicles;
-
             NAPI.Task.Run(() =>
             {
                 insuranceAreas.ForEach(area =>
                 {
                     NAPI.Blip.CreateBlip(380, area.retrievePosition, 1.0f, 49, area.insuranceName, 255, 1.0f, true, 0, 0);
-                    MarkersAndLabels.setPlaceMarker(area.retrievePosition);
-                    MarkersAndLabels.setTextLabel(area.retrievePosition, area.insuranceName + "\nUse ~y~Y~w~ to interact", 5f);
+
+                    RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
+                    {
+                        raycastMenuItems = new string[] { "View vehicle insurance" },
+                        raycastMenuPosition = area.retrievePosition,
+                        targetMethod = viewServerInsuranceVehicles
+                    });
 
                     ColShape insuranceCol = NAPI.ColShape.CreateSphereColShape(area.retrievePosition, 2.0f, 0);
                     insuranceCol.SetData(_insuranceDataIdentifier, area);
@@ -78,9 +82,11 @@ namespace CloudRP.VehicleSystems.VehicleInsurance
                     };
                 });
             });
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"A total of {insuranceAreas.Count} insurance areas were loaded.");
         }
 
-        public void viewServerInsuranceVehicles(Player player)
+        public void viewServerInsuranceVehicles(Player player, string rayOption)
         {
             InsuranceArea playerInsuranceData = player.GetData<InsuranceArea>(_insuranceDataIdentifier);
             DbCharacter charData = player.getPlayerCharacterData();

@@ -350,6 +350,14 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
                 updateTracking.Elapsed += handleVehicleTracking;
             });
+
+            Main.resourceStart += () =>
+            {
+                ChatUtils.startupPrint($"A total of {Enum.GetNames(typeof(Factions)).Length} legal factions were loaded.");
+                ChatUtils.startupPrint($"A total of {onDutyAreas.Count} duty points were loaded.");
+                ChatUtils.startupPrint($"A total of {vehicleSpawnPoints.Count} vehicle spawn points were loaded.");
+                ChatUtils.startupPrint($"A total of {vehicleImportAreas.Count} vehicle import areas were loaded.");
+            };
         }
 
         private static void initFactionRanks()

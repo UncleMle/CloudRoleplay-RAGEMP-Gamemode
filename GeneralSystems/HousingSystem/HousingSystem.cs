@@ -35,6 +35,8 @@ namespace CloudRP.GeneralSystems.HousingSystem
                 {
                     loadAHouse(house);
                 }
+
+                ChatUtils.startupPrint($"A total of {houses.Count} houses were loaded.");
             }
         }
 

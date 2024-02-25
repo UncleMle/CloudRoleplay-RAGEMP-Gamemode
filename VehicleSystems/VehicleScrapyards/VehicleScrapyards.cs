@@ -39,6 +39,8 @@ namespace CloudRP.VehicleSystems.VehicleScrapyards
                 NAPI.Marker.CreateMarker(27, new Vector3(scrap.position.X, scrap.position.Y, scrap.position.Z - 0.9), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
                 NAPI.Marker.CreateMarker(36, scrap.position, new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0.5f, new Color(214, 175, 250, 250), false, 0);
             });
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"A total of {vehicleScrapyards.Count} vehicle scrap yards were loaded in.");
         }
 
         #region Commands

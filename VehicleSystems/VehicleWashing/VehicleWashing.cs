@@ -2,6 +2,7 @@
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
+using CloudRP.VehicleSystems.VehicleScrapyards;
 using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
 using System;
@@ -67,6 +68,8 @@ namespace CloudRP.VehicleSystems.VehicleWashing
                     }
                 };
             });
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"A total of {vehicleWashingStations.Count} vehicle washing stations were loaded in.");
         }
 
         [Command("wash", "~y~Use: ~w~/wash")]

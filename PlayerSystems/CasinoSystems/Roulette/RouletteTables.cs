@@ -1,4 +1,5 @@
 ﻿using CloudRP.ServerSystems.Database;
+using CloudRP.ServerSystems.Utils;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
@@ -35,6 +36,8 @@ namespace CloudRP.PlayerSystems.CasinoSystems.Roulette
             {
                 table.load();
             });
+
+            ChatUtils.startupPrint($"A total of {tables.Count} roulette tables were loaded.");
         }
 
         #region Remote Events

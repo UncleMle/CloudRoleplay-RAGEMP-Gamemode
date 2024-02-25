@@ -2,6 +2,7 @@
 using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.DeathSystem;
 using CloudRP.PlayerSystems.DMV;
+using CloudRP.PlayerSystems.FactionSystems;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
@@ -47,6 +48,8 @@ namespace CloudRP.PlayerSystems.Jobs
                     deleteFreeLanceVehs(player);
                 }
             };
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"A total of {Enum.GetNames(typeof(FreelanceJobs)).Length} freelance jobs were loaded.");
         }
 
         #region Global Methods

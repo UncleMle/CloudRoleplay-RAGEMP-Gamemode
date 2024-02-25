@@ -3,6 +3,7 @@ using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
+using CloudRP.WorldSystems.RaycastInteractions;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
@@ -89,22 +90,22 @@ namespace CloudRP.PlayerSystems.JobCenter
 
         public JobCenter()
         {
-            KeyPressEvents.keyPress_Y += (player) =>
-            {
-                if (player.checkIsWithinOneCoords(jobCenterPositions, 2)) showCenterUi(player);
-            };
-
             jobCenterPositions.ForEach(pos =>
             {
                 NAPI.Blip.CreateBlip(408, pos, 1f, 4, "Job Center", 255, 1f, true, 0, 0);
 
-                MarkersAndLabels.setPlaceMarker(pos);
-                MarkersAndLabels.setTextLabel(pos, "Job Center\nUse ~y~Y~w~ to interact", 5f);
-
+                RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
+                {
+                    raycastMenuItems = new string[] { "View available jobs" },
+                    raycastMenuPosition = pos,
+                    targetMethod = showCenterUi
+                });
             });
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"A total of {jobCenterPositions.Count} job centers were loaded.");
         }
 
-        private static void showCenterUi(Player player)
+        private static void showCenterUi(Player player, string rayOption)
         {
             uiHandling.resetMutationPusher(player, MutationKeys.JobCenterJobs);
             uiHandling.pushRouterToClient(player, Browsers.JobCenter, true);

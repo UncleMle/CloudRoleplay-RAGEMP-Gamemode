@@ -1,6 +1,7 @@
 ﻿using CloudRP.PlayerSystems.AnimationSync;
 using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.ServerSystems.Utils;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,11 @@ namespace CloudRP.GeneralSystems.WeaponSystem
     class WeaponSystems : Script
     {
         public static readonly string _currentWeaponDataIdentifier = "server:weaponSystem:currentWeapon";
+
+        public WeaponSystems()
+        {
+            Main.resourceStart += () => ChatUtils.startupPrint($"A total of {WeaponList.serverWeapons.Count} server weapons were loaded.");
+        }
 
         [ServerEvent(Event.PlayerWeaponSwitch)]
         public void OnPlayerWeaponSwitch(Player player, WeaponHash oldWeapon, WeaponHash newWeapon)

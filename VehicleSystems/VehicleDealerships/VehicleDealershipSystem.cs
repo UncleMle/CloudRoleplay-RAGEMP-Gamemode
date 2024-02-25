@@ -5,6 +5,7 @@ using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.VehicleParking;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
+using CloudRP.WorldSystems.RaycastInteractions;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
@@ -188,15 +189,18 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
 
         public VehicleDealershipSystem()
         {
-            KeyPressEvents.keyPress_Y += serverViewDealerVehicles;
-
             foreach (DealerShip dealerShip in dealerships)
             {
                 ColShape viewingCol = NAPI.ColShape.CreateSphereColShape(dealerShip.viewPosition, dealerShip.viewRange, 0);
 
+                RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
+                {
+                    raycastMenuItems = new string[] { "View vehicle dealership vehicles" },
+                    raycastMenuPosition = dealerShip.viewPosition,
+                    targetMethod = serverViewDealerVehicles
+                });
+
                 viewingCol.SetData(_dealershipIdentifer, dealerShip);
-                MarkersAndLabels.setTextLabel(dealerShip.viewPosition, $"{dealerShip.dealershipName}\n Use ~y~Y~w~ to interact", dealerShip.viewRange);
-                MarkersAndLabels.setPlaceMarker(dealerShip.viewPosition);
                 NAPI.Blip.CreateBlip(595, dealerShip.position, 1.0f, 7, dealerShip.dealershipName, 255, 1.0f, true, 0, 0);
 
                 viewingCol.OnEntityEnterColShape += (col, player) =>
@@ -219,9 +223,11 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
                     }
                 };
             }
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"A total of {dealerships.Count} vehicle dealerships were loaded.");
         }
 
-        public void serverViewDealerVehicles(Player player)
+        public void serverViewDealerVehicles(Player player, string rayOption)
         {
             DealerShip dealerData = player.GetData<DealerShip>(_dealershipIdentifer);
             bool dealerActive = player.GetData<bool>(_dealerActiveIdentifier);

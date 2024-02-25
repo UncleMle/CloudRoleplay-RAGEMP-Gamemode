@@ -544,3 +544,9 @@ interface RouletteTable {
 	beingRolled: boolean;
 	tableObject: ObjectMp;
 }
+
+interface RaycastInteraction {
+	raycastMenuItems: string[];
+	raycastMenuPosition: Vector3;
+	object: ObjectMp;
+}

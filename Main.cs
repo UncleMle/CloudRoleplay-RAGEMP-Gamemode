@@ -27,8 +27,8 @@ namespace CloudRP
         public static event PrimaryEventsHandler tick;
 
         public static event PlayerEventsHandler playerDisconnect;
+        public static event PlayerEventsHandler playerConnect;
 
-        public static readonly string serverName = "cloud-rp.net";
         public static string ProductionBuild = "";
         public static string JsonDirectory = "";
         public static string _dbHost = "";
@@ -87,7 +87,7 @@ namespace CloudRP
 
             string prod = ProductionBuild == "true" ? "[Production]" : "[Development]";
 
-            ChatUtils.formatConsolePrint($"{prod} Gamemode has started. (Loaded {Commands.loadedCommands.Count()} total commands)", ConsoleColor.Cyan);
+            ChatUtils.formatConsolePrint($"{prod} {NAPI.Server.GetServerName()} gamemode has started. (Loaded {Commands.loadedCommands.Count()} total commands)", ConsoleColor.Cyan);
         }
 
         #region Global Methods
@@ -104,6 +104,10 @@ namespace CloudRP
         [ServerEvent(Event.PlayerDisconnected)]
         public void OnPlayerDisconnect(Player player, DisconnectionType type, string reason) 
             => playerDisconnect(player);
+        
+        [ServerEvent(Event.PlayerConnected)]
+        public void OnPlayerConnect(Player player) 
+            => playerConnect(player);
 
         [ServerEvent(Event.ResourceStopEx)]
         public void OnServerStop()

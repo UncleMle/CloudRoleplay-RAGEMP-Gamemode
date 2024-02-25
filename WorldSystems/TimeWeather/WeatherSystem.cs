@@ -36,6 +36,8 @@ namespace CloudRP.World.TimeWeather
 
                 resyncWeather();
             }, interval_delay_seconds * 1000);
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"Weather system started and synced to {weatherSyncTo}");
         }
 
         public static void resyncWeather(object source = null, ElapsedEventArgs e = null)

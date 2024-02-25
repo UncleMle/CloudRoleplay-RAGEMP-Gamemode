@@ -103,6 +103,8 @@ namespace CloudRP.GeneralSystems.SpeedCameras
                 speedCamCol.OnEntityEnterColShape += setSpeedCamData;
                 speedCamCol.OnEntityExitColShape += removeSpeedCamData;
             });
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"A total of {cameras.Count} speed cameras were loaded with {speedFines.Count} speed fines.");
         }
 
         public void setSpeedCamData(ColShape colshape, Player player)

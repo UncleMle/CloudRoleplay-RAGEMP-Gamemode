@@ -49,6 +49,8 @@ namespace CloudRP.PlayerSystems.DeathSystem
             {
                 NAPI.Blip.CreateBlip(61, hospital.position, 1.0f, 49, hospital.name, 255, 20, true, 0, 0);
             }
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"A total of {hospitalList.Count} hospitals were loaded.");
         }
 
         #region Server Events

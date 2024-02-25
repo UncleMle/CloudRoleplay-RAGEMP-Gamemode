@@ -39,6 +39,7 @@ namespace CloudRP.World.TimeWeather
             });
 
             Main.tick += handleEveryHour;
+            Main.resourceStart += () => ChatUtils.startupPrint($"Time system started at hour {hour}");
         }
 
         #region Global Methods

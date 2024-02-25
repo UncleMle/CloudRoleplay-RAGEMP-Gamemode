@@ -1,4 +1,5 @@
 ﻿using CloudRP.GeneralSystems.SpeedCameras;
+using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
 using GTANetworkAPI;
@@ -17,6 +18,11 @@ namespace CloudRP.WorldSystems.NpcInteractions
         public static readonly string _npcPedSharedDataKey = "npcs:peds:sharedDataKey";
         public static Dictionary<int, InteractionPed> npcPeds = new Dictionary<int, InteractionPed>();
         public static float maxNpcDist = 4.0f;
+
+        public NpcInteractions()
+        {
+            Main.resourceStart += () => ChatUtils.startupPrint($"A total of {npcPeds.Count} npc interaction points were loaded.");
+        }
 
         #region Global Methods
         public static int buildPed(PedHash ped, Vector3 position, float heading, string headName, string[] raycastMenuItems)

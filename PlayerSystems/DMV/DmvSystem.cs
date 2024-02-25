@@ -45,6 +45,8 @@ namespace CloudRP.PlayerSystems.DMV
             NAPI.Blip.CreateBlip(351, dmvStartPoint, 1f, 71, "DMV", 255, 5f, true, 0, 0);
             MarkersAndLabels.setPlaceMarker(dmvStartPoint);
             MarkersAndLabels.setTextLabel(dmvStartPoint, "DMV\nUse ~y~Y~w~ to interact.", 5f);
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"A total of {DmvLicenseCourses.availableCourses.Count} DMV courses were loaded in.");
         }
 
         #region Global Methods
