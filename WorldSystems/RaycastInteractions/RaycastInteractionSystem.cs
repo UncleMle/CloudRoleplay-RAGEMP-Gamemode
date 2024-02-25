@@ -28,7 +28,6 @@ namespace CloudRP.WorldSystems.RaycastInteractions
                     raycastPoints.ForEach(p =>
                     {
                         Ped rayPed = NAPI.Ped.CreatePed((uint)PedHash.Hacker, p.raycastMenuPosition, 0, true, true, true, true, 0);
-                        rayPed.Transparency = 100;
 
                         rayPed.SetSharedData(pedRaycastSharedKey, raycastPoints.IndexOf(p));
 

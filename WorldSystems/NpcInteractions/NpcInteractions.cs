@@ -13,7 +13,7 @@ namespace CloudRP.WorldSystems.NpcInteractions
     public class NpcInteractions : Script
     {
         public static readonly string _npcPedSharedDataKey = "npcs:peds:sharedDataKey";
-        public static Dictionary<int, InteractionPed> npcPeds = new Dictionary<int, InteractionPed>();
+        public static List<InteractionPed> npcPeds = new List<InteractionPed>();
         public static float maxNpcDist = 4.0f;
 
         public NpcInteractions()
@@ -34,24 +34,16 @@ namespace CloudRP.WorldSystems.NpcInteractions
                 targetMethod = targetMethod
             };
 
-            npcPed.SetSharedData(_npcPedSharedDataKey, interactionPed);
-            npcPeds.Add(npcPed.Id, interactionPed);
+            npcPed.SetSharedData(_npcPedSharedDataKey, new InteractionPedShared
+            {
+                ped = npcPed,
+                pedHeadName = headName,
+                raycastMenuItems = raycastMenuItems,
+            });
+
+            npcPeds.Add(interactionPed);
 
             return npcPed.Id;
-        }
-
-        public static int getClosestPedByRange(Player player, float range)
-        {
-            int pedId = -1;
-
-            foreach (KeyValuePair<int, InteractionPed> npc in npcPeds)
-            {
-                Vector3 pos = npc.Value.ped.Position;
-
-                if(pos.DistanceToSquared(player.Position) < range) pedId = npc.Key;
-            }
-
-            return pedId;
         }
         #endregion
 
@@ -59,12 +51,12 @@ namespace CloudRP.WorldSystems.NpcInteractions
         [RemoteEvent("server:npcPeds:recieveInteraction")]
         public void handleNpcInteraction(Player player, string raycastMenu)
         {
-            KeyValuePair<int, InteractionPed> targetPed = npcPeds
-                .OrderBy(item => Vector3.Distance(player.Position, item.Value.ped.Position)).First();
+            InteractionPed targetPed = npcPeds
+                .OrderBy(item => Vector3.Distance(player.Position, item.ped.Position)).First();
 
-            if (targetPed.Value == null || Vector3.Distance(player.Position, targetPed.Value.ped.Position) > maxNpcDist) return;
+            if (targetPed == null || Vector3.Distance(player.Position, targetPed.ped.Position) > maxNpcDist) return;
 
-            targetPed.Value.targetMethod(player, raycastMenu);
+            targetPed.targetMethod(player, raycastMenu);
         }
         #endregion
     }
