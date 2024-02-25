@@ -76,7 +76,13 @@ export default class RaycastInteractions {
 
             if (!targetPed) return;
 
-            if (!targetPed.doesExist() || targetPed.doesExist() && !targetPed.getVariable(RaycastInteractions.pedRaycastSharedKey)) return;
+            let interactId: number = targetPed.getVariable(RaycastInteractions.pedRaycastSharedKey);
+
+            if (!targetPed.doesExist() || targetPed.doesExist() && targetPed.getVariable(RaycastInteractions.pedRaycastSharedKey) === undefined) return;
+
+            mp.gui.chat.push(`${RaycastInteractions.raycastInteractionPoints.indexOf(interactionPoint)} || ${interactId}`);
+
+            if (RaycastInteractions.raycastInteractionPoints.indexOf(interactionPoint) !== interactId) return;
 
             RaycastInteractions.lookingAtInteractionPoint = interactionPoint;
 
