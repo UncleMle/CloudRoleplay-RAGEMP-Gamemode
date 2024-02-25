@@ -7,6 +7,7 @@ using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
+using CloudRP.WorldSystems.RaycastInteractions;
 using GTANetworkAPI;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,6 @@ namespace CloudRP.PlayerSystems.DMV
 
         public DmvSystem()
         {
-            KeyPressEvents.keyPress_Y += viewDmvMenu;
             Main.playerDisconnect += removeDmvVehicle;
 
             VehicleSystem.vehicleDeath += (vehicle, vehicleData) =>
@@ -43,8 +43,14 @@ namespace CloudRP.PlayerSystems.DMV
             });
 
             NAPI.Blip.CreateBlip(351, dmvStartPoint, 1f, 71, "DMV", 255, 5f, true, 0, 0);
-            MarkersAndLabels.setPlaceMarker(dmvStartPoint);
-            MarkersAndLabels.setTextLabel(dmvStartPoint, "DMV\nUse ~y~Y~w~ to interact.", 5f);
+
+            RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
+            {
+                menuTitle = "Department of Motor Vehicles",
+                raycastMenuItems = new string[] { "Select a course" },
+                raycastMenuPosition = dmvStartPoint,
+                targetMethod = viewDmvMenu
+            });
 
             Main.resourceStart += () => ChatUtils.startupPrint($"A total of {DmvLicenseCourses.availableCourses.Count} DMV courses were loaded in.");
         }
@@ -127,7 +133,7 @@ namespace CloudRP.PlayerSystems.DMV
             player.SetCustomData(_PlayerDmvDataKey, playerDmv);
         }
 
-        private void viewDmvMenu(Player player)
+        private void viewDmvMenu(Player player, string rayOption)
         {
             if (!player.checkIsWithinCoord(dmvStartPoint, 2f)) return;
 

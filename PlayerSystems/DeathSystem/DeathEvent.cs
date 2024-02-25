@@ -6,6 +6,7 @@ using CloudRP.ServerSystems.AntiCheat;
 using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
+using CloudRP.WorldSystems.RaycastInteractions;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
@@ -37,6 +38,12 @@ namespace CloudRP.PlayerSystems.DeathSystem
             new Hospital { name = "Paleto Hospital", position = new Vector3(-381.1, 6119.7, 31.5) }
         };
 
+        class RaycastMenuOptions
+        {
+            public const string painKillerPurchase = "Purchase Painkiller";
+            public const string bandagePurchase = "Purchase Bandages";
+        }
+
         public DeathEvent()
         {
             Main.playerDisconnect += removeServerInjuredTimer;
@@ -47,6 +54,14 @@ namespace CloudRP.PlayerSystems.DeathSystem
 
             foreach (Hospital hospital in hospitalList)
             {
+                RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
+                {
+                    menuTitle = hospital.name,
+                    raycastMenuItems = new string[] { RaycastMenuOptions.painKillerPurchase, RaycastMenuOptions.bandagePurchase },
+                    raycastMenuPosition = hospital.position,
+                    targetMethod = purchaseFromHospital
+                });
+
                 NAPI.Blip.CreateBlip(61, hospital.position, 1.0f, 49, hospital.name, 255, 20, true, 0, 0);
             }
 
@@ -95,6 +110,23 @@ namespace CloudRP.PlayerSystems.DeathSystem
         #endregion
 
         #region Global Methods
+        public static void purchaseFromHospital(Player player, string raycastMenuOption)
+        {
+            switch(raycastMenuOption)
+            {
+                case RaycastMenuOptions.painKillerPurchase:
+                    {
+
+                        break;
+                    }
+                case RaycastMenuOptions.bandagePurchase:
+                    {
+
+                        break;
+                    }
+            }
+        }
+
         public static void respawnAtHospital(Player player)
         {
             DbCharacter playerCharacterData = player.getPlayerCharacterData();

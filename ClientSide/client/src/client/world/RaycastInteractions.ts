@@ -1,6 +1,7 @@
 import { RaycastInteraction } from "@/@types";
 import { _control_ids } from "@/Constants/Constants";
 import distBetweenCoords from "@/PlayerMethods/distanceBetweenCoords";
+import validateKeyPress from "@/PlayerMethods/validateKeyPress";
 import RaycastUtils from "@/RaycastUtils/RaycastUtils";
 
 export default class RaycastInteractions {
@@ -21,7 +22,7 @@ export default class RaycastInteractions {
     }
 
     private static handleKeyPress() {
-        if (!RaycastInteractions.lookingAtInteractionPoint) return;
+        if (!RaycastInteractions.lookingAtInteractionPoint || !validateKeyPress(true, true, true)) return;
         let pointId: number = RaycastInteractions.raycastInteractionPoints.indexOf(RaycastInteractions.lookingAtInteractionPoint);
 
         mp.events.callRemote(RaycastInteractions.interactionServerEvent, pointId, RaycastUtils.rayMenu[RaycastUtils.wheelPosition]);
