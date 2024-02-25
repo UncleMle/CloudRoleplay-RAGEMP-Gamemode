@@ -4,6 +4,7 @@ using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.World.MarkersLabels;
 using CloudRP.World.TimeWeather;
+using CloudRP.WorldSystems.RaycastInteractions;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
@@ -89,16 +90,19 @@ namespace CloudRP.World.BanksAtms
 
         public Banks()
         {
-            KeyPressEvents.keyPress_Y += openBankEvent;
-
             banks.ForEach(bank =>
             {
                 NAPI.Blip.CreateBlip(374, bank.blipPos, 1.0f, 5, "Bank", 255, 1.0f, true, 0, 0);
 
                 bank.tellers.ForEach(teller =>
                 {
-                    MarkersAndLabels.setTextLabel(teller, $"Use ~y~Y~w~ to interact with bank.\n(Open - {bankOpenHour}:00 to {bankCloseHour}:00)", 5f);
-                    MarkersAndLabels.setPlaceMarker(teller);
+                    RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
+                    {
+                        menuTitle = "Bank Teller",
+                        raycastMenuItems = new string[] { "Open bank menu" },
+                        raycastMenuPosition = teller,
+                        targetMethod = openBankEvent
+                    });
                 });
             });
 
@@ -123,7 +127,7 @@ namespace CloudRP.World.BanksAtms
             return close;
         }
 
-        public void openBankEvent(Player player)
+        public void openBankEvent(Player player, string rayMenuOption)
         {
             if (!closeToBankTeller(player)) return;
 

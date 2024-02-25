@@ -3,6 +3,8 @@ using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.World.MarkersLabels;
+using CloudRP.WorldSystems.NpcInteractions;
+using CloudRP.WorldSystems.RaycastInteractions;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
@@ -97,13 +99,17 @@ namespace CloudRP.World.BanksAtms
 
         public AtmSystem()
         {
-            KeyPressEvents.keyPress_Y += openAtm;
-
             Atms.ForEach(atm =>
             {
                 NAPI.Blip.CreateBlip(108, atm, 1.0f, 25, "ATM", 255, 1.0f, true, 0, 0);
-                MarkersAndLabels.setTextLabel(atm, "Use ~y~Y~w~ to interact with this ATM", 2f);
-                MarkersAndLabels.setPlaceMarker(atm);
+
+                RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
+                {
+                    menuTitle = $"Atm #{Atms.IndexOf(atm)}",
+                    raycastMenuItems = new string[] { "Use atm" },
+                    raycastMenuPosition = atm,
+                    targetMethod = openAtm
+                });
             });
 
             Main.resourceStart += () => ChatUtils.startupPrint($"A total of {Atms.Count} atms were loaded in."); 
@@ -124,7 +130,7 @@ namespace CloudRP.World.BanksAtms
             return isByAtm;
         }
 
-        public void openAtm(Player player)
+        public void openAtm(Player player, string rayMenuOption)
         {
             if (!checkIsByAtm(player)) return;
 
