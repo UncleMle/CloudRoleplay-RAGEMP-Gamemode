@@ -85,6 +85,8 @@ namespace CloudRP.PlayerSystems.FactionSystems.PoliceFaction
 
             CriminalChargeSystem.removePlayerCharge(character.character_id, fineId);
 
+            player.SendChatMessage(ChatUtils.Success + $"You paid off a fine totalling {charge.totalFine}");
+
             resyncFinesUiData(player);
         }
         #endregion

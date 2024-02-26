@@ -15,6 +15,12 @@
                             </div>
 
                             <div class="overflow-x-hidden overflow-y-scroll max-h-[30vw]">
+
+                                <div v-if="playerData.criminal_charges.length == 0"
+                                    class="flex justify-center mt-4 font-medium">
+                                    You don't have any fines (Get those numbers up).
+                                </div>
+
                                 <div v-for="(item, idx) in playerData.criminal_charges" :key="idx"
                                     class="relative border mt-4 ml-2 mr-4 rounded-lg border-gray-400/40">
 

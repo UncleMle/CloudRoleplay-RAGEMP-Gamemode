@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text;
 
 namespace CloudRP.PlayerSystems.FactionSystems.PoliceSystems
@@ -61,6 +62,8 @@ namespace CloudRP.PlayerSystems.FactionSystems.PoliceSystems
                 charge = dbContext.criminal_charges.Find(chargeId);
 
                 if (charge != null) dbContext.criminal_charges.Remove(charge);
+
+                dbContext.SaveChanges();
             }
 
             NAPI.Pools.GetAllPlayers().ForEach(p =>
@@ -69,6 +72,9 @@ namespace CloudRP.PlayerSystems.FactionSystems.PoliceSystems
 
                 if(character != null && character.character_id == characterId)
                 {
+                    charge = character.criminalCharges.Where(c => c.criminal_charge_id == chargeId).FirstOrDefault();
+                    if (charge == null) return;
+
                     character.criminalCharges.Remove(charge);
                     p.setPlayerCharacterData(character);
                 }
