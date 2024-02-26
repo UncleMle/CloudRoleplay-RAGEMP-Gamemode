@@ -31,7 +31,7 @@ namespace CloudRP.WorldSystems.RaycastInteractions
 
                         rayPed.SetSharedData(pedRaycastSharedKey, raycastPoints.IndexOf(p));
 
-                        MarkersAndLabels.setPlaceMarker(p.raycastMenuPosition);
+                        if(p.hasPlaceMarker) MarkersAndLabels.setPlaceMarker(p.raycastMenuPosition);
                     });
                 }, 6 * 1000);
             };

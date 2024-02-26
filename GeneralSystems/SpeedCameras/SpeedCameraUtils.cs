@@ -13,6 +13,7 @@ namespace CloudRP.GeneralSystems.SpeedCameras
         public float range { get; set; }
         public double camRot { get; set; }
         public int speedLimit { get; set; }
+        public bool sabotaged { get; set; }
     }
 
     class SpeedFine

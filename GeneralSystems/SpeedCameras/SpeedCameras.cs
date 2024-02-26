@@ -3,8 +3,11 @@ using CloudRP.PlayerSystems.FactionSystems;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
+using CloudRP.WorldSystems.RaycastInteractions;
 using GTANetworkAPI;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +18,7 @@ namespace CloudRP.GeneralSystems.SpeedCameras
     public class SpeedCameras : Script
     {
         public string _speedCameraDataIdentifier = "speedCameraColshapeData";
+        public static readonly int speedCameraSabotageTime_seconds = 60;
         public List<SpeedCamera> cameras = new List<SpeedCamera>
         {
             new SpeedCamera
@@ -84,12 +88,9 @@ namespace CloudRP.GeneralSystems.SpeedCameras
 
         List<SpeedFine> speedFines = new List<SpeedFine>
         {
-            new SpeedFine
-            { finePrice = 400, speed = 82 },
-            new SpeedFine
-            { finePrice = 800, speed = 120 },
-            new SpeedFine
-            { finePrice = 2500, speed = 200 }
+            new SpeedFine { finePrice = 400, speed = 82 },
+            new SpeedFine { finePrice = 800, speed = 120 },
+            new SpeedFine { finePrice = 2500, speed = 200 }
         };
 
         public SpeedCameras()
@@ -102,9 +103,42 @@ namespace CloudRP.GeneralSystems.SpeedCameras
 
                 speedCamCol.OnEntityEnterColShape += setSpeedCamData;
                 speedCamCol.OnEntityExitColShape += removeSpeedCamData;
+
+                RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
+                {
+                    menuTitle = "Speedcamera - Sabotage",
+                    raycastMenuItems = new string[] { $"Sabotage Speedcamera for {speedCameraSabotageTime_seconds} seconds." },
+                    raycastMenuPosition = cam.camPropPos,
+                    hasPlaceMarker = false,
+                    targetMethod = (player, rayOption) => {
+                        sabotageSpeedCamera(player, cameras.IndexOf(cam));
+                    }
+                });
             });
 
             Main.resourceStart += () => ChatUtils.startupPrint($"A total of {cameras.Count} speed cameras were loaded with {speedFines.Count} speed fines.");
+        }
+
+        public void sabotageSpeedCamera(Player player, int cameraIndex)
+        {
+            SpeedCamera camera = cameras.ElementAt(cameraIndex);
+
+            if (camera == null) return;
+
+            if(camera.sabotaged)
+            {
+                uiHandling.sendPushNotifError(player, "This camera is already sabotaged.", 6600);
+                return;
+            }
+
+            camera.sabotaged = true;
+
+            uiHandling.sendNotification(player, $"You sabotaged this speed camera for {speedCameraSabotageTime_seconds} seconds.", false, true, "Sabotages speedcamera");
+
+            NAPI.Task.Run(() =>
+            {
+                camera.sabotaged = false;
+            }, speedCameraSabotageTime_seconds * 1000);
         }
 
         public void setSpeedCamData(ColShape colshape, Player player)
@@ -136,6 +170,8 @@ namespace CloudRP.GeneralSystems.SpeedCameras
 
             if (cameraData != null && characterData != null && player.IsInVehicle)
             {
+                if(cameraData.sabotaged) return;
+
                 double speed = vehicleSpeed * 3.6;
 
                 DbVehicle vehicleData = player.Vehicle.getData();

@@ -930,7 +930,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                         return;
                     }
 
-                    VehicleSystem.spawnVehicle(findVeh, parkingLot.spawnVehiclesAt);
+                    spawnVehicle(findVeh, parkingLot.spawnVehiclesAt);
                     CommandUtils.successSay(player, $"You unparked your vehicle [{findVeh.numberplate}]");
                     uiHandling.resetRouter(player);
                 }

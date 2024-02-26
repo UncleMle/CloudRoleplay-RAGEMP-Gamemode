@@ -56,6 +56,7 @@ import Barber from "./Barber/Barber";
 import NpcInteractions from "./world/NPCInteractions";
 import RouletteTables from "./CasinoSystems/RouletteTables";
 import RaycastInteractions from "./world/RaycastInteractions";
+import VehicleEnterSystem from "./VehicleSystems/VehicleEnterSystem";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -116,3 +117,4 @@ new Barber();
 new NpcInteractions();
 new RouletteTables();
 new RaycastInteractions();
+new VehicleEnterSystem();

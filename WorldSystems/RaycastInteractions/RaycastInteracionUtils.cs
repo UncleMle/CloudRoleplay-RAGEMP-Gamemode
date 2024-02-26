@@ -11,6 +11,7 @@ namespace CloudRP.WorldSystems.RaycastInteractions
         public string[] raycastMenuItems = new string[] { };
 	    public Vector3 raycastMenuPosition;
         public Action<Player, string?> targetMethod;
+        public bool hasPlaceMarker { get; set; } = true;
     }
     
     public class RaycastInteractionClient
