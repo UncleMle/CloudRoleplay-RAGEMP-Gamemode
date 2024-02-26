@@ -28,7 +28,8 @@ namespace CloudRP.GeneralSystems.SpeedCameras
             new SpeedCamera { position = new Vector3(616.7, 42.3, 89.8), camPropPos = new Vector3(630.7, 57.3, 87.7), camFlashPos = new Vector3(631.0, 57.3, 92.4), camRot = 30, range = 15, speedLimit = 80 },
             new SpeedCamera { position = new Vector3(170.8, -818.6, 31.2), camPropPos = new Vector3(142.7, -823, 29.9), camFlashPos = new Vector3(142.7, -823.8, 35.2), camRot = 180, range = 25, speedLimit = 80 },
             new SpeedCamera { position = new Vector3(399.7, -989.6, 29.5), camPropPos = new Vector3(391.5, -1003.7, 27.8), camFlashPos = new Vector3(391.5, -1003.7, 32.6), camRot = 170, range = 15, speedLimit = 80 },
-            new SpeedCamera { position = new Vector3(-1032.5, 263.4, 64.8), camPropPos = new Vector3(-1042.7, 279.5, 62.5), camFlashPos = new Vector3(-1042.7, 279.5, 66.9), camRot = 50, range = 25, speedLimit = 80 }
+            new SpeedCamera { position = new Vector3(-1032.5, 263.4, 64.8), camPropPos = new Vector3(-1042.7, 279.5, 62.5), camFlashPos = new Vector3(-1042.7, 279.5, 66.9), camRot = 50, range = 25, speedLimit = 80 },
+            new SpeedCamera { position = new Vector3(-92.5, 6440.4, 31.5), camPropPos = new Vector3(-100.5, 6447.5, 30.6), camFlashPos = new Vector3(-100.5, 6447.5, 34.6), camRot = 178.2, range = 15, speedLimit = 80  }
         };
 
         List<SpeedFine> speedFines = new List<SpeedFine>

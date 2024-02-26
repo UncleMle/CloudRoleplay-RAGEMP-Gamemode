@@ -58,6 +58,8 @@ export default class RaycastInteractions {
                 }
             );
 
+            RaycastInteractions.lookingAtInteractionPoint = null;
+
             let getRayMenu: RaycastResult | undefined = RaycastUtils.getInFrontOfPlayer();
 
             if (!getRayMenu) return;

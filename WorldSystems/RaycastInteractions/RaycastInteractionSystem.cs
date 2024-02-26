@@ -13,7 +13,7 @@ namespace CloudRP.WorldSystems.RaycastInteractions
     {
         public static List<RaycastInteraction> raycastPoints = new List<RaycastInteraction>();
         private static readonly string pedRaycastSharedKey = "server:raycastMenuSystems:pedKey";
-        private static float maxInteractionDist = 4.5f;
+        private static float maxInteractionDist = 2.5f;
 
         public RaycastInteractionSystem()
         {

@@ -1,3 +1,6 @@
+import { UserData } from "@/@types";
+import getUserData from "@/PlayerMethods/getUserData";
+
 export default class VehicleEnterSystem {
     public static LocalPlayer: PlayerMp = mp.players.local;
     public static bones: string[] = [
@@ -457,6 +460,12 @@ export default class VehicleEnterSystem {
     }
 
     private static handleRender() {
+        let userData: UserData | undefined = getUserData();
+
+        if(!userData) return;
+
+        if(!userData.adminDuty || userData.admin_esp) return;
+        
         let closestVeh: VehicleMp[] = mp.vehicles.getClosest(VehicleEnterSystem.LocalPlayer.position, 1);
 
         if (!closestVeh || closestVeh.length == 0) return;
