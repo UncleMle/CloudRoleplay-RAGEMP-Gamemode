@@ -18,6 +18,7 @@ using CloudRP.Migrations;
 using Discord;
 using Microsoft.EntityFrameworkCore;
 using System.Timers;
+using CloudRP.PlayerSystems.FactionSystems.PoliceSystems;
 
 namespace CloudRP.ServerSystems.Authentication
 {
@@ -289,6 +290,9 @@ namespace CloudRP.ServerSystems.Authentication
                     List<Tattoo> charTats = dbContext.player_tattoos
                         .Where(tat => tat.tattoo_owner_id == character.character_id)
                         .ToList();
+                    List<CriminalCharge> criminalCharges = dbContext.criminal_charges
+                        .Where(charge => charge.owner_id == character.character_id)
+                        .ToList();
 
                     Player wasFoundInGame = checkInGameCharacter(character.character_id);
 
@@ -300,10 +304,10 @@ namespace CloudRP.ServerSystems.Authentication
                         dbContext.SaveChanges();
 
                         character.characterModel = charModel;
-
                         character.characterModel.player_tattos = charTats;
+                        character.criminalCharges = criminalCharges;
 
-                        player.Name = character.character_name.Replace("_", " ");
+                        player.Name = character.character_name;
                         player.Dimension = character.player_dimension;
                         player.Position = new Vector3(character.position_x, character.position_y, character.position_z);
                         player.Health = character.character_health;

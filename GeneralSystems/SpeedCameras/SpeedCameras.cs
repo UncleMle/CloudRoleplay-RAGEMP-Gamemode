@@ -1,5 +1,6 @@
 ﻿using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.FactionSystems;
+using CloudRP.PlayerSystems.FactionSystems.PoliceSystems;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
@@ -21,76 +22,20 @@ namespace CloudRP.GeneralSystems.SpeedCameras
         public static readonly int speedCameraSabotageTime_seconds = 60;
         public List<SpeedCamera> cameras = new List<SpeedCamera>
         {
-            new SpeedCamera
-            {
-                position = new Vector3(429.7, -543.6, 28.7),
-                camPropPos = new Vector3(399.9, -561.0, 27.1),
-                camFlashPos = new Vector3(400.1, -560.8, 32.7),
-                camRot = 155,
-                range = 25,
-                speedLimit = 80,
-            },
-            new SpeedCamera
-            {
-                position = new Vector3(-2006.4, -388.6, 11.4),
-                camPropPos = new Vector3(-2007.4, -395.9, 9.9),
-                camFlashPos = new Vector3(-2007.3, -395.0, 14.4),
-                camRot = 180,
-                range = 10,
-                speedLimit = 80,
-            },
-            new SpeedCamera
-            {
-                position = new Vector3(-76.7, 259.1, 101.4),
-                camPropPos = new Vector3(-74.8, 272.1, 99.9),
-                camFlashPos = new Vector3(-75.0, 271.8, 103.9),
-                camRot = 100,
-                range = 15,
-                speedLimit = 80,
-            },
-            new SpeedCamera
-            {
-                position = new Vector3(616.7, 42.3, 89.8),
-                camPropPos = new Vector3(630.7, 57.3, 87.7),
-                camFlashPos = new Vector3(631.0, 57.3, 92.4),
-                camRot = 30,
-                range = 15,
-                speedLimit = 80,
-            },
-            new SpeedCamera
-            {
-                position = new Vector3(170.8, -818.6, 31.2),
-                camPropPos = new Vector3(142.7, -823, 29.9),
-                camFlashPos = new Vector3(142.7, -823.8, 35.2),
-                camRot = 180,
-                range = 25,
-                speedLimit = 80,
-            },
-            new SpeedCamera
-            {
-                position = new Vector3(399.7, -989.6, 29.5),
-                camPropPos = new Vector3(391.5, -1003.7, 27.8),
-                camFlashPos = new Vector3(391.5, -1003.7, 32.6),
-                camRot = 170,
-                range = 15,
-                speedLimit = 80,
-            },
-            new SpeedCamera
-            {
-                position = new Vector3(-1032.5, 263.4, 64.8),
-                camPropPos = new Vector3(-1042.7, 279.5, 62.5),
-                camFlashPos = new Vector3(-1042.7, 279.5, 66.9),
-                camRot = 50,
-                range = 25,
-                speedLimit = 80,
-            }
+            new SpeedCamera { position = new Vector3(429.7, -543.6, 28.7), camPropPos = new Vector3(399.9, -561.0, 27.1), camFlashPos = new Vector3(400.1, -560.8, 32.7), camRot = 155, range = 25, speedLimit = 80 },
+            new SpeedCamera { position = new Vector3(-2006.4, -388.6, 11.4), camPropPos = new Vector3(-2007.4, -395.9, 9.9), camFlashPos = new Vector3(-2007.3, -395.0, 14.4), camRot = 180, range = 10, speedLimit = 80 },
+            new SpeedCamera { position = new Vector3(-76.7, 259.1, 101.4), camPropPos = new Vector3(-74.8, 272.1, 99.9), camFlashPos = new Vector3(-75.0, 271.8, 103.9), camRot = 100, range = 15, speedLimit = 80 },
+            new SpeedCamera { position = new Vector3(616.7, 42.3, 89.8), camPropPos = new Vector3(630.7, 57.3, 87.7), camFlashPos = new Vector3(631.0, 57.3, 92.4), camRot = 30, range = 15, speedLimit = 80 },
+            new SpeedCamera { position = new Vector3(170.8, -818.6, 31.2), camPropPos = new Vector3(142.7, -823, 29.9), camFlashPos = new Vector3(142.7, -823.8, 35.2), camRot = 180, range = 25, speedLimit = 80 },
+            new SpeedCamera { position = new Vector3(399.7, -989.6, 29.5), camPropPos = new Vector3(391.5, -1003.7, 27.8), camFlashPos = new Vector3(391.5, -1003.7, 32.6), camRot = 170, range = 15, speedLimit = 80 },
+            new SpeedCamera { position = new Vector3(-1032.5, 263.4, 64.8), camPropPos = new Vector3(-1042.7, 279.5, 62.5), camFlashPos = new Vector3(-1042.7, 279.5, 66.9), camRot = 50, range = 25, speedLimit = 80 }
         };
 
         List<SpeedFine> speedFines = new List<SpeedFine>
         {
-            new SpeedFine { finePrice = 400, speed = 82 },
-            new SpeedFine { finePrice = 800, speed = 120 },
-            new SpeedFine { finePrice = 2500, speed = 200 }
+            new SpeedFine { finePrice = 400, speed = 82, chargeId = 43 },
+            new SpeedFine { finePrice = 800, speed = 120, chargeId = 44 },
+            new SpeedFine { finePrice = 2500, speed = 200, chargeId = 45 }
         };
 
         public SpeedCameras()
@@ -108,7 +53,7 @@ namespace CloudRP.GeneralSystems.SpeedCameras
                 {
                     menuTitle = "Speedcamera - Sabotage",
                     raycastMenuItems = new string[] { $"Sabotage Speedcamera for {speedCameraSabotageTime_seconds} seconds." },
-                    raycastMenuPosition = cam.camPropPos,
+                    raycastMenuPosition = new Vector3(cam.camPropPos.X, cam.camPropPos.Y, cam.camPropPos.Z + 1.5),
                     hasPlaceMarker = false,
                     targetMethod = (player, rayOption) => {
                         sabotageSpeedCamera(player, cameras.IndexOf(cam));
@@ -184,23 +129,23 @@ namespace CloudRP.GeneralSystems.SpeedCameras
                 {
                     SpeedFine closest = speedFines.OrderBy(item => Math.Abs(speed - item.speed)).First();
 
-                    if (closest != null)
+                    if (closest == null) return;
+
+                    NAPI.Pools.GetAllPlayers().ForEach(p =>
                     {
-                        NAPI.Pools.GetAllPlayers().ForEach(p =>
+                        if (Vector3.Distance(p.Position, player.Position) < 120)
                         {
-                            if (Vector3.Distance(p.Position, player.Position) < 120)
-                            {
-                                p.TriggerEvent("client:handleCameraFlash", player.Vehicle.Id, cameraData.camFlashPos.X, cameraData.camFlashPos.Y, cameraData.camFlashPos.Z);
-                            }
-                        });
+                            p.TriggerEvent("client:handleCameraFlash", player.Vehicle.Id, cameraData.camFlashPos.X, cameraData.camFlashPos.Y, cameraData.camFlashPos.Z);
+                        }
+                    });
 
-                        characterData.money_amount -= closest.finePrice;
+                    CriminalChargeSystem.addPlayerCharge(characterData.character_id, new int[]
+                    {
+                        closest.chargeId
+                    }, 0, closest.finePrice);
 
-                        player.setPlayerCharacterData(characterData, false, true);
-
-                        player.SendChatMessage(ChatUtils.info + $"You have been fined in excess of ${closest.finePrice.ToString("N0")} for speeding ({speed.ToString("N0")}KMH in a {cameraData.speedLimit}KMH Zone). " +
-                            $"Please go to a police station and pay your fine or it will end in further legal action being taken.");
-                    }
+                    player.SendChatMessage(ChatUtils.info + $"You have been fined in excess of ${closest.finePrice.ToString("N0")} for speeding ({speed.ToString("N0")}KMH in a {cameraData.speedLimit}KMH Zone). " +
+                        $"Please go to a police station and pay your fine or it will end in further legal action being taken.");
                 }
             }
 

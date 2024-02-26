@@ -6,6 +6,7 @@ using CloudRP.PlayerSystems.CasinoSystems;
 using CloudRP.PlayerSystems.CasinoSystems.Roulette;
 using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.FactionSystems;
+using CloudRP.PlayerSystems.FactionSystems.PoliceSystems;
 using CloudRP.ServerSystems.Admin;
 using CloudRP.ServerSystems.AntiCheat;
 using CloudRP.ServerSystems.Authentication;
@@ -53,6 +54,7 @@ namespace CloudRP.ServerSystems.Database
         public DbSet<Faction> factions { get; set; }
         public DbSet<FactionRank> faction_ranks { get; set; }
         public DbSet<RouletteTable> roulette_tables { get; set; }
+        public DbSet<CriminalCharge> criminal_charges { get; set; }
     }
 
     public class BaseEntity

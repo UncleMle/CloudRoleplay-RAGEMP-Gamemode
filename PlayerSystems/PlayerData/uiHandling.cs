@@ -170,6 +170,7 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string BarberShop = "/barbershop";
         public static readonly string PromptScreen = "/promptscreen";
         public static readonly string JobCenter = "/jobcenter";
+        public static readonly string FineMenu = "/viewfines";
     }
 
     public static class AuthStates
@@ -215,6 +216,7 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string JobCenterJobs = "job_center_jobs";
         public static readonly string AutoLogin = "auto_auth_data";
         public static readonly string Admin = "admin_data";
+        public static readonly string CriminalCharges = "criminal_charges";
     }
 
     public class PromptUiData

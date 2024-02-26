@@ -20,5 +20,6 @@ namespace CloudRP.GeneralSystems.SpeedCameras
     {
         public int speed { get; set; }
         public int finePrice { get; set; }
+        public int chargeId { get; set; }
     }
 }

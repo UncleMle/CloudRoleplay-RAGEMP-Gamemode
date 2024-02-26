@@ -48,7 +48,8 @@ const store = new Vuex.Store({
 			player_prompt_data: {},
 			in_mask_store: false,
 			job_center_jobs: [],
-			auto_auth_data: {}
+			auto_auth_data: {},
+			criminal_charges: []
 		},
 		uiStates: {
 			characterSelection: false,

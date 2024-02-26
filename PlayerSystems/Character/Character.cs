@@ -6,6 +6,7 @@ using CloudRP.ServerSystems.Database;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using CloudRP.PlayerSystems.FactionSystems;
+using CloudRP.PlayerSystems.FactionSystems.PoliceSystems;
 
 namespace CloudRP.PlayerSystems.Character
 {
@@ -54,6 +55,8 @@ namespace CloudRP.PlayerSystems.Character
         public FactionRank onDutyRank { get; set; }
         [NotMapped]
         public CharacterClothing cachedClothes { get; set; }
+        [NotMapped]
+        public List<CriminalCharge> criminalCharges { get; set; }
     }
 
 }
