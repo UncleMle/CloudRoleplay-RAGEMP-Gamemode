@@ -27,6 +27,7 @@ import BarberView from './components/barber/BarberView.vue';
 import PromptMenu from './components/PromptMenu/PromptMenu.vue';
 import JobCenter from './components/jobs/JobCenter.vue';
 import FinesView from './components/police/FinesView.vue';
+import AnimationMenu from './components/animation/animationMenu.vue';
 
 export default new Router({
     routes: [
@@ -53,6 +54,7 @@ export default new Router({
         { path: '/barbershop', component: BarberView },
         { path: '/promptscreen', component: PromptMenu },
         { path: '/jobcenter', component: JobCenter },
-        { path: '/viewfines', component: FinesView }
+        { path: '/viewfines', component: FinesView },
+        { path: '/animations', component: AnimationMenu }
     ]
 });

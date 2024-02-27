@@ -62,8 +62,14 @@ export default class DeathSystem {
     private static handleIntervalStart(time: number) {
         DeathSystem.playInjuredEffects();
         DeathSystem.turnGuiOnAfterScaleform();
+
+        let pPos: Vector3 = DeathSystem.LocalPlayer.position;
+        let zCoord: number = mp.game.gameplay.getGroundZFor3dCoord(pPos.x, pPos.y, pPos.z, false, false);
+
+        DeathSystem.LocalPlayer.position = new mp.Vector3(pPos.x, pPos.y, zCoord + 2);
         DeathSystem.LocalPlayer.freezePosition(true);
         DeathSystem.injuredTimer = time;
+
 
         DeathSystem._saveInterval = setInterval(() => {
             let characterData: CharacterData | undefined = getUserCharacterData();

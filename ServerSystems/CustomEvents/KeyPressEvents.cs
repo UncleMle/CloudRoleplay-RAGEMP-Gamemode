@@ -17,6 +17,8 @@ namespace CloudRP.ServerSystems.CustomEvents
         public static event KeyPressEventsEventHandler keyPress_F3;
         public static event KeyPressEventsEventHandler keyPress_CTRL_D;
         public static event KeyPressEventsEventHandler keyPress_E;
+        public static event KeyPressEventsEventHandler keyPress_CTRL_X;
+        public static event KeyPressEventsEventHandler keyPress_M;
         #endregion
 
         #region Remote Events
@@ -41,13 +43,25 @@ namespace CloudRP.ServerSystems.CustomEvents
                 }
                 case KeyType.KEY_F3:
                 {
+                        if (!valid) return;
                         keyPress_F3(player);
                         break;
                 }
+                case KeyType.KEY_CTRL_X:
+                    {
+                        if (!valid) return;
+                        keyPress_CTRL_X(player);
+                        break;
+                    }
                 case KeyType.KEY_E:
                     {
                         if (!valid) return;
                         keyPress_E(player);
+                        break;
+                    }
+                case KeyType.KEY_M:
+                    {
+                        keyPress_M(player);
                         break;
                     }
             }
@@ -61,7 +75,9 @@ namespace CloudRP.ServerSystems.CustomEvents
             KEY_F4,
             KEY_F3,
             KEY_CTRL_D,
-            KEY_E
+            KEY_E,
+            KEY_CTRL_X,
+            KEY_M
         }
     }
 }

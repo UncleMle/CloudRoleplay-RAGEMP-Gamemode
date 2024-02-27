@@ -9,5 +9,6 @@ namespace CloudRP.PlayerSystems.AnimationSync
         public string anim {  get; set; }
 	    public string dict { get; set; }
 	    public int flag { get; set; }
+        public string name { get; set; }
     }
 }

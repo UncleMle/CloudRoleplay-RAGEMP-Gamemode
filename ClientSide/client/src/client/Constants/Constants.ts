@@ -60,7 +60,8 @@ export const _control_ids = {
 	F4: 115,
 	F3: 114,
 	F9: 120,
-	F10: 121
+	F10: 121,
+	M: 77
 };
 
 export const _config_flags = {

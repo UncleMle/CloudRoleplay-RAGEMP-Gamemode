@@ -387,7 +387,7 @@ export interface TattoData {
 	data: object;
 }
 
-interface House {
+export interface House {
 	house_id: number;
 	house_owner_id: number;
 	house_name: string;
@@ -551,4 +551,17 @@ interface RaycastInteraction {
 	raycastMenuItems: string[];
 	raycastMenuPosition: Vector3;
 	raycastNpc: PedMp;
+}
+
+export interface TollBooth
+{
+	tollPrice: number;
+	boothPos: Vector3
+	boothBarrierPos: Vector3
+	boothColPos: Vector3
+	jobStartPos: Vector3
+	boothRot: number;
+	isBoothActivated: boolean;
+	boothBarrierRot: number;
+	barrierObject: ObjectMp;
 }

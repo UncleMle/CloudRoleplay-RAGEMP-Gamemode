@@ -3,6 +3,7 @@ import PhoneSystem from "@/PhoneSystem/PhoneSystem";
 import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
 import { CharacterData } from "@/@types";
 import { KeyType } from "@/enums";
+import validateKeyPress from "@/PlayerMethods/validateKeyPress";
 
 export default class KeyPressActions {
     public static LocalPlayer: PlayerMp = mp.players.local;
@@ -15,6 +16,8 @@ export default class KeyPressActions {
         mp.keys.bind(_control_ids.F4, false, () => KeyPressActions.handleKeyPressed(KeyType.KEY_F4));
         mp.keys.bind(_control_ids.F3, false, () => KeyPressActions.handleKeyPressed(KeyType.KEY_F3));
         mp.keys.bind(_control_ids.EBIND, false, () => KeyPressActions.handleKeyPressed(KeyType.KEY_E));
+        mp.keys.bind(_control_ids.X, false, () => mp.keys.isDown(_control_ids.LCtrl) && KeyPressActions.handleKeyPressed(KeyType.KEY_CTRL_X));
+        mp.keys.bind(_control_ids.M, false, () => validateKeyPress(true, true, true) && KeyPressActions.LocalPlayer.browserRouter === "/" && KeyPressActions.handleKeyPressed(KeyType.KEY_M));
     }
 
     private static getArgs(): boolean[] {

@@ -50,6 +50,19 @@ namespace CloudRP.WorldSystems.RaycastInteractions
 
             player.TriggerEvent("client::raycastInteractions:loadPoints", JsonConvert.SerializeObject(points));
         }
+
+        public void loadDynamicInteractionPoint(Player player, RaycastInteraction raypoint)
+        {
+            raycastPoints.Add(raypoint);
+
+            player.TriggerEvent("client::raycastInteractions:loadOnePoint", raypoint);
+
+            Ped rayPed = NAPI.Ped.CreatePed((uint)PedHash.Hacker, raypoint.raycastMenuPosition, 0, true, true, true, true, 0);
+
+            rayPed.SetSharedData(pedRaycastSharedKey, raycastPoints.IndexOf(raypoint));
+
+            if (raypoint.hasPlaceMarker) MarkersAndLabels.setPlaceMarker(raypoint.raycastMenuPosition);
+        }
         #endregion
 
         #region Remote Events

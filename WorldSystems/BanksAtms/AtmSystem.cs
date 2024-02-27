@@ -1,4 +1,5 @@
-﻿using CloudRP.PlayerSystems.Character;
+﻿using CloudRP.PlayerSystems.AnimationSync;
+using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Utils;
@@ -138,6 +139,7 @@ namespace CloudRP.World.BanksAtms
 
             if (characterData != null)
             {
+                AnimSync.playSyncAnimation(player, 1, $"amb@prop_human_atm@{(characterData.characterModel.sex ? "male" : "female")}@enter", "enter");
                 Banks.sendAtmUIData(player, characterData);
             }
         }

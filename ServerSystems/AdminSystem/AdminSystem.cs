@@ -15,6 +15,7 @@ using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.DiscordSystem;
 using CloudRP.ServerSystems.Extensions;
 using CloudRP.ServerSystems.Utils;
+using CloudRP.VehicleSystems.VehicleGarages;
 using CloudRP.VehicleSystems.Vehicles;
 using Discord;
 using GTANetworkAPI;
@@ -2032,6 +2033,15 @@ namespace CloudRP.ServerSystems.Admin
             }
 
             CommandUtils.errorSay(player, $"Roulette table with id {tableId} wasn't found.");
+        }
+
+        [AdminCommand(AdminRanks.Admin_Developer)]
+        [Command("creategarage", "~r~/creategarage [vehicleSlots]")]
+        public void createGarageCommand(Player player, int sellPrice, int vehicleSlots)
+        {
+            int garageId = VehicleGarages.createGarage(sellPrice, player.Position, vehicleSlots).garage_id;
+
+            AdminUtils.staffSay(player, $"Created a vehicle garage with id #{garageId}.");
         }
     }
 }

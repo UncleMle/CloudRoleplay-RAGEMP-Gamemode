@@ -57,6 +57,7 @@ import NpcInteractions from "./world/NPCInteractions";
 import RouletteTables from "./CasinoSystems/RouletteTables";
 import RaycastInteractions from "./world/RaycastInteractions";
 import VehicleEnterSystem from "./VehicleSystems/VehicleEnterSystem";
+import TollBooths from "./TollBooths/TollBooths";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -118,3 +119,4 @@ new NpcInteractions();
 new RouletteTables();
 new RaycastInteractions();
 new VehicleEnterSystem();
+new TollBooths();

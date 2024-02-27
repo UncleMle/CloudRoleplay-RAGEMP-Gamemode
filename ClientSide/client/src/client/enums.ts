@@ -28,12 +28,15 @@ export enum StallTypes {
 	Medium = 1,
 }
 
-export enum KeyType {
+export enum KeyType
+{
 	KEY_Y,
 	KEY_F4,
 	KEY_F3,
 	KEY_CTRL_D,
-	KEY_E
+	KEY_E,
+	KEY_CTRL_X,
+	KEY_M
 }
 
 export class MutationKeys {
