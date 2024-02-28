@@ -1,4 +1,5 @@
-﻿using CloudRP.ServerSystems.Database;
+﻿using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.WorldSystems.RaycastInteractions;
 using GTANetworkAPI;
@@ -22,14 +23,14 @@ namespace CloudRP.VehicleSystems.VehicleGarages
 
         public void loadAllGarages()
         {
-            using(DefaultDbContext dbContext = new DefaultDbContext()) vehicleGarages = dbContext.vehicle_garages.ToList();
-
-            vehicleGarages.ForEach(garage =>
+            using (DefaultDbContext dbContext = new DefaultDbContext())
             {
-                loadGarage(garage);
-            });
+                vehicleGarages = dbContext.vehicle_garages.ToList();
 
-            ChatUtils.startupPrint($"Loaded in {vehicleGarages.Count} vehicle garages.");
+                ChatUtils.startupPrint($"Loaded in {vehicleGarages.Count} vehicle garages.");
+            }
+
+            vehicleGarages.ForEach(garage => loadGarage(garage, true));
         }
 
         public class RaycastMenuOptions
@@ -38,14 +39,36 @@ namespace CloudRP.VehicleSystems.VehicleGarages
             public const string viewVehicles = "View garage vehicles";
         }
 
-        private static void loadGarage(VehicleGarage vehicleGarage)
+        private static void loadGarage(VehicleGarage vehicleGarage, bool fromDb = false)
         {
             Vector3 garagePos = new Vector3(vehicleGarage.pos_x, vehicleGarage.pos_y, vehicleGarage.pos_z);
 
             NAPI.Blip.CreateBlip(856, garagePos, 1f, 4, "Vehicle Garage", 255, 1f, true, 0, 0);
 
+            vehicleGarage.pos = garagePos;
 
-            vehicleGarages.Add(vehicleGarage);
+            List<string> menuItems = new List<string> { RaycastMenuOptions.viewVehicles };
+
+            if(vehicleGarage.garage_sell_price > 0)
+            {
+                menuItems.Add(RaycastMenuOptions.buyGarage);
+            }
+
+            vehicleGarage.raycastPoint = new RaycastInteraction
+            {
+                menuTitle = "Vehicle Garage #" + vehicleGarage.garage_id,
+                raycastMenuItems = menuItems,
+                raycastMenuPosition = garagePos,
+                targetMethod = handleGarageInteraction
+            };
+
+            RaycastInteractionSystem.raycastPoints.Add(vehicleGarage.raycastPoint);
+
+            if (fromDb) return;
+
+            if (vehicleGarages.IndexOf(vehicleGarage) == -1) return;
+
+            vehicleGarages[vehicleGarages.IndexOf(vehicleGarage)] = vehicleGarage;
         }
 
         public static VehicleGarage createGarage(int sellPrice, Vector3 garagePos, int slots)
@@ -66,7 +89,31 @@ namespace CloudRP.VehicleSystems.VehicleGarages
 
                 loadGarage(newGarage);
 
+                vehicleGarages.Add(newGarage);
                 return newGarage;
+            }
+        }
+
+        public static void handleGarageInteraction(Player player, string menuOption)
+        {
+            VehicleGarage garage = vehicleGarages.Where(gar => player.checkIsWithinCoord(gar.pos, 2f)).FirstOrDefault();
+
+            if (garage == null) return;
+
+            switch(menuOption)
+            {
+                case RaycastMenuOptions.viewVehicles:
+                    {
+                        RaycastInteractionSystem.updateRaycastPointInteractionMenu(garage.raycastPoint, new List<string> { RaycastMenuOptions.buyGarage });
+
+                        Console.Write("View vehs");
+                        break;
+                    }
+                case RaycastMenuOptions.buyGarage:
+                    {
+                        Console.Write("buy garage");
+                        break;
+                    }
             }
         }
     }

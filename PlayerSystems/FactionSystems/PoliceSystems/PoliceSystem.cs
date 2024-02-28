@@ -27,7 +27,7 @@ namespace CloudRP.PlayerSystems.FactionSystems.PoliceFaction
                 RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
                 {
                     menuTitle = "Police Reception Desk",
-                    raycastMenuItems = new string[] { "View active fines" },
+                    raycastMenuItems = new List<string> { "View active fines" },
                     raycastMenuPosition = desk,
                     targetMethod = resyncFinesUiData
                 });

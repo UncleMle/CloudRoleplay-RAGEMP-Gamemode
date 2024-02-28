@@ -52,7 +52,7 @@ namespace CloudRP.VehicleSystems.VehicleInsurance
                     RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
                     {
                         menuTitle = "Vehicle Insurance",
-                        raycastMenuItems = new string[] { "View vehicle insurance" },
+                        raycastMenuItems = new List<string> { "View vehicle insurance" },
                         raycastMenuPosition = area.retrievePosition,
                         targetMethod = viewServerInsuranceVehicles
                     });

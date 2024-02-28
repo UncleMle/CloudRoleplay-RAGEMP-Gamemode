@@ -1,6 +1,40 @@
 <template>
     <body class="vignette w-full text-white font-medium">
-        <div v-if="!loadingState" class="flex justify-center mt-6">
+
+        <Transition name="fade">
+            <div v-if="!loadingState && promptActive" class="absolute w-full h-screen">
+
+                <div class="ml-[35%] mr-[35%] flex justify-center mt-[20%] h-[10%] text-center">
+
+                    <div
+                        class="relative bg-black/70 rounded-2xl shadow-2xl shadow-black w-full h-22 border-b-4 border-t-4 border-purple-400/50">
+
+                        <p class="absolute mt-4 w-full text-xl">Are you sure you want to purchase a
+                            <b>{{ uiStates.vehicleSpeedoData.displayName }}</b>?
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="relative bg-red-400 ml-[40%] mr-[40%] mt-7">
+                    <button @click="promptActive = false"
+                        class="absolute left-0 shadow-2xl shadow-black border-b-4 border-red-400/50 hover:border-red-400 rounded-xl duration-300 hover:scale-105 bg-black/50 p-4 w-[40%]">
+                        Deny
+                    </button>
+
+
+                    <button @click="purchase"
+                        class="absolute right-0 shadow-2xl shadow-black border-b-4 border-green-400/50 rounded-xl duration-300 hover:border-green-400 hover:scale-105 bg-black/50 p-4 w-[40%]">
+                        Accept
+                    </button>
+                </div>
+            </div>
+        </Transition>
+
+        <div v-if="!loadingState && !promptActive" class="flex justify-center mt-6">
             <div class="p-2 text-center w-[40%] relative">
                 <div
                     class="absolute w-full rounded-xl shadow-2xl shadow-black border-t-4 border-b-4 border-purple-400/50 colourBackground p-2">
@@ -12,7 +46,7 @@
             </div>
         </div>
 
-        <main v-if="!loadingState" class="relative">
+        <main v-if="!loadingState && !promptActive" class="relative">
             <div class="absolute left-[3%] top-20">
 
                 <div class="colourBackground shadow-2xl shadow-black rounded-xl border-t-4 border-b-4 border-purple-400/50">
@@ -221,7 +255,7 @@
                         class="w-[250px] duration-300 hover:text-red-400 border-t-4 border-b-4 shadow-black shadow-2xl p-2 rounded-lg colourBackground border-red-400/50">
                         Close <i class="fa-solid fa-rotate-left text-red-400"></i>
                     </button>
-                    <button @click="purchase"
+                    <button @click="promptActive = true"
                         class="w-[250px] duration-300 p-2 rounded-lg hover:text-purple-400 shadow-black shadow-2xl colourBackground border-b-4 border-t-4 border-purple-400/50">
 
                         <span v-if="playerData.is_in_player_dealer">
@@ -256,13 +290,14 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { promptMenu } from '@/helpers';
+import { sendToServer } from '@/helpers';
 
 export default {
     data() {
         return {
             browsingType: "general",
             basketItems: [],
+            promptActive: false,
             vehicleData: null,
             vehicleDataOld: null,
             vehImage: null,
@@ -417,7 +452,7 @@ export default {
             } catch (error) {
                 return require("../../assets/img/cars/sentinel.png");
             }
-        },
+        }
     },
     watch: {
         vehicleData: {
@@ -426,6 +461,9 @@ export default {
             },
             deep: true,
         },
+        promptActive() {
+            window.mp.trigger("browser:toggleClientBlur", this.promptActive);
+        }
     },
     methods: {
         formatMod(modIdx) {
@@ -484,10 +522,11 @@ export default {
             if (!this.playerData.is_in_player_dealer) {
                 window.mp.trigger("browser:sendObject", "server:vehicleModsSave", JSON.stringify(this.vehicleData));
             } else {
-                promptMenu("fa-solid fa-car", "Purchase Market Vehicle", `Are you sure you want to purchase ${this.uiStates.vehicleSpeedoData.displayName}?`, "server:purchasePlayerDealerVehicle", null, "/vehiclemods");
+                sendToServer("server:purchasePlayerDealerVehicle");
             }
 
             window.mp.trigger("gui:toggleHudComplete", true);
+            window.mp.trigger("browser:toggleClientBlur", false);
         },
         saveBasket() {
             this.$store.state.uiStates.serverLoading = true;
@@ -499,6 +538,7 @@ export default {
         close() {
             window.mp.trigger("browser:resetRouter");
             window.mp.trigger("gui:toggleHudComplete", true);
+            window.mp.trigger("browser:toggleClientBlur", false);
             window.mp.trigger("vehicle:setAttachments", JSON.stringify(this.playerData.vehicle_mod_data_old), true);
 
             if (!this.playerData.is_in_player_dealer) {

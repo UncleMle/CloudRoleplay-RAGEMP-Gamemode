@@ -59,7 +59,7 @@ namespace CloudRP.PlayerSystems.Jobs.GarbageJob
                     "fa-solid fa-briefcase",
                     "Garbage Job Start",
                     $"Are you sure you want to start this job for the pay of ${jobPay.ToString("N0")} with a total of {stops.Count} stops",
-                    "server:jobs:garbageJob:start");
+                    startGarbageJob);
             });
 
             NAPI.Blip.CreateBlip(318, startJob, 1f, 81, "Garbage Job", 255, 0, true, 0, 0);
@@ -160,8 +160,7 @@ namespace CloudRP.PlayerSystems.Jobs.GarbageJob
         #endregion
 
         #region Remote Events
-        [RemoteEvent("server:jobs:garbageJob:start")]
-        private static void startGarbageJob(Player player)
+        public void startGarbageJob(Player player, object prompt)
         {
             if (!player.checkIsWithinCoord(startJob, 2f) || FreelanceJobSystem.hasAJob(player, jobId) || FreelanceJobSystem.hasFreeLanceVehicle(player)) return;
 

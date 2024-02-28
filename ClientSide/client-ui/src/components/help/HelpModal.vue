@@ -16,19 +16,19 @@
                                 <button @click="browseView = 'commands'"
                                     class="hover:text-purple-400 hover:scale-105 duration-300">
                                     <i class="fa-solid fa-terminal pr-2"></i>
-                                    <span class="text-gray-300 hover:text-white duration-300 font-medium">Commands</span>
+                                    <span class="text-gray-300 hover:text-white duration-300 font-medium">Commands ({{ commands.length }})</span>
                                 </button>
 
                                 <button @click="browseView = 'keybinds'"
                                     class="duration-300 hover:scale-105 hover:text-purple-400">
                                     <i class="fa-solid fa-key pr-2"></i>
-                                    <span class="text-gray-300 hover:text-white duration-300 font-medium">Keybinds</span>
+                                    <span class="text-gray-300 hover:text-white duration-300 font-medium">Keybinds ({{ keybinds.length }})</span>
                                 </button>
 
                                 <button v-if="playerData.admin_data.rankId > 0" @click="browseView = 'admin'"
                                     class="duration-300 hover:scale-105 duration-300">
                                     <i class="fa-solid fa-shield text-red-400 pr-2"></i>
-                                    <span class="text-red-300 font-medium">Admin</span>
+                                    <span class="text-red-300 font-medium">Admin ({{ admin.length }})</span>
                                 </button>
                             </ui>
 
@@ -634,11 +634,6 @@ export default {
                     name: "deletefdos",
                     arguments: [],
                     info: "Deletes your created Floating Do statements."
-                },
-                {
-                    name: "logout",
-                    arguments: [],
-                    info: "Logs you out."
                 },
                 {
                     name: "longdo",

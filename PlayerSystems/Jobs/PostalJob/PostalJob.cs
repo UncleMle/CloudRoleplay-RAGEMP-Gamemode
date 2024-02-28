@@ -8,6 +8,7 @@ using CloudRP.WorldSystems.RaycastInteractions;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace CloudRP.PlayerSystems.Jobs.PostalJob
@@ -27,7 +28,7 @@ namespace CloudRP.PlayerSystems.Jobs.PostalJob
             RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
             {
                 menuTitle = "Postal Job",
-                raycastMenuItems = new string[] { "Start Postal Job" },
+                raycastMenuItems = new List<string> { "Start Postal Job" },
                 raycastMenuPosition = jobStartPosition,
                 targetMethod = startPostalJob
             });

@@ -39,7 +39,7 @@ namespace CloudRP.WorldSystems.RaycastInteractions
 
         #region Global Methods
 
-        private void resyncPlayerInteractionPoints(Player player)
+        public static void resyncPlayerInteractionPoints(Player player)
         {
             List<RaycastInteractionClient> points = new List<RaycastInteractionClient>();
 
@@ -51,18 +51,29 @@ namespace CloudRP.WorldSystems.RaycastInteractions
             player.TriggerEvent("client::raycastInteractions:loadPoints", JsonConvert.SerializeObject(points));
         }
 
-        public void loadDynamicInteractionPoint(Player player, RaycastInteraction raypoint)
+        public static void updateRaycastPointInteractionMenu(RaycastInteraction point, List<string> menuOptions)
         {
-            raycastPoints.Add(raypoint);
+            int index = raycastPoints.IndexOf(point);
 
-            player.TriggerEvent("client::raycastInteractions:loadOnePoint", raypoint);
+            if (index == -1) return;
 
-            Ped rayPed = NAPI.Ped.CreatePed((uint)PedHash.Hacker, raypoint.raycastMenuPosition, 0, true, true, true, true, 0);
+            point.raycastMenuItems = menuOptions;
 
-            rayPed.SetSharedData(pedRaycastSharedKey, raycastPoints.IndexOf(raypoint));
+            raycastPoints[index] = point;
 
-            if (raypoint.hasPlaceMarker) MarkersAndLabels.setPlaceMarker(raypoint.raycastMenuPosition);
+            NAPI.Pools.GetAllPlayers().ForEach(p => loadOnePoint(p, index, point));
         }
+
+        public static void loadOnePoint(Player player, int idx, RaycastInteraction raypoint) 
+            => player.TriggerEvent("client::raycastInteractions:loadOnePoint", JsonConvert.SerializeObject(
+                new RaycastInteractionClient { menuTitle = raypoint.menuTitle, raycastMenuItems = raypoint.raycastMenuItems, raycastMenuPosition = raypoint.raycastMenuPosition }
+                ), idx);
+
+        public static void addOnePoint(Player player, RaycastInteraction point, int idx)
+            => player.TriggerEvent("client::raycastInteractions:addOnePoint", JsonConvert.SerializeObject(
+                new RaycastInteractionClient { menuTitle = point.menuTitle, raycastMenuItems = point.raycastMenuItems, raycastMenuPosition = point.raycastMenuPosition }
+                ), idx);
+
         #endregion
 
         #region Remote Events

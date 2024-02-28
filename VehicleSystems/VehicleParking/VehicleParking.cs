@@ -248,7 +248,7 @@ namespace CloudRP.VehicleSystems.VehicleParking
                     RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
                     {
                         menuTitle = "Vehicle Parking",
-                        raycastMenuItems = new string[] { "View parked vehicles" },
+                        raycastMenuItems = new List<string> { "View parked vehicles" },
                         raycastMenuPosition = pLot.retrieve.position,
                         targetMethod = viewParkedVehicles
                     });

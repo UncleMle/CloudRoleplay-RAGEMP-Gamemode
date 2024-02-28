@@ -208,7 +208,7 @@ namespace CloudRP.PlayerSystems.Jobs
             {
                 string jobName = jobData.jobName;
                 quitJob(player, jobData);
-                uiHandling.sendPrompt(player, "fa-solid fa-briefcase", "Quit job", $"Are you sure you want to quit your freelance job as a {jobName}?", "server:freelanceJobs:quitJob");
+                uiHandling.sendPrompt(player, "fa-solid fa-briefcase", "Quit job", $"Are you sure you want to quit your freelance job as a {jobName}?", remoteEventQuitJob);
             }
             else
             {
@@ -218,8 +218,7 @@ namespace CloudRP.PlayerSystems.Jobs
         #endregion
 
         #region Remote Events
-        [RemoteEvent("server:freelanceJobs:quitJob")]
-        public void remoteEventQuitJob(Player player)
+        public void remoteEventQuitJob(Player player, object prompt)
         {
             DbCharacter characterData = player.getPlayerCharacterData();
             FreeLanceJobData jobData = player.getFreelanceJobData();

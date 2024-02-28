@@ -74,13 +74,12 @@ namespace CloudRP.VehicleSystems.VehicleScrapyards
                 return;
             }
 
-            uiHandling.sendPrompt(player, "fa-solid fa-car", "Vehicle Scrapyard", $"Are you sure you want to scrap your {vehicleData.vehicle_display_name} for ${scrapPrice.ToString("N0")}?", "server:vehicleSystem:scrapVehicle");
+            uiHandling.sendPrompt(player, "fa-solid fa-car", "Vehicle Scrapyard", $"Are you sure you want to scrap your {vehicleData.vehicle_display_name} for ${scrapPrice.ToString("N0")}?", scrapPlayersVehicle);
         }
         #endregion
 
         #region Remote Events
-        [RemoteEvent("server:vehicleSystem:scrapVehicle")]
-        public void scrapPlayersVehicle(Player player)
+        public void scrapPlayersVehicle(Player player, object prompt)
         {
             DbVehicle vehicleData = player.Vehicle.getData();
             DbCharacter character = player.getPlayerCharacterData();

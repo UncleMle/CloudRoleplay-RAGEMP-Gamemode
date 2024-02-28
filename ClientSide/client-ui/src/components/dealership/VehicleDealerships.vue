@@ -1,6 +1,39 @@
 <template>
-    <body class="w-full text-white font-medium">
-        <div v-if="!loadingState" class="flex justify-center mt-6">
+    <body class="w-full text-white font-medium duration-300">
+
+        <div v-if="!loadingState && promptActive" class="absolute w-full h-screen">
+
+            <div class="ml-[35%] mr-[35%] flex justify-center mt-[20%] h-[10%] text-center">
+
+                <div
+                    class="relative bg-black/70 rounded-2xl shadow-2xl shadow-black w-full h-22 border-b-4 border-t-4 border-purple-400/50">
+
+                    <p class="absolute mt-4 w-full text-xl">Are you sure you want to purchase a <b>{{
+                        selectedVehicle.spawnName }}</b> for <font class="text-green-400">${{
+        selectedVehicle.price.toLocaleString("en-US") }}</font>
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="relative bg-red-400 ml-[40%] mr-[40%] mt-7">
+                <button @click="promptActive = false"
+                    class="absolute left-0 shadow-2xl shadow-black border-b-4 border-red-400/50 hover:border-red-400 rounded-xl duration-300 hover:scale-105 bg-black/50 p-4 w-[40%]">
+                    Deny
+                </button>
+
+
+                <button @click="confirmPurchase"
+                    class="absolute right-0 shadow-2xl shadow-black border-b-4 border-green-400/50 rounded-xl duration-300 hover:border-green-400 hover:scale-105 bg-black/50 p-4 w-[40%]">
+                    Accept
+                </button>
+            </div>
+        </div>
+
+        <div v-if="!loadingState && !promptActive" class="flex justify-center mt-6">
             <div class="p-2 text-center w-[40%] relative">
                 <div
                     class="absolute w-full rounded-xl shadow-2xl shadow-black colourBackground p-2 border-b-4 border-t-4 border-purple-400/50">
@@ -12,131 +45,135 @@
             </div>
         </div>
 
-        <main v-if="!loadingState" class="relative">
-            <div class="absolute left-[1%] top-20">
+        <Transition name="slide-fade">
+            <main v-if="!loadingState && !promptActive" class="relative">
+                <div class="absolute left-[1%] top-20">
 
-                <div class="colourBackground border-b-4 border-t-4 border-purple-400/50 shadow-2xl shadow-black rounded-xl">
-                    <ui class="flex justify-center space-x-5 border-gray-400/40 p-4">
-                        Choose a vehicle
-                    </ui>
-                </div>
+                    <div
+                        class="colourBackground border-b-4 border-t-4 border-purple-400/50 shadow-2xl shadow-black rounded-xl">
+                        <ui class="flex justify-center space-x-5 border-gray-400/40 p-4">
+                            Choose a vehicle
+                        </ui>
+                    </div>
 
-                <div class="container flex items-center w-[24vw] mx-auto mt-14">
-                    <div class="flex justify-center w-full">
-                        <div class="rounded-xl text-white w-full select-none">
+                    <div class="container flex items-center w-[24vw] mx-auto mt-14">
+                        <div class="flex justify-center w-full">
+                            <div class="rounded-xl text-white w-full select-none">
 
-                            <div
-                                class="relative w-full h-fit rounded-lg text-center max-h-[37vw] overflow-scroll overflow-x-hidden">
+                                <div
+                                    class="relative w-full h-fit rounded-lg text-center max-h-[37vw] overflow-scroll overflow-x-hidden">
 
-                                <div class="p-4">
-                                    <div v-for="item in playerData.vehicle_dealer_data.vehicles"
-                                        :key="playerData.vehicle_dealer_data.vehicles.indexOf(item)">
+                                    <div class="p-4">
+                                        <div v-for="item in playerData.vehicle_dealer_data.vehicles"
+                                            :key="playerData.vehicle_dealer_data.vehicles.indexOf(item)">
 
 
-                                        <div class="colourBackground border-b-4 border-t-4 border-purple-400/50 shadow-md shadow-black/70 h-32 p-4 rounded-xl relative"
-                                            :class="playerData.vehicle_dealer_data.vehicles.indexOf(item) == 0 ? '' : 'mt-6'">
-                                            <div class="relative w-full">
-                                                <img :src="getCarImagePath(item.spawnName)" alt="Car Image"
-                                                    class="absolute rounded-xl w-40 h-24" />
+                                            <div class="colourBackground border-b-4 border-t-4 border-purple-400/50 shadow-md shadow-black/70 h-32 p-4 rounded-xl relative"
+                                                :class="playerData.vehicle_dealer_data.vehicles.indexOf(item) == 0 ? '' : 'mt-6'">
+                                                <div class="relative w-full">
+                                                    <img :src="getCarImagePath(item.spawnName)" alt="Car Image"
+                                                        class="absolute rounded-xl w-40 h-24" />
 
-                                                <font class="absolute font-bold text-2xl">
-                                                    {{
-                                                        playerData.vehicle_dealer_data.vehDispNames[playerData.vehicle_dealer_data.vehicles.indexOf(item)]
-                                                    }}
-                                                </font>
+                                                    <font class="absolute font-bold text-2xl">
+                                                        {{
+                                                            playerData.vehicle_dealer_data.vehDispNames[playerData.vehicle_dealer_data.vehicles.indexOf(item)]
+                                                        }}
+                                                    </font>
 
+                                                </div>
+
+                                                <font class="absolute bottom-14 text-green-400">${{
+                                                    item.price?.toLocaleString('en-US') }}</font>
+
+                                                <button @click="viewVehicle(item)"
+                                                    class="absolute bottom-4 w-[40%] border-b-4 border-purple-400/50 duration-300 hover:text-purple-300">
+                                                    <i class="fa-solid fa-eye"></i> View
+                                                </button>
                                             </div>
 
-                                            <font class="absolute bottom-14 text-green-400">${{
-                                                item.price?.toLocaleString('en-US') }}</font>
-
-                                            <button @click="viewVehicle(item.spawnName)"
-                                                class="absolute bottom-4 w-[40%] border-b-4 border-purple-400/50 duration-300 hover:text-purple-300">
-                                                <i class="fa-solid fa-eye"></i> View
-                                            </button>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="absolute right-[1%] top-20">
-                <div v-if="playerData.vehicle_performance_data"
-                    class="colourBackground shadow-2xl shadow-black p-4 rounded-xl relative h-full w-[24vw] font-medium border-b-4 border-t-4 border-purple-400/50">
-                    <div class="w-full">
-                        <div class=" w-full duration-300">
+                <div class="absolute right-[1%] top-20">
+                    <div v-if="playerData.vehicle_performance_data"
+                        class="colourBackground shadow-2xl shadow-black p-4 rounded-xl relative h-full w-[24vw] font-medium border-b-4 border-t-4 border-purple-400/50">
+                        <div class="w-full">
+                            <div class=" w-full duration-300">
 
-                            <div class="mt-2">Acceleration</div>
-                            <div class="p-3 duration-300 bg-purple-400/30 mt-2 text-center rounded-lg max-w-full"
-                                :style="{ 'width': playerData.vehicle_performance_data.maxTraction * 30 + '%' }">
-                                {{ (playerData.vehicle_performance_data.maxTraction * 30).toFixed(0) }}%</div>
+                                <div class="mt-2">Acceleration</div>
+                                <div class="p-3 duration-300 bg-purple-400/30 mt-2 text-center rounded-lg max-w-full"
+                                    :style="{ 'width': playerData.vehicle_performance_data.maxTraction * 30 + '%' }">
+                                    {{ (playerData.vehicle_performance_data.maxTraction * 30).toFixed(0) }}%</div>
 
-                            <div class="mt-2">Top Speed</div>
-                            <div class="p-3 duration-300 bg-purple-400/30 mt-2 text-center rounded-lg max-w-full"
-                                :style="{ 'width': playerData.vehicle_performance_data.estimatedMaxSpeed * 1.4 + '%' }">
-                                {{ (playerData.vehicle_performance_data.estimatedMaxSpeed * 1.4).toFixed(0) }}%</div>
+                                <div class="mt-2">Top Speed</div>
+                                <div class="p-3 duration-300 bg-purple-400/30 mt-2 text-center rounded-lg max-w-full"
+                                    :style="{ 'width': playerData.vehicle_performance_data.estimatedMaxSpeed * 1.4 + '%' }">
+                                    {{ (playerData.vehicle_performance_data.estimatedMaxSpeed * 1.4).toFixed(0) }}%</div>
 
-                            <div class="mt-2">Brakes</div>
-                            <div class="p-3 duration-300 bg-purple-400/30 mt-2 text-center rounded-lg max-w-full"
-                                :style="{ 'width': (playerData.vehicle_performance_data.maxBraking * 100).toFixed(0) + '%' }">
-                                {{ (playerData.vehicle_performance_data.maxBraking * 100).toFixed(0) }}%</div>
+                                <div class="mt-2">Brakes</div>
+                                <div class="p-3 duration-300 bg-purple-400/30 mt-2 text-center rounded-lg max-w-full"
+                                    :style="{ 'width': (playerData.vehicle_performance_data.maxBraking * 100).toFixed(0) + '%' }">
+                                    {{ (playerData.vehicle_performance_data.maxBraking * 100).toFixed(0) }}%</div>
 
 
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="colourBackground shadow-2xl shadow-black rounded-xl border-t-4 border-b-4 border-purple-400/50"
-                    :class="playerData.vehicle_performance_data ? 'mt-14' : ''">
-                    <ui class="flex justify-center space-x-5 p-4">
-                        Choose your vehicle's colour
-                    </ui>
-                </div>
-
-                <div
-                    class="colourBackground border-b-4 border-t-4 border-purple-400/50 shadow-2xl shadow-black p-4 rounded-xl relative h-full w-[24vw] mt-14">
-                    <div class="grid grid-cols-4 gap-4">
-                        <div class="text-center" v-for="item in possibleVehicleColours"
-                            :key="possibleVehicleColours.indexOf(item)">
-                            <button @click="selectedColour = item.rage" class="w-20 h-20 rounded-full"
-                                :style="{ 'background-color': item.html }">
-                            </button>
-                        </div>
+                    <div class="colourBackground shadow-2xl shadow-black rounded-xl border-t-4 border-b-4 border-purple-400/50"
+                        :class="playerData.vehicle_performance_data ? 'mt-14' : ''">
+                        <ui class="flex justify-center space-x-5 p-4">
+                            Choose your vehicle's colour
+                        </ui>
                     </div>
-                </div>
 
-            </div>
-
-            <div class="fixed bottom-4 text-2xl w-full">
-
-                <div class="flex justify-center ">
                     <div
-                        class="w-[450px] colourBackground border-b-4 border-t-4 border-purple-400/50 shadow-2xl shadow-black/60 pr-4 pl-4 pt-1 pb-2 rounded-lg">
-                        <label for="steps-range" class="block mb-2 text-sm font-medium  text-white text-center">Rotation {{
-                            rotation }}°</label>
-                        <input id="steps-range" v-model="rotation" type="range" min="0" max="360"
-                            class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-gray-400/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                        class="colourBackground border-b-4 border-t-4 border-purple-400/50 shadow-2xl shadow-black p-4 rounded-xl relative h-full w-[24vw] mt-14">
+                        <div class="grid grid-cols-4 gap-4">
+                            <div class="text-center" v-for="item in possibleVehicleColours"
+                                :key="possibleVehicleColours.indexOf(item)">
+                                <button @click="selectedColour = item.rage" class="w-20 h-20 rounded-full"
+                                    :style="{ 'background-color': item.html }">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="fixed bottom-4 text-2xl w-full">
+
+                    <div class="flex justify-center ">
+                        <div
+                            class="w-[450px] colourBackground border-b-4 border-t-4 border-purple-400/50 shadow-2xl shadow-black/60 pr-4 pl-4 pt-1 pb-2 rounded-lg">
+                            <label for="steps-range" class="block mb-2 text-sm font-medium  text-white text-center">Rotation
+                                {{
+                                    rotation }}°</label>
+                            <input id="steps-range" v-model="rotation" type="range" min="0" max="360"
+                                class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-gray-400/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center mt-6 space-x-16">
+
+                        <button @click="close"
+                            class="w-[250px] duration-300 hover:text-red-400 border-t-4 border-b-4 shadow-black shadow-2xl p-2 rounded-lg colourBackground border-red-400/50">
+                            Close <i class="fa-solid fa-rotate-left text-red-400"></i>
+                        </button>
+                        <button @click="purchaseVehicle"
+                            class="w-[250px] duration-300 p-2 rounded-lg hover:text-purple-400 shadow-black shadow-2xl colourBackground border-b-4 border-t-4 border-purple-400/50">
+                            Purchase
+                            <i class="fa-solid fa-dollar-sign text-purple-400"></i>
+                        </button>
                     </div>
                 </div>
-
-                <div class="flex justify-center mt-6 space-x-16">
-
-                    <button @click="close"
-                        class="w-[250px] duration-300 hover:text-red-400 border-t-4 border-b-4 shadow-black shadow-2xl p-2 rounded-lg colourBackground border-red-400/50">
-                        Close <i class="fa-solid fa-rotate-left text-red-400"></i>
-                    </button>
-                    <button @click="purchaseVehicle"
-                        class="w-[250px] duration-300 p-2 rounded-lg hover:text-purple-400 shadow-black shadow-2xl colourBackground border-b-4 border-t-4 border-purple-400/50">
-                        Purchase
-                        <i class="fa-solid fa-dollar-sign text-purple-400"></i>
-                    </button>
-                </div>
-            </div>
-        </main>
+            </main>
+        </Transition>
 
         <div v-if="loadingState" class="flex colourBackground h-screen items-center justify-center">
             <b role="status" class="flex justify-center">
@@ -157,6 +194,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import { sendToServer } from '@/helpers';
 
 export default {
     data() {
@@ -174,7 +212,8 @@ export default {
                 { html: "#f21f99", rage: 135 },
                 { html: "#c00e1a", rage: 27 },
             ],
-            selectedColour: 111
+            selectedColour: 111,
+            promptActive: false
         }
     },
     computed: {
@@ -187,7 +226,7 @@ export default {
     mounted() {
         window.mp.trigger("gui:toggleHudComplete", false);
 
-        this.selectedVehicle = this.playerData.vehicle_dealer_data.vehicles[0].spawnName;
+        this.selectedVehicle = this.playerData.vehicle_dealer_data.vehicles[0];
     },
     watch: {
         rotation() {
@@ -195,6 +234,9 @@ export default {
         },
         selectedColour() {
             window.mp.trigger("dealers:changeSelectVehColour", this.selectedColour);
+        },
+        promptActive() {
+            window.mp.trigger("browser:toggleClientBlur", this.promptActive);
         }
     },
     methods: {
@@ -210,14 +252,25 @@ export default {
                 return require("../../assets/img/cars/sentinel.png");
             }
         },
-        viewVehicle(name) {
-            this.selectedVehicle = name;
-            window.mp.trigger("dealers:changeSelectVeh", name, this.rotation, this.selectedColour);
+        viewVehicle(veh) {
+            this.selectedVehicle = veh;
+            window.mp.trigger("dealers:changeSelectVeh", veh.spawnName, this.rotation, this.selectedColour);
         },
         purchaseVehicle() {
             if (!this.selectedVehicle) return;
+            this.promptActive = true;
+        },
+        confirmPurchase() {
+            if (!this.selectedVehicle) return;
             this.$store.state.uiStates.serverLoading = true;
-            window.mp.trigger("dealers:purchaseVehicle", this.selectedVehicle, this.selectedColour);
+            this.promptActive = false;
+
+            sendToServer("server:dealerShip:purchaseVehicle", JSON.stringify({
+                vehName: this.selectedVehicle.spawnName,
+                vehColour: this.selectedColour
+            }));
+
+            window.mp.trigger("browser:toggleClientBlur", false);
         }
     }
 }

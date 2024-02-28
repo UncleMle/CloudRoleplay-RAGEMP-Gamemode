@@ -16,7 +16,8 @@ export default class RaycastInteractions {
         mp.events.add({
             "render": RaycastInteractions.handleRaycastRender,
             "client::raycastInteractions:loadPoints": RaycastInteractions.handlePointLoad,
-            "client::raycastInteractions:loadOnePoint": RaycastInteractions.loadOnePoint
+            "client::raycastInteractions:loadOnePoint": RaycastInteractions.reloadOnePoint,
+            "client::raycastInteractions:addOnePoint": RaycastInteractions.addOnePoint
         });
 
         mp.keys.bind(_control_ids.EBIND, false, RaycastInteractions.handleKeyPress);
@@ -96,8 +97,17 @@ export default class RaycastInteractions {
         RaycastInteractions.raycastInteractionPoints = JSON.parse(pointData);
     }
 
-    private static loadOnePoint(point: string) {
+    private static addOnePoint(pointData: string, idx: number) {
+        RaycastInteractions.raycastInteractionPoints[idx] = JSON.parse(pointData);
+    }
+
+    private static reloadOnePoint(point: string, idx: number) {
         let newPoint: RaycastInteraction = JSON.parse(point);
+
+        if (idx !== -1) {
+            RaycastInteractions.raycastInteractionPoints[idx] = newPoint;
+            return;
+        }
 
         RaycastInteractions.raycastInteractionPoints.push(newPoint);
     }

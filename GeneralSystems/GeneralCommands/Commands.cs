@@ -48,7 +48,10 @@ namespace CloudRP.GeneralSystems.GeneralCommands
             }
         }
 
-        #region Commands
+        /*
+         * 
+         * Needs some re-works & improvements
+         * 
         [Command("logout", "~y~Use: ~w~/logout")]
         public void logoutCommand(Player player)
         {
@@ -104,6 +107,7 @@ namespace CloudRP.GeneralSystems.GeneralCommands
                 }, _logoutTimeout_seconds * 1000);
             }
         }
+        */
 
         [Command("b", "~y~Use:~w~ /b [message]", Alias = "ooc,o", GreedyArg = true)]
         public void oocCommand(Player player, string oocChat)
@@ -619,7 +623,6 @@ namespace CloudRP.GeneralSystems.GeneralCommands
             ChatUtils.sendWithNickName(targetPlayer, player, prefix, suffix, true);
             ChatUtils.sendWithNickName(player, targetPlayer, playerPrefix, suffix, true);
         }
-        #endregion
 
         #region Remote Events
         [RemoteEvent("server:requestPlayerNickname")]

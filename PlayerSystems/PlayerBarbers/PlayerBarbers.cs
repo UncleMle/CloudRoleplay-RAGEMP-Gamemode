@@ -37,7 +37,7 @@ namespace CloudRP.PlayerSystems.PlayerBarber
                 RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
                 {
                     menuTitle = "Barber Shop",
-                    raycastMenuItems = new string[] { "Open barber menu" },
+                    raycastMenuItems = new List<string> { "Open barber menu" },
                     raycastMenuPosition = shop,
                     targetMethod = openBarberShop
                 });

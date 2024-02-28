@@ -47,7 +47,7 @@ namespace CloudRP.PlayerSystems.DMV
             RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
             {
                 menuTitle = "Department of Motor Vehicles",
-                raycastMenuItems = new string[] { "Select a course" },
+                raycastMenuItems = new List<string> { "Select a course" },
                 raycastMenuPosition = dmvStartPoint,
                 targetMethod = viewDmvMenu
             });

@@ -32,7 +32,7 @@ namespace CloudRP.PlayerSystems.Jobs.GruppeSixJob
             RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
             {
                 menuTitle = "Gruppe Six Job",
-                raycastMenuItems = new string[] { "Start gruppe six job" },
+                raycastMenuItems = new List<string> { "Start gruppe six job" },
                 raycastMenuPosition = jobStartPosition,
                 targetMethod = startGruppeSixJob
             });

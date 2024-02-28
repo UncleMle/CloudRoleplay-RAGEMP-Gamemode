@@ -31,7 +31,8 @@ export default class BrowserSystem {
 			"browser:setAuthState": BrowserSystem.setAuthState,
 			"browser:clearChat": BrowserSystem.clearChat,
 			"browser:playerFrontendSound": BrowserSystem.playFrontendSound,
-			"browser:callServerProc": BrowserSystem.handleServerProc
+			"browser:callServerProc": BrowserSystem.handleServerProc,
+			"browser:toggleClientBlur": BrowserSystem.handleClientBlur
 		});
 
 		mp.keys.bind(F2, false, BrowserSystem.handleF2Press);
@@ -173,6 +174,10 @@ export default class BrowserSystem {
 			mp.game.invoke(_REMOVE_TIMER_NATIVE);
 			BrowserSystem.IdleDate = new Date();
 		}
+	}
+
+	public static handleClientBlur(toggle: boolean) {
+		toggle ? mp.game.graphics.transitionToBlurred(100) : mp.game.graphics.transitionFromBlurred(100); 
 	}
 
 	public static disableDefaultGuiElements() {

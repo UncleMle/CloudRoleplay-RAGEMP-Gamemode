@@ -97,7 +97,7 @@ namespace CloudRP.PlayerSystems.JobCenter
                 RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
                 {
                     menuTitle = "Job Center",
-                    raycastMenuItems = new string[] { "View available jobs" },
+                    raycastMenuItems = new List<string> { "View available jobs" },
                     raycastMenuPosition = pos,
                     targetMethod = showCenterUi
                 });

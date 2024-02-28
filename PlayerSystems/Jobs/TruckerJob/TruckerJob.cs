@@ -7,6 +7,7 @@ using CloudRP.World.MarkersLabels;
 using CloudRP.WorldSystems.RaycastInteractions;
 using GTANetworkAPI;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -35,7 +36,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
             RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
             {
                 menuTitle = "Trucking Job",
-                raycastMenuItems = new string[] { "Start trucking job" },
+                raycastMenuItems = new List<string> { "Start trucking job" },
                 raycastMenuPosition = truckerJobStart,
                 targetMethod = startTruckerJob
             });

@@ -57,7 +57,7 @@ namespace CloudRP.PlayerSystems.DeathSystem
                 RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
                 {
                     menuTitle = hospital.name,
-                    raycastMenuItems = new string[] { RaycastMenuOptions.painKillerPurchase, RaycastMenuOptions.bandagePurchase },
+                    raycastMenuItems = new List<string> { RaycastMenuOptions.painKillerPurchase, RaycastMenuOptions.bandagePurchase },
                     raycastMenuPosition = hospital.position,
                     targetMethod = purchaseFromHospital
                 });

@@ -164,7 +164,7 @@
 import CloseButton from '../ui/CloseButton.vue';
 import LoadingSpinner from '../ui/LoadingSpinner.vue';
 import { mapGetters } from 'vuex';
-import { promptMenu } from '@/helpers';
+import { sendToServer } from '@/helpers';
 
 export default {
     data() {
@@ -173,7 +173,7 @@ export default {
             withdrawCash: "",
             transferCashName: "",
             transferCashAmount: "",
-            depositAmount: ""
+            depositAmount: "",
         }
     },
     components: {
@@ -192,29 +192,29 @@ export default {
 
             this.$store.state.uiStates.serverLoading = true;
 
-            promptMenu("fa-solid fa-bank", "Withdraw Cash", `Are you sure you want to withdraw $${parseInt(this.withdrawCash).toLocaleString("en-US")}?`, "server:atmWithdrawCash", parseInt(this.withdrawCash), "/atm");
+            sendToServer("server:atmWithdrawCash", this.withdrawCash);
         },
         depositPlayerCash() {
             if (this.depositAmount.length === 0) return;
 
             this.$store.state.uiStates.serverLoading = true;
 
-            promptMenu("fa-solid fa-bank", "Deposit Cash", `Are you sure you want to deposit $${parseInt(this.depositAmount).toLocaleString("en-US")}?`, "server:bankDepositCash", parseInt(this.depositAmount), "/atm");
+            sendToServer("server:bankDepositCash", this.depositAmount);
         },
         transferCash() {
             if (this.transferCashAmount.length === 0) return;
 
             this.$store.state.uiStates.serverLoading = true;
 
-            promptMenu("fa-solid fa-bank", "Transfer Money", `Are you sure you want to transfer $${parseInt(this.transferCashAmount).toLocaleString("en-US")}?`, "server:bankTransferSomeone", JSON.stringify({
+            sendToServer("server:bankTransferSomeone", JSON.stringify({
                 recieverName: this.transferCashName,
                 transferAmount: this.transferCashAmount
-            }), "/atm");
+            }));
         },
         retrieveSalary() {
             this.$store.state.uiStates.serverLoading = true;
 
-            promptMenu("fa-solid fa-bank", "Retrieve Salary", `Are you sure you want to retrieve your $${this.playerData.atm_data.balanceSalary.toLocaleString("en-US")} in salary?`, "server:bank:retrieveSalary", null, "/atm");
+            sendToServer("server:bank:retrieveSalary");
         }
     }
 }

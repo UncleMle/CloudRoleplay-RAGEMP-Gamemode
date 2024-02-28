@@ -202,7 +202,7 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
                 RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
                 {
                     menuTitle = "Vehicle Dealership",
-                    raycastMenuItems = new string[] { RaycastMenuOptions.viewDealerVehicles, RaycastMenuOptions.viewDealerVehiclesAmount },
+                    raycastMenuItems = new List<string> { RaycastMenuOptions.viewDealerVehicles, RaycastMenuOptions.viewDealerVehiclesAmount },
                     raycastMenuPosition = dealerShip.viewPosition,
                     targetMethod = serverViewDealerVehicles
                 });
@@ -275,36 +275,20 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
             }
         }
 
-        [RemoteEvent("server:purchaseVehicleConfirm")]
-        public void confirmDealerPurchase(Player player, string spawnName, int spawnColour)
-        {
-            DealerShip playerDealerData = player.GetData<DealerShip>(_dealershipIdentifer);
-
-            if (playerDealerData == null) return;
-
-            DealerVehicle findDealerVeh = playerDealerData.vehicles.Where(veh => veh.spawnName == spawnName).FirstOrDefault();
-
-            if (findDealerVeh == null) return;
-
-            uiHandling.sendPrompt(player, "fa-solid fa-car", "Purchase Vehicle", $"Are you sure you want to purchase a {findDealerVeh.spawnName} for ${findDealerVeh.price.ToString("N0")}?", "server:purchaseVehicle", new DealerUiData 
-            {
-                vehColour = spawnColour,
-                vehName = spawnName
-            }, Browsers.Dealership);
-        }
-
-        [RemoteEvent("server:purchaseVehicle")]
+        [RemoteEvent("server:dealerShip:purchaseVehicle")]
         public void handlePlayerVehiclePurchase(Player player, string data)
         {
-            DealerUiData vehiclePurchase = JsonConvert.DeserializeObject<DealerUiData>(data);
             DealerShip playerDealerData = player.GetData<DealerShip>(_dealershipIdentifer);
             bool dealerActive = player.GetData<bool>(_dealerActiveIdentifier);
             DbCharacter charData = player.getPlayerCharacterData();
+            DealerUiData uiData = JsonConvert.DeserializeObject<DealerUiData>(data);
+
+            if (uiData == null) return;
 
             if (playerDealerData != null && dealerActive && charData != null)
             {
                 long currentMoney = charData.money_amount;
-                DealerVehicle findDealerVeh = playerDealerData.vehicles.Where(veh => veh.spawnName == vehiclePurchase.vehName).FirstOrDefault();
+                DealerVehicle findDealerVeh = playerDealerData.vehicles.Where(veh => veh.spawnName == uiData.vehName).FirstOrDefault();
                 
                 if (findDealerVeh == null)
                 {
@@ -329,7 +313,7 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
 
                 charData.money_amount -= findDealerVeh.price;
 
-                (Vehicle buildVeh, DbVehicle vehicleData) = VehicleSystem.buildVehicle(vehiclePurchase.vehName, playerDealerData.spawnPosition, 0, charData.character_id, vehiclePurchase.vehColour, vehiclePurchase.vehColour, charData.character_name);
+                (Vehicle buildVeh, DbVehicle vehicleData) = VehicleSystem.buildVehicle(uiData.vehName, playerDealerData.spawnPosition, 0, charData.character_id, uiData.vehColour, uiData.vehColour, charData.character_name);
 
                 if (buildVeh == null || vehicleData == null) return;
 

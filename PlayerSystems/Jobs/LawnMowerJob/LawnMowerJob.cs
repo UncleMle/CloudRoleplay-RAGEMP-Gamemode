@@ -93,7 +93,7 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
         #region Global Methods
         private static void showJobPrompt(Player player, MowableLawn lawn)
         {
-            uiHandling.sendPrompt(player, "fa-solid fa-briefcase", "Lawnmower Job", $"Are you sure you want to start the lawn mower job? You will get paid ${lawn.pay.ToString("N0")}.", "server:jobs:lawnMower:start");
+            uiHandling.sendPrompt(player, "fa-solid fa-briefcase", "Lawnmower Job", $"Are you sure you want to start the lawn mower job? You will get paid ${lawn.pay.ToString("N0")}.", startLawnMowerJob);
         }
 
         private static void initLawnPositions(List<Vector3> positions)
@@ -172,8 +172,7 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
         #endregion
 
         #region Remote Events
-        [RemoteEvent("server:jobs:lawnMower:start")]
-        public void startLawnMowerJob(Player player)
+        private static void startLawnMowerJob(Player player, object prompt)
         {
             if (FreelanceJobSystem.hasAJob(player, jobId) || FreelanceJobSystem.hasFreeLanceVehicle(player)) return;
 

@@ -37,7 +37,7 @@
             </div>
 
             <div>
-                <button @click="server(playerData.player_prompt_data.callBackEvent)"
+                <button @click="server"
                     class="border-b-4 border-green-400/60 colourBackground shadow-black shadow-2xl p-3 w-40 rounded-lg duration-300 hover:border-green-400 hover:scale-105">
                     Accept</button>
             </div>
@@ -59,22 +59,11 @@ export default {
     methods: {
         close() {
             this.$store.state.uiStates.serverLoading = false;
-
-            if (this.playerData.player_prompt_data.callBackRoute) {
-                window.mp.trigger("browser:pushRouter", this.playerData.player_prompt_data.callBackRoute);
-                return;
-            }
-
             window.mp.trigger("browser:resetRouter");
         },
-        server(callBack) {
-            if (!this.playerData.player_prompt_data.callBackRoute) this.close();
-
-            if (typeof this.playerData.player_prompt_data.callBackObject === "object") {
-                this.playerData.player_prompt_data.callBackObject = JSON.stringify(this.playerData.player_prompt_data.callBackObject);
-            }
-
-            sendToServer(callBack, this.playerData.player_prompt_data.callBackObject);
+        server() {
+            this.close();
+            sendToServer("server:uiHandling:handleAccept");
         }
     }
 }

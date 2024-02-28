@@ -21,8 +21,7 @@ export default class VehicleDealerShips {
 			"dealers:closeDealership": VehicleDealerShips.closeDealerShip,
 			"dealers:changeSelectVeh": VehicleDealerShips.addDealerShipVehicle,
 			"dealers:setSelectedVehRot": VehicleDealerShips.setDealerVehRot,
-			"dealers:changeSelectVehColour": VehicleDealerShips.setDealerVehColour,
-			"dealers:purchaseVehicle": VehicleDealerShips.purchaseDealerVehicle
+			"dealers:changeSelectVehColour": VehicleDealerShips.setDealerVehColour
 		});
 	}
 
@@ -134,11 +133,5 @@ export default class VehicleDealerShips {
 		VehicleDealerShips.dealerSelectedVehicle.setDirtLevel(0);
 		VehicleDealerShips.dealerSelectedVehicle.setHeading(Number(rotation));
 		VehicleDealerShips.dealerSelectedVehicle.setColours(Number(colour), Number(colour));
-	}
-
-	public static purchaseDealerVehicle(vehName: string, spawnColour: string | number) {
-		if (!vehName) return;
-
-		mp.events.callRemote(VehicleDealerShips._dealerPurchaseEvent, vehName, Number(spawnColour));
 	}
 }

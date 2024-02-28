@@ -10,9 +10,11 @@ namespace CloudRP.PlayerSystems.PlayerData
 {
     internal class uiHandling : Script
     {
-        public static string _sharedMutationStoreSetter = "playerMutationSetter";
+        public static readonly string _sharedMutationStoreSetter = "playerMutationSetter";
+        public static readonly string _promptMenuCallbackDataKey = "server:uiHandling:promptMenuCallbackData";
         public static int _loadingStateTimeout_seconds = 1;
 
+        #region Global Methods
         public static void togglePlayerChat(Player player, bool toggle)
         {
             string mutationName = "setChatStatus";
@@ -121,25 +123,45 @@ namespace CloudRP.PlayerSystems.PlayerData
             }
         }
         
-        public static void sendPrompt(Player player, string icon, string title, string message, string callBackEvent, object callBackObject = null, string callBackRoute = null)
+        public static void sendPrompt(Player player, string icon, string title, string message, Action<Player, object> callback, object data = null) 
         {
             pushRouterToClient(player, Browsers.PromptScreen, true);
 
             handleObjectUiMutation(player, MutationKeys.PromptData, JsonConvert.SerializeObject(new PromptUiData
             {
                 icon = icon,
-                callBackEvent = callBackEvent,
                 message = message,
-                title = title,
-                callBackObject = callBackObject,
-                callBackRoute = callBackRoute
+                title = title
             }));
+
+            player.SetCustomData(_promptMenuCallbackDataKey, new PromptCallback
+            {
+                callback = callback,
+                data = data
+            });
         }
 
         public static void sendSound(Player player, string soundName, string soundSetName)
             => player.TriggerEvent("browser:playerFrontendSound", soundName, soundSetName);
+
+        public static void toggleBlur(Player player, bool toggle)
+            => player.TriggerEvent("browser:toggleClientBlur", toggle);
+
+        #endregion
+
+        #region Remote Events
+        [RemoteEvent("server:uiHandling:handleAccept")]
+        public void handlePromptMenuAccept(Player player)
+        {
+            PromptCallback callback = player.GetData<PromptCallback>(_promptMenuCallbackDataKey);
+            if (callback == null) return;
+
+            callback.callback.Invoke(player, callback.data == null ? new object { } : callback.data);
+            player.ResetData(_promptMenuCallbackDataKey);
+        }
+        #endregion
     }
-    
+
     public static class HintKeys
     {
         public static readonly string LCTRL_KEY = "~INPUT_VEH_MOVE_UD~";
@@ -235,5 +257,11 @@ namespace CloudRP.PlayerSystems.PlayerData
     {
         public string username { get; set; }
         public string email { get; set; }
+    }
+
+    public class PromptCallback
+    {
+        public object data { get; set; }
+        public Action<Player, object> callback { get; set; }
     }
 }

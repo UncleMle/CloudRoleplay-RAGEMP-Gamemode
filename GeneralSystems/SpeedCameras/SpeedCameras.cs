@@ -53,7 +53,7 @@ namespace CloudRP.GeneralSystems.SpeedCameras
                 RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
                 {
                     menuTitle = "Speedcamera - Sabotage",
-                    raycastMenuItems = new string[] { $"Sabotage Speedcamera for {speedCameraSabotageTime_seconds} seconds." },
+                    raycastMenuItems = new List<string> { $"Sabotage Speedcamera for {speedCameraSabotageTime_seconds} seconds." },
                     raycastMenuPosition = new Vector3(cam.camPropPos.X, cam.camPropPos.Y, cam.camPropPos.Z + 1.5),
                     hasPlaceMarker = false,
                     targetMethod = (player, rayOption) => {

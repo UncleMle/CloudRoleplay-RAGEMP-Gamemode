@@ -1,6 +1,9 @@
-﻿using System;
+﻿using CloudRP.WorldSystems.RaycastInteractions;
+using GTANetworkAPI;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace CloudRP.VehicleSystems.VehicleGarages
@@ -17,5 +20,9 @@ namespace CloudRP.VehicleSystems.VehicleGarages
         public float pos_y { get; set; }
         public float pos_z { get; set; }
         public int garage_sell_price { get; set; }
+        [NotMapped]
+        public RaycastInteraction raycastPoint { get; set; }
+        [NotMapped]
+        public Vector3 pos { get; set; } = new Vector3();
     }
 }

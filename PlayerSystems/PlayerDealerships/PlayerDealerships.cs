@@ -154,7 +154,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                 return;
             }
 
-            uiHandling.sendPrompt(player, "fa-solid fa-car", "Sell Vehicle", $"Are you sure you want to sell your {vehicleData.vehicle_display_name} for ${price.ToString("N0")}?", "server:sellPlayerVehicle", new DealerSellData
+            uiHandling.sendPrompt(player, "fa-solid fa-car", "Sell Vehicle", $"Are you sure you want to sell your {vehicleData.vehicle_display_name} for ${price.ToString("N0")}?", sellPlayerVehicle, new DealerSellData
             {
                 desc = desc,
                 price = price,
@@ -218,11 +218,10 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
             }
         }
 
-        [RemoteEvent("server:sellPlayerVehicle")]
-        public void sellPlayerVehicle(Player player, string vehicleSellData)
+        public void sellPlayerVehicle(Player player, object data)
         {
             KeyValuePair<string, Dealer> dealerData = player.GetData<KeyValuePair<string, Dealer>>(_dealerColDataIdentifier);
-            DealerSellData data = JsonConvert.DeserializeObject<DealerSellData>(vehicleSellData);
+            DealerSellData sellData = (DealerSellData)data; 
 
             if (dealerData.Value != null)
             {
@@ -255,19 +254,19 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                         {
                             foundSpot = true;
 
-                            if (data.price > maxSellPrice || data.price < dealerMinSellPrice)
+                            if (sellData.price > maxSellPrice || sellData.price < dealerMinSellPrice)
                             {
                                 uiHandling.sendPushNotifError(player, $"Sell price must be between ${dealerMinSellPrice} and ${maxSellPrice}", 6600);
                                 return;
                             }
 
-                            if (!AuthUtils.validateNick(data.desc))
+                            if (!AuthUtils.validateNick(sellData.desc))
                             {
                                 uiHandling.sendPushNotifError(player, "Dealer descriptions cannot have certain special characters.", 6600);
                                 return;
                             }
 
-                            if (data.desc.Length > 256)
+                            if (sellData.desc.Length > 256)
                             {
                                 uiHandling.sendPushNotifError(player, "Dealer descriptions cannot be longer than 256 characters.", 6600);
                                 return;
@@ -287,7 +286,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                                     p.WarpOutOfVehicle();
                                 }
                             });
-                            CommandUtils.successSay(player, $"You have sold your vehicle for {ChatUtils.moneyGreen}${data.price.ToString("N0")}{ChatUtils.White}!");
+                            CommandUtils.successSay(player, $"You have sold your vehicle for {ChatUtils.moneyGreen}${sellData.price.ToString("N0")}{ChatUtils.White}!");
 
                             targetVehicle.Position = vehPosition.vehPos;
                             targetVehicle.Rotation = new Vector3(0, 0, vehPosition.vehRot);
@@ -295,8 +294,8 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
 
                             targetVehicleData.rotation = (float)vehPosition.vehRot;
                             targetVehicleData.dealership_id = dealer.dealerId;
-                            targetVehicleData.dealership_price = data.price;
-                            targetVehicleData.dealership_description = data.desc;
+                            targetVehicleData.dealership_price = sellData.price;
+                            targetVehicleData.dealership_description = sellData.desc;
                             targetVehicleData.dealership_spot_id = vehPosition.spotId;
                             targetVehicleData.dynamic_dealer_spot_id = vehPosition.spotId;
                             targetVehicleData.vehicle_locked = false;

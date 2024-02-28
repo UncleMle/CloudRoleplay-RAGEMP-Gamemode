@@ -99,7 +99,7 @@ namespace CloudRP.World.BanksAtms
                     RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
                     {
                         menuTitle = "Bank Teller",
-                        raycastMenuItems = new string[] { "Open bank menu" },
+                        raycastMenuItems = new List<string> { "Open bank menu" },
                         raycastMenuPosition = teller,
                         targetMethod = openBankEvent
                     });

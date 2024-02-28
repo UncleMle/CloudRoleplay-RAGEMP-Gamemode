@@ -107,7 +107,7 @@ namespace CloudRP.World.BanksAtms
                 RaycastInteractionSystem.raycastPoints.Add(new RaycastInteraction
                 {
                     menuTitle = $"Atm #{Atms.IndexOf(atm)}",
-                    raycastMenuItems = new string[] { "Use atm" },
+                    raycastMenuItems = new List<string> { "Use atm" },
                     raycastMenuPosition = atm,
                     targetMethod = openAtm
                 });
