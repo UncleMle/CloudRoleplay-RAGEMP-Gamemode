@@ -41,6 +41,7 @@ export interface UserData {
 	admin_esp: boolean;
 	admin_ped: string;
 	showAdminPed: boolean;
+	admin_jail_reason: string;
 }
 
 export interface SubtractVector {

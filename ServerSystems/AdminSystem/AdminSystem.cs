@@ -26,6 +26,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CloudRP.ServerSystems.Admin
@@ -38,6 +39,8 @@ namespace CloudRP.ServerSystems.Admin
         public static string defaultAdminPed = "ig_abigail";
         public static readonly string _adminLastPositionKey = "adminDuty:system:positionKey";
         public static int totalAdminCommands = 0;
+        public static Vector3 adminJailLocation = new Vector3(3055.0, -4705.1, 15.3);
+        public static Dictionary<int, System.Timers.Timer> adminJailTimers = new Dictionary<int, System.Timers.Timer>();
 
         public class AdminCommand : CommandConditionAttribute
         {
@@ -81,9 +84,57 @@ namespace CloudRP.ServerSystems.Admin
         {
             KeyPressEvents.keyPress_F4 += fly;
 
+            Main.playerDisconnect += (player) =>
+            {
+                if (player.getPlayerAccountData() == null) return;
+
+                int accountId = player.getPlayerAccountData().account_id;
+
+                if (adminJailTimers.ContainsKey(accountId))
+                {
+                    adminJailTimers[accountId].Dispose();
+                    adminJailTimers.Remove(accountId);
+                }
+            };
+
             Main.resourceStart += () => ChatUtils.startupPrint($"A total of {totalAdminCommands} admin commands were loaded.");
+
+            ColShape adminJailCol = NAPI.ColShape.CreateSphereColShape(adminJailLocation, 55f);
+
+            adminJailCol.OnEntityExitColShape += (col, player) =>
+            {
+                if (!col.Equals(adminJailCol)) return;
+
+                User user = player.getPlayerAccountData();
+
+                if (user != null && user.admin_jail_time > 0) player.Position = adminJailLocation;
+            };
         }
 
+        #region Global Methods
+        public static void adminJailInterval(Player player)
+        {
+            User user = player.getPlayerAccountData();
+
+            if (user == null) return;
+
+            if((user.admin_jail_time - 10) <= 0)
+            {
+                player.endAdminJail();
+                AdminUtils.staffSay(player, $"You have been released from admin jail.");
+                AdminUtils.sendMessageToAllStaff($"{player.getPlayerCharacterData().character_name} has been released from admin jail.", 0, true);
+                return;
+            }
+
+            if (player.checkIsWithinCoord(adminJailLocation, 50f)) player.Position = adminJailLocation;
+
+            player.Dimension = (uint)player.Id + 1;
+            user.admin_jail_time -= 10;
+            player.setPlayerAccountData(user, false, true);
+        }
+        #endregion
+
+        #region Server Events
         [ServerEvent(Event.PlayerConnected)]
         public void playerConnected(Player player)
         {
@@ -94,7 +145,9 @@ namespace CloudRP.ServerSystems.Admin
                 player.setPlayerToBanScreen(checkIsBanned);
             }
         }
+        #endregion
 
+        #region Commands
         [Command("report", "~y~Use: ~w~/report [description]", GreedyArg = true)]
         public async void onReport(Player player, string desc)
         {
@@ -144,7 +197,7 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_SeniorModerator)]
-        [Command("ann", "~r~/ann [message]", Alias = "announce", GreedyArg = true, Group = "admin")]
+        [Command("ann", "~r~/ann [message]", Alias = "announce", GreedyArg = true)]
         public void announceCommand(Player player, string message)
         {
             User userData = player.getPlayerAccountData();
@@ -157,7 +210,7 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]
-        [Command("aesp", "~r~/asep", Group = "admin")]
+        [Command("aesp", "~r~/asep")]
         public void adminEspToggle(Player player)
         {
             User userData = player.getPlayerAccountData();
@@ -194,7 +247,7 @@ namespace CloudRP.ServerSystems.Admin
 
         [RemoteEvent("server:viewReports")]
         [AdminCommand(AdminRanks.Admin_Support, checkForAduty = false)]
-        [Command("reports", "~r~/reports", Group = "admin")]
+        [Command("reports", "~r~/reports")]
         public void viewReports(Player player)
         {
             if (activeReports.Count == 0)
@@ -341,7 +394,7 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]
-        [Command("goback", "~r~/goback", Alias = "gotob, gb", Group = "admin")]
+        [Command("goback", "~r~/goback", Alias = "gotob, gb")]
         public static void goAdminBack(Player player)
         {
             User user = player.getPlayerAccountData();
@@ -362,10 +415,16 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator, checkForAduty = false)]
-        [Command("aduty", "~r~/aduty", Alias = "ad", Group = "admin")]
+        [Command("aduty", "~r~/aduty", Alias = "ad")]
         public void onAduty(Player player)
         {
             User userData = player.getPlayerAccountData();
+
+            if(userData.admin_status <= (int)AdminRanks.Admin_HeadAdmin && userData.admin_jail_time > 0)
+            {
+                CommandUtils.errorSay(player, "You can't use this command whilst in admin jail.");
+                return;
+            }
 
             string colourAdminRank = AdminUtils.getColouredAdminRank(userData);
 
@@ -378,7 +437,7 @@ namespace CloudRP.ServerSystems.Admin
 
 
         [AdminCommand(AdminRanks.Admin_Support, checkForAduty = false)]
-        [Command("staff", "~r~/staff", Group = "admin")]
+        [Command("staff", "~r~/staff")]
         public void staff(Player player)
         {
             Dictionary<Player, User> onlineStaff = AdminUtils.gatherStaff();
@@ -402,7 +461,7 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_Support, checkForAduty = false)]
-        [Command("a", "~r~/adminchat [message]", GreedyArg = true, Alias = "adminchat", Group = "admin")]
+        [Command("a", "~r~/adminchat [message]", GreedyArg = true, Alias = "adminchat")]
         public void adminChat(Player player, string message)
         {
             User userData = player.getPlayerAccountData();
@@ -418,7 +477,7 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]
-        [Command("tpto", "~r~/tpto [nameOrId]", Alias = "goto", Group = "admin")]
+        [Command("tpto", "~r~/tpto [nameOrId]", Alias = "goto")]
         public void teleportToPlayer(Player player, string nameOrId)
         {
             User userData = player.getPlayerAccountData();
@@ -452,7 +511,7 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]
-        [Command("kick", "~r~/kick [nameOrId] [silent]", Group = "admin")]
+        [Command("kick", "~r~/kick [nameOrId] [silent]")]
         public void kickPlayer(Player player, string nameOrId, bool isSilent = false)
         {
             User userData = player.getPlayerAccountData();
@@ -486,7 +545,7 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]
-        [Command("revive", "~r~/revive [nameOrId]", Group = "admin")]
+        [Command("revive", "~r~/revive [nameOrId]")]
         public void reviveCommand(Player player, string nameOrId)
         {
             User userData = player.getPlayerAccountData();
@@ -517,11 +576,61 @@ namespace CloudRP.ServerSystems.Admin
             uiHandling.sendNotification(findPlayer, $"~r~You were revived by {userData.admin_name}", false);
 
             ChatUtils.formatConsolePrint($"{userData.admin_name} revived {findCharacter.character_name}");
-
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]
-        [Command("bring", "~r~/bring [nameOrId]", Group = "admin")]
+        [Command("ajail", "~r~/ajail [nameOrId] [minutes] [reason]", GreedyArg = true)]
+        public void adminJailCommand(Player player, string nameOrId, int time, string reason)
+        {
+            User user = player.getPlayerAccountData();
+            Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+            if(findPlayer == null)
+            {
+                CommandUtils.notFound(player);
+                return;
+            }
+
+            if(time < 0)
+            {
+                CommandUtils.errorSay(player, "Time cannot be less than zero.");
+                return;
+            }
+
+            player.adminJail(time * 60, reason);
+            AdminUtils.sendMessageToAllStaff($"{user.admin_name} admin jailed {findPlayer.getPlayerCharacterData().character_name} for {time} minute(s).", 0, true);
+            AdminUtils.staffSay(findPlayer, $"You have been admin jailed by {user.admin_name} for {time} minute(s).");
+        }
+
+        [AdminCommand(AdminRanks.Admin_Moderator)]
+        [Command("endajail", "~r~/endajail [nameOrId]")]
+        public void endAdminJail(Player player, string nameOrId)
+        {
+            User user = player.getPlayerAccountData();
+            Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+            if(findPlayer == null)
+            {
+                CommandUtils.notFound(player);
+                return;
+            }
+
+            User findUser = findPlayer.getPlayerAccountData();
+            DbCharacter findCharacter = findPlayer.getPlayerCharacterData();
+
+            if(findUser.admin_jail_time == 0)
+            {
+                CommandUtils.errorSay(player, $"This player doesn't have any admin jail time.");
+                return;
+            }
+
+            findPlayer.endAdminJail();
+            AdminUtils.sendMessageToAllStaff($"{user.admin_name} released {findCharacter.character_name} from admin jail.", 0, true);
+            AdminUtils.staffSay(findPlayer, $"{user.admin_name} ended your admin jail.");
+        }
+
+        [AdminCommand(AdminRanks.Admin_Moderator)]
+        [Command("bring", "~r~/bring [nameOrId]")]
         public void bringPlayer(Player player, string nameOrId)
         {
             User userData = player.getPlayerAccountData();
@@ -557,8 +666,8 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_HeadAdmin)]
-        [Command("veh", "~r~/veh [vehName] [colourOne] [colourTwo]")]
-        public void spawnVehicle(Player player, string vehName, int colourOne = 111, int colourTwo = 111)
+        [Command("buildveh", "~r~/buildveh [vehName] [colourOne] [colourTwo]")]
+        public void buildVehicle(Player player, string vehName, int colourOne = 111, int colourTwo = 111)
         {
             User userData = player.getPlayerAccountData();
             DbCharacter charData = player.getPlayerCharacterData();
@@ -579,7 +688,31 @@ namespace CloudRP.ServerSystems.Admin
             player.SetIntoVehicle(vehicle, 0);
 
             AdminUtils.staffSay(player, $"You spawned in vehicle {vehName} #{vehicleData.vehicle_id}");
-            ChatUtils.formatConsolePrint($"{userData.admin_name} spawned in a {vehName} #{vehicleData.vehicle_id}");
+            ChatUtils.formatConsolePrint($"{userData.admin_name} spawned in a [NON-VOLATILE] {vehName} #{vehicleData.vehicle_id}");
+        }
+
+        [AdminCommand(AdminRanks.Admin_SeniorAdmin)]
+        [Command("veh", "~r~/veh [vehName] [colourOne] [colourTwo]")]
+        public void spawnVehicle(Player player, string vehName, int colourOne = 111, int colourTwo = 111)
+        {
+            User userData = player.getPlayerAccountData();
+            DbCharacter charData = player.getPlayerCharacterData();
+
+            Vector3 playerPosition = player.Position;
+            float playerRotation = player.Rotation.Z;
+
+            Vehicle spawnVeh = VehicleSystem.buildVolatileVehicle(player, vehName, playerPosition, playerRotation, "ADMIN", colourOne, colourTwo);
+
+            if (spawnVeh == null)
+            {
+                CommandUtils.errorSay(player, "Invalid vehicle spawn name");
+                return;
+            }
+
+            player.SetIntoVehicle(spawnVeh, 0);
+
+            AdminUtils.staffSay(player, $"You spawned in vehicle {vehName}");
+            ChatUtils.formatConsolePrint($"{userData.admin_name} spawned in a [VOLATILE] {vehName}");
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]
@@ -2043,5 +2176,6 @@ namespace CloudRP.ServerSystems.Admin
 
             AdminUtils.staffSay(player, $"Created a vehicle garage with id #{garageId}.");
         }
+        #endregion
     }
 }

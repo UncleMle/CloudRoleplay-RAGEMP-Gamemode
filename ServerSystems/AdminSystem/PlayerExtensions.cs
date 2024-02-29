@@ -4,6 +4,8 @@ using CloudRP.ServerSystems.Authentication;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CloudRP.ServerSystems.Admin
 {
@@ -49,5 +51,57 @@ namespace CloudRP.ServerSystems.Admin
             }
         }
 
+        public static void adminJail(this Player player, int time, string reason)
+        {
+            User user = player.getPlayerAccountData();
+
+            if (user == null) return;
+
+            if(user.adminDuty && user.admin_status <= (int)AdminRanks.Admin_HeadAdmin)
+            {
+                player.setAdminDuty(false);
+            }
+
+            user.admin_jail_time = time;
+            user.admin_jail_reason = reason;
+
+            player.setPlayerAccountData(user, true, true);
+
+            if (AdminSystem.adminJailTimers.ContainsKey(user.account_id))
+            {
+                AdminSystem.adminJailTimers[user.account_id].Dispose();
+                AdminSystem.adminJailTimers.Remove(user.account_id);
+            }
+
+            System.Timers.Timer removeTime = new System.Timers.Timer
+            {
+                AutoReset = true,
+                Enabled = true,
+                Interval = 10000
+            };
+
+            player.Dimension = (uint)player.Id + 1;
+            player.Position = AdminSystem.adminJailLocation;
+            AdminSystem.adminJailTimers.Add(user.account_id, removeTime);
+            removeTime.Elapsed += (source, elapsed) => NAPI.Task.Run(() => AdminSystem.adminJailInterval(player));
+
+            player.TriggerEvent("client:adminSystem:adminJail:start", time);
+        }
+
+        public static void endAdminJail(this Player player)
+        {
+            User user = player.getPlayerAccountData();
+
+            if(user == null) return;
+
+            AdminSystem.adminJailTimers[user.account_id].Dispose();
+            AdminSystem.adminJailTimers.Remove(user.account_id);
+
+            player.Dimension = 0;
+            player.Position = PlayersData.defaultSpawnPosition;
+            user.admin_jail_time = 0;
+            player.setPlayerAccountData(user, false, true);
+            player.TriggerEvent("client:adminSystem:adminJail:end");
+        }
     }
 }

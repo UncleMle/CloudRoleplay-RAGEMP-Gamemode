@@ -920,7 +920,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                     DbVehicle findVeh = dbContext.vehicles
                         .Where(veh => veh.vehicle_id == vehicleId &&
                         veh.vehicle_dimension == VehicleDimensions.Garage &&
-                        veh.vehicle_garage_id == parkingLot.parkingId &&
+                        veh.vehicle_parking_lot_id == parkingLot.parkingId &&
                         veh.owner_id == characterData.character_id)
                         .FirstOrDefault();
 

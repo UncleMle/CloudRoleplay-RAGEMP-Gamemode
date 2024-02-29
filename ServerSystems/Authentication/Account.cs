@@ -34,6 +34,8 @@ namespace CloudRP.ServerSystems.Authentication
         public bool admin_esp { get; set; }
         public bool has_first_login { get; set; }
         public long vip_unix_expires { get; set; }
+        public int admin_jail_time { get; set; }
+        public string admin_jail_reason { get; set; }
 
         [NotMapped]
         public bool adminDuty { get; set; }

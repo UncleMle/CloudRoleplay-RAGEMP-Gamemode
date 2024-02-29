@@ -10,15 +10,45 @@ export default class AdminSystem {
 	public static LocalPlayer: PlayerMp;
 	public static userData: UserData | undefined;
 	public static viewReportsEvent: string = "server:viewReports";
+	public static adminJailTimer: number = 0;
+	public static _jailTimeInterval: ReturnType<typeof setInterval> | undefined = undefined;
 
 	constructor() {
 		AdminSystem.LocalPlayer = mp.players.local;
 		mp.keys.bind(_control_ids.F9, false, AdminSystem.viewActiveReports);
 
-		mp.events.add("render", AdminSystem.renderTextOnScreen);
+		mp.events.add("render", () => {
+			AdminSystem.renderAdutyText();
+			AdminSystem.renderJailText();
+		});
+
 		mp.events.add("entityStreamIn", AdminSystem.handleEntityStream);
+		mp.events.add("client:adminSystem:adminJail:start", AdminSystem.handleJailStart);
+		mp.events.add("client:adminSystem:adminJail:end", AdminSystem.clearJailInterval);
 		mp.events.add("playerRuleTriggered", AdminSystem.handleRuleCheck);
 		mp.events.addDataHandler(_sharedAccountDataIdentifier, AdminSystem.handleFlyStart);
+	}
+
+	private static clearJailInterval() {
+		AdminSystem.adminJailTimer = 0;
+
+		if (AdminSystem._jailTimeInterval) {
+			clearInterval(AdminSystem._jailTimeInterval);
+			AdminSystem._jailTimeInterval = undefined;
+		}
+	}
+
+	private static handleJailStart(time: number) {
+		AdminSystem.clearJailInterval();
+
+		AdminSystem.adminJailTimer = time;
+
+		AdminSystem._jailTimeInterval = setInterval(() => {
+
+			if (AdminSystem.adminJailTimer <= 0) return AdminSystem.clearJailInterval();
+
+			AdminSystem.adminJailTimer--;
+		}, 1000);
 	}
 
 	public static handleRuleCheck(rule: string, counter: number) {
@@ -27,13 +57,13 @@ export default class AdminSystem {
 	}
 
 	public static viewActiveReports() {
-		if(!validateKeyPress()) return;
+		if (!validateKeyPress()) return;
 
 		let userData: UserData | undefined = getUserData();
 
-		if(!userData) return;
+		if (!userData) return;
 
-		if(userData.admin_status > AdminRanks.admin_None) {
+		if (userData.admin_status > AdminRanks.admin_None) {
 			mp.events.callRemote(AdminSystem.viewReportsEvent);
 		}
 	}
@@ -41,14 +71,32 @@ export default class AdminSystem {
 	public static handleFlyStart(entity: EntityMp, value: UserData): void {
 		if (entity.type != "player" || value == null) return;
 
-		if (value.isFlying) {
-			entity.setAlpha(0);
-		} else {
-			entity.setAlpha(255);
-		}
+		entity.setAlpha(value.isFlying ? 0 : 255);
 	}
 
-	public static renderTextOnScreen() {
+	private static renderJailText() {
+		if(AdminSystem.adminJailTimer <= 0) return;
+
+		let userData: UserData | undefined = getUserData();
+
+		if(!userData) return;
+
+		mp.game.graphics.drawText(`You are in ~r~admin jail~w~ there are ${AdminSystem.adminJailTimer} seconds remaining.`, [0.5, 0.69], {
+			font: 4,
+			color: [255, 255, 255, 255],
+			scale: [0.4, 0.4],
+			outline: false
+		});
+
+		mp.game.graphics.drawText("Reason: ~c~" + userData.admin_jail_reason, [0.5, 0.73], {
+			font: 4,
+			color: [255, 255, 255, 255],
+			scale: [0.4, 0.4],
+			outline: false
+		});
+	}
+
+	public static renderAdutyText() {
 		AdminSystem.userData = getUserData();
 
 		if (AdminSystem.userData?.adminDuty) {
@@ -57,7 +105,7 @@ export default class AdminSystem {
 			let poz_z: string = AdminSystem.LocalPlayer.position.z.toFixed(1);
 
 			let adminRankData = AdminRank.getAdminRankInfo(AdminSystem.userData.admin_status);
-			if(!adminRankData) return;
+			if (!adminRankData) return;
 
 			let positionString = `~r~X:~w~ ${poz_x} ~r~Y:~w~ ${poz_y} ~r~Z:~w~ ${poz_z} ~r~ROT:~w~ ${AdminSystem.LocalPlayer.getRotation(5).z.toFixed(1)}`;
 

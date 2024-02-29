@@ -34,7 +34,7 @@ namespace CloudRP.VehicleSystems.Vehicles
         public float rotation { get; set; }
         public string vehicle_dimension { get; set; }
         public int vehicle_insurance_id { get; set; }
-        public int vehicle_garage_id { get; set; }
+        public int vehicle_parking_lot_id { get; set; } = -1;
         public double vehicle_fuel { get; set; } = 100;
         public ulong vehicle_distance { get; set; }
         public float vehicle_health { get; set; } = 1000;
@@ -43,7 +43,8 @@ namespace CloudRP.VehicleSystems.Vehicles
         public int dealership_spot_id { get; set; } = -1;
         public string dealership_description { get; set; }
         public int faction_owner_id { get; set; } = -1;
-        public bool insurance_status {  get; set; } 
+        public bool insurance_status {  get; set; }
+        public int vehicle_garage_id { get; set; } = -1;
 
         [NotMapped]
         public bool[] vehicle_doors { get; set; } = new bool[] { false, false, false, false, false, false };

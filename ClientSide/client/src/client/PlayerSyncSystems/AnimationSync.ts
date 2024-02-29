@@ -5,12 +5,6 @@ export default class AnimationSync {
 
     constructor() {
         mp.events.add("entityStreamIn", AnimationSync.handleStreamIn);
-
-        mp.events.add("anim:testClient", (dict, anim) => {
-            mp.game.streaming.requestAnimDict(dict);
-            mp.players.local.taskPlayAnim(dict, anim, 8.0, 1.0, -1, 1, 1.0, false, false, false);
-        });
-
         mp.events.addDataHandler(AnimationSync._animationDataKey, AnimationSync.handleDataHandler);
     }
 

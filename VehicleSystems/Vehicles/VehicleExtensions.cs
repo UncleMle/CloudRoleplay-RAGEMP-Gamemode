@@ -328,7 +328,7 @@ namespace CloudRP.VehicleSystems.Vehicles
             if (vehicleData == null) return;
 
             vehicleData.vehicle_dimension = VehicleDimensions.Garage;
-            vehicleData.vehicle_garage_id = garageId;
+            vehicleData.vehicle_parking_lot_id = garageId;
 
             vehicle.saveVehicleData(vehicleData, true);
 

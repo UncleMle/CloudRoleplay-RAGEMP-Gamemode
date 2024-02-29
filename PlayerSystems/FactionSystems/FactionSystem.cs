@@ -648,7 +648,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
             {
                 vehicles = dbContext.vehicles
                     .Where(veh => veh.faction_owner_id == (int)faction && 
-                    veh.vehicle_garage_id == garageId &&
+                    veh.vehicle_parking_lot_id == garageId &&
                     veh.vehicle_dimension == VehicleDimensions.Garage)
                     .ToList();
             }
@@ -757,7 +757,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
                 List<FactionVehSpawn> points = vehicleSpawnPoints[(Factions)targetVehicle.faction_owner_id];
 
                 FactionVehSpawn spawn = points
-                    .Where(p => p.garageId == targetVehicle.vehicle_garage_id)
+                    .Where(p => p.garageId == targetVehicle.vehicle_parking_lot_id)
                     .FirstOrDefault();
 
                 if (spawn == null || spawn != null && Vector3.Distance(player.Position, spawn.spawnPos) > 12) return;

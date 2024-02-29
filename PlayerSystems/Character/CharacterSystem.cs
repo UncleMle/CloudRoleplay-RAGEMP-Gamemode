@@ -112,7 +112,7 @@ namespace CloudRP.PlayerSystems.Character
                 DbCharacter characterData = player.getPlayerCharacterData();
                 bool vehicleDealerActive = player.GetData<bool>(VehicleDealershipSystem._dealerActiveIdentifier);
 
-                if (vehicleDealerActive || userData == null || characterData == null) return;
+                if (vehicleDealerActive || userData == null || characterData == null || userData != null && userData.admin_jail_time > 0) return;
 
                 checkForDups(characterData.character_name);
 

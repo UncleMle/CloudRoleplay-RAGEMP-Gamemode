@@ -356,7 +356,7 @@ namespace CloudRP.VehicleSystems.VehicleParking
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
                     List<DbVehicle> vehicles = dbContext.vehicles
-                        .Where(veh => veh.owner_id == charData.character_id && veh.vehicle_dimension == VehicleDimensions.Garage && veh.vehicle_garage_id == retrievalCol.owner_id)
+                        .Where(veh => veh.owner_id == charData.character_id && veh.vehicle_dimension == VehicleDimensions.Garage && veh.vehicle_parking_lot_id == retrievalCol.owner_id)
                         .ToList();
 
                     if (vehicles.Count > 0)

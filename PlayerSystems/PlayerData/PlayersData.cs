@@ -20,7 +20,6 @@ namespace CloudRP.PlayerSystems.PlayerData
     {
         public static readonly Vector3 defaultSpawnPosition = new Vector3(-1036.6, -2736.0, 13.8);
         public static readonly Vector3 defaultLoginPosition = new Vector3(0, 0, 0);
-
         public static readonly string _playerKeysIdentifier = "AllPlayerKeys";
         public static readonly string _isBanned = "playerIsBanned";
         public static readonly string _sharedAccountDataIdentifier = "PlayerAccountData";

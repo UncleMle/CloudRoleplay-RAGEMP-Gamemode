@@ -244,6 +244,8 @@ namespace CloudRP.ServerSystems.Authentication
         public string redeem_code { get; set; }
         public bool showAdminPed { get; set; } = false;
         public long vip_unix_expires { get; set; }
+        public int admin_jail_time { get; set; }
+        public string admin_jail_reason { get; set; }
     }
 
     class SharedDataAccount
@@ -259,6 +261,8 @@ namespace CloudRP.ServerSystems.Authentication
         public bool isOnCharacterCreation { get; set; }
         public bool admin_esp { get; set; }
         public bool showAdminPed { get; set; }
+        public int admin_jail_time { get; set; }
+        public string admin_jail_reason { get; set; }
     }
 
     class SharedDataCharacter
@@ -314,12 +318,5 @@ namespace CloudRP.ServerSystems.Authentication
         public int targetAccountId { get; set; }
         public long createdAt { get; set; } = CommandUtils.generateUnix();
         public string targetUsername { get; set; }
-    }
-
-    public static class DefaultSpawn
-    {
-        public static double pos_x { get { return -1035.7; } }
-        public static double pos_y { get { return -2733.4; } }
-        public static double pos_z { get { return -13.8; } }
     }
 }

@@ -7,8 +7,8 @@
                         class="colourBackground rounded-xl text-white w-[25vw] colourBackground border-b-4 border-t-4 border-purple-400/50 shadow-2xl shadow-black border-gray-400/40 select-none">
 
                         <div class="relative w-full h-fit py-4 rounded-lg">
-                            <h1 class="font-bold text-2xl pb-2 pl-4"><i
-                                    class="fa-solid fa-list text-gray-400"></i> Player Stats</h1>
+                            <h1 class="font-bold text-2xl pb-2 pl-4"><i class="fa-solid fa-list text-gray-400"></i> Player
+                                Stats</h1>
                             <CloseButton />
 
                             <div class="border-b-4 mr-4 ml-4 border-gray-400/50">

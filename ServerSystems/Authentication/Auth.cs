@@ -32,11 +32,10 @@ namespace CloudRP.ServerSystems.Authentication
         public static string _otpAccountStoreKey = "auth_account_otp";
         public static string _accountCreatedKey = "authentication:player:accountCreated";
         public static readonly int autoLoginValid_seconds = 300;
-        public static Vector3 spawnPos = new Vector3(DefaultSpawn.pos_x, DefaultSpawn.pos_y, DefaultSpawn.pos_z);
 
         public Auth()
         {
-            NAPI.Server.SetDefaultSpawnLocation(spawnPos, 0);
+            NAPI.Server.SetDefaultSpawnLocation(PlayersData.defaultLoginPosition, 0);
 
             Timer timer = new Timer
             {
@@ -318,10 +317,12 @@ namespace CloudRP.ServerSystems.Authentication
 
                         Chat.welcomePlayerOnSpawn(player);
 
-                        if (character.injured_timer > 0)
+                        if (character.injured_timer > 0 && userData.admin_jail_time == 0)
                         {
                             DeathEvent.updateAndSetInjuredState(player, character, character.injured_timer);
                         }
+
+                        if (userData.admin_jail_time > 0) player.adminJail(userData.admin_jail_time, userData.admin_jail_reason);
 
                         if(character.freelance_job_data != null)
                         {
@@ -434,7 +435,7 @@ namespace CloudRP.ServerSystems.Authentication
             {
                 if(player.getPlayerCharacterData() == null)
                 {
-                    player.Position = spawnPos;
+                    player.Position = PlayersData.defaultLoginPosition;
                 };
             });
         }
