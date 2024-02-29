@@ -458,6 +458,10 @@ namespace CloudRP.VehicleSystems.Vehicles
                         volatileVeh = NAPI.Vehicle.CreateVehicle(NAPI.Util.GetHashKey(vehName), pos, rot, colourOne, colourTwo, plate, 255, false, true, 0);
                         volatileVeh.Locked = false;
 
+                        string numberPlate = plate + volatileVeh.Id;
+
+                        volatileVeh.NumberPlate = numberPlate;
+
                         volatileVeh.saveVehicleData(new DbVehicle
                         {
                             vehicle_id = -1,
@@ -468,7 +472,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                             vehicle_display_name = vehicleName,
                             vehicle_class_id = classId,
                             engine_status = true,
-                            numberplate = plate,
+                            numberplate = numberPlate,
                             owner_name = playerData.character_name,
                             owner_id = -1,
                             vehicle_fuel = 100,

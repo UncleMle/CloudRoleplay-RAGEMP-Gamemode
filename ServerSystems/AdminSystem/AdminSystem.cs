@@ -1,19 +1,15 @@
 ﻿using CloudRP.GeneralSystems.GeneralCommands;
 using CloudRP.GeneralSystems.WeaponSystem;
-using CloudRP.PlayerSystems.AnimationSync;
-using CloudRP.PlayerSystems.CasinoSystems;
 using CloudRP.PlayerSystems.CasinoSystems.Roulette;
 using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.DeathSystem;
 using CloudRP.PlayerSystems.FactionSystems;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.PlayerSystems.PlayerDealerships;
-using CloudRP.ServerSystems.AntiCheat;
 using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.DiscordSystem;
-using CloudRP.ServerSystems.Extensions;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.VehicleGarages;
 using CloudRP.VehicleSystems.Vehicles;
@@ -22,12 +18,8 @@ using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace CloudRP.ServerSystems.Admin
 {
@@ -50,15 +42,12 @@ namespace CloudRP.ServerSystems.Admin
             public AdminCommand(AdminRanks adminRank)
             {
                 _adminRank = (int)adminRank;
-                AdminSystem.totalAdminCommands++;
+                totalAdminCommands++;
             }
 
             public override bool Check(Player player, string cmdName, string cmdText)
             {
-                if(player.getAdmin() == (int)AdminRanks.Admin_Developer)
-                {
-                    return true;
-                }
+                if(player.getAdmin() == (int)AdminRanks.Admin_Developer) return true;
 
                 if (player.getAdmin() >= _adminRank)
                 {
