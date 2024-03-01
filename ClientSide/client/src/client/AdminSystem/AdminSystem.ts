@@ -81,7 +81,9 @@ export default class AdminSystem {
 
 		if(!userData) return;
 
-		mp.game.graphics.drawText(`You are in ~r~admin jail~w~ there are ${AdminSystem.adminJailTimer} seconds remaining.`, [0.5, 0.69], {
+		let mins = Math.round(AdminSystem.adminJailTimer / 60);
+
+		mp.game.graphics.drawText(`You are in ~r~admin jail~w~ there are ${mins != 0 ? mins + " minutes" : "" } ${mins != 0 ? "(" : ""}${AdminSystem.adminJailTimer}${mins != 0 ? "s)" : "seconds"} remaining.`, [0.5, 0.69], {
 			font: 4,
 			color: [255, 255, 255, 255],
 			scale: [0.4, 0.4],

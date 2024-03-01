@@ -60,6 +60,8 @@ namespace CloudRP
         [ServerEvent(Event.ResourceStart)]
         public void Start()
         {
+            initWebRoutes();
+
             ProductionBuild = NAPI.Resource.GetSetting<string>(this, "production");
 
             JsonDirectory = Directory.GetCurrentDirectory() + NAPI.Resource.GetSetting<string>(this, "jsonentrypoint");
@@ -97,6 +99,10 @@ namespace CloudRP
             stream.WriteLine("json: " + NAPI.Util.ToJson(exception));
             stream.WriteLine("exception object: " + exception.ExceptionObject);
             stream.Close();
+        }
+
+        public void initWebRoutes()
+        {
         }
         #endregion
 

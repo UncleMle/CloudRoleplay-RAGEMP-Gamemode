@@ -70,6 +70,12 @@
                                         </span>
                                     </span>
                                 </div>
+
+                                <div class="relative w-full mt-4">
+                                    <span class="left-0 top-0 text-yellow-300"><i class="fa-solid fa-star pr-2"></i>VIP Status</span>
+                                    <span class="absolute right-0 top-0" :class="playerData.player_account_info.vip_unix_expires > 0 ? 'text-green-400' : 'text-red-400'">
+                                        {{ playerData.player_account_info.vip_unix_expires > 0 ? "valid" : "invalid" }}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -96,7 +102,8 @@ export default {
     computed: {
         ...mapGetters({
             characterStats: "getPlayerStats",
-            playerDataServer: "getPlayerDataServer"
+            playerDataServer: "getPlayerDataServer",
+            playerData: 'getPlayerInfo'
         })
     }
 }

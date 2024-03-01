@@ -6,6 +6,9 @@ namespace CloudRP.ServerSystems.ApiRoutes
 {
     public class ApiAuthentication 
     {
+        public void test()
+        {
 
+        }
     }
 }

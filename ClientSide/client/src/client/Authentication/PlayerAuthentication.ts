@@ -2,11 +2,8 @@ import { CreationCam } from "../@types";
 import BrowserSystem from "../BrowserSystem/BrowserSystem";
 import Camera from "../CameraSystem/Camera";
 import { _IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE } from "../Constants/Constants";
-import toggleChat from "../PlayerMethods/ToggleChat";
 import getCameraOffset from "../PlayerMethods/getCameraOffset";
 import getUserCharacterData from "../PlayerMethods/getUserCharacterData";
-import setGuiState from "../PlayerMethods/setGuiState";
-import setUiStateChange from "../PlayerMethods/setUiStateChange";
 
 const _storage_key: string = "AutoLoginToken";
 

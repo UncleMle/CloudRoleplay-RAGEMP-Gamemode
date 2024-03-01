@@ -74,6 +74,8 @@ namespace CloudRP.VehicleSystems.Vehicles
         public double speed_limit { get; set; } = -1;
         [NotMapped]
         public int dynamic_dealer_spot_id { get; set; } = -1;
+        [NotMapped]
+        public bool adminVehicle { get; set; }
     }
 
 
@@ -82,6 +84,7 @@ namespace CloudRP.VehicleSystems.Vehicles
         public static readonly string World = "world";
         public static readonly string Insurance = "insurance";
         public static readonly string Garage = "Garage";
+        public static readonly string PlayerGarage = "PlayerGarage";
         public static readonly Vector3 morsPosition = new Vector3(-862, -265, 40);
         public static readonly int _morsId = 0;
     }

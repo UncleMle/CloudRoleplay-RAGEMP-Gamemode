@@ -66,8 +66,6 @@ namespace CloudRP.PlayerSystems.AnimationSync
 
             if (findAnim == null) return;
 
-            Console.WriteLine(JsonConvert.SerializeObject(findAnim));
-
             playSyncAnimation(player, findAnim.flag, findAnim.dict, findAnim.anim);
         }
         #endregion

@@ -937,17 +937,10 @@ namespace CloudRP.ServerSystems.Admin
                 return;
             }
 
-            bool findAndDelete = VehicleSystem.deleteVehicleById(vehicleId);
+            VehicleSystem.deleteVehicleById(vehicleId);
 
-            if (findAndDelete)
-            {
-                ChatUtils.formatConsolePrint($"{userData.admin_name} deleted vehicle #{vehicleId}");
-                AdminUtils.staffSay(player, $"Vehicle with id {vehicleId} deleted.");
-            }
-            else
-            {
-                CommandUtils.errorSay(player, "Vehicle couldn't be found!");
-            }
+            ChatUtils.formatConsolePrint($"{userData.admin_name} deleted vehicle #{vehicleId}");
+            AdminUtils.staffSay(player, $"Vehicle with id {vehicleId} deleted.");
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator, checkForAduty = false)]

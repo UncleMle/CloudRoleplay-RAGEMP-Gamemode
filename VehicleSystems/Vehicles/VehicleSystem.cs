@@ -70,6 +70,7 @@ namespace CloudRP.VehicleSystems.Vehicles
         private static int vipLockDelay_seconds = 6;
         private static Timer saveVehicleTimer;
         public static readonly int[] blockedSeatbeltClasses = { 13, 14, 15, 16, 21, 8 };
+        public static readonly int engineStartTimeout_seconds = 2;
 
         public static VehicleClasses[] aircraftClasses = new VehicleClasses[]
         {
@@ -1065,13 +1066,27 @@ namespace CloudRP.VehicleSystems.Vehicles
                 return;
             }
 
-            if(FactionSystem.emergencyFactions.Contains((Factions)vehicleData.faction_owner_id) && !player.isPartOfFaction((Factions)vehicleData.faction_owner_id))
+            if (FactionSystem.emergencyFactions.Contains((Factions)vehicleData.faction_owner_id) && !player.isPartOfFaction((Factions)vehicleData.faction_owner_id))
             {
                 uiHandling.sendNotification(player, "~r~You fail to start the engine.", false, true, "Fails to start engine");
                 return;
             }
 
             vehicleData.engine_status = !vehicleData.engine_status;
+
+            if(vehicleData.engine_status)
+            {
+                uiHandling.sendNotification(player, "Attemping to start engine...", true, true, "Attempts to start engine");
+
+                NAPI.Task.Run(() =>
+                {
+                    if (!player.IsInVehicle || vehicleData == null) return;
+                    
+                    uiHandling.sendNotification(player, "You started" + $" the {vehicleData.vehicle_display_name}'s engine.", true, true, "Started" + $" the {vehicleData.vehicle_display_name}'s engine.");
+                    player.Vehicle.saveVehicleData(vehicleData);
+                }, engineStartTimeout_seconds * 1000);
+                return;
+            }
 
             uiHandling.sendNotification(player, "You " + (vehicleData.engine_status ? "started" : "turned off") + $" the {vehicleData.vehicle_display_name}'s engine.", true, true, (vehicleData.engine_status ? "Started" : "Turned off") + $" the {vehicleData.vehicle_display_name}'s engine.");
 
@@ -1378,7 +1393,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                 {
                     NAPI.Pools.GetAllVehicles().ForEach(veh =>
                     {
-                        if(veh.getData()?.vehicle_id ==  targetVehId)
+                        if(veh.getData()?.vehicle_id == targetVehId)
                         {
                             veh.setVehicleStalled(false);
                         }

@@ -3,6 +3,7 @@ import { VehicleData } from "../@types";
 import { _SHARED_VEHICLE_DATA, _control_ids } from "../Constants/Constants";
 import getVehicleData from "../PlayerMethods/getVehicleData";
 import HandsUp from "@/Animation/HandsUpAnim";
+import VehicleStall from "./VehicleStall";
 
 export default class VehicleEngine {
 	public static LocalPlayer: PlayerMp = mp.players.local;
@@ -45,7 +46,7 @@ export default class VehicleEngine {
 
 		if(mp.players.atHandle(entity.getPedInSeat(-1)) && mp.players.atHandle(entity.getPedInSeat(-1)).getVariable(HandsUp._handsUpAnimIdentifer)) return;
 
-		if(vehicleData.engine_status && vehicleData.vehicle_fuel > 0 && vehicleData.vehicle_health > 0) {
+		if(vehicleData.engine_status && vehicleData.vehicle_fuel > 0 && vehicleData.vehicle_health > 0 && !entity.getVariable(VehicleStall.isStalledKey)) {
 			entity.setEngineOn(true, true, true);
 		} else {
 			entity.setEngineOn(false, true, true);

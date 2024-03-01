@@ -8,7 +8,7 @@ import getUserCharacterData from '@/PlayerMethods/getUserCharacterData';
 export default class VehicleInteraction {
 	public static LocalPlayer: PlayerMp = mp.players.local;
 	public static bones: string[] = ["handle_dside_f", "handle_pside_f", "handle_dside_r", "handle_pside_r", "bonnet", "boot"];
-	public static names: string[] = ["door", "door", "door", "door", "hood", "boot"];
+	public static names: string[] = ["door", "door", "door", "door", "bonnet", "boot"];
 	public static boneTarget: BoneData;
 	private static wheelMenuPosition: number = 0;
 	private static renderedMenu: string[];
@@ -35,7 +35,9 @@ export default class VehicleInteraction {
 
 			let veh: VehicleMp = vehicleList[0];
 
-			if(getVehicleData(veh)?.vehicle_locked) return;
+			let vehData: VehicleData | undefined = getVehicleData(veh);
+
+			if(!vehData) return;
 
 			let pPos: Vector3 = VehicleInteraction.LocalPlayer.position;
 
@@ -65,11 +67,11 @@ export default class VehicleInteraction {
 					true
 				) > 2) return;
 
-				let name = VehicleInteraction.names[idx];
+				let name: string = VehicleInteraction.names[idx];
 
 				mp.game.graphics.drawText(
-					name[0].toUpperCase() + name.substring(1),
-					[boneRenderPos.x, boneRenderPos.y, boneRenderPos.z + 0.09],
+					name[0].toUpperCase() + name.substring(1) + ` ${vehData?.vehicle_locked ? '~r~locked' : '~g~unlocked'}`,
+					[boneRenderPos.x, boneRenderPos.y, boneRenderPos.z + 0.11],
 					{
 						font: 4,
 						color: [198, 163, 255, 160],
@@ -78,6 +80,8 @@ export default class VehicleInteraction {
 					}
 				);
 			});
+
+			if(vehData.vehicle_locked) return;
 
 			const raycast: RaycastResult | null = VehicleInteraction.getLocalTargetVehicle();
 			if (raycast == null || (raycast.entity as EntityMp).type != 'vehicle') return;
@@ -120,7 +124,7 @@ export default class VehicleInteraction {
 				let dist: number = distBetweenCoords(VehicleInteraction.LocalPlayer.position, bonePos);
 
 				renderText.forEach((text, idx) => {
-					let textSelected: string = VehicleInteraction.wheelMenuPosition == idx ? "[E]" : "~c~";
+					let textSelected: string = VehicleInteraction.wheelMenuPosition === idx ? "[E]" : "~c~";
 
 					mp.game.graphics.drawText(textSelected + text, [bonePos.x, bonePos.y, bonePos.z - (idx > 0 ? idx / 7 : 0)], {
 						scale: [0.3, 0.3],
