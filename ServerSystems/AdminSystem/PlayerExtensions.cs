@@ -1,5 +1,6 @@
 ﻿using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.ServerSystems.AntiCheat;
 using CloudRP.ServerSystems.Authentication;
 using GTANetworkAPI;
 using Newtonsoft.Json;
@@ -80,7 +81,8 @@ namespace CloudRP.ServerSystems.Admin
                 Interval = 10000
             };
 
-            player.Dimension = (uint)player.Id + 1;
+            player.sleepClientAc();
+            player.safeSetDimension((uint)player.Id + 1);
             player.Position = AdminSystem.adminJailLocation;
             AdminSystem.adminJailTimers.Add(user.account_id, removeTime);
             removeTime.Elapsed += (source, elapsed) => NAPI.Task.Run(() => AdminSystem.adminJailInterval(player));
@@ -97,11 +99,26 @@ namespace CloudRP.ServerSystems.Admin
             AdminSystem.adminJailTimers[user.account_id].Dispose();
             AdminSystem.adminJailTimers.Remove(user.account_id);
 
-            player.Dimension = 0;
+            player.sleepClientAc();
+            player.safeSetDimension(0);
             player.Position = PlayersData.defaultSpawnPosition;
             user.admin_jail_time = 0;
             player.setPlayerAccountData(user, false, true);
             player.TriggerEvent("client:adminSystem:adminJail:end");
+        }
+
+        public static void safeSetDimension(this Player player, uint dimension)
+        {
+            player.Dimension = dimension;
+
+            player.SetData(AntiCheatSystem._safeDimensionChangingKey, true);
+            
+            NAPI.Task.Run(() =>
+            {
+                if (!NAPI.Player.IsPlayerConnected(player)) return;
+
+                player.ResetData(AntiCheatSystem._safeDimensionChangingKey);
+            }, 1500);
         }
     }
 }

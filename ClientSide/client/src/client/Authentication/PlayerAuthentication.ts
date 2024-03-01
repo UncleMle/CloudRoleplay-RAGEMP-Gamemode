@@ -1,3 +1,4 @@
+import GuiSystem from "@/BrowserSystem/GuiSystem";
 import { CreationCam } from "../@types";
 import BrowserSystem from "../BrowserSystem/BrowserSystem";
 import Camera from "../CameraSystem/Camera";
@@ -108,6 +109,8 @@ export default class PlayerAuthentication {
 	}
 
 	public static handleCameraStart() {
+		GuiSystem.toggleHudComplete(false);
+
 		PlayerAuthentication.LoginCamera?.delete();
 
 		let randomSelect: number = Math.floor(Math.random() * PlayerAuthentication.cameraPositions.length);

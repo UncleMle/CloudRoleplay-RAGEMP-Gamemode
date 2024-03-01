@@ -1,5 +1,7 @@
 ﻿using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.ServerSystems.Admin;
+using CloudRP.ServerSystems.AntiCheat;
 using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.VehicleParking;
@@ -18,6 +20,7 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
     {
         public static string _dealershipIdentifer = "vehicleDealership";
         public static string _dealerActiveIdentifier = "vehicleDealershipIsActive";
+        public static readonly Vector3 garageIplPosition = new Vector3(230.7, -997.9, -98.2);
 
         public static List<DealerShip> dealerships = new List<DealerShip>
         {
@@ -245,9 +248,11 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
             {
                 case RaycastMenuOptions.viewDealerVehicles:
                     {
+                        player.sleepClientAc();
+                        player.Position = garageIplPosition; 
                         player.SetCustomData(_dealerActiveIdentifier, true);
                         player.TriggerEvent("dealers:initDealership");
-                        player.Dimension = (uint)player.Id + 1;
+                        player.safeSetDimension((uint)player.Id + 1);
                         break;
                     }
                 case RaycastMenuOptions.viewDealerVehiclesAmount:
@@ -269,9 +274,10 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
 
             if (playerDealerData != null && dealerActive)
             {
+                player.sleepClientAc();
                 player.SetCustomData(_dealerActiveIdentifier, false);
                 player.Position = playerDealerData.viewPosition;
-                player.Dimension = 0;
+                player.safeSetDimension(0);
             }
         }
 

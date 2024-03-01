@@ -21,6 +21,10 @@ export default class GuiSystem {
 		setInterval(() => {
 			GuiSystem.fillGuiRenderValues();
 		}, 700);
+
+		setInterval(() => {
+			if (GuiSystem.LocalPlayer.getVariable("playerIsBanned")) GuiSystem.toggleHudComplete(false);
+		}, 1000);
 	}
 
 	public static toggleHud() {
@@ -32,24 +36,22 @@ export default class GuiSystem {
 	}
 
 	public static toggleHudComplete(toggle: boolean, notif: boolean = false, checkForScaleFormAndSwitch: boolean = true) {
-		if (checkForScaleFormAndSwitch && (mp.game.invoke(_IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE) || ScaleForm.isActive())) return;
-
-		let browser: BrowserMp | null = BrowserSystem._browserInstance;
+		// if (checkForScaleFormAndSwitch && (mp.game.invoke(_IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE) || ScaleForm.isActive())) return;
 		GuiSystem.hudToggle = toggle;
 
-		if (browser) {
-			mp.game.ui.displayRadar(toggle);
-			GuiSystem.LocalPlayer.guiState = toggle;
-			toggleChat(toggle);
+		mp.game.ui.displayRadar(toggle);
+		GuiSystem.LocalPlayer.guiState = toggle;
+		toggleChat(toggle);
 
-			browser.execute(`appSys.commit('setUiState', {
-				_stateKey: "guiEnabled",
-				status: ${toggle}
-			})`);
+		BrowserSystem._browserInstance.execute(`appSys.commit('setUiState', {
+			_stateKey: "guiEnabled",
+			status: ${toggle}
+		})`);
 
-			if (notif) {
-				NotificationSystem.createNotification(`You turned your HUD ${toggle ? "on" : "off"}`);
-			}
+		mp.console.logInfo("Gui toggle " + toggle);
+
+		if (notif) {
+			NotificationSystem.createNotification(`You turned your HUD ${toggle ? "on" : "off"}`);
 		}
 	}
 

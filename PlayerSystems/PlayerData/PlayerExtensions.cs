@@ -177,10 +177,12 @@ namespace CloudRP.PlayerSystems.PlayerData
             return aduty;
         }
 
-        public static void banPlayer(this Player banPlayer, int time, User adminUserData, User banPlayerUserData, string reason)
+        public static void banPlayer(this Player banPlayer, int time, string adminName, User banPlayerUserData, string reason)
         {
             if (NAPI.Player.IsPlayerConnected(banPlayer))
             {
+                banPlayer.ResetData();
+                
                 banPlayer.SetCustomData(PlayersData._isBanned, true);
 
                 using (DefaultDbContext dbContext = new DefaultDbContext())
@@ -192,7 +194,7 @@ namespace CloudRP.PlayerSystems.PlayerData
                     Ban ban = new Ban
                     {
                         account_id = banPlayerUserData.account_id,
-                        admin = adminUserData.admin_name,
+                        admin = adminName,
                         ban_reason = reason,
                         ip_address = banPlayer.Address,
                         lift_unix_time = lift_unix_time,
@@ -218,6 +220,9 @@ namespace CloudRP.PlayerSystems.PlayerData
                     dbContext.SaveChanges();
 
                     banPlayer.setPlayerToBanScreen(ban);
+                    uiHandling.toggleGui(banPlayer, false);
+
+                    ChatUtils.formatConsolePrint($"{ban.username} was banned with lift time being {lift_unix_time}. Reason {reason}");
                 }
             }
         }
@@ -286,7 +291,7 @@ namespace CloudRP.PlayerSystems.PlayerData
 
         public static void setPlayerToBanScreen(this Player player, Ban banData)
         {
-            player.Dimension = Auth._startDimension;
+            player.safeSetDimension(Auth._startDimension);
             player.TriggerEvent("client:loginCameraStart");
             uiHandling.pushRouterToClient(player, Browsers.BanPage);
 

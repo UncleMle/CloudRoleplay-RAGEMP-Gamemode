@@ -306,8 +306,9 @@ namespace CloudRP.ServerSystems.Authentication
                         character.characterModel.player_tattos = charTats;
                         character.criminalCharges = criminalCharges;
 
+                        player.sleepClientAc();
                         player.Name = character.character_name;
-                        player.Dimension = character.player_dimension;
+                        player.safeSetDimension(character.player_dimension);
                         player.Position = new Vector3(character.position_x, character.position_y, character.position_z);
                         player.Health = character.character_health;
 
@@ -463,7 +464,7 @@ namespace CloudRP.ServerSystems.Authentication
 
                 if (findAccount.ban_status == 1)
                 {
-                    player.banPlayer(-1, user, user, "Logging into banned accounts.");
+                    player.banPlayer(-1, "[System]", user, "Logging into banned accounts.");
                     return;
                 }
 

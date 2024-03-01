@@ -37,5 +37,10 @@ namespace CloudRP.ServerSystems.AntiCheat
             return exceeded;
         }
 
+        public static void sleepClientAc(this Player player, int timeMiliseconds = 4500)
+        {
+            Console.WriteLine($"Player [{player.Id}] ac client was slept for {timeMiliseconds} miliseconds.");
+            player.TriggerEvent("client:ac:sleepClient", timeMiliseconds);
+        }
     }
 }

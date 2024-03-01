@@ -58,6 +58,7 @@ import RouletteTables from "./CasinoSystems/RouletteTables";
 import RaycastInteractions from "./world/RaycastInteractions";
 import VehicleEnterSystem from "./VehicleSystems/VehicleEnterSystem";
 import TollBooths from "./TollBooths/TollBooths";
+import NewAntiCheatSystem from "./AntiCheat/NewAntiCheatSystem";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -120,3 +121,4 @@ new RouletteTables();
 new RaycastInteractions();
 new VehicleEnterSystem();
 new TollBooths();
+new NewAntiCheatSystem();

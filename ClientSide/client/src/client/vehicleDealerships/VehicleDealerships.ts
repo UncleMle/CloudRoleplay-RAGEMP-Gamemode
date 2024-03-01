@@ -51,7 +51,6 @@ export default class VehicleDealerShips {
 			GuiSystem.toggleHudComplete(false);
 			mp.game.cam.doScreenFadeOut(0);
 
-			VehicleDealerShips.LocalPlayer.position = new mp.Vector3(230.7, -997.9, -98.2);
 			VehicleDealerShips.dealerCam = mp.cameras.new('default', VehicleDealerShips.dealerCamPos, new mp.Vector3(0, 0, 0), 40);
 			VehicleDealerShips.dealerCam.pointAtCoord(227.5, -987.2, -99);
 			mp.game.cam.renderScriptCams(true, false, 0, true, false);

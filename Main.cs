@@ -3,6 +3,7 @@ using CloudRP.GeneralSystems.HousingSystem;
 using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.FactionSystems;
 using CloudRP.ServerSystems.Admin;
+using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.DiscordSystem;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
@@ -55,6 +56,10 @@ namespace CloudRP
                 logException(eventArgs);
             };
 
+            DimensionChangeEvent.onDimensionChange += (player, oldDim, newDim) =>
+            {
+                Console.WriteLine($"Player {player.Id} changed dimension old {oldDim} new {newDim}");
+            };
         }
 
         [ServerEvent(Event.ResourceStart)]

@@ -1,5 +1,7 @@
 ﻿using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.ServerSystems.Admin;
+using CloudRP.ServerSystems.AntiCheat;
 using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.World.MarkersLabels;
@@ -103,8 +105,9 @@ namespace CloudRP.GeneralSystems.HousingSystem
 
                 if (houseInterior != null)
                 {
+                    player.sleepClientAc();
                     characterData.player_dimension = (uint)houseData.house_id;
-                    player.Dimension = (uint)houseData.house_id;
+                    player.safeSetDimension((uint)houseData.house_id);
                     player.Position = houseInterior.interiorPosition;
 
                     setHouseDataForPlayer(player, houseData);
@@ -121,8 +124,9 @@ namespace CloudRP.GeneralSystems.HousingSystem
 
             if (housePos != null && characterData != null)
             {
+                player.sleepClientAc();
                 player.Position = housePos;
-                player.Dimension = 0;
+                player.safeSetDimension(0);
                 characterData.player_dimension = 0;
 
                 player.setPlayerCharacterData(characterData, false, true);

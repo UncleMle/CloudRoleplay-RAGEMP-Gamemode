@@ -6,6 +6,7 @@ using CloudRP.PlayerSystems.DeathSystem;
 using CloudRP.PlayerSystems.FactionSystems;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.PlayerSystems.PlayerDealerships;
+using CloudRP.ServerSystems.AntiCheat;
 using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Database;
@@ -117,7 +118,7 @@ namespace CloudRP.ServerSystems.Admin
 
             if (player.checkIsWithinCoord(adminJailLocation, 50f)) player.Position = adminJailLocation;
 
-            player.Dimension = (uint)player.Id + 1;
+            player.safeSetDimension((uint)player.Id + 1);
             user.admin_jail_time -= 10;
             player.setPlayerAccountData(user, false, true);
         }
@@ -396,6 +397,7 @@ namespace CloudRP.ServerSystems.Admin
                 return;
             }
 
+            player.sleepClientAc();
             player.Position = lastPos;
 
             ChatUtils.formatConsolePrint($"{user.admin_name} teleported to last saved position");
@@ -489,8 +491,9 @@ namespace CloudRP.ServerSystems.Admin
 
             if (findPlayer != null)
             {
+                player.sleepClientAc();
                 player.Position = findPlayer.Position;
-                player.Dimension = findPlayer.Dimension;
+                player.safeSetDimension(findPlayer.Dimension);
 
                 AdminUtils.staffSay(player, $"Teleported to {characterData.character_name}");
                 ChatUtils.formatConsolePrint($"{userData.admin_name} teleported to player {findPlayer.Id}");
@@ -555,6 +558,7 @@ namespace CloudRP.ServerSystems.Admin
                 return;
             }
 
+            findPlayer.sleepClientAc();
             DeathEvent.resetTimer(findPlayer, findCharacter);
             NAPI.Player.SpawnPlayer(findPlayer, findPlayer.Position);
 
@@ -637,8 +641,10 @@ namespace CloudRP.ServerSystems.Admin
                 }
 
                 if (findPlayer.isImmuneTo(player)) return;
+
+                findPlayer.sleepClientAc(3400);
                 findPlayer.Position = player.Position;
-                findPlayer.Dimension = player.Dimension;
+                findPlayer.safeSetDimension(player.Dimension);
 
                 uiHandling.resetRouter(findPlayer);
 
@@ -825,6 +831,8 @@ namespace CloudRP.ServerSystems.Admin
 
             if(userData.adminDuty && player.getAdmin() > (int)AdminRanks.Admin_SeniorSupport || player.getAdmin() == (int)AdminRanks.Admin_Developer)
             {
+                player.sleepClientAc();
+
                 userData.isFlying = !userData.isFlying;
 
                 ChatUtils.formatConsolePrint($"{userData.admin_name} {(userData.isFlying ? "enabled" : "disabled")} fly.");
@@ -899,6 +907,7 @@ namespace CloudRP.ServerSystems.Admin
             player.SetData(_adminLastPositionKey, player.Position);
             ChatUtils.formatConsolePrint($"{userData.admin_name} teleported to way point.");
             player.TriggerEvent("admin:events:teleportWay");
+            player.sleepClientAc();
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]
@@ -1003,7 +1012,7 @@ namespace CloudRP.ServerSystems.Admin
             if (getPlayer.isImmuneTo(player)) return;
 
             characterData.player_dimension = dimension;
-            getPlayer.Dimension = dimension;
+            getPlayer.safeSetDimension(dimension);
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
@@ -1147,7 +1156,7 @@ namespace CloudRP.ServerSystems.Admin
 
             long lift_unix_time = time == -1 ? -1 : CommandUtils.generateUnix() + time * 60;
 
-            banPlayer.banPlayer(time, userData, banPlayerUserData, reason);
+            banPlayer.banPlayer(time, userData.admin_name, banPlayerUserData, reason);
 
             string playerAdminRank = AdminUtils.getColouredAdminRank(userData);
             string endOfBanString = lift_unix_time == -1 ? ChatUtils.red + "is permanent" : "expires at " + ChatUtils.orange + CommandUtils.unixTimeStampToDateTime(lift_unix_time);
@@ -1327,6 +1336,7 @@ namespace CloudRP.ServerSystems.Admin
 
             if (findPlayer.isImmuneTo(player)) return;
 
+            findPlayer.sleepClientAc(2500);
             findPlayer.Health = health;
 
             ChatUtils.formatConsolePrint($"{userData.admin_name} set {characterData.character_name} health to {health}");
@@ -2157,6 +2167,14 @@ namespace CloudRP.ServerSystems.Admin
             int garageId = VehicleGarages.createGarage(sellPrice, player.Position, vehicleSlots).garage_id;
 
             AdminUtils.staffSay(player, $"Created a vehicle garage with id #{garageId}.");
+        }
+
+        [Command("getbanned")]
+        public void getbanned(Player player)
+        {
+            Vehicle veh = NAPI.Vehicle.CreateVehicle(VehicleHash.Carbonrs, player.Position, 20f, 111, 111, "banlol", 255, false, true, 0);
+
+            player.SetIntoVehicle(veh, 0);
         }
         #endregion
     }

@@ -135,7 +135,7 @@ namespace CloudRP.PlayerSystems.DeathSystem
 
             onDeath(player);
 
-            player.Dimension = 0;
+            player.safeSetDimension(0);
             playerCharacterData.player_dimension = 0;
             playerCharacterData.injured_timer = 0;
 
@@ -164,6 +164,7 @@ namespace CloudRP.PlayerSystems.DeathSystem
 
             HosList closestHospital = pDist.FirstOrDefault(d => d.dist == distList[0]);
 
+            player.sleepClientAc();
             NAPI.Player.SpawnPlayer(player, closestHospital.hospital.position);
 
             playerCharacterData.cash_amount = 0;

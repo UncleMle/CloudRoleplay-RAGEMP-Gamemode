@@ -20,7 +20,7 @@ namespace CloudRP.ServerSystems.Authentication
             }
 
             player.Position = PlayersData.defaultLoginPosition;
-            player.Dimension = Auth._startDimension;
+            player.safeSetDimension(Auth._startDimension);
 
             if (resetCam)
             {

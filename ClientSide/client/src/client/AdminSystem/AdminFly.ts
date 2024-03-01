@@ -13,6 +13,7 @@ export default class AdminFly {
 	public static updated: boolean;
 	public static gameControls: GamePadMp;
 	public static flyEvent: string = "admin:fly";
+	public static flyEnabled: boolean = false;
 
 	constructor() {
 		AdminFly.LocalPlayer = mp.players.local;
@@ -39,6 +40,7 @@ export default class AdminFly {
 		if (!localUserData) return;
 
 		if (localUserData?.admin_status > AdminRanks.Admin_SeniorSupport) {
+			AdminFly.flyEnabled = true;
 			AdminFly.LocalPlayer.freezePosition(true);
 			AdminFly.LocalPlayer.setInvincible(true);
 			AdminFly.LocalPlayer.setCollision(false, false);
@@ -48,6 +50,8 @@ export default class AdminFly {
 	}
 
 	public static handleFlyEnd() {
+		AdminFly.flyEnabled = false;
+
 		AdminFly.LocalPlayer.setAlpha(255);
 		AdminFly.LocalPlayer.freezePosition(false);
 		AdminFly.LocalPlayer.setInvincible(false);
@@ -70,7 +74,7 @@ export default class AdminFly {
 		mp.players.forEach(player => {
 			let userData: UserData | undefined = getTargetData(player);
 
-			if(userData && userData.isFlying) {
+			if (userData && userData.isFlying) {
 				player.setAlpha(0);
 			}
 		})
@@ -96,7 +100,7 @@ export default class AdminFly {
 			});
 
 			const position: Vector3 = AdminFly.LocalPlayer.position;
-			
+
 			if (AdminFly.gameControls.isControlPressed(0, _control_ids.W)) {
 				if (AdminFly.flightData.f < 8.0) AdminFly.flightData.f *= 11.025;
 
@@ -112,7 +116,7 @@ export default class AdminFly {
 				position.z -= AdminFly.direction.z / (AdminFly.flightData.f / 8);
 				updated = true;
 			}
-			
+
 			if (AdminFly.gameControls.isControlPressed(0, _control_ids.LCtrl)) {
 				if (AdminFly.flightData.f < 8.0) AdminFly.flightData.f *= 11.025;
 
@@ -126,13 +130,13 @@ export default class AdminFly {
 			}
 
 			if (AdminFly.gameControls.isControlPressed(0, _control_ids.A)) {
-				if (AdminFly.flightData.l < 8.0) AdminFly.flightData.l *= 11.025; 
+				if (AdminFly.flightData.l < 8.0) AdminFly.flightData.l *= 11.025;
 
 				position.x += (-AdminFly.direction.y) / (AdminFly.flightData.l / 7);
 				position.y += AdminFly.direction.x / (AdminFly.flightData.l / 7);
 				updated = true;
 			} else if (AdminFly.gameControls.isControlPressed(0, _control_ids.D)) {
-				if (AdminFly.flightData.l < 8.0) AdminFly.flightData.l *= 11.025; 
+				if (AdminFly.flightData.l < 8.0) AdminFly.flightData.l *= 11.025;
 
 				position.x -= (-AdminFly.direction.y) / (AdminFly.flightData.l / 8);
 				position.y -= AdminFly.direction.x / (AdminFly.flightData?.l / 8);
@@ -142,12 +146,12 @@ export default class AdminFly {
 			}
 
 			if (AdminFly.gameControls.isControlPressed(0, _control_ids.E)) {
-				if (AdminFly.flightData.h < 8.0) AdminFly.flightData.h *= 11.025; 
+				if (AdminFly.flightData.h < 8.0) AdminFly.flightData.h *= 11.025;
 
 				position.z += (AdminFly.flightData.h / 55);
 				updated = true;
 			} else if (AdminFly.gameControls.isControlPressed(0, _control_ids.Q)) {
-				if (AdminFly.flightData.h < 8.0) AdminFly.flightData.h *= 11.025; 
+				if (AdminFly.flightData.h < 8.0) AdminFly.flightData.h *= 11.025;
 
 				position.z -= (AdminFly.flightData.h / 55);
 				updated = true;

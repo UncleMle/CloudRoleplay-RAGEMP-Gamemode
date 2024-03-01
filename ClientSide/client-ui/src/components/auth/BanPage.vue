@@ -1,5 +1,5 @@
 <template>
-    <main>
+    <main class="vignette">
         <div class="fixed inset-0 z-10 w-full text-white text-lg">
             <div class="container flex items-center max-w-3xl mx-auto mt-52 rounded-lg">
                 <div

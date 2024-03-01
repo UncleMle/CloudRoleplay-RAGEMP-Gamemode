@@ -1,25 +1,117 @@
-﻿using CloudRP.PlayerSystems.Character;
+﻿using CloudRP.GeneralSystems.WeaponSystem;
+using CloudRP.PlayerSystems.Character;
+using CloudRP.PlayerSystems.FactionSystems;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Admin;
 using CloudRP.ServerSystems.Authentication;
+using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Utils;
+using CloudRP.VehicleSystems.Vehicles;
 using GTANetworkAPI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 
 namespace CloudRP.ServerSystems.AntiCheat
 {
     class AntiCheatSystem : Script
     {
-        #region Server Events
-        [ServerEvent(Event.PlayerConnected)]
-        public void OnPlayerConnected(Player player)
+        public static readonly string _safeDimensionChangingKey = "server:player:dimensionChanging";
+        public static readonly int checkForValidVehicles_seconds = 14;
+
+        public AntiCheatSystem()
         {
-            handleVpnCheck(player);
+            Main.playerConnect += (player) =>
+            {
+                player.sleepClientAc();
+                handleVpnCheck(player);
+            };
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"Loaded a total of {Enum.GetNames(typeof(AcEvents)).Length} Anti cheat events.");
+
+            DimensionChangeEvent.onDimensionChange += (player, oldDim, newDim) =>
+            {
+                if (player.GetData<bool>(_safeDimensionChangingKey)) return;
+
+                string message = string.Format(antiCheatMessage[AcEvents.dimensionChangeHack], player.Id, player.Ping, oldDim, newDim);
+
+                sendAcMessage(message);
+
+                if (player.getPlayerAccountData() == null)
+                {
+                    player.Kick();
+                    return;
+                }
+
+                player.banPlayer(-1, "[Anti-Cheat System]", player.getPlayerAccountData(), "Dimension changer hack.");
+            };
+
+            System.Timers.Timer checkForValidVehicles = new System.Timers.Timer
+            {
+                AutoReset = true,
+                Enabled = true,
+                Interval = checkForValidVehicles_seconds * 1000
+            };
+
+            checkForValidVehicles.Elapsed += (source, elapsed) =>
+            {
+                NAPI.Task.Run(() => validVehicleCheck());
+            };
+        }
+
+        private static Dictionary<AcEvents, string> antiCheatMessage = new Dictionary<AcEvents, string>
+        {
+            {
+                AcEvents.teleportHack, "{0} [{1} | FPS {2}] triggered a teleport hack. With distance {3} meters"
+            },
+            {
+                AcEvents.healthKey, "{0} [{1} | FPS {2}] possible health key hack. Health difference {3}"
+            },
+            {
+                AcEvents.disallowedWeapon, "{0} [{1}] triggered a disallowed weapon exception (hash {2}). Kicking player..."
+            },
+            {
+                AcEvents.carFly, "{0} [{1} | FPS {2}] possible car fly hack. Position difference {3}"
+            },
+            {
+                AcEvents.vehicleSpeedHack, "{0} [{1} | FPS {2}] possible vehicle speed hack. Speed {3} kmh"
+            },
+            {
+                AcEvents.noReloadHack, "{0} [{1} | FPS {2}] possible no reload hack. Ammo in clip {3}"
+            },
+            {
+                AcEvents.dimensionChangeHack, "Player [{0} | {1}] triggered dimension change hack. Old dim {2} new dim {3}. Banning player..."
+            },
+            {
+                AcEvents.vehicleSpawnHack, "Players with Ids {0} were found in a invalid vehicle entity. Kicking players and deleting entity..."
+            },
+            {
+                AcEvents.vehicleUnlockHack, "{0} [{1}] attempted a vehicle unlock hack on vehicle {2}"
+            }
+        };
+
+        #region Server Events
+        [ServerEvent(Event.PlayerWeaponSwitch)]
+        public void OnPlayerWeaponSwitch(Player player, WeaponHash oldWeapon, WeaponHash newWeapon)
+        {
+            if (newWeapon == WeaponHash.Unarmed) return;
+
+            if(!WeaponList.serverWeapons.ContainsKey(newWeapon))
+            {
+                DbCharacter character = player.getPlayerCharacterData();
+
+                player.Kick();
+
+                if (character == null) return;
+                
+                string message = string.Format(antiCheatMessage[AcEvents.disallowedWeapon], character.character_name, player.Ping, newWeapon);
+
+                sendAcMessage(message);
+            }
         }
 
         [ServerEvent(Event.IncomingConnection)]
@@ -28,73 +120,79 @@ namespace CloudRP.ServerSystems.AntiCheat
             ChatUtils.formatConsolePrint($"Player Connecting: RGNAME {rgscName} | IP {ip} | RGID {rgscId} | GTYPE {gameType}", ConsoleColor.Green);
         }
 
-        [ServerEvent(Event.PlayerWeaponSwitch)]
-        public void OnPlayerWeaponSwitch(Player player, WeaponHash oldWeapon, WeaponHash newWeapon)
+        [ServerEvent(Event.PlayerEnterVehicle)]
+        public void onPlayerEnterVehicle(Player player, Vehicle vehicle, sbyte seatId)
         {
+            DbVehicle vehicleData = vehicle.getData();
             User userData = player.getPlayerAccountData();
-            DbCharacter characterData = player.getPlayerCharacterData();
+            DbCharacter character = player.getPlayerCharacterData();
 
-            if (userData == null || characterData == null) return;
+            if (character == null) player.WarpOutOfVehicle();
 
-            player.TriggerEvent("client:weaponSwap");
+            if (userData == null || vehicleData == null && vehicle.getFreelanceJobData() == null || vehicleData != null && vehicleData.vehicle_locked && !(userData.admin_status > (int)AdminRanks.Admin_HeadAdmin || userData.adminDuty))
+            {
+                string message = string.Format(antiCheatMessage[AcEvents.vehicleUnlockHack], character.character_name, player.Ping, vehicleData.numberplate);
+
+                sendAcMessage(message);
+
+                player.WarpOutOfVehicle();
+                return;
+            }
         }
         #endregion
 
         #region Remote Events
-        [RemoteEvent("server:CheatDetection")]
-        public static void alertAdmins(Player player, int exception, string message)
+        [RemoteEvent("server:anticheat:alertAdmins")]
+        public static void alertAdmins(Player player, int exception, int fps, string acValue)
         {
-            Dictionary<Player, User> onlineStaff = AdminUtils.gatherStaff();
+            DbCharacter character = player.getPlayerCharacterData();
 
-            User userData = player.getPlayerAccountData();
-
-            if (userData != null && (userData.adminDuty || userData.admin_status > (int)AdminRanks.Admin_HeadAdmin)) return;
-
-            if (userData == null && exception != (int)AcExceptions.tpHack)
+            if (character == null)
             {
-                foreach (KeyValuePair<Player, User> entry in onlineStaff)
-                {
-                    NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.antiCheat + "Player [" + player.Id + "] was kicked.");
-                }
-
-                ChatUtils.formatConsolePrint("Player [" + player.Id + "] was kicked.");
-                player.Kick("[Anti Cheat]");
+                player.Kick();
                 return;
             }
 
-            if (exception == (int)AcExceptions.disallowedWeapon && userData != null && userData.admin_status > (int)AdminRanks.Admin_Founder)
-            {
-                User antiCheat = AdminUtils.getAcBanAdmin();
+            string message = string.Format(antiCheatMessage[(AcEvents)exception], 
+                character.character_name, player.Ping, fps, acValue);
 
-                player.banPlayer(-1, antiCheat, userData, "Disallowed weapon");
-
-                foreach (KeyValuePair<Player, User> entry in onlineStaff)
-                {
-                    NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.antiCheat + "Player [" + player.Id + $"] ({userData.username}) was banned for disallowed weapon flag.");
-                }
-
-                ChatUtils.formatConsolePrint("Player [" + player.Id + "] was banned.");
-
-                return;
-            }
-
-            DbCharacter characterData = player.getPlayerCharacterData();
-
-            string suffix = (characterData != null ? " from " + characterData.character_name : $" Player") + $" [{player.Id}]";
-
-            ChatUtils.formatConsolePrint(message + suffix);
-
-            foreach (KeyValuePair<Player, User> entry in onlineStaff)
-            {
-                NAPI.Chat.SendChatMessageToPlayer(entry.Key, ChatUtils.antiCheat + message + suffix);
-            }
+            sendAcMessage(message);
         }
         #endregion
 
         #region Global Methods
-        public static void sleepClient(Player player, int duration = 2000)
+        public static void validVehicleCheck()
         {
-            player.TriggerEvent("client:acSleep", duration);
+            NAPI.Pools.GetAllVehicles().ForEach(veh =>
+            {
+                if(veh.getData() == null)
+                {
+                    List<int> occIds = new List<int>();
+
+                    veh.Occupants.ForEach(occ =>
+                    {
+                        if (occ.Type == EntityType.Player)
+                        {
+                            occIds.Add(occ.Id); 
+                            (occ as Player).Kick();
+                        }
+                    });
+
+                    veh.Delete();
+
+                    string message = string.Format(antiCheatMessage[AcEvents.vehicleSpawnHack], JsonConvert.SerializeObject(occIds));
+
+                    sendAcMessage(message);
+                    return;
+                }
+            });
+        }
+
+        public static void sendAcMessage(string message)
+        {
+            ChatUtils.formatConsolePrint(message);
+
+            AdminUtils.sendMessageToAllStaff(ChatUtils.antiCheat + message, (int)AdminRanks.Admin_Moderator);
         }
 
         public static void handleVpnCheck(Player player)
@@ -136,13 +234,16 @@ namespace CloudRP.ServerSystems.AntiCheat
         #endregion
     }
 
-    enum AcExceptions
+    enum AcEvents
     {
-        tpHack = 0,
-        disallowedWeapon = 1,
-        vehicleSpeedOrFly = 2,
-        noReloadHack = 3,
-        ammoHack = 4,
-        healthKey = 5
+        teleportHack,
+        disallowedWeapon,
+        healthKey,
+        carFly,
+        vehicleSpeedHack,
+        noReloadHack,
+        dimensionChangeHack,
+        vehicleSpawnHack,
+        vehicleUnlockHack
     }
 }

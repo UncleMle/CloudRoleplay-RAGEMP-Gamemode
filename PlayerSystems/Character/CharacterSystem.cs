@@ -94,10 +94,8 @@ namespace CloudRP.PlayerSystems.Character
                 {
                     if (!player.isBanned())
                     {
-                        player.banPlayer(-1, new User
-                        {
-                            admin_name = "[System]",
-                        }, new User
+                        player.banPlayer(-1, "[System]", 
+                        new User
                         {
                             username = "N/A",
                             account_id = -1,
@@ -111,6 +109,8 @@ namespace CloudRP.PlayerSystems.Character
                 User userData = player.getPlayerAccountData();
                 DbCharacter characterData = player.getPlayerCharacterData();
                 bool vehicleDealerActive = player.GetData<bool>(VehicleDealershipSystem._dealerActiveIdentifier);
+
+                if (vehicleDealerActive) player.Position = VehicleDealershipSystem.garageIplPosition;
 
                 if (vehicleDealerActive || userData == null || characterData == null || userData != null && userData.admin_jail_time > 0) return;
 

@@ -55,7 +55,7 @@ export const _control_ids = {
 	TAB: 9,
 	LCtrl: 326,
 	LCtrlBind: 17,
-	RELOADBIND: 0x52,
+	RELOADBIND: 82,
 	NBIND: 78,
 	F4: 115,
 	F3: 114,
