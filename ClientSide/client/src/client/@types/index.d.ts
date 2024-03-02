@@ -564,3 +564,32 @@ export interface TollBooth {
 	boothBarrierRot: number;
 	barrierObject: ObjectMp;
 }
+
+interface IgnoreWeapons {
+	[key: number]: string;
+}
+
+interface WeaponDamage {
+	max: number;
+	min: number;
+}
+
+interface DamageWeapons {
+	[key: number]: WeaponDamage;
+}
+
+interface WeaponGroup {
+	name: string;
+	max: number;
+	min: number;
+}
+
+interface DamageWeaponGroups {
+	[key: number]: WeaponGroup;
+}
+
+interface WeaponDamageData {
+	ignoreWeapons: IgnoreWeapons;
+	damageWeapons: DamageWeapons;
+	damageWeaponGroups: DamageWeaponGroups;
+}

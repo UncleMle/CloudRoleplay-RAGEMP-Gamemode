@@ -23,46 +23,6 @@ namespace CloudRP.ServerSystems.AntiCheat
         public static readonly string _safeDimensionChangingKey = "server:player:dimensionChanging";
         public static readonly int checkForValidVehicles_seconds = 14;
 
-        public AntiCheatSystem()
-        {
-            Main.playerConnect += (player) =>
-            {
-                player.sleepClientAc();
-                handleVpnCheck(player);
-            };
-
-            Main.resourceStart += () => ChatUtils.startupPrint($"Loaded a total of {Enum.GetNames(typeof(AcEvents)).Length} Anti cheat events.");
-
-            DimensionChangeEvent.onDimensionChange += (player, oldDim, newDim) =>
-            {
-                if (player.GetData<bool>(_safeDimensionChangingKey)) return;
-
-                string message = string.Format(antiCheatMessages[AcEvents.dimensionChangeHack], player.Id, player.Ping, oldDim, newDim);
-
-                sendAcMessage(message);
-
-                if (player.getPlayerAccountData() == null)
-                {
-                    player.Kick();
-                    return;
-                }
-
-                player.banPlayer(-1, "[Anti-Cheat System]", player.getPlayerAccountData(), "Dimension changer hack.");
-            };
-
-            System.Timers.Timer checkForValidVehicles = new System.Timers.Timer
-            {
-                AutoReset = true,
-                Enabled = true,
-                Interval = checkForValidVehicles_seconds * 1000
-            };
-
-            checkForValidVehicles.Elapsed += (source, elapsed) =>
-            {
-                NAPI.Task.Run(() => validVehicleCheck());
-            };
-        }
-
         private static Dictionary<AcEvents, string> antiCheatMessages = new Dictionary<AcEvents, string>
         {
             {
@@ -103,8 +63,54 @@ namespace CloudRP.ServerSystems.AntiCheat
             },
             {
                 AcEvents.magicBullet, "{0} [{1} | FPS {2}] Possible magic bullet / aimhack cheat."
+            },
+            {
+                AcEvents.firerateHack, "{0} [{1} | FPS {2}] Possible weapon firerate hack. Bullets shot within 1 second {3}"
+            },
+            {
+                AcEvents.godModeCheat, "{0} [{1} | FPS {2}] Potential godmode cheat (player took no damage). Combined HP and armour is {3}"
             }
         };
+
+        public AntiCheatSystem()
+        {
+            Main.playerConnect += (player) =>
+            {
+                player.sleepClientAc();
+                handleVpnCheck(player);
+            };
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"Loaded a total of {Enum.GetNames(typeof(AcEvents)).Length} Anti cheat events.");
+
+            DimensionChangeEvent.onDimensionChange += (player, oldDim, newDim) =>
+            {
+                if (player.GetData<bool>(_safeDimensionChangingKey)) return;
+
+                string message = string.Format(antiCheatMessages[AcEvents.dimensionChangeHack], player.Id, player.Ping, oldDim, newDim);
+
+                sendAcMessage(message);
+
+                if (player.getPlayerAccountData() == null)
+                {
+                    player.Kick();
+                    return;
+                }
+
+                player.banPlayer(-1, "[Anti-Cheat System]", player.getPlayerAccountData(), "Dimension changer hack.");
+            };
+
+            System.Timers.Timer checkForValidVehicles = new System.Timers.Timer
+            {
+                AutoReset = true,
+                Enabled = true,
+                Interval = checkForValidVehicles_seconds * 1000
+            };
+
+            checkForValidVehicles.Elapsed += (source, elapsed) =>
+            {
+                NAPI.Task.Run(() => validVehicleCheck());
+            };
+        }
 
         #region Server Events
         [ServerEvent(Event.PlayerWeaponSwitch)]
@@ -195,7 +201,6 @@ namespace CloudRP.ServerSystems.AntiCheat
                     string message = string.Format(antiCheatMessages[AcEvents.vehicleSpawnHack], JsonConvert.SerializeObject(occIds));
 
                     sendAcMessage(message);
-                    return;
                 }
             });
         }
@@ -260,6 +265,8 @@ namespace CloudRP.ServerSystems.AntiCheat
         weaponAmmoHack,
         playerSpeedHack,
         tpToVehicle,
-        magicBullet
+        magicBullet,
+        firerateHack,
+        godModeCheat
     }
 }

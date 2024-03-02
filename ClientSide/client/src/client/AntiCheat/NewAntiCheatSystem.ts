@@ -2,7 +2,7 @@ import AdminFly from "@/AdminSystem/AdminFly";
 import { _control_ids } from "@/Constants/Constants";
 import distBetweenCoords from "@/PlayerMethods/distanceBetweenCoords";
 import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
-import getUserData from "@/PlayerMethods/getUserData";
+import weaponDamageValues from './WeaponDamageData';
 
 export default class NewAntiCheatSystem {
     private static LocalPlayer: PlayerMp = mp.players.local;
@@ -19,6 +19,7 @@ export default class NewAntiCheatSystem {
     public static isReloadingWeapon: boolean;
     public static enteringVehHandle: number;
     public static pointingAtRemoteId: number;
+    public static bulletsShot: number;
 
     constructor() {
         mp.events.add("render", () => {
@@ -30,6 +31,7 @@ export default class NewAntiCheatSystem {
         mp.events.add({
             "playerWeaponShot": NewAntiCheatSystem.handleWeaponShot,
             "outgoingDamage": NewAntiCheatSystem.handleOutgoingDamage,
+            "incomingDamage": NewAntiCheatSystem.handleIncomingDamage,
             "playerEnterVehicle": NewAntiCheatSystem.handleEnterVehicle,
             "client:ac:sleepClient": NewAntiCheatSystem.handleSleep
         });
@@ -42,6 +44,7 @@ export default class NewAntiCheatSystem {
         }, 4000);
 
         setInterval(() => {
+            NewAntiCheatSystem.bulletsShot = 0;
             NewAntiCheatSystem.clientFps = NewAntiCheatSystem.getFrameCount() - NewAntiCheatSystem.lastFrameCount;
             NewAntiCheatSystem.LocalPlayer.fps = NewAntiCheatSystem.clientFps;
             NewAntiCheatSystem.lastFrameCount = NewAntiCheatSystem.getFrameCount();
@@ -56,10 +59,6 @@ export default class NewAntiCheatSystem {
 
         let farAway: Vector3 = new mp.Vector3((direction.x * 250) + (position.x), (direction.y * 250) + (position.y), (direction.z * 250) + (position.z));
 
-        let pPos: Vector3 = NewAntiCheatSystem.LocalPlayer.getBoneCoords(NewAntiCheatSystem.LocalPlayer.getBoneIndexByName("IK_Head"), 0, 0, 0);
-
-        mp.game.graphics.drawLine(pPos.x, pPos.y, pPos.z, farAway.x, farAway.y, farAway.z, 255, 255, 255, 255);
-
         let getHittingData: RaycastResult = mp.raycasting.testPointToPoint(position, farAway, NewAntiCheatSystem.LocalPlayer);
 
         if (getHittingData && getHittingData.entity && (getHittingData.entity as PlayerMp).remoteId !== undefined) {
@@ -71,7 +70,7 @@ export default class NewAntiCheatSystem {
     }
 
     private static disablePistolWhip() {
-        if (NewAntiCheatSystem.allowedToWhip.indexOf(NewAntiCheatSystem.LocalPlayer.weapon) !== -1) return;
+        if (NewAntiCheatSystem.allowedToWhip.indexOf(NewAntiCheatSystem.LocalPlayer.weapon) !== -1 && NewAntiCheatSystem.LocalPlayer.getAmmoInClip(NewAntiCheatSystem.LocalPlayer.weapon) === 0) return;
 
         mp.game.controls.disableControlAction(1, 140, true);
         mp.game.controls.disableControlAction(1, 141, true);
@@ -81,7 +80,7 @@ export default class NewAntiCheatSystem {
     private static handleEnterVehicle(vehicle: VehicleMp) {
         if (!vehicle || vehicle.handle === 0) return;
 
-        if (vehicle.handle !== NewAntiCheatSystem.enteringVehHandle || vehicle.getDoorLockStatus()) {
+        if (vehicle.handle !== NewAntiCheatSystem.enteringVehHandle) {
             let enteredPlateFromHandle = NewAntiCheatSystem.enteringVehHandle ? NewAntiCheatSystem.enteringVehHandle : vehicle.handle;
             let plate: string = "N/A";
 
@@ -147,14 +146,14 @@ export default class NewAntiCheatSystem {
     private static async handlePositionCheck() {
         if (AdminFly.flyEnabled || NewAntiCheatSystem.LocalPlayer.vehicle) NewAntiCheatSystem.lastCheckPosition = NewAntiCheatSystem.LocalPlayer.position;
 
-        if (Math.round(NewAntiCheatSystem.LocalPlayer.getSpeed()) > 9 && !NewAntiCheatSystem.LocalPlayer.vehicle) {
+        if (Math.round(NewAntiCheatSystem.LocalPlayer.getSpeed()) > 9 && !NewAntiCheatSystem.LocalPlayer.vehicle && !NewAntiCheatSystem.LocalPlayer.isOnVehicle()) {
             NewAntiCheatSystem.adminAlert(AcEvents.playerSpeedHack, Math.round(NewAntiCheatSystem.LocalPlayer.getSpeed()));
         }
 
         let lastPosDifX: number = Math.abs(NewAntiCheatSystem.LocalPlayer.position.subtract(NewAntiCheatSystem.lastCheckPosition).x);
         let lastPosDifY: number = Math.abs(NewAntiCheatSystem.LocalPlayer.position.subtract(NewAntiCheatSystem.lastCheckPosition).y);
 
-        if ((lastPosDifX > 30 || lastPosDifY > 30) && !AdminFly.flyEnabled) {
+        if ((lastPosDifX > 30 || lastPosDifY > 30) && !AdminFly.flyEnabled && !NewAntiCheatSystem.LocalPlayer.isOnVehicle()) {
             NewAntiCheatSystem.adminAlert(AcEvents.teleportHack, Math.round(lastPosDifY + lastPosDifX));
         }
 
@@ -162,6 +161,8 @@ export default class NewAntiCheatSystem {
     }
 
     private static handleWeaponShot() {
+        NewAntiCheatSystem.bulletsShot++;
+
         let ammoInClip: number = NewAntiCheatSystem.LocalPlayer.getAmmoInClip(NewAntiCheatSystem.LocalPlayer.weapon);
         let maxAmmoForGun: number = mp.game.weapon.getWeaponClipSize(NewAntiCheatSystem.LocalPlayer.weapon);
 
@@ -172,15 +173,62 @@ export default class NewAntiCheatSystem {
         if (ammoInClip > maxAmmoForGun) {
             NewAntiCheatSystem.adminAlert(AcEvents.weaponAmmoHack, `${ammoInClip} in clip and max for gun ${maxAmmoForGun} dif (${ammoInClip - maxAmmoForGun})`);
         }
-    }
 
-    private static handleOutgoingDamage(sourceEntity: EntityMp, targetEntity: EntityMp, sourcePlayer: PlayerMp, weapon: number, boneIndex: number, damage: number) {
-        if (targetEntity.type !== "player") return;
-
-        if (NewAntiCheatSystem.pointingAtRemoteId !== targetEntity.remoteId && NewAntiCheatSystem.LocalPlayer) {
-            NewAntiCheatSystem.adminAlert(AcEvents.magicBullet, distBetweenCoords(NewAntiCheatSystem.LocalPlayer.position, targetEntity.position));
+        if (NewAntiCheatSystem.bulletsShot > 10) {
+            NewAntiCheatSystem.adminAlert(AcEvents.firerateHack, NewAntiCheatSystem.bulletsShot);
         }
     }
+
+    private static handleOutgoingDamage(sourceEntity: EntityMp, targetEntity: EntityMp, sourcePlayer: PlayerMp, weapon: number, boneIndex: number, damage: number): boolean {
+        if (targetEntity.type !== "player" || sourcePlayer.handle !== NewAntiCheatSystem.LocalPlayer.handle) return false;
+
+        if (NewAntiCheatSystem.pointingAtRemoteId !== targetEntity.remoteId) {
+            NewAntiCheatSystem.adminAlert(AcEvents.magicBullet, distBetweenCoords(NewAntiCheatSystem.LocalPlayer.position, targetEntity.position));
+            return true;
+        }
+
+        return false;
+    }
+
+    private static handleIncomingDamage(sourceEntity: EntityMp, sourcePlayer: PlayerMp, targetEntity: EntityMp, weapon: number, boneIndex: number, damage: number) {
+        if (targetEntity.type !== "player" || !sourcePlayer) return;
+
+        let oldHealth: number = NewAntiCheatSystem.getAcHealth(targetEntity as PlayerMp);
+
+        let max: number = 85;
+        let min: number = 60;
+
+        const weaponGroupHash: number = mp.game.weapon.getWeapontypeGroup(weapon);
+
+        if (weapon in weaponDamageValues.damageWeapons) {
+            max = weaponDamageValues.damageWeapons[weapon].max;
+            min = weaponDamageValues.damageWeapons[weapon].min;
+        } else if (weaponGroupHash in weaponDamageValues.damageWeaponGroups) {
+            max = weaponDamageValues.damageWeaponGroups[weaponGroupHash].max;
+            min = weaponDamageValues.damageWeaponGroups[weaponGroupHash].min;
+        }
+
+        const percent: number = (Math.random() * (max - min) + min) / 100;
+        let customDamage: any = damage - (damage * percent);
+
+        if (boneIndex === 20) {
+            customDamage /= 10;
+        }
+
+        (targetEntity as PlayerMp).applyDamageTo(parseInt(customDamage), true);
+
+        const currentHealth: number = targetEntity.getHealth();
+        let newHealth: number = NewAntiCheatSystem.getAcHealth(targetEntity as PlayerMp);
+
+        if (oldHealth === newHealth && targetEntity.handle === NewAntiCheatSystem.LocalPlayer.handle) {
+            NewAntiCheatSystem.adminAlert(AcEvents.godModeCheat, newHealth);
+        }
+
+        if (currentHealth > 0) {
+            mp.game.weapon.setCurrentDamageEventAmount(0);
+        }
+    }
+
 
     private static handleReloadCheck() {
         if (getUserCharacterData() == null || !NewAntiCheatSystem.LocalPlayer.isReloading()) return;
@@ -192,8 +240,12 @@ export default class NewAntiCheatSystem {
         }, 1100);
     }
 
-    private static getFrameCount() {
+    private static getFrameCount(): number {
         return mp.game.invoke("0xFC8202EFC642E6F2");
+    }
+
+    private static getAcHealth(player: PlayerMp): number {
+        return player.getHealth() + player.getArmour();
     }
 
     private static handleSleep(time: number) {
@@ -220,5 +272,7 @@ enum AcEvents {
     weaponAmmoHack,
     playerSpeedHack,
     tpToVehicle,
-    magicBullet
+    magicBullet,
+    firerateHack,
+    godModeCheat
 }

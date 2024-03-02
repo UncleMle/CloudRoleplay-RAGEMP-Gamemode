@@ -14,6 +14,7 @@ using CloudRP.ServerSystems.DiscordSystem;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.VehicleGarages;
 using CloudRP.VehicleSystems.Vehicles;
+using CloudRP.WorldSystems.BulletFragments;
 using Discord;
 using GTANetworkAPI;
 using Newtonsoft.Json;
@@ -116,7 +117,7 @@ namespace CloudRP.ServerSystems.Admin
                 return;
             }
 
-            if (player.checkIsWithinCoord(adminJailLocation, 50f)) player.Position = adminJailLocation;
+            if (!player.checkIsWithinCoord(adminJailLocation, 50f)) player.Position = adminJailLocation;
 
             player.safeSetDimension((uint)player.Id + 1);
             user.admin_jail_time -= 10;
@@ -2165,6 +2166,15 @@ namespace CloudRP.ServerSystems.Admin
             int garageId = VehicleGarages.createGarage(sellPrice, player.Position, vehicleSlots).garage_id;
 
             AdminUtils.staffSay(player, $"Created a vehicle garage with id #{garageId}.");
+        }
+
+        [AdminCommand(AdminRanks.Admin_Developer)]
+        [Command("flushfragments", "~r~/flushfragments")]
+        public void flushBulletFragmentsCommand(Player player)
+        {
+            AdminUtils.staffSay(player, $"Flushed all {BulletFragmentSystem.bulletFragments.Count} bullet fragments from memory.");
+
+            BulletFragmentSystem.flushFragments();
         }
         #endregion
     }
