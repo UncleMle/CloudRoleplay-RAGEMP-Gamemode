@@ -100,6 +100,9 @@ namespace CloudRP.ServerSystems.AntiCheat
             },
             {
                 AcEvents.tpToVehicle, "{0} [{1} | FPS {2}] Possible teleport into vehicle hack. Last entered vehicle {3}"
+            },
+            {
+                AcEvents.magicBullet, "{0} [{1} | FPS {2}] Possible magic bullet / aimhack cheat."
             }
         };
 
@@ -256,6 +259,7 @@ namespace CloudRP.ServerSystems.AntiCheat
         vehicleUnlockHack,
         weaponAmmoHack,
         playerSpeedHack,
-        tpToVehicle
+        tpToVehicle,
+        magicBullet
     }
 }

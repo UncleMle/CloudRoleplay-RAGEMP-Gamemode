@@ -1,5 +1,6 @@
 import AdminFly from "@/AdminSystem/AdminFly";
 import { _control_ids } from "@/Constants/Constants";
+import distBetweenCoords from "@/PlayerMethods/distanceBetweenCoords";
 import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
 import getUserData from "@/PlayerMethods/getUserData";
 
@@ -12,15 +13,23 @@ export default class NewAntiCheatSystem {
     public static acActive: boolean = true;
     public static lastHpVal: number = NewAntiCheatSystem.LocalPlayer.getHealth() + NewAntiCheatSystem.LocalPlayer.getArmour();
     public static readonly aircraftClasses: number[] = [15, 16];
+    public static readonly allowedToWhip: number[] = [mp.game.joaat("WEAPON_UNARMED"), mp.game.joaat("WEAPON_NIGHSTICK")];
+    public static playerCamera: CameraMp = mp.cameras.new("gameplay");
     public static groundZCheck: number;
     public static isReloadingWeapon: boolean;
     public static enteringVehHandle: number;
+    public static pointingAtRemoteId: number;
 
     constructor() {
+        mp.events.add("render", () => {
+            NewAntiCheatSystem.setVehicleEnterHandle();
+            NewAntiCheatSystem.createForwardFacingRaycast();
+            NewAntiCheatSystem.disablePistolWhip();
+        });
+
         mp.events.add({
             "playerWeaponShot": NewAntiCheatSystem.handleWeaponShot,
-            "render": NewAntiCheatSystem.handleRender,
-            "incomingDamage": NewAntiCheatSystem.handleIncomingDamage,
+            "outgoingDamage": NewAntiCheatSystem.handleOutgoingDamage,
             "playerEnterVehicle": NewAntiCheatSystem.handleEnterVehicle,
             "client:ac:sleepClient": NewAntiCheatSystem.handleSleep
         });
@@ -41,22 +50,50 @@ export default class NewAntiCheatSystem {
         mp.keys.bind(_control_ids.RELOADBIND, false, NewAntiCheatSystem.handleReloadCheck);
     }
 
+    private static createForwardFacingRaycast() {
+        let position: Vector3 = NewAntiCheatSystem.playerCamera.getCoord();
+        let direction: Vector3 = NewAntiCheatSystem.playerCamera.getDirection();
+
+        let farAway: Vector3 = new mp.Vector3((direction.x * 250) + (position.x), (direction.y * 250) + (position.y), (direction.z * 250) + (position.z));
+
+        let pPos: Vector3 = NewAntiCheatSystem.LocalPlayer.getBoneCoords(NewAntiCheatSystem.LocalPlayer.getBoneIndexByName("IK_Head"), 0, 0, 0);
+
+        mp.game.graphics.drawLine(pPos.x, pPos.y, pPos.z, farAway.x, farAway.y, farAway.z, 255, 255, 255, 255);
+
+        let getHittingData: RaycastResult = mp.raycasting.testPointToPoint(position, farAway, NewAntiCheatSystem.LocalPlayer);
+
+        if (getHittingData && getHittingData.entity && (getHittingData.entity as PlayerMp).remoteId !== undefined) {
+            NewAntiCheatSystem.pointingAtRemoteId = (getHittingData.entity as PlayerMp).remoteId;
+            return;
+        }
+
+        NewAntiCheatSystem.pointingAtRemoteId = -1;
+    }
+
+    private static disablePistolWhip() {
+        if (NewAntiCheatSystem.allowedToWhip.indexOf(NewAntiCheatSystem.LocalPlayer.weapon) !== -1) return;
+
+        mp.game.controls.disableControlAction(1, 140, true);
+        mp.game.controls.disableControlAction(1, 141, true);
+        mp.game.controls.disableControlAction(1, 142, true);
+    }
+
     private static handleEnterVehicle(vehicle: VehicleMp) {
         if (!vehicle || vehicle.handle === 0) return;
 
-        if (vehicle.handle !== NewAntiCheatSystem.enteringVehHandle) {
-            let enteredPlateFromHandle = NewAntiCheatSystem.enteringVehHandle ? NewAntiCheatSystem.enteringVehHandle : vehicle.handle;  
+        if (vehicle.handle !== NewAntiCheatSystem.enteringVehHandle || vehicle.getDoorLockStatus()) {
+            let enteredPlateFromHandle = NewAntiCheatSystem.enteringVehHandle ? NewAntiCheatSystem.enteringVehHandle : vehicle.handle;
             let plate: string = "N/A";
 
             let veh: VehicleMp = mp.vehicles.atHandle(enteredPlateFromHandle);
 
-            if(veh) plate = veh.getNumberPlateText();
+            if (veh) plate = veh.getNumberPlateText();
 
             NewAntiCheatSystem.adminAlert(AcEvents.tpToVehicle, plate);
         }
     }
 
-    private static handleRender() {
+    private static setVehicleEnterHandle() {
         let enteringVehHandle: number = NewAntiCheatSystem.LocalPlayer.getVehicleIsTryingToEnter();
 
         if (enteringVehHandle !== 0) {
@@ -137,14 +174,12 @@ export default class NewAntiCheatSystem {
         }
     }
 
-    private static handleIncomingDamage(sourceEntity: EntityMp, sourcePlayer: EntityMp, targetEntity: EntityMp, weapon: number, boneIndex: number, damage: number) {
-        if (targetEntity.handle !== NewAntiCheatSystem.LocalPlayer.handle || getUserData()?.adminDuty) return;
+    private static handleOutgoingDamage(sourceEntity: EntityMp, targetEntity: EntityMp, sourcePlayer: PlayerMp, weapon: number, boneIndex: number, damage: number) {
+        if (targetEntity.type !== "player") return;
 
-        mp.gui.chat.push("DMG " + damage);
-
-        let newDif: number = NewAntiCheatSystem.LocalPlayer.getHealth() + NewAntiCheatSystem.LocalPlayer.getArmour();
-
-        mp.gui.chat.push(`${NewAntiCheatSystem.lastHpVal} | dif ${NewAntiCheatSystem.lastHpVal - newDif} || new ${newDif}`);
+        if (NewAntiCheatSystem.pointingAtRemoteId !== targetEntity.remoteId && NewAntiCheatSystem.LocalPlayer) {
+            NewAntiCheatSystem.adminAlert(AcEvents.magicBullet, distBetweenCoords(NewAntiCheatSystem.LocalPlayer.position, targetEntity.position));
+        }
     }
 
     private static handleReloadCheck() {
@@ -184,5 +219,6 @@ enum AcEvents {
     vehicleUnlockHack,
     weaponAmmoHack,
     playerSpeedHack,
-    tpToVehicle
+    tpToVehicle,
+    magicBullet
 }

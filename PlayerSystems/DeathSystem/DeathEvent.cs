@@ -177,6 +177,7 @@ namespace CloudRP.PlayerSystems.DeathSystem
 
         public static void updateAndSetInjuredState(Player player, DbCharacter characterData, int time = _deathTimer_seconds)
         {
+            player.sleepClientAc();
             NAPI.Player.SpawnPlayer(player, player.Position);
 
             characterData.injured_timer = time;

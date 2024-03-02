@@ -1,4 +1,5 @@
-﻿using CloudRP.PlayerSystems.PlayerData;
+﻿using CloudRP.PlayerSystems.Character;
+using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Authentication;
 using GTANetworkAPI;
 using System;
@@ -19,7 +20,7 @@ namespace CloudRP.ServerSystems.AntiCheat
 
             if (checkVecRange(pos, defaultLogin) && (player.getPlayerCharacterData() == null || player.getPlayerAccountData() == null) && player.Dimension != Auth._startDimension)
             {
-                isAtLogin = true;
+                if(!player.GetData<bool>(CharacterSystem.startedCharacterCreationKey)) isAtLogin = true;
             }
 
             return isAtLogin;

@@ -13,6 +13,7 @@ declare global {
 		lastReceivedPointing: number | undefined;
 		pointingInterval: number | undefined;
 		testMethod: () => UserData;
+		acPointAtRemoteId: number;
 	}
 
 	interface EntityMp {
@@ -236,7 +237,7 @@ export interface VehicleData {
 	vehicle_class_id: number;
 	vehicle_display_name: string;
 	faction_owner_id: number;
-	insurance_status: boolean;	
+	insurance_status: boolean;
 }
 
 export interface RenderKeys {
@@ -517,8 +518,7 @@ interface BarberData {
 	eyebrowsColour: string;
 }
 
-interface ClientBlip
-{
+interface ClientBlip {
 	blipId: number;
 	pos: Vector3;
 	type: number;
@@ -527,10 +527,9 @@ interface ClientBlip
 	blip: BlipMp;
 	setMarker: boolean;
 	marker: MarkerMp;
-}   
+}
 
-interface InteractionPed
-{
+interface InteractionPed {
 	pedHeadName: string;
 	ped: PedMp;
 	raycastMenuItems: string[];
@@ -554,8 +553,7 @@ interface RaycastInteraction {
 	raycastNpc: PedMp;
 }
 
-export interface TollBooth
-{
+export interface TollBooth {
 	tollPrice: number;
 	boothPos: Vector3
 	boothBarrierPos: Vector3

@@ -434,7 +434,7 @@ namespace CloudRP.ServerSystems.Authentication
         {
             NAPI.Pools.GetAllPlayers().ForEach(player =>
             {
-                if(player.getPlayerCharacterData() == null)
+                if(player.getPlayerCharacterData() == null && !player.GetData<bool>(CharacterSystem.startedCharacterCreationKey))
                 {
                     player.Position = PlayersData.defaultLoginPosition;
                 };

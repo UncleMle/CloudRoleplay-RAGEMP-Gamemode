@@ -50,8 +50,8 @@ export default class BrowserSystem {
 		BrowserSystem._browserInstance = mp.browsers.new(BrowserEnv.development);
 	}
 
-	private static handleExit() {
-		BrowserSystem._browserInstance.destroy();
+	private static handleExit(player: PlayerMp) {
+		if(player.handle === BrowserSystem.LocalPlayer.handle) BrowserSystem._browserInstance.destroy();
 	}
 
 	private static async handleServerProc(procedureName: string): Promise<any> {

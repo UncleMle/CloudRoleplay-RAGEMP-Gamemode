@@ -75,15 +75,15 @@ export default class AdminSystem {
 	}
 
 	private static renderJailText() {
-		if(AdminSystem.adminJailTimer <= 0) return;
+		if (AdminSystem.adminJailTimer <= 0) return;
 
 		let userData: UserData | undefined = getUserData();
 
-		if(!userData) return;
+		if (!userData) return;
 
 		let mins = Math.round(AdminSystem.adminJailTimer / 60);
 
-		mp.game.graphics.drawText(`You are in ~r~admin jail~w~ there are ${mins != 0 ? mins + " minute(s)" : "" } ${mins != 0 ? "(" : " "}${AdminSystem.adminJailTimer}${mins != 0 ? "s)" : " seconds"} remaining.`, [0.5, 0.69], {
+		mp.game.graphics.drawText(`You are in ~r~admin jail~w~ there are ${mins != 0 ? mins + " minute(s)" : ""} ${mins != 0 ? "(" : " "}${AdminSystem.adminJailTimer}${mins != 0 ? "s)" : " seconds"} remaining.`, [0.5, 0.69], {
 			font: 4,
 			color: [255, 255, 255, 255],
 			scale: [0.4, 0.4],
@@ -106,12 +106,15 @@ export default class AdminSystem {
 			let poz_y: string = AdminSystem.LocalPlayer.position.y.toFixed(1);
 			let poz_z: string = AdminSystem.LocalPlayer.position.z.toFixed(1);
 
-			let adminRankData = AdminRank.getAdminRankInfo(AdminSystem.userData.admin_status);
+			let adminRankData: void | {
+				rank: string,
+				colour: string
+			} = AdminRank.getAdminRankInfo(AdminSystem.userData.admin_status);
 			if (!adminRankData) return;
 
-			let positionString = `~r~X:~w~ ${poz_x} ~r~Y:~w~ ${poz_y} ~r~Z:~w~ ${poz_z} ~r~ROT:~w~ ${AdminSystem.LocalPlayer.getRotation(5).z.toFixed(1)}`;
+			let positionString: string = `~r~X:~w~ ${poz_x} ~r~Y:~w~ ${poz_y} ~r~Z:~w~ ${poz_z} ~r~ROT:~w~ ${AdminSystem.LocalPlayer.getRotation(5).z.toFixed(1)}`;
 
-			let msg = `~r~On duty as ~w~<font color="${adminRankData.colour}">${adminRankData.rank}~r~ ${AdminSystem.userData.admin_name} ${AdminSystem.userData.isFlying ? "\n~g~[Fly enabled]~w~" : ""}`;
+			let msg: string = `~r~On duty as ~w~<font color="${adminRankData.colour}">${adminRankData.rank}~r~ ${AdminSystem.userData.admin_name} ${AdminSystem.userData.isFlying ? "\n~g~[Fly enabled]~w~" : ""}`;
 
 			mp.game.graphics.drawText(msg, [0.5, 0.90], {
 				font: 4,
