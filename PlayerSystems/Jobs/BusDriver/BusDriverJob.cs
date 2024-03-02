@@ -1,5 +1,6 @@
 ﻿using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.ServerSystems.AntiCheat;
 using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
@@ -313,7 +314,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                             nextStop = firstStop.stopName
                         });
                         
-                        player.SetIntoVehicle(bus, 0);
+                        player.safePutIntoVehicle(bus, 0);
                         player.SendChatMessage(ChatUtils.freelanceJobs + "Your bus route has been started. Please follow the route once finished you will be paid. Don't exit your vehicle. You will be rewarded for good driving.");
                     }
                 }

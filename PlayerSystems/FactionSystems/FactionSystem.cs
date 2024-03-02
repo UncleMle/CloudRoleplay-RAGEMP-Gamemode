@@ -2,6 +2,7 @@
 using CloudRP.PlayerSystems.FactionSystems.DCCFaction;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Admin;
+using CloudRP.ServerSystems.AntiCheat;
 using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Database;
@@ -763,7 +764,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
                 if (spawn == null || spawn != null && Vector3.Distance(player.Position, spawn.spawnPos) > 12) return;
 
                 Vehicle spawnedVehicle = VehicleSystem.spawnVehicle(targetVehicle, spawn.spawnPos);
-                player.SetIntoVehicle(spawnedVehicle, 0);
+                player.safePutIntoVehicle(spawnedVehicle, 0);
                 uiHandling.resetRouter(player);
             }
         }

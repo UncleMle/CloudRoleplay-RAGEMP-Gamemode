@@ -680,7 +680,7 @@ namespace CloudRP.ServerSystems.Admin
                 return;
             }
 
-            player.SetIntoVehicle(vehicle, 0);
+            player.safePutIntoVehicle(vehicle, 0);
 
             AdminUtils.staffSay(player, $"You spawned in vehicle {vehName} #{vehicleData.vehicle_id}");
             ChatUtils.formatConsolePrint($"{userData.admin_name} spawned in a [NON-VOLATILE] {vehName} #{vehicleData.vehicle_id}");
@@ -704,7 +704,7 @@ namespace CloudRP.ServerSystems.Admin
                 return;
             }
 
-            player.SetIntoVehicle(spawnVeh, 0);
+            player.safePutIntoVehicle(spawnVeh, 0);
 
             AdminUtils.staffSay(player, $"You spawned in vehicle {vehName}");
             ChatUtils.formatConsolePrint($"{userData.admin_name} spawned in a [VOLATILE] {vehName}");
@@ -770,7 +770,7 @@ namespace CloudRP.ServerSystems.Admin
 
                             if (setIntoVeh)
                             {
-                                player.SetIntoVehicle(findVehicle, 0);
+                                player.safePutIntoVehicle(findVehicle, 0);
                             }
 
                             uiHandling.sendNotification(player, $"~r~Teleported vehicle [{findVehicle.NumberPlate}]", false);
@@ -1014,11 +1014,9 @@ namespace CloudRP.ServerSystems.Admin
             characterData.player_dimension = dimension;
             getPlayer.safeSetDimension(dimension);
 
-            using (DefaultDbContext dbContext = new DefaultDbContext())
-            {
-                dbContext.characters.Update(characterData);
-                dbContext.SaveChanges();
-            }
+            if(getPlayer.IsInVehicle) getPlayer.Vehicle.Dimension = dimension;
+
+            getPlayer.setPlayerCharacterData(characterData, false, true);
 
             ChatUtils.formatConsolePrint($"{userData.admin_name} set {characterData.character_name}'s dimension to {dimension}");
             AdminUtils.staffSay(player, $"Set {characterData.character_name}'s dimension to {dimension}");
@@ -1269,7 +1267,7 @@ namespace CloudRP.ServerSystems.Admin
                 }
 
                 uiHandling.sendNotification(player, $"~r~Entered vehicle.", false);
-                player.SetIntoVehicle(findVeh, seatId);
+                player.safePutIntoVehicle(findVeh, seatId);
                 return;
             }
 
@@ -1292,7 +1290,7 @@ namespace CloudRP.ServerSystems.Admin
             NAPI.Task.Run(() =>
             {
                 uiHandling.sendNotification(player, $"~r~Entered vehicle.", false);
-                player.SetIntoVehicle(findVeh, seatId);
+                player.safePutIntoVehicle(findVeh, seatId);
             }, 1000);
         }
 
@@ -2167,14 +2165,6 @@ namespace CloudRP.ServerSystems.Admin
             int garageId = VehicleGarages.createGarage(sellPrice, player.Position, vehicleSlots).garage_id;
 
             AdminUtils.staffSay(player, $"Created a vehicle garage with id #{garageId}.");
-        }
-
-        [Command("getbanned")]
-        public void getbanned(Player player)
-        {
-            Vehicle veh = NAPI.Vehicle.CreateVehicle(VehicleHash.Carbonrs, player.Position, 20f, 111, 111, "banlol", 255, false, true, 0);
-
-            player.SetIntoVehicle(veh, 0);
         }
         #endregion
     }

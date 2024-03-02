@@ -1,6 +1,7 @@
 import AdminFly from "@/AdminSystem/AdminFly";
 import { _control_ids } from "@/Constants/Constants";
 import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
+import getUserData from "@/PlayerMethods/getUserData";
 
 export default class NewAntiCheatSystem {
     private static LocalPlayer: PlayerMp = mp.players.local;
@@ -13,10 +14,14 @@ export default class NewAntiCheatSystem {
     public static readonly aircraftClasses: number[] = [15, 16];
     public static groundZCheck: number;
     public static isReloadingWeapon: boolean;
+    public static enteringVehHandle: number;
 
     constructor() {
         mp.events.add({
             "playerWeaponShot": NewAntiCheatSystem.handleWeaponShot,
+            "render": NewAntiCheatSystem.handleRender,
+            "incomingDamage": NewAntiCheatSystem.handleIncomingDamage,
+            "playerEnterVehicle": NewAntiCheatSystem.handleEnterVehicle,
             "client:ac:sleepClient": NewAntiCheatSystem.handleSleep
         });
 
@@ -34,6 +39,29 @@ export default class NewAntiCheatSystem {
         }, 1000);
 
         mp.keys.bind(_control_ids.RELOADBIND, false, NewAntiCheatSystem.handleReloadCheck);
+    }
+
+    private static handleEnterVehicle(vehicle: VehicleMp) {
+        if (!vehicle || vehicle.handle === 0) return;
+
+        if (vehicle.handle !== NewAntiCheatSystem.enteringVehHandle) {
+            let enteredPlateFromHandle = NewAntiCheatSystem.enteringVehHandle ? NewAntiCheatSystem.enteringVehHandle : vehicle.handle;  
+            let plate: string = "N/A";
+
+            let veh: VehicleMp = mp.vehicles.atHandle(enteredPlateFromHandle);
+
+            if(veh) plate = veh.getNumberPlateText();
+
+            NewAntiCheatSystem.adminAlert(AcEvents.tpToVehicle, plate);
+        }
+    }
+
+    private static handleRender() {
+        let enteringVehHandle: number = NewAntiCheatSystem.LocalPlayer.getVehicleIsTryingToEnter();
+
+        if (enteringVehHandle !== 0) {
+            NewAntiCheatSystem.enteringVehHandle = enteringVehHandle;
+        }
     }
 
     private static checkForCarFly(height: number = 50) {
@@ -72,7 +100,7 @@ export default class NewAntiCheatSystem {
         let checkHp: number = NewAntiCheatSystem.lastHpVal;
         let newHp: number = NewAntiCheatSystem.LocalPlayer.getHealth() + NewAntiCheatSystem.LocalPlayer.getArmour();
 
-        if (newHp > checkHp) {
+        if (newHp > checkHp || newHp > 200 || checkHp > 200) {
             NewAntiCheatSystem.adminAlert(AcEvents.healthKey, newHp - checkHp);
         }
 
@@ -81,6 +109,10 @@ export default class NewAntiCheatSystem {
 
     private static async handlePositionCheck() {
         if (AdminFly.flyEnabled || NewAntiCheatSystem.LocalPlayer.vehicle) NewAntiCheatSystem.lastCheckPosition = NewAntiCheatSystem.LocalPlayer.position;
+
+        if (Math.round(NewAntiCheatSystem.LocalPlayer.getSpeed()) > 9 && !NewAntiCheatSystem.LocalPlayer.vehicle) {
+            NewAntiCheatSystem.adminAlert(AcEvents.playerSpeedHack, Math.round(NewAntiCheatSystem.LocalPlayer.getSpeed()));
+        }
 
         let lastPosDifX: number = Math.abs(NewAntiCheatSystem.LocalPlayer.position.subtract(NewAntiCheatSystem.lastCheckPosition).x);
         let lastPosDifY: number = Math.abs(NewAntiCheatSystem.LocalPlayer.position.subtract(NewAntiCheatSystem.lastCheckPosition).y);
@@ -94,10 +126,25 @@ export default class NewAntiCheatSystem {
 
     private static handleWeaponShot() {
         let ammoInClip: number = NewAntiCheatSystem.LocalPlayer.getAmmoInClip(NewAntiCheatSystem.LocalPlayer.weapon);
+        let maxAmmoForGun: number = mp.game.weapon.getWeaponClipSize(NewAntiCheatSystem.LocalPlayer.weapon);
 
         if (NewAntiCheatSystem.isReloadingWeapon) {
             NewAntiCheatSystem.adminAlert(AcEvents.noReloadHack, ammoInClip);
         }
+
+        if (ammoInClip > maxAmmoForGun) {
+            NewAntiCheatSystem.adminAlert(AcEvents.weaponAmmoHack, `${ammoInClip} in clip and max for gun ${maxAmmoForGun} dif (${ammoInClip - maxAmmoForGun})`);
+        }
+    }
+
+    private static handleIncomingDamage(sourceEntity: EntityMp, sourcePlayer: EntityMp, targetEntity: EntityMp, weapon: number, boneIndex: number, damage: number) {
+        if (targetEntity.handle !== NewAntiCheatSystem.LocalPlayer.handle || getUserData()?.adminDuty) return;
+
+        mp.gui.chat.push("DMG " + damage);
+
+        let newDif: number = NewAntiCheatSystem.LocalPlayer.getHealth() + NewAntiCheatSystem.LocalPlayer.getArmour();
+
+        mp.gui.chat.push(`${NewAntiCheatSystem.lastHpVal} | dif ${NewAntiCheatSystem.lastHpVal - newDif} || new ${newDif}`);
     }
 
     private static handleReloadCheck() {
@@ -119,6 +166,8 @@ export default class NewAntiCheatSystem {
 
         setTimeout(() => {
             NewAntiCheatSystem.acActive = true;
+            NewAntiCheatSystem.lastCheckPosition = NewAntiCheatSystem.LocalPlayer.position;
+            NewAntiCheatSystem.lastHpVal = NewAntiCheatSystem.LocalPlayer.getHealth() + NewAntiCheatSystem.LocalPlayer.getArmour();
         }, time);
     }
 }
@@ -129,5 +178,11 @@ enum AcEvents {
     healthKey,
     carFly,
     vehicleSpeedHack,
-    noReloadHack
+    noReloadHack,
+    dimensionChangeHack,
+    vehicleSpawnHack,
+    vehicleUnlockHack,
+    weaponAmmoHack,
+    playerSpeedHack,
+    tpToVehicle
 }

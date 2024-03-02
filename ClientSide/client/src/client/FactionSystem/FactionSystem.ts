@@ -140,6 +140,9 @@ export default class FactionSystem {
                     shortRange: true
                 });
 
+                mp.game.invoke("0x5FBCA48327B914DF", veh.blip, true);
+                mp.game.invoke("0x234CDD44D996FD9A", veh.blip, 2);
+
                 FactionSystem.TrackerBlips.set(veh.remoteId, veh);
             });
 

@@ -37,7 +37,7 @@ namespace CloudRP.ServerSystems.AntiCheat
             {
                 if (player.GetData<bool>(_safeDimensionChangingKey)) return;
 
-                string message = string.Format(antiCheatMessage[AcEvents.dimensionChangeHack], player.Id, player.Ping, oldDim, newDim);
+                string message = string.Format(antiCheatMessages[AcEvents.dimensionChangeHack], player.Id, player.Ping, oldDim, newDim);
 
                 sendAcMessage(message);
 
@@ -63,7 +63,7 @@ namespace CloudRP.ServerSystems.AntiCheat
             };
         }
 
-        private static Dictionary<AcEvents, string> antiCheatMessage = new Dictionary<AcEvents, string>
+        private static Dictionary<AcEvents, string> antiCheatMessages = new Dictionary<AcEvents, string>
         {
             {
                 AcEvents.teleportHack, "{0} [{1} | FPS {2}] triggered a teleport hack. With distance {3} meters"
@@ -91,6 +91,15 @@ namespace CloudRP.ServerSystems.AntiCheat
             },
             {
                 AcEvents.vehicleUnlockHack, "{0} [{1}] attempted a vehicle unlock hack on vehicle {2}"
+            },
+            {
+                AcEvents.weaponAmmoHack, "{0} [{1} | FPS {2}] Possible weapon ammo hack {3}"
+            },
+            {
+                AcEvents.playerSpeedHack, "{0} [{1} | FPS {2}] Possible player speed hack. Player speed is {3}"
+            },
+            {
+                AcEvents.tpToVehicle, "{0} [{1} | FPS {2}] Possible teleport into vehicle hack. Last entered vehicle {3}"
             }
         };
 
@@ -108,7 +117,7 @@ namespace CloudRP.ServerSystems.AntiCheat
 
                 if (character == null) return;
                 
-                string message = string.Format(antiCheatMessage[AcEvents.disallowedWeapon], character.character_name, player.Ping, newWeapon);
+                string message = string.Format(antiCheatMessages[AcEvents.disallowedWeapon], character.character_name, player.Ping, newWeapon);
 
                 sendAcMessage(message);
             }
@@ -131,7 +140,7 @@ namespace CloudRP.ServerSystems.AntiCheat
 
             if (userData == null || vehicleData == null && vehicle.getFreelanceJobData() == null || vehicleData != null && vehicleData.vehicle_locked && !(userData.admin_status > (int)AdminRanks.Admin_HeadAdmin || userData.adminDuty))
             {
-                string message = string.Format(antiCheatMessage[AcEvents.vehicleUnlockHack], character.character_name, player.Ping, vehicleData.numberplate);
+                string message = string.Format(antiCheatMessages[AcEvents.vehicleUnlockHack], character.character_name, player.Ping, vehicleData.numberplate);
 
                 sendAcMessage(message);
 
@@ -153,7 +162,7 @@ namespace CloudRP.ServerSystems.AntiCheat
                 return;
             }
 
-            string message = string.Format(antiCheatMessage[(AcEvents)exception], 
+            string message = string.Format(antiCheatMessages[(AcEvents)exception], 
                 character.character_name, player.Ping, fps, acValue);
 
             sendAcMessage(message);
@@ -180,7 +189,7 @@ namespace CloudRP.ServerSystems.AntiCheat
 
                     veh.Delete();
 
-                    string message = string.Format(antiCheatMessage[AcEvents.vehicleSpawnHack], JsonConvert.SerializeObject(occIds));
+                    string message = string.Format(antiCheatMessages[AcEvents.vehicleSpawnHack], JsonConvert.SerializeObject(occIds));
 
                     sendAcMessage(message);
                     return;
@@ -244,6 +253,9 @@ namespace CloudRP.ServerSystems.AntiCheat
         noReloadHack,
         dimensionChangeHack,
         vehicleSpawnHack,
-        vehicleUnlockHack
+        vehicleUnlockHack,
+        weaponAmmoHack,
+        playerSpeedHack,
+        tpToVehicle
     }
 }

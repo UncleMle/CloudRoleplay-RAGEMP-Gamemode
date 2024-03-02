@@ -38,9 +38,26 @@ namespace CloudRP.ServerSystems.AntiCheat
         }
 
         public static void sleepClientAc(this Player player, int timeMiliseconds = 4500)
+           => player.TriggerEvent("client:ac:sleepClient", timeMiliseconds);
+
+        public static void safeSetDimension(this Player player, uint dimension)
         {
-            Console.WriteLine($"Player [{player.Id}] ac client was slept for {timeMiliseconds} miliseconds.");
-            player.TriggerEvent("client:ac:sleepClient", timeMiliseconds);
+            player.Dimension = dimension;
+
+            player.SetData(AntiCheatSystem._safeDimensionChangingKey, true);
+
+            NAPI.Task.Run(() =>
+            {
+                if (!NAPI.Player.IsPlayerConnected(player)) return;
+
+                player.ResetData(AntiCheatSystem._safeDimensionChangingKey);
+            }, 1500);
+        }
+        
+        public static void safePutIntoVehicle(this Player player, Vehicle veh, int seatId)
+        {
+            player.sleepClientAc();
+            player.SetIntoVehicle(veh, seatId);
         }
     }
 }

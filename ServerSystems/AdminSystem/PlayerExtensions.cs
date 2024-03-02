@@ -106,19 +106,5 @@ namespace CloudRP.ServerSystems.Admin
             player.setPlayerAccountData(user, false, true);
             player.TriggerEvent("client:adminSystem:adminJail:end");
         }
-
-        public static void safeSetDimension(this Player player, uint dimension)
-        {
-            player.Dimension = dimension;
-
-            player.SetData(AntiCheatSystem._safeDimensionChangingKey, true);
-            
-            NAPI.Task.Run(() =>
-            {
-                if (!NAPI.Player.IsPlayerConnected(player)) return;
-
-                player.ResetData(AntiCheatSystem._safeDimensionChangingKey);
-            }, 1500);
-        }
     }
 }
