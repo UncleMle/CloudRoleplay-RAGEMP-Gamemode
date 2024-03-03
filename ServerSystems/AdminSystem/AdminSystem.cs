@@ -739,6 +739,7 @@ namespace CloudRP.ServerSystems.Admin
             else
             {
                 DbVehicle vehicleData = findVehicle.getData();
+                findVehicle.Dimension = player.Dimension;
 
                 if (vehicleData != null)
                 {
@@ -996,13 +997,14 @@ namespace CloudRP.ServerSystems.Admin
         {
             User userData = player.getPlayerAccountData();
             Player getPlayer = CommandUtils.getPlayerFromNameOrId(playerIdOrName);
-            DbCharacter characterData = getPlayer.getPlayerCharacterData();
 
-            if (getPlayer == null || characterData == null)
+            if (getPlayer == null)
             {
                 AdminUtils.playerNotFound(player);
                 return;
             }
+
+            DbCharacter characterData = getPlayer.getPlayerCharacterData();
 
             if (dimension == Auth._startDimension)
             {
@@ -1254,6 +1256,7 @@ namespace CloudRP.ServerSystems.Admin
             if(idOrPlate == null)
             {
                 findVeh = VehicleSystem.getClosestVehicleToPlayer(player, 20);
+                findVeh.Dimension = player.Dimension;
 
                 if (findVeh == null)
                 {
@@ -1273,6 +1276,7 @@ namespace CloudRP.ServerSystems.Admin
             }
 
             findVeh = VehicleSystem.vehicleIdOrPlate(idOrPlate);
+            findVeh.Dimension = player.Dimension;
 
             if(findVeh == null)
             {
@@ -1429,18 +1433,8 @@ namespace CloudRP.ServerSystems.Admin
                 findPlayerData.isFlying = false;
                 player.TriggerEvent("admin:endFly");
 
-                using (DefaultDbContext dbContext = new DefaultDbContext())
-                {
-                    Account findAcc = dbContext.accounts.Find(findPlayerData.account_id);
-
-                    if (findAcc == null) return;
-
-                    findAcc.admin_status = adminRankSet;
-                    findAcc.admin_ped = defaultAdminPed;
-
-                    dbContext.accounts.Update(findAcc);
-                    dbContext.SaveChanges();
-                }
+                findPlayer.setPlayerAccountData(findPlayerData, false, true);
+                
                 string setAdminRank = AdminUtils.getColouredAdminRank(findPlayerData);
 
                 ChatUtils.formatConsolePrint($"{userData.admin_name} set {findPlayerCharData.character_name}'s admin level to {RankList.adminRanksList[adminRankSet]}");
@@ -1486,7 +1480,7 @@ namespace CloudRP.ServerSystems.Admin
 
             foreach (KeyValuePair<Player, User> admin in adminGroup)
             {
-                NAPI.Chat.SendChatMessageToPlayer(admin.Key, prefix + adminRank + userData.admin_name + ChatUtils.red + " says: " + ChatUtils.White + message);
+                admin.Key.SendChatMessage(prefix + adminRank + userData.admin_name + ChatUtils.red + " says: " + ChatUtils.White + message);
             }
         }
 
@@ -1682,6 +1676,7 @@ namespace CloudRP.ServerSystems.Admin
         [Command("gotoc", "~r~/gotoc [x] [y] [z]")]
         public void teleportToCoords(Player player, double x, double y, double z)
         {
+            player.sleepClientAc();
             player.Position = new Vector3(x, y, z);
 
             AdminUtils.staffSay(player, $"Teleported to vector {x} {y} {z}");

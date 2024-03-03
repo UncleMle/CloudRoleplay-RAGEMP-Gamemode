@@ -60,6 +60,7 @@ import VehicleEnterSystem from "./VehicleSystems/VehicleEnterSystem";
 import TollBooths from "./TollBooths/TollBooths";
 import NewAntiCheatSystem from "./AntiCheat/NewAntiCheatSystem";
 import BulletFragments from "./WeaponSystems/BulletFragmentSystem";
+import LuckyWheel from "./CasinoSystems/LuckyWheel";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -124,3 +125,4 @@ new VehicleEnterSystem();
 new TollBooths();
 new NewAntiCheatSystem();
 new BulletFragments();
+new LuckyWheel();
