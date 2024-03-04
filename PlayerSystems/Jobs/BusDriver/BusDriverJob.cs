@@ -192,8 +192,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                             jobData.jobLevel = -1;
                             player.setFreelanceJobData(jobData);
 
-                            characterData.salary_amount += selectedRoute.routePay;
-                            player.setPlayerCharacterData(characterData, false, true);
+                            player.addPlayerSalary(selectedRoute.routePay, "Bus Driver Job Pay");
 
                             player.SendChatMessage(ChatUtils.freelanceJobs + $"{ChatUtils.moneyGreen}${selectedRoute.routePay}{ChatUtils.White} has been paid into your salary for completeting the {selectedRoute.routeName} route.");
                             player.Vehicle.Delete();

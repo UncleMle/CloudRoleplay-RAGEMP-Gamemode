@@ -906,7 +906,8 @@ namespace CloudRP.PlayerSystems.FactionSystems
 
                 if (rank == null) return;
 
-                character.salary_amount += rank.rank_salary;
+                factionMem.addPlayerSalary(rank.rank_salary, "Faction Salary Payment");
+
                 factionMem.setPlayerCharacterData(character, false, true);
 
                 factionMem.SendChatMessage(ChatUtils.factions + $"You've recieved your salary of {ChatUtils.moneyGreen}${rank.rank_salary.ToString("N0")}{ChatUtils.White} from faction {getFactionName((int)faction)}. As rank {rank.rank_name}.");

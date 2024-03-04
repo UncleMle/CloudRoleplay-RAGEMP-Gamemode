@@ -91,14 +91,11 @@ namespace CloudRP.PlayerSystems.PlayerBarber
 
             long difference = barberPrice - character.money_amount;
 
-            if((character.money_amount - barberPrice) < 0)
+            if(!player.processPayment(barberPrice, "Barber Payment"))
             {
                 uiHandling.sendPushNotifError(player, $"You don't have enough to pay for this. You need ${difference.ToString("N0")} more.", 6600, true);
                 return;
             }
-
-            character.money_amount -= barberPrice;
-            player.setPlayerCharacterData(character, false, true);
 
             CharacterModel model = character.characterModel;
 

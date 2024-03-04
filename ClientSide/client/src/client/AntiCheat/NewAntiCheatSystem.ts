@@ -3,6 +3,7 @@ import { _control_ids } from "@/Constants/Constants";
 import distBetweenCoords from "@/PlayerMethods/distanceBetweenCoords";
 import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
 import weaponDamageValues from './WeaponDamageData';
+import VehicleManager from "@/VehicleSystems/VehicleManager";
 
 export default class NewAntiCheatSystem {
     private static LocalPlayer: PlayerMp = mp.players.local;
@@ -33,6 +34,7 @@ export default class NewAntiCheatSystem {
             "outgoingDamage": NewAntiCheatSystem.handleOutgoingDamage,
             "incomingDamage": NewAntiCheatSystem.handleIncomingDamage,
             "playerEnterVehicle": NewAntiCheatSystem.handleEnterVehicle,
+            "entityStreamIn": NewAntiCheatSystem.checkForIllegalVeh,
             "client:ac:sleepClient": NewAntiCheatSystem.handleSleep
         });
 
@@ -77,8 +79,22 @@ export default class NewAntiCheatSystem {
         mp.game.controls.disableControlAction(1, 142, true);
     }
 
+    private static checkForIllegalVeh(entity: EntityMp) {
+        if (entity.type !== "vehicle") return;
+
+        if (entity.remoteId === 65535 && VehicleManager.spawnedVehicles.indexOf(entity as VehicleMp) === -1) {
+            let plate = (entity as VehicleMp).getNumberPlateText();
+
+            NewAntiCheatSystem.adminAlert(AcEvents.vehicleSpawnHack, plate);
+
+            entity.destroy();
+        }
+    }
+
     private static handleEnterVehicle(vehicle: VehicleMp) {
         if (!vehicle || vehicle.handle === 0) return;
+
+        NewAntiCheatSystem.checkForIllegalVeh(vehicle as VehicleMp);
 
         if (vehicle.handle !== NewAntiCheatSystem.enteringVehHandle) {
             let enteredPlateFromHandle = NewAntiCheatSystem.enteringVehHandle ? NewAntiCheatSystem.enteringVehHandle : vehicle.handle;
@@ -116,14 +132,15 @@ export default class NewAntiCheatSystem {
         }
     }
 
-    private static checkSpeed(maxSpeed: number = 260) {
+    private static checkSpeed() {
         if (!NewAntiCheatSystem.LocalPlayer.vehicle) return;
 
         if (NewAntiCheatSystem.aircraftClasses.indexOf(NewAntiCheatSystem.LocalPlayer.vehicle.getClass()) !== -1) return;
 
-        let currentSpeed: number = NewAntiCheatSystem.LocalPlayer.vehicle.getSpeed() * 3.6;
+        let currentSpeed: number = NewAntiCheatSystem.LocalPlayer.vehicle.getSpeed();
+        let maxSpeed: number = mp.game.vehicle.getVehicleModelMaxSpeed(NewAntiCheatSystem.LocalPlayer.vehicle.model) + 10;
 
-        if (currentSpeed > maxSpeed) NewAntiCheatSystem.adminAlert(AcEvents.vehicleSpeedHack, Math.round(currentSpeed));
+        if (currentSpeed > maxSpeed) NewAntiCheatSystem.adminAlert(AcEvents.vehicleSpeedHack, `${Math.round(currentSpeed * 3.6)}kmh max speed is ${Math.round(maxSpeed * 3.6)}kmh`);
     }
 
     private static adminAlert(event: AcEvents, otherVal: any = "null") {

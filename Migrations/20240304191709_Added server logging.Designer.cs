@@ -3,14 +3,16 @@ using System;
 using CloudRP.ServerSystems.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CloudRP.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240304191709_Added server logging")]
+    partial class Addedserverlogging
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -443,9 +445,6 @@ namespace CloudRP.Migrations
                     b.Property<DateTime>("last_login")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<long>("last_spun_luckywheel")
-                        .HasColumnType("bigint");
-
                     b.Property<long>("money_amount")
                         .HasColumnType("bigint");
 
@@ -797,9 +796,6 @@ namespace CloudRP.Migrations
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<int>("account_id")
-                        .HasColumnType("int");
 
                     b.Property<int>("character_owner_id")
                         .HasColumnType("int");

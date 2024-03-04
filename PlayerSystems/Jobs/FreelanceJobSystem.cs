@@ -80,7 +80,7 @@ namespace CloudRP.PlayerSystems.Jobs
 
                 if (character == null || character != null && character.faction_duty_status != -1) return;
 
-                character.salary_amount += baseSalaryPay;
+                p.addPlayerSalary(baseSalaryPay, "Base Salary Pay");
 
                 p.setPlayerCharacterData(character, false, true);
                 p.SendChatMessage(ChatUtils.salary + $"You have recieved your benefit salary of {ChatUtils.moneyGreen}${baseSalaryPay.ToString("N0")}{ChatUtils.White}.");

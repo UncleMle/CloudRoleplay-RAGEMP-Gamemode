@@ -14,7 +14,6 @@ export default class PlayerAuthentication {
 	public static selectionCam: CameraMp;
 	public static LocalPlayer: PlayerMp
 	public static LocalStorage: StorageMp;
-	public static characterCreationPosition: Vector3 = new mp.Vector3(-38.6, -590.5, 78.8);
 	public static _cameraSwitchInterval: number = 500;
 	public static _switchCamCmd: string = "swcm";
 	public static readonly _logoutIdentifier = "playerIsLoggingOut";
@@ -88,7 +87,6 @@ export default class PlayerAuthentication {
 	public static setCharacterCreation() {
 		PlayerAuthentication.endClientLogin();
 		BrowserSystem.pushRouter("/charcreation");
-		PlayerAuthentication.LocalPlayer.position = PlayerAuthentication.characterCreationPosition;
 
 		let camValues: CreationCam = { angle: PlayerAuthentication.LocalPlayer.getRotation(2).z + 90, dist: 2.6, height: 0.2 };
 		let pos: Vector3 = getCameraOffset(new mp.Vector3(PlayerAuthentication.LocalPlayer.position.x, PlayerAuthentication.LocalPlayer.position.y, PlayerAuthentication.LocalPlayer.position.z + camValues.height), camValues.angle, camValues.dist);

@@ -25,7 +25,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
 
     public class DealerSellData
     {
-        public long price { get; set; }
+        public int price { get; set; }
         public string desc { get; set; }
     }
 

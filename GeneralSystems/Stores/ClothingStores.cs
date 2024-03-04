@@ -190,7 +190,7 @@ namespace CloudRP.GeneralSystems.Stores
                     return;
                 }
 
-                if (characterData.money_amount - 300 <= 0)
+                if (!player.processPayment(300, "Clothing Purchase"))
                 {
                     uiHandling.sendPushNotifError(player, "You do not have enough money to cover this purchase.", 5500, true);
                     return;
@@ -213,8 +213,6 @@ namespace CloudRP.GeneralSystems.Stores
                         dbContext.character_clothes.Add(clothingData);
                         dbContext.SaveChanges();
                         uiHandling.sendPushNotif(player, "You successfully purchase a new item of clothing.", 6600, false, false);
-
-                        characterData.money_amount -= 300;
 
                         player.setPlayerCharacterData(characterData, true, true);
                         CommandUtils.successSay(player, $"You purchased a new clothing item for {ChatUtils.moneyGreen}$300");

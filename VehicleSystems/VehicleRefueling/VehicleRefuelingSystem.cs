@@ -154,7 +154,7 @@ namespace CloudRP.VehicleSystems.VehicleRefueling
                         return;
                     }
 
-                    if (characterData.money_amount - fuelPrice < 0)
+                    if (!player.processPayment(fuelPrice, "Fuel Purchase"))
                     {
                         endPlayerRefuellingCycle(player, "You don't have enough money to continue to cover this payment.");
                         return;
@@ -169,13 +169,9 @@ namespace CloudRP.VehicleSystems.VehicleRefueling
                     }
 
                     foundVehData.vehicle_fuel += 1.89;
-                    characterData.money_amount -= fuelPrice;
-
                     foundVehData.vehicle_fuel_purchase_price += fuelPrice;
 
                     findVeh.setVehicleData(foundVehData, true);
-
-                    player.setPlayerCharacterData(characterData, false, true);
 
                     uiHandling.handleObjectUiMutation(player, MutationKeys.VehicleFuelData, new UiFuelData
                     {

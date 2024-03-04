@@ -4,6 +4,7 @@ using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Admin;
 using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.Database;
+using CloudRP.ServerSystems.Logging;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
@@ -130,7 +131,7 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
         }
 
         [Command("sellveh", "~y~Use: ~w~/sellveh [price] [description]", GreedyArg = true)]
-        public void sellVehicleCommand(Player player, long price, string desc)
+        public void sellVehicleCommand(Player player, int price, string desc)
         {
             DbCharacter character = player.getPlayerCharacterData();
 
@@ -341,14 +342,12 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                             return;
                         }
 
-                        if((characterData.money_amount - vehicleData.dealership_price) < 0)
+                        if(!player.processPayment(vehicleData.dealership_price, "Vehicle Dealership Purchase"))
                         {
                             uiHandling.setLoadingState(player, false, true);
                             CommandUtils.errorSay(player, "You don't have enough money to cover the purchase of this vehicle.");
                             return;
                         }
-
-                        characterData.money_amount -= vehicleData.dealership_price;
 
                         using (DefaultDbContext dbContext = new DefaultDbContext())
                         {
@@ -379,6 +378,8 @@ namespace CloudRP.PlayerSystems.PlayerDealerships
                         player.setPlayerCharacterData(characterData, false, true);
                         targetVehicle.saveVehicleData(vehicleData, true);
                         targetVehicle.removePlayerDealerStatus();
+
+                        ServerLogging.addNewLog(characterData.character_id, "Vehicle Market Purchase", $"{characterData.character_name} purchase a {vehicleData.vehicle_display_name} for ${vehicleData.dealership_price.ToString("N0")}.", LogTypes.AssetPurchase);
 
                         uiHandling.setLoadingState(player, false, true);
                         CommandUtils.successSay(player, $"You purchased a vehicle [{targetVehicle.NumberPlate}] for ${vehicleData.dealership_price}");

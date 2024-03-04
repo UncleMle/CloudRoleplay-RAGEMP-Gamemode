@@ -1,5 +1,6 @@
 ﻿using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.PlayerData;
+using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.World.MarkersLabels;
@@ -38,7 +39,7 @@ namespace CloudRP.PlayerSystems.CasinoSystems.LuckyWheel
             "vehicle",
             "$50,000"
         };
-        string[] winVehicles = new string[]
+        private static string[] winVehicles = new string[]
         {
             "adder", "autarch", "banshee2", "bullet", "cheetah", "emerus", "italigtb2"
         };
@@ -46,7 +47,7 @@ namespace CloudRP.PlayerSystems.CasinoSystems.LuckyWheel
         {
             -1, 2500, 20000, 10000, 2000, 5000, 30000, 15000, -1, 7500, 20000, -1, -1, 10000, 40000, 25000, -1, 15000, -1, 50000
         };
-        public int winVehicleIndex = 0;
+        private static int winVehicleIndex = 0;
 
         public LuckyWheelSystem()
         {
@@ -56,29 +57,36 @@ namespace CloudRP.PlayerSystems.CasinoSystems.LuckyWheel
         }
 
         #region Global Methods
-        public void spawnClientPodiumVehicle(Player player)
+        private static void spawnClientPodiumVehicle(Player player)
         {
             player.TriggerEvent("client:luckyWheel:spawnPrizeVeh", winVehicles[winVehicleIndex]);
         }
 
         public void startWheelWelcome(Player player, object callback)
         {
-            DbCharacter character = player.getPlayerCharacterData();
+            User user = player.getPlayerAccountData();
 
-            if((character.money_amount - spinWheelCost) < 0)
+            if(!player.processPayment(spinWheelCost, "Casino - Lucky Wheel Spin Cost"))
             {
                 uiHandling.sendPushNotifError(player, "You don't have money to spin the wheel.", 5000);
                 return;
             }
 
-            character.money_amount -= spinWheelCost;
-            player.setPlayerCharacterData(character, false, true);
+            int win = user.adminDuty ? 18 : new Random().Next(winListNames.Length);
 
-            int randomWin = new Random().Next(winListNames.Length);
+            player.SetCustomData(_spinningWheelDataKey, win);
 
-            player.SetCustomData(_spinningWheelDataKey, randomWin);
+            player.TriggerEvent("client:luckywheel:arriveToWheel", win);
+        }
 
-            player.TriggerEvent("client:luckywheel:arriveToWheel", randomWin);
+        public static string cyclePrizeVehicle()
+        {
+            if (winVehicleIndex + 1 > winVehicles.Length - 1) winVehicleIndex = 0;
+            else winVehicleIndex++;
+
+            NAPI.Pools.GetAllPlayers().ForEach(p => spawnClientPodiumVehicle(p));
+
+            return winVehicles[winVehicleIndex];
         }
         #endregion
 
@@ -106,8 +114,6 @@ namespace CloudRP.PlayerSystems.CasinoSystems.LuckyWheel
 
             DbCharacter character = player.getPlayerCharacterData();
 
-            character.money_amount -= spinWheelCost;
-
             int win = player.GetData<int>(_spinningWheelDataKey);
 
             player.ResetData(_spinningWheelDataKey);
@@ -117,8 +123,7 @@ namespace CloudRP.PlayerSystems.CasinoSystems.LuckyWheel
             if (winMoneyAmount != -1)
             {
                 player.SendChatMessage(ChatUtils.Success + $"You have succesfully won ${winMoneyAmount.ToString("N0")}.");
-                character.money_amount += winMoneyAmount;
-                player.setPlayerCharacterData(character, false, true);
+                player.addPlayerMoney(winMoneyAmount, "Casino - Lucky Wheel");
                 return;
             }
 
@@ -128,17 +133,16 @@ namespace CloudRP.PlayerSystems.CasinoSystems.LuckyWheel
                     {
                         string winVeh = winVehicles[winVehicleIndex];
 
-                        if (winVehicleIndex + 1 > winVehicles.Length) winVehicleIndex = 0;
-                        else winVehicleIndex++;
+                        cyclePrizeVehicle();
 
                         int colour = new Random().Next(0, 159);
-
-                        NAPI.Pools.GetAllPlayers().ForEach(p => spawnClientPodiumVehicle(p));
 
                         VehicleSystem.buildVehicle(winVeh, spawnVehicleAt, 145.2f, character.character_id, colour, colour, character.character_name);
 
                         player.SendChatMessage(ChatUtils.Success + $"You have won an {winVeh}! It has been parked outside the casino and marked on the GPS.");
                         MarkersAndLabels.addBlipForClient(player, 523, "Your new vehicle", spawnVehicleAt, 4, 255, 55);
+
+                        player.TriggerEvent("client:luckyWheel:vehiclePrizeAnim");
                         break;
                     }
             }

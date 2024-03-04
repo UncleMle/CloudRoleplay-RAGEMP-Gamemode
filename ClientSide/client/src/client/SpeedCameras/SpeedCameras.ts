@@ -1,13 +1,13 @@
 export default class SpeedCameras {
-	public static LocalPlayer: PlayerMp;
+	public static LocalPlayer: PlayerMp = mp.players.local;
 	public static serverCameraTrigger: string = 'server:handleSpeedCamera';
     public static flashDuration: number = 200;
 
 	constructor() {
-		SpeedCameras.LocalPlayer = mp.players.local;
-
-		mp.events.add('client:speedCameraTrigger', SpeedCameras.handleTriggerEvent);
-		mp.events.add('client:handleCameraFlash', SpeedCameras.handleCameraFlash);
+		mp.events.add({
+            "client:speedCameraTrigger": SpeedCameras.handleTriggerEvent,
+            "client:handleCameraFlash": SpeedCameras.handleCameraFlash
+        });
 	}
 
     public static async handleCameraFlash(vehId: number, camPos_x: number, camPos_y: number, camPos_z: number) {

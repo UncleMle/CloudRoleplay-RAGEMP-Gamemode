@@ -1,3 +1,4 @@
+import GuiSystem from "@/BrowserSystem/GuiSystem";
 import distBetweenCoords from "@/PlayerMethods/distanceBetweenCoords";
 import VehicleManager from "@/VehicleSystems/VehicleManager";
 
@@ -39,7 +40,8 @@ export default class LuckyWheel {
             "render": LuckyWheel.handleRender,
             "client:luckywheel:arriveToWheel": LuckyWheel.handleArriveToWheel,
             "client:luckyWheel:spinWheel": LuckyWheel.handleWheelSpin,
-            "client:luckyWheel:spawnPrizeVeh": LuckyWheel.spawnPrizeInVehicle
+            "client:luckyWheel:spawnPrizeVeh": LuckyWheel.spawnPrizeInVehicle,
+            "client:luckyWheel:vehiclePrizeAnim": LuckyWheel.playVehicleWinningAnimation
         });
 
         LuckyWheel.model = mp.objects.new(mp.game.joaat("vw_prop_vw_luckywheel_02a"), LuckyWheel.wheelObjectPos);
@@ -51,8 +53,8 @@ export default class LuckyWheel {
 
     private static spawnPrizeInVehicle(vehicleName: string) {
         LuckyWheel.wheelPrizeVehicleName = vehicleName;
-        
-        if(LuckyWheel.wheelPrizeVehicle && mp.vehicles.exists(LuckyWheel.wheelPrizeVehicle)) {
+
+        if (LuckyWheel.wheelPrizeVehicle && mp.vehicles.exists(LuckyWheel.wheelPrizeVehicle)) {
             LuckyWheel.wheelPrizeVehicle.destroy();
         }
 
@@ -63,17 +65,17 @@ export default class LuckyWheel {
     }
 
     private static rotatePrizeVehicle() {
-        if(!LuckyWheel.wheelPrizeVehicle || !mp.vehicles.exists(LuckyWheel.wheelPrizeVehicle)) return;
+        if (!LuckyWheel.wheelPrizeVehicle || !mp.vehicles.exists(LuckyWheel.wheelPrizeVehicle)) return;
 
-        LuckyWheel.wheelPrizeRotation += 0.4;
+        LuckyWheel.wheelPrizeRotation += 0.2;
 
         LuckyWheel.wheelPrizeVehicle.setHeading(LuckyWheel.wheelPrizeRotation);
     }
 
     private static renderPrizeVehicleText() {
-        if(!LuckyWheel.wheelPrizeVehicle || !mp.vehicles.exists(LuckyWheel.wheelPrizeVehicle)) return;
+        if (!LuckyWheel.wheelPrizeVehicle || !mp.vehicles.exists(LuckyWheel.wheelPrizeVehicle)) return;
 
-        if(distBetweenCoords(LuckyWheel.LocalPlayer.position, LuckyWheel.vehiclePodiumTextDraw) > 12) return;
+        if (distBetweenCoords(LuckyWheel.LocalPlayer.position, LuckyWheel.vehiclePodiumTextDraw) > 12) return;
 
         let displayName: string = mp.game.vehicle.getDisplayNameFromVehicleModel(LuckyWheel.wheelPrizeVehicle.model);;
 
@@ -84,6 +86,23 @@ export default class LuckyWheel {
             scale: [0.35, 0.35],
             color: [255, 255, 255, 255]
         });
+    }
+
+    private static async playVehicleWinningAnimation() {
+        GuiSystem.toggleHudComplete(false, false, false);
+
+        let vehicleCam = mp.cameras.new('default', LuckyWheel.vehiclePodiumTextDraw, new mp.Vector3(0, 0, 0), 40);
+        vehicleCam.pointAtCoord(LuckyWheel.vehiclePodium.x, LuckyWheel.vehiclePodium.y, LuckyWheel.vehiclePodium.z);
+
+        mp.game.cam.renderScriptCams(true, true, 3000, false, false);
+    
+        await mp.game.waitAsync(7000);
+
+        if(vehicleCam && mp.cameras.exists(vehicleCam)) vehicleCam.destroy();
+
+        mp.game.cam.renderScriptCams(false, true, 2000, false, false);
+        
+        GuiSystem.toggleHudComplete(true);
     }
 
     private static getDictionary() {
@@ -133,9 +152,11 @@ export default class LuckyWheel {
     private static async handleWheelSpin(wheelIndex: number, isOwner: boolean) {
         if (LuckyWheel.isWheelSpinning) return;
 
+        if(!LuckyWheel.model || !mp.objects.exists(LuckyWheel.model)) LuckyWheel.model = mp.objects.new(mp.game.joaat("vw_prop_vw_luckywheel_02a"), LuckyWheel.wheelObjectPos);
+
         LuckyWheel.isWheelSpinning = true;
         let spins: number = 320, maxSpeed = 2.25;
-        const speed: number = maxSpeed / (spins * 2 + (wheelIndex + this.model.getRotation(1).y / 18) * 16 + 1);
+        const speed: number = maxSpeed / (spins * 2 + (wheelIndex + LuckyWheel.model.getRotation(1).y / 18) * 16 + 1);
         mp.game.audio.playSoundFromCoord(1, 'Spin_Start', LuckyWheel.wheelObjectPos.x, LuckyWheel.wheelObjectPos.y, LuckyWheel.wheelObjectPos.z, 'dlc_vw_casino_lucky_wheel_sounds', true, 0, false);
 
         while (true) {
@@ -159,7 +180,7 @@ export default class LuckyWheel {
                             }
                             await mp.game.waitAsync(0);
                         }
-                        
+
                     }
                     break;
                 }

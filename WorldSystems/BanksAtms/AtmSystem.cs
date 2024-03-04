@@ -163,16 +163,14 @@ namespace CloudRP.World.BanksAtms
 
                     if (withdrawAmount > 0 && withdrawAmount <= 200000)
                     {
-                        if (characterData.money_amount - withdrawAmount < 0)
+                        if (!player.processPayment(withdrawAmount, "Bank Withdrawl"))
                         {
                             uiHandling.sendPushNotifError(player, "You do not have enough money to withdraw this amount.", 5400, true);
                             return;
                         }
 
-                        characterData.money_amount -= withdrawAmount;
-                        characterData.cash_amount += withdrawAmount;
+                        player.addPlayerCash(withdrawAmount, "Withdrawl Cash");
 
-                        player.setPlayerCharacterData(characterData, false, true);
                         uiHandling.sendNotification(player, $"~g~You withdrew ${withdrawAmount.ToString("N0")}.", false, true, "Withdraws cash.");
                         uiHandling.setLoadingState(player, false);
                         Banks.sendAtmUIData(player, characterData);

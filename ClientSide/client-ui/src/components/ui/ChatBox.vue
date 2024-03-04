@@ -49,7 +49,7 @@ export default {
         },
         chatMessages() {
             if (this.$router.currentRoute.path == "/") {
-                window.mp.trigger("gui:toggleHudComplete", true);
+               // window.mp.trigger("gui:toggleHudComplete", true);
             }
             this.setCloseInterval();
         }

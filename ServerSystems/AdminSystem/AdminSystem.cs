@@ -1,5 +1,6 @@
 ﻿using CloudRP.GeneralSystems.GeneralCommands;
 using CloudRP.GeneralSystems.WeaponSystem;
+using CloudRP.PlayerSystems.CasinoSystems.LuckyWheel;
 using CloudRP.PlayerSystems.CasinoSystems.Roulette;
 using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.DeathSystem;
@@ -11,6 +12,7 @@ using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.DiscordSystem;
+using CloudRP.ServerSystems.Logging;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.VehicleGarages;
 using CloudRP.VehicleSystems.Vehicles;
@@ -25,7 +27,7 @@ using System.Linq;
 
 namespace CloudRP.ServerSystems.Admin
 {
-    internal class AdminSystem : Script
+    public class AdminSystem : Script
     {
         public static List<Report> activeReports = new List<Report>();
         public static int _maxReports = 2;
@@ -49,7 +51,17 @@ namespace CloudRP.ServerSystems.Admin
 
             public override bool Check(Player player, string cmdName, string cmdText)
             {
-                if(player.getAdmin() == (int)AdminRanks.Admin_Developer) return true;
+                DbCharacter character = player.getPlayerCharacterData();
+
+                if (character == null) return false;
+
+                string adminName = player.getPlayerAccountData().admin_name;
+
+                if (player.getAdmin() == (int)AdminRanks.Admin_Developer)
+                {
+                    ServerLogging.addNewLog(-1, $"Admin Command", $"{adminName} used command /{cmdName} with arguments {cmdText}", LogTypes.AdminLog, player.getPlayerAccountData().account_id);
+                    return true;
+                }
 
                 if (player.getAdmin() >= _adminRank)
                 {
@@ -61,7 +73,7 @@ namespace CloudRP.ServerSystems.Admin
 
                     if(checkForAduty && player.getPlayerAccountData() != null && player.getPlayerAccountData().adminDuty || !checkForAduty)
                     {
-
+                        ServerLogging.addNewLog(-1, $"Admin Command", $"{adminName} used command /{cmdName} with arguments {cmdText}", LogTypes.AdminLog, player.getPlayerAccountData().account_id);
                         return true;
                     }
                 }
@@ -2100,6 +2112,8 @@ namespace CloudRP.ServerSystems.Admin
             findPlayerData.salary_amount += amount;
             findPlayer.setPlayerCharacterData(findPlayerData, false, true);
 
+            ServerLogging.addNewLog(findPlayerData.character_id, "Added salary money", $"Admin {user.admin_name} added ${amount.ToString("N0")} to {findPlayerData.character_name}'s salary.", LogTypes.AdminLog);
+
             AdminUtils.staffSay(player, $"You put ${amount.ToString("N0")} into {findPlayerData.character_name} salary.");
             AdminUtils.staffSay(findPlayer, $"{user.admin_name} has placed ${amount.ToString("N0")} into your salary.");
         }
@@ -2170,6 +2184,23 @@ namespace CloudRP.ServerSystems.Admin
             AdminUtils.staffSay(player, $"Flushed all {BulletFragmentSystem.bulletFragments.Count} bullet fragments from memory.");
 
             BulletFragmentSystem.flushFragments();
+        }
+
+        [AdminCommand(AdminRanks.Admin_Founder)]
+        [Command("cycleprizeveh", "~r~/cycleprizeveh")]
+        public void cyclePrizeVehicleCommand(Player player)
+        {
+            string winVeh = LuckyWheelSystem.cyclePrizeVehicle();
+
+            AdminUtils.staffSay(player, "Cycled prize vehicle. Prize vehicle is now " + winVeh);
+        }
+
+        [AdminCommand(AdminRanks.Admin_Developer)]
+        [Command("eval", "~r~/eval [commandString]", GreedyArg = true)]
+        public void evalCommand(Player player, string command)
+        {
+            AdminUtils.staffSay(player, $"You triggered eval on client with params {command}");
+            player.TriggerEvent("client:adminSystem:eval", command);
         }
         #endregion
     }

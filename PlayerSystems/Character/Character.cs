@@ -40,6 +40,7 @@ namespace CloudRP.PlayerSystems.Character
         public string faction_ranks { get; set; } = JsonConvert.SerializeObject(new string[] {});
         public int faction_duty_uniform { get; set; } = -1;
         public int freelance_job_uniform { get; set; } = -1;
+        public long last_spun_luckywheel { get; set; }
 
         [NotMapped]
         public bool voiceChatState { get; set; } = true;

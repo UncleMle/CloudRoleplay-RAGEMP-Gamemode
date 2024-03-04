@@ -105,16 +105,13 @@ namespace CloudRP.PlayerSystems.RentableVehicles
 
                 if(rentalVehicles.ContainsKey(character.character_id))
                 {
-                    if((character.money_amount - fixedRentalPrice) < 0)
+                    if(!p.processPayment(fixedRentalPrice, "Rental Vehicle Payment"))
                     {
                         p.SendChatMessage(ChatUtils.rentalVehicles + $"You can't afford to pay your rental vehicle fee. Your rental vehicle has been returned.");
 
                         removeRentalVehicle(p);
                         return;
                     }
-
-                    character.money_amount -= fixedRentalPrice;
-                    p.setPlayerCharacterData(character, false, true);
 
                     p.SendChatMessage(ChatUtils.rentalVehicles + $"You have been charged {ChatUtils.moneyGreen}${fixedRentalPrice.ToString("N0")}{ChatUtils.White} for a rental vehicle. To return a vehicle head to a rental point and return the rental.");
                 }

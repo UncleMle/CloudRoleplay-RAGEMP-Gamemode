@@ -185,16 +185,13 @@ namespace CloudRP.World.BanksAtms
                         return;
                     }
 
-                    if (characterData.cash_amount - cashDepo < 0)
+                    if (!player.processCashPayment(cashDepo, "Bank Deposit"))
                     {
                         uiHandling.sendPushNotifError(player, "You don't have enough cash to deposit this amount", 6600, true);
                         return;
                     }
 
-                    characterData.cash_amount -= cashDepo;
-                    characterData.money_amount += cashDepo;
-
-                    player.setPlayerCharacterData(characterData, false, true);
+                    player.addPlayerMoney(cashDepo, "Bank Deposit");
                     uiHandling.sendNotification(player, $"~g~Deposited ${cashDepo.ToString("N0")}.", false, true, "Deposits cash.");
 
                     uiHandling.setLoadingState(player, false);
@@ -221,9 +218,9 @@ namespace CloudRP.World.BanksAtms
             {
                 try
                 {
-                    long transferAmount = long.Parse(bankTransfer.transferAmount);
+                    int transferAmount = int.Parse(bankTransfer.transferAmount);
 
-                    if (characterData.money_amount - transferAmount < 0)
+                    if (player.processPayment(transferAmount, "Transfer Charge"))
                     {
                         uiHandling.sendPushNotifError(player, "You don't have enough money to send that amount.", 6600, true);
                         return;
@@ -254,11 +251,8 @@ namespace CloudRP.World.BanksAtms
                                     return;
                                 }
 
-                                characterData.money_amount -= transferAmount;
-                                targetCharData.money_amount += transferAmount;
+                                p.addPlayerMoney(transferAmount, "Transfer Transaction");
 
-                                player.setPlayerCharacterData(characterData, false, true);
-                                p.setPlayerCharacterData(targetCharData, false, true);
                                 p.SendChatMessage(ChatUtils.info + $"You have just been bank transferred ${transferAmount.ToString("N0")}.");
                                 CommandUtils.successSay(player, $"You successfully bank transferred {targetCharData.character_name} ${transferAmount.ToString("N0")}");
                                 uiHandling.setLoadingState(player, false);
@@ -288,16 +282,15 @@ namespace CloudRP.World.BanksAtms
 
             if (character == null || character != null && character.salary_amount == 0) return;
 
-            long salary = character.salary_amount;
+            player.addPlayerMoney((int)character.salary_amount, "Salary Retrieval");
 
-            character.money_amount += salary;
             character.salary_amount = 0;
             player.setPlayerCharacterData(character, false, true);
 
             uiHandling.setLoadingState(player, false);
             sendAtmUIData(player, character);
 
-            CommandUtils.successSay(player, $"You have successfully deposited {ChatUtils.moneyGreen}${salary.ToString("N0")}{ChatUtils.White} from your salary into your bank account.");
+            CommandUtils.successSay(player, $"You have successfully deposited {ChatUtils.moneyGreen}${character.salary_amount.ToString("N0")}{ChatUtils.White} from your salary into your bank account.");
         }
         #endregion
     }

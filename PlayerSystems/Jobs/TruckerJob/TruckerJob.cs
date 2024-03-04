@@ -224,8 +224,7 @@ namespace CloudRP.PlayerSystems.Jobs.TruckerJob
 
                 if(characterData != null && selectedJob != null && jobData.jobLevel == 2)
                 {
-                    characterData.salary_amount += selectedJob.jobPay;
-                    player.setPlayerCharacterData(characterData, false, true);
+                    player.addPlayerSalary(selectedJob.jobPay, "Trucker Job Pay");
 
                     player.SendChatMessage(ChatUtils.freelanceJobs + $"You have finished the trucker job {selectedJob.jobName} and {ChatUtils.moneyGreen}${selectedJob.jobPay.ToString("N0")}{ChatUtils.White} has been paid into your salary.");
                     FreelanceJobSystem.deleteFreeLanceVehs(player);

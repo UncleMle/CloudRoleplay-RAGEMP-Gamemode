@@ -4,6 +4,7 @@ import GuiSystem from '@/BrowserSystem/GuiSystem';
 import { CLEAR_FOCUS, _IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE, _control_ids } from '@/Constants/Constants';
 import { Browsers } from '@/enums';
 import vehicleData from './VehicleData.json';
+import VehicleManager from '@/VehicleSystems/VehicleManager';
 
 export default class VehicleDealerShips {
 	public static LocalPlayer: PlayerMp = mp.players.local;
@@ -107,23 +108,15 @@ export default class VehicleDealerShips {
 	public static async addDealerShipVehicle(vehName: string, rotation: string | number, colour: string | number) {
 		if (!vehName) return;
 
-		let spawnHash: number = mp.game.joaat(vehName);
-
 		VehicleDealerShips.insertPerformanceToBrowser(vehName);
 
-		if (VehicleDealerShips.dealerSelectedVehicle && VehicleDealerShips.dealerSelectedVehicle.model == spawnHash) return;
+		if (VehicleDealerShips.dealerSelectedVehicle && mp.game.vehicle.getDisplayNameFromVehicleModel(VehicleDealerShips.dealerSelectedVehicle.model) === vehName) return;
 
 		if (VehicleDealerShips.dealerSelectedVehicle) {
 			VehicleDealerShips.dealerSelectedVehicle.destroy();
 		}
 
-		VehicleDealerShips.dealerSelectedVehicle = mp.vehicles.new(spawnHash, new mp.Vector3(227.5, -987.2, -99), {
-			heading: -127,
-			numberPlate: 'DEALER',
-			locked: true,
-			engine: false,
-			dimension: VehicleDealerShips.LocalPlayer.remoteId + 1
-		});
+		VehicleDealerShips.dealerSelectedVehicle = VehicleManager.createVehicle(vehName, new mp.Vector3(227.5, -987.2, -99), 111, 111, true, "DEALER", VehicleDealerShips.LocalPlayer.remoteId + 1);
 
 		for (let i = 0; VehicleDealerShips.dealerSelectedVehicle.handle === 0 && i < 15; ++i) {
 			await mp.game.waitAsync(100);

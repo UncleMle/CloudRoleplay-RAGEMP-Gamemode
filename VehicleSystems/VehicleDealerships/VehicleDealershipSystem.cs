@@ -3,6 +3,7 @@ using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.ServerSystems.Admin;
 using CloudRP.ServerSystems.AntiCheat;
 using CloudRP.ServerSystems.CustomEvents;
+using CloudRP.ServerSystems.Logging;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.VehicleParking;
 using CloudRP.VehicleSystems.Vehicles;
@@ -293,7 +294,6 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
 
             if (playerDealerData != null && dealerActive && charData != null)
             {
-                long currentMoney = charData.money_amount;
                 DealerVehicle findDealerVeh = playerDealerData.vehicles.Where(veh => veh.spawnName == uiData.vehName).FirstOrDefault();
                 
                 if (findDealerVeh == null)
@@ -302,12 +302,9 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
                     return;
                 }
 
-                long moneyDifference = currentMoney - findDealerVeh.price;
-                long priceDifference = findDealerVeh.price - charData.money_amount;
-
-                if (moneyDifference < 0)
+                if (!player.processPayment(findDealerVeh.price, "Vehicle Dealership - Purchase"))
                 {
-                    uiHandling.sendPushNotifError(player, $"You don't have enough money to purchase this vehicle! You need ${priceDifference} more", 6600, true);
+                    uiHandling.sendPushNotifError(player, $"You don't have enough money to purchase this vehicle!", 6600, true);
                     return;
                 }
 
@@ -317,17 +314,15 @@ namespace CloudRP.VehicleSystems.VehicleDealerships
                     return;
                 }
 
-                charData.money_amount -= findDealerVeh.price;
-
                 (Vehicle buildVeh, DbVehicle vehicleData) = VehicleSystem.buildVehicle(uiData.vehName, playerDealerData.spawnPosition, 0, charData.character_id, uiData.vehColour, uiData.vehColour, charData.character_name);
 
                 if (buildVeh == null || vehicleData == null) return;
 
-                player.setPlayerCharacterData(charData, false, true);
-
                 player.TriggerEvent("dealers:closeDealership");
                 CommandUtils.successSay(player, $"You purchased a new {vehicleData.vehicle_display_name} for {ChatUtils.moneyGreen}${findDealerVeh.price.ToString("N0")}{ChatUtils.White}. Your vehicle ~y~has been marked on the map~w~.");
                 player.SendChatMessage(ChatUtils.info + $"Make sure to {ChatUtils.red}insure{ChatUtils.White} your vehicle. Or you will have to pay 2x in costs to retrieve it from insurance.");
+
+                ServerLogging.addNewLog(charData.character_id, "Vehicle Dealership Purchase", $"{charData.character_name} purchased a {vehicleData.vehicle_display_name} for ${findDealerVeh.price.ToString("N0")}", LogTypes.AssetPurchase);
 
                 MarkersAndLabels.addBlipForClient(player, 523, $"Your new vehicle [{vehicleData.numberplate}]", playerDealerData.spawnPosition, 70, 255);
                 ChatUtils.formatConsolePrint($"{charData.character_name} purchased a new {vehicleData.vehicle_display_name} with id #{vehicleData.vehicle_id}", ConsoleColor.Blue);

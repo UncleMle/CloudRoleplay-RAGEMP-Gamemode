@@ -22,6 +22,7 @@ namespace CloudRP.PlayerSystems.Character
         private static double _characterHungerRemover = 0.004;
         private static double _characterWaterRemover = 0.009;
         public static readonly string startedCharacterCreationKey = "server:characterCreation:hasStarted";
+        public static readonly Vector3 characterCreationArea = new Vector3(-38.6, -590.5, 78.8);
 
         public CharacterSystem()
         {
@@ -387,6 +388,9 @@ namespace CloudRP.PlayerSystems.Character
                 uiHandling.sendPushNotifError(player, "You already have the maximum amount of characters", 5600);
                 return;
             }
+
+            player.sleepClientAc();
+            player.Position = characterCreationArea;
 
             player.SetData(startedCharacterCreationKey, true);
             player.TriggerEvent("client:setCharacterCreation");

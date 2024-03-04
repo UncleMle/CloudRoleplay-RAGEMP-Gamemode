@@ -140,7 +140,7 @@ namespace CloudRP.VehicleSystems.VehicleInsurance
 
             if (vehicleData == null || vehicleData != null && vehicleData.insurance_status) return;
 
-            if(character.money_amount - insureVehicleFee < 0)
+            if(!player.processPayment(insureVehicleFee, "Vehicle Insurance Fee"))
             {
                 long difference = insureVehicleFee - character.money_amount;
 
@@ -149,9 +149,6 @@ namespace CloudRP.VehicleSystems.VehicleInsurance
             }
 
             uiHandling.resetRouter(player);
-
-            character.money_amount -= insureVehicleFee;
-            player.setPlayerCharacterData(character, false, true);
 
             string newPlate = VehicleSystem.genUniquePlate(vehicleData.vehicle_id, vehicleData.vehicle_class_id, true);
 
@@ -178,7 +175,7 @@ namespace CloudRP.VehicleSystems.VehicleInsurance
 
                 int insuranceFee = findFromDb.insurance_status ? playerInsuranceData.retrieveFee : playerInsuranceData.retrieveFee * 2;
 
-                if (charData.money_amount - insuranceFee < 0)
+                if (!player.processPayment(insuranceFee, "Insurance Vehicle Retrieval Fee"))
                 {
                     uiHandling.sendPushNotifError(player, $"You don't have enough money to pay for this. You need {playerInsuranceData.retrieveFee - charData.money_amount:N0} more.", 5500);
                     return;
@@ -199,9 +196,6 @@ namespace CloudRP.VehicleSystems.VehicleInsurance
                     player.SendChatMessage(ChatUtils.info + $"You have had to pay {ChatUtils.red}${playerInsuranceData.retrieveFee.ToString("N0")}{ChatUtils.White} more in insurance due to your car not being insured.");
                 }
 
-                charData.money_amount -= insuranceFee;
-
-                player.setPlayerCharacterData(charData, false, true);
                 ChatUtils.formatConsolePrint($"{charData.character_name} retrieved their vehicle [{findFromDb.numberplate}] from {playerInsuranceData.insuranceName} for ${insuranceFee.ToString("N0")}");
                 CommandUtils.successSay(player, $"You retrieved your vehicle [{findFromDb.numberplate}] from {playerInsuranceData.insuranceName} for ${insuranceFee.ToString("N0")}. The vehicle has ~y~been marked on the map~w~.");
 

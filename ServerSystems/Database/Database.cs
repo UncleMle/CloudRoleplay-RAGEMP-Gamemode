@@ -10,6 +10,7 @@ using CloudRP.PlayerSystems.FactionSystems.PoliceSystems;
 using CloudRP.ServerSystems.Admin;
 using CloudRP.ServerSystems.AntiCheat;
 using CloudRP.ServerSystems.Authentication;
+using CloudRP.ServerSystems.Logging;
 using CloudRP.VehicleSystems.VehicleGarages;
 using CloudRP.VehicleSystems.VehicleModification;
 using CloudRP.VehicleSystems.Vehicles;
@@ -57,6 +58,7 @@ namespace CloudRP.ServerSystems.Database
         public DbSet<RouletteTable> roulette_tables { get; set; }
         public DbSet<CriminalCharge> criminal_charges { get; set; }
         public DbSet<VehicleGarage> vehicle_garages { get; set; }
+        public DbSet<ServerLog> server_logs { get; set; }
     }
 
     public class BaseEntity

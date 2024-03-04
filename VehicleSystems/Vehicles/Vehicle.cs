@@ -39,7 +39,7 @@ namespace CloudRP.VehicleSystems.Vehicles
         public ulong vehicle_distance { get; set; }
         public float vehicle_health { get; set; } = 1000;
         public int dealership_id { get; set; } = -1;
-        public long dealership_price { get; set; } = -1;
+        public int dealership_price { get; set; } = -1;
         public int dealership_spot_id { get; set; } = -1;
         public string dealership_description { get; set; }
         public int faction_owner_id { get; set; } = -1;

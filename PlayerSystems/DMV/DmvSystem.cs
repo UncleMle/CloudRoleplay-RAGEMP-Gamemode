@@ -246,14 +246,11 @@ namespace CloudRP.PlayerSystems.DMV
                 return;
             }
 
-            if((character.money_amount - selectCourse.coursePrice) < 0)
+            if(!player.processPayment(selectCourse.coursePrice, "DMV - Course Payment"))
             {
                 uiHandling.sendPushNotifError(player, "You don't have enough money to afford this course.", 5600);
                 return;
             }
-
-            character.money_amount -= selectCourse.coursePrice;
-            player.setPlayerCharacterData(character, false, true);
             
             createDmvVehicle(player, selectCourse);
             uiHandling.resetRouter(player);

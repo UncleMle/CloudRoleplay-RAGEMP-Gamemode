@@ -128,7 +128,7 @@ namespace CloudRP.PlayerSystems.Jobs.GarbageJob
             MarkersAndLabels.removeClientBlip(player);
             FreelanceJobSystem.deleteFreeLanceVehs(player);
 
-            character.salary_amount += jobPay;
+            player.addPlayerSalary(jobPay, "Garbage Job Pay");
 
             player.setPlayerCharacterData(character, false, true);
             player.SendChatMessage(ChatUtils.freelanceJobs + $"You have finished the garbage job and {ChatUtils.moneyGreen}${jobPay.ToString("N0")}{ChatUtils.White} has been paid into your salary.");

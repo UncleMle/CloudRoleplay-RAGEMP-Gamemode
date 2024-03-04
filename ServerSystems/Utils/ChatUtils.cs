@@ -61,6 +61,8 @@ namespace CloudRP.ServerSystems.Utils
         {
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.Write(getTimeString());
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.Write("[CloudRP] ");
             Console.ForegroundColor = colour;
             Console.Write(_c_Server + message);
             Console.ForegroundColor = ConsoleColor.White;
@@ -75,6 +77,9 @@ namespace CloudRP.ServerSystems.Utils
 
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.Write(getTimeString());
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write("[Startup] ");
             Console.ForegroundColor = lastColour;
             Console.Write(_c_Server + message);
             Console.ForegroundColor = ConsoleColor.White;

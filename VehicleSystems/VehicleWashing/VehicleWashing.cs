@@ -83,18 +83,14 @@ namespace CloudRP.VehicleSystems.VehicleWashing
                         return;
                     }
 
-                    if (characterData.money_amount - vehicleWashData.washPrice < 0)
+                    if (!player.processPayment(vehicleWashData.washPrice, "Vehicle Washing Charge"))
                     {
                         CommandUtils.errorSay(player, "You do not have enough money to pay for this vehicle wash.");
                         return;
                     }
 
-                    characterData.money_amount -= vehicleWashData.washPrice;
 
                     player.Vehicle.setDirtLevel(0);
-
-                    player.setPlayerCharacterData(characterData, false, true);
-
                     CommandUtils.successSay(player, "You washed your vehicle [" + targetVehicleData.numberplate + "] for the price of $" + vehicleWashData.washPrice);
                 }
             }

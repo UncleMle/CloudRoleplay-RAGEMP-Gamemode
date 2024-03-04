@@ -74,14 +74,11 @@ namespace CloudRP.PlayerSystems.FactionSystems.PoliceFaction
 
             if(charge == null) return;  
 
-            if((character.money_amount - charge.totalFine) < 0)
+            if(!player.processPayment(charge.totalFine, "Fine Payment"))
             {
                 uiHandling.sendPushNotifError(player, "You don't have enough to pay for this fine.", 6600);
                 return;
             }
-
-            character.money_amount -= charge.totalFine;
-            player.setPlayerCharacterData(character, false, true);
 
             CriminalChargeSystem.removePlayerCharge(character.character_id, fineId);
 

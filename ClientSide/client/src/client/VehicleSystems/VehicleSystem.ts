@@ -3,8 +3,8 @@ import { CF_PED_FLAG_CAN_FLY_THRU_WINDSCREEN, _control_ids } from "../Constants/
 import isFlipped from "../PlayerMethods/getIfVehicleIsFlipped";
 
 export default class VehicleSystems {
-	public static LocalPlayer: PlayerMp;
-	public static GameControls: GamePadMp;
+	public static LocalPlayer: PlayerMp = mp.players.local;
+	public static GameControls: GamePadMp = mp.game.controls;
 	public static beltToggle: boolean;
 	public static vehicleOldPos: Vector3;
 	public static updateVehicleDistEvent: string = "server:updateVehicleDistance";
@@ -16,17 +16,16 @@ export default class VehicleSystems {
 	public static blockVehicleSeatBelts: number[] = [13, 14, 15, 16, 21, 8];
 
 	constructor() {
-		VehicleSystems.LocalPlayer = mp.players.local;
-		VehicleSystems.GameControls = mp.game.controls;
+		mp.events.add({
+			"render": VehicleSystems.handleRender,
+			"playerEnterVehicle": VehicleSystems.handlePlayerEnterVehicle,
+			"playerLeaveVehicle": VehicleSystems.handlePlayerExitVehicle,
+			"playerCreateWaypoint": VehicleSystems.handleWaypointCreate,
+			"playerRemoveWaypoint": VehicleSystems.handleWaypointRemove,
+			"vehicleSystem:freezePlayerVehicle": VehicleSystems.freezePlayerVehicle,
+			"vehicleSystem:handleAutoDriveStart": VehicleSystems.handleAutoDriveStart
+		});
 
-		mp.events.add("render", VehicleSystems.handleRender);
-		mp.events.add("playerLeaveVehicle", (veh: VehicleMp) => VehicleSystems.beltToggle ? VehicleSystems.toggleSeatBelt(veh) : null);
-		mp.events.add("playerEnterVehicle", VehicleSystems.handlePlayerEnterVehicle);
-		mp.events.add("playerLeaveVehicle", VehicleSystems.handleExitDistCalc);
-		mp.events.add("playerCreateWaypoint", VehicleSystems.handleWaypointCreate);
-		mp.events.add("playerRemoveWaypoint", VehicleSystems.handleWaypointRemove);
-		mp.events.add("vehicleSystem:freezePlayerVehicle", VehicleSystems.freezePlayerVehicle);
-		mp.events.add("vehicleSystem:handleAutoDriveStart", VehicleSystems.handleAutoDriveStart);
 		mp.keys.bind(_control_ids.F, false, VehicleSystems.stopWindowBreaking);
 		mp.keys.bind(_control_ids.J, false, VehicleSystems.toggleSeatBelt);
 
@@ -66,8 +65,11 @@ export default class VehicleSystems {
 		VehicleSystems.vehicleOldPos = vehicle.position;
 	}
 
-	public static handleExitDistCalc(vehicle: VehicleMp) {
+	public static handlePlayerExitVehicle(vehicle: VehicleMp) {
 		if (!vehicle) return;
+
+		VehicleSystems.beltToggle ? VehicleSystems.toggleSeatBelt(vehicle) : null;
+
 		mp.events.callRemote(VehicleSystems.updateVehicleDistEvent, JSON.stringify(VehicleSystems.vehicleOldPos))
 	}
 

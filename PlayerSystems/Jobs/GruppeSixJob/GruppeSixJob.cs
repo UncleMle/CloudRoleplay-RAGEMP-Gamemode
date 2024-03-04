@@ -167,7 +167,7 @@ namespace CloudRP.PlayerSystems.Jobs.GruppeSixJob
             MarkersAndLabels.removeClientBlip(player);
             FreelanceJobSystem.deleteFreeLanceVehs(player);
 
-            character.salary_amount += selectJob.jobPay;
+            player.addPlayerSalary(selectJob.jobPay, "Gruppe Six Job Pay");
 
             player.setPlayerCharacterData(character, false, true);
 

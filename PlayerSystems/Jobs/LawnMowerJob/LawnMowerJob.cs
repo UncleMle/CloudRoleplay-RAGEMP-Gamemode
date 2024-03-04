@@ -128,9 +128,8 @@ namespace CloudRP.PlayerSystems.Jobs.LawnMowerJob
 
                 if (targetLawn == null) return;
 
-                character.salary_amount += targetLawn.pay;
+                player.addPlayerSalary(targetLawn.pay, "Lawn Mower Pay");
 
-                player.setPlayerCharacterData(character, false, true);
                 FreelanceJobSystem.deleteFreeLanceVehs(player);
                 MarkersAndLabels.removeClientBlip(player);
                 MarkersAndLabels.flushClientBlips(player);

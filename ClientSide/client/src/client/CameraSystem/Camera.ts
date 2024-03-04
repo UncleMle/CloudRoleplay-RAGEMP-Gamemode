@@ -48,7 +48,7 @@ export default class Camera {
 
     setActive() {
         this.camera?.setActive(true);
-        mp.game.cam.renderScriptCams(true, false, 0, false, false);
+        mp.game.cam.renderScriptCams(true, true, 2000, false, false);
         mp.game.streaming.setFocusArea(this.position.x, this.position.y, this.position.z, 0, 0, 0);
     }
 
