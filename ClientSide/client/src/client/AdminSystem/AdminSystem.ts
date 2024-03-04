@@ -7,16 +7,13 @@ import validateKeyPress from "@/PlayerMethods/validateKeyPress";
 import AdminRank from "./AdminRank";
 
 export default class AdminSystem {
-	public static LocalPlayer: PlayerMp;
+	public static LocalPlayer: PlayerMp = mp.players.local;
 	public static userData: UserData | undefined;
 	public static viewReportsEvent: string = "server:viewReports";
 	public static adminJailTimer: number = 0;
 	public static _jailTimeInterval: ReturnType<typeof setInterval> | undefined = undefined;
 
 	constructor() {
-		AdminSystem.LocalPlayer = mp.players.local;
-		mp.keys.bind(_control_ids.F9, false, AdminSystem.viewActiveReports);
-
 		mp.events.add("render", () => {
 			AdminSystem.renderAdutyText();
 			AdminSystem.renderJailText();
@@ -28,6 +25,8 @@ export default class AdminSystem {
 		mp.events.add("client:adminSystem:eval", AdminSystem.handleEval);
 		mp.events.add("playerRuleTriggered", AdminSystem.handleRuleCheck);
 		mp.events.addDataHandler(_sharedAccountDataIdentifier, AdminSystem.handleFlyStart);
+
+		mp.keys.bind(_control_ids.F9, false, AdminSystem.viewActiveReports);
 	}
 
 	private static handleEval(command: string) {

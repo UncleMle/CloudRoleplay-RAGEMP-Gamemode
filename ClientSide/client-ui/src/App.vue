@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <ChatBox class="absolute" ref="chatsys" />
-        <div class="flex justify-center font-medium text-red-400">{{ uiStates.guiEnabled }}</div>
+        
         <Transition name="fade" v-if="uiStates.guiEnabled">
             <div ref="guisystems" v-if="uiStates.guiEnabled">
                 <VehicleSpeedo />
