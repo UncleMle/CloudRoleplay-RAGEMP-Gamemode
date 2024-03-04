@@ -84,24 +84,21 @@ namespace CloudRP.ServerSystems.AntiCheat
 
             DimensionChangeEvent.onDimensionChange += (player, oldDim, newDim) =>
             {
-                NAPI.Task.Run(() =>
+                if (!NAPI.Player.IsPlayerConnected(player)) return;
+
+                if (player.GetData<bool>(_safeDimensionChangingKey) || player.isBanned()) return;
+
+                string message = string.Format(antiCheatMessages[AcEvents.dimensionChangeHack], player.Id, player.Ping, oldDim, newDim);
+
+                sendAcMessage(message);
+
+                if (player.getPlayerAccountData() == null)
                 {
-                    if (!NAPI.Player.IsPlayerConnected(player)) return;
+                    player.Kick();
+                    return;
+                }
 
-                    if (player.GetData<bool>(_safeDimensionChangingKey) || player.isBanned()) return;
-
-                    string message = string.Format(antiCheatMessages[AcEvents.dimensionChangeHack], player.Id, player.Ping, oldDim, newDim);
-
-                    sendAcMessage(message);
-
-                    if (player.getPlayerAccountData() == null)
-                    {
-                        player.Kick();
-                        return;
-                    }
-
-                    player.banPlayer(-1, "[Anti-Cheat System]", player.getPlayerAccountData(), "Dimension changer hack.");
-                }, 1500);
+                if(player.getPlayerCharacterData() != null) player.banPlayer(-1, "[Anti-Cheat System]", player.getPlayerAccountData(), "Dimension changer hack.");
             };
 
             System.Timers.Timer checkForValidVehicles = new System.Timers.Timer
