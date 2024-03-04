@@ -220,13 +220,6 @@ namespace CloudRP.World.BanksAtms
                 {
                     int transferAmount = int.Parse(bankTransfer.transferAmount);
 
-                    if (player.processPayment(transferAmount, "Transfer Charge"))
-                    {
-                        uiHandling.sendPushNotifError(player, "You don't have enough money to send that amount.", 6600, true);
-                        return;
-                    }
-
-
                     if (transferAmount < 0 || transferAmount > 200000)
                     {
                         uiHandling.sendPushNotifError(player, "Transfer amount must be between $0 and $200,000", 6600, true);
@@ -248,6 +241,12 @@ namespace CloudRP.World.BanksAtms
                                 if (targetCharData.character_id == characterData.character_id)
                                 {
                                     uiHandling.sendPushNotifError(player, "You cannot bank transfer money to yourself.", 6600, true);
+                                    return;
+                                }
+
+                                if (!player.processPayment(transferAmount, "Transfer Charge"))
+                                {
+                                    uiHandling.sendPushNotifError(player, "You don't have enough money to send that amount.", 6600, true);
                                     return;
                                 }
 
@@ -284,13 +283,13 @@ namespace CloudRP.World.BanksAtms
 
             player.addPlayerMoney((int)character.salary_amount, "Salary Retrieval");
 
+            CommandUtils.successSay(player, $"You have successfully deposited {ChatUtils.moneyGreen}${character.salary_amount.ToString("N0")}{ChatUtils.White} from your salary into your bank account.");
+
             character.salary_amount = 0;
             player.setPlayerCharacterData(character, false, true);
 
             uiHandling.setLoadingState(player, false);
             sendAtmUIData(player, character);
-
-            CommandUtils.successSay(player, $"You have successfully deposited {ChatUtils.moneyGreen}${character.salary_amount.ToString("N0")}{ChatUtils.White} from your salary into your bank account.");
         }
         #endregion
     }
