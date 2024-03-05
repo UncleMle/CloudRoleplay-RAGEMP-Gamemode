@@ -112,7 +112,7 @@ namespace CloudRP.ServerSystems.Authentication
                     AuthUtils.sendEmail(
                         findAccount.email_address, 
                         $"OTP Code for {findAccount.username}", 
-                        $"Hello {findAccount.username}<br>The OTP code for your account {findAccount.username} is <b>{otp}</b>."
+                        $"Hello {findAccount.username},<br>The OTP code for your account {findAccount.username} is <b>{otp}</b>."
                     );
 
                     uiHandling.setLoadingState(player, false);

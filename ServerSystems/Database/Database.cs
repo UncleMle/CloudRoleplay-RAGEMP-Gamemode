@@ -59,6 +59,7 @@ namespace CloudRP.ServerSystems.Database
         public DbSet<CriminalCharge> criminal_charges { get; set; }
         public DbSet<VehicleGarage> vehicle_garages { get; set; }
         public DbSet<ServerLog> server_logs { get; set; }
+        public DbSet<AdminPunishments> admin_punishments { get; set; }
     }
 
     public class BaseEntity

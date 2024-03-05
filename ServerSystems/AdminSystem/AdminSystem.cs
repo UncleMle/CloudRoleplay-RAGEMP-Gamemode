@@ -516,8 +516,8 @@ namespace CloudRP.ServerSystems.Admin
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]
-        [Command("kick", "~r~/kick [nameOrId] [silent]")]
-        public void kickPlayer(Player player, string nameOrId, bool isSilent = false)
+        [Command("kick", "~r~/kick [nameOrId] [reason]", GreedyArg = true)]
+        public void kickPlayer(Player player, string nameOrId, string reason)
         {
             User userData = player.getPlayerAccountData();
             Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
@@ -534,14 +534,14 @@ namespace CloudRP.ServerSystems.Admin
 
                 if (findPlayer.isImmuneTo(player)) return;
 
-                findPlayer.Kick();
+                AdminPunishments.addNewPunishment(findPlayer.getPlayerAccountData().account_id, reason, userData.admin_name, PunishmentTypes.AdminKick, -1);
+
                 ChatUtils.formatConsolePrint($"{userData.admin_name} kicked {characterData.character_name}");
                 uiHandling.sendNotification(player, $"~r~You kicked {userData.admin_name}", false);
 
-                if (!isSilent)
-                {
-                    AdminUtils.sendMessageToAllStaff(userData.admin_name + " kicked " + characterData.character_name);
-                }
+                findPlayer.Kick();
+                
+                AdminUtils.sendMessageToAllStaff(userData.admin_name + " kicked " + characterData.character_name);
             }
             else
             {
@@ -604,8 +604,32 @@ namespace CloudRP.ServerSystems.Admin
             }
 
             player.adminJail(time * 60, reason);
+
+            AdminPunishments.addNewPunishment(user.account_id, reason, user.admin_name, PunishmentTypes.AdminJail, time);
             AdminUtils.sendMessageToAllStaff($"{user.admin_name} admin jailed {findPlayer.getPlayerCharacterData().character_name} for {time} minute(s).", 0, true);
             AdminUtils.staffSay(findPlayer, $"You have been admin jailed by {user.admin_name} for {time} minute(s).");
+        }
+
+        [AdminCommand(AdminRanks.Admin_Moderator)]
+        [Command("warn", "~r~/warn [nameOrId] [reason]", GreedyArg = true)]
+        public void warnUser(Player player, string nameOrId, string reason)
+        {
+            User user = player.getPlayerAccountData();
+
+            Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+            if(findPlayer == null)
+            {
+                CommandUtils.notFound(player);
+                return;
+            }
+
+            User findPlayerUser = findPlayer.getPlayerAccountData();
+
+            AdminPunishments.addNewPunishment(findPlayerUser.account_id, reason, user.admin_name, PunishmentTypes.AdminWarn);
+
+            AdminUtils.staffSay(player, $"You warned {findPlayer.getPlayerCharacterData().character_name} with reason {ChatUtils.red}{reason}{AdminUtils.staffSuffixColour}.");
+            AdminUtils.staffSay(findPlayer, $"You have been warned by {user.admin_name} with reason {ChatUtils.red}{reason}{AdminUtils.staffSuffixColour}.");
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]

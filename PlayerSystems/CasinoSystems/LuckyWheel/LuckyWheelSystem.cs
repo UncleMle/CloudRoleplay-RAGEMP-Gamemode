@@ -16,6 +16,7 @@ namespace CloudRP.PlayerSystems.CasinoSystems.LuckyWheel
         private static readonly string _spinningWheelDataKey = "casinoSystem:spinningWheel:winDataKey";
         private static readonly Vector3 spawnVehicleAt = new Vector3(935.2, -0.9, 78.8);
         private static readonly int spinWheelCost = 400;
+        private static bool wheelIsSpinning;
         string[] winListNames = new string[]
         {
             "clothing",
@@ -52,6 +53,10 @@ namespace CloudRP.PlayerSystems.CasinoSystems.LuckyWheel
         public LuckyWheelSystem()
         {
             Main.playerConnect += spawnClientPodiumVehicle;
+            Main.playerDisconnect += (player) =>
+            {
+                if (player.HasData(_spinningWheelDataKey)) wheelIsSpinning = false;
+            };
 
             Main.resourceStart += () => ChatUtils.startupPrint("Loaded in Lucky Wheel System");
         }
@@ -64,6 +69,14 @@ namespace CloudRP.PlayerSystems.CasinoSystems.LuckyWheel
 
         public void startWheelWelcome(Player player, object callback)
         {
+            if(!wheelIsSpinning)
+            {
+                uiHandling.sendPushNotifError(player, "The wheel is already spinning. Please wait.", 6600);
+                return;
+            }
+
+            wheelIsSpinning = true;
+
             User user = player.getPlayerAccountData();
 
             if(!player.processPayment(spinWheelCost, "Casino - Lucky Wheel Spin Cost"))
@@ -111,6 +124,8 @@ namespace CloudRP.PlayerSystems.CasinoSystems.LuckyWheel
         public void handleFinishWheelSpin(Player player)
         {
             if (!player.HasData(_spinningWheelDataKey) || player.getPlayerCharacterData() == null) return;
+
+            wheelIsSpinning = false;
 
             DbCharacter character = player.getPlayerCharacterData();
 

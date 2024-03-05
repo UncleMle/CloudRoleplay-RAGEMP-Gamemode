@@ -221,6 +221,7 @@ namespace CloudRP.PlayerSystems.PlayerData
                     dbContext.SaveChanges();
 
                     banPlayer.setPlayerToBanScreen(ban);
+                    AdminPunishments.addNewPunishment(banPlayerUserData.account_id, reason, adminName, PunishmentTypes.AdminBan, lift_unix_time);
                     uiHandling.toggleGui(banPlayer, false);
 
                     ChatUtils.formatConsolePrint($"{ban.username} was banned with lift time being {lift_unix_time}. Reason {reason}");
