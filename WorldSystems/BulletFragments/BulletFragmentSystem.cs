@@ -46,6 +46,7 @@ namespace CloudRP.WorldSystems.BulletFragments
         [RemoteEvent("server:bulletFragments:addNewBulletFragmentArea")]
         public void createNewFragmentArea(Player player, Vector3 position)
         {
+            return;
             syncNewBulletCasing(position);
         }
         #endregion

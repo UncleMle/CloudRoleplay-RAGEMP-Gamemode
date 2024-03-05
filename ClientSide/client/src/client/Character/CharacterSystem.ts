@@ -6,15 +6,15 @@ import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
 import Tattoos from "./Tattoos";
 
 export default class CharacterSystem {
-	public static LocalPlayer: PlayerMp;
+	public static LocalPlayer: PlayerMp = mp.players.local;
 	public static serverName: string = "Cloud Roleplay";
 	public static discordStatusUpdate_seconds: number = 15;
 
 	constructor() {
-		CharacterSystem.LocalPlayer = mp.players.local;
-
+		mp.events.add("render", CharacterSystem.handleRender);
 		mp.events.add("character:setModel", CharacterSystem.setCharacterCustomization);
 		mp.events.add("entityStreamIn", CharacterSystem.handleEntityStreamIn);
+
 		mp.events.addDataHandler(_sharedCharacterModelIdentifier, CharacterSystem.handleDataHandler);
 		mp.events.addDataHandler(_sharedAccountDataIdentifier, CharacterSystem.handleAdmins);
 
@@ -23,6 +23,15 @@ export default class CharacterSystem {
 		setInterval(() => {
 			CharacterSystem.setDiscordStatus();
 		}, CharacterSystem.discordStatusUpdate_seconds * 1000)
+	}
+
+	private static handleRender() {
+		mp.game.graphics.beginScaleformMovieMethodOnFrontend("SET_HEADING_DETAILS");
+		mp.game.graphics.scaleformMovieMethodAddParamTextureNameString(`Player [${CharacterSystem.LocalPlayer.remoteId}]`);
+		mp.game.graphics.scaleformMovieMethodAddParamTextureNameString(CharacterSystem.serverName);
+		mp.game.graphics.scaleformMovieMethodAddParamTextureNameString("With " + mp.players.length + " players.");
+		mp.game.graphics.scaleformMovieMethodAddParamBool(false);
+		mp.game.graphics.endScaleformMovieMethod();
 	}
 
 	public static setDiscordStatus() {
@@ -39,9 +48,9 @@ export default class CharacterSystem {
 		}
 
 		await mp.game.waitAsync(50);
-		if(!entity || !charData) return;
+		if (!entity || !charData) return;
 
-		if((entity.type == "ped" && mp.peds.exists(entity as PedMp)) || (entity.type == "player" && mp.players.exists(entity as PlayerMp))) {
+		if ((entity.type == "ped" && mp.peds.exists(entity as PedMp)) || (entity.type == "player" && mp.players.exists(entity as PlayerMp))) {
 			let female: number = mp.game.joaat("mp_m_freemode_01");
 			let male: number = mp.game.joaat("mp_f_freemode_01");
 
@@ -49,7 +58,7 @@ export default class CharacterSystem {
 
 			let rot: number = parseInt(charData.rotation);
 
-			if(rot != 0) {
+			if (rot != 0) {
 				entity.setHeading(rot);
 			}
 
@@ -90,16 +99,16 @@ export default class CharacterSystem {
 
 			entity.setHeadBlendData(parseInt(charData.firstHeadShape), parseInt(charData.secondHeadShape), 0, parseInt(charData.firstHeadShape), parseInt(charData.secondHeadShape), 0, Number(charData.headMix) * 0.01, Number(charData.skinMix) * 0.01, 0, false);
 
-			if(charData.player_tattos && charData.player_tattos.length > 0) {
+			if (charData.player_tattos && charData.player_tattos.length > 0) {
 				Tattoos.setDbTats(entity, charData);
 			}
 		}
 	}
 
 	public static handleAdmins(entity: PlayerMp, data: UserData) {
-		if(entity.type != "player" || !data) return;
+		if (entity.type != "player" || !data) return;
 
-		if(data && data.showAdminPed) {
+		if (data && data.showAdminPed) {
 			entity.model = mp.game.joaat(data.admin_ped);
 		}
 	}
@@ -111,7 +120,7 @@ export default class CharacterSystem {
 
 		if (!userData || !characterData) return;
 
-		if(userData.showAdminPed) {
+		if (userData.showAdminPed) {
 			entity.model = mp.game.joaat(userData.admin_ped);
 			return;
 		}
@@ -125,7 +134,7 @@ export default class CharacterSystem {
 
 		if (!userData) return;
 
-		if(userData.showAdminPed) {
+		if (userData.showAdminPed) {
 			entity.model = mp.game.joaat(userData.admin_ped);
 			return;
 		}

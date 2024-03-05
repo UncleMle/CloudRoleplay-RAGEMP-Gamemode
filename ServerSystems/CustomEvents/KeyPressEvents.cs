@@ -19,6 +19,7 @@ namespace CloudRP.ServerSystems.CustomEvents
         public static event KeyPressEventsEventHandler keyPress_E;
         public static event KeyPressEventsEventHandler keyPress_CTRL_X;
         public static event KeyPressEventsEventHandler keyPress_M;
+        public static event KeyPressEventsEventHandler keyPress_BACKQUOTE;
         #endregion
 
         #region Remote Events
@@ -64,6 +65,11 @@ namespace CloudRP.ServerSystems.CustomEvents
                         keyPress_M(player);
                         break;
                     }
+                case KeyType.KEY_BACKQUOTE:
+                    {
+                        keyPress_BACKQUOTE(player);
+                        break;
+                    }
             }
         }
 
@@ -77,7 +83,8 @@ namespace CloudRP.ServerSystems.CustomEvents
             KEY_CTRL_D,
             KEY_E,
             KEY_CTRL_X,
-            KEY_M
+            KEY_M,
+            KEY_BACKQUOTE
         }
     }
 }

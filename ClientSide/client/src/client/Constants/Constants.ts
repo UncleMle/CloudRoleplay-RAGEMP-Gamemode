@@ -61,6 +61,7 @@ export const _control_ids = {
 	F3: 114,
 	F9: 120,
 	F10: 121,
+	backQuote: 223,
 	M: 77
 };
 

@@ -16,7 +16,7 @@ namespace CloudRP.PlayerSystems.CasinoSystems.LuckyWheel
         private static readonly string _spinningWheelDataKey = "casinoSystem:spinningWheel:winDataKey";
         private static readonly Vector3 spawnVehicleAt = new Vector3(935.2, -0.9, 78.8);
         private static readonly int spinWheelCost = 400;
-        private static bool wheelIsSpinning;
+        private static bool wheelIsSpinning = false;
         string[] winListNames = new string[]
         {
             "clothing",
@@ -69,7 +69,7 @@ namespace CloudRP.PlayerSystems.CasinoSystems.LuckyWheel
 
         public void startWheelWelcome(Player player, object callback)
         {
-            if(!wheelIsSpinning)
+            if(wheelIsSpinning)
             {
                 uiHandling.sendPushNotifError(player, "The wheel is already spinning. Please wait.", 6600);
                 return;

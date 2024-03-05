@@ -66,6 +66,7 @@ namespace CloudRP.VehicleSystems.Vehicles
         public static readonly string _vehicleSharedModData = "VehicleModData";
         public static readonly string _vehicleDirtLevelIdentifier = "VehicleDirtLevel";
         public static readonly string _seatBeltIdentifier = "playerIsWearingSeatBelt";
+        public static readonly string _tyreStateKey = "server:vehicleSystem:tyreSync";
         private static int _timerInterval_seconds = 10;
         private static int vipLockDelay_seconds = 6;
         private static Timer saveVehicleTimer;
@@ -185,6 +186,7 @@ namespace CloudRP.VehicleSystems.Vehicles
             }
 
             veh.setVehicleData(vehicle, true, true);
+            veh.syncTyreStatus(JsonConvert.DeserializeObject<List<bool>>(vehicle.tyre_states));
 
             return veh;
         }
@@ -344,7 +346,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                     {
                         DbVehicle vehicleData = vehicle.getData();
 
-                        if (vehicleData == null) return;
+                        if (vehicleData == null || vehicleData.vehicle_id == -1) return;
 
                         vehicle.saveVehicleData(vehicleData, true);
                     }
@@ -434,6 +436,7 @@ namespace CloudRP.VehicleSystems.Vehicles
 
                 veh.setVehicleData(vehicleData, true, true);
                 veh.setDirtLevel(0);
+                veh.syncTyreStatus();
                 vehicle = veh;
                 vehData = vehicleData;
             }
@@ -1378,7 +1381,7 @@ namespace CloudRP.VehicleSystems.Vehicles
         [RemoteEvent("server:stallVehicle")]
         public void beginVehicleStall(Player player, int stallType)
         {
-            if (player.adminDuty()) return;
+            if (player.adminDuty() || true) return;
 
             if(player.IsInVehicle && player.VehicleSeat == 0 && !player.Vehicle.isStalled() && player.Vehicle.getData() != null)
             {
@@ -1428,7 +1431,12 @@ namespace CloudRP.VehicleSystems.Vehicles
         [RemoteEvent("server:vehicleSystems:syncTyres")]
         public void vehicleTyreSync(Player player, string tyreData)
         {
-            Console.WriteLine("Tyre Sync " + tyreData);
+            if (!player.IsInVehicle) return;
+
+            List<bool> states = JsonConvert.DeserializeObject<List<bool>>(tyreData);
+
+            player.Vehicle.SetData(_tyreStateKey, states);
+            player.Vehicle.SetSharedData(_tyreStateKey, states);
         }
         #endregion
 

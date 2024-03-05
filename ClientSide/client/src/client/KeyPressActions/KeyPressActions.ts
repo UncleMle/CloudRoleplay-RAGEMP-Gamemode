@@ -18,6 +18,7 @@ export default class KeyPressActions {
         mp.keys.bind(_control_ids.EBIND, false, () => KeyPressActions.handleKeyPressed(KeyType.KEY_E));
         mp.keys.bind(_control_ids.X, false, () => mp.keys.isDown(_control_ids.LCtrl) && KeyPressActions.handleKeyPressed(KeyType.KEY_CTRL_X));
         mp.keys.bind(_control_ids.M, false, () => validateKeyPress(true, true, true) && KeyPressActions.LocalPlayer.browserRouter === "/" && KeyPressActions.handleKeyPressed(KeyType.KEY_M));
+        mp.keys.bind(_control_ids.backQuote, false, () => KeyPressActions.handleKeyPressed(KeyType.KEY_BACKQUOTE))
     }
 
     private static getArgs(): boolean[] {

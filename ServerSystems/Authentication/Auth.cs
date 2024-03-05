@@ -19,6 +19,7 @@ using Discord;
 using Microsoft.EntityFrameworkCore;
 using System.Timers;
 using CloudRP.PlayerSystems.FactionSystems.PoliceSystems;
+using CloudRP.GeneralSystems.WeaponSystem;
 
 namespace CloudRP.ServerSystems.Authentication
 {
@@ -45,7 +46,7 @@ namespace CloudRP.ServerSystems.Authentication
             };
 
             timer.Elapsed += (object source, ElapsedEventArgs e) => 
-            NAPI.Task.Run(() => handleNonAuthenticated());
+                NAPI.Task.Run(() => handleNonAuthenticated());
 
             Main.resourceStart += () => ChatUtils.startupPrint("Started checking for non-authenticated users.");
         }

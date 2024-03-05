@@ -86,6 +86,7 @@ namespace CloudRP.ServerSystems.Admin
         public AdminSystem()
         {
             KeyPressEvents.keyPress_F4 += fly;
+            KeyPressEvents.keyPress_BACKQUOTE += onFixVehicle;
 
             Main.playerDisconnect += (player) =>
             {

@@ -1,5 +1,5 @@
 export enum BrowserEnv {
-	development = "192.168.1.188:3000", //"package://dist/index.html",
+	development = "http://package2/index.html", //"package://dist/index.html",
 	production = "http://package2/index.html" // 192.168.1.188:3000/?#/
 }
 
@@ -36,7 +36,8 @@ export enum KeyType
 	KEY_CTRL_D,
 	KEY_E,
 	KEY_CTRL_X,
-	KEY_M
+	KEY_M,
+	KEY_BACKQUOTE
 }
 
 export class MutationKeys {

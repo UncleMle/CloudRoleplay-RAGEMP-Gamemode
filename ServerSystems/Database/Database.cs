@@ -2,6 +2,7 @@
 using CloudRP.GeneralSystems.GeneralCommands;
 using CloudRP.GeneralSystems.HousingSystem;
 using CloudRP.GeneralSystems.InventorySystem;
+using CloudRP.GeneralSystems.WeaponSystem;
 using CloudRP.PlayerSystems.CasinoSystems;
 using CloudRP.PlayerSystems.CasinoSystems.Roulette;
 using CloudRP.PlayerSystems.Character;

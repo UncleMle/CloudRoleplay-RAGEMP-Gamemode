@@ -34,6 +34,7 @@ export default class NewAntiCheatSystem {
             "outgoingDamage": NewAntiCheatSystem.handleOutgoingDamage,
             "incomingDamage": NewAntiCheatSystem.handleIncomingDamage,
             "playerEnterVehicle": NewAntiCheatSystem.handleEnterVehicle,
+            "playerLeaveVehicle": NewAntiCheatSystem.handleLeaveVehicle,
             "entityStreamIn": NewAntiCheatSystem.checkForIllegalVeh,
             "client:ac:sleepClient": NewAntiCheatSystem.handleSleep
         });
@@ -53,6 +54,10 @@ export default class NewAntiCheatSystem {
         }, 1000);
 
         mp.keys.bind(_control_ids.RELOADBIND, false, NewAntiCheatSystem.handleReloadCheck);
+    }
+
+    private static handleLeaveVehicle(vehicle: VehicleMp) {
+        NewAntiCheatSystem.lastCheckPosition = NewAntiCheatSystem.LocalPlayer.position;
     }
 
     private static createForwardFacingRaycast() {

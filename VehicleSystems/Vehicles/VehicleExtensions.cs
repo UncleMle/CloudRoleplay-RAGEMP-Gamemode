@@ -79,6 +79,8 @@ namespace CloudRP.VehicleSystems.Vehicles
                     vehicleData.rotation_y = vehicle.Rotation.Y;
                     vehicleData.rotation_z = vehicle.Rotation.Z;
 
+                    vehicleData.tyre_states = JsonConvert.SerializeObject(vehicle.getTyreStates());
+
                     vehicleData.vehicle_health = NAPI.Vehicle.GetVehicleBodyHealth(vehicle);
 
                     dbContext.vehicles.Update(vehicleData);
@@ -177,6 +179,28 @@ namespace CloudRP.VehicleSystems.Vehicles
 
                 vehicle.setVehicleData(vehicleData, false, true);
             }
+        }
+
+        public static void syncTyreStatus(this Vehicle vehicle, List<bool> current = null)
+        {
+            List<bool> states = new List<bool>();
+
+            if(current == null)
+            {
+                states = new List<bool>
+                {
+                    false, false, false, false, false, false
+                };
+            }
+            else states = current;
+
+            vehicle.SetData(VehicleSystem._tyreStateKey, states);
+            vehicle.SetSharedData(VehicleSystem._tyreStateKey, states);
+        }
+        
+        public static List<bool> getTyreStates(this Vehicle vehicle)
+        {
+            return vehicle.GetData<List<bool>>(VehicleSystem._tyreStateKey);
         }
 
         public static void freeze(this Vehicle vehicle, bool toggle)

@@ -45,6 +45,7 @@ namespace CloudRP.VehicleSystems.Vehicles
         public int faction_owner_id { get; set; } = -1;
         public bool insurance_status {  get; set; }
         public int vehicle_garage_id { get; set; } = -1;
+        public string tyre_states { get; set; }
 
         [NotMapped]
         public bool[] vehicle_doors { get; set; } = new bool[] { false, false, false, false, false, false };
