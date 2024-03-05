@@ -112,7 +112,7 @@ namespace CloudRP.ServerSystems.Authentication
                     AuthUtils.sendEmail(
                         findAccount.email_address, 
                         $"OTP Code for {findAccount.username}", 
-                        $"The OTP code for your account {findAccount.username} is <b>{otp}</b>."
+                        $"Hello {findAccount.username}<br>The OTP code for your account {findAccount.username} is <b>{otp}</b>."
                     );
 
                     uiHandling.setLoadingState(player, false);
@@ -575,7 +575,8 @@ namespace CloudRP.ServerSystems.Authentication
 
                     dbContext.bans.Add(ban);
 
-                    AuthUtils.sendEmail(emailAddress, "Authentication Warning", $"Our systems detected a third party attempting to gain access to your account (<b>{username}</b>). We have blocked the login attempt. Please reset all related passwords immediately.");
+                    AuthUtils.sendEmail(emailAddress, "Authentication Warning", 
+                        $"Our systems detected a third party attempting to gain access to your account (<b>{username}</b>). We have blocked the login attempt. Please reset all related passwords immediately.");
                     wasFound.SendChatMessage(ChatUtils.red + "~h~[AUTHENTICATION WARNING] " + ChatUtils.White + "A third party attempted to login into your account. Please reset your account password immediately.");
                     player.KickSilent();
                     found = true;
@@ -618,9 +619,9 @@ namespace CloudRP.ServerSystems.Authentication
                 unixMade = CommandUtils.generateUnix()
             });
 
-            string otpContextEmail = $"Enter the OTP {otp} (This code is valid for 3 minutes)";
+            string otpContextEmail = $"Hello <b>{registeringData.registerUsername}</b>,<br> Please enter the OTP <i>{otp}</i> (This code is valid for 3 minutes)";
 
-            AuthUtils.sendEmail(registeringData.registerEmail, "Cloud RP | OTP", AuthUtils.getEmailWithContext(otpContextEmail));
+            AuthUtils.sendEmail(registeringData.registerEmail, "Cloud RP | OTP", otpContextEmail);
         }
 
         public static void createAccount(Player player, Register registeringData)

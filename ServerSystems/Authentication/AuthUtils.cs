@@ -13,6 +13,9 @@ using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.PlayerSystems.Character;
 using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
+using CloudRP.VehicleSystems.Vehicles;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace CloudRP.ServerSystems.Authentication
 {
@@ -68,7 +71,7 @@ namespace CloudRP.ServerSystems.Authentication
                 result += characters[rInt];
             }
 
-            return result;
+            return result.ToUpper();
         }
 
         public static void sendEmail(string targetEmail, string subject, string body)
@@ -84,6 +87,7 @@ namespace CloudRP.ServerSystems.Authentication
                     return;
                 }
 
+
                 SmtpClient smtpClient = new SmtpClient("smtp.gmail.com")
                 {
                     Port = 587,
@@ -91,7 +95,7 @@ namespace CloudRP.ServerSystems.Authentication
                     EnableSsl = true,
                 };
 
-                MailMessage msg = new MailMessage(smtpClientUsername, targetEmail, subject, body)
+                MailMessage msg = new MailMessage(smtpClientUsername, targetEmail, subject, getEmailContext(body))
                 {
                     IsBodyHtml = true
                 };
@@ -103,7 +107,7 @@ namespace CloudRP.ServerSystems.Authentication
 
             }
         }
-
+        
         public static bool checkCharacterName(string name)
         {
             using (DefaultDbContext dbContext = new DefaultDbContext())
@@ -119,11 +123,24 @@ namespace CloudRP.ServerSystems.Authentication
             return true;
         }
 
-        public static string getEmailWithContext(string context)
+        public static string getEmailContext(string context)
         {
-            string email = $"<h1>{context}<h1>";
+            string editedContext = "";
 
-            return email;
+            using (StreamReader sr = new StreamReader(Main.JsonDirectory + "emailFormat.json"))
+            {
+                HtmlEmailFormat emailFormat = JsonConvert.DeserializeObject<HtmlEmailFormat>(sr.ReadToEnd());
+
+                if(emailFormat != null)
+                {
+                    int currentYear = DateTime.Now.Year;
+
+                    editedContext = emailFormat.html_content_first + context + string.Format(emailFormat.html_content_second, currentYear);
+                }
+
+            }
+
+            return editedContext;
         }
 
         public static bool isEmailValid(string email)
@@ -216,6 +233,12 @@ namespace CloudRP.ServerSystems.Authentication
 
             return true;
         }
+    }
+
+    class HtmlEmailFormat
+    {
+        public string html_content_first { get; set; }
+        public string html_content_second { get; set; }
     }
 
     class UserCredentials
