@@ -1,7 +1,7 @@
 import { VehicleData } from '@/@types';
 import BrowserSystem from '@/BrowserSystem/BrowserSystem';
 import getVehicleData from '@/PlayerMethods/getVehicleData';
-import VehicleSpeedo from '@/VehicleSystems/VehicleSpeedo';
+import VehicleSpeedo from '@/VehicleSystems/Utilitys/VehicleSpeedo';
 
 export default class VehicleRadar {
 	public static LocalPlayer: PlayerMp;

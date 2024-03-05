@@ -1,8 +1,8 @@
-import { VehicleData } from '../@types';
-import { TASK_WARP_PED_INTO_VEHICLE, _control_ids, _sharedAccountDataIdentifier } from '../Constants/Constants';
-import calcDist from '../PlayerMethods/calcDist';
-import getVehicleData from '../PlayerMethods/getVehicleData';
-import getClosestVehicleInRange from '../PlayerMethods/getVehicleInRange';
+import { VehicleData } from '../../@types';
+import { TASK_WARP_PED_INTO_VEHICLE, _control_ids, _sharedAccountDataIdentifier } from '../../Constants/Constants';
+import calcDist from '../../PlayerMethods/calcDist';
+import getVehicleData from '../../PlayerMethods/getVehicleData';
+import getClosestVehicleInRange from '../../PlayerMethods/getVehicleInRange';
 
 
 export default class EnterVehicle {

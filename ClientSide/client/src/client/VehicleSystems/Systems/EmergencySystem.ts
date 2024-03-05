@@ -1,7 +1,7 @@
 import validateKeyPress from "@/PlayerMethods/validateKeyPress";
-import { VehicleData } from "../@types";
-import { _SHARED_VEHICLE_DATA, _control_ids } from "../Constants/Constants";
-import getVehicleData from "../PlayerMethods/getVehicleData";
+import { VehicleData } from "../../@types";
+import { _SHARED_VEHICLE_DATA, _control_ids } from "../../Constants/Constants";
+import getVehicleData from "../../PlayerMethods/getVehicleData";
 
 export default class EmergencySystem {
 	public static LocalPlayer: PlayerMp = mp.players.local;

@@ -1,6 +1,6 @@
 import getVehicleData from "@/PlayerMethods/getVehicleData";
 import { StallTypes } from "@/enums";
-import isFlipped from "../PlayerMethods/getIfVehicleIsFlipped";
+import isFlipped from "../../PlayerMethods/getIfVehicleIsFlipped";
 
 export default class VehicleStall {
     public static LocalPlayer: PlayerMp = mp.players.local;

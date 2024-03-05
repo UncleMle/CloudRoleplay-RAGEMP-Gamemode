@@ -1,7 +1,7 @@
-import { BoneData, FreeLanceJobVehicleData, VehicleData } from '../@types';
-import getVehicleData from '../PlayerMethods/getVehicleData';
-import distBetweenCoords from '../PlayerMethods/distanceBetweenCoords';
-import { FREELANCE_JOB_VEHICLE_DATA_KEY, _config_flags, _control_ids } from '../Constants/Constants';
+import { BoneData, FreeLanceJobVehicleData, VehicleData } from '../../@types';
+import getVehicleData from '../../PlayerMethods/getVehicleData';
+import distBetweenCoords from '../../PlayerMethods/distanceBetweenCoords';
+import { FREELANCE_JOB_VEHICLE_DATA_KEY, _config_flags, _control_ids } from '../../Constants/Constants';
 import { FreelanceJobs, InteractMenu } from '@/enums';
 import getUserCharacterData from '@/PlayerMethods/getUserCharacterData';
 

@@ -1,9 +1,9 @@
 import validateKeyPress from "@/PlayerMethods/validateKeyPress";
-import { VehicleData } from "../@types";
-import { _SHARED_VEHICLE_DATA, _control_ids } from "../Constants/Constants";
-import getVehicleData from "../PlayerMethods/getVehicleData";
+import { VehicleData } from "../../@types";
+import { _SHARED_VEHICLE_DATA, _control_ids } from "../../Constants/Constants";
+import getVehicleData from "../../PlayerMethods/getVehicleData";
 import HandsUp from "@/Animation/HandsUpAnim";
-import VehicleStall from "./VehicleStall";
+import VehicleStall from "../Events/VehicleStall";
 
 export default class VehicleEngine {
 	public static LocalPlayer: PlayerMp = mp.players.local;

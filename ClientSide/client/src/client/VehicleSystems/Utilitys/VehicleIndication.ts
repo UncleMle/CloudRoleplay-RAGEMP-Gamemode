@@ -1,7 +1,7 @@
 import validateKeyPress from "@/PlayerMethods/validateKeyPress";
-import { VehicleData } from "../@types";
-import { _control_ids } from "../Constants/Constants";
-import getVehicleData from "../PlayerMethods/getVehicleData";
+import { VehicleData } from "../../@types";
+import { _control_ids } from "../../Constants/Constants";
+import getVehicleData from "../../PlayerMethods/getVehicleData";
 import { _SHARED_VEHICLE_DATA } from 'Constants/Constants';
 
 export default class VehicleIndicators {

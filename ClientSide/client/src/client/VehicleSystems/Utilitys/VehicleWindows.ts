@@ -1,6 +1,6 @@
 import { _SHARED_VEHICLE_DATA } from "@/Constants/Constants";
-import { VehicleData } from "../@types";
-import getVehicleData from "../PlayerMethods/getVehicleData";
+import { VehicleData } from "../../@types";
+import getVehicleData from "../../PlayerMethods/getVehicleData";
 
 export default class VehicleWindows {
 	public static LocalPlayer: PlayerMp = mp.players.local;

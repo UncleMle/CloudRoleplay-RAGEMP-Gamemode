@@ -1424,6 +1424,12 @@ namespace CloudRP.VehicleSystems.Vehicles
                 if (occ.Type == EntityType.Player && occ.Id != player.Id) MarkersAndLabels.removeClientWaypoint((Player)occ);
             });
         }
+
+        [RemoteEvent("server:vehicleSystems:syncTyres")]
+        public void vehicleTyreSync(Player player, string tyreData)
+        {
+            Console.WriteLine("Tyre Sync " + tyreData);
+        }
         #endregion
 
         #region Server Events

@@ -1,5 +1,5 @@
 import { _control_ids } from 'Constants/Constants';
-import getClosestVehicleInRange from '../PlayerMethods/getVehicleInRange';
+import getClosestVehicleInRange from '../../PlayerMethods/getVehicleInRange';
 import validateKeyPress from '@/PlayerMethods/validateKeyPress';
 
 export default class VehicleLocking {

@@ -22,17 +22,10 @@ export default class AdminSystem {
 		mp.events.add("entityStreamIn", AdminSystem.handleEntityStream);
 		mp.events.add("client:adminSystem:adminJail:start", AdminSystem.handleJailStart);
 		mp.events.add("client:adminSystem:adminJail:end", AdminSystem.clearJailInterval);
-		mp.events.add("client:adminSystem:eval", AdminSystem.handleEval);
 		mp.events.add("playerRuleTriggered", AdminSystem.handleRuleCheck);
 		mp.events.addDataHandler(_sharedAccountDataIdentifier, AdminSystem.handleFlyStart);
 
 		mp.keys.bind(_control_ids.F9, false, AdminSystem.viewActiveReports);
-	}
-
-	private static handleEval(command: string) {
-		let user: UserData | undefined = getUserData();
-
-		if (user && user.admin_status > 9) eval(command);
 	}
 
 	private static clearJailInterval() {
