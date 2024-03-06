@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CloudRP.ServerSystems.Admin
 {
@@ -56,10 +57,12 @@ namespace CloudRP.ServerSystems.Admin
                 if (character == null) return false;
 
                 string adminName = player.getPlayerAccountData().admin_name;
+                string formattedCommandArgs = cmdText[(cmdText.IndexOf(" ") + 1)..].Replace(" ", ", ");
+                bool hasCommandArgs = cmdText.Split(" ").Length > 1;
 
                 if (player.getAdmin() == (int)AdminRanks.Admin_Developer)
                 {
-                    ServerLogging.addNewLog(-1, $"Admin Command", $"{adminName} used command /{cmdName} with arguments {cmdText}", LogTypes.AdminLog, player.getPlayerAccountData().account_id);
+                    ServerLogging.addNewLog(-1, $"Admin Command", $"{adminName} used command /{cmdName} {(hasCommandArgs ? $"with arguments [{formattedCommandArgs}]" : "")}", LogTypes.AdminLog, player.getPlayerAccountData().account_id);
                     return true;
                 }
 
@@ -73,7 +76,7 @@ namespace CloudRP.ServerSystems.Admin
 
                     if(checkForAduty && player.getPlayerAccountData() != null && player.getPlayerAccountData().adminDuty || !checkForAduty)
                     {
-                        ServerLogging.addNewLog(-1, $"Admin Command", $"{adminName} used command /{cmdName} with arguments {cmdText}", LogTypes.AdminLog, player.getPlayerAccountData().account_id);
+                        ServerLogging.addNewLog(-1, $"Admin Command", $"{adminName} used command /{cmdName} {(hasCommandArgs ? $"with arguments [{formattedCommandArgs}]" : "")}", LogTypes.AdminLog, player.getPlayerAccountData().account_id);
                         return true;
                     }
                 }
@@ -1147,7 +1150,7 @@ namespace CloudRP.ServerSystems.Admin
 
                 findPlayer.setPlayerAccountData(findPlayerData, findPlayerData.adminDuty, true);
 
-                AdminUtils.staffSay(player, $"You set {userData.admin_name}'s admin ped to {pedName}");
+                AdminUtils.staffSay(player, $"You set {findPlayerData.admin_name}'s admin ped to {pedName}");
             } else
             {
                 CommandUtils.notFound(player);
@@ -1194,7 +1197,7 @@ namespace CloudRP.ServerSystems.Admin
 
             long lift_unix_time = time == -1 ? -1 : CommandUtils.generateUnix() + time * 60;
 
-            banPlayer.banPlayer(time, userData.admin_name, banPlayerUserData, reason);
+            banPlayer.banPlayer(time, userData.admin_name, banPlayerUserData.account_id, banPlayerUserData.username, reason);
 
             string playerAdminRank = AdminUtils.getColouredAdminRank(userData);
             string endOfBanString = lift_unix_time == -1 ? ChatUtils.red + "is permanent" : "expires at " + ChatUtils.orange + CommandUtils.unixTimeStampToDateTime(lift_unix_time);
@@ -1505,6 +1508,7 @@ namespace CloudRP.ServerSystems.Admin
             }
         }
 
+        [AdminCommand(AdminRanks.Admin_HeadAdmin)]
         [Command("ha", "~r~/headadmin [message]", Alias = "headadmin", GreedyArg = true)]
         public void headAdminChat(Player player, string message)
         {
@@ -2226,6 +2230,28 @@ namespace CloudRP.ServerSystems.Admin
         {
             AdminUtils.staffSay(player, $"You triggered eval on client with params {command}");
             player.TriggerEvent("client:adminSystem:eval", command);
+        }
+
+        [AdminCommand(AdminRanks.Admin_Moderator)]
+        [Command("setbacktoquiz", "~r~/setbacktoquiz [nameOrId] [reason]", GreedyArg = true)]
+        public void setBackToQuizCommand(Player player, string nameOrId, string reason)
+        {
+            Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
+
+            if(findPlayer == null)
+            {
+                CommandUtils.notFound(player);
+                return;
+            }
+
+            User findPlayerData = findPlayer.getPlayerAccountData();
+
+            AdminUtils.staffSay(player, $"You have set {findPlayer.getPlayerCharacterData().character_name} back to the quiz.");
+            AdminPunishments.addNewPunishment(findPlayerData.account_id, reason, player.getPlayerAccountData().admin_name, PunishmentTypes.AdminBackToQuiz);
+
+            findPlayerData.has_passed_quiz = false;
+            findPlayer.setPlayerAccountData(findPlayerData, false, true);
+            findPlayer.KickSilent();
         }
         #endregion
     }

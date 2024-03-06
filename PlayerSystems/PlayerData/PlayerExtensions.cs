@@ -178,7 +178,7 @@ namespace CloudRP.PlayerSystems.PlayerData
             return aduty;
         }
 
-        public static void banPlayer(this Player banPlayer, int time, string adminName, User banPlayerUserData, string reason)
+        public static void banPlayer(this Player banPlayer, int time, string adminName, int accountId, string username, string reason)
         {
             if (NAPI.Player.IsPlayerConnected(banPlayer))
             {
@@ -194,7 +194,7 @@ namespace CloudRP.PlayerSystems.PlayerData
 
                     Ban ban = new Ban
                     {
-                        account_id = banPlayerUserData.account_id,
+                        account_id = accountId,
                         admin = adminName,
                         ban_reason = reason,
                         ip_address = banPlayer.Address,
@@ -205,10 +205,10 @@ namespace CloudRP.PlayerSystems.PlayerData
                         CreatedDate = DateTime.Now,
                         UpdatedDate = DateTime.Now,
                         issue_unix_date = issueDateUnix,
-                        username = banPlayerUserData.username
+                        username = username
                     };
 
-                    Account findAccount = dbContext.accounts.Find(banPlayerUserData.account_id);
+                    Account findAccount = dbContext.accounts.Find(accountId);
 
                     if (findAccount != null)
                     {
@@ -221,10 +221,11 @@ namespace CloudRP.PlayerSystems.PlayerData
                     dbContext.SaveChanges();
 
                     banPlayer.setPlayerToBanScreen(ban);
-                    AdminPunishments.addNewPunishment(banPlayerUserData.account_id, reason, adminName, PunishmentTypes.AdminBan, lift_unix_time);
                     uiHandling.toggleGui(banPlayer, false);
 
                     ChatUtils.formatConsolePrint($"{ban.username} was banned with lift time being {lift_unix_time}. Reason {reason}");
+
+                    AdminPunishments.addNewPunishment(accountId, reason, adminName, PunishmentTypes.AdminBan, lift_unix_time);
                 }
             }
         }

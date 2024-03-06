@@ -1,4 +1,6 @@
-﻿using CloudRP.ServerSystems.Database;
+﻿using CloudRP.ServerSystems.Admin;
+using CloudRP.ServerSystems.Database;
+using CloudRP.ServerSystems.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -22,6 +24,11 @@ namespace CloudRP.ServerSystems.Logging
 
                 dbContext.server_logs.Add(log);
                 dbContext.SaveChanges();
+
+                if(characterId == -1 && accountId == -1 && logType == LogTypes.AdminLog)
+                {
+                    AdminUtils.sendMessageToAllStaff($"{ChatUtils.red}[Log]{AdminUtils.staffSuffixColour} [{name}] {description}");
+                }
             }
         }
     }

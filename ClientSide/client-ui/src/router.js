@@ -28,6 +28,7 @@ import PromptMenu from './components/PromptMenu/PromptMenu.vue';
 import JobCenter from './components/jobs/JobCenter.vue';
 import FinesView from './components/police/FinesView.vue';
 import AnimationMenu from './components/animation/animationMenu.vue';
+import QuizMenu from './components/auth/QuizMenu.vue';
 
 export default new Router({
     routes: [
@@ -55,6 +56,7 @@ export default new Router({
         { path: '/promptscreen', component: PromptMenu },
         { path: '/jobcenter', component: JobCenter },
         { path: '/viewfines', component: FinesView },
-        { path: '/animations', component: AnimationMenu }
+        { path: '/animations', component: AnimationMenu },
+        { path: '/quiz', component: QuizMenu }
     ]
 });

@@ -4,6 +4,7 @@ import distBetweenCoords from "@/PlayerMethods/distanceBetweenCoords";
 import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
 import weaponDamageValues from './WeaponDamageData';
 import VehicleManager from "@/VehicleSystems/VehicleManager";
+import getVehicleData from "@/PlayerMethods/getVehicleData";
 
 export default class NewAntiCheatSystem {
     private static LocalPlayer: PlayerMp = mp.players.local;
@@ -84,10 +85,14 @@ export default class NewAntiCheatSystem {
         mp.game.controls.disableControlAction(1, 142, true);
     }
 
-    private static checkForIllegalVeh(entity: EntityMp) {
+    private static async checkForIllegalVeh(entity: EntityMp) {
         if (entity.type !== "vehicle") return;
 
-        if (entity.remoteId === 65535 && VehicleManager.spawnedVehicles.indexOf(entity as VehicleMp) === -1) {
+        for (let i = 0; entity.handle === 0 && i < 35; i++) {
+            await mp.game.waitAsync(100);
+        }
+
+        if (!getVehicleData(entity as VehicleMp) && VehicleManager.spawnedVehicles.indexOf(entity as VehicleMp) === -1) {
             let plate = (entity as VehicleMp).getNumberPlateText();
 
             NewAntiCheatSystem.adminAlert(AcEvents.vehicleSpawnHack, plate);
@@ -123,6 +128,8 @@ export default class NewAntiCheatSystem {
 
     private static checkForCarFly(height: number = 50) {
         if (!NewAntiCheatSystem.LocalPlayer.vehicle) return;
+
+        if(NewAntiCheatSystem.LocalPlayer.vehicle.getClass() === 14) return;
 
         if (NewAntiCheatSystem.aircraftClasses.indexOf(NewAntiCheatSystem.LocalPlayer.vehicle.getClass()) !== -1) return;
 
@@ -168,7 +175,7 @@ export default class NewAntiCheatSystem {
     private static async handlePositionCheck() {
         if (AdminFly.flyEnabled || NewAntiCheatSystem.LocalPlayer.vehicle) NewAntiCheatSystem.lastCheckPosition = NewAntiCheatSystem.LocalPlayer.position;
 
-        if (Math.round(NewAntiCheatSystem.LocalPlayer.getSpeed()) > 9 && !NewAntiCheatSystem.LocalPlayer.vehicle && !NewAntiCheatSystem.LocalPlayer.isOnVehicle()) {
+        if (Math.round(NewAntiCheatSystem.LocalPlayer.getSpeed()) > 9 && !NewAntiCheatSystem.LocalPlayer.isFalling() && !NewAntiCheatSystem.LocalPlayer.vehicle && !NewAntiCheatSystem.LocalPlayer.isOnVehicle()) {
             NewAntiCheatSystem.adminAlert(AcEvents.playerSpeedHack, Math.round(NewAntiCheatSystem.LocalPlayer.getSpeed()));
         }
 

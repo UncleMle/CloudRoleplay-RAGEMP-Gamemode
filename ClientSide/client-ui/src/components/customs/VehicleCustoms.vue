@@ -9,7 +9,11 @@
                     <div
                         class="relative bg-black/70 rounded-2xl shadow-2xl shadow-black w-full h-22 border-b-4 border-t-4 border-purple-400/50">
 
-                        <p class="absolute mt-4 w-full text-xl">Are you sure you want to purchase a
+                        <p v-if="playerData.is_in_player_dealer" class="absolute mt-4 w-full text-xl">Are you sure you want to purchase a
+                            <b>{{ uiStates.vehicleSpeedoData.displayName }}</b>?
+                        </p>
+                        
+                        <p v-else class="absolute mt-4 w-full text-xl">Are you sure you want to purchase mods for your vehicle
                             <b>{{ uiStates.vehicleSpeedoData.displayName }}</b>?
                         </p>
 

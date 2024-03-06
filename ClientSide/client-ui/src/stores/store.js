@@ -50,7 +50,9 @@ const store = new Vuex.Store({
 			job_center_jobs: [],
 			auto_auth_data: {},
 			criminal_charges: [],
-			animations_data: []
+			animations_data: [],
+			quiz_question_data: [],
+			quiz_given_answers_data: {}
 		},
 		uiStates: {
 			characterSelection: false,

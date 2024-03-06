@@ -22,6 +22,7 @@ namespace CloudRP.PlayerSystems.Character
         private static double _characterHungerRemover = 0.004;
         private static double _characterWaterRemover = 0.009;
         public static readonly string startedCharacterCreationKey = "server:characterCreation:hasStarted";
+        public static readonly string startedCharacterSelectionKey = "server:characterSelection:hasStarted";
         public static readonly Vector3 characterCreationArea = new Vector3(-38.6, -590.5, 78.8);
 
         public CharacterSystem()
@@ -96,12 +97,7 @@ namespace CloudRP.PlayerSystems.Character
                 {
                     if (!player.isBanned())
                     {
-                        player.banPlayer(-1, "[System]", 
-                        new User
-                        {
-                            username = "N/A",
-                            account_id = -1,
-                        }, "Exploits / Cheats [System]");
+                        player.banPlayer(-1, "[System]", -1, "N/A", "Exploits / Cheats [System]");
 
                         AdminUtils.sendMessageToAllStaff($"A player with ID {player.Id} was banned for evading login screen.", (int)AdminRanks.Admin_SeniorSupport, true);
                         return;
@@ -211,6 +207,10 @@ namespace CloudRP.PlayerSystems.Character
 
         public static void fillCharacterSelectionTable(Player player, User userData)
         {
+            if (player.GetData<bool>(startedCharacterSelectionKey)) return;
+
+            player.SetCustomData(startedCharacterSelectionKey, true);
+
             uiHandling.resetMutationPusher(player, MutationKeys.PlayerCharacters);
             uiHandling.resetMutationPusher(player, MutationKeys.PlayerAccountData);
 
@@ -288,6 +288,8 @@ namespace CloudRP.PlayerSystems.Character
                 uiHandling.sendPushNotifError(player, "This character name is already taken.", 7500);
                 return;
             }
+
+            player.SetCustomData(startedCharacterSelectionKey, false);
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {

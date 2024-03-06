@@ -69,7 +69,7 @@ export default class AdminSystem {
 
 	public static handleFlyStart(entity: EntityMp, value: UserData): void {
 		if (entity.type != "player" || value == null) return;
-
+		entity.setInvincible(value.adminDuty);
 		entity.setAlpha(value.isFlying ? 0 : 255);
 	}
 

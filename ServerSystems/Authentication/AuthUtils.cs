@@ -269,6 +269,8 @@ namespace CloudRP.ServerSystems.Authentication
         public long vip_unix_expires { get; set; }
         public int admin_jail_time { get; set; }
         public string admin_jail_reason { get; set; }
+        public bool has_passed_quiz { get; set; }
+        public long quiz_fail_unix { get; set; }
     }
 
     class SharedDataAccount
@@ -341,5 +343,26 @@ namespace CloudRP.ServerSystems.Authentication
         public int targetAccountId { get; set; }
         public long createdAt { get; set; } = CommandUtils.generateUnix();
         public string targetUsername { get; set; }
+    }
+
+    public class QuizQuestion
+    {
+        public int questionId { get; set; }
+        public string question { get; set; }
+        public List<string> answers { get; set; }
+        [JsonIgnore]
+        public int answerId { get; set; }
+    }
+
+    public class ClientQuizAnswerData
+    {
+        public int questionId { get; set; }
+        public int answerId { get; set; }
+    }
+
+    public class QuizGivenAnswersData
+    {
+        public bool passedQuiz { get; set; }
+        public int questionsWrong { get; set; }
     }
 }

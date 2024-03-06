@@ -40,7 +40,7 @@ export default class LuckyWheel {
             "render": LuckyWheel.handleRender,
             "client:luckywheel:arriveToWheel": LuckyWheel.handleArriveToWheel,
             "client:luckyWheel:spinWheel": LuckyWheel.handleWheelSpin,
-            "client:luckyWheel:spawnPrizeVeh": LuckyWheel.spawnPrizeInVehicle,
+            "client:luckyWheel:spawnPrizeVeh": LuckyWheel.spawnInPrizeVehicle,
             "client:luckyWheel:vehiclePrizeAnim": LuckyWheel.playVehicleWinningAnimation
         });
 
@@ -51,7 +51,7 @@ export default class LuckyWheel {
         }
     }
 
-    private static spawnPrizeInVehicle(vehicleName: string) {
+    private static spawnInPrizeVehicle(vehicleName: string) {
         LuckyWheel.wheelPrizeVehicleName = vehicleName;
 
         if (LuckyWheel.wheelPrizeVehicle && mp.vehicles.exists(LuckyWheel.wheelPrizeVehicle)) {

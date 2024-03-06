@@ -20,6 +20,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Timers;
 using CloudRP.PlayerSystems.FactionSystems.PoliceSystems;
 using CloudRP.GeneralSystems.WeaponSystem;
+using CloudRP.ServerSystems.Logging;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace CloudRP.ServerSystems.Authentication
 {
@@ -33,6 +35,8 @@ namespace CloudRP.ServerSystems.Authentication
         public static string _otpAccountStoreKey = "auth_account_otp";
         public static string _accountCreatedKey = "authentication:player:accountCreated";
         public static readonly int autoLoginValid_seconds = 300;
+        public static readonly int quizMultichoiceQuestions = 5;
+        public static readonly int quizFailTimeout_seconds = 3600;
 
         public Auth()
         {
@@ -58,7 +62,7 @@ namespace CloudRP.ServerSystems.Authentication
             UserCredentials userCredentials = JsonConvert.DeserializeObject<UserCredentials>(data);
             User userData = player.getPlayerAccountData();
 
-            if (userData != null || player.checkPlayerIsBanned() != null) return;
+            if (userData != null || player.isBanned()) return;
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
@@ -79,7 +83,7 @@ namespace CloudRP.ServerSystems.Authentication
                 {
                     findAccount = dbContext.accounts
                                 .Where(b => 
-                                (b.username == userCredentials.username.ToLower() || b.email_address == userCredentials.username)
+                                (b.username == userCredentials.username || b.email_address == userCredentials.username)
                                 && b.ban_status == 0
                                 )
                                 .FirstOrDefault();
@@ -122,13 +126,17 @@ namespace CloudRP.ServerSystems.Authentication
                     return;
                 }
 
-                loginInToAccount(player, findAccount, userCredentials.rememberMe);
+                loginInToAccount(player, findAccount);
+
+                if(userCredentials.rememberMe) setUpAutoLogin(player, findAccount);
             }
         }
 
         [RemoteEvent("server:recieveRegister")]
         public void handleRegister(Player player, string data)
         {
+            if (player.checkPlayerIsBanned() != null) return;
+
             Register registeringData = JsonConvert.DeserializeObject<Register>(data);
 
             User userData = player.getPlayerAccountData();
@@ -143,8 +151,7 @@ namespace CloudRP.ServerSystems.Authentication
         [RemoteEvent("server:resetPasswordAuth")]
         public void resetPasswordAuth(Player player, string emailAddress)
         {
-            Ban ban = player.checkPlayerIsBanned();
-            if (ban != null) return;
+            if (player.checkPlayerIsBanned() != null) return;
 
             if (!AuthUtils.isEmailValid(emailAddress))
             {
@@ -173,7 +180,7 @@ namespace CloudRP.ServerSystems.Authentication
         [RemoteEvent("server:resetPassword")]
         public void resetPassword(Player player, string data)
         {
-            if (data == null) return;
+            if (data == null || player.isBanned()) return;
             OtpStore playerOtpData = player.GetData<OtpStore>(_otpRegisterStoreKey);
             ResetPass passReset = JsonConvert.DeserializeObject<ResetPass>(data);
 
@@ -272,8 +279,10 @@ namespace CloudRP.ServerSystems.Authentication
         {
             User userData = player.getPlayerAccountData();
 
-            if (userData != null && player.checkPlayerIsBanned() == null && player.getPlayerCharacterData() == null)
+            if (userData != null && !player.isBanned() && player.getPlayerCharacterData() == null)
             {
+                if (!userData.has_passed_quiz) return;
+
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
                     DbCharacter character = dbContext.characters
@@ -426,7 +435,70 @@ namespace CloudRP.ServerSystems.Authentication
                 return;
             }
 
-            loginInToAccount(player, find, accountOtpStore.rememberMe);
+            loginInToAccount(player, find);
+        }
+
+        [RemoteEvent("server:authentication:handleQuizResults")]
+        public void handleQuizResults(Player player, string quizAnswerData)
+        {
+            User user = player.getPlayerAccountData();
+
+            if (user == null || user != null && user.has_passed_quiz) return;
+
+            if((CommandUtils.generateUnix() - user.quiz_fail_unix) < quizFailTimeout_seconds) return;
+
+            List<ClientQuizAnswerData> givenQuizAnswers = JsonConvert.DeserializeObject<List<ClientQuizAnswerData>>(quizAnswerData);
+
+            if (givenQuizAnswers == null || givenQuizAnswers.Count == 0) return;
+
+            List<int> correctQuestions = new List<int>();
+
+            givenQuizAnswers.ForEach(ans =>
+            {
+                QuizQuestion question = QuizQuestions.questions.Where(q => q.questionId == ans.questionId).FirstOrDefault();
+
+                if(question != null && question.answerId == ans.answerId)
+                {
+                    correctQuestions.Add(question.questionId);
+                }
+            });
+
+            if(correctQuestions.Count == givenQuizAnswers.Count)
+            {
+                uiHandling.handleObjectUiMutation(player, MutationKeys.QuizAnswerData, new QuizGivenAnswersData
+                {
+                    passedQuiz = true
+                });
+
+                user.has_passed_quiz = true;
+                player.setPlayerAccountData(user, false, true);
+            } else
+            {
+                uiHandling.handleObjectUiMutation(player, MutationKeys.QuizAnswerData, new QuizGivenAnswersData
+                {
+                    questionsWrong = givenQuizAnswers.Count - correctQuestions.Count,
+                });
+
+                user.quiz_fail_unix = CommandUtils.generateUnix();
+                player.setPlayerAccountData(user, false, true);
+            }
+        }
+
+        [RemoteEvent("server:authentication:beginSelection")]
+        public static void setUserToCharacterSelection(Player player)
+        {
+            if (player.GetData<bool>(CharacterSystem.startedCharacterSelectionKey)) return;
+
+            User user = player.getPlayerAccountData();
+
+            if (user == null || user != null && !user.has_passed_quiz) return;
+
+            if (player.getPlayerCharacterData() != null) return;
+
+            uiHandling.pushRouterToClient(player, Browsers.LoginPage);
+            ChatUtils.formatConsolePrint($"{user.username} (#{user.account_id}) has entered character selection process.", ConsoleColor.Yellow);
+
+            CharacterSystem.fillCharacterSelectionTable(player, user);
         }
         #endregion
 
@@ -442,7 +514,7 @@ namespace CloudRP.ServerSystems.Authentication
             });
         }
 
-        public void loginInToAccount(Player player, Account findAccount, bool rememberMe)
+        public void loginInToAccount(Player player, Account findAccount)
         {
             if (checkInGame(player, findAccount.email_address, findAccount.username, findAccount.account_id)) return;
 
@@ -465,16 +537,16 @@ namespace CloudRP.ServerSystems.Authentication
 
                 if (findAccount.ban_status == 1)
                 {
-                    player.banPlayer(-1, "[System]", user, "Logging into banned accounts.");
+                    player.banPlayer(-1, "[System]", user.account_id, user.username, "Logging into banned accounts.");
+                    ServerLogging.addNewLog(-1, "System | Server Ban", $"Someone attempted to login to banned account {user.username} and has been banned.", LogTypes.AdminLog);
                     return;
                 }
 
-                setUserToCharacterSelection(player, user);
+                player.setPlayerAccountData(user);
+                checkVipStatus(player, user);
 
-                if (rememberMe)
-                {
-                    setUpAutoLogin(player, findAccount);
-                }
+                if (!user.has_passed_quiz) setUserToQuiz(player);
+                else setUserToCharacterSelection(player);
 
                 ChatUtils.formatConsolePrint($"User {findAccount.username} (#{findAccount.account_id}) has logged in.", ConsoleColor.Green);
             }
@@ -510,21 +582,60 @@ namespace CloudRP.ServerSystems.Authentication
             player.TriggerEvent("client:moveSkyCamera", "down");
         }
 
-        public static void setUserToCharacterSelection(Player player, User userData)
+        public static void setUserToQuiz(Player player)
         {
-            if (player.checkPlayerIsBanned() != null) return;
+            User user = player.getPlayerAccountData();
 
-            player.setPlayerAccountData(userData);
-            checkVipStatus(player, userData);
+            if (user == null || user != null && user.has_passed_quiz) return;
 
-            ChatUtils.formatConsolePrint($"{userData.username} (#{userData.account_id}) has entered character selection process.", ConsoleColor.Yellow);
+            ChatUtils.formatConsolePrint($"{user.username} has started the quiz.", ConsoleColor.Yellow);
 
-            CharacterSystem.fillCharacterSelectionTable(player, userData);
+            List<QuizQuestion> questions = getRandomQuestions();
+
+            uiHandling.resetMutationPusher(player, MutationKeys.QuizQuestions);
+            uiHandling.pushRouterToClient(player, Browsers.Quiz);
+
+            questions.ForEach(question =>
+            {
+                uiHandling.handleObjectUiMutationPush(player, MutationKeys.QuizQuestions, question);
+            });
+
+            if ((CommandUtils.generateUnix() - user.quiz_fail_unix) < quizFailTimeout_seconds)
+            {
+                uiHandling.handleObjectUiMutation(player, MutationKeys.QuizAnswerData, new QuizGivenAnswersData
+                {
+                    questionsWrong = 2,
+                });
+            }
+        }
+
+        public static List<QuizQuestion> getRandomQuestions()
+        {
+            List<QuizQuestion> questions = new List<QuizQuestion>();
+
+            List<int> selectedIndexs = new List<int>();
+
+            Random random = new Random();
+
+            for (int i = 0; i < quizMultichoiceQuestions; i++)
+            {
+                int randomIndex = random.Next(0, QuizQuestions.questions.Count);
+
+                while (selectedIndexs.Contains(randomIndex))
+                {
+                    randomIndex = random.Next(0, QuizQuestions.questions.Count);
+                }
+
+                selectedIndexs.Add(randomIndex);
+                questions.Add(QuizQuestions.questions[randomIndex]);
+            }
+
+            return questions;
         }
 
         public void setUpAutoLogin(Player player, Account userAccount)
         {
-            string randomString = AuthUtils.generateString(15) + userAccount.account_id;
+            string randomString = AuthUtils.generateString(25) + userAccount.account_id;
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
@@ -556,32 +667,13 @@ namespace CloudRP.ServerSystems.Authentication
             
             if(wasFound != null)
             {
-                using(DefaultDbContext dbContext = new DefaultDbContext())
-                {
-                    Ban ban = new Ban
-                    {
-                        account_id = -1,
-                        admin = "System",
-                        username = "N/A",
-                        ban_reason = $"Attempting to breach accounts. REFID #{accountId}",
-                        ip_address = player.Address,
-                        lift_unix_time = -1,
-                        social_club_id = player.SocialClubId,
-                        social_club_name = player.SocialClubName,
-                        client_serial = player.Serial,
-                        CreatedDate = DateTime.Now,
-                        UpdatedDate = DateTime.Now,
-                        issue_unix_date = CommandUtils.generateUnix(),
-                    };
+                player.banPlayer(-1, "[System]", -1, "N/A", $"Attempting to breach accounts. REFID #{accountId}");
 
-                    dbContext.bans.Add(ban);
-
-                    AuthUtils.sendEmail(emailAddress, "Authentication Warning", 
-                        $"Our systems detected a third party attempting to gain access to your account (<b>{username}</b>). We have blocked the login attempt. Please reset all related passwords immediately.");
-                    wasFound.SendChatMessage(ChatUtils.red + "~h~[AUTHENTICATION WARNING] " + ChatUtils.White + "A third party attempted to login into your account. Please reset your account password immediately.");
-                    player.KickSilent();
-                    found = true;
-                }
+                AuthUtils.sendEmail(emailAddress, "Authentication Warning",
+                    $"Our systems detected a third party attempting to gain access to your account (<b>{username}</b>). We have blocked the login attempt. Please reset all related passwords immediately.");
+                wasFound.SendChatMessage(ChatUtils.red + "~h~[AUTHENTICATION WARNING] " + ChatUtils.White + "A third party attempted to login into your account. Please reset your account password immediately.");
+                player.KickSilent();
+                found = true;
             }
 
             return found;
@@ -608,6 +700,7 @@ namespace CloudRP.ServerSystems.Authentication
 
         public void enterRegisterOtpStage(Player player, Register registeringData)
         {
+            uiHandling.setLoadingState(player, false);
             uiHandling.setAuthState(player, AuthStates.otp);
 
             string otp = AuthUtils.generateString(4);
@@ -645,7 +738,7 @@ namespace CloudRP.ServerSystems.Authentication
                     social_club_id = player.SocialClubId,
                     CreatedDate = DateTime.Now,
                     UpdatedDate = DateTime.Now,
-                    username = registeringData.registerUsername.ToLower(),
+                    username = registeringData.registerUsername,
                     user_ip = player.Address,
                     admin_status = (int)AdminRanks.Admin_None,
                     auto_login_key = "",
@@ -660,11 +753,13 @@ namespace CloudRP.ServerSystems.Authentication
                 dbContext.Update(creatingAccount);
                 dbContext.SaveChanges();
 
+                player.setPlayerAccountData(createUser(creatingAccount));
+                
                 uiHandling.sendPushNotif(player, $"You have successfully created an account.", 6000);
-                User userData = createUser(creatingAccount);
-
-                setUserToCharacterSelection(player, userData);
+                ChatUtils.formatConsolePrint($"Account {creatingAccount.username} has been created.", ConsoleColor.Green);
                 player.SetCustomData(_accountCreatedKey, true);
+
+                setUserToQuiz(player);
             }
         }
 

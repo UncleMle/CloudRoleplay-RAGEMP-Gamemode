@@ -92,13 +92,15 @@ namespace CloudRP.ServerSystems.AntiCheat
 
                 sendAcMessage(message);
 
-                if (player.getPlayerAccountData() == null)
+                User user = player.getPlayerAccountData();
+
+                if (user == null)
                 {
                     player.Kick();
                     return;
                 }
 
-                if(player.getPlayerCharacterData() != null) player.banPlayer(-1, "[Anti-Cheat System]", player.getPlayerAccountData(), "Dimension changer hack.");
+                if(player.getPlayerCharacterData() != null) player.banPlayer(-1, "[Anti-Cheat System]", user.account_id, user.username, "Dimension changer hack.");
             };
 
             System.Timers.Timer checkForValidVehicles = new System.Timers.Timer

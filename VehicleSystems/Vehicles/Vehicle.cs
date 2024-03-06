@@ -6,6 +6,7 @@ using System.Text;
 using GTANetworkAPI;
 using CloudRP.VehicleSystems.VehicleModification;
 using CloudRP.ServerSystems.Database;
+using Newtonsoft.Json;
 
 namespace CloudRP.VehicleSystems.Vehicles
 {
@@ -45,7 +46,10 @@ namespace CloudRP.VehicleSystems.Vehicles
         public int faction_owner_id { get; set; } = -1;
         public bool insurance_status {  get; set; }
         public int vehicle_garage_id { get; set; } = -1;
-        public string tyre_states { get; set; }
+        public string tyre_states { get; set; } = JsonConvert.SerializeObject(new List<bool>
+        {
+            false, false, false, false, false, false
+        });
 
         [NotMapped]
         public bool[] vehicle_doors { get; set; } = new bool[] { false, false, false, false, false, false };

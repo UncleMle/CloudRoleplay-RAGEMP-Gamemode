@@ -40,8 +40,8 @@
             </div>
         </div>
 
+        
         <body v-if="!uiStates.serverLoading">
-
 
             <div v-if="uiStates.authenticationState == 'charSelect'"
                 class="fixed inset-0 w-full text-white text-lg duration-300 font-medium">

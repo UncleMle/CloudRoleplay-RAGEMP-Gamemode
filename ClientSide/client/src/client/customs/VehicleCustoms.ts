@@ -80,12 +80,12 @@ export default class VehicleCustoms {
 			{ name: 'Colour Two', modNumber: veh.getNumMods(67) }
 		];
 
-        BrowserSystem._browserInstance.execute(`appSys.commit("playerMutationSetter", {
+		BrowserSystem._browserInstance.execute(`appSys.commit("playerMutationSetter", {
             _mutationKey: "vehicle_mod_indexes",
             data: ${JSON.stringify(indexData)}
         })`);
 
-        BrowserSystem._browserInstance.execute(`appSys.commit("playerMutationSetter", {
+		BrowserSystem._browserInstance.execute(`appSys.commit("playerMutationSetter", {
             _mutationKey: "vehicle_mod_data_old",
             data: ${JSON.stringify(veh.getVariable(_SHARED_VEHICLE_MODS_DATA))}
         })`);
@@ -105,11 +105,11 @@ export default class VehicleCustoms {
 	}
 
 	public static async handleStreamIn(entity: VehicleMp) {
-		if(entity.type != "vehicle") return;
+		if (entity.type != "vehicle") return;
 		let vehicleData: VehicleData | undefined = getVehicleData(entity);
 		let dirtLevel: number = entity.getVariable(VehicleCustoms._vehicleDirtLevelIdentifier);
 
-		if(vehicleData && dirtLevel !== undefined) {
+		if (vehicleData && dirtLevel !== undefined) {
 			VehicleCustoms.setVehicleAttachments(vehicleData.vehicle_mods, false, entity);
 			entity.setDirtLevel(dirtLevel);
 		}
@@ -151,10 +151,10 @@ export default class VehicleCustoms {
 		vehicle.setColours(Number(modData.colour_1), Number(modData.colour_2));
 		vehicle.setExtraColours(Number(modData.pearleascent), Number(modData.wheel_colour));
 
-        vehicle.toggleMod(20, true);
-        vehicle.setTyreSmokeColor(Number(modData.tyre_smoke_r), Number(modData.tyre_smoke_g), Number(modData.tyre_smoke_b));
+		vehicle.toggleMod(20, true);
+		vehicle.setTyreSmokeColor(Number(modData.tyre_smoke_r), Number(modData.tyre_smoke_g), Number(modData.tyre_smoke_b));
 
-        if (Number(modData.neon_colour_r) != -1 || Number(modData.neon_colour_b) != -1 || Number(modData.neon_colour_g) != -1) {
+		if (Number(modData.neon_colour_r) != -1 || Number(modData.neon_colour_b) != -1 || Number(modData.neon_colour_g) != -1) {
 			vehicle.setNeonLightsColour(Number(modData.neon_colour_r), Number(modData.neon_colour_g), Number(modData.neon_colour_b));
 
 			VehicleCustoms.toggleNeons(vehicle, true);
@@ -162,46 +162,52 @@ export default class VehicleCustoms {
 			VehicleCustoms.toggleNeons(vehicle, false);
 		}
 
-        if(modData.wheel_type == 10) {
-            vehicle.setDriftTyresEnabled(true);
-        } else {
-            vehicle.setDriftTyresEnabled(false);
-        }
+		if (modData.wheel_type == 10) {
+			vehicle.setDriftTyresEnabled(true);
+		} else {
+			vehicle.setDriftTyresEnabled(false);
+		}
 
-		vehicle.setMod(0, Number(modData.spoilers));
-		vehicle.setMod(1, Number(modData.front_bumper));
-		vehicle.setMod(2, Number(modData.rear_bumper));
-		vehicle.setMod(3, Number(modData.side_skirt));
-		vehicle.setMod(4, Number(modData.exhaust));
-		vehicle.setMod(5, Number(modData.frame));
-		vehicle.setMod(6, Number(modData.grille));
-		vehicle.setMod(7, Number(modData.hood));
-		vehicle.setMod(8, Number(modData.fender));
-		vehicle.setMod(9, Number(modData.right_fender));
-		vehicle.setMod(10, Number(modData.roof));
-		vehicle.setMod(11, Number(modData.engine));
-		vehicle.setMod(12, Number(modData.brakes));
-		vehicle.setMod(13, Number(modData.transmission));
-		vehicle.setMod(14, Number(modData.horns));
-		vehicle.setMod(15, Number(modData.suspension));
-		vehicle.setMod(16, Number(modData.armor));
-		vehicle.setMod(18, Number(modData.turbo));
-		vehicle.setMod(23, Number(modData.front_wheels));
-		vehicle.setMod(24, Number(modData.back_wheels));
-		vehicle.setMod(25, Number(modData.plate_holders));
-		vehicle.setMod(27, Number(modData.trim_design));
-		vehicle.setMod(28, Number(modData.ornaments));
-		vehicle.setMod(30, Number(modData.dial_design));
-		vehicle.setMod(33, Number(modData.steering_wheel));
-		vehicle.setMod(34, Number(modData.shift_lever));
-		vehicle.setMod(35, Number(modData.plaques));
-		vehicle.setMod(38, Number(modData.hydraulics));
-		vehicle.setMod(40, Number(modData.boost));
-		vehicle.setMod(55, Number(modData.window_tint));
-		vehicle.setMod(48, Number(modData.livery));
-		vehicle.setMod(53, Number(modData.plate));
-		vehicle.setMod(66, Number(modData.colour_1));
-		vehicle.setMod(67, Number(modData.colour_2));
+		let mods: Map<number, number> = new Map<number, number>([
+			[0, modData.spoilers],
+			[1, modData.front_bumper],
+			[2, modData.rear_bumper],
+			[3, modData.side_skirt],
+			[4, modData.exhaust],
+			[5, modData.frame],
+			[6, modData.grille],
+			[7, modData.hood],
+			[8, modData.fender],
+			[9, modData.right_fender],
+			[10, modData.roof],
+			[11, modData.engine],
+			[12, modData.brakes],
+			[13, modData.transmission],
+			[14, modData.horns],
+			[15, modData.suspension],
+			[16, modData.armor],
+			[18, modData.turbo],
+			[23, modData.front_wheels],
+			[24, modData.back_wheels],
+			[25, modData.plate_holders],
+			[27, modData.trim_design],
+			[28, modData.ornaments],
+			[30, modData.dial_design],
+			[33, modData.steering_wheel],
+			[34, modData.shift_lever],
+			[35, modData.plaques],
+			[38, modData.hydraulics],
+			[40, modData.boost],
+			[55, modData.window_tint],
+			[48, modData.livery],
+			[53, modData.plate],
+			[66, modData.colour_1],
+			[67, modData.colour_2]
+		]);
+
+		for (let [key, value] of mods.entries()) {
+			vehicle.setMod(key, Number(value));
+		}
 	}
 
 	public static toggleNeons(veh: VehicleMp, tog: boolean) {

@@ -194,6 +194,7 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string JobCenter = "/jobcenter";
         public static readonly string FineMenu = "/viewfines";
         public static readonly string AnimationMenu = "/animations";
+        public static readonly string Quiz = "/quiz";
     }
 
     public static class AuthStates
@@ -241,6 +242,8 @@ namespace CloudRP.PlayerSystems.PlayerData
         public static readonly string Admin = "admin_data";
         public static readonly string CriminalCharges = "criminal_charges";
         public static readonly string Animations = "animations_data";
+        public static readonly string QuizQuestions = "quiz_question_data";
+        public static readonly string QuizAnswerData = "quiz_given_answers_data";
     }
 
     public class PromptUiData

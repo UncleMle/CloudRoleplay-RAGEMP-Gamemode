@@ -42,6 +42,7 @@ namespace CloudRP.ServerSystems.Admin
         AdminJail,
         AdminBan,
         AdminWarn,
-        AdminKick
+        AdminKick,
+        AdminBackToQuiz
     }
 }
