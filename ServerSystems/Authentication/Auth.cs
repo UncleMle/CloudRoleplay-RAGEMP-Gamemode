@@ -52,7 +52,26 @@ namespace CloudRP.ServerSystems.Authentication
             timer.Elapsed += (object source, ElapsedEventArgs e) => 
                 NAPI.Task.Run(() => handleNonAuthenticated());
 
-            Main.resourceStart += () => ChatUtils.startupPrint("Started checking for non-authenticated users.");
+            Random ran = new Random();
+
+            QuizQuestions.questions.ForEach(question =>
+            {
+                string answer = question.answers[question.answerId];
+                int index = question.answers.Count;
+                
+                while (index > 1)
+                {
+                    index--;
+                    int randomIndex = ran.Next(index + 1);
+                    string value = question.answers[randomIndex];
+                    question.answers[randomIndex] = question.answers[index];
+                    question.answers[index] = value;
+                }
+
+                question.answerId = question.answers.IndexOf(answer);
+            });
+
+            Main.resourceStart += () => ChatUtils.startupPrint($"Started checking for non-authenticated users. And loaded in {QuizQuestions.questions.Count} quiz questions.");
         }
 
         #region Remote Events

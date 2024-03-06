@@ -1,3 +1,5 @@
+import VehicleManager from "../VehicleManager";
+
 export default class VehicleTyreSync {
     public static LocalPlayer: PlayerMp = mp.players.local;
     public static readonly _vehicleTyreServerEvent: string = "server:vehicleSystems:syncTyres";
@@ -20,6 +22,8 @@ export default class VehicleTyreSync {
 
     private static handleStreamIn(vehicle: EntityMp) {
         if (vehicle.type !== "vehicle" || !vehicle.getVariable(VehicleTyreSync._tyreStateKey)) return;
+
+        if(VehicleManager.spawnedVehicles.indexOf(vehicle as VehicleMp) !== -1) return;
 
         VehicleTyreSync.applySync(vehicle);
     }

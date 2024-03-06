@@ -88,11 +88,9 @@ export default class NewAntiCheatSystem {
     private static async checkForIllegalVeh(entity: EntityMp) {
         if (entity.type !== "vehicle") return;
 
-        for (let i = 0; entity.handle === 0 && i < 35; i++) {
-            await mp.game.waitAsync(100);
-        }
+        if (entity.type === 'vehicle' && entity.remoteId === 65535 && VehicleManager.spawnedVehicles.indexOf(entity as VehicleMp) === -1) {
+            if (getVehicleData(entity as VehicleMp)) return;
 
-        if (!getVehicleData(entity as VehicleMp) && VehicleManager.spawnedVehicles.indexOf(entity as VehicleMp) === -1) {
             let plate = (entity as VehicleMp).getNumberPlateText();
 
             NewAntiCheatSystem.adminAlert(AcEvents.vehicleSpawnHack, plate);
@@ -129,7 +127,7 @@ export default class NewAntiCheatSystem {
     private static checkForCarFly(height: number = 50) {
         if (!NewAntiCheatSystem.LocalPlayer.vehicle) return;
 
-        if(NewAntiCheatSystem.LocalPlayer.vehicle.getClass() === 14) return;
+        if (NewAntiCheatSystem.LocalPlayer.vehicle.getClass() === 14) return;
 
         if (NewAntiCheatSystem.aircraftClasses.indexOf(NewAntiCheatSystem.LocalPlayer.vehicle.getClass()) !== -1) return;
 
