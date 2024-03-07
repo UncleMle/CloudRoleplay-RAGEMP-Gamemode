@@ -12,6 +12,7 @@ using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.CustomEvents;
 using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.DiscordSystem;
+using CloudRP.ServerSystems.JsonParser;
 using CloudRP.ServerSystems.Logging;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.VehicleGarages;
@@ -38,6 +39,7 @@ namespace CloudRP.ServerSystems.Admin
         public static int totalAdminCommands = 0;
         public static Vector3 adminJailLocation = new Vector3(3055.0, -4705.1, 15.3);
         public static Dictionary<int, System.Timers.Timer> adminJailTimers = new Dictionary<int, System.Timers.Timer>();
+        public static Dictionary<int, NewPlayerQuestion> newPlayerQuestions = new Dictionary<int, NewPlayerQuestion>();
 
         public class AdminCommand : CommandConditionAttribute
         {
@@ -95,6 +97,8 @@ namespace CloudRP.ServerSystems.Admin
             {
                 if (player.getPlayerAccountData() == null) return;
 
+                DbCharacter character = player.getPlayerCharacterData();
+
                 int accountId = player.getPlayerAccountData().account_id;
 
                 if (adminJailTimers.ContainsKey(accountId))
@@ -102,6 +106,9 @@ namespace CloudRP.ServerSystems.Admin
                     adminJailTimers[accountId].Dispose();
                     adminJailTimers.Remove(accountId);
                 }
+
+                if (character != null && newPlayerQuestions.ContainsKey(character.character_id)) 
+                    newPlayerQuestions.Remove(character.character_id);
             };
 
             Main.resourceStart += () => ChatUtils.startupPrint($"A total of {totalAdminCommands} admin commands were loaded.");
@@ -116,6 +123,8 @@ namespace CloudRP.ServerSystems.Admin
 
                 if (user != null && user.admin_jail_time > 0) player.Position = adminJailLocation;
             };
+
+            JsonParser.JsonParser.addJson("adminPlaces.json");
         }
 
         #region Global Methods
@@ -201,6 +210,56 @@ namespace CloudRP.ServerSystems.Admin
             };
 
             await DiscordIntegration.SendEmbed(report.discordChannelId, sendInChannel);
+        }
+
+        [Command("n", "~y~Use: ~w~/n [question]", GreedyArg = true)]
+        public void newPlayerQuestionCommand(Player player, string question)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if (character == null) return;
+
+            newPlayerQuestions.Add(character.character_id, new NewPlayerQuestion
+            {
+                question = question,
+                unixCreated = CommandUtils.generateUnix()
+            });
+
+            AdminUtils.sendMessageToAllStaff($"{character.character_name} has created a new player question with id #{character.character_id}. Use /respn {character.character_id} [response] to respond to it", 0, true);
+            CommandUtils.successSay(player, $"You have created a new player question. To cancel it use /canceln");
+        }
+
+        [Command("canceln", "~y~Use: ~w~/canceln")]
+        public void cancelNewPlayerQuestionCommand(Player player)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if (character == null) return;
+
+            if(!newPlayerQuestions.ContainsKey(character.character_id))
+            {
+                CommandUtils.errorSay(player, $"You don't have a new player question to cancel.");
+                return;
+            }
+
+            newPlayerQuestions.Remove(character.character_id);
+            CommandUtils.successSay(player, $"You removed your new player question.");
+        }
+
+        [AdminCommand(AdminRanks.Admin_Support)]
+        [Command("respn", "~r~/respn [questionId] [response]", GreedyArg = true)]
+        public void respondToNewPlaceQuestionCommand(Player player, int questionId, string response)
+        {
+            if(!newPlayerQuestions.ContainsKey(questionId))
+            {
+                CommandUtils.errorSay(player, $"New player question with id {questionId} wasn't found.");
+                return;
+            }
+
+            NAPI.Chat.SendChatMessageToAll($"{ChatUtils.grey}(( {ChatUtils.moneyGreen}[Question #{questionId}]{ChatUtils.White} " +
+                $"Anonymous {ChatUtils.grey}asks:{ChatUtils.White} {newPlayerQuestions[questionId].question} and {player.getPlayerAccountData().admin_name} responds {response} {ChatUtils.grey}))");
+
+            newPlayerQuestions.Remove(questionId);
         }
 
         [AdminCommand(AdminRanks.Admin_SeniorModerator)]
@@ -2252,6 +2311,56 @@ namespace CloudRP.ServerSystems.Admin
             findPlayerData.has_passed_quiz = false;
             findPlayer.setPlayerAccountData(findPlayerData, false, true);
             findPlayer.KickSilent();
+        }
+
+        [AdminCommand(AdminRanks.Admin_Moderator)]
+        [Command("gotoplace", "~r~/gotoplace [placeId]", Alias = "gotop")]
+        public void gotoAdminPlaceCommand(Player player, int placeId = -1)
+        {
+            List<AdminPlace> adminPlaces = JsonParser.JsonParser.parseJson<List<AdminPlace>>("adminPlaces.json");
+
+            if(placeId == -1)
+            {
+                adminPlaces.ForEach(place =>
+                {
+                    AdminUtils.staffSay(player, $"{adminPlaces.IndexOf(place)} | {place.placeName}");
+                });
+
+                return;
+            }
+
+            if(adminPlaces.ElementAt(placeId) == null)
+            {
+                CommandUtils.errorSay(player, $"Admin place with id {placeId} wasn't found.");
+                return;
+            }
+
+            AdminPlace place = adminPlaces[placeId];
+
+            player.sleepClientAc();
+            player.Position = place.placePosition;
+
+            AdminUtils.staffSay(player, $"You teleported to admin position {place.placeName}.");
+            uiHandling.sendNotification(player, $"Teleported to admin position.");
+        }
+
+        [AdminCommand(AdminRanks.Admin_HeadAdmin)]
+        [Command("addaplace", "~r~/addaplace [placeName]", GreedyArg = true)]
+        public void addAdminPlaceCommand(Player player, string placeName)
+        {
+            List<AdminPlace> adminPlaces = JsonParser.JsonParser.parseJson<List<AdminPlace>>("adminPlaces.json");
+
+            AdminPlace place = new AdminPlace
+            {
+                placeName = placeName,
+                placePosition = player.Position
+            };
+
+            adminPlaces.Add(place);
+
+            JsonParser.JsonParser.setToJson("adminPlaces.json", adminPlaces);
+
+            AdminUtils.staffSay(player, $"You added a new admin place with id #{adminPlaces.IndexOf(place)}");
         }
         #endregion
     }

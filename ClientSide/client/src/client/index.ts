@@ -62,6 +62,7 @@ import NewAntiCheatSystem from "./AntiCheat/NewAntiCheatSystem";
 import BulletFragments from "./WeaponSystems/BulletFragmentSystem";
 import LuckyWheel from "./CasinoSystems/LuckyWheel";
 import VehicleTyreSync from "./VehicleSystems/CustomSync/VehicleTyreSync";
+import IplLoader from "./world/IplLoader";
 
 // initialize client classes.
 new PlayerAuthentication();
@@ -128,3 +129,4 @@ new NewAntiCheatSystem();
 new BulletFragments();
 new LuckyWheel();
 new VehicleTyreSync();
+new IplLoader();

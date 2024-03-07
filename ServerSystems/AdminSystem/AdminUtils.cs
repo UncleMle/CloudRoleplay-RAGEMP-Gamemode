@@ -250,4 +250,16 @@ namespace CloudRP.ServerSystems.Admin
         public string rankName { get; set; }
         public int rankId { get; set; }
     }
+
+    public class AdminPlace
+    {
+        public string placeName { get; set; }
+        public Vector3 placePosition { get; set; }
+    }
+
+    public class NewPlayerQuestion
+    {
+        public string question { get; set; }
+        public long unixCreated { get; set; }
+    }
 }

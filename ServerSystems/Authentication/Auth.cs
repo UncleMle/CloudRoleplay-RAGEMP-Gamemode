@@ -122,7 +122,7 @@ namespace CloudRP.ServerSystems.Authentication
                    findAccount.social_club_id != player.SocialClubId
                 )
                 {
-                    string otp = AuthUtils.generateString(5);
+                    string otp = AuthUtils.generateString(5, true);
 
                     player.SetData(_otpAccountStoreKey, new AccountOtpStore
                     {
@@ -383,6 +383,8 @@ namespace CloudRP.ServerSystems.Authentication
         {
             if (autoLoginKey != null && player.getPlayerAccountData() == null && player.GetData<AccountOtpStore>(_otpAccountStoreKey) == null && player.GetData<OtpStore>(_otpRegisterStoreKey) == null)
             {
+                Console.WriteLine("Auto login key " + autoLoginKey);
+
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
                     Account findAccount = dbContext.accounts
@@ -654,18 +656,18 @@ namespace CloudRP.ServerSystems.Authentication
 
         public void setUpAutoLogin(Player player, Account userAccount)
         {
-            string randomString = AuthUtils.generateString(25) + userAccount.account_id;
+            string uuid = Guid.NewGuid().ToString();
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
-                userAccount.auto_login_key = randomString;
+                userAccount.auto_login_key = uuid;
                 userAccount.auto_login = 1;
 
                 dbContext.Update(userAccount);
                 dbContext.SaveChanges();
             };
 
-            player.TriggerEvent("client:setAuthKey", randomString);
+            player.TriggerEvent("client:setAuthKey", uuid);
         }
 
         public bool checkInGame(Player player, string emailAddress, string username, int accountId)
@@ -722,7 +724,7 @@ namespace CloudRP.ServerSystems.Authentication
             uiHandling.setLoadingState(player, false);
             uiHandling.setAuthState(player, AuthStates.otp);
 
-            string otp = AuthUtils.generateString(4);
+            string otp = AuthUtils.generateString(5, true);
 
             player.SetCustomData(_otpRegisterStoreKey, new OtpStore
             {
