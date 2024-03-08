@@ -55,6 +55,9 @@ ClientSide/client/dist
 ClientSide/client/.env
 ClientSide/client/node_modules
 
+# Remote UCP things
+UserControlPanel/.env
+
 # Remove meta
 meta.xml
 
