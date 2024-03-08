@@ -9,6 +9,7 @@ import apiErrorHandle from "@/lib/ErrorHandling/ErrorHandles";
 import AccountsController from "@/lib/AccountController/AccountController";
 import { serialize } from "cookie";
 import jwt from 'jsonwebtoken';
+import requestIp from 'request-ip'
 
 interface AuthEndpointBody {
   username: string,
@@ -46,7 +47,7 @@ const handler: (req: NextApiRequest, res: NextApiResponse) => Promise<void> = as
   res.status(200).send({
     status: true,
     code: 200,
-    authedAccount: account
+    ipFrom: requestIp.getClientIp(req)
   });
 }
 
