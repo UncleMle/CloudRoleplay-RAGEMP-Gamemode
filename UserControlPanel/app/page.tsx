@@ -1,7 +1,9 @@
+import LoginPage from "@/components/auth/LoginPage";
+
 export default function Home() {
   return (
-    <main>
-      User Control panel
-    </main>
-  );
+    <div>
+      <LoginPage />
+    </div>
+  )
 }

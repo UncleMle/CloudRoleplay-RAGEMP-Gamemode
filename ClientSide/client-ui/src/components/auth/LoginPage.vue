@@ -1,5 +1,5 @@
 <template>
-    <main class="vignette w-full bg-black/40 bg-blend-multiply w-full h-full">
+    <main class="vignette w-full bg-black/40 bg-blend-multiply h-full">
         <div v-if="uiStates.serverLoading" class="w-full h-screen flex justify-center">
             <svg class="h-20 w-20 animate-spin text-gray-500 fill-black/30 mt-[20%]" viewBox="0 0 100 101" fill="none"
                 xmlns="http://www.w3.org/2000/svg">
@@ -174,7 +174,7 @@
 
                                 <div class="inline-flex w-full mt-4 space-x-10 font-medium">
                                     <button @click="uiStates.authenticationState = 'register'"
-                                        class="w-full rounded-l-xl p-3 bg-gradient-to-r from-black/30 to-black/40 duration-300 hover:bg-black/20 duration-300 hover:bg-black/20"><i
+                                        class="w-full rounded-l-xl p-3 bg-gradient-to-r from-black/30 to-black/40 duration-300 hover:bg-black/20"><i
                                             class="fa-solid fa-book text-gray-400" type="button"></i> Register
                                     </button>
 

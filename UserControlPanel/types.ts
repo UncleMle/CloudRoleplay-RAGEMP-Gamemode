@@ -1,12 +1,5 @@
 import { RowDataPacket } from "mysql2";
 
-export class EndpointRequestTypes {
-    public static get: string = "GET";
-    public static post: string = "GET";
-    public static put: string = "PUT";
-    public static delete: string = "DELETE";
-}
-
 export interface IAccount extends RowDataPacket {
     account_id: number;
     account_uuid: string;
@@ -33,3 +26,17 @@ export interface IAccount extends RowDataPacket {
     has_passed_quiz: boolean;
     quiz_fail_unix: number;
 };
+
+export interface ServerInfo {
+    name: string;
+    gamemode: string;
+    url: string;
+    lang: string;
+    players: number;
+    peak: number;
+    maxplayers: number;
+}
+
+export interface ServerList {
+    [serverAddress: string]: ServerInfo;
+}

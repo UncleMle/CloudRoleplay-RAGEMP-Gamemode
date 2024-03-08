@@ -1,6 +1,8 @@
 import { IAccount } from "@/types";
 import pool from "../mysqlDb";
 import crypto from 'crypto';
+import jwt from "jsonwebtoken";
+import { NextApiRequest } from "next";
 
 export default class AccountsController {
     public static checkAccountPassword(targetHash: string, compare: string): boolean {
@@ -19,5 +21,31 @@ export default class AccountsController {
         }
 
         return match;
+    }
+
+    public static async tokenAuthentication(token: string | void | null | string[]): Promise<boolean> {
+        try {
+            const decoded = jwt.verify(token as string, "jwtPrivateKey");
+            return decoded ? true : false;
+
+
+        } catch (e) {
+            return false;
+        }
+    }
+
+    public static getIdFromToken(req: NextApiRequest): number {
+        let accountId: number = -1;
+        let decoded = jwt.verify(req.headers['x-auth-token'] as string, "jwtPrivateKey");
+
+        if(decoded) {
+            decoded = decoded as {
+                x: number
+            };
+
+            accountId = decoded.id;
+        }
+
+        return accountId;
     }
 }
