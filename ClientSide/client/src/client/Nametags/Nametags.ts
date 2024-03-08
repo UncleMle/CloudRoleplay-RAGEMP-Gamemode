@@ -1,6 +1,6 @@
 import getUserCharacterData from '@/PlayerMethods/getUserCharacterData';
 import { UserData, CharacterData } from '../@types';
-import { _TEXT_CLOUD_ADMINBLUE, _TEXT_R_RED, _TEXT_R_WHITE } from '../Constants/Constants';
+import { _TEXT_CLOUD_ADMINPURPLE, _TEXT_R_RED, _TEXT_R_WHITE } from '../Constants/Constants';
 import gettargetCharacterData from '../PlayerMethods/getTargetCharacterData';
 import gettargetData from '../PlayerMethods/getTargetData';
 import distBetweenCoords from '@/PlayerMethods/distanceBetweenCoords';
@@ -134,7 +134,7 @@ export default class NameTags {
 				let defaultTagContent: string = injuredState + voiceState + NameTags.getPlayerNick(target);
 
 				if (targetUserData.adminDuty) {
-					defaultTagContent = `~w~<font color="${_TEXT_CLOUD_ADMINBLUE}">[Staff]</font> ${voiceState} ${targetUserData.admin_name}`;
+					defaultTagContent = `~w~<font color="${_TEXT_CLOUD_ADMINPURPLE}">[Staff]</font> ~w~<font color="#ffa6a6">${voiceState}${targetUserData.admin_name}</font>`;
 				}
 
 				target.getVariable(NameTags.playerIsTypingState) ? (defaultTagContent += '\n ~m~(( Typing... ))~w~') : '';

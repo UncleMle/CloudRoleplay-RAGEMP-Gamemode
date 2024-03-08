@@ -13,6 +13,10 @@ export default class VehicleFuel {
         mp.events.add("playerEnterVehicle", VehicleFuel.handleEnter);
         mp.events.add("playerLeaveVehicle", VehicleFuel.handleExit);
         mp.events.add("render", VehicleFuel.handleRender);
+
+        setInterval(() => {
+            VehicleFuel.checkForLeakingFuelTank();
+        }, 5000);
     }
 
     public static handleRender() {
@@ -25,6 +29,13 @@ export default class VehicleFuel {
                 VehicleFuel.renderNoFuelText();
             }
         }
+    }
+
+    public static checkForLeakingFuelTank() {
+        if(!VehicleFuel.LocalPlayer.vehicle) return;
+
+        let fuelTankHealth = VehicleFuel.LocalPlayer.vehicle.getPetrolTankHealth();
+
     }
 
     public static renderNoFuelText() {

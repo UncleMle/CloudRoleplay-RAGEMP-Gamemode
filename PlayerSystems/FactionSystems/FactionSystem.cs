@@ -115,13 +115,13 @@ namespace CloudRP.PlayerSystems.FactionSystems
             {
                 Factions.LSPD, new List<Vector3>
                 {
-                    new Vector3(452.0, -987.0, 30.7)
+                    new Vector3(461.8, -999.1, 30.7)
                 }
             },
             {
                 Factions.SASD, new List<Vector3>
                 {
-                    new Vector3(-442.4, 6011.9, 31.7)
+                    new Vector3(-453.0, 6013.0, 31.7)
                 }
             },
             {
@@ -169,19 +169,19 @@ namespace CloudRP.PlayerSystems.FactionSystems
                     {
                         garageId = 1,
                         vehicleRot = 90.6f,
-                        spawnPos = new Vector3(416.7, -1025.0, 29.1)
+                        spawnPos = new Vector3(435.0, -975.8, 25.7)
                     },
                     new FactionVehSpawn
                     {
                         garageId = 2,
                         vehicleRot = 57.4f,
-                        spawnPos = new Vector3(407.4, -997.3, 29.3)
+                        spawnPos = new Vector3(449.5, -976.2, 25.7)
                     },
                     new FactionVehSpawn
                     {
                         garageId = 3,
                         vehicleRot = 92.1f,
-                        spawnPos = new Vector3(449.1, -980.9, 43.7)
+                        spawnPos = new Vector3(458.4, -992.0, 25.7)
                     },
                     new FactionVehSpawn
                     {

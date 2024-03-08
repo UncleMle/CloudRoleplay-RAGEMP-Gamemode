@@ -47,12 +47,23 @@ namespace CloudRP.GeneralSystems.WeaponSystem
 
                 player.SetCustomData(_currentWeaponDataIdentifier, data);
 
-                if(data.weaponClass == WeaponClasses.primary)
+                switch(data.weaponClass)
                 {
-                    AnimSync.playSyncAnimation(player, 49, "anim@heists@ornate_bank@grab_cash", "exit", 10000);
-                } else
-                {
-                    AnimSync.playSyncAnimation(player, 49, "reaction@intimidation@1h", "intro", 10000);
+                    case WeaponClasses.primary:
+                        {
+                            AnimSync.playSyncAnimation(player, 49, "anim@heists@ornate_bank@grab_cash", "exit", 1800);
+                            break;
+                        }
+                    case WeaponClasses.secondary:
+                        {
+                            AnimSync.playSyncAnimation(player, 49, "reaction@intimidation@1h", "intro", 1800);
+                            break;
+                        }
+                    case WeaponClasses.melee:
+                        {
+                            AnimSync.playSyncAnimation(player, 49, "anim@weapons@pistol@doubleaction_holster", "holster", 1800);
+                            break;
+                        }
                 }
             }
         }

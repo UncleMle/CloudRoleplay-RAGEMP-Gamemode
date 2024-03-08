@@ -16,7 +16,7 @@ namespace CloudRP.PlayerSystems.FactionSystems.PoliceFaction
     {
         public List<Vector3> receptionDesks = new List<Vector3>
         {
-            new Vector3(441.1, -981.0, 30.7),
+            new Vector3(441.2, -982.1, 30.7),
             new Vector3(-447.8, 6013.7, 31.7)
         };
 

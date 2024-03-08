@@ -3,6 +3,14 @@ export default class Weather {
 
     constructor() {
         mp.events.add("client:weatherSet", Weather.handleWeatherChange);
+        
+        // Weather.updateLightStates();
+    }
+
+    private static updateLightStates() {
+        for (let i = 0; i <= 16; i++) {
+            mp.game.graphics.setLightsState(i, true);
+        }
     }
 
     private static handleWeatherChange(weatherType: string) {

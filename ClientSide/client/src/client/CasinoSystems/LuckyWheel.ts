@@ -62,6 +62,7 @@ export default class LuckyWheel {
         let secondary: number = Math.floor(Math.random() * 255);
 
         LuckyWheel.wheelPrizeVehicle = VehicleManager.createVehicle(vehicleName, LuckyWheel.vehiclePodium, primary, secondary, true, "PODIUM");
+        LuckyWheel.wheelPrizeVehicle.setAllowNoPassengersLockon(true); 
     }
 
     private static rotatePrizeVehicle() {
@@ -194,11 +195,6 @@ export default class LuckyWheel {
     }
 
     private static handleOnClick() {
-        if (LuckyWheel.isWheelSpinning) {
-            mp.game.graphics.notify('Lucky wheel is already spinning!');
-            return;
-        }
-
         mp.events.callRemote(LuckyWheel.serverEvents[2]);
     }
 
@@ -225,7 +221,7 @@ export default class LuckyWheel {
 
     private static handleUserNotify(text: string) {
         mp.game.ui.setTextComponentFormat('STRING');
-        mp.game.ui.addTextComponentSubstringWebsite(text);
-        mp.game.ui.displayHelpTextFromStringLabel(0, true, true, 1000);
+        mp.game.ui.addTextComponentSubstringPlayerName(text);
+        mp.game.ui.displayHelpTextFromStringLabel(0, false, true, -1);
     }
 }

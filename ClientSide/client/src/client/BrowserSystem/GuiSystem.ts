@@ -16,7 +16,7 @@ export default class GuiSystem {
 	constructor() {
 		mp.events.add('guiReady', () => GuiSystem.toggleHudComplete(false));
 		mp.events.add("gui:toggleHudComplete", GuiSystem.toggleHudComplete);
-		mp.keys.bind(_control_ids.F10, false, () => GuiSystem.toggleHud);
+		mp.keys.bind(_control_ids.F10, false, GuiSystem.toggleHud);
 
 		setInterval(() => {
 			GuiSystem.fillGuiRenderValues();

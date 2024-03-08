@@ -666,6 +666,8 @@ namespace CloudRP.ServerSystems.Admin
                 return;
             }
 
+            if (findPlayer.isImmuneTo(player)) return;
+
             player.adminJail(time * 60, reason);
 
             AdminPunishments.addNewPunishment(user.account_id, reason, user.admin_name, PunishmentTypes.AdminJail, time);
@@ -686,6 +688,8 @@ namespace CloudRP.ServerSystems.Admin
                 CommandUtils.notFound(player);
                 return;
             }
+
+            if (findPlayer.isImmuneTo(player)) return;
 
             User findPlayerUser = findPlayer.getPlayerAccountData();
 

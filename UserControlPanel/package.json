@@ -9,21 +9,23 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@prisma/client": "^5.10.2",
+    "crypto": "^1.0.1",
+    "mysql2": "^3.9.2",
     "next": "14.1.0",
     "react": "^18",
     "react-dom": "^18"
   },
   "devDependencies": {
-    "@types/node": "^20.11.19",
+    "@types/node": "^20.11.25",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.1.0",
     "postcss": "^8",
-    "prisma": "^5.10.1",
     "tailwindcss": "^3.3.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.4.2"
   }
 }

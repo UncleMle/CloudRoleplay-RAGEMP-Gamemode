@@ -205,6 +205,7 @@ namespace CloudRP.GeneralSystems.Stores
                     if (findCharClothes != null)
                     {
                         characterData.characterClothing = clothingData;
+                        characterData.cachedClothes = clothingData;
 
                         dbContext.character_clothes.Remove(findCharClothes);
                         dbContext.SaveChanges();

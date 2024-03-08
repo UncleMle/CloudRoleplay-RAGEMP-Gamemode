@@ -40,6 +40,46 @@ namespace CloudRP.GeneralSystems.WeaponSystem
                     weaponClass = WeaponClasses.primary,
                     weaponName = "Combat PDW"
                 }
+            },
+            {
+                WeaponHash.Nightstick, new WeaponsData
+                {
+                    maxAmmo = 20,
+                    weaponClass = WeaponClasses.melee,
+                    weaponName = "Night Stick"
+                }
+            },
+            {
+                WeaponHash.Stungun, new WeaponsData
+                {
+                    maxAmmo = 20,
+                    weaponClass = WeaponClasses.melee,
+                    weaponName = "Stun Gun"
+                }
+            },
+            {
+                WeaponHash.Knife, new WeaponsData
+                {
+                    maxAmmo = 20,
+                    weaponClass = WeaponClasses.melee,
+                    weaponName = "Knife"
+                }
+            },
+            {
+                WeaponHash.Machete, new WeaponsData
+                {
+                    maxAmmo = 20,
+                    weaponClass = WeaponClasses.melee,
+                    weaponName = "Machete"
+                }
+            },
+            {
+                WeaponHash.Molotov, new WeaponsData
+                {
+                    maxAmmo = 20,
+                    weaponClass = WeaponClasses.melee,
+                    weaponName = "Molotov"
+                }
             }
         };
     }

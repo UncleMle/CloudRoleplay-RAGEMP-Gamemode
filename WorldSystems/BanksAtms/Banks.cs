@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -185,13 +186,13 @@ namespace CloudRP.World.BanksAtms
                         return;
                     }
 
-                    if (!player.processCashPayment(cashDepo, "Bank Deposit"))
+                    if((characterData.cash_amount - cashDepo) < 0)
                     {
                         uiHandling.sendPushNotifError(player, "You don't have enough cash to deposit this amount", 6600, true);
                         return;
                     }
 
-                    player.addPlayerMoney(cashDepo, "Bank Deposit");
+                    player.processCashPayment(cashDepo, "Bank Deposit");
                     uiHandling.sendNotification(player, $"~g~Deposited ${cashDepo.ToString("N0")}.", false, true, "Deposits cash.");
 
                     uiHandling.setLoadingState(player, false);

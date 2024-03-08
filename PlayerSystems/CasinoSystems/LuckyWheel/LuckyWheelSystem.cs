@@ -15,6 +15,7 @@ namespace CloudRP.PlayerSystems.CasinoSystems.LuckyWheel
     {
         private static readonly string _spinningWheelDataKey = "casinoSystem:spinningWheel:winDataKey";
         private static readonly Vector3 spawnVehicleAt = new Vector3(935.2, -0.9, 78.8);
+        private static readonly Vector3 wheelObjectPosition = new Vector3(1111.052, 229.8579, -49.133);
         private static readonly int spinWheelCost = 400;
         private static bool wheelIsSpinning = false;
         string[] winListNames = new string[]
@@ -44,7 +45,7 @@ namespace CloudRP.PlayerSystems.CasinoSystems.LuckyWheel
         {
             "adder", "autarch", "banshee2", "bullet", "cheetah", "emerus", "italigtb2"
         };
-        int[] winMoneyAmounts = new int[]
+        private static int[] winMoneyAmounts = new int[]
         {
             -1, 2500, 20000, 10000, 2000, 5000, 30000, 15000, -1, 7500, 20000, -1, -1, 10000, 40000, 25000, -1, 15000, -1, 50000
         };
@@ -101,6 +102,49 @@ namespace CloudRP.PlayerSystems.CasinoSystems.LuckyWheel
 
             return winVehicles[winVehicleIndex];
         }
+
+        public static void handleWin(Player player, int win)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if (character == null) return;
+
+            player.ResetData(_spinningWheelDataKey);
+
+            int winMoneyAmount = winMoneyAmounts[win];
+
+            if (winMoneyAmount != -1)
+            {
+                player.SendChatMessage(ChatUtils.Success + $"You have succesfully won ${winMoneyAmount.ToString("N0")}.");
+                player.addPlayerMoney(winMoneyAmount, "Casino - Lucky Wheel");
+                return;
+            }
+
+            switch ((PossibleWins)win)
+            {
+                case PossibleWins.vehicle:
+                    {
+                        string winVeh = winVehicles[winVehicleIndex];
+
+                        cyclePrizeVehicle();
+
+                        int colour = new Random().Next(0, 159);
+
+                        VehicleSystem.buildVehicle(winVeh, spawnVehicleAt, 145.2f, character.character_id, colour, colour, character.character_name);
+
+                        player.SendChatMessage(ChatUtils.Success + $"You have won an {winVeh}! It has been parked outside the casino and marked on the GPS.");
+                        MarkersAndLabels.addBlipForClient(player, 523, "Your new vehicle", spawnVehicleAt, 4, 255, 55);
+
+                        player.TriggerEvent("client:luckyWheel:vehiclePrizeAnim");
+                        break;
+                    }
+                case PossibleWins.mystery:
+                    {
+                        handleWin(player, new Random().Next(0, 11));
+                        break;
+                    }
+            }
+        }
         #endregion
 
         #region Remote Events
@@ -109,6 +153,8 @@ namespace CloudRP.PlayerSystems.CasinoSystems.LuckyWheel
         {
             if (player.getPlayerCharacterData() == null || player.HasData(_spinningWheelDataKey)) return;
 
+            if (Vector3.Distance(player.Position, wheelObjectPosition) > 10) return;
+            
             uiHandling.sendPrompt(player, "fa-solid fa-money-bill", "Lucky Wheel", $"Are you sure you want to spin the lucky wheel? It will cost ${spinWheelCost.ToString("N0")}.", startWheelWelcome);
         }
 
@@ -127,40 +173,7 @@ namespace CloudRP.PlayerSystems.CasinoSystems.LuckyWheel
 
             wheelIsSpinning = false;
 
-            DbCharacter character = player.getPlayerCharacterData();
-
-            int win = player.GetData<int>(_spinningWheelDataKey);
-
-            player.ResetData(_spinningWheelDataKey);
-
-            int winMoneyAmount = winMoneyAmounts[win];
-
-            if (winMoneyAmount != -1)
-            {
-                player.SendChatMessage(ChatUtils.Success + $"You have succesfully won ${winMoneyAmount.ToString("N0")}.");
-                player.addPlayerMoney(winMoneyAmount, "Casino - Lucky Wheel");
-                return;
-            }
-
-            switch((PossibleWins)win)
-            {
-                case PossibleWins.vehicle:
-                    {
-                        string winVeh = winVehicles[winVehicleIndex];
-
-                        cyclePrizeVehicle();
-
-                        int colour = new Random().Next(0, 159);
-
-                        VehicleSystem.buildVehicle(winVeh, spawnVehicleAt, 145.2f, character.character_id, colour, colour, character.character_name);
-
-                        player.SendChatMessage(ChatUtils.Success + $"You have won an {winVeh}! It has been parked outside the casino and marked on the GPS.");
-                        MarkersAndLabels.addBlipForClient(player, 523, "Your new vehicle", spawnVehicleAt, 4, 255, 55);
-
-                        player.TriggerEvent("client:luckyWheel:vehiclePrizeAnim");
-                        break;
-                    }
-            }
+            handleWin(player, player.GetData<int>(_spinningWheelDataKey));
         }
         #endregion
     }

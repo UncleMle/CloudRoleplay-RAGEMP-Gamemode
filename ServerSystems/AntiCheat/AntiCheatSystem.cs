@@ -171,6 +171,8 @@ namespace CloudRP.ServerSystems.AntiCheat
 
             if (character == null)
             {
+                if (player.isBanned()) return;
+
                 player.Kick();
                 sendAcMessage($"Player [{player.Id}] was kicked for triggering AC without being logged in.");
                 return;

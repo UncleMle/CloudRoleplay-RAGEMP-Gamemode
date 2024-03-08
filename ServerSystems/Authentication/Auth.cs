@@ -383,8 +383,6 @@ namespace CloudRP.ServerSystems.Authentication
         {
             if (autoLoginKey != null && player.getPlayerAccountData() == null && player.GetData<AccountOtpStore>(_otpAccountStoreKey) == null && player.GetData<OtpStore>(_otpRegisterStoreKey) == null)
             {
-                Console.WriteLine("Auto login key " + autoLoginKey);
-
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
                     Account findAccount = dbContext.accounts
