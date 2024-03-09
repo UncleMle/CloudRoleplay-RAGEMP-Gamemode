@@ -31,7 +31,7 @@ const CharacterList = ({ characters, vehicles }: { characters: DbCharacter[], ve
             <ul className="space-x-4 text-xl">
                 {
                     characters.map((char, idx) => (
-                        <button onClick={() => setCharacterIndex(idx)} className={"inline-block " + (idx === selectIndex ? "border-b text-purple-400/50 border-purple-400/50" : "")}>
+                        <button key={idx} onClick={() => setCharacterIndex(idx)} className={"inline-block " + (idx === selectIndex ? "border-b text-purple-400/50 border-purple-400/50" : "")}>
                             {char.character_name.replace("_", " ").toUpperCase()}
                         </button>
                     ))
@@ -42,7 +42,7 @@ const CharacterList = ({ characters, vehicles }: { characters: DbCharacter[], ve
                 {
                     JSON.parse(characters[selectIndex].character_faction_data)?.map((f: number) =>
                     (
-                        <span style={{ backgroundColor: factionColours[f] }} className="p-2 rounded-xl">{factions[f].replace("_", " ")}</span>
+                        <span key={f} style={{ backgroundColor: factionColours[f] }} className="p-2 rounded-xl">{factions[f].replace("_", " ")}</span>
                     ))
                 }
             </p>
