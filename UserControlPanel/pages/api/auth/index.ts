@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import crypto from 'crypto';
 import pool from "../../../lib/mysqlDb";
-import { IAccount } from "@/types";
+import { AccountSessionOtpData, IAccount } from "@/types";
 import DatabaseController from "@/lib/mysqlDbController";
 import middleware from "@/lib/Middleware/Middleware";
 import { EndpointRequestTypes, HttpStatusCodes } from "@/utilClasses";
@@ -17,6 +17,7 @@ interface AuthEndpointBody {
 }
 
 const handler: (req: NextApiRequest, res: NextApiResponse) => Promise<void> = async (req: NextApiRequest, res: NextApiResponse) => {
+  if (AccountsController.tokenAuthentication(req.headers['x-auth-token'])) return;
 
   if (!req.body || !req.body.payload) return apiErrorHandle(res, HttpStatusCodes.BAD_REQUEST);
 
@@ -24,18 +25,22 @@ const handler: (req: NextApiRequest, res: NextApiResponse) => Promise<void> = as
 
   if (!body.password || !body.username) return apiErrorHandle(res, HttpStatusCodes.BAD_REQUEST);
 
-  let account: IAccount[] = await DatabaseController.selectQuery<IAccount[]>("SELECT * FROM accounts where username = ? LIMIT 1", [
+  let accounts: IAccount[] = await DatabaseController.selectQuery<IAccount[]>("SELECT * FROM accounts where username = ? LIMIT 1", [
     body.username
   ]);
 
-  if (account.length === 0 || !account) return apiErrorHandle(res, HttpStatusCodes.UNAUTHORIZED);
+  if (accounts.length === 0 || !accounts) return apiErrorHandle(res, HttpStatusCodes.UNAUTHORIZED);
 
-  if (!AccountsController.checkAccountPassword(account[0].password as string, body.password)) return apiErrorHandle(res, HttpStatusCodes.UNAUTHORIZED);
+  if (!AccountsController.checkAccountPassword(accounts[0].password as string, body.password)) return apiErrorHandle(res, HttpStatusCodes.UNAUTHORIZED);
 
-  let accountId: number = account[0].account_id;
+  let account: IAccount = accounts[0];
+  let targetIp: string | null = requestIp.getClientIp(req);
+
+  if (account.user_ip !== targetIp) {
+  }
 
   const token = jwt.sign(
-    { id: accountId },
+    { id: account.account_id },
     "jwtPrivateKey",
     {
       expiresIn: "5h",
@@ -46,8 +51,7 @@ const handler: (req: NextApiRequest, res: NextApiResponse) => Promise<void> = as
 
   res.status(200).send({
     status: true,
-    code: 200,
-    ipFrom: requestIp.getClientIp(req)
+    code: 200
   });
 }
 

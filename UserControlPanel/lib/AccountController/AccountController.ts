@@ -1,4 +1,4 @@
-import { IAccount } from "@/types";
+import { AccountSessionOtpData, IAccount } from "@/types";
 import pool from "../mysqlDb";
 import crypto from 'crypto';
 import jwt from "jsonwebtoken";
@@ -23,14 +23,32 @@ export default class AccountsController {
         return match;
     }
 
-    public static async tokenAuthentication(token: string | void | null | string[]): Promise<boolean> {
+    public static tokenAuthentication(token: string | void | null | string[]): boolean {
         try {
-            const decoded = jwt.verify(token as string, "jwtPrivateKey");
-            return decoded ? true : false;
+            let decoded = jwt.verify(token as string, "jwtPrivateKey");
 
+            decoded = decoded as {
+                x: number
+            };
 
+            return decoded.id != -1 ? true : false;
         } catch (e) {
             return false;
+        }
+    }
+    
+    public static otpVerification(token: string | void | null | string[]): AccountSessionOtpData | null {
+        console.log(token);
+        try {
+            let decoded = jwt.verify(token as string, "jwtPrivateKey");
+
+            decoded = decoded as AccountSessionOtpData;
+
+            console.log("decoded" + decoded);
+
+            return decoded.accountOtpSession;
+        } catch (e) {
+            return null;
         }
     }
 
@@ -38,7 +56,7 @@ export default class AccountsController {
         let accountId: number = -1;
         let decoded = jwt.verify(req.headers['x-auth-token'] as string, "jwtPrivateKey");
 
-        if(decoded) {
+        if (decoded) {
             decoded = decoded as {
                 x: number
             };
@@ -47,5 +65,16 @@ export default class AccountsController {
         }
 
         return accountId;
+    }
+
+    public static generateOtp(length: number = 5): string {
+        let otp: string = "";
+        let numbers: string = "1234567890";
+
+        for (let i = 0; i < length; i++) {
+            otp += numbers[Math.floor(Math.random() * numbers.length)];
+        }
+
+        return otp;
     }
 }

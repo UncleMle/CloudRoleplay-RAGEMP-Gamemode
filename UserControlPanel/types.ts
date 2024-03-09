@@ -40,3 +40,55 @@ export interface ServerInfo {
 export interface ServerList {
     [serverAddress: string]: ServerInfo;
 }
+
+export type AccountSessionOtpData = {
+    accountId: number,
+    username: string
+}
+
+export interface ServerDashboardData {
+    accountData: {
+        username: string, adminLevel: number
+    }
+    characters: DbCharacter[],
+    punishments: AdminPunishment[]
+}
+
+export interface AdminPunishment {
+    admin_punishment_id: number;
+    owner_account_id: number;
+    punishment_type: number;
+    admin_name: string;
+    punishment_reason: string;
+    is_void: boolean;
+    unix_expires: number;
+}
+
+export interface DbCharacter {
+    character_id: number;
+    owner_id: number;
+    character_name: string;
+    position_x: number;
+    position_y: number;
+    position_z: number;
+    last_login: string;
+    character_health: number;
+    character_water: number;
+    character_hunger: number;
+    character_isbanned: number;
+    money_amount: number;
+    cash_amount: number;
+    salary_amount?: number;
+    play_time_seconds: number;
+    player_dimension: number;
+    player_exp: number;
+    injured_timer: number;
+    freelance_job_data: string;
+    character_license_data: string;
+    character_faction_data: string;
+    faction_duty_status: number;
+    faction_ranks: string;
+    faction_duty_uniform: number;
+    freelance_job_uniform: number;
+    last_spun_luckywheel: number;
+}

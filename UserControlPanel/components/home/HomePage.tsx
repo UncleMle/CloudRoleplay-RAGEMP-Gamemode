@@ -1,20 +1,27 @@
+"use client";
+
 import axios from "axios";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import useSWR from "swr";
+import HomeSideBar from "./Sidebar/HomeSideBar";
 
 const HomePage = () => {
     const { isLoading, data, error } = useHome();
     const router = useRouter();
+    const urlSearchString = window.location.search;
+    const params = new URLSearchParams(urlSearchString);
+
+    const seachParams = useSearchParams();
 
     useEffect(() => {
         if (error) router.push("/");
-    })
+    }, []);
 
     return (
-        <div>
-            Home Page {JSON.stringify(data)}
+        <div className="relative">
+            {data && <HomeSideBar data={data} />}
         </div>
     )
 }
