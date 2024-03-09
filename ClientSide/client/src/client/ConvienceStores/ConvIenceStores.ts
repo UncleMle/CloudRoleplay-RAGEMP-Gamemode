@@ -1,10 +1,8 @@
 export default class ConvienceStores {
-    public static LocalPlayer: PlayerMp;
+    public static LocalPlayer: PlayerMp = mp.players.local;;
     public static readonly _convienceStoreDataIdentifier: string = "storePedAndColshapeData";
 
     constructor() {
-        ConvienceStores.LocalPlayer = mp.players.local;
-
         mp.events.add("entityStreamIn", ConvienceStores.handleStreamIn);
     }
 

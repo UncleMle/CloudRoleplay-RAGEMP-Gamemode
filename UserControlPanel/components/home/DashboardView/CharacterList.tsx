@@ -1,7 +1,9 @@
 import { DbCharacter } from "@/types";
 import { useState } from "react";
+import { MdDriveFileRenameOutline } from "react-icons/md";
+import { FaCar } from "react-icons/fa";
 
-const CharacterList = ({ characters, vehicles }: { characters: DbCharacter[], vehicles: any[] }) => {
+const CharacterList = ({ characters }: { characters: DbCharacter[] }) => {
     const [selectIndex, setCharacterIndex] = useState<number>(0);
 
     const factions: string[] = [
@@ -89,6 +91,41 @@ const CharacterList = ({ characters, vehicles }: { characters: DbCharacter[], ve
                         Water - {Math.round(characters[selectIndex].character_water)}% Hunger - {Math.round(characters[selectIndex].character_hunger)}%
                     </div>
                 </div>
+
+            </div>
+
+
+            <h2 className="text-left border-l-4 pl-3 text-xl bg-gray-500/20 w-fit pr-6 p-2 mt-20 border-purple-400/50 ">Character's vehicles</h2>
+            <div className="border-l-4 w-full backdrop-blur-lg p-4 border-purple-400/50 max-h-96 overflow-y-scroll">
+
+                {characters[selectIndex].charactersVehicles.length > 0 &&
+                    <table className="w-full">
+                        <tr className="border-b-4 border-gray-400/50">
+                            <th className="pb-4 relative">Vehicle Name</th>
+                            <th className="pb-4">Numberplate</th>
+                            <th className="pb-4">Dimension</th>
+                            <th className="pb-4">Distance</th>
+                            <th className="pb-4">Fuel Level</th>
+                            <th className="pb-4">Health</th>
+                        </tr>
+                        {
+                            characters[selectIndex].charactersVehicles.map(veh => (
+                                <tr className="pb-4 border-b-2 border-gray-400/50">
+                                    <th className="pt-4 pb-4">{veh.vehicle_display_name}</th>
+                                    <th>{veh.numberplate}</th>
+                                    <th>{veh.vehicle_dimension}</th>
+                                    <th>{Math.round(veh.vehicle_distance / 1000)}KMH</th>
+                                    <th>{Math.round(veh.vehicle_fuel)}L</th>
+                                    <th>{veh.vehicle_health / 10}%</th>
+                                </tr>
+                            ))
+                        }
+                    </table>
+                }
+
+                {
+                    characters[selectIndex].charactersVehicles.length == 0 && <p className="text-gray-400">This character doesn't have any vehicles.</p>
+                }
 
             </div>
         </div>

@@ -1,17 +1,24 @@
 import AccountsController from "@/lib/AccountController/AccountController";
 import middleware from "@/lib/Middleware/Middleware";
 import DatabaseController from "@/lib/mysqlDbController";
-import { IAccount } from "@/types";
+import { DbVehicle, IAccount } from "@/types";
 import { EndpointRequestTypes } from "@/utilClasses";
+import { DbCharacter } from "@/types";
 import { NextApiRequest, NextApiResponse } from "next";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     let accountId: number = AccountsController.getIdFromToken(req);
+    let account: IAccount[] = await DatabaseController.selectQuery("SELECT * FROM accounts WHERE account_id = ? LIMIT 1", [accountId]);
+
 
     let adminPunishments = await DatabaseController.selectQuery("SELECT * FROM server_logs WHERE account_id = ?", [accountId]);
-    let characters = await DatabaseController.selectQuery("SELECT * FROM characters WHERE owner_id = ?", [accountId]);
-    let account: IAccount[] = await DatabaseController.selectQuery("SELECT * FROM accounts WHERE account_id = ? LIMIT 1", [accountId]);
+    let characters: DbCharacter[] = await DatabaseController.selectQuery("SELECT * FROM characters WHERE owner_id = ?", [accountId]);
+
+    for (const char of characters) {
+        char.charactersVehicles = await DatabaseController.selectQuery("SELECT * FROM vehicles WHERE owner_id = ?", [char.character_id]);
+    }
+
 
     res.status(200).send({
         punishments: adminPunishments,

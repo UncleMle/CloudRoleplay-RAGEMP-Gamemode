@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdDashboard } from "react-icons/md";
 import logoImage from '../../../img/backgrounds/FinalLogo.png';
 import Image from "next/image";
@@ -7,10 +7,12 @@ import { FaCreditCard, FaLayerGroup, FaBook } from "react-icons/fa";
 import { MdAdminPanelSettings } from "react-icons/md";
 import DashboardView from "../DashboardView/DashboardView";
 import { ServerDashboardData } from "@/types";
+import axios from "axios";
 
 const HomeSideBar = ({ data }: { data: ServerDashboardData }) => {
     const [navState, setNavState] = useState<string>("");
     const [navMenu, setNavMenu] = useState<boolean>(false);
+    const [playerCount, setPlayerCount] = useState<number>();
     const router = useRouter();
     const navItemStyle: string = "relative text-center mt-8 border-b-4 border-t-4 p-7 text-white font-medium cursor-pointer border-purple-400/50 text-xl";
     const adminRanksList: string[] = ["None", "Support", "Senior Support", "Moderator", "Senior Moderator", "Administrator", "Senior Administrator", "Head Administrator", "Founder", "Developer"];
@@ -19,6 +21,11 @@ const HomeSideBar = ({ data }: { data: ServerDashboardData }) => {
     const setView = (viewName: string) => {
         router.push("/home?view=" + viewName);
     }
+
+    useEffect(() => {
+        axios.get("/api/playercount").then(count =>
+            count.status === 200 ? setPlayerCount(count.data.players) : setPlayerCount(-1));
+    }, []);
 
     return (
         <nav className="bg-black/50">
@@ -59,38 +66,51 @@ const HomeSideBar = ({ data }: { data: ServerDashboardData }) => {
                     </div>
 
 
-                    <ul className="space-y-2 font-medium mt-4">
+                    <ul className="space-y-2 font-medium mt-4 text-white">
                         <li onClick={() => setView("dash")}>
-                            <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group">
+                            <a href="#" className="flex items-center p-2  rounded-lg">
                                 <MdDashboard className="text-3xl text-gray-400" />
                                 <span className="ms-3">Dashboard</span>
                             </a>
                         </li>
                         <li onClick={() => setView("credits")}>
-                            <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group">
+                            <a href="#" className="flex items-center p-2  rounded-lg">
                                 <FaCreditCard className="text-3xl text-gray-400" />
                                 <span className="flex-1 ms-3 whitespace-nowrap">Credits</span>
                             </a>
                         </li>
                         <li onClick={() => setView("factions")}>
-                            <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group">
+                            <a href="#" className="flex items-center p-2  rounded-lg">
                                 <FaLayerGroup className="text-3xl text-gray-400" />
                                 <span className="flex-1 ms-3 whitespace-nowrap">Factions</span>
                             </a>
                         </li>
                         <li onClick={() => setView("punishments")}>
-                            <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group">
+                            <a href="#" className="flex items-center p-2  rounded-lg">
                                 <FaBook className="text-3xl text-gray-400" />
                                 <span className="flex-1 ms-3 whitespace-nowrap">Punishments</span>
                             </a>
                         </li>
                         {data.accountData.adminLevel > 0 && <li onClick={() => setView("staff")}>
-                            <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white className group">
+                            <a href="#" className="flex items-center p-2  rounded-lg">
                                 <MdAdminPanelSettings className="text-3xl text-red-400" />
                                 <span className="flex-1 ms-3 whitespace-nowrap text-red-400">Staff</span>
                             </a>
                         </li>}
                     </ul>
+
+                    <div className="p-4 mt-4 rounded-lg" role="alert">
+                        <div className="flex items-center">
+                            {
+                                playerCount != -1 &&
+                                <span className="bg-green-400 text-sm font-semibold me-2 px-2.5 py-0.5 rounded">Server is online with {playerCount} players</span>
+                            }
+                            {
+                                playerCount == -1 &&
+                                <span className="bg-red-400 text-sm font-semibold me-2 px-2.5 py-0.5 rounded">Server is offline</span>
+                            }
+                        </div>
+                    </div>
                 </div>
             </aside>
 

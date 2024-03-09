@@ -91,4 +91,39 @@ export interface DbCharacter {
     faction_duty_uniform: number;
     freelance_job_uniform: number;
     last_spun_luckywheel: number;
+    charactersVehicles: DbVehicle[];
+}
+
+export interface DbVehicle {
+    vehicle_id: number;
+    vehicle_uuid: string;
+    owner_id: number;
+    owner_name: string;
+    vehicle_name: string;
+    vehicle_display_name: string;
+    vehicle_class_id: number;
+    vehicle_locked: boolean;
+    vehicle_spawn_hash: number;
+    numberplate: string;
+    position_x: number;
+    position_y: number;
+    position_z: number;
+    rotation_x: number;
+    rotation_y: number;
+    rotation_z: number;
+    rotation: number;
+    vehicle_dimension: string;
+    vehicle_insurance_id: number;
+    vehicle_parking_lot_id: number;
+    vehicle_fuel: number;
+    vehicle_distance: number;
+    vehicle_health: number;
+    dealership_id: number;
+    dealership_price: number;
+    dealership_spot_id: number;
+    dealership_description: string;
+    faction_owner_id: number;
+    insurance_status: boolean;
+    vehicle_garage_id: number;
+    tyre_states: string;
 }
