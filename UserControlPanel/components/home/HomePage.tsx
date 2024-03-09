@@ -10,10 +10,6 @@ import HomeSideBar from "./Sidebar/HomeSideBar";
 const HomePage = () => {
     const { isLoading, data, error } = useHome();
     const router = useRouter();
-    const urlSearchString = window.location.search;
-    const params = new URLSearchParams(urlSearchString);
-
-    const seachParams = useSearchParams();
 
     useEffect(() => {
         if (error) router.push("/");

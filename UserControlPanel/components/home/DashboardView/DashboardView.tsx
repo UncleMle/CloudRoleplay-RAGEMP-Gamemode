@@ -7,17 +7,19 @@ import CharacterList from "./CharacterList";
 const DashboardView = ({ data }: { data: ServerDashboardData }) => {
     const [viewState, setViewState] = useState<string>("");
     const [selectIndex, setCharacterIndex] = useState<number>(0);
-    const urlSearchString = window.location.search;
     const seachParams = useSearchParams();
 
-
     useEffect(() => {
-        console.log("view set " + seachParams?.get("view"));
-        const params = new URLSearchParams(urlSearchString);
+        if (typeof "window" !== undefined) {
+            const urlSearchString = window.location.search;
 
-        if (params.get("view")) {
-            setViewState(seachParams?.get("view") as string);
-        } else setViewState("dash");
+            console.log("view set " + seachParams?.get("view"));
+            const params = new URLSearchParams(urlSearchString);
+
+            if (params.get("view")) {
+                setViewState(seachParams?.get("view") as string);
+            } else setViewState("dash");
+        }
 
     }, [seachParams]);
 

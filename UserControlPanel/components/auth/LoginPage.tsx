@@ -29,13 +29,15 @@ function LoginPage() {
     };
 
     useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
+        if (typeof "window" !== undefined) {
+            const params = new URLSearchParams(window.location.search);
 
-        console.log(params.get("otp"));
+            console.log(params.get("otp"));
 
-        if (params.get("otp") && cookies["user-otp-token"]) setOtpState(true);
+            if (params.get("otp") && cookies["user-otp-token"]) setOtpState(true);
 
-        if (cookies["user-jwt-token"]) router.push("/home");
+            if (cookies["user-jwt-token"]) router.push("/home");
+        }
     }, []);
 
     const handleLogin = async () => {
