@@ -95,7 +95,7 @@ const CharacterList = ({ characters }: { characters: DbCharacter[] }) => {
             </div>
 
 
-            <h2 className="text-left border-l-4 pl-3 text-xl bg-gray-500/20 w-fit pr-6 p-2 mt-20 border-purple-400/50 ">Character's vehicles</h2>
+            <h2 className="text-left border-l-4 pl-3 text-xl bg-gray-500/20 w-fit pr-6 p-2 mt-20 border-purple-400/50 ">Character&aposs vehicles</h2>
             <div className="border-l-4 w-full backdrop-blur-lg p-4 border-purple-400/50 max-h-96 overflow-y-scroll">
 
                 {characters[selectIndex].charactersVehicles.length > 0 &&
@@ -124,7 +124,7 @@ const CharacterList = ({ characters }: { characters: DbCharacter[] }) => {
                 }
 
                 {
-                    characters[selectIndex].charactersVehicles.length == 0 && <p className="text-gray-400">This character doesn't have any vehicles.</p>
+                    characters[selectIndex].charactersVehicles.length == 0 && <p className="text-gray-400">This character doesn&apost have any vehicles.</p>
                 }
 
             </div>

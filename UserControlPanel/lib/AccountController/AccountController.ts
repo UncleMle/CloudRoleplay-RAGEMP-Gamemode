@@ -41,8 +41,6 @@ export default class AccountsController {
     public static async confirmRecaptcha(response: string) {
         let res = await axios.post(`https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${response}`);
 
-        console.log("response " +res.data.success);
-
         return res.data.success;
     }
 
