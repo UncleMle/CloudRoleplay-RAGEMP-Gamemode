@@ -310,11 +310,11 @@
 
                                     <div class="inline-flex w-full mt-4 space-x-10 font-medium">
                                         <button @click="uiStates.authenticationState = ''"
-                                            class="w-full rounded-l-xl p-3 bg-gradient-to-r from-black/30 to-black/40 duration-300 hover:bg-black/20 duration-300 hover:bg-black/20">
+                                            class="w-full rounded-l-xl p-3 bg-gradient-to-r from-black/30 to-black/40 duration-300 hover:bg-black/20">
                                             <i class="fa-solid fa-rotate-left text-gray-400"></i> Back
                                         </button>
                                         <button :disabled="loadingState" @click="sendRegisterDataToServer()"
-                                            class="w-full rounded-r-xl p-3 bg-gradient-to-r from-black/30 to-black/40 duration-300 hover:bg-black/20 duration-300 hover:bg-black/20"
+                                            class="w-full rounded-r-xl p-3 bg-gradient-to-r from-black/30 to-black/40 duration-300 hover:bg-black/20"
                                             :class="loadingState ? 'hover:border-red-400' : 'hover:border-gray-400'">
 
                                             <LoadingSpinner v-if="loadingState" />
@@ -347,7 +347,7 @@
 
                                     <div class="inline-flex w-full mt-4 space-x-10 font-medium">
                                         <button @click="register()"
-                                            class="w-full rounded-xl p-3 bg-gradient-to-r from-black/30 to-black/40 duration-300 hover:bg-black/20 duration-300 hover:bg-black/20">Register
+                                            class="w-full rounded-xl p-3 bg-gradient-to-r from-black/30 to-black/40 duration-300 hover:bg-black/20">Register
                                             <i class="fa-solid fa-book text-gray-400"></i></button>
                                     </div>
                                 </div>
@@ -374,7 +374,7 @@
 
                                     <div class="inline-flex w-full mt-4 space-x-10 font-medium">
                                         <button @click="sendAccountOtp()"
-                                            class="w-full rounded-xl p-3 bg-gradient-to-r from-black/30 to-black/40 duration-300 hover:bg-black/20 duration-300 hover:bg-black/20">Login
+                                            class="w-full rounded-xl p-3 bg-gradient-to-r from-black/30 to-black/40 duration-300 hover:bg-black/20">Login
                                             <i class="fa-solid fa-book text-gray-400"></i></button>
                                     </div>
                                 </div>
@@ -397,11 +397,11 @@
 
                                     <div class="inline-flex w-full mt-4 space-x-10 font-medium">
                                         <button @click="uiStates.authenticationState = ''"
-                                            class="w-full rounded-l-xl p-3 bg-gradient-to-r from-black/30 to-black/40 duration-300 hover:bg-black/20 duration-300 hover:bg-black/20">
+                                            class="w-full rounded-l-xl p-3 bg-gradient-to-r from-black/30 to-black/40 duration-300 hover:bg-black/20">
                                             <i class="fa-solid fa-rotate-left text-gray-400"></i> Back
                                         </button>
                                         <button :disabled="loadingState" @click="resetPasswordAuth()"
-                                            class="w-full rounded-r-xl p-3 bg-gradient-to-r from-black/30 to-black/40 duration-300 hover:bg-black/20 duration-300 hover:bg-black/20"
+                                            class="w-full rounded-r-xl p-3 bg-gradient-to-r from-black/30 to-black/40 duration-300 hover:bg-black/20"
                                             :class="loadingState ? 'hover:border-red-400' : 'hover:border-gray-400'">
 
                                             <LoadingSpinner v-if="loadingState" />
@@ -453,7 +453,7 @@
 
                                     <div class="inline-flex w-full mt-4 space-x-10 font-medium">
                                         <button :disabled="loadingState" @click="resetPassword()"
-                                            class="w-full rounded-xl p-3 bg-gradient-to-r from-black/30 to-black/40 duration-300 hover:bg-black/20 duration-300 hover:bg-black/20"
+                                            class="w-full rounded-xl p-3 bg-gradient-to-r from-black/30 to-black/40 duration-300 hover:bg-black/20"
                                             :class="loadingState ? 'hover:border-red-400' : 'hover:border-gray-400'">
 
                                             <LoadingSpinner v-if="loadingState" />

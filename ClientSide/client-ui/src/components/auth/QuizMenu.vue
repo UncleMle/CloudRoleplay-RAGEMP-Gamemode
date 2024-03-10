@@ -177,7 +177,7 @@ export default {
         setTimeout(() => {
             this.fetching = false;
 
-            if (!this.playerData.quiz_question_data[0]) return this.created();
+            if (!this.playerData.quiz_question_data.length === 0) return this.created();
 
             this.currentQuestion = this.playerData.quiz_question_data[0];
             this.maxQuestions = this.playerData.quiz_question_data.length;

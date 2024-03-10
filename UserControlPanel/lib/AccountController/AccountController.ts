@@ -3,6 +3,7 @@ import pool from "../mysqlDb";
 import crypto from 'crypto';
 import jwt from "jsonwebtoken";
 import { NextApiRequest } from "next";
+import axios from "axios";
 
 export default class AccountsController {
     public static checkAccountPassword(targetHash: string, compare: string): boolean {
@@ -36,7 +37,15 @@ export default class AccountsController {
             return false;
         }
     }
-    
+
+    public static async confirmRecaptcha(response: string) {
+        let res = await axios.post(`https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${response}`);
+
+        console.log("response " +res.data.success);
+
+        return res.data.success;
+    }
+
     public static otpVerification(token: string | void | null | string[]): AccountSessionOtpData | null {
         console.log(token);
         try {

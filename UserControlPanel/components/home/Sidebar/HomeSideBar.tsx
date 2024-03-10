@@ -8,8 +8,10 @@ import { MdAdminPanelSettings } from "react-icons/md";
 import DashboardView from "../DashboardView/DashboardView";
 import { ServerDashboardData } from "@/types";
 import axios from "axios";
+import { useCookies } from "react-cookie";
 
 const HomeSideBar = ({ data }: { data: ServerDashboardData }) => {
+    const [cookies, setCookies] = useCookies();
     const [navState, setNavState] = useState<string>("");
     const [navMenu, setNavMenu] = useState<boolean>(false);
     const [playerCount, setPlayerCount] = useState<number>();
@@ -21,6 +23,11 @@ const HomeSideBar = ({ data }: { data: ServerDashboardData }) => {
     const setView = (viewName: string) => {
         router.push("/home?view=" + viewName);
     }
+
+    const logout = () => {
+        setCookies("user-jwt-token", null);
+        router.push("/");
+    };
 
     useEffect(() => {
         axios.get("/api/playercount").then(count =>
@@ -97,6 +104,12 @@ const HomeSideBar = ({ data }: { data: ServerDashboardData }) => {
                                 <span className="flex-1 ms-3 whitespace-nowrap text-red-400">Staff</span>
                             </a>
                         </li>}
+                        <li onClick={logout}>
+                            <a href="#" className="flex items-center p-2  rounded-lg">
+                                <FaBook className="text-3xl text-gray-400" />
+                                <span className="flex-1 ms-3 whitespace-nowrap">Logout</span>
+                            </a>
+                        </li>
                     </ul>
 
                     <div className="p-4 mt-4 rounded-lg" role="alert">

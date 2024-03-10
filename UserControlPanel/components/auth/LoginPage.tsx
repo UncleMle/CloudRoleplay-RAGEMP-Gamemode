@@ -6,13 +6,18 @@ import { useCookies } from "react-cookie";
 import axios, { AxiosError } from 'axios';
 import { EndpointRequestTypes } from '@/utilClasses';
 import { useRouter } from 'next/navigation'
+import LoadingSpinner from '../utilComponents/LoadingSpinner';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 function LoginPage() {
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+    const [error, setError] = useState<string>("");
     const [otp, setOtp] = useState<string>("");
     const [otpState, setOtpState] = useState<boolean>();
+    const [loading, setLoading] = useState<boolean>(false);
     const [cookies, setCookies] = useCookies();
+    const [captcha, setCaptcha] = useState<string | null>();
 
     const router = useRouter();
 
@@ -32,8 +37,6 @@ function LoginPage() {
         if (typeof "window" !== undefined) {
             const params = new URLSearchParams(window.location.search);
 
-            console.log(params.get("otp"));
-
             if (params.get("otp") && cookies["user-otp-token"]) setOtpState(true);
 
             if (cookies["user-jwt-token"]) router.push("/home");
@@ -41,12 +44,22 @@ function LoginPage() {
     }, []);
 
     const handleLogin = async () => {
+        if (password.length === 0 || username.length === 0) {
+            setError("Ensure all fields are filled.");
+            return;
+        }
+
+        if (!captcha) return setError("Ensure captcha is completed.");
+
+        setLoading(true);
+
         try {
             const login = await axios.post('/api/auth', {
                 method: EndpointRequestTypes.post,
                 payload: {
                     username: username,
-                    password: password
+                    password: password,
+                    response: captcha
                 },
                 headers: {
                     'x-otp-token': cookies["user-otp-token"],
@@ -62,23 +75,32 @@ function LoginPage() {
                         setOtpState(true);
                         break;
                     }
+                default: {
+                    setError("Incorrect account credentials.");
+
+                    setTimeout(() => {
+                        setError("");
+                    }, 6500);
+                }
             }
+        } finally {
+            setLoading(false);
         }
     }
 
     return (
-        <div className="fixed inset-0 w-full text-white sm:text-lg text-md duration-300 font-medium">
+        <div className={"fixed inset-0 w-full text-white sm:text-lg text-md duration-300 font-medium bg-black/30 " + (loading ? "bg-black/70 h-screen" : "")}>
+
             <div className="duration-300 container flex items-center max-w-3xl mx-auto">
                 <div className="flex justify-center w-full">
-                    <div className="sm:rounded-xl text-white w-full bg-black/60 backdrop-blur-xl border-b-4 border-t-4 shadow-2xl shadow-black border-purple-400/50 select-none duration-300 sm:p-8 p-4 mt-40">
+                    {!loading && <div className="sm:rounded-xl text-white w-full bg-black/60 backdrop-blur-xl border-b-4 border-t-4 shadow-2xl shadow-black border-purple-400/50 select-none duration-300 sm:p-8 p-4 mt-40">
 
                         <form onSubmit={(e: any) => {
                             e.preventDefault();
                             handleLogin();
-                        }}>
+                        }} className='duration-300'>
 
                             <div>
-
                                 <label className="block">
                                     <span className="font-medium">Enter your username or email</span>
                                     <div className="relative mt-2 rounded-lg bg-gradient-to-r from-black/30 to-black/40">
@@ -114,6 +136,15 @@ function LoginPage() {
                             </div>
 
 
+                            {error.length > 0 && <div className='flex justify-center bg-red-400/40 p-2 rounded-xl mt-2'>
+                                {error}
+                            </div>
+                            }
+
+                            {
+                                username.length > 0 && password.length > 0 &&
+                                <ReCAPTCHA sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!} onChange={setCaptcha} className='mt-4' />
+                            }
                             <div className="inline-flex w-full mt-4 space-x-10 font-medium">
                                 <button onClick={handleLogin} className="w-full rounded-xl p-3 bg-gradient-to-l from-black/30 to-black/40 duration-300 hover:bg-black/20">
                                     <span>
@@ -124,7 +155,10 @@ function LoginPage() {
 
                         </form>
 
-                    </div>
+                    </div>}
+                    {loading && <div className='mt-60'>
+                        <LoadingSpinner />
+                    </div>}
                 </div>
             </div>
         </div>

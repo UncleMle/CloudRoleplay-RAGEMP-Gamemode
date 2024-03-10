@@ -13,20 +13,20 @@ import requestIp from 'request-ip'
 
 interface AuthEndpointBody {
   username: string,
-  password: string
+  password: string,
+  response: string
 }
 
 const handler: (req: NextApiRequest, res: NextApiResponse) => Promise<void> = async (req: NextApiRequest, res: NextApiResponse) => {
   if (AccountsController.tokenAuthentication(req.headers['x-auth-token'])) return;
-
   if (!req.body || !req.body.payload) return apiErrorHandle(res, HttpStatusCodes.BAD_REQUEST);
 
   let body: AuthEndpointBody = req.body.payload;
 
-  if (!body.password || !body.username) return apiErrorHandle(res, HttpStatusCodes.BAD_REQUEST);
+  if (!body.password || !body.username || !await AccountsController.confirmRecaptcha(body.response)) return apiErrorHandle(res, HttpStatusCodes.BAD_REQUEST);
 
-  let accounts: IAccount[] = await DatabaseController.selectQuery<IAccount[]>("SELECT * FROM accounts where username = ? LIMIT 1", [
-    body.username
+  let accounts: IAccount[] = await DatabaseController.selectQuery<IAccount[]>("SELECT * FROM accounts where username = ? OR email_address = ? LIMIT 1", [
+    body.username, body.username
   ]);
 
   if (accounts.length === 0 || !accounts) return apiErrorHandle(res, HttpStatusCodes.UNAUTHORIZED);

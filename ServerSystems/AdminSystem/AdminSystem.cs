@@ -668,7 +668,7 @@ namespace CloudRP.ServerSystems.Admin
 
             if (findPlayer.isImmuneTo(player)) return;
 
-            player.adminJail(time * 60, reason);
+            findPlayer.adminJail(time * 60, reason);
 
             AdminPunishments.addNewPunishment(user.account_id, reason, user.admin_name, PunishmentTypes.AdminJail, time);
             AdminUtils.sendMessageToAllStaff($"{user.admin_name} admin jailed {findPlayer.getPlayerCharacterData().character_name} for {time} minute(s).", 0, true);

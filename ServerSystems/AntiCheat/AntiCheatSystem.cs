@@ -77,7 +77,7 @@ namespace CloudRP.ServerSystems.AntiCheat
             Main.playerConnect += (player) =>
             {
                 player.sleepClientAc();
-                handleVpnCheck(player);
+                //handleVpnCheck(player); Causes Thread Locking
             };
 
             Main.resourceStart += () => ChatUtils.startupPrint($"Loaded a total of {Enum.GetNames(typeof(AcEvents)).Length} Anti cheat events.");
