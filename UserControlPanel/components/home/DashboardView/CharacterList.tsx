@@ -110,7 +110,7 @@ const CharacterList = ({ characters }: { characters: DbCharacter[] }) => {
                         </tr>
                         {
                             characters[selectIndex].charactersVehicles.map(veh => (
-                                <tr className="pb-4 border-b-2 border-gray-400/50">
+                                <tr key={veh.vehicle_id} className="pb-4 border-b-2 border-gray-400/50">
                                     <th className="pt-4 pb-4">{veh.vehicle_display_name}</th>
                                     <th>{veh.numberplate}</th>
                                     <th>{veh.vehicle_dimension}</th>
