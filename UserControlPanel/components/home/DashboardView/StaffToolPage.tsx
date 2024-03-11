@@ -143,7 +143,7 @@ const StaffToolPage = ({ adminLevel }: { adminLevel: number }) => {
                             <div className="w-full mt-4 border-2 p-3 rounded-xl h- border-gray-500 h-14 backdrop-blur-md">
                                 <span className="float-left">Player Factions</span>
                                 <span className="float-right">{JSON.parse(searchObj.char.character_faction_data)?.map((f: number) => (
-                                    <span>{factions[f].replace("_", " ")} </span>
+                                    <span key={f}>{factions[f].replace("_", " ")} </span>
                                 ))}</span>
                             </div>
 
