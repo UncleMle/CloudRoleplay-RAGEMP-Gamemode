@@ -7,14 +7,12 @@ import { useCookies } from "react-cookie";
 import useSWR from "swr";
 import HomeSideBar from "./Sidebar/HomeSideBar";
 import LoadingSpinner from "../utilComponents/LoadingSpinner";
+import { ServerDashboardData } from "@/types";
 
 const HomePage = () => {
-    const { isLoading, data, error } = useHome();
+    const { data } = useHome();
     const router = useRouter();
-
-    useEffect(() => {
-        if (error) router.push("/");
-    }, []);
+    const [cookies, setCookie] = useCookies();
 
     return (
         <div className={"relative " + (!data ? "bg-black/80 h-screen" : "")}>

@@ -12,14 +12,17 @@ interface Admin {
     ucp_image_url: string
 }
 
-const StaffRoster = () => {
-    const { data, isLoading } = useEndpoint("/api/data/roster");
+const StaffRoster = ({ staffMembers }: {
+    staffMembers: {
+        admin_name: string,
+        admin_status: number,
+        ucp_image_url: string
+    }[]
+}) => {
 
     useEffect(() => {
-        if (!data || isLoading || !data?.staff) return;
-
-        data.staff.sort((a: Admin, b: Admin) => b.admin_status - a.admin_status);
-    }, [data]);
+        staffMembers.sort((a, b) => b.admin_status - a.admin_status);
+    }, [staffMembers]);
 
     return (
         <div>
@@ -29,7 +32,7 @@ const StaffRoster = () => {
             <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 mt-10">
 
                 {
-                    data?.staff && data.staff.map((staff: Admin, idx: number) => (
+                    staffMembers.map((staff: Admin, idx: number) => (
                         <div key={idx} className="border p-8 font-medium rounded-lg border-gray-400 backdrop-blur-lg">
                             <div className="flex justify-center items-center">
                                 <Image className="rounded-full w-40 h-40 object-cover" src={staff.ucp_image_url ? staff.ucp_image_url : "https://i.imgur.com/J4m5RVt.png"} alt="Staff profile picture" width={150} height={150} />

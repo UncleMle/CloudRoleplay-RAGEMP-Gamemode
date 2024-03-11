@@ -51,7 +51,13 @@ export interface ServerDashboardData {
         username: string, adminLevel: number
     }
     characters: DbCharacter[],
-    punishments: AdminPunishment[]
+    punishments: AdminPunishment[],
+    factions: Faction[],
+    staffMembers: {
+        admin_name: string,
+        admin_status: number,
+        ucp_image_url: string
+    }[];
 }
 
 export interface AdminPunishment {

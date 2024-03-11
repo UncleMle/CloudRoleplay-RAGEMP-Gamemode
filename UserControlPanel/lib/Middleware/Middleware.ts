@@ -11,7 +11,7 @@ const middleware = (handler: any, checkAdmin: boolean, checkAuth: boolean, metho
         desc: "This endpoint requires a " + method
     });
 
-    if (checkAuth && !await AccountsController.tokenAuthentication(req.headers['x-auth-token'])) {
+    if (checkAuth && !AccountsController.tokenAuthentication(req.headers['x-auth-token'])) {
         return res.status(HttpStatusCodes.UNAUTHORIZED).send({
             status: false,
             code: HttpStatusCodes.UNAUTHORIZED,

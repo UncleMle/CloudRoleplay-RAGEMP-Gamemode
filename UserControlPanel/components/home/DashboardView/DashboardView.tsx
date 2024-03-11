@@ -9,6 +9,7 @@ import CreditsPage from "./CreditsPage";
 import PunishmentPage from "./PunishmentPage";
 import StaffRoster from "./StaffRoster";
 import FactionsPage from "./FactionsPage";
+import StaffToolPage from "./StaffToolPage";
 
 
 const DashboardView = ({ data }: { data: ServerDashboardData }) => {
@@ -17,7 +18,7 @@ const DashboardView = ({ data }: { data: ServerDashboardData }) => {
     const seachParams = useSearchParams();
 
     const views: string[] = [
-        "dash", "credits", "factions", "punishments", "staff", "roster", "factions"
+        "dash", "credits", "factions", "punishments", "staff", "roster"
     ]
 
     useEffect(() => {
@@ -53,11 +54,15 @@ const DashboardView = ({ data }: { data: ServerDashboardData }) => {
             }
 
             {
-                viewState === "roster" && <StaffRoster />
+                viewState === "roster" && <StaffRoster staffMembers={data.staffMembers} />
             }
 
             {
-                viewState === "factions" && <FactionsPage />
+                viewState === "factions" && <FactionsPage factions={data.factions} />
+            }
+
+            {
+                viewState === "staff" && <StaffToolPage adminLevel={data.accountData.adminLevel} />
             }
         </div>
     )
