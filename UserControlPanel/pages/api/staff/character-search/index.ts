@@ -3,7 +3,7 @@ import apiErrorHandle from "@/lib/ErrorHandling/ErrorHandles";
 import middleware from "@/lib/Middleware/Middleware";
 import DatabaseController from "@/lib/mysqlDbController";
 import { EndpointRequestTypes, HttpStatusCodes } from "@/utilClasses";
-import { DbCharacter } from "@prisma/client";
+import { DbCharacter } from "@/types";
 import { NextApiRequest, NextApiResponse } from "next";
 
 const selectProps: string[] = [
