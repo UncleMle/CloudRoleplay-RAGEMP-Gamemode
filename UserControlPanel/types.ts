@@ -60,7 +60,7 @@ export interface AdminPunishment {
     punishment_type: number;
     admin_name: string;
     punishment_reason: string;
-    is_void: boolean;
+    is_void: number;
     unix_expires: number;
 }
 
@@ -126,4 +126,12 @@ export interface DbVehicle {
     insurance_status: boolean;
     vehicle_garage_id: number;
     tyre_states: string;
+}
+
+export interface Faction {
+    faction_id: number;
+    faction_name: string;
+    owner_id: number;
+    owner_name: string;
+    faction_allowed_vehicles: string;
 }

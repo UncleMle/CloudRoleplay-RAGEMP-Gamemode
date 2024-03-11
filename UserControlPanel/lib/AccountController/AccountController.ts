@@ -65,13 +65,30 @@ export default class AccountsController {
 
         if (decoded) {
             decoded = decoded as {
-                x: number
+                id: number,
+                adminLevel: number
             };
 
             accountId = decoded.id;
         }
 
         return accountId;
+    }
+    
+    public static getAdminFromToken(req: NextApiRequest): number {
+        let admin: number = -1;
+        let decoded = jwt.verify(req.headers['x-auth-token'] as string, "jwtPrivateKey");
+
+        if (decoded) {
+            decoded = decoded as {
+                id: number,
+                adminLevel: number
+            };
+
+            admin = decoded.adminLevel;
+        }
+
+        return admin;
     }
 
     public static generateOtp(length: number = 5): string {

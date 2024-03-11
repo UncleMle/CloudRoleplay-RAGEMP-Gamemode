@@ -12,11 +12,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     let account: IAccount[] = await DatabaseController.selectQuery("SELECT * FROM accounts WHERE account_id = ? LIMIT 1", [accountId]);
 
 
-    let adminPunishments = await DatabaseController.selectQuery("SELECT * FROM server_logs WHERE account_id = ?", [accountId]);
+    let adminPunishments = await DatabaseController.selectQuery("SELECT * FROM admin_punishments WHERE owner_account_id = ?", [accountId]);
     let characters: DbCharacter[] = await DatabaseController.selectQuery("SELECT * FROM characters WHERE owner_id = ?", [accountId]);
 
     for (const char of characters) {
-        char.charactersVehicles = await DatabaseController.selectQuery("SELECT * FROM vehicles WHERE owner_id = ?", [char.character_id]);
+        let query = "SELECT vehicle_display_name, "
+
+        query += "numberplate, vehicle_dimension, vehicle_distance, "
+        query += "vehicle_fuel, vehicle_health "
+        query += "FROM vehicles WHERE owner_id = ?"
+
+        char.charactersVehicles = await DatabaseController.selectQuery(query, [char.character_id]);
     }
 
 

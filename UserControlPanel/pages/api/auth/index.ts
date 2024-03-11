@@ -40,7 +40,7 @@ const handler: (req: NextApiRequest, res: NextApiResponse) => Promise<void> = as
   }
 
   const token = jwt.sign(
-    { id: account.account_id },
+    { id: account.account_id, adminLevel: account.admin_status },
     "jwtPrivateKey",
     {
       expiresIn: "5h",

@@ -1,3 +1,5 @@
+"use client";
+
 import { ServerDashboardData } from "@/types";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -5,6 +7,8 @@ import { RiCashFill } from "react-icons/ri";
 import CharacterList from "./CharacterList";
 import CreditsPage from "./CreditsPage";
 import PunishmentPage from "./PunishmentPage";
+import StaffRoster from "./StaffRoster";
+import FactionsPage from "./FactionsPage";
 
 
 const DashboardView = ({ data }: { data: ServerDashboardData }) => {
@@ -13,7 +17,7 @@ const DashboardView = ({ data }: { data: ServerDashboardData }) => {
     const seachParams = useSearchParams();
 
     const views: string[] = [
-        "dash", "credits", "factions", "punishments", "staff"
+        "dash", "credits", "factions", "punishments", "staff", "roster", "factions"
     ]
 
     useEffect(() => {
@@ -34,7 +38,7 @@ const DashboardView = ({ data }: { data: ServerDashboardData }) => {
     }, [seachParams]);
 
     return (
-        <div className="text-white text-center bg-black/50 rounded-2xl p-8 ">
+        <div className="text-white text-center bg-black/50 rounded-2xl p-8 h-fit">
 
             {
                 viewState === "dash" && <CharacterList characters={data.characters} />
@@ -45,9 +49,16 @@ const DashboardView = ({ data }: { data: ServerDashboardData }) => {
             }
 
             {
-                viewState === "punishments" && <PunishmentPage />
+                viewState === "punishments" && <PunishmentPage punishments={data.punishments} />
             }
 
+            {
+                viewState === "roster" && <StaffRoster />
+            }
+
+            {
+                viewState === "factions" && <FactionsPage />
+            }
         </div>
     )
 };

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import useSWR from "swr";
 import HomeSideBar from "./Sidebar/HomeSideBar";
+import LoadingSpinner from "../utilComponents/LoadingSpinner";
 
 const HomePage = () => {
     const { isLoading, data, error } = useHome();
@@ -16,7 +17,11 @@ const HomePage = () => {
     }, []);
 
     return (
-        <div className="relative">
+        <div className={"relative " + (!data ? "bg-black/80 h-screen" : "")}>
+            {!data && <div className="absolute top-60 left-1/2">
+                <LoadingSpinner />
+            </div>}
+
             {data && <HomeSideBar data={data} />}
         </div>
     )

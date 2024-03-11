@@ -39,6 +39,7 @@ namespace CloudRP.ServerSystems.Authentication
         public bool has_passed_quiz { get; set; }
         public long quiz_fail_unix { get; set; }
         public string ucp_otp { get; set; }
+        public string ucp_image_url { get; set; }
 
         [NotMapped]
         public bool adminDuty { get; set; }
