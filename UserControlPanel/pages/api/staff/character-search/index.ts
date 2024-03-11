@@ -3,7 +3,6 @@ import apiErrorHandle from "@/lib/ErrorHandling/ErrorHandles";
 import middleware from "@/lib/Middleware/Middleware";
 import DatabaseController from "@/lib/mysqlDbController";
 import { EndpointRequestTypes, HttpStatusCodes } from "@/utilClasses";
-import { DbCharacter } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
