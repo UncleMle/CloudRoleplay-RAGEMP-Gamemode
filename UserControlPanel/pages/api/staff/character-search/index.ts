@@ -33,8 +33,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         })
         return;
     }
-
+    
     let getLogs = await DatabaseController.selectQuery("SELECT * FROM server_logs WHERE character_owner_id = ?", [
+        findCharacter[0].character_id
+    ]);
+
+    findCharacter[0].charactersVehicles = await DatabaseController.selectQuery("SELECT vehicle_display_name, numberplate, CreatedDate FROM vehicles WHERE owner_id = ?", [
         findCharacter[0].character_id
     ]);
 

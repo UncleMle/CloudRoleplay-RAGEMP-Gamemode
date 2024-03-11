@@ -27,3 +27,11 @@ export const logTypes: string[] = [
     "Asset Purchase",
     "Admin Log"
 ]
+
+export const PunishmentTypes: string[] = [
+    "Jail",
+    "Ban",
+    "Warn",
+    "Kick",
+    "Back To Quiz"
+]

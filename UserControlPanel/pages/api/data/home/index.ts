@@ -1,13 +1,12 @@
 import AccountsController from "@/lib/AccountController/AccountController";
 import middleware from "@/lib/Middleware/Middleware";
 import DatabaseController from "@/lib/mysqlDbController";
-import { DbVehicle, Faction, IAccount } from "@/types";
+import { AdminPunishment, DbVehicle, Faction, IAccount, ServerLog } from "@/types";
 import { EndpointRequestTypes } from "@/utilClasses";
 import { DbCharacter } from "@/types";
 import { NextApiRequest, NextApiResponse } from "next";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-
     let accountId: number = AccountsController.getIdFromToken(req);
     let account: IAccount[] = await DatabaseController.selectQuery("SELECT * FROM accounts WHERE account_id = ? LIMIT 1", [accountId]);
 
@@ -36,6 +35,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     let staffMembers = await DatabaseController.selectQuery("SELECT admin_name, admin_status, ucp_image_url from accounts WHERE admin_status > 0");
 
+    let serverLogs: AdminPunishment[] = [];
+
+    if (account[0].admin_status > 0) {
+        serverLogs = await DatabaseController.selectQuery("SELECT * FROM admin_punishments ORDER BY admin_punishment_id DESC LIMIT 5");
+    }
+
+
     res.status(200).send({
         punishments: adminPunishments,
         characters: characters,
@@ -44,7 +50,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         accountData: {
             username: account[0].username,
             adminLevel: account[0].admin_status
-        }
+        },
+        serverLogs: serverLogs
     });
 }
 

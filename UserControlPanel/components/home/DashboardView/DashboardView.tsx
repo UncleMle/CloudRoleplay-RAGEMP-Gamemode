@@ -62,7 +62,7 @@ const DashboardView = ({ data }: { data: ServerDashboardData }) => {
             }
 
             {
-                viewState === "staff" && <StaffToolPage adminLevel={data.accountData.adminLevel} />
+                viewState === "staff" && <StaffToolPage adminLevel={data.accountData.adminLevel} serverLogs={data.serverLogs} />
             }
         </div>
     )

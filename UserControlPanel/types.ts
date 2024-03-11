@@ -58,6 +58,7 @@ export interface ServerDashboardData {
         admin_status: number,
         ucp_image_url: string
     }[];
+    serverLogs: any[]
 }
 
 export interface AdminPunishment {
@@ -68,6 +69,8 @@ export interface AdminPunishment {
     punishment_reason: string;
     is_void: number;
     unix_expires: number;
+    CreatedDate: string;
+    owner_name: string;
 }
 
 export interface DbCharacter {
@@ -132,6 +135,8 @@ export interface DbVehicle {
     insurance_status: boolean;
     vehicle_garage_id: number;
     tyre_states: string;
+    CreatedDate: string;
+    UpdatedDate: string;
 }
 
 export interface Faction {
