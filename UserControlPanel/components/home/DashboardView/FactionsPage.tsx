@@ -1,18 +1,8 @@
 import useEndpoint from "@/lib/Fetcher/useEndpoint";
+import { factionColours } from "@/sharedConstants";
 import { Faction } from "@/types";
 
 const FactionsPage = ({ factions }: { factions: Faction[] }) => {
-    let factionColours = [
-        "", // Factions.None
-        "#5998ff", // Factions.LSPD
-        "#7bb089", // Factions.SASD
-        "#f25130", // Factions.LSMD
-        "#baffe6", // Factions.Weazel_News
-        "#878787", // Factions.Bayview
-        "#878787", // Factions.LS_Customs
-        "#f0cb58" // Factions.DCC
-    ];
-
     return (
         <div className="pb-10">
 

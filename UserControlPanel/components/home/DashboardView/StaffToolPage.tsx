@@ -1,4 +1,5 @@
-import { adminRanksColours } from "@/sharedConstants";
+import { adminRanksColours, factions, logTypes } from "@/sharedConstants";
+import { ServerLog } from "@/types";
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -10,7 +11,8 @@ const StaffToolPage = ({ adminLevel }: { adminLevel: number }) => {
     const [staffView, setStaffView] = useState<string>("");
     const [searched, setSearched] = useState<string>("");
     const [loading, setLoading] = useState<boolean>();
-    const [searchObj, setSearchObj] = useState<object>();
+    const [searchObj, setSearchObj] = useState<any>();
+    const [error, setError] = useState<string>("");
     const [cookies, setCookies] = useCookies();
     const seachParams = useSearchParams();
     const paramKey: string = "staffview";
@@ -42,6 +44,8 @@ const StaffToolPage = ({ adminLevel }: { adminLevel: number }) => {
 
     const searchCharacter = async (e: any) => {
         e.preventDefault();
+
+        if (searched.length === 0) return;
 
         const options = {
             method: "GET",
@@ -82,9 +86,9 @@ const StaffToolPage = ({ adminLevel }: { adminLevel: number }) => {
                 staffView === views[0] && <div>quiz view</div>
             }
             {
-                staffView === views[1] && <div className="flex justify-center">
+                staffView === views[1] && <div>
 
-                    <form onSubmit={searchCharacter}>
+                    <form onSubmit={searchCharacter} className="flex justify-center">
                         <div className="flex bg-black/30 rounded-xl"><input
                             value={searched}
                             onChange={(e: any) => setSearched(e.target.value)}
@@ -94,13 +98,85 @@ const StaffToolPage = ({ adminLevel }: { adminLevel: number }) => {
                             placeholder="Enter a character name"
                         />
 
-                            <button className="pl-2 pr-2">
+                            <button className="pl-2 pr-6">
                                 <FaSearch />
                             </button>
                         </div>
-
-                        {JSON.stringify(searchObj)}
                     </form>
+
+                    {searchObj?.char ?
+                        <div className="mt-10 mr-[25%] ml-[25%]">
+
+                            <div className="w-full border-2 p-3 rounded-xl h- border-gray-500 h-14 backdrop-blur-md">
+                                <span className="float-left">Character Name</span>
+                                <span className="float-right">{searchObj.char.character_name}</span>
+                            </div>
+
+                            <div className="w-full mt-4 border-2 p-3 rounded-xl h- border-gray-500 h-14 backdrop-blur-md">
+                                <span className="float-left">Last Active</span>
+                                <span className="float-right">{new Date(searchObj.char.UpdatedDate).toDateString()}</span>
+                            </div>
+
+
+                            <div className="w-full mt-4 border-2 p-3 rounded-xl h- border-gray-500 h-14 backdrop-blur-md">
+                                <span className="float-left">Is Injured</span>
+                                <span className="float-right">{
+                                    searchObj.char.injured_timer > 0 ? <span className="text-green-400">True</span> : <span className="text-red-400">False</span>
+                                }</span>
+                            </div>
+
+                            <div className="w-full mt-4 border-2 p-3 rounded-xl h- border-gray-500 h-14 backdrop-blur-md">
+                                <span className="float-left">Money Amount</span>
+                                <span className="float-right text-green-400">${searchObj.char.money_amount.toLocaleString("en-US")}</span>
+                            </div>
+
+                            <div className="w-full mt-4 border-2 p-3 rounded-xl h- border-gray-500 h-14 backdrop-blur-md">
+                                <span className="float-left">Cash Amount</span>
+                                <span className="float-right text-green-400">${searchObj.char.cash_amount.toLocaleString("en-US")}</span>
+                            </div>
+                            
+                            <div className="w-full mt-4 border-2 p-3 rounded-xl h- border-gray-500 h-14 backdrop-blur-md">
+                                <span className="float-left">Health</span>
+                                <span className="float-right text-green-400">{searchObj.char.character_health}%</span>
+                            </div>
+
+                            <div className="w-full mt-4 border-2 p-3 rounded-xl h- border-gray-500 h-14 backdrop-blur-md">
+                                <span className="float-left">Player Factions</span>
+                                <span className="float-right">{JSON.parse(searchObj.char.character_faction_data)?.map((f: number) => (
+                                    <span>{factions[f].replace("_", " ")} </span>
+                                ))}</span>
+                            </div>
+
+                            <div className="w-full mt-4 border-2 p-3 rounded-xl h- border-gray-500 h-14 backdrop-blur-md">
+                                <span className="float-left">Is Banned</span>
+                                <span className="float-right">{searchObj.char.character_isbanned === 1 ? <span className="text-red-400">Banned</span> : <span className="text-green-400">Not Banned</span>}</span>
+                            </div>
+
+                            <div className="max-h-96 overflow-y-scroll mt-10">
+                                {
+                                    searchObj.logs.length > 0 &&
+                                    <table className="w-full mt-10 ">
+                                        <tr className="border-b-4 border-gray-400/50">
+                                            <th className="pb-4">Type</th>
+                                            <th className="pb-4">Description</th>
+                                            <th className="pb-4">Date</th>
+                                        </tr>
+                                        {
+                                            searchObj.logs.map((log: ServerLog, idx: number) => (
+                                                idx > 0 && <tr key={idx} className="pb-4 border-b-2 border-gray-400/50">
+                                                    <th className="pt-4 pb-4">{logTypes[log.log_type]}</th>
+                                                    <th className="rounded-xl">{log.server_log_description}</th>
+                                                    <th className="rounded-xl">{new Date(log.CreatedDate).toDateString()} ({new Date(log.CreatedDate).getHours()}:{new Date(log.CreatedDate).getMinutes()})</th>
+                                                    <th></th>
+                                                </tr>
+                                            ))
+                                        }
+                                    </table>
+                                }
+                            </div>
+
+                        </div>
+                        : <p className="mt-4 font-medium text-lg">Character not found</p>}
                 </div>
             }
             {

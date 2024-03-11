@@ -141,3 +141,14 @@ export interface Faction {
     owner_name: string;
     faction_allowed_vehicles: string;
 }
+
+export type ServerLog = {
+    server_log_id: number;
+    CreatedDate: string;
+    UpdatedDate: string;
+    server_log_name: string;
+    server_log_description: string;
+    character_owner_id: number;
+    log_type: number;
+    account_id: number;
+};

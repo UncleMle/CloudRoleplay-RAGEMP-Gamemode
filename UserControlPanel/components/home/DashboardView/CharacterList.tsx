@@ -2,31 +2,10 @@ import { DbCharacter } from "@/types";
 import { useState } from "react";
 import { MdDriveFileRenameOutline } from "react-icons/md";
 import { FaCar } from "react-icons/fa";
+import { factionColours, factions } from "@/sharedConstants";
 
 const CharacterList = ({ characters }: { characters: DbCharacter[] }) => {
     const [selectIndex, setCharacterIndex] = useState<number>(0);
-
-    const factions: string[] = [
-        "None",
-        "LSPD",
-        "SASD",
-        "LSMD",
-        "Weazel_News",
-        "Bayview",
-        "LS_Customs",
-        "DCC"
-    ];
-
-    const factionColours: string[] = [
-        "", // Factions.None
-        "#5998ff", // Factions.LSPD
-        "#7bb089", // Factions.SASD
-        "#f25130", // Factions.LSMD
-        "#baffe6", // Factions.Weazel_News
-        "#878787", // Factions.Bayview
-        "#878787", // Factions.LS_Customs
-        "#f0cb58" // Factions.DCC
-    ]
 
     return (
         <div>
@@ -42,7 +21,7 @@ const CharacterList = ({ characters }: { characters: DbCharacter[] }) => {
 
             <p className="space-x-4 mt-8">
                 {
-                    JSON.parse(characters[selectIndex].character_faction_data)?.map((f: number) =>
+                    characters[selectIndex].character_faction_data && JSON.parse(characters[selectIndex].character_faction_data)?.map((f: number) =>
                     (
                         <span key={f} style={{ backgroundColor: factionColours[f] }} className="p-2 rounded-xl">{factions[f].replace("_", " ")}</span>
                     ))
@@ -71,7 +50,7 @@ const CharacterList = ({ characters }: { characters: DbCharacter[] }) => {
                     <div>
                         Job Status -
                         {
-                            !characters[selectIndex].freelance_job_data ? " Unemployed" : " " + JSON.parse(characters[selectIndex].freelance_job_data).jobName
+                            !characters[selectIndex].freelance_job_data ? " Unemployed" : " " + JSON.parse(characters[selectIndex]?.freelance_job_data).jobName
                         }</div>
                     <div>
                         Health - {characters[selectIndex].character_health}%</div>

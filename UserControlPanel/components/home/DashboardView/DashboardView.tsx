@@ -42,7 +42,7 @@ const DashboardView = ({ data }: { data: ServerDashboardData }) => {
         <div className="text-white text-center bg-black/50 rounded-2xl p-8 h-fit">
 
             {
-                viewState === "dash" && <CharacterList characters={data.characters} />
+                viewState === "dash" && (data.characters.length > 0 ? <CharacterList characters={data.characters} /> : <span className="text-lg">You do not have any characters</span>)
             }
 
             {
