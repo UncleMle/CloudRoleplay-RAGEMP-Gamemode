@@ -29,8 +29,8 @@ const StaffRoster = () => {
             <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 mt-10">
 
                 {
-                    data?.staff && data.staff.map((staff: Admin) => (
-                        <div className="border p-8 font-medium rounded-lg border-gray-400 backdrop-blur-lg">
+                    data?.staff && data.staff.map((staff: Admin, idx: number) => (
+                        <div key={idx} className="border p-8 font-medium rounded-lg border-gray-400 backdrop-blur-lg">
                             <div className="flex justify-center items-center">
                                 <Image className="rounded-full w-40 h-40 object-cover" src={staff.ucp_image_url ? staff.ucp_image_url : "https://i.imgur.com/J4m5RVt.png"} alt="Staff profile picture" width={150} height={150} />
                             </div>
