@@ -22,6 +22,7 @@ export default class VehicleSystems {
 			"playerLeaveVehicle": VehicleSystems.handlePlayerExitVehicle,
 			"playerCreateWaypoint": VehicleSystems.handleWaypointCreate,
 			"playerRemoveWaypoint": VehicleSystems.handleWaypointRemove,
+			"playerReady": VehicleSystems.handlePlayerReady,
 			"vehicleSystem:freezePlayerVehicle": VehicleSystems.freezePlayerVehicle,
 			"vehicleSystem:handleAutoDriveStart": VehicleSystems.handleAutoDriveStart
 		});
@@ -34,6 +35,15 @@ export default class VehicleSystems {
 			mp.events.callRemote(VehicleSystems.updateVehicleDistEvent, JSON.stringify(VehicleSystems.vehicleOldPos));
 			VehicleSystems.vehicleOldPos = VehicleSystems.LocalPlayer.vehicle.position;
 		}, VehicleSystems.updateDistInteral_seconds * 1000);
+	}
+
+	private static handlePlayerReady() {
+		/*
+		! Not updated in ragemp community types yet.
+		*/
+		
+		// @ts-ignore
+		mp.game.vehicle.setExperimentalAttachmentSyncEnabled(true);
 	}
 
 	private static handleWaypointCreate(position: Vector3) {

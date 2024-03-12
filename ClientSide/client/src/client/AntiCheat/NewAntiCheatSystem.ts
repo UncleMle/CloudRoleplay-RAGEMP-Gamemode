@@ -36,7 +36,7 @@ export default class NewAntiCheatSystem {
             "incomingDamage": NewAntiCheatSystem.handleIncomingDamage,
             "playerEnterVehicle": NewAntiCheatSystem.handleEnterVehicle,
             "playerLeaveVehicle": NewAntiCheatSystem.handleLeaveVehicle,
-            "entityStreamIn": NewAntiCheatSystem.checkForIllegalVeh,
+            // "entityStreamIn": NewAntiCheatSystem.checkForIllegalVeh,
             "client:ac:sleepClient": NewAntiCheatSystem.handleSleep
         });
 
@@ -85,24 +85,28 @@ export default class NewAntiCheatSystem {
         mp.game.controls.disableControlAction(1, 142, true);
     }
 
+    /*
+    65535 = max unsigned interger rogue client entitys.
+
+    this has caused issues with some client scripts so is disabled for now.
+
     private static async checkForIllegalVeh(entity: EntityMp) {
         if (entity.type !== "vehicle") return;
 
-        if (entity.type === 'vehicle' && entity.remoteId === 65535 && VehicleManager.spawnedVehicles.indexOf(entity as VehicleMp) === -1) {
+        if (entity.remoteId === 65535 && VehicleManager.spawnedVehicles.indexOf(entity as VehicleMp) === -1) {
             if (getVehicleData(entity as VehicleMp)) return;
 
             let plate = (entity as VehicleMp).getNumberPlateText();
 
             NewAntiCheatSystem.adminAlert(AcEvents.vehicleSpawnHack, plate);
 
-            entity.destroy();
+            // entity.destroy();
         }
     }
+    */
 
     private static handleEnterVehicle(vehicle: VehicleMp) {
         if (!vehicle || vehicle.handle === 0) return;
-
-        NewAntiCheatSystem.checkForIllegalVeh(vehicle as VehicleMp);
 
         if (vehicle.handle !== NewAntiCheatSystem.enteringVehHandle) {
             let enteredPlateFromHandle = NewAntiCheatSystem.enteringVehHandle ? NewAntiCheatSystem.enteringVehHandle : vehicle.handle;

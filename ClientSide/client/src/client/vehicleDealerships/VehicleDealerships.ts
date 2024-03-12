@@ -27,7 +27,7 @@ export default class VehicleDealerShips {
 	}
 
 	public static closeDealerShip() {
-		let dealerData: DealerShip | undefined = VehicleDealerShips.LocalPlayer.getVariable(VehicleDealerShips._dealershipIdentifer);
+		let dealerData: DealerShip | null = VehicleDealerShips.LocalPlayer.getVariable(VehicleDealerShips._dealershipIdentifer);
 
 		if (dealerData) {
 			mp.events.callRemote(VehicleDealerShips._closeDealerEvent);
@@ -46,7 +46,7 @@ export default class VehicleDealerShips {
 	public static async initDealership() {
 		if (mp.game.invoke(_IS_PLAYER_SWITCH_IN_PROGRESS_NATIVE)) return;
 
-		let dealerData: DealerShip | undefined = VehicleDealerShips.LocalPlayer.getVariable(VehicleDealerShips._dealershipIdentifer);
+		let dealerData: DealerShip | null = VehicleDealerShips.LocalPlayer.getVariable(VehicleDealerShips._dealershipIdentifer);
 
 		if (dealerData) {
 			GuiSystem.toggleHudComplete(false);

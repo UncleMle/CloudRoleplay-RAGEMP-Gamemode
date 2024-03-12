@@ -16,6 +16,59 @@ declare global {
 		acPointAtRemoteId: number;
 	}
 
+	interface BrowserMp {
+		/**
+		 * Property used to gets/sets the console's active state.
+		 */
+		active: boolean;
+
+		/**
+		 * Property used to gets/sets the browser's url.
+		 */
+		url: string;
+
+		/**
+		 * Destroys browser instance.
+		 */
+		destroy(): void;
+
+		/**
+		 * Calls JavaScript code inside the browser.
+		 *
+		 * @param executedCode JavaScript code to be executed in browser
+		 */
+		execute(executedCode: string): void;
+
+		/**
+		 * Marks the browser as the chat for the server.
+		 */
+		markAsChat(): void;
+
+		/**
+		 * Reloads current page.
+		 *
+		 * @param ignoreCache True to ignore cache
+		 */
+		reload(ignoreCache: boolean): void;
+
+		call(eventName: string, ...args: any[]): void;
+		callProc<T = any>(procName: string, ...args: any[]): Promise<T>;
+		executeCached(code: string): void;
+
+		/**
+		  * Available on 11_test_1102_eXzHpHrWd2UfgUhdau6PDVJ88GG5aQY3 branch
+		  */
+		headlessTextureDict: string;
+		headlessTextureName: string;
+		headlessTextureHeightScale: number;
+		inputEnabled: boolean;
+	}
+
+	interface BrowserMpPool extends EntityMpPool<BrowserMp> {
+		'new'(url: string): BrowserMp;
+		newHeadless(url: string, width: number, height: number): BrowserMp;
+	}
+
 	interface EntityMp {
 		trackerBlip: BlipMp
 	}
@@ -30,6 +83,7 @@ declare global {
 		ballObject: ObjectMp;
 	}
 }
+
 
 export interface UserData {
 	account_id: number;
@@ -593,3 +647,4 @@ interface WeaponDamageData {
 	damageWeapons: DamageWeapons;
 	damageWeaponGroups: DamageWeaponGroups;
 }
+

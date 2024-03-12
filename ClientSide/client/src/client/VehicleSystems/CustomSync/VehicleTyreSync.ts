@@ -1,3 +1,4 @@
+import getVehicleData from "@/PlayerMethods/getVehicleData";
 import VehicleManager from "../VehicleManager";
 
 export default class VehicleTyreSync {
@@ -17,13 +18,15 @@ export default class VehicleTyreSync {
     private static handleDataHandler(vehicle: VehicleMp, data: boolean[]) {
         if (vehicle.type !== "vehicle" || data === undefined) return;
 
+        if (!getVehicleData(vehicle)) return;
+
         VehicleTyreSync.applySync(vehicle, data);
     }
 
     private static handleStreamIn(vehicle: EntityMp) {
         if (vehicle.type !== "vehicle" || !vehicle.getVariable(VehicleTyreSync._tyreStateKey)) return;
 
-        if(VehicleManager.spawnedVehicles.indexOf(vehicle as VehicleMp) !== -1) return;
+        if (!getVehicleData(vehicle as VehicleMp)) return;
 
         VehicleTyreSync.applySync(vehicle);
     }
@@ -31,12 +34,14 @@ export default class VehicleTyreSync {
     private static applySync(vehicle: EntityMp, newData: boolean[] = []) {
         if (!vehicle.getVariable(VehicleTyreSync._tyreStateKey)) return;
 
-        let tyreStates: boolean[] = vehicle.getVariable(VehicleTyreSync._tyreStateKey);
+        let tyreStates: boolean[] | null = [];
+
+        if (vehicle.getVariable(VehicleTyreSync._tyreStateKey)) tyreStates = vehicle.getVariable(VehicleTyreSync._tyreStateKey);
 
         if (newData.length > 0) tyreStates = newData;
 
         for (let i = 0; i < 6; i++) {
-            if (tyreStates[i]) (vehicle as VehicleMp).setTyreBurst(i, true, 1000);
+            if (tyreStates && tyreStates[i]) (vehicle as VehicleMp).setTyreBurst(i, true, 1000);
         }
     }
 
@@ -51,7 +56,7 @@ export default class VehicleTyreSync {
             tyres.push(veh.isTyreBurst(i, false));
         }
 
-        let currentTyres: boolean[] = veh.getVariable(VehicleTyreSync._tyreStateKey) ? veh.getVariable(VehicleTyreSync._tyreStateKey) : [];
+        let currentTyres: boolean[] | null = veh.getVariable(VehicleTyreSync._tyreStateKey) ? veh.getVariable(VehicleTyreSync._tyreStateKey) : [];
 
         let isDif: boolean = JSON.stringify(tyres) !== JSON.stringify(currentTyres);
 

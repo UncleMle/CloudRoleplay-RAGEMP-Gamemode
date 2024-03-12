@@ -339,6 +339,16 @@ namespace CloudRP.ServerSystems.Admin
             uiHandling.pushRouterToClient(player, Browsers.ReportsPage);
         }
 
+        [RemoteEvent("server:adminSystem:alertOnException")]
+        public void alertOnException(Player player)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if (character == null) return;
+
+            AdminUtils.sendMessageToAllStaff($"{character.character_name} experienced a client side exception / rejection", (int)AdminRanks.Admin_Founder, true);
+        }
+
         [RemoteEvent("server:acceptReport")]
         public void acceptReport(Player player, int reportId)
         {

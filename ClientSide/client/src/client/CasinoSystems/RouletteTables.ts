@@ -79,7 +79,7 @@ export default class RouletteTables {
 
         if (!mp.objects.exists(raycast.entity as ObjectMp)) return null;
 
-        let rayEntityData: RouletteTable = (raycast.entity as EntityMp).getVariable(RouletteTables._rouletteTableSharedDataKey);
+        let rayEntityData: RouletteTable | null = (raycast.entity as EntityMp).getVariable(RouletteTables._rouletteTableSharedDataKey);
 
         if (!rayEntityData) return null;
 

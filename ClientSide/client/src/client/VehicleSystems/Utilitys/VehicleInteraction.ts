@@ -37,7 +37,7 @@ export default class VehicleInteraction {
 
 			let vehData: VehicleData | undefined = getVehicleData(veh);
 
-			if(!vehData) return;
+			if (!vehData) return;
 
 			let pPos: Vector3 = VehicleInteraction.LocalPlayer.position;
 
@@ -81,7 +81,7 @@ export default class VehicleInteraction {
 				);
 			});
 
-			if(vehData.vehicle_locked) return;
+			if (vehData.vehicle_locked) return;
 
 			const raycast: RaycastResult | null = VehicleInteraction.getLocalTargetVehicle();
 			if (raycast == null || (raycast.entity as EntityMp).type != 'vehicle') return;
@@ -91,7 +91,7 @@ export default class VehicleInteraction {
 				const bonePos: Vector3 = (raycast.entity as EntityMp).getWorldPositionOfBone(VehicleInteraction.boneTarget.boneIndex);
 
 				const vehicleData: VehicleData | undefined = getVehicleData(raycast.entity as VehicleMp);
-				const freelanceData: FreeLanceJobVehicleData = VehicleInteraction.boneTarget.veh.getVariable(FREELANCE_JOB_VEHICLE_DATA_KEY);
+				const freelanceData: FreeLanceJobVehicleData | null = VehicleInteraction.boneTarget.veh.getVariable(FREELANCE_JOB_VEHICLE_DATA_KEY);
 				if (!vehicleData) return;
 
 				if (vehicleData.vehicle_locked) return;

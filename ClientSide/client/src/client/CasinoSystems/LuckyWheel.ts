@@ -221,7 +221,7 @@ export default class LuckyWheel {
 
     private static handleUserNotify(text: string) {
         mp.game.ui.setTextComponentFormat('STRING');
-        mp.game.ui.addTextComponentSubstringPlayerName(text);
-        mp.game.ui.displayHelpTextFromStringLabel(0, false, true, -1);
+        mp.game.ui.addTextComponentSubstringKeyboardDisplay(text);
+        mp.game.ui.displayHelpTextFromStringLabel(1, false, true, -1);
     }
 }

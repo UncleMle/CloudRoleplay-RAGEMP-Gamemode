@@ -22,6 +22,7 @@ using CloudRP.PlayerSystems.FactionSystems.PoliceSystems;
 using CloudRP.GeneralSystems.WeaponSystem;
 using CloudRP.ServerSystems.Logging;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using CloudRP.VehicleSystems.Vehicles;
 
 namespace CloudRP.ServerSystems.Authentication
 {
@@ -37,6 +38,11 @@ namespace CloudRP.ServerSystems.Authentication
         public static readonly int autoLoginValid_seconds = 300;
         public static readonly int quizMultichoiceQuestions = 5;
         public static readonly int quizFailTimeout_seconds = 3600;
+
+        public delegate void AuthEventsHandler(Player player, DbCharacter character);
+
+        #region Event Handlers
+        public static event AuthEventsHandler onCharacterLogin;
 
         public Auth()
         {
@@ -371,6 +377,9 @@ namespace CloudRP.ServerSystems.Authentication
                         character.cachedClothes = charClothing;
 
                         player.setPlayerCharacterData(character, true);
+
+                        onCharacterLogin(player, character);
+
                         welcomeAndSpawnPlayer(player);
                         uiHandling.setLoadingState(player, false);
                     }
@@ -820,5 +829,5 @@ namespace CloudRP.ServerSystems.Authentication
         }
         #endregion
     }
-
+    #endregion
 }
