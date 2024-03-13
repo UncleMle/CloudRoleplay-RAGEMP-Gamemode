@@ -157,3 +157,27 @@ export type ServerLog = {
     log_type: number;
     account_id: number;
 };
+
+export interface User {
+    account_id: number;
+    auto_login: number;
+    username: string;
+    admin_status: number;
+    adminDuty: boolean;
+    admin_name: string;
+    vip_status: boolean;
+    email_address: string;
+    admin_ped: string;
+    isFlying: boolean;
+    isFrozen: boolean;
+    playerDimension: number;
+    max_characters: number;
+    admin_esp: boolean;
+    redeem_code: string;
+    showAdminPed: boolean;
+    vip_unix_expires: number;
+    admin_jail_time: number;
+    admin_jail_reason: string;
+    has_passed_quiz: boolean;
+    quiz_fail_unix: number;
+}

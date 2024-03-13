@@ -59,7 +59,13 @@ const HomeSideBar = ({ data }: { data: ServerDashboardData }) => {
             <aside id="default-sidebar" className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0 bg-black/50" aria-label="Sidebar">
                 <div className="h-full px-3 py-4 overflow-y-auto backdrop-blur-lg border-r-4 border-gray-400/50">
 
-                    <Image src={logoImage} alt="Cloud RP Logo Iamge" className="scale-75" height={300} />
+                    <Image
+                        src={logoImage}
+                        alt="Cloud RP Logo Iamge"
+                        className="scale-75"
+                        height={300}
+                        priority
+                    />
 
                     <div className="text-center text-white">
                         <div className="text-white font-bold text-xl">

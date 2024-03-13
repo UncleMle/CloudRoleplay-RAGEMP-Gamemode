@@ -79,6 +79,8 @@ namespace CloudRP.VehicleSystems.Vehicles
                     vehicleData.rotation_y = vehicle.Rotation.Y;
                     vehicleData.rotation_z = vehicle.Rotation.Z;
 
+                    vehicleData.UpdatedDate = DateTime.Now;
+
                     vehicleData.tyre_states = JsonConvert.SerializeObject(vehicle.getTyreStates());
 
                     vehicleData.vehicle_health = NAPI.Vehicle.GetVehicleBodyHealth(vehicle);

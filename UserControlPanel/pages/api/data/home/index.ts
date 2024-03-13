@@ -1,17 +1,24 @@
-import AccountsController from "@/lib/AccountController/AccountController";
+import AccountsController, { TokenData } from "@/lib/AccountController/AccountController";
 import middleware from "@/lib/Middleware/Middleware";
 import DatabaseController from "@/lib/mysqlDbController";
 import { AdminPunishment, DbVehicle, Faction, IAccount, ServerLog } from "@/types";
-import { EndpointRequestTypes } from "@/utilClasses";
+import { EndpointRequestTypes, HttpStatusCodes } from "@/utilClasses";
 import { DbCharacter } from "@/types";
 import { NextApiRequest, NextApiResponse } from "next";
+import requestIp from 'request-ip'
+import apiErrorHandle from "@/lib/ErrorHandling/ErrorHandles";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-    let accountId: number = AccountsController.getIdFromToken(req);
-    let account: IAccount[] = await DatabaseController.selectQuery("SELECT * FROM accounts WHERE account_id = ? LIMIT 1", [accountId]);
+    let tokenData: TokenData | null = AccountsController.getDataFromToken(req);
 
-    let adminPunishments = await DatabaseController.selectQuery("SELECT * FROM admin_punishments WHERE owner_account_id = ?", [accountId]);
-    let characters: DbCharacter[] = await DatabaseController.selectQuery("SELECT * FROM characters WHERE owner_id = ?", [accountId]);
+    if (tokenData && tokenData.ip !== requestIp.getClientIp(req)) {
+        return apiErrorHandle(res, HttpStatusCodes.UNAUTHORIZED);
+    }
+
+    let account: IAccount[] = await DatabaseController.selectQuery("SELECT * FROM accounts WHERE account_id = ? LIMIT 1", [tokenData?.id]);
+
+    let adminPunishments = await DatabaseController.selectQuery("SELECT * FROM admin_punishments WHERE owner_account_id = ?", [tokenData?.id]);
+    let characters: DbCharacter[] = await DatabaseController.selectQuery("SELECT * FROM characters WHERE owner_id = ?", [tokenData?.id]);
 
     for (const char of characters) {
         let query = "SELECT vehicle_display_name, "

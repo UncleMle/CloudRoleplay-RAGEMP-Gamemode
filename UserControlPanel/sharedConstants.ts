@@ -35,3 +35,18 @@ export const PunishmentTypes: string[] = [
     "Kick",
     "Back To Quiz"
 ]
+
+export const userPropertiesDb: string[] = [
+    "account_id",
+    "username",
+    "admin_status",
+    "admin_name",
+    "vip_status"
+];
+
+export const selectCharProps: string[] = [
+    "character_name", "UpdatedDate", "play_time_seconds",
+    "injured_timer", "money_amount", "cash_amount",
+    "character_faction_data", "character_isbanned", "character_id",
+    "character_health", "owner_id"
+]

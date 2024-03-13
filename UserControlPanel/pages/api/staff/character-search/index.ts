@@ -5,25 +5,20 @@ import DatabaseController from "@/lib/mysqlDbController";
 import { EndpointRequestTypes, HttpStatusCodes } from "@/utilClasses";
 import { DbCharacter } from "@/types";
 import { NextApiRequest, NextApiResponse } from "next";
+import { selectCharProps } from "@/sharedConstants";
 
-const selectProps: string[] = [
-    "character_name", "UpdatedDate", "play_time_seconds",
-    "injured_timer", "money_amount", "cash_amount",
-    "character_faction_data", "character_isbanned", "character_id",
-    "character_health"
-]
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-    let adminLevel: number = AccountsController.getAdminFromToken(req);
+    let adminLevel: number | undefined = AccountsController.getDataFromToken(req)?.adminLevel;
 
-    if (adminLevel < 3) return apiErrorHandle(res, HttpStatusCodes.UNAUTHORIZED);
+    if (adminLevel && adminLevel < 3) return apiErrorHandle(res, HttpStatusCodes.UNAUTHORIZED);
 
     if (!req.headers['x-search-character']) return apiErrorHandle(res, HttpStatusCodes.BAD_REQUEST);
 
     let characterName: string = req.headers['x-search-character'].toString().replace(" ", "_");
 
-    let findCharacter: DbCharacter[] = await DatabaseController.selectQuery(`SELECT ${selectProps.join(", ")} FROM characters WHERE character_name = ?`, [
-        characterName
+    let findCharacter: DbCharacter[] = await DatabaseController.selectQuery(`SELECT ${selectCharProps.join(", ")} FROM characters WHERE LOWER(character_name) = ?`, [
+        characterName.toLowerCase()
     ]);
 
     if (findCharacter.length === 0) {
@@ -33,7 +28,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         })
         return;
     }
-    
+
     let getLogs = await DatabaseController.selectQuery("SELECT * FROM server_logs WHERE character_owner_id = ?", [
         findCharacter[0].character_id
     ]);

@@ -5,6 +5,12 @@ import jwt from "jsonwebtoken";
 import { NextApiRequest } from "next";
 import axios from "axios";
 
+export interface TokenData {
+    id: number,
+    ip: string,
+    adminLevel: number
+};
+
 export default class AccountsController {
     public static checkAccountPassword(targetHash: string, compare: string): boolean {
         let match: boolean = true;
@@ -45,13 +51,10 @@ export default class AccountsController {
     }
 
     public static otpVerification(token: string | void | null | string[]): AccountSessionOtpData | null {
-        console.log(token);
         try {
             let decoded = jwt.verify(token as string, "jwtPrivateKey");
 
             decoded = decoded as AccountSessionOtpData;
-
-            console.log("decoded" + decoded);
 
             return decoded.accountOtpSession;
         } catch (e) {
@@ -59,36 +62,15 @@ export default class AccountsController {
         }
     }
 
-    public static getIdFromToken(req: NextApiRequest): number {
+    public static getDataFromToken(req: NextApiRequest): TokenData | null {
         let accountId: number = -1;
         let decoded = jwt.verify(req.headers['x-auth-token'] as string, "jwtPrivateKey");
 
         if (decoded) {
-            decoded = decoded as {
-                id: number,
-                adminLevel: number
-            };
-
-            accountId = decoded.id;
+            decoded = decoded as TokenData;
         }
 
-        return accountId;
-    }
-    
-    public static getAdminFromToken(req: NextApiRequest): number {
-        let admin: number = -1;
-        let decoded = jwt.verify(req.headers['x-auth-token'] as string, "jwtPrivateKey");
-
-        if (decoded) {
-            decoded = decoded as {
-                id: number,
-                adminLevel: number
-            };
-
-            admin = decoded.adminLevel;
-        }
-
-        return admin;
+        return decoded ? decoded as TokenData : null;
     }
 
     public static generateOtp(length: number = 5): string {

@@ -35,10 +35,6 @@ function LoginPage() {
 
     useEffect(() => {
         if (typeof "window" !== undefined) {
-            const params = new URLSearchParams(window.location.search);
-
-            if (params.get("otp") && cookies["user-otp-token"]) setOtpState(true);
-
             if (cookies["user-jwt-token"]) router.push("/home");
         }
     }, []);

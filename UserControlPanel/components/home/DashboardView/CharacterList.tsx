@@ -1,11 +1,22 @@
 import { DbCharacter } from "@/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdDriveFileRenameOutline } from "react-icons/md";
 import { FaCar } from "react-icons/fa";
 import { factionColours, factions } from "@/sharedConstants";
 
 const CharacterList = ({ characters }: { characters: DbCharacter[] }) => {
     const [selectIndex, setCharacterIndex] = useState<number>(0);
+    let baseStyle = "";
+
+    useEffect(() => {
+        let char = characters[selectIndex];
+
+        baseStyle = "";
+
+        if (char.character_faction_data) {
+            baseStyle += `grid lg:grid-cols-3 md:grid-cols-2 grid-cols-${JSON.parse(char.character_faction_data).length}`;
+        }
+    }, [selectIndex]);
 
     return (
         <div>
@@ -19,14 +30,14 @@ const CharacterList = ({ characters }: { characters: DbCharacter[] }) => {
                 }
             </ul>
 
-            <p className="space-x-4 mt-8">
+            {characters[selectIndex].character_faction_data && <p className={"mt-8" + baseStyle}>
                 {
-                    characters[selectIndex].character_faction_data && JSON.parse(characters[selectIndex].character_faction_data)?.map((f: number) =>
+                    JSON.parse(characters[selectIndex].character_faction_data)?.map((f: number) =>
                     (
-                        <span key={f} style={{ backgroundColor: factionColours[f] }} className="p-2 rounded-xl">{factions[f].replace("_", " ")}</span>
+                        <span key={f} style={{ backgroundColor: factionColours[f] }} className="mr-3 p-2 rounded-xl">{factions[f].replace("_", " ")}</span>
                     ))
                 }
-            </p>
+            </p>}
 
             {
                 characters[selectIndex].character_isbanned === 1 &&
@@ -74,31 +85,33 @@ const CharacterList = ({ characters }: { characters: DbCharacter[] }) => {
             </div>
 
 
-            <h2 className="text-left border-l-4 pl-3 text-xl bg-gray-500/20 w-fit pr-6 p-2 mt-20 border-purple-400/50 ">Character&aposs vehicles</h2>
+            <h2 className="text-left border-l-4 pl-3 text-xl bg-gray-500/20 w-fit pr-6 p-2 mt-20 border-purple-400/50 ">Character&#39;s vehicles</h2>
             <div className="border-l-4 w-full backdrop-blur-lg p-4 border-purple-400/50 max-h-96 overflow-y-scroll">
 
                 {characters[selectIndex].charactersVehicles.length > 0 &&
                     <table className="w-full">
-                        <tr className="border-b-4 border-gray-400/50">
-                            <th className="pb-4 relative">Vehicle Name</th>
-                            <th className="pb-4">Numberplate</th>
-                            <th className="pb-4">Dimension</th>
-                            <th className="pb-4">Distance</th>
-                            <th className="pb-4">Fuel Level</th>
-                            <th className="pb-4">Health</th>
-                        </tr>
-                        {
-                            characters[selectIndex].charactersVehicles.map(veh => (
-                                <tr key={veh.vehicle_id} className="pb-4 border-b-2 border-gray-400/50">
-                                    <th className="pt-4 pb-4">{veh.vehicle_display_name}</th>
-                                    <th>{veh.numberplate}</th>
-                                    <th>{veh.vehicle_dimension}</th>
-                                    <th>{Math.round(veh.vehicle_distance / 1000)}KMH</th>
-                                    <th>{Math.round(veh.vehicle_fuel)}L</th>
-                                    <th>{veh.vehicle_health / 10}%</th>
-                                </tr>
-                            ))
-                        }
+                        <tbody>
+                            <tr className="border-b-4 border-gray-400/50">
+                                <th className="pb-4 relative">Vehicle Name</th>
+                                <th className="pb-4">Numberplate</th>
+                                <th className="pb-4">Dimension</th>
+                                <th className="pb-4">Distance</th>
+                                <th className="pb-4">Fuel Level</th>
+                                <th className="pb-4">Health</th>
+                            </tr>
+                            {
+                                characters[selectIndex].charactersVehicles.map((veh, idx: number) => (
+                                    <tr key={idx} className="pb-4 border-b-2 border-gray-400/50">
+                                        <th className="pt-4 pb-4">{veh.vehicle_display_name}</th>
+                                        <th>{veh.numberplate}</th>
+                                        <th>{veh.vehicle_dimension}</th>
+                                        <th>{Math.round(veh.vehicle_distance / 1000)}KMH</th>
+                                        <th>{Math.round(veh.vehicle_fuel)}L</th>
+                                        <th>{veh.vehicle_health / 10}%</th>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
                     </table>
                 }
 

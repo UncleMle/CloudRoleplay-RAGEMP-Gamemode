@@ -10,21 +10,23 @@ const FactionsPage = ({ factions }: { factions: Faction[] }) => {
             <div className="backdrop-blur-lg border-l-4 border-purple-400/50 max-h-96 overflow-y-scroll">
                 {
                     factions.length > 0 &&
-                    <table className="w-full">
-                        <tr className="border-b-4 border-gray-400/50">
-                            <th className="pb-4 relative">Faction Name</th>
-                            <th className="pb-4">Colour</th>
-                            <th className="pb-4">Owner</th>
-                        </tr>
-                        {
-                            factions.map((faction: Faction, idx: number) => (
-                                idx > 0 && <tr key={idx} className="pb-4 border-b-2 border-gray-400/50">
-                                    <th className="pt-4 pb-4">{faction.faction_name.replace("_", " ")}</th>
-                                    <th style={{ backgroundColor: factionColours[idx] }} className="w-20 rounded-xl"></th>
-                                    <th>{faction.owner_name}</th>
-                                </tr>
-                            ))
-                        }
+                    <table className="w-full  overflow-x-scroll min-w-[500px]">
+                        <tbody>
+                            <tr className="border-b-4 border-gray-400/50">
+                                <th className="pb-4 relative pt-4">Faction Name</th>
+                                <th className="pb-4">Colour</th>
+                                <th className="pb-4">Owner</th>
+                            </tr>
+                            {
+                                factions.map((faction: Faction, idx: number) => (
+                                    idx > 0 && <tr key={idx} className="pb-4 border-b-2 border-gray-400/50">
+                                        <th className="pt-4 pb-4">{faction.faction_name.replace("_", " ")}</th>
+                                        <th style={{ backgroundColor: factionColours[idx] }} className="w-20 rounded-xl"></th>
+                                        <th className="max-w-[40px] whitespace-nowrap overflow-hidden text-ellipsis">{faction.owner_name}</th>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
                     </table>
                 }
             </div>
