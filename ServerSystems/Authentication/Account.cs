@@ -30,6 +30,7 @@ namespace CloudRP.ServerSystems.Authentication
         public string client_serial { get; set; }
         public int ban_status { get; set; }
         public ulong social_club_id { get; set; }
+        public string social_club_name { get; set; }
         public int max_characters { get; set; }
         public bool admin_esp { get; set; }
         public bool has_first_login { get; set; }

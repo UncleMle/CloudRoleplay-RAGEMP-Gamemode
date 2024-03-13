@@ -8,6 +8,7 @@ import { useCookies } from "react-cookie";
 import useSWR from "swr";
 import CharacterSearch from "./StaffTools/CharacterSearch";
 import VehicleSearch from "./StaffTools/VehicleSearch";
+import AccountSearch from "./StaffTools/AccountSearch";
 
 export enum staffActions {
     none,
@@ -125,7 +126,7 @@ const StaffToolPage = ({ adminLevel, serverLogs }: { adminLevel: number, serverL
                 staffView === views[2] && <VehicleSearch searchParam={search} setSearch={setParam} />
             }
             {
-                staffView === views[3] && <div>acc Search</div>
+                staffView === views[3] && <AccountSearch />
             }
         </div >
     )

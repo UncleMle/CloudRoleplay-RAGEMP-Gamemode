@@ -43,6 +43,7 @@ namespace CloudRP.ServerSystems.Authentication
 
         #region Event Handlers
         public static event AuthEventsHandler onCharacterLogin;
+        #endregion
 
         public Auth()
         {
@@ -125,7 +126,8 @@ namespace CloudRP.ServerSystems.Authentication
                 if(
                    findAccount.user_ip != player.Address ||
                    findAccount.client_serial != player.Serial ||
-                   findAccount.social_club_id != player.SocialClubId
+                   findAccount.social_club_id != player.SocialClubId || 
+                   findAccount.social_club_name != player.SocialClubName
                 )
                 {
                     string otp = AuthUtils.generateString(5, true);
@@ -559,6 +561,7 @@ namespace CloudRP.ServerSystems.Authentication
                 findAccount.user_ip = player.Address;
                 findAccount.UpdatedDate = DateTime.Now;
                 findAccount.social_club_id = player.SocialClubId;
+                findAccount.social_club_name = player.SocialClubName;
 
                 dbContext.Update(findAccount);
                 dbContext.SaveChanges();
@@ -829,5 +832,4 @@ namespace CloudRP.ServerSystems.Authentication
         }
         #endregion
     }
-    #endregion
 }

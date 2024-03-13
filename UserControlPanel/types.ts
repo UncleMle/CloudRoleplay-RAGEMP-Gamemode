@@ -165,7 +165,7 @@ export interface User {
     admin_status: number;
     adminDuty: boolean;
     admin_name: string;
-    vip_status: boolean;
+    vip_status: number;
     email_address: string;
     admin_ped: string;
     isFlying: boolean;
@@ -180,4 +180,7 @@ export interface User {
     admin_jail_reason: string;
     has_passed_quiz: boolean;
     quiz_fail_unix: number;
+    CreatedDate: string;
+    social_club_name: string;
+    user_ip: string;
 }

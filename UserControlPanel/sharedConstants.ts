@@ -41,7 +41,8 @@ export const userPropertiesDb: string[] = [
     "username",
     "admin_status",
     "admin_name",
-    "vip_status"
+    "vip_status",
+    "CreatedDate"
 ];
 
 export const selectCharProps: string[] = [

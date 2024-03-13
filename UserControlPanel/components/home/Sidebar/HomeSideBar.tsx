@@ -49,7 +49,7 @@ const HomeSideBar = ({ data }: { data: ServerDashboardData }) => {
 
     return (
         <nav>
-            <div className='dropdown inline-block relative'>
+            <div className='sm:hidden dropdown inline-block relative'>
                 <button
                     className='flex flex-col h-12 w-12 rounded justify-center items-center group'
                     onClick={() => setNavMenu(!navMenu)}
