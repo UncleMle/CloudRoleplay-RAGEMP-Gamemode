@@ -9,10 +9,10 @@ import { selectCharProps, userPropertiesDb } from "@/sharedConstants";
 
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-    let adminLevel: number | undefined = AccountsController.getDataFromToken(req)?.adminLevel;
+    let adminLevel: number | undefined = AccountsController.getDataFromToken(req)?.adminLevel as number;
     let props: string[] = userPropertiesDb;
 
-    if (adminLevel && adminLevel < 3) return apiErrorHandle(res, HttpStatusCodes.UNAUTHORIZED);
+    if (adminLevel < 3) return apiErrorHandle(res, HttpStatusCodes.UNAUTHORIZED);
 
     if (!req.headers['x-search-vehicle']) return apiErrorHandle(res, HttpStatusCodes.BAD_REQUEST);
 

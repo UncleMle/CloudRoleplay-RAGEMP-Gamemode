@@ -7,6 +7,7 @@ import { staffActions } from "../StaffToolPage";
 import { DbVehicle, ServerLog } from "@/types";
 import LoadingSpinner from "@/components/utilComponents/LoadingSpinner";
 import { useRouter, useSearchParams } from "next/navigation";
+import { getFormattedDateString } from "@/lib/Helpers/Helpers";
 
 const CharacterSearch = ({ staffAction, setStaffAction }: {
     staffAction: staffActions | undefined, setStaffAction: Dispatch<SetStateAction<staffActions | undefined>>
@@ -176,14 +177,14 @@ const CharacterSearch = ({ staffAction, setStaffAction }: {
                                 <tr className="border-b-4 border-gray-400/50">
                                     <th className="pb-4">Name</th>
                                     <th className="pb-4">Plate</th>
-                                    <th className="pb-4">Date</th>
+                                    <th className="pb-4">Created</th>
                                 </tr>
                                 {
                                     searchObj.char.charactersVehicles.map((vehicle: DbVehicle) => (
                                         <tr key={vehicle.vehicle_id} className="pb-4 border-b-2 border-gray-400/50">
                                             <th className="pt-4 pb-4">{vehicle.vehicle_display_name}</th>
                                             <th className="rounded-xl">{vehicle.numberplate}</th>
-                                            <th className="rounded-xl">{new Date(vehicle.CreatedDate).toDateString()} ({new Date(vehicle.CreatedDate).getHours()}:{new Date(vehicle.CreatedDate).getMinutes()})</th>
+                                            <th className="rounded-xl">{getFormattedDateString(vehicle.CreatedDate)}</th>
                                             <th></th>
                                         </tr>
                                     ))

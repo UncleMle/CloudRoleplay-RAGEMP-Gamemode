@@ -37,6 +37,10 @@ const StaffToolPage = ({ adminLevel, serverLogs }: { adminLevel: number, serverL
     }, [staffView]);
 
     useEffect(() => {
+        if (adminLevel === 0) router.push("/");
+    });
+
+    useEffect(() => {
         setStaffAction(staffActions.none);
 
         if (typeof "window" !== undefined) {

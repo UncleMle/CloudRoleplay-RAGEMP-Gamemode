@@ -9,9 +9,9 @@ import { selectCharProps } from "@/sharedConstants";
 
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-    let adminLevel: number | undefined = AccountsController.getDataFromToken(req)?.adminLevel;
+    let adminLevel: number | undefined = AccountsController.getDataFromToken(req)?.adminLevel as number;
 
-    if (adminLevel && adminLevel < 3) return apiErrorHandle(res, HttpStatusCodes.UNAUTHORIZED);
+    if (adminLevel < 3) return apiErrorHandle(res, HttpStatusCodes.UNAUTHORIZED);
 
     if (!req.headers['x-search-character']) return apiErrorHandle(res, HttpStatusCodes.BAD_REQUEST);
 
@@ -33,7 +33,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         findCharacter[0].character_id
     ]);
 
-    findCharacter[0].charactersVehicles = await DatabaseController.selectQuery("SELECT vehicle_display_name, numberplate, CreatedDate FROM vehicles WHERE owner_id = ?", [
+    findCharacter[0].charactersVehicles = await DatabaseController.selectQuery("SELECT vehicle_id, vehicle_display_name, numberplate, CreatedDate FROM vehicles WHERE owner_id = ?", [
         findCharacter[0].character_id
     ]);
 
