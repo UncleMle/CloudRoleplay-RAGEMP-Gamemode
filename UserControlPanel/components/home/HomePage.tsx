@@ -16,7 +16,7 @@ const HomePage = () => {
 
     useEffect(() => {
         if (error && !isLoading) {
-            console.log("err");
+            setCookie("user-jwt-token", null);
             router.push("/");
         }
     }, [error]);
