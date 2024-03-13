@@ -1,4 +1,4 @@
-import { useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MdDashboard, MdGroups2 } from "react-icons/md";
 import logoImage from '../../../img/backgrounds/FinalLogo.png';
@@ -20,38 +20,68 @@ const HomeSideBar = ({ data }: { data: ServerDashboardData }) => {
     const [playerCount, setPlayerCount] = useState<number>();
     const router = useRouter();
     const navItemStyle: string = "relative text-center mt-8 border-b-4 border-t-4 p-7 text-white font-medium cursor-pointer border-purple-400/50 text-xl";
-
+    const params = useSearchParams();
     const setView = (viewName: string) => {
         router.push("/home?view=" + viewName);
     }
+
+    useEffect(() => {
+        if (!params?.get("view")) {
+            setView("dash");
+        }
+    }, []);
 
     const logout = () => {
         setCookies("user-jwt-token", null);
         router.push("/");
     };
 
+    const getIsActive = (view: string): string => {
+        return params?.get("view") === view ? "border-b-2 pb-2 border-gray-400/50 text-gray-400" : "white"
+    }
+
     useEffect(() => {
         axios.get("/api/playercount").then(count =>
             count.status === 200 ? setPlayerCount(count.data.players) : setPlayerCount(-1));
     }, []);
 
+    const genericHamburgerLine: string = `h-1 w-6 my-1 rounded-full bg-white transition ease transform duration-300`
+
     return (
         <nav>
-            <button onClick={() => setNavMenu(!navMenu)} data-drawer-target="default-sidebar" data-drawer-toggle="default-sidebar" aria-controls="default-sidebar" type="button" className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
-                <span className="sr-only">Open sidebar</span>
-                <svg className="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
-                </svg>
-            </button>
+            <div className='dropdown inline-block relative'>
+                <button
+                    className='flex flex-col h-12 w-12 rounded justify-center items-center group'
+                    onClick={() => setNavMenu(!navMenu)}
+                >
+                    <div
+                        className={`${genericHamburgerLine} ${navMenu
+                            ? 'rotate-45 translate-y-3 opacity-50 group-hover:opacity-100'
+                            : 'opacity-50 group-hover:opacity-100'
+                            }`}
+                    />
+                    <div
+                        className={`${genericHamburgerLine} ${navMenu ? 'opacity-0' : 'opacity-50 group-hover:opacity-100'
+                            }`}
+                    />
+                    <div
+                        className={`${genericHamburgerLine} ${navMenu
+                            ? '-rotate-45 -translate-y-3 opacity-50 group-hover:opacity-100'
+                            : 'opacity-50 group-hover:opacity-100'
+                            }`}
+                    />
+                </button>
+            </div>
 
             {navMenu && <div className="block sm:hidden bg-black/30 border-t-4 border-gray-400/40 border-b-4 font-medium text-white p-4">
                 <ul className="w-full text-center space-y-4">
-                    <li>Test</li>
-                    <li>Test</li>
-                    <li>Test</li>
-                    <li>Test</li>
-                    <li>Test</li>
-                    <li>Test</li>
+                    <li onClick={() => setView("dash")} className={getIsActive("dash")}>Dashboard</li>
+                    <li onClick={() => setView("credits")} className={getIsActive("credits")}>Credits</li>
+                    <li onClick={() => setView("roster")} className={getIsActive("roster")}>Staff Roster</li>
+                    <li onClick={() => setView("factions")} className={getIsActive("factions")}>Factions</li>
+                    <li onClick={() => setView("punishments")} className={getIsActive("punishments")}>Punishments</li>
+                    <li onClick={() => setView("staff")} className={getIsActive("staff")}>Staff</li>
+                    <li onClick={logout}>Logout</li>
                 </ul>
             </div>
             }
@@ -81,37 +111,37 @@ const HomeSideBar = ({ data }: { data: ServerDashboardData }) => {
 
 
                     <ul className="space-y-2 font-medium mt-4 text-white">
-                        <li onClick={() => setView("dash")}>
+                        <li onClick={() => setView("dash")} className={getIsActive("dash")}>
                             <a href="#" className="flex items-center p-2  rounded-lg">
                                 <MdDashboard className="text-3xl text-gray-400" />
                                 <span className="ms-3">Dashboard</span>
                             </a>
                         </li>
-                        <li onClick={() => setView("credits")}>
+                        <li onClick={() => setView("credits")} className={getIsActive("credits")}>
                             <a href="#" className="flex items-center p-2  rounded-lg">
                                 <FaCreditCard className="text-3xl text-gray-400" />
                                 <span className="flex-1 ms-3 whitespace-nowrap">Credits</span>
                             </a>
                         </li>
-                        <li onClick={() => setView("roster")}>
+                        <li onClick={() => setView("roster")} className={getIsActive("roster")}>
                             <a href="#" className="flex items-center p-2  rounded-lg">
                                 <MdGroups2 className="text-3xl text-gray-400" />
                                 <span className="flex-1 ms-3 whitespace-nowrap">Staff Roster</span>
                             </a>
                         </li>
-                        <li onClick={() => setView("factions")}>
+                        <li onClick={() => setView("factions")} className={getIsActive("factions")}>
                             <a href="#" className="flex items-center p-2  rounded-lg">
                                 <FaLayerGroup className="text-3xl text-gray-400" />
                                 <span className="flex-1 ms-3 whitespace-nowrap">Factions</span>
                             </a>
                         </li>
-                        <li onClick={() => setView("punishments")}>
+                        <li onClick={() => setView("punishments")} className={getIsActive("punishments")}>
                             <a href="#" className="flex items-center p-2  rounded-lg">
                                 <FaBook className="text-3xl text-gray-400" />
                                 <span className="flex-1 ms-3 whitespace-nowrap">Punishments</span>
                             </a>
                         </li>
-                        {data.accountData.adminLevel > 0 && <li onClick={() => setView("staff")}>
+                        {data.accountData.adminLevel > 0 && <li onClick={() => setView("staff")} className={getIsActive("staff")}>
                             <a href="#" className="flex items-center p-2  rounded-lg">
                                 <MdAdminPanelSettings className="text-3xl text-red-400" />
                                 <span className="flex-1 ms-3 whitespace-nowrap text-red-400">Staff</span>
