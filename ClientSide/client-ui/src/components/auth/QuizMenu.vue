@@ -42,7 +42,7 @@
                 <div class="mt-10" :class="baseStyle">
 
                     <Transition name="fade">
-                        <div v-if="stage == -1">
+                        <div v-if="stage === -1">
 
                             <p>
                                 There are {{ maxQuestions }} multiple choice questions you have to answer. If these

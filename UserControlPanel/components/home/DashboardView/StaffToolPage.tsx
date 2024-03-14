@@ -15,7 +15,8 @@ export enum staffActions {
     viewLogs,
     viewVehicles,
     viewDamageLogs,
-    banCharacter
+    banCharacter,
+    adminJail
 }
 
 const StaffToolPage = ({ adminLevel, serverLogs }: { adminLevel: number, serverLogs: AdminPunishment[] }) => {

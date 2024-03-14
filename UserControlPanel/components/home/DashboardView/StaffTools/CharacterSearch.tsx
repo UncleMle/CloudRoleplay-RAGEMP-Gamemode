@@ -13,6 +13,8 @@ const CharacterSearch = ({ staffAction, setStaffAction }: {
     staffAction: staffActions | undefined, setStaffAction: Dispatch<SetStateAction<staffActions | undefined>>
 }) => {
     const [error, setError] = useState<string>("");
+    const [banReason, setBanReason] = useState<string>("");
+    const [banTime, setBanTime] = useState<number>(0);
     const [cookies, setCookies] = useCookies();
     const [searched, setSearched] = useState<string>("");
     const [loading, setLoading] = useState<boolean>();
@@ -57,7 +59,27 @@ const CharacterSearch = ({ staffAction, setStaffAction }: {
         } finally {
             setLoading(false);
         }
+    };
 
+    const banAccount = async () => {
+        console.log("acc id " + searchObj.acc.account_id);
+
+        try {
+            const options = {
+                method: "GET",
+                headers: {
+                    "content-type": "application/json",
+                    "x-auth-token": cookies['user-jwt-token'],
+                    "x-ban-accid": searchObj.acc.account_id,
+                    "x-ban-time": banTime,
+                    "x-ban-reason": banReason
+                },
+            };
+
+            let banCharacter = await axios.get("/api/staff/account-ban", options);
+        } catch {
+
+        }
     };
 
     return <div>
@@ -90,10 +112,19 @@ const CharacterSearch = ({ staffAction, setStaffAction }: {
                 </div>
 
                 <div className="w-full mt-4 border-2 p-3 rounded-xl h- border-gray-500 h-14 backdrop-blur-md">
+                    <span className="float-left">Account ID</span>
+                    <span className="float-right">{searchObj.acc.account_id}</span>
+                </div>
+
+                <div className="w-full mt-4 border-2 p-3 rounded-xl h- border-gray-500 h-14 backdrop-blur-md">
+                    <span className="float-left">Username</span>
+                    <span className="float-right">{searchObj.acc.username}</span>
+                </div>
+
+                <div className="w-full mt-4 border-2 p-3 rounded-xl h- border-gray-500 h-14 backdrop-blur-md">
                     <span className="float-left">Last Active</span>
                     <span className="float-right">{new Date(searchObj.char.UpdatedDate).toDateString()}</span>
                 </div>
-
 
                 <div className="w-full mt-4 border-2 p-3 rounded-xl h- border-gray-500 h-14 backdrop-blur-md">
                     <span className="float-left">Is Injured</span>
@@ -129,20 +160,45 @@ const CharacterSearch = ({ staffAction, setStaffAction }: {
                     <span className="float-right">{searchObj.char.character_isbanned === 1 ? <span className="text-red-400">Banned</span> : <span className="text-green-400">Not Banned</span>}</span>
                 </div>
 
-                <div className="grid md:grid-cols-3 mt-10 md:space-x-4">
+                {staffAction === staffActions.banCharacter && <div className="mt-10 border-t-2 pt-8 border-gray-400/50">
+                    <form onSubmit={(e: any) => {
+                        e.preventDefault();
+                        banAccount();
+                    }}>
+                        <input value={banReason} onChange={(e: any) => setBanReason(e.target.value)} maxLength={200} className="p-2 w-[90%] rounded-xl border bg-transparent backdrop-blur-md border-gray-400/50" placeholder="Ban Reason"></input>
 
-                    <button onClick={() => setStaffAction(staffActions.viewLogs)} className="relative border-2 p-4 rounded-xl border-gray-400/50 duration-300 hover:scale-105 backdrop-blur-md">
-                        View Logs
+                        <p className="mt-4 text-sm text-gray-400">Enter a ban time (-1 for perm)</p>
+                        <input value={banTime} onChange={(e: any) => setBanTime(e.target.value)} className="mt-2 p-2 rounded-xl border bg-transparent backdrop-blur-md border-gray-400/50" type="number" placeholder="Ban Time (minutes)"></input>
+                    </form>
+                    <div className="grid md:grid-cols-2 grid-cols-1 mt-9 md:space-x-4 space-y-4 md:space-y-0">
+                        <button onClick={() => setStaffAction(staffActions.none)} className="border p-2 rounded-xl border-gray-400/50 backdrop-blur-lg duration-300 hover:scale-105">Back</button>
+                        <button onClick={banAccount} className="border p-2 rounded-xl border-gray-400/50 backdrop-blur-lg duration-300 hover:scale-105 hover:border-red-400/50">Confirm Ban</button>
+                    </div>
+                </div>}
+
+                {staffAction !== (staffActions.banCharacter || staffActions.adminJail) && <><div className="grid md:grid-cols-2 mt-5 md:space-x-4">
+                    <button onClick={() => setStaffAction(staffActions.banCharacter)} className="mt-6 border-2 p-4 rounded-xl border-gray-400/50 duration-300 hover:scale-105 backdrop-blur-md hover:border-red-400">
+                        Ban Account
                     </button>
 
-                    <button onClick={() => setStaffAction(staffActions.viewVehicles)} className="relative md:mt-0 mt-4 border-2 p-4 rounded-xl border-gray-400/50 duration-300 hover:scale-105 backdrop-blur-md">
-                        View Vehicles
-                    </button>
-
-                    <button onClick={() => setStaffAction(staffActions.viewDamageLogs)} className="relative md:mt-0 mt-4 border-2 p-4 rounded-xl border-gray-400/50 duration-300 hover:scale-105 backdrop-blur-md">
-                        Damage Logs
+                    <button onClick={() => setStaffAction(staffActions.adminJail)} className="mt-6 border-2 p-4 rounded-xl border-gray-400/50 duration-300 hover:scale-105 backdrop-blur-md hover:border-red-400">
+                        Admin Jail
                     </button>
                 </div>
+                    <div className="grid md:grid-cols-3 mt-5 md:space-x-4">
+
+                        <button onClick={() => setStaffAction(staffActions.viewLogs)} className="relative border-2 p-4 rounded-xl border-gray-400/50 duration-300 hover:scale-105 backdrop-blur-md">
+                            View Logs
+                        </button>
+
+                        <button onClick={() => setStaffAction(staffActions.viewVehicles)} className="relative md:mt-0 mt-4 border-2 p-4 rounded-xl border-gray-400/50 duration-300 hover:scale-105 backdrop-blur-md">
+                            View Vehicles
+                        </button>
+
+                        <button onClick={() => setStaffAction(staffActions.viewDamageLogs)} className="relative md:mt-0 mt-4 border-2 p-4 rounded-xl border-gray-400/50 duration-300 hover:scale-105 backdrop-blur-md">
+                            Damage Logs
+                        </button>
+                    </div></>}
 
                 {staffAction === staffActions.viewLogs && <div className="max-h-96 overflow-y-scroll mt-10">
                     {
@@ -196,7 +252,7 @@ const CharacterSearch = ({ staffAction, setStaffAction }: {
 
             </div>
             : loading ? <div className="mt-7"><LoadingSpinner /></div> : <p className="mt-4 font-medium text-lg">{error}</p>}
-    </div>
+    </div >
 }
 
 export default CharacterSearch;

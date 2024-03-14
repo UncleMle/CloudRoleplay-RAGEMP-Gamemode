@@ -1,6 +1,6 @@
 import LoadingSpinner from "@/components/utilComponents/LoadingSpinner";
 import { getFormattedDateString } from "@/lib/Helpers/Helpers";
-import { adminRanksColours, adminRanksList } from "@/sharedConstants";
+import { PunishmentTypes, adminRanksColours, adminRanksList, logTypes } from "@/sharedConstants";
 import { AdminPunishment, DbCharacter, ServerLog, User } from "@/types";
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -136,7 +136,7 @@ const AccountSearch = () => {
                             <span className="float-left">Username</span>
                             <span className="float-right">{searchData.account.username}</span>
                         </div>
-                        
+
                         <div className="w-full mt-4 border-2 p-3 rounded-xl h- border-gray-500 h-14 backdrop-blur-md">
                             <span className="float-left">Social Club</span>
                             <span className="float-right">{searchData.account.social_club_name}</span>
@@ -188,13 +188,49 @@ const AccountSearch = () => {
 
                         {
                             staffAction === StaffActions.viewingCharacters && <div>
-                                {JSON.stringify(searchData.characters)}
+                                <table className="w-full mt-10">
+                                    <tbody>
+                                        <tr className="border-b-4 border-gray-400/50">
+                                            <th className="pb-4">Name</th>
+                                            <th className="pb-4">Cash Amount</th>
+                                            <th className="pb-4">Money Amount</th>
+                                            <th className="pb-4">Health</th>
+                                        </tr>
+                                        {
+                                            searchData?.characters.map(char => (
+                                                <tr key={char.character_id} className="pb-4 border-b-2 border-gray-400/50">
+                                                    <th className="pt-4 pb-4">{char.character_name}</th>
+                                                    <th className="rounded-xl">${char.cash_amount.toLocaleString("en-US")}</th>
+                                                    <th className="rounded-xl">${char.money_amount.toLocaleString("en-uS")}</th>
+                                                    <th className="">{char.character_health}%</th>
+                                                </tr>
+                                            ))
+                                        }</tbody>
+                                </table>
                             </div>
                         }
 
                         {
                             staffAction === StaffActions.viewingPunishments && <div>
-                                {JSON.stringify(searchData.punishments)}
+                                <table className="w-full mt-10">
+                                    <tbody>
+                                        <tr className="border-b-4 border-gray-400/50">
+                                            <th className="pb-4">Punishment</th>
+                                            <th className="pb-4">Reason</th>
+                                            <th className="pb-4">Admin</th>
+                                            <th className="pb-4">Expires</th>
+                                        </tr>
+                                        {
+                                            searchData?.punishments.map((log, idx: number) => (
+                                                <tr key={idx} className="pb-4 border-b-2 border-gray-400/50">
+                                                    <th className="pt-4 pb-4">{PunishmentTypes[log.punishment_type]}</th>
+                                                    <th className="rounded-xl">{log.punishment_reason}</th>
+                                                    <th className="rounded-xl">{log.admin_name}</th>
+                                                    <th className="rounded-xl">{log.unix_expires === -1 ? <span className="text-red-400">Permanent</span> : <span className="text-green-400">Unbanned</span>}</th>
+                                                </tr>
+                                            ))
+                                        }</tbody>
+                                </table>
                             </div>
                         }
 
@@ -202,7 +238,7 @@ const AccountSearch = () => {
                 }
 
             </div>}
-        </div>
+        </div >
     )
 }
 

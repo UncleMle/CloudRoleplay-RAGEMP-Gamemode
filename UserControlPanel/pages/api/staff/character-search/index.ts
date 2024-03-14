@@ -3,7 +3,7 @@ import apiErrorHandle from "@/lib/ErrorHandling/ErrorHandles";
 import middleware from "@/lib/Middleware/Middleware";
 import DatabaseController from "@/lib/mysqlDbController";
 import { EndpointRequestTypes, HttpStatusCodes } from "@/utilClasses";
-import { DbCharacter } from "@/types";
+import { DbCharacter, User } from "@/types";
 import { NextApiRequest, NextApiResponse } from "next";
 import { selectCharProps } from "@/sharedConstants";
 
@@ -37,7 +37,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         findCharacter[0].character_id
     ]);
 
-    res.send({ char: findCharacter[0], logs: getLogs });
+    let account: User[] = await DatabaseController.selectQuery("SELECT account_id, username FROM accounts WHERE account_id = ?", [
+        findCharacter[0].owner_id
+    ]);
+
+    res.send({ char: findCharacter[0], logs: getLogs, acc: account[0] });
 }
 
 export default middleware(handler, false, true, EndpointRequestTypes.get);
