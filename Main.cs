@@ -61,11 +61,6 @@ namespace CloudRP
             {
                 Console.WriteLine($"Player {player.Id} changed dimension old {oldDim} new {newDim}");
             };
-
-            NAPI.Task.Run(async() =>
-            {
-                await Ban.sendBanWebhookMessageAsync($"Unclemole was banned by Unclemole");
-            }, 6000);
         }
 
         [ServerEvent(Event.ResourceStart)]

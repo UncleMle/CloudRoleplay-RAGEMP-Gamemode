@@ -237,45 +237,39 @@ namespace CloudRP.PlayerSystems.PlayerData
 
         public static Ban checkPlayerIsBanned(this Player player)
         {
-            Ban returnBanData = null;
-
-            try
+            using (DefaultDbContext dbContext = new DefaultDbContext())
             {
-                using (DefaultDbContext dbContext = new DefaultDbContext())
+                Ban returnBanData = dbContext.bans.Where(ban =>
+                        ban.client_serial == player.Serial ||
+                        ban.social_club_name == player.SocialClubName ||
+                        ban.social_club_id == player.SocialClubId ||
+                        ban.ip_address == player.Address)
+                    .FirstOrDefault();
+
+                Console.WriteLine("Ban data " + JsonConvert.SerializeObject(returnBanData));
+
+                if (returnBanData != null && returnBanData.lift_unix_time < CommandUtils.generateUnix() && returnBanData.lift_unix_time != -1)
                 {
-                    returnBanData = dbContext.bans.Where(ban =>
-                            ban.client_serial == player.Serial ||
-                            ban.social_club_name == player.SocialClubName ||
-                            ban.social_club_id == player.SocialClubId ||
-                            ban.ip_address == player.Address)
-                        .FirstOrDefault();
+                    Account findUserAccount = dbContext.accounts.Find(returnBanData.account_id);
 
-                    if (returnBanData != null && returnBanData.lift_unix_time < CommandUtils.generateUnix() && returnBanData.lift_unix_time != -1)
+                    if (findUserAccount != null)
                     {
-                        Account findUserAccount = dbContext.accounts.Find(returnBanData.account_id);
-
-                        if (findUserAccount != null)
-                        {
-                            findUserAccount.ban_status = 0;
-                            dbContext.accounts.Update(findUserAccount);
-                        }
-
-                        dbContext.bans.Remove(returnBanData);
-                        dbContext.SaveChanges();
-                        returnBanData = null;
+                        findUserAccount.ban_status = 0;
+                        dbContext.accounts.Update(findUserAccount);
                     }
+
+                    dbContext.bans.Remove(returnBanData);
+                    dbContext.SaveChanges();
+                    return null;
                 }
-            }
-            catch
-            {
-            }
 
-            if (returnBanData != null)
-            {
-                player.SetData(PlayersData._isBanned, true);
+                if (returnBanData != null)
+                {
+                    player.SetData(PlayersData._isBanned, true);
+                    return returnBanData;
+                }
+                else return null;
             }
-
-            return returnBanData;
         }
 
         public static bool isImmuneTo(this Player target, Player player)
