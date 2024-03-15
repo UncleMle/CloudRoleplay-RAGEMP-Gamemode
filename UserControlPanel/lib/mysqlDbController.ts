@@ -21,4 +21,8 @@ export default class DatabaseController {
 
         await pool.promise().execute(queryString, values);
     }
+
+    public static async deleteQuery(queryString: string, values: any[] = []) {
+        console.log(`[MYSQL] DELETE Query [${queryString}] was execute with values ${values}`);
+    }
 }

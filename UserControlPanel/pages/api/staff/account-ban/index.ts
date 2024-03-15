@@ -58,9 +58,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         reason, adminName, liftUnix, currentUnix
     ]);
 
+    await DatabaseController.deleteQuery("DELETE FROM bans WHERE account_id = ?", [
+        account.account_id
+    ]);
+
     let punishmentQuery = "INSERT INTO admin_punishments SET "
     punishmentQuery += "CreatedDate = ?, UpdatedDate = ?, owner_account_id = ?, punishment_type = ?, ";
-    punishmentQuery += "admin_name = ?, punishment_reason = ?, is_void = ?, unix_expires = ?";
+    punishmentQuery += "admin_name = ?, punishment_reason = ?, is_void = ?, unix_expires = ?, is_active = 1";
 
     await DatabaseController.insertQuery(punishmentQuery, [
         new Date(), new Date(), account.account_id, PunishmentType.AdminBan,

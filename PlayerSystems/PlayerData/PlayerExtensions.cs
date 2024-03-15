@@ -240,13 +240,11 @@ namespace CloudRP.PlayerSystems.PlayerData
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
                 Ban returnBanData = dbContext.bans.Where(ban =>
-                        ban.client_serial == player.Serial ||
+                        (ban.client_serial == player.Serial ||
                         ban.social_club_name == player.SocialClubName ||
                         ban.social_club_id == player.SocialClubId ||
-                        ban.ip_address == player.Address)
+                        ban.ip_address == player.Address) && ban.is_active)
                     .FirstOrDefault();
-
-                Console.WriteLine("Ban data " + JsonConvert.SerializeObject(returnBanData));
 
                 if (returnBanData != null && returnBanData.lift_unix_time < CommandUtils.generateUnix() && returnBanData.lift_unix_time != -1)
                 {
@@ -258,7 +256,8 @@ namespace CloudRP.PlayerSystems.PlayerData
                         dbContext.accounts.Update(findUserAccount);
                     }
 
-                    dbContext.bans.Remove(returnBanData);
+                    returnBanData.is_active = false;
+                    dbContext.bans.Update(returnBanData);
                     dbContext.SaveChanges();
                     return null;
                 }

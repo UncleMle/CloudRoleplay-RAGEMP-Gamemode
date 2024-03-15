@@ -31,6 +31,7 @@ namespace CloudRP.ServerSystems.Admin
         public long lift_unix_time { get; set; }
         [Required]
         public long issue_unix_date { get; set; }
+        public bool is_active { get; set; } = true;
 
         public static async Task sendBanWebhookMessageAsync(string message)
         {

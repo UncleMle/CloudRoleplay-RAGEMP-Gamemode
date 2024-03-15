@@ -48,8 +48,6 @@ export default class GuiSystem {
 			status: ${toggle}
 		})`);
 
-		mp.console.logInfo("Gui toggle " + toggle);
-
 		if (notif) {
 			NotificationSystem.createNotification(`You turned your HUD ${toggle ? "on" : "off"}`);
 		}
