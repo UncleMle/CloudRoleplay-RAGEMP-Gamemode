@@ -58,7 +58,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         reason, adminName, liftUnix, currentUnix
     ]);
 
-    await DatabaseController.deleteQuery("DELETE FROM bans WHERE account_id = ?", [
+    await DatabaseController.deleteQuery("UPDATE bans SET is_active = 0 WHERE account_id = ?", [
         account.account_id
     ]);
 
