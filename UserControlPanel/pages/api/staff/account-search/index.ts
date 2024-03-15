@@ -35,7 +35,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         return;
     }
 
-    let getAdminLogs: ServerLog[] = await DatabaseController.selectQuery("SELECT * FROM server_logs WHERE account_id = ?", [
+    let getAdminLogs: ServerLog[] = await DatabaseController.selectQuery("SELECT * FROM server_logs WHERE account_id = ? ORDER BY CreatedDate DESC", [
         findAccount[0].account_id
     ]);
 

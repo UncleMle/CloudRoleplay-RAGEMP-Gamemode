@@ -218,7 +218,7 @@ const AccountSearch = () => {
                                             <th className="pb-4">Punishment</th>
                                             <th className="pb-4">Reason</th>
                                             <th className="pb-4">Admin</th>
-                                            <th className="pb-4">Expires</th>
+                                            <th className="pb-4">Has expired</th>
                                         </tr>
                                         {
                                             searchData?.punishments.map((log, idx: number) => (

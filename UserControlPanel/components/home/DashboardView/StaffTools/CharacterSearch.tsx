@@ -15,12 +15,17 @@ const CharacterSearch = ({ staffAction, setStaffAction }: {
     staffAction: staffActions | undefined, setStaffAction: Dispatch<SetStateAction<staffActions | undefined>>
 }) => {
     const [error, setError] = useState<string>("");
-    const [banReason, setBanReason] = useState<string>("");
-    const [banTime, setBanTime] = useState<number>(0);
     const [cookies, setCookies] = useCookies();
     const [searched, setSearched] = useState<string>("");
     const [loading, setLoading] = useState<boolean>();
     const [searchObj, setSearchObj] = useState<any>();
+
+    const [banReason, setBanReason] = useState<string>("");
+    const [banTime, setBanTime] = useState<number>(0);
+
+    const [adminJailReason, setAdminJailReason] = useState<string>("");
+    const [ajailTime, setAjailTime] = useState<number>(0);
+
     const seachParams = useSearchParams();
     const searchParamKey: string = "search";
     const router = useRouter();
@@ -84,6 +89,27 @@ const CharacterSearch = ({ staffAction, setStaffAction }: {
             toast.error(`There was an error attempting to ban this player.`, { theme: "dark" });
         }
     };
+
+    const adminJail = async () => {
+        try {
+            const options = {
+                method: "GET",
+                headers: {
+                    "content-type": "application/json",
+                    "x-auth-token": cookies['user-jwt-token'],
+                    "x-ajail-accid": searchObj.acc.account_id,
+                    "x-ajail-time": ajailTime,
+                    "x-ajail-reason": adminJailReason
+                },
+            };
+
+            await axios.get("/api/staff/account-ajail", options);
+            toast.success(`You have admin jailed ${searchObj.acc.username} with reason ${banReason} minutes: ${ajailTime}`, { theme: "dark" });
+            setStaffAction(staffActions.none);
+        } catch {
+            toast.error("There was an error attempting to admin jail this player.");
+        }
+    }
 
     return <div>
 
@@ -179,7 +205,23 @@ const CharacterSearch = ({ staffAction, setStaffAction }: {
                     </div>
                 </div>}
 
-                {staffAction !== (staffActions.banCharacter || staffActions.adminJail) && <><div className="grid md:grid-cols-2 mt-5 md:space-x-4">
+                {staffAction === staffActions.adminJail && <div className="mt-10 border-t-2 pt-8 border-gray-400/50">
+                    <form onSubmit={(e: any) => {
+                        e.preventDefault();
+                        adminJail();
+                    }}>
+                        <input value={adminJailReason} onChange={(e: any) => setAdminJailReason(e.target.value)} maxLength={200} className="p-2 w-[90%] rounded-xl border bg-transparent backdrop-blur-md border-gray-400/50" placeholder="Admin Jail Reason"></input>
+
+                        <p className="mt-4 text-sm text-gray-400">Enter an admin jail time (minutes)</p>
+                        <input value={ajailTime} onChange={(e: any) => setAjailTime(Math.abs(e.target.value))} className="mt-2 p-2 rounded-xl border bg-transparent backdrop-blur-md border-gray-400/50" type="number" placeholder="Admin Jail Time (minutes)"></input>
+                    </form>
+                    <div className="grid md:grid-cols-2 grid-cols-1 mt-9 md:space-x-4 space-y-4 md:space-y-0">
+                        <button onClick={() => setStaffAction(staffActions.none)} className="border p-2 rounded-xl border-gray-400/50 backdrop-blur-lg duration-300 hover:scale-105">Back</button>
+                        <button onClick={adminJail} className="border p-2 rounded-xl border-gray-400/50 backdrop-blur-lg duration-300 hover:scale-105 hover:border-red-400/50">Confirm Admin Jail</button>
+                    </div>
+                </div>}
+
+                {staffAction !== staffActions.banCharacter && staffAction !== staffActions.adminJail && <><div className="grid md:grid-cols-2 mt-5 md:space-x-4">
                     <button onClick={() => setStaffAction(staffActions.banCharacter)} className="mt-6 border-2 p-4 rounded-xl border-gray-400/50 duration-300 hover:scale-105 backdrop-blur-md hover:border-red-400">
                         Ban Account
                     </button>
