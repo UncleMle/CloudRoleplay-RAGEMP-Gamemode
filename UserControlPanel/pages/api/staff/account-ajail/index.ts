@@ -48,7 +48,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     ]);
 
     await DatabaseController.updateQuery("UPDATE accounts SET admin_jail_time = ?, admin_jail_reason = ? WHERE account_id = ? LIMIT 1", [
-        minutes, reason, account.account_id
+        minutes * 60, reason, account.account_id
     ]);
 
     res.status(200).send({
