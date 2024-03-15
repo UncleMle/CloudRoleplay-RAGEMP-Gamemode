@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CloudRP.ServerSystems.Admin
 {
@@ -30,5 +32,33 @@ namespace CloudRP.ServerSystems.Admin
         [Required]
         public long issue_unix_date { get; set; }
 
+        public static async Task sendBanWebhookMessageAsync(string message)
+        {
+            string webhookUrl = Main._banWebhook;
+
+            string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(new
+            {
+                content = message,
+                username = "Cloud RP | Bans",
+                avatar_url = "https://i.imgur.com/PAeaKFH.png"
+            });
+
+            using (var httpClient = new HttpClient())
+            {
+                try
+                {
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, webhookUrl)
+                    {
+                        Content = new StringContent(jsonPayload, Encoding.UTF8, "application/json")
+                    };
+
+                    HttpResponseMessage response = await httpClient.SendAsync(request);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred whilst sending a ban webhook message: {ex.Message}");
+                }
+            }
+        }
     }
 }

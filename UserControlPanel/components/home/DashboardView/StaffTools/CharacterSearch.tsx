@@ -8,6 +8,8 @@ import { DbVehicle, ServerLog } from "@/types";
 import LoadingSpinner from "@/components/utilComponents/LoadingSpinner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getFormattedDateString } from "@/lib/Helpers/Helpers";
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const CharacterSearch = ({ staffAction, setStaffAction }: {
     staffAction: staffActions | undefined, setStaffAction: Dispatch<SetStateAction<staffActions | undefined>>
@@ -62,8 +64,6 @@ const CharacterSearch = ({ staffAction, setStaffAction }: {
     };
 
     const banAccount = async () => {
-        console.log("acc id " + searchObj.acc.account_id);
-
         try {
             const options = {
                 method: "GET",
@@ -76,9 +76,12 @@ const CharacterSearch = ({ staffAction, setStaffAction }: {
                 },
             };
 
-            let banCharacter = await axios.get("/api/staff/account-ban", options);
-        } catch {
+            await axios.get("/api/staff/account-ban", options);
 
+            toast.success(`You have banned ${searchObj.acc.username} with reason ${banReason}`, { theme: "dark" });
+            setStaffAction(staffActions.none);
+        } catch {
+            toast.error(`There was an error attempting to ban this player.`, { theme: "dark" });
         }
     };
 
@@ -167,7 +170,7 @@ const CharacterSearch = ({ staffAction, setStaffAction }: {
                     }}>
                         <input value={banReason} onChange={(e: any) => setBanReason(e.target.value)} maxLength={200} className="p-2 w-[90%] rounded-xl border bg-transparent backdrop-blur-md border-gray-400/50" placeholder="Ban Reason"></input>
 
-                        <p className="mt-4 text-sm text-gray-400">Enter a ban time (-1 for perm)</p>
+                        <p className="mt-4 text-sm text-gray-400">Enter a ban (minutes) time (-1 for perm)</p>
                         <input value={banTime} onChange={(e: any) => setBanTime(e.target.value)} className="mt-2 p-2 rounded-xl border bg-transparent backdrop-blur-md border-gray-400/50" type="number" placeholder="Ban Time (minutes)"></input>
                     </form>
                     <div className="grid md:grid-cols-2 grid-cols-1 mt-9 md:space-x-4 space-y-4 md:space-y-0">

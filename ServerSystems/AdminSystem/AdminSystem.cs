@@ -1233,7 +1233,7 @@ namespace CloudRP.ServerSystems.Admin
 
         [AdminCommand(AdminRanks.Admin_Moderator)]
         [Command("ban", "~r~/ban [playerIdOrName] [length minutes(-1 for permanent ban)] [reason]", GreedyArg = true)]
-        public static void banPlayer(Player player, string playerNameOrId, int time, string reason)
+        public static async void banPlayer(Player player, string playerNameOrId, int time, string reason)
         {
             User userData = player.getPlayerAccountData();
 
@@ -1259,7 +1259,6 @@ namespace CloudRP.ServerSystems.Admin
             User banPlayerUserData = banPlayer.getPlayerAccountData();
             DbCharacter characterData = banPlayer.getPlayerCharacterData();
 
-
             if (banPlayer.isImmuneTo(player)) return;
 
             if (time < -1 || time == 0)
@@ -1277,6 +1276,7 @@ namespace CloudRP.ServerSystems.Admin
 
             ChatUtils.formatConsolePrint($"{userData.admin_name} banned {characterData.character_name} with reason {reason} ban {endOfBanString}");
             CommandUtils.sendToAllPlayers($"{AdminUtils.staffPrefix}{playerAdminRank} {userData.admin_name} banned {characterData.character_name} with reason {reason} ban {endOfBanString}");
+            await Ban.sendBanWebhookMessageAsync($"{userData.admin_name} banned {characterData.character_name} with reason ``{reason}`` ban {endOfBanString}.");
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]

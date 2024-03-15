@@ -36,6 +36,14 @@ export const PunishmentTypes: string[] = [
     "Back To Quiz"
 ]
 
+export enum PunishmentType {
+    AdminJail,
+    AdminBan,
+    AdminWarn,
+    AdminKick,
+    AdminSetBackToQuiz
+}
+
 export const userPropertiesDb: string[] = [
     "account_id",
     "username",

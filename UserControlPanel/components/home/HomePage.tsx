@@ -8,6 +8,7 @@ import useSWR from "swr";
 import HomeSideBar from "./Sidebar/HomeSideBar";
 import LoadingSpinner from "../utilComponents/LoadingSpinner";
 import { ServerDashboardData } from "@/types";
+import { ToastContainer } from "react-toastify";
 
 const HomePage = () => {
     const { data, error, isLoading } = useHome();
@@ -34,6 +35,7 @@ const HomePage = () => {
             {!data && <div className="absolute top-60 left-1/2">
                 <LoadingSpinner />
             </div>}
+            <ToastContainer />
 
             {data && <HomeSideBar data={data} />}
         </div>

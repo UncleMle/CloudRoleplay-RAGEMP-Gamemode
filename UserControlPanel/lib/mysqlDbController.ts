@@ -16,4 +16,9 @@ export default class DatabaseController {
         await pool.promise().execute(queryString, values);
     }
 
+    public static async insertQuery(queryString: string, values: any[] = []) {
+        console.log(`[MYSQL] INSERT Query [${queryString}] was executed with values ${values}`);
+
+        await pool.promise().execute(queryString, values);
+    }
 }

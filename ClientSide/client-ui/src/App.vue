@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <ChatBox class="absolute" ref="chatsys" />
-        
+
         <Transition name="fade" v-if="uiStates.guiEnabled">
             <div ref="guisystems" v-if="uiStates.guiEnabled">
                 <VehicleSpeedo />
@@ -66,7 +66,10 @@ export default {
 @tailwind utilities;
 
 .crp {
-    background: rgba(0, 0, 0, 0.6)
+    background-image: linear-gradient(to right, rgb(90, 90, 90) , rgb(141, 141, 141));
+    border-width: 5px 0px 0px 0px;
+    border-style: solid;
+    border-color: rgba(227, 125, 255, 0.369);
 }
 
 .crperror {

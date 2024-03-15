@@ -45,6 +45,7 @@ namespace CloudRP
         public static string _discordReportChannel = "";
         public static string _discordGuild = "";
         public static string _discordReportCat = "";
+        public static string _banWebhook = "";
         
 
         public static string defaultErrorMessage = ChatUtils.error + " specified command could not be found. Use /help to view available commands.";
@@ -60,6 +61,11 @@ namespace CloudRP
             {
                 Console.WriteLine($"Player {player.Id} changed dimension old {oldDim} new {newDim}");
             };
+
+            NAPI.Task.Run(async() =>
+            {
+                await Ban.sendBanWebhookMessageAsync($"Unclemole was banned by Unclemole");
+            }, 6000);
         }
 
         [ServerEvent(Event.ResourceStart)]
@@ -83,7 +89,7 @@ namespace CloudRP
             _discordReportChannel = NAPI.Resource.GetSetting<string>(this, "discordreportalertchannel");
             _discordGuild = NAPI.Resource.GetSetting<string>(this, "discordguildid");
             _discordReportCat = NAPI.Resource.GetSetting<string>(this, "discordreportcat");
-
+            _banWebhook = NAPI.Resource.GetSetting<string>(this, "banwebhookaddress");
 
             _weatherApiKey = NAPI.Resource.GetSetting<string>(this, "weatherapikey");
             _vpnApiKey = NAPI.Resource.GetSetting<string>(this, "vpnapikey");

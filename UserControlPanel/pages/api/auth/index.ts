@@ -37,7 +37,7 @@ const handler: (req: NextApiRequest, res: NextApiResponse) => Promise<void> = as
   let targetIp: string | null = requestIp.getClientIp(req);
 
   const token = jwt.sign(
-    { id: account.account_id, adminLevel: account.admin_status, ip: targetIp },
+    { id: account.account_id, adminLevel: account.admin_status, ip: targetIp, adminName: account.admin_name },
     "jwtPrivateKey",
     {
       expiresIn: "1h",

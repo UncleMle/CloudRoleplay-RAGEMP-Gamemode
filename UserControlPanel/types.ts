@@ -183,4 +183,6 @@ export interface User {
     CreatedDate: string;
     social_club_name: string;
     user_ip: string;
+    client_serial: string;
+    social_club_id: number;
 }

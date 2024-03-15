@@ -7,31 +7,29 @@
 import Vue from "vue";
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
-
 Vue.use(Toast, {
   transition: "Vue-Toastification__bounce",
-  maxToasts: 4,
-  newestOnTop: true
+  maxToasts: 5,
+  newestOnTop: true,
 });
 
 export default {
   methods: {
     showNotification(text, progbar, dragbl, timeout, iconpic) {
+      text = text.replace(/~r~/g, "<font color=red>");
+      text = text.replace(/~g~/g, "<font color=green>");
+      text = text.replace(/~b~/g, "<font color=blue>");
+      text = text.replace(/~w~/g, "<font color=white>");
+      text = text.replace(/~y~/g, "<font color=yellow>");
+      text = text.replace(/~n~/g, "</br>");
       this.$toast(text, {
         toastClassName: ["crp"],
-        position: "top-right",
+        position: "top-center",
         timeout: timeout,
-        closeOnClick: progbar,
-        pauseOnFocusLoss: true,
-        pauseOnHover: true,
-        draggable: dragbl,
-        draggablePercent: 0.6,
-        showCloseButtonOnHover: false,
-        hideProgressBar: progbar,
-        closeButton: "button",
         icon: iconpic,
-        rtl: false,
+        content: text
       });
+
 
       window.mp.trigger("browser:playerFrontendSound", "5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET");
     },
@@ -64,7 +62,7 @@ export default {
   width: 100%;
   height: 5px;
   z-index: 10000;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-image: linear-gradient(to right, rgb(33, 33, 33), rgb(75, 75, 75));
   transform-origin: left;
   animation: scale-x-frames linear 1 forwards;
 }

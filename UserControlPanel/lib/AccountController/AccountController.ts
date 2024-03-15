@@ -8,7 +8,8 @@ import axios from "axios";
 export interface TokenData {
     id: number,
     ip: string,
-    adminLevel: number
+    adminLevel: number,
+    adminName: string
 };
 
 export default class AccountsController {
@@ -71,6 +72,25 @@ export default class AccountsController {
         }
 
         return decoded ? decoded as TokenData : null;
+    }
+
+    public static async postToBanHook(message: string) {
+        const webhookUrl: string | undefined = process.env.DISCORD_BANS_WEBHOOK;
+
+        if (!webhookUrl) {
+            console.log("Discord webhook URL not found. Couldn't post ban message");
+            return;
+        }
+
+        try {
+            await axios.post(webhookUrl, {
+                content: message,
+                username: "Cloud RP | Bans",
+                avatar_url: 'https://i.imgur.com/PAeaKFH.png'
+            });
+        } catch (error) {
+            console.log("There was an error whilst sending a discord webhook ban message");
+        }
     }
 
     public static generateOtp(length: number = 5): string {
