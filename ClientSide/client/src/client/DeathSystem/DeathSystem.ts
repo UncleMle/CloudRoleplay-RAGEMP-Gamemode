@@ -141,6 +141,8 @@ export default class DeathSystem {
             await mp.game.waitAsync(100);
         }
 
+        if(player.vehicle) return;
+
         mp.game.streaming.requestAnimDict(DeathSystem.injuredAnim);
 
         await mp.game.waitAsync(50);

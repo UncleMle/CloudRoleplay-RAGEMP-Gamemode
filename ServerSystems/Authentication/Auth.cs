@@ -99,8 +99,14 @@ namespace CloudRP.ServerSystems.Authentication
                 {
                     long differenceMinutes = (CommandUtils.generateUnix() - autoLogin.createdAt) / 60;
 
-                    if (differenceMinutes > autoLoginValid_seconds / 60) uiHandling.sendPushNotifError(player, $"Your autologin for account {autoLogin.targetUsername} has expired {differenceMinutes.ToString("N0")} minutes ago.", 5500);
-                    else findAccount = dbContext.accounts
+                    if (differenceMinutes > autoLoginValid_seconds / 60)
+                    {
+                        uiHandling.sendPushNotifError(player, $"Your autologin for account {autoLogin.targetUsername} has expired {differenceMinutes.ToString("N0")} minutes ago (Auto Login Data reset).", 5500);
+                        player.ResetData(autoLoginDataKey);
+                        return;
+                    }
+                    
+                    findAccount = dbContext.accounts
                             .Where(user => user.account_id == autoLogin.targetAccountId &&
                              user.ban_status == 0)
                             .FirstOrDefault();

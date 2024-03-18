@@ -3,8 +3,6 @@ import { _control_ids } from "@/Constants/Constants";
 import distBetweenCoords from "@/PlayerMethods/distanceBetweenCoords";
 import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
 import weaponDamageValues from './WeaponDamageData';
-import VehicleManager from "@/VehicleSystems/VehicleManager";
-import getVehicleData from "@/PlayerMethods/getVehicleData";
 
 export default class NewAntiCheatSystem {
     private static LocalPlayer: PlayerMp = mp.players.local;

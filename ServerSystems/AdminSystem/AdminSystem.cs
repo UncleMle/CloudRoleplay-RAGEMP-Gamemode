@@ -1389,7 +1389,6 @@ namespace CloudRP.ServerSystems.Admin
             }
 
             findVeh = VehicleSystem.vehicleIdOrPlate(idOrPlate);
-            findVeh.Dimension = player.Dimension;
 
             if(findVeh == null)
             {
@@ -1404,6 +1403,7 @@ namespace CloudRP.ServerSystems.Admin
             }
 
             player.Position = findVeh.Position;
+            findVeh.Dimension = player.Dimension;
 
             NAPI.Task.Run(() =>
             {

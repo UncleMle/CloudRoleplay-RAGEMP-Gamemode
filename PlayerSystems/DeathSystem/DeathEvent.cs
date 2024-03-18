@@ -6,6 +6,7 @@ using CloudRP.ServerSystems.AntiCheat;
 using CloudRP.ServerSystems.Authentication;
 using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
+using CloudRP.VehicleSystems.Vehicles;
 using CloudRP.WorldSystems.RaycastInteractions;
 using GTANetworkAPI;
 using Newtonsoft.Json;
@@ -183,8 +184,26 @@ namespace CloudRP.PlayerSystems.DeathSystem
 
         public static void updateAndSetInjuredState(Player player, DbCharacter characterData, int time = _deathTimer_seconds)
         {
+            Vehicle playerVeh = null;
+            int playerVehSeat = 0;
+
+            if(player.IsInVehicle)
+            {
+                playerVeh = player.Vehicle;
+                playerVehSeat = player.VehicleSeat;
+            }
+
             player.sleepClientAc();
             NAPI.Player.SpawnPlayer(player, player.Position);
+
+            if (playerVeh != null && player.GetData<bool>(VehicleSystem._seatBeltIdentifier))
+            {
+                NAPI.Task.Run(() =>
+                {
+                    if (!playerVeh.Exists) return;
+                    player.SetIntoVehicle(playerVeh, playerVehSeat);
+                }, 500);
+            }
 
             characterData.injured_timer = time;
             characterData.character_health = 100;
