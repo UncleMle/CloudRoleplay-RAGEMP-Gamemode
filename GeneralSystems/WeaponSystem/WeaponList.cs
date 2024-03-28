@@ -18,6 +18,14 @@ namespace CloudRP.GeneralSystems.WeaponSystem
                 }
             },
             {
+                WeaponHash.Carbinerifle, new WeaponsData
+                {
+                    maxAmmo = 20,
+                    weaponClass = WeaponClasses.primary,
+                    weaponName = "Carbine Rifle"
+                }
+            },
+            {
                 WeaponHash.Pistol, new WeaponsData
                 {
                     maxAmmo = 20,
@@ -31,6 +39,14 @@ namespace CloudRP.GeneralSystems.WeaponSystem
                     maxAmmo = 20,
                     weaponClass = WeaponClasses.primary,
                     weaponName = "Combat PDW"
+                }
+            },
+            {
+                WeaponHash.Bat, new WeaponsData
+                {
+                    maxAmmo = 20,
+                    weaponClass = WeaponClasses.melee,
+                    weaponName = "Bat"
                 }
             },
             {
@@ -79,6 +95,14 @@ namespace CloudRP.GeneralSystems.WeaponSystem
                     maxAmmo = 20,
                     weaponClass = WeaponClasses.melee,
                     weaponName = "Molotov"
+                }
+            },
+            {
+                WeaponHash.Pistol_mk2, new WeaponsData
+                {
+                    maxAmmo = 20,
+                    weaponClass = WeaponClasses.secondary,
+                    weaponName = "Pistol MK II"
                 }
             }
         };

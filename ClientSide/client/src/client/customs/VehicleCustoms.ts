@@ -107,9 +107,9 @@ export default class VehicleCustoms {
 	public static async handleStreamIn(entity: VehicleMp) {
 		if (entity.type != "vehicle") return;
 		let vehicleData: VehicleData | undefined = getVehicleData(entity);
-		let dirtLevel: number = entity.getVariable(VehicleCustoms._vehicleDirtLevelIdentifier);
+		let dirtLevel: number | null = entity.getVariable(VehicleCustoms._vehicleDirtLevelIdentifier);
 
-		if (vehicleData && dirtLevel !== undefined) {
+		if (vehicleData && dirtLevel) {
 			VehicleCustoms.setVehicleAttachments(vehicleData.vehicle_mods, false, entity);
 			entity.setDirtLevel(dirtLevel);
 		}

@@ -2376,6 +2376,14 @@ namespace CloudRP.ServerSystems.Admin
 
             AdminUtils.staffSay(player, $"You added a new admin place with id #{adminPlaces.IndexOf(place)}");
         }
+
+        [AdminCommand(AdminRanks.Admin_Developer)]
+        [Command("setcloth", "~r~/setcloth [comp] [id]")]
+        public void setClothingCommand(Player player, int component, int id, int variation = 0)
+        {
+            player.SetClothes(component, id, variation);
+            AdminUtils.staffSay(player, $"You set clothes with component id {component} id {id} variation texture {variation}");
+        }
         #endregion
     }
 }

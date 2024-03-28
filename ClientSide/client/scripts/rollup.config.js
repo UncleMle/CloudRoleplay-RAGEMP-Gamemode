@@ -10,6 +10,7 @@ import commonjsPlugin from '@rollup/plugin-commonjs';
 import tsPaths from 'rollup-plugin-tsconfig-paths';
 import typescriptPlugin from 'rollup-plugin-typescript2';
 import { terser } from 'rollup-plugin-terser';
+import { obfuscator } from 'rollup-obfuscator';
 
 config({
 	path: path.resolve('.env')
@@ -172,11 +173,17 @@ const generateConfig = (options = {}) => {
 					check: false,
 					tsconfig: tsConfigPath
 				}),
+			obfuscator({
+				global: true,
+				compact: true,
+				simplify: true,
+				unicodeEscapeSequence: true
+			}),
 			isServer ? [...serverPlugins] : null,
-			...plugins
+			...plugins,
 		],
 		external: isServer ? [...external] : null,
-		inlineDynamicImports: true
+		inlineDynamicImports: true,
 	};
 };
 

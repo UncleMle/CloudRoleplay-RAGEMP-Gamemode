@@ -4,7 +4,7 @@
 	"scripts": {
 		"format": "prettier --write {src,scripts}/**/*.ts",
 		"build:production": "rollup -c ./scripts/rollup.config.js --environment NODE_ENV:production",
-		"build": "rollup -c ./scripts/rollup.config.js && npx javascript-obfuscator dist/client_packages/index.js && npx rimraf dist/client_packages/index.js",
+		"build": "rollup -c ./scripts/rollup.config.js",
 		"watch": "rollup -w -c ./scripts/rollup.config.js"
 	},
 	"license": "MIT",
@@ -21,6 +21,7 @@
 		"javascript-obfuscator": "^4.1.0",
 		"prettier": "^2.5.0",
 		"rollup": "^2.60.1",
+		"rollup-obfuscator": "^4.1.1",
 		"rollup-plugin-swc3": "^0.1.4",
 		"rollup-plugin-terser": "^7.0.2",
 		"rollup-plugin-tsconfig-paths": "^1.0.15",

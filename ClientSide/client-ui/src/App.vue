@@ -66,7 +66,7 @@ export default {
 @tailwind utilities;
 
 .crp {
-    background-image: linear-gradient(to right, rgb(90, 90, 90) , rgb(141, 141, 141));
+    background-color: rgba(0, 0, 0, 0.641);
     border-width: 5px 0px 0px 0px;
     border-style: solid;
     border-color: rgba(227, 125, 255, 0.369);
