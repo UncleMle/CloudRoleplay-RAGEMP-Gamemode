@@ -41,6 +41,9 @@ namespace CloudRP.PlayerSystems.Character
         public int faction_duty_uniform { get; set; } = -1;
         public int freelance_job_uniform { get; set; } = -1;
         public long last_spun_luckywheel { get; set; }
+        public long total_kills { get; set; }
+        public long total_deaths { get; set; }
+        public long total_times_jailed { get; set; }
 
         [NotMapped]
         public bool voiceChatState { get; set; } = true;

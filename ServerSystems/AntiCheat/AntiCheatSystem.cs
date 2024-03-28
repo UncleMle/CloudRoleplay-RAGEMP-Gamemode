@@ -82,7 +82,7 @@ namespace CloudRP.ServerSystems.AntiCheat
 
             Main.resourceStart += () => ChatUtils.startupPrint($"Loaded a total of {Enum.GetNames(typeof(AcEvents)).Length} Anti cheat events.");
 
-            DimensionChangeEvent.onDimensionChange += (player, oldDim, newDim) =>
+            DimensionChangeEvent.onDimensionChange += async (player, oldDim, newDim) =>
             {
                 if (!NAPI.Player.IsPlayerConnected(player)) return;
 

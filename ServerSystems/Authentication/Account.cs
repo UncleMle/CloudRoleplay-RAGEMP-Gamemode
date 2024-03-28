@@ -1,7 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using CloudRP.ServerSystems.Database;
+using Microsoft.EntityFrameworkCore.Diagnostics.Internal;
+using Newtonsoft.Json;
 
 namespace CloudRP.ServerSystems.Authentication
 {
@@ -41,6 +44,8 @@ namespace CloudRP.ServerSystems.Authentication
         public long quiz_fail_unix { get; set; }
         public string ucp_otp { get; set; }
         public string ucp_image_url { get; set; }
+        public long vip_credits_amount { get; set; }
+        public long admin_reports_completed { get; set; }
 
         [NotMapped]
         public bool adminDuty { get; set; }
@@ -52,5 +57,22 @@ namespace CloudRP.ServerSystems.Authentication
         public bool isOnCharacterCreation { get; set; }
         [NotMapped]
         public bool showAdminPed { get; set; }
+
+        public static User getById(int id)
+        {
+            User findAccount = null;
+
+            using(DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                Account find = dbContext.accounts.Where(ac => ac.account_id == id).FirstOrDefault();
+            
+                if(find != null)
+                {
+                    findAccount = JsonConvert.DeserializeObject<User>(JsonConvert.SerializeObject(find));
+                }
+            }
+
+            return findAccount;
+        }
     }
 }

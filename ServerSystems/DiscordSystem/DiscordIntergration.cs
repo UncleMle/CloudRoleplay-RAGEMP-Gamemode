@@ -75,7 +75,7 @@ namespace CloudRP.ServerSystems.DiscordSystem
                         {
                             IUserMessage mesg = await reactData.DownloadAsync();
 
-                            Report validReport = AdminSystem.activeReports.Where(rep => rep.discordRefId == mesg.Id).FirstOrDefault();
+                            Report validReport = Admin.AdminSystem.activeReports.Where(rep => rep.discordRefId == mesg.Id).FirstOrDefault();
 
                             if (validReport != null)
                             {
@@ -107,7 +107,7 @@ namespace CloudRP.ServerSystems.DiscordSystem
                     {
                         if (message.Author.IsBot) return;
 
-                        Report findValidRep = AdminSystem.activeReports.Where(rep => rep.discordChannelId == message.Channel.Id).FirstOrDefault();
+                        Report findValidRep = Admin.AdminSystem.activeReports.Where(rep => rep.discordChannelId == message.Channel.Id).FirstOrDefault();
 
                         if (findValidRep != null)
                         {
@@ -174,7 +174,7 @@ namespace CloudRP.ServerSystems.DiscordSystem
                 {
                     SocketGuild guild = discord.GetGuild(DiscordSystems.guildId);
 
-                    RestTextChannel newChannel = await guild.CreateTextChannelAsync($"Report {AdminSystem.activeReports.IndexOf(report)}", tcp => tcp.CategoryId = DiscordSystems.reportCategory);
+                    RestTextChannel newChannel = await guild.CreateTextChannelAsync($"Report {Admin.AdminSystem.activeReports.IndexOf(report)}", tcp => tcp.CategoryId = DiscordSystems.reportCategory);
                     report.discordChannelId = newChannel.Id;
                     await newChannel.AddPermissionOverwriteAsync(guild.EveryoneRole, OverwritePermissions.DenyAll(newChannel));
                 }

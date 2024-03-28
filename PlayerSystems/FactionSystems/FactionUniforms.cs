@@ -18,7 +18,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
                 {
                     torso = 11,
                     top = 186,
-                    leg = 35,
+                    leg = 108,
                     shoes = 25,
                     undershirt = 99,
                     armor = 9
@@ -31,8 +31,12 @@ namespace CloudRP.PlayerSystems.FactionSystems
                 faction = Factions.LSPD,
                 uniform = new CharacterClothing
                 {
-                    top = 8,
-                    undershirt = 15,
+                    torso = 86,
+                    top = 165,
+                    leg = 108,
+                    shoes = 25,
+                    undershirt = 99,
+                    armor = 9
                 }
             },
             new FactionUniform

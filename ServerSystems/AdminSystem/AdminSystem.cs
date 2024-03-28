@@ -414,14 +414,18 @@ namespace CloudRP.ServerSystems.Admin
                 CommandUtils.errorSay(player, "You must a be an admin handling this report to close it.");
                 return;
             }
-
             uiHandling.resetRouter(player);
 
             await DiscordSystems.closeAReport(findReport, true);
 
             activeReports.Remove(findReport);
-            NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.Success + "You closed report with id " + reportId);
-            NAPI.Chat.SendChatMessageToPlayer(findReport.playerReporting, ChatUtils.reports + $"Your report was closed");
+            
+            player.SendChatMessage(ChatUtils.Success + "You closed report with id " + reportId);
+            if (NAPI.Player.IsPlayerConnected(findReport.playerReporting))
+                findReport.playerReporting.SendChatMessage(ChatUtils.reports + $"Your report was closed");
+
+            userData.admin_reports_completed++;
+            player.setPlayerAccountData(userData,false, true);
         }
 
         [Command("rr", "~r~Use: ~w~/rr [message]", GreedyArg = true, Alias = "reportrespond")]
@@ -1276,7 +1280,6 @@ namespace CloudRP.ServerSystems.Admin
 
             ChatUtils.formatConsolePrint($"{userData.admin_name} banned {characterData.character_name} with reason {reason} ban {endOfBanString}");
             CommandUtils.sendToAllPlayers($"{AdminUtils.staffPrefix}{playerAdminRank} {userData.admin_name} banned {characterData.character_name} with reason {reason} ban {endOfBanString}");
-            await Ban.sendBanWebhookMessageAsync($"{userData.admin_name} banned {characterData.character_name} with reason ``{reason}`` ban {endOfBanString}.");
         }
 
         [AdminCommand(AdminRanks.Admin_Moderator)]

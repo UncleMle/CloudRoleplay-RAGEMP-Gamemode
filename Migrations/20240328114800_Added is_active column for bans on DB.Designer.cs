@@ -3,14 +3,16 @@ using System;
 using CloudRP.ServerSystems.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CloudRP.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240328114800_Added is_active column for bans on DB")]
+    partial class Addedis_activecolumnforbansonDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -473,15 +475,6 @@ namespace CloudRP.Migrations
                     b.Property<long>("salary_amount")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("total_deaths")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("total_kills")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("total_times_jailed")
-                        .HasColumnType("bigint");
-
                     b.HasKey("character_id");
 
                     b.ToTable("characters");
@@ -781,9 +774,6 @@ namespace CloudRP.Migrations
                     b.Property<string>("admin_ped")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<long>("admin_reports_completed")
-                        .HasColumnType("bigint");
-
                     b.Property<int>("admin_status")
                         .HasColumnType("int");
 
@@ -839,9 +829,6 @@ namespace CloudRP.Migrations
                     b.Property<string>("username")
                         .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<long>("vip_credits_amount")
-                        .HasColumnType("bigint");
 
                     b.Property<bool>("vip_status")
                         .HasColumnType("tinyint(1)");

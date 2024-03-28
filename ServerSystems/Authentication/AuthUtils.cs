@@ -271,6 +271,7 @@ namespace CloudRP.ServerSystems.Authentication
         public string admin_jail_reason { get; set; }
         public bool has_passed_quiz { get; set; }
         public long quiz_fail_unix { get; set; }
+        public long admin_reports_completed { get; set; }
     }
 
     class SharedDataAccount

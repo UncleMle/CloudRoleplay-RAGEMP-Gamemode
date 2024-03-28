@@ -12,6 +12,7 @@ using System.Linq;
 using System.Reflection;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.ServerSystems.AntiCheat;
+using System.Threading.Tasks;
 
 namespace CloudRP.PlayerSystems.PlayerData
 {
@@ -178,12 +179,12 @@ namespace CloudRP.PlayerSystems.PlayerData
             return aduty;
         }
 
-        public static void banPlayer(this Player banPlayer, int time, string adminName, int accountId, string username, string reason)
+        public static void banPlayer(this Player banPlayer, int time, string adminName, int accountId, string username, string reason, string characterName = null)
         {
-            if (NAPI.Player.IsPlayerConnected(banPlayer))
+            NAPI.Task.Run(async () =>
             {
                 banPlayer.ResetData();
-                
+
                 banPlayer.SetCustomData(PlayersData._isBanned, true);
 
                 using (DefaultDbContext dbContext = new DefaultDbContext())
@@ -226,8 +227,11 @@ namespace CloudRP.PlayerSystems.PlayerData
                     ChatUtils.formatConsolePrint($"{ban.username} was banned with lift time being {lift_unix_time}. Reason {reason}");
 
                     AdminPunishments.addNewPunishment(accountId, reason, adminName, PunishmentTypes.AdminBan, lift_unix_time);
+
+                    string endOfBanString = lift_unix_time == -1 ? "is permanent" : "expires at <t:" + lift_unix_time + ">";
+                    await Ban.sendBanWebhookMessageAsync($"{adminName} banned {(characterName != null ? characterName : username)} with reason ``{reason}`` ban {endOfBanString}.");
                 }
-            }
+            });
         }
 
         public static bool isBanned(this Player player)

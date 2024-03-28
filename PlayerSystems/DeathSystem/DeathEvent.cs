@@ -97,9 +97,28 @@ namespace CloudRP.PlayerSystems.DeathSystem
                     return;
                 }
 
+                if(killer != null && killerData == null)
+                {
+                    User loggedAccount = killer.getPlayerAccountData();
+
+                    string banReason = "Killing someone without having character data";
+
+                    if (loggedAccount != null)
+                        killer.banPlayer(-1, "[System]", loggedAccount.account_id, loggedAccount.username, banReason);
+                    else killer.banPlayer(-1, "[System]", -1, "N/A", banReason);
+
+                    return;
+                }
+
                 if (characterData != null)
                 {
-                    AdminUtils.sendMessageToAllStaff($"{characterData.character_name} [{player.Id}] was {(characterData.injured_timer > 0 ? "killed" : "injured")}{(killerData != null ? $" by {killerData.character_name} [{killer.Id}]" : "")}.", (int)AdminRanks.Admin_SeniorSupport);
+                    AdminUtils.sendMessageToAllStaff($"{characterData.character_name} [{player.Id}] was {(characterData.injured_timer > 0 ? "killed" : "injured")} {($"by {killerData.character_name} [{killer.Id}]")}.", (int)AdminRanks.Admin_SeniorSupport);
+
+                    if(killerData != null)
+                    {
+                        killerData.total_kills++;
+                        killer.setPlayerCharacterData(killerData, false, true);
+                    }
 
                     if (characterData.injured_timer > 0)
                     {
@@ -175,6 +194,7 @@ namespace CloudRP.PlayerSystems.DeathSystem
             NAPI.Player.SpawnPlayer(player, closestHospital.hospital.position);
 
             playerCharacterData.cash_amount = 0;
+            playerCharacterData.total_deaths++;
             player.setPlayerCharacterData(playerCharacterData, false, true);
 
             player.SendChatMessage(ChatUtils.hospital + "You recieved medial treatment at " + closestHospital.hospital.name);

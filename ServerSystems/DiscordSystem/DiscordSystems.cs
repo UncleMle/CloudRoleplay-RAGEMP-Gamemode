@@ -369,8 +369,8 @@ namespace CloudRP.ServerSystems.DiscordSystem
 
         public void handleReportDisconnect(Player player)
         {
-            Report findRep = AdminSystem.activeReports.Where(rep => rep.playerReporting.Equals(player)).FirstOrDefault();
-            Report isHandling = AdminSystem.activeReports.Where(rep => rep.adminsHandling.ContainsKey(player)).FirstOrDefault();
+            Report findRep = Admin.AdminSystem.activeReports.Where(rep => rep.playerReporting.Equals(player)).FirstOrDefault();
+            Report isHandling = Admin.AdminSystem.activeReports.Where(rep => rep.adminsHandling.ContainsKey(player)).FirstOrDefault();
             User adminData = player.getPlayerAccountData();
 
             if (isHandling != null && adminData != null)
@@ -406,9 +406,9 @@ namespace CloudRP.ServerSystems.DiscordSystem
             {
                 IUser discordUser = reaction.User.Value;
                 Player reportingPlayer = NAPI.Player.GetPlayerFromHandle(report.playerReporting.Handle);
-                int rid = AdminSystem.activeReports.IndexOf(report);
+                int rid = Admin.AdminSystem.activeReports.IndexOf(report);
 
-                if (discordUser.IsBot || !AdminSystem.activeReports.Contains(report)) return;
+                if (discordUser.IsBot || !Admin.AdminSystem.activeReports.Contains(report)) return;
 
                 if (reaction.Emote.GetHashCode() == DiscordIntegration.closeReaction.GetHashCode())
                 {
@@ -448,7 +448,7 @@ namespace CloudRP.ServerSystems.DiscordSystem
             AdminUtils.sendToAdminsHandlingReport(report, ChatUtils.reports + "This report was closed.", report.playerReporting);
 
             await DiscordIntegration.removeAMessage(reportAlertChannel, report.discordRefId);
-            AdminSystem.activeReports.Remove(report);
+            Admin.AdminSystem.activeReports.Remove(report);
             await DiscordIntegration.removeAChannel(report.discordChannelId);
         }
 
