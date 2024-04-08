@@ -17,7 +17,7 @@ namespace CloudRP.PlayerSystems.Character
 {
     internal class CharacterSystem : Script
     {
-        private static System.Timers.Timer saveCharactersTimer;
+        private static Timer saveCharactersTimer;
         private static int _timerInterval = 5000;
         private static double _characterHungerRemover = 0.004;
         private static double _characterWaterRemover = 0.009;

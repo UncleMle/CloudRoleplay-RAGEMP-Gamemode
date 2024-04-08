@@ -7,7 +7,7 @@ import Tattoos from "./Tattoos";
 
 export default class CharacterSystem {
 	public static LocalPlayer: PlayerMp = mp.players.local;
-	public static serverName: string = "Cloud Roleplay";
+	public static serverName: string = "Developer";
 	public static discordStatusUpdate_seconds: number = 15;
 
 	constructor() {

@@ -159,9 +159,9 @@ namespace CloudRP.ServerSystems.Authentication
                     return;
                 }
 
-                loginInToAccount(player, findAccount);
+                if (userCredentials.rememberMe) setUpAutoLogin(player, findAccount);
 
-                if(userCredentials.rememberMe) setUpAutoLogin(player, findAccount);
+                loginInToAccount(player, findAccount);
             }
         }
 
@@ -564,7 +564,6 @@ namespace CloudRP.ServerSystems.Authentication
 
                 findAccount.user_ip = player.Address;
                 findAccount.client_serial = player.Serial;
-                findAccount.user_ip = player.Address;
                 findAccount.UpdatedDate = DateTime.Now;
                 findAccount.social_club_id = player.SocialClubId;
                 findAccount.social_club_name = player.SocialClubName;

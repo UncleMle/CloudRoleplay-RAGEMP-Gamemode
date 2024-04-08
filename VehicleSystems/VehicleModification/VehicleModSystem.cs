@@ -82,7 +82,6 @@ namespace CloudRP.VehicleSystems.VehicleModification
                 } 
             }
 
-
             if (player.GetData<CustomArea>(_colShapeIdentifer) == null)
             {
                 CommandUtils.errorSay(player, "You must be within one of the customs areas or viewing a dealer vehicle to use this command.");

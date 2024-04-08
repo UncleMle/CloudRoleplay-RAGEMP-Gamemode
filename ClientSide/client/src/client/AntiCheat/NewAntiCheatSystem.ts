@@ -240,9 +240,8 @@ export default class NewAntiCheatSystem {
         const percent: number = (Math.random() * (max - min) + min) / 100;
         let customDamage: any = damage - (damage * percent);
 
-        if (boneIndex === 20) {
+        if (boneIndex === 20)
             customDamage /= 10;
-        }
 
         (targetEntity as PlayerMp).applyDamageTo(parseInt(customDamage), true);
 

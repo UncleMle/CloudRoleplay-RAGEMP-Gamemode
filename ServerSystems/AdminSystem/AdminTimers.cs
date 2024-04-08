@@ -26,8 +26,11 @@ namespace CloudRP.ServerSystems.AdminSystem.AdminTimers
 
             timer.Elapsed += (elapsed, source) =>
             {
-                checkForAdminJail();
-                checkForBan();
+                NAPI.Task.Run(() =>
+                {
+                    checkForAdminJail();
+                    checkForBan();
+                });
             };
 
             ChatUtils.startupPrint($"Started {punishmentInterval_seconds} second admin punishment check.");
@@ -37,11 +40,11 @@ namespace CloudRP.ServerSystems.AdminSystem.AdminTimers
         {
             NAPI.Pools.GetAllPlayers().ForEach(player =>
             {
-            User user = player.getPlayerAccountData();
+                User user = player.getPlayerAccountData();
 
-            if (user == null) return;
+                if (user == null) return;
 
-            Ban ban = player.checkPlayerIsBanned();
+                Ban ban = player.checkPlayerIsBanned();
 
                 if (!player.isBanned() && ban != null) player.Kick();
             });

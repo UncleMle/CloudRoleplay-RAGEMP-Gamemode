@@ -45,7 +45,7 @@ export default class Clothing {
 
     public static handleKeyPressed_Y() {
         if(!Clothing.LocalPlayer.isTypingInTextChat) {
-            let currentClothingStoreData: ClothingStore | undefined = Clothing.LocalPlayer.getVariable(Clothing._clothingStoreIdentifier);
+            let currentClothingStoreData: ClothingStore | null = Clothing.LocalPlayer.getVariable(Clothing._clothingStoreIdentifier);
             let playerClothingData: ClothingData | undefined = getClothingData(Clothing.LocalPlayer);
 
             if(currentClothingStoreData && playerClothingData) {

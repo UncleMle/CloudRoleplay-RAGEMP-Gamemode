@@ -190,7 +190,6 @@ namespace CloudRP.ServerSystems.DiscordSystem
         {
             if (!DiscordUtils.checkArgs(args, "vinfo", 2, "vehicleId")) return;
 
-
             int? vehicleId = CommandUtils.tryParse(args[1]);
 
             using (DefaultDbContext dbContext = new DefaultDbContext())
@@ -301,7 +300,6 @@ namespace CloudRP.ServerSystems.DiscordSystem
                 if (!DiscordUtils.checkArgs(args, "say", 2, "message")) return;
 
                 string message = ChatUtils.red + "[Discord] " + ChatUtils.White + user.Username + ChatUtils.red + " says: " + ChatUtils.White + DiscordUtils.getSplicedArgument(args);
-
 
                 await DiscordIntegration.SendMessage(staffChannel, MentionUtils.MentionUser(user.Id) + " sent message in game!", false);
                 NAPI.Chat.SendChatMessageToAll(message);
