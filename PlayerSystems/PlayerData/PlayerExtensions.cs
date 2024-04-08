@@ -18,6 +18,8 @@ namespace CloudRP.PlayerSystems.PlayerData
 {
     public static class PlayerExtensions
     {
+        public static readonly string _atBanScreenIdentifier = "server:auth:atBanScreen";
+
         public static void setPlayerAccountData(this Player player, User userData, bool triggerShared = true, bool updateDb = false)
         {
             if (!PlayersData.checkIfAccountIsLogged(userData.account_id))
@@ -250,6 +252,8 @@ namespace CloudRP.PlayerSystems.PlayerData
                         ban.ip_address == player.Address) && ban.is_active)
                     .FirstOrDefault();
 
+                Console.WriteLine("Ban " + JsonConvert.SerializeObject(returnBanData));
+
                 if (returnBanData != null && returnBanData.lift_unix_time < CommandUtils.generateUnix() && returnBanData.lift_unix_time != -1)
                 {
                     Account findUserAccount = dbContext.accounts.Find(returnBanData.account_id);
@@ -296,6 +300,7 @@ namespace CloudRP.PlayerSystems.PlayerData
             uiHandling.pushRouterToClient(player, Browsers.BanPage);
 
             uiHandling.handleObjectUiMutation(player, MutationKeys.BanData, banData);
+            player.SetData(_atBanScreenIdentifier, true);
         }
 
         public static void addPlayerKey(this Player player, string usedKey)

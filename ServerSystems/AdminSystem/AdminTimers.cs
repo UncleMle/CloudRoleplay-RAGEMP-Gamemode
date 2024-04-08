@@ -46,7 +46,10 @@ namespace CloudRP.ServerSystems.AdminSystem.AdminTimers
 
                 Ban ban = player.checkPlayerIsBanned();
 
-                if (!player.isBanned() && ban != null) player.Kick();
+            if (ban != null && !player.GetData<bool>(PlayerSystems.PlayerData.PlayerExtensions._atBanScreenIdentifier))
+                {
+                    player.setPlayerToBanScreen(ban);
+                }
             });
         }
 

@@ -48,7 +48,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     let banQuery = "INSERT INTO bans SET ";
     banQuery += "CreatedDate = ?, UpdatedDate = ?, ip_address = ?, client_serial = ?, ";
     banQuery += "social_club_id = ?, social_club_name = ?, username = ?, account_id = ?, ";
-    banQuery += "ban_reason = ?, admin = ?, lift_unix_time = ?, issue_unix_date = ?";
+    banQuery += "ban_reason = ?, admin = ?, lift_unix_time = ?, issue_unix_date = ?, is_active = 1";
 
     let account: User = accounts[0];
 
@@ -56,10 +56,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         new Date(), new Date(), account.user_ip, account.client_serial,
         account.social_club_id, account.social_club_name, account.username, account.account_id,
         reason, adminName, liftUnix, currentUnix
-    ]);
-
-    await DatabaseController.deleteQuery("UPDATE bans SET is_active = 0 WHERE account_id = ?", [
-        account.account_id
     ]);
 
     let punishmentQuery = "INSERT INTO admin_punishments SET "
