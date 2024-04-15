@@ -252,8 +252,6 @@ namespace CloudRP.PlayerSystems.PlayerData
                         ban.ip_address == player.Address) && ban.is_active)
                     .FirstOrDefault();
 
-                Console.WriteLine("Ban " + JsonConvert.SerializeObject(returnBanData));
-
                 if (returnBanData != null && returnBanData.lift_unix_time < CommandUtils.generateUnix() && returnBanData.lift_unix_time != -1)
                 {
                     Account findUserAccount = dbContext.accounts.Find(returnBanData.account_id);

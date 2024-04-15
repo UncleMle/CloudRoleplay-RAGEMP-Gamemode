@@ -112,7 +112,7 @@ namespace CloudRP.PlayerSystems.DeathSystem
 
                 if (characterData != null)
                 {
-                    AdminUtils.sendMessageToAllStaff($"{characterData.character_name} [{player.Id}] was {(characterData.injured_timer > 0 ? "killed" : "injured")} {($"by {killerData.character_name} [{killer.Id}]")}.", (int)AdminRanks.Admin_SeniorSupport);
+                    AdminUtils.sendMessageToAllStaff($"{characterData.character_name} [{player.Id}] was {(characterData.injured_timer > 0 ? "killed" : "injured")} {(killerData != null ? $"by {killerData.character_name} [{killer.Id}]" : "")}.", (int)AdminRanks.Admin_SeniorSupport);
 
                     if(killerData != null)
                     {

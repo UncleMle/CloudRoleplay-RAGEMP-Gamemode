@@ -18,18 +18,29 @@ namespace CloudRP.GeneralSystems.SpeedCameras
 {
     public class SpeedCameras : Script
     {
+        public delegate void OnVehiclePassByCamEvent(Player player, Vehicle vehicle, DbVehicle vehicleData, string camName, int vehicleSpeed);
+
+        #region Event Handlers
+        public static event OnVehiclePassByCamEvent onVehiclePassByCamera;
+        #endregion
+
+        public static VehicleClasses[] exemptClasses = new VehicleClasses[] {
+            VehicleClasses.Helicopters, VehicleClasses.Boats, VehicleClasses.Cycles, VehicleClasses.Planes,
+            VehicleClasses.Trains
+        };
+
         public string _speedCameraDataIdentifier = "speedCameraColshapeData";
         public static readonly int speedCameraSabotageTime_seconds = 60;
-        public List<SpeedCamera> cameras = new List<SpeedCamera>
+        public static List<SpeedCamera> cameras = new List<SpeedCamera>
         {
-            new SpeedCamera { position = new Vector3(429.7, -543.6, 28.7), camPropPos = new Vector3(399.9, -561.0, 27.1), camFlashPos = new Vector3(400.1, -560.8, 32.7), camRot = 155, range = 25, speedLimit = 80 },
-            new SpeedCamera { position = new Vector3(-2006.4, -388.6, 11.4), camPropPos = new Vector3(-2007.4, -395.9, 9.9), camFlashPos = new Vector3(-2007.3, -395.0, 14.4), camRot = 180, range = 10, speedLimit = 80 },
-            new SpeedCamera { position = new Vector3(-76.7, 259.1, 101.4), camPropPos = new Vector3(-74.8, 272.1, 99.9), camFlashPos = new Vector3(-75.0, 271.8, 103.9), camRot = 100, range = 15, speedLimit = 80 },
-            new SpeedCamera { position = new Vector3(616.7, 42.3, 89.8), camPropPos = new Vector3(630.7, 57.3, 87.7), camFlashPos = new Vector3(631.0, 57.3, 92.4), camRot = 30, range = 15, speedLimit = 80 },
-            new SpeedCamera { position = new Vector3(170.8, -818.6, 31.2), camPropPos = new Vector3(142.7, -823, 29.9), camFlashPos = new Vector3(142.7, -823.8, 35.2), camRot = 180, range = 25, speedLimit = 80 },
-            new SpeedCamera { position = new Vector3(399.7, -989.6, 29.5), camPropPos = new Vector3(391.5, -1003.7, 27.8), camFlashPos = new Vector3(391.5, -1003.7, 32.6), camRot = 170, range = 15, speedLimit = 80 },
-            new SpeedCamera { position = new Vector3(-1032.5, 263.4, 64.8), camPropPos = new Vector3(-1042.7, 279.5, 62.5), camFlashPos = new Vector3(-1042.7, 279.5, 66.9), camRot = 50, range = 25, speedLimit = 80 },
-            new SpeedCamera { position = new Vector3(-92.5, 6440.4, 31.5), camPropPos = new Vector3(-100.5, 6447.5, 30.6), camFlashPos = new Vector3(-100.5, 6447.5, 34.6), camRot = 178.2, range = 15, speedLimit = 80  }
+            new SpeedCamera { position = new Vector3(429.7, -543.6, 28.7), camName = "Strawberry Ave Highway Exit", camPropPos = new Vector3(399.9, -561.0, 27.1), camFlashPos = new Vector3(400.1, -560.8, 32.7), camRot = 155, range = 25, speedLimit = 80 },
+            new SpeedCamera { position = new Vector3(-2006.4, -388.6, 11.4), camName = "Bay City Incline", camPropPos = new Vector3(-2007.4, -395.9, 9.9), camFlashPos = new Vector3(-2007.3, -395.0, 14.4), camRot = 180, range = 10, speedLimit = 80 },
+            new SpeedCamera { position = new Vector3(-76.7, 259.1, 101.4), camName = "Eclipse Blvd", camPropPos = new Vector3(-74.8, 272.1, 99.9), camFlashPos = new Vector3(-75.0, 271.8, 103.9), camRot = 100, range = 15, speedLimit = 80 },
+            new SpeedCamera { position = new Vector3(616.7, 42.3, 89.8), camName = "Vinewood PD", camPropPos = new Vector3(630.7, 57.3, 87.7), camFlashPos = new Vector3(631.0, 57.3, 92.4), camRot = 30, range = 15, speedLimit = 80 },
+            new SpeedCamera { position = new Vector3(170.8, -818.6, 31.2), camName = "Pillbox Hill Junction",camPropPos = new Vector3(142.7, -823, 29.9), camFlashPos = new Vector3(142.7, -823.8, 35.2), camRot = 180, range = 25, speedLimit = 80 },
+            new SpeedCamera { position = new Vector3(399.7, -989.6, 29.5), camName = "Mission Row PD",camPropPos = new Vector3(391.5, -1003.7, 27.8), camFlashPos = new Vector3(391.5, -1003.7, 32.6), camRot = 170, range = 15, speedLimit = 80 },
+            new SpeedCamera { position = new Vector3(-1032.5, 263.4, 64.8), camName = "Rockford Hills", camPropPos = new Vector3(-1042.7, 279.5, 62.5), camFlashPos = new Vector3(-1042.7, 279.5, 66.9), camRot = 50, range = 25, speedLimit = 80 },
+            new SpeedCamera { position = new Vector3(-92.5, 6440.4, 31.5), camName = "Paleto Bank", camPropPos = new Vector3(-100.5, 6447.5, 30.6), camFlashPos = new Vector3(-100.5, 6447.5, 34.6), camRot = 178.2, range = 15, speedLimit = 80  }
         };
 
         List<SpeedFine> speedFines = new List<SpeedFine>
@@ -123,6 +134,10 @@ namespace CloudRP.GeneralSystems.SpeedCameras
                 DbVehicle vehicleData = player.Vehicle.getData();
 
                 if (vehicleData == null) return;
+
+                if (exemptClasses.Contains((VehicleClasses)vehicleData.vehicle_class_id)) return;
+
+                onVehiclePassByCamera(player, player.Vehicle, vehicleData, cameraData.camName, vehicleSpeed);
 
                 if (FactionSystem.emergencyFactions.Contains((Factions)vehicleData.faction_owner_id)) return;
 

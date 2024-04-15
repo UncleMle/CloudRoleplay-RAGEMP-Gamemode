@@ -75,7 +75,7 @@
                 <div class="container flex items-center w-[24vw] mx-auto mt-14">
                     <div class="flex justify-center w-full">
                         <div
-                            class="rounded-xl text-white w-full border-t-4 border-b-4 border-purple-400/50 colourBackground shadow-2xl shadow-black border-gray-400/40 select-none">
+                            class="rounded-xl text-white w-full border-t-4 border-b-4 border-purple-400/50 colourBackground shadow-2xl shadow-black select-none">
 
                             <div
                                 class="relative w-full h-fit rounded-lg border border-gray-900 text-center max-h-[37vw] overflow-scroll overflow-x-hidden">

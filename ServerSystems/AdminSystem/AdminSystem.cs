@@ -5,6 +5,7 @@ using CloudRP.PlayerSystems.CasinoSystems.Roulette;
 using CloudRP.PlayerSystems.Character;
 using CloudRP.PlayerSystems.DeathSystem;
 using CloudRP.PlayerSystems.FactionSystems;
+using CloudRP.PlayerSystems.FactionSystems.PoliceSystems;
 using CloudRP.PlayerSystems.PlayerData;
 using CloudRP.PlayerSystems.PlayerDealerships;
 using CloudRP.ServerSystems.AntiCheat;
@@ -1208,7 +1209,6 @@ namespace CloudRP.ServerSystems.Admin
         [Command("setaped", "~r~/setaped [nameOrId] [pedName | none]")]
         public void setAdminPed(Player player, string nameOrId, string pedName)
         {
-            User userData = player.getPlayerAccountData();
             Player findPlayer = CommandUtils.getPlayerFromNameOrId(nameOrId);
 
             if(findPlayer != null)
@@ -1218,6 +1218,12 @@ namespace CloudRP.ServerSystems.Admin
                 if(findPlayerData.admin_status < (int)AdminRanks.Admin_Moderator)
                 {
                     CommandUtils.errorSay(player, "This player doesn't have the required rank to have an admin ped.");
+                    return;
+                }
+
+                if(findPlayerData.adminDuty && pedName == "none")
+                {
+                    CommandUtils.errorSay(player, "You cannot set this to a player who is on admin duty.");
                     return;
                 }
 
@@ -2386,6 +2392,29 @@ namespace CloudRP.ServerSystems.Admin
         {
             player.SetClothes(component, id, variation);
             AdminUtils.staffSay(player, $"You set clothes with component id {component} id {id} variation texture {variation}");
+        }
+
+        [AdminCommand(AdminRanks.Admin_Developer)]
+        [Command("addstolenveh", "~r~/addstolenveh [vehicleId]")]
+        public void addStolenVehicle(Player player, int vehicleId)
+        {
+            DbVehicle findVeh = null;
+
+            NAPI.Pools.GetAllVehicles().ForEach(veh =>
+            {
+                DbVehicle vehData = veh.getData();
+
+                if (vehData != null && vehData.vehicle_id == vehicleId) findVeh = vehData;
+            });
+
+            if(findVeh == null)
+            {
+                AdminUtils.staffSay(player, $"Vehicle with that ID wasn't found in the world.");
+                return;
+            }
+
+            AdminUtils.staffSay(player, $"Vehicle with ID {vehicleId} was added as a stolen vehicle.");
+            ANPRSystem.stolenVehicles.Add(vehicleId, findVeh);
         }
         #endregion
     }

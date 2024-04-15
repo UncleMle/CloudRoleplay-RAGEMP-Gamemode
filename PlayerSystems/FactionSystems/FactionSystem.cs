@@ -25,6 +25,7 @@ using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Timers;
+using static System.Collections.Specialized.BitVector32;
 
 namespace CloudRP.PlayerSystems.FactionSystems
 {
@@ -522,17 +523,6 @@ namespace CloudRP.PlayerSystems.FactionSystems
             });
         }
 
-        public static void sendMessageToOndutyFactionMembers(string message, Factions faction)
-            => NAPI.Pools.GetAllPlayers().ForEach(p =>
-            {
-                DbCharacter character = p.getPlayerCharacterData();
-
-                if(character != null && character.faction_duty_status == (int)faction)
-                {
-                    p.SendChatMessage(message);
-                }
-            });
-
         public static void handleVehiclePoint(Player player, Factions targetFaction, int garageId)
         {
             if (!player.hasFactionPermission(targetFaction, GeneralRankPerms.ViewFactionParking)) return;
@@ -914,6 +904,26 @@ namespace CloudRP.PlayerSystems.FactionSystems
             });
         }
 
+        public static void sendMessageToFactionMembers(Factions factionId, string message) 
+            => NAPI.Pools.GetAllPlayers().ForEach(targetPlayer =>
+            {
+                if (targetPlayer.getPlayerFactions()?.Contains(factionId) != null)
+                {
+                    targetPlayer.SendChatMessage(message);
+                }
+            });
+
+        public static void sendMessageToOndutyFactionMembers(string message, Factions faction)
+            => NAPI.Pools.GetAllPlayers().ForEach(p =>
+            {
+                DbCharacter character = p.getPlayerCharacterData();
+
+                if (character != null && character.faction_duty_status == (int)faction)
+                {
+                    p.SendChatMessage(message);
+                }
+            });
+
         #endregion
 
         #region Remote Events
@@ -1101,13 +1111,7 @@ namespace CloudRP.PlayerSystems.FactionSystems
                 }
             }
 
-            NAPI.Pools.GetAllPlayers().ForEach(targetPlayer =>
-            {
-                if (targetPlayer.getPlayerFactions()?.Contains(faction) != null)
-                {
-                    targetPlayer.SendChatMessage(factionColour + factionMessage);
-                }
-            });
+            sendMessageToFactionMembers((Factions)character.faction_duty_status, factionColour + factionMessage);
 
             ChatUtils.formatConsolePrint($"[F] [{faction}] {character.character_name} says: {message}", ConsoleColor.Magenta);
         }
