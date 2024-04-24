@@ -9,6 +9,7 @@ export default class BrowserSystem {
 	public static IdleDate: Date = new Date();
 	public static LocalPlayer: PlayerMp = mp.players.local;
 	public static f2Cursor: boolean = false;
+	public static blackScreen: boolean = false;
 
 	constructor() {
 		BrowserSystem.LocalPlayer.browserRouter = '/';
@@ -32,7 +33,8 @@ export default class BrowserSystem {
 			"browser:clearChat": BrowserSystem.clearChat,
 			"browser:playerFrontendSound": BrowserSystem.playFrontendSound,
 			"browser:callServerProc": BrowserSystem.handleServerProc,
-			"browser:toggleClientBlur": BrowserSystem.handleClientBlur
+			"browser:toggleClientBlur": BrowserSystem.handleClientBlur,
+			"browser:toggleBlack": BrowserSystem.toggleBlack
 		});
 
 		mp.keys.bind(F2, false, BrowserSystem.handleF2Press);
@@ -40,6 +42,10 @@ export default class BrowserSystem {
 		setInterval(() => {
 			BrowserSystem.disableAfkTimer();
 		}, 6000);
+	}
+
+	private static toggleBlack(tog: boolean) {
+		BrowserSystem.blackScreen = tog;
 	}
 
 	private static handleLoadFail() {
@@ -51,7 +57,7 @@ export default class BrowserSystem {
 	}
 
 	private static handleExit(player: PlayerMp) {
-		if(player.handle === BrowserSystem.LocalPlayer.handle) BrowserSystem._browserInstance.destroy();
+		if (player.handle === BrowserSystem.LocalPlayer.handle) BrowserSystem._browserInstance.destroy();
 	}
 
 	private static async handleServerProc(procedureName: string): Promise<any> {
@@ -91,12 +97,20 @@ export default class BrowserSystem {
 
 	public static handleRender() {
 		BrowserSystem.disableDefaultGuiElements();
+		BrowserSystem.handleBlackScreen();
 
 		let characterData: CharacterData | undefined = getUserCharacterData();
 
 		if (characterData?.routeIsFrozen && BrowserSystem.LocalPlayer.browserRouter != "/" || BrowserSystem.LocalPlayer.browserRouter === Browsers.PromptMenu) {
 			mp.gui.cursor.show(true, true);
 		}
+	}
+
+	private static handleBlackScreen() {
+		if (!BrowserSystem.blackScreen) return;
+		const resolution: GetScreenResolutionResult = mp.game.graphics.getScreenResolution();
+
+		mp.game.graphics.drawRect(0, 0, resolution.x, resolution.y, 0, 0, 0, 255, true);
 	}
 
 	public static pushRouter(route: string, showCursor: boolean = true) {
@@ -177,7 +191,7 @@ export default class BrowserSystem {
 	}
 
 	public static handleClientBlur(toggle: boolean) {
-		toggle ? mp.game.graphics.transitionToBlurred(100) : mp.game.graphics.transitionFromBlurred(100); 
+		toggle ? mp.game.graphics.transitionToBlurred(100) : mp.game.graphics.transitionFromBlurred(100);
 	}
 
 	public static disableDefaultGuiElements() {

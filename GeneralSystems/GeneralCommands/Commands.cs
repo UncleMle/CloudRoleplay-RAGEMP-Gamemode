@@ -286,6 +286,20 @@ namespace CloudRP.GeneralSystems.GeneralCommands
 
         }
 
+        [Command("blindfold", "~y~Use:~w~ /blindfold")]
+        public void blindfoldCommand(Player player)
+        {
+            DbCharacter character = player.getPlayerCharacterData();
+
+            if (character is null) return;
+
+            character.isBlindFolded = !character.isBlindFolded;
+
+            player.TriggerEvent("browser:toggleBlack", character.isBlindFolded);
+
+            uiHandling.sendNotification(player, $"You {(character.isBlindFolded ? "put a blindfold on" : "took a blindfold off.")}", true, true, $"{(character.isBlindFolded ? "Puts on a blindfold." : "Removes blindfold.")}");
+        }
+
         [Command("do", "~y~Use:~w~ /do [message]", GreedyArg = true)]
         public void onDoCommand(Player player, string docommand)
         {

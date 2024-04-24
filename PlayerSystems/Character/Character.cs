@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using CloudRP.PlayerSystems.FactionSystems;
 using CloudRP.PlayerSystems.FactionSystems.PoliceSystems;
+using System.Diagnostics.SymbolStore;
 
 namespace CloudRP.PlayerSystems.Character
 {
@@ -61,6 +62,10 @@ namespace CloudRP.PlayerSystems.Character
         public CharacterClothing cachedClothes { get; set; }
         [NotMapped]
         public List<CriminalCharge> criminalCharges { get; set; }
+        [NotMapped]
+        public bool isBlindFolded { get; set; }
+        [NotMapped]
+        public int totalAcFlags { get; set; }
     }
 
 }

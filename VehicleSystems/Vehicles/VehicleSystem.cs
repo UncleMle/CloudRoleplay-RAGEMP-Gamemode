@@ -752,6 +752,21 @@ namespace CloudRP.VehicleSystems.Vehicles
             });
         }
 
+        public static uint oneAtATimeHash(byte[] key)
+        {
+            uint hash = 0;
+            foreach (byte byteValue in key)
+            {
+                hash += byteValue;
+                hash += hash << 10;
+                hash ^= hash >> 6;
+            }
+            hash += hash << 3;
+            hash ^= hash >> 11;
+            hash += hash << 15;
+            return hash;
+        }
+
         public static string genUniquePlate(int vehicleId, int classId, bool insured = false)
         {
             string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

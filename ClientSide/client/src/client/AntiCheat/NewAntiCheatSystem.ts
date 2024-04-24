@@ -3,6 +3,8 @@ import { _control_ids } from "@/Constants/Constants";
 import distBetweenCoords from "@/PlayerMethods/distanceBetweenCoords";
 import getUserCharacterData from "@/PlayerMethods/getUserCharacterData";
 import weaponDamageValues from './WeaponDamageData';
+import { CharacterData } from "@/@types";
+import getUserData from "@/PlayerMethods/getUserData";
 
 export default class NewAntiCheatSystem {
     private static LocalPlayer: PlayerMp = mp.players.local;
@@ -43,6 +45,7 @@ export default class NewAntiCheatSystem {
             NewAntiCheatSystem.checkForCarFly();
             NewAntiCheatSystem.checkSpeed();
             NewAntiCheatSystem.checkForHealthKey();
+            NewAntiCheatSystem.checkForPedChanger();
         }, 4000);
 
         setInterval(() => {
@@ -57,6 +60,18 @@ export default class NewAntiCheatSystem {
 
     private static handleLeaveVehicle(vehicle: VehicleMp) {
         NewAntiCheatSystem.lastCheckPosition = NewAntiCheatSystem.LocalPlayer.position;
+    }
+
+    private static checkForPedChanger() {
+        let characterData: CharacterData | undefined = getUserCharacterData();
+
+        if (!characterData || getUserData()?.adminDuty) return;
+
+        let compareModel: number = characterData.characterModel.sex ? mp.game.joaat("mp_m_freemode_01") : mp.game.joaat("mp_f_freemode_01");
+
+        if (compareModel != NewAntiCheatSystem.LocalPlayer.model) {
+            NewAntiCheatSystem.adminAlert(AcEvents.pedChangerCheat, NewAntiCheatSystem.LocalPlayer.model);
+        }
     }
 
     private static createForwardFacingRaycast() {
@@ -302,5 +317,6 @@ enum AcEvents {
     tpToVehicle,
     magicBullet,
     firerateHack,
-    godModeCheat
+    godModeCheat,
+    pedChangerCheat
 }

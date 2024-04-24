@@ -69,6 +69,9 @@ namespace CloudRP.ServerSystems.AntiCheat
             },
             {
                 AcEvents.godModeCheat, "{0} [{1} | FPS {2}] Potential godmode cheat (player took no damage). Combined HP and armour is {3}"
+            },
+            {
+                AcEvents.pedChanger, "{0} [{1} | FPS {2}] Potential client ped changer cheat. Ped attempted to change to ped {3}"
             }
         };
 
@@ -274,6 +277,7 @@ namespace CloudRP.ServerSystems.AntiCheat
         tpToVehicle,
         magicBullet,
         firerateHack,
-        godModeCheat
+        godModeCheat,
+        pedChanger
     }
 }

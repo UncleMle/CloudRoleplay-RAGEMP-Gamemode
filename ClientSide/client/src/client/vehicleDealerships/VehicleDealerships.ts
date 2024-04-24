@@ -86,6 +86,7 @@ export default class VehicleDealerShips {
 
 	public static setDealerVehColour(colour: string | number) {
 		if (VehicleDealerShips.dealerSelectedVehicle) {
+			mp.console.logInfo(Number(colour) + " colour");
 			VehicleDealerShips.dealerSelectedVehicle.setColours(Number(colour), Number(colour));
 		}
 	}
