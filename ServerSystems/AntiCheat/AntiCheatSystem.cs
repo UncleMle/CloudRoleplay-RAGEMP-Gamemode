@@ -80,7 +80,7 @@ namespace CloudRP.ServerSystems.AntiCheat
             Main.playerConnect += (player) =>
             {
                 player.sleepClientAc();
-                //handleVpnCheck(player); Causes Thread Locking
+                handleVpnCheck(player);
             };
 
             Main.resourceStart += () => ChatUtils.startupPrint($"Loaded a total of {Enum.GetNames(typeof(AcEvents)).Length} Anti cheat events.");
@@ -222,40 +222,37 @@ namespace CloudRP.ServerSystems.AntiCheat
             AdminUtils.sendMessageToAllStaff(ChatUtils.antiCheat + message, (int)AdminRanks.Admin_Moderator);
         }
 
-        public static void handleVpnCheck(Player player)
+        public static async void handleVpnCheck(Player player)
         {
-            NAPI.Task.Run( async () =>
+            if (player.Address == null) return;
+
+            string str = player.Address[..7];
+
+            if (str == "192.168" || player.Address == "127.0.0.1") return;
+
+            try
             {
-                if (player.Address == null) return;
+                string uri = $"https://vpnapi.io/api/{player.Address}?key={Main._vpnApiKey}";
 
-                string str = player.Address[..7];
+                HttpClient client = new HttpClient();
 
-                if (str == "192.168" || player.Address == "127.0.0.1") return;
+                string response = await client.GetStringAsync(uri);
 
-                try
+                if (response != null)
                 {
-                    string uri = $"https://vpnapi.io/api/{player.Address}?key={Main._vpnApiKey}";
+                    IPAddressInfo data = JsonConvert.DeserializeObject<IPAddressInfo>(response);
 
-                    HttpClient client = new HttpClient();
-
-                    string response = await client.GetStringAsync(uri);
-
-                    if (response != null)
+                    if (data != null && (data.security.vpn || data.security.proxy))
                     {
-                        IPAddressInfo data = JsonConvert.DeserializeObject<IPAddressInfo>(response);
-
-                        if (data != null && (data.security.vpn || data.security.proxy))
-                        {
-                            ChatUtils.formatConsolePrint($"Player [{player.Id}] was kicked for VPN or Proxy! Address: {player.Address}");
-                            player.Kick();
-                        }
+                        ChatUtils.formatConsolePrint($"Player [{player.Id}] was kicked for VPN or Proxy! Address: {player.Address}");
+                        player.Kick();
                     }
                 }
-                catch
-                {
+            }
+            catch
+            {
 
-                }
-            });
+            }
         }
 
         #endregion

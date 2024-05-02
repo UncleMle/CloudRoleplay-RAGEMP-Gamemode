@@ -4,6 +4,7 @@ using CloudRP.ServerSystems.Database;
 using CloudRP.ServerSystems.Utils;
 using CloudRP.VehicleSystems.Vehicles;
 using GTANetworkAPI;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -121,13 +122,11 @@ namespace CloudRP.VehicleSystems.VehicleModification
         }
 
         [RemoteEvent("server:vehicleModsSave")]
-        public void saveVehiclesMods(Player player, string modData)
+        public async void saveVehiclesMods(Player player, string modData)
         {
             DbCharacter characterData = player.getPlayerCharacterData();
 
             if (!player.IsInVehicle || characterData == null) return;
-
-            player.TriggerEvent("customs:toggleVehicleFreeze", false);
 
             Vehicle pVeh = player.Vehicle;
             DbVehicle pVehData = pVeh.getData();
@@ -148,9 +147,8 @@ namespace CloudRP.VehicleSystems.VehicleModification
 
                 using (DefaultDbContext dbContext = new DefaultDbContext())
                 {
-                    VehicleMods currentData = dbContext.vehicle_mods
-                        .Where(mod => mod.vehicle_owner_id == pVehData.vehicle_id)
-                        .FirstOrDefault();
+                    VehicleMods currentData = await dbContext.vehicle_mods
+                        .FirstOrDefaultAsync(mod => mod.vehicle_owner_id == pVehData.vehicle_id);
 
                     if (currentData != null)
                     {
@@ -163,13 +161,16 @@ namespace CloudRP.VehicleSystems.VehicleModification
                         dbContext.SaveChanges();
                     }
 
-                    pVeh.setVehicleData(pVehData, true);
+                    NAPI.Task.Run(() =>
+                    {
+                        player.TriggerEvent("customs:toggleVehicleFreeze", false);
+                        pVeh.setVehicleData(pVehData, true);
+                        uiHandling.sendPushNotif(player, "You successfully modified your vehicle!", 6600, true, true, true);
+                        uiHandling.pushRouterToClient(player, Browsers.None);
+                        uiHandling.toggleGui(player, true);
+                    });
                 }
             }
-
-            uiHandling.sendPushNotif(player, "You successfully modified your vehicle!", 6600, true, true, true);
-            uiHandling.pushRouterToClient(player, Browsers.None);
-            uiHandling.toggleGui(player, true);
         }
 
         public static void setColData(ColShape colshape, CustomArea customsData)

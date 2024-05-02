@@ -88,7 +88,7 @@ namespace CloudRP.PlayerSystems.Character
 
         public static void saveCharacterData(Player player)
         {
-            NAPI.Task.Run(async() =>
+            NAPI.Task.Run(() =>
             {
                 Vector3 pos = player.Position;
                 Vector3 checkPos = PlayersData.defaultLoginPosition;

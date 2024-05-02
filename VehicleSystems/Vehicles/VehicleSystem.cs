@@ -140,6 +140,12 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             vehicle.vehicle_dimension = VehicleDimensions.World;
 
+            if (vehicle.tyre_states == null || vehicle.tyre_states == "null")
+                vehicle.tyre_states = JsonConvert.SerializeObject(new List<bool>()
+                {
+                    false, false, false, false, false, false
+                });
+
             using (DefaultDbContext dbContext = new DefaultDbContext())
             {
                 dbContext.vehicles.Update(vehicle);

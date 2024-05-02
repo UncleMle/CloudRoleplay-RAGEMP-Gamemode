@@ -22,7 +22,7 @@
                                             </div>
 
                                             <div
-                                                class="font-medium text-lg max-w-[4vw] w-[4vw] overflow-hidden text-ellipsis text-green-400 bg-black/20 p-2 mt-2 w-[40%] rounded-xl">
+                                                class="font-medium text-lg max-w-[4vw] w-[4vw] overflow-hidden text-ellipsis text-green-400 bg-black/20 p-2 mt-2  rounded-xl">
                                                 ${{ item.coursePrice.toLocaleString("en-US") }}
                                                 <br>
                                             </div>
@@ -32,7 +32,7 @@
                                     <div class="absolute w-full bottom-0">
                                         <div class="flex justify-center">
                                             <button @click="startCourse(item.courseId)"
-                                                class="w-full w-[40%] p-1.5 bg-black/40 rounded-lg border-gray-400/40 duration-300 hover:text-green-400 hover:border-green-400">
+                                                class="w-[40%] p-1.5 bg-black/40 rounded-lg border-gray-400/40 duration-300 hover:text-green-400 hover:border-green-400">
                                                 <i class="fa-solid fa-play"></i>
                                             </button>
                                         </div>

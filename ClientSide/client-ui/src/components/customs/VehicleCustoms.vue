@@ -204,7 +204,7 @@
                 <div v-if="!playerData.is_in_player_dealer" class="container flex items-center w-[24vw] mx-auto mt-14">
                     <div class="flex justify-center w-full">
                         <div
-                            class="rounded-xl text-white w-full colourBackground border-t-4 border-b-4 border-purple-400/50 shadow-2xl shadow-black border-gray-400/40 select-none max-h-[34vw]">
+                            class="rounded-xl text-white w-full colourBackground border-t-4 border-b-4 border-purple-400/50 shadow-2xl shadow-black select-none max-h-[34vw]">
 
                             <div class="relative p-4">
                                 <h1 class="font-bold text-2xl pl-4"><i class="fa-solid fa-cart-shopping text-gray-300"></i>
