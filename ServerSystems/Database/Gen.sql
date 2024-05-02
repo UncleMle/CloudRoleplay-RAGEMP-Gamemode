@@ -1,3 +1,12 @@
+-- cloud_rp.`__efmigrationshistory` definition
+
+CREATE TABLE `__efmigrationshistory` (
+  `MigrationId` varchar(95) NOT NULL,
+  `ProductVersion` varchar(32) NOT NULL,
+  PRIMARY KEY (`MigrationId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
 -- cloud_rp.accounts definition
 
 CREATE TABLE `accounts` (
@@ -27,6 +36,11 @@ CREATE TABLE `accounts` (
   `admin_jail_reason` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   `has_passed_quiz` tinyint(1) NOT NULL DEFAULT '0',
   `quiz_fail_unix` bigint NOT NULL DEFAULT '0',
+  `ucp_otp` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `ucp_image_url` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `social_club_name` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `vip_credits_amount` bigint NOT NULL DEFAULT '0',
+  `admin_reports_completed` bigint NOT NULL DEFAULT '0',
   PRIMARY KEY (`account_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -57,7 +71,7 @@ CREATE TABLE `admin_punishments` (
   `is_void` tinyint(1) NOT NULL,
   `unix_expires` bigint NOT NULL,
   PRIMARY KEY (`admin_punishment_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 -- cloud_rp.bans definition
@@ -76,8 +90,9 @@ CREATE TABLE `bans` (
   `admin` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `lift_unix_time` bigint NOT NULL,
   `issue_unix_date` bigint NOT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ban_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 -- cloud_rp.character_clothes definition
@@ -196,6 +211,9 @@ CREATE TABLE `characters` (
   `faction_ranks` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   `salary_amount` bigint NOT NULL DEFAULT '0',
   `last_spun_luckywheel` bigint NOT NULL DEFAULT '0',
+  `total_deaths` bigint NOT NULL DEFAULT '0',
+  `total_kills` bigint NOT NULL DEFAULT '0',
+  `total_times_jailed` bigint NOT NULL DEFAULT '0',
   PRIMARY KEY (`character_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -211,7 +229,7 @@ CREATE TABLE `criminal_charges` (
   `totalTime` int NOT NULL,
   `totalFine` int NOT NULL,
   PRIMARY KEY (`criminal_charge_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 -- cloud_rp.faction_ranks definition
@@ -310,7 +328,7 @@ CREATE TABLE `player_tattoos` (
   `tattoo_lib` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   `tattoo_collection` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   PRIMARY KEY (`tattoo_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=195 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=207 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 -- cloud_rp.roulette_tables definition
@@ -322,7 +340,7 @@ CREATE TABLE `roulette_tables` (
   `pos_z` float NOT NULL,
   `heading` float NOT NULL DEFAULT '0',
   PRIMARY KEY (`roulette_table_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 -- cloud_rp.server_connections definition
@@ -335,7 +353,7 @@ CREATE TABLE `server_connections` (
   `character_id` int NOT NULL,
   `player_id` int NOT NULL,
   PRIMARY KEY (`join_log_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2823 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2943 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 -- cloud_rp.server_logs definition
@@ -350,7 +368,7 @@ CREATE TABLE `server_logs` (
   `log_type` int NOT NULL,
   `account_id` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`server_log_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=694 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 -- cloud_rp.vehicle_garages definition
@@ -434,7 +452,7 @@ CREATE TABLE `vehicle_mods` (
   `tyre_smoke_g` int NOT NULL DEFAULT '0',
   `tyre_smoke_r` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`vehicle_mod_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=292 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=306 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 -- cloud_rp.vehicles definition
@@ -474,4 +492,4 @@ CREATE TABLE `vehicles` (
   `vehicle_parking_lot_id` int NOT NULL DEFAULT '0',
   `tyre_states` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   PRIMARY KEY (`vehicle_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=297 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=311 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
