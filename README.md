@@ -110,6 +110,7 @@ To report a bug you can open an issue on the github repo (Don't contact me on di
 
 * Weather system synced to location of your choice
 
+***+ More***
 ### How to Install
 
 ###### 1. First navigate to ``meta.example.xml`` and setup your credentials (for getting channel ID's make sure your discord is in developer mode then right click on a channel and "Copy ID").
@@ -205,4 +206,3 @@ To edit the UI you must run the VueJS dev server (located in ``ClientSide\client
 <img src="https://i.imgur.com/QlBHJsu.png">
 <img src="https://i.imgur.com/ebFg4Dx.png">
 <img src="https://i.imgur.com/aKBrbSK.png">
-** + More **
