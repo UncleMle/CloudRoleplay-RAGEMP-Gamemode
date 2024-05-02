@@ -35,8 +35,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                 depoName = "Duluoz Bus Depot",
                 depoStartPosition = new Vector3(-236.6, 6202.3, 31.9),
                 buses = new List<string> {
-                    "blfs08",
-                    "blfs05"
+                    "bus" // Change these if you have modded buses you want to use
                 }
             },
             new BusDepo
@@ -47,8 +46,7 @@ namespace CloudRP.PlayerSystems.Jobs.BusDriver
                 depoName = "Dashound Bus Depot",
                 depoStartPosition = new Vector3(436.3, -647.5, 28.7),
                 buses = new List<string> {
-                    "zxd40",
-                    "bxd40"
+                    "bus" // Change these if you have modded buses you want to use
                 }
             }
         };
