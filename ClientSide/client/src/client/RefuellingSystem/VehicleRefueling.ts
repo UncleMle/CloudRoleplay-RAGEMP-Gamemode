@@ -48,7 +48,7 @@ export default class VehicleRefueling {
 
     public static async handleEntityStreamIn(entity: PlayerMp) {
         if(entity.type != "player") return;
-        let refuelData: RefuelStation | undefined = entity.getVariable(VehicleRefueling._refuelDataIdentifier);
+        let refuelData: RefuelStation | null = entity.getVariable(VehicleRefueling._refuelDataIdentifier);
 
         if(refuelData) {
             VehicleRefueling.playRefuelAnimation(entity);

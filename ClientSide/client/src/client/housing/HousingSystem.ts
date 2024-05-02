@@ -24,9 +24,9 @@ export default class HousingSystem {
 	}
 
 	public static async handleKeyPress_K() {
-		let houseData: House | undefined = HousingSystem.LocalPlayer.getVariable(HousingSystem._housingDataIdentifier);
+		let houseData: House | null = HousingSystem.LocalPlayer.getVariable(HousingSystem._housingDataIdentifier);
 		let characterData: CharacterData | undefined = getUserCharacterData();
-		let interiorData: Interior | undefined = HousingSystem.LocalPlayer.getVariable(HousingSystem._interiorDataIdentifier);
+		let interiorData: Interior | null = HousingSystem.LocalPlayer.getVariable(HousingSystem._interiorDataIdentifier);
 
 		if (!characterData) return;
 
@@ -37,8 +37,8 @@ export default class HousingSystem {
 
 	public static async handleKeyPress_Y() {
 		if (!validateKeyPress(true)) return;
-		let houseData: House | undefined = HousingSystem.LocalPlayer.getVariable(HousingSystem._housingDataIdentifier);
-		let interiorData: Interior | undefined = HousingSystem.LocalPlayer.getVariable(HousingSystem._interiorDataIdentifier);
+		let houseData: House | null = HousingSystem.LocalPlayer.getVariable(HousingSystem._housingDataIdentifier);
+		let interiorData: Interior | null = HousingSystem.LocalPlayer.getVariable(HousingSystem._interiorDataIdentifier);
 
 		if (interiorData && !houseData) {
 			mp.events.callRemote(HousingSystem._houseExitEvent);

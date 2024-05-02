@@ -20,7 +20,7 @@ export default class BusDriverJob {
 
     private static handleRender() {
         if (BusDriverJob.LocalPlayer.vehicle) {
-            let nextStop: BusSharedData = BusDriverJob.LocalPlayer.vehicle.getVariable(BusDriverJob._busVehicleData);
+            let nextStop: BusSharedData | null = BusDriverJob.LocalPlayer.vehicle.getVariable(BusDriverJob._busVehicleData);
 
             if (nextStop) {
                 mp.game.graphics.drawText(`~y~Destination ${nextStop.destination}`, [0.1, 0.64], {

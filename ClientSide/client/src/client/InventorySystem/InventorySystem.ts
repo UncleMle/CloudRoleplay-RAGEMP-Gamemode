@@ -10,7 +10,9 @@ export default class InventorySystem {
     constructor() {
         InventorySystem.LocalPlayer = mp.players.local;
 
-        mp.keys.bind(_control_ids.I, false, InventorySystem.toggleInventory);
+        // ! Not Finished
+        
+        //mp.keys.bind(_control_ids.I, false, InventorySystem.toggleInventory);
     }
 
     public static toggleInventory() {

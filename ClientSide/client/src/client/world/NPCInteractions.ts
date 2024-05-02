@@ -110,14 +110,14 @@ export default class NpcInteractions {
     }
 
     private static handleStreamOut(entity: EntityMp) {
-        let interactionData: InteractionPed | undefined = entity.getVariable(NpcInteractions._npcSharedDataKey);
+        let interactionData: InteractionPed | null = entity.getVariable(NpcInteractions._npcSharedDataKey);
         if (entity.type !== "ped" || !interactionData) return;
 
         NpcInteractions.streamedNpcPeds.delete(interactionData.ped.remoteId);
     }
 
     private static handleStreamIn(entity: EntityMp) {
-        let interactionData: InteractionPed | undefined = entity.getVariable(NpcInteractions._npcSharedDataKey);
+        let interactionData: InteractionPed | null = entity.getVariable(NpcInteractions._npcSharedDataKey);
         if (entity.type !== "ped" || !interactionData) return;
 
         interactionData.ped = entity as PedMp;
