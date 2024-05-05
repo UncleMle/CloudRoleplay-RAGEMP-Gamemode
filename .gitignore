@@ -52,7 +52,6 @@ nunit-*.xml
 
 # Remove TS client things
 ClientSide/client/dist
-ClientSide/client/.env
 ClientSide/client/node_modules
 
 # Remote UCP things

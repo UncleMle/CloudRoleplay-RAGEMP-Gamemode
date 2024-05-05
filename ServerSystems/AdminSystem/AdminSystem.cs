@@ -465,8 +465,8 @@ namespace CloudRP.ServerSystems.Admin
                 }
 
                 AdminUtils.sendToAdminsHandlingReport(report, ChatUtils.reports + $"{characterData.character_name} [{player.Id}]" + ChatUtils.grey + " says: " + ChatUtils.White + message, player);
-                await DiscordIntegration.SendMessage(report.discordChannelId, characterData.character_name + $" [{player.Id}] " + "**says:** " + message);
                 NAPI.Chat.SendChatMessageToPlayer(player, ChatUtils.reports + $"You {ChatUtils.grey}say:{ChatUtils.White} " + message);
+                await DiscordIntegration.SendMessage(report.discordChannelId, characterData.character_name + $" [{player.Id}] " + "**says:** " + message);                
                 return;
             }
             else

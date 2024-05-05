@@ -16,7 +16,7 @@ import VehicleEngine from "./VehicleSystems/CustomSync/VehicleEngine";
 import VehicleIndicators from "./VehicleSystems/Utilitys/VehicleIndication";
 import EmergencySystem from "./VehicleSystems/Systems/EmergencySystem";
 import CharacterSystem from "./Character/CharacterSystem";
-import AntiCheat from "./AntiCheat/AntiCheatSystem";
+import AntiCheat from "./AntiCheat/OldAntiCheatSystem";
 import AdminEsp from "./AdminSystem/AdminEsp";
 import VoiceSystem from "./VoiceChat/VoiceSystem";
 import DeathSystem from "./DeathSystem/DeathSystem";
