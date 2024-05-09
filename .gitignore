@@ -97,7 +97,6 @@ meta.xml
 *.tlb
 *.tli
 *.tlh
-*.csproj
 *.tmp
 *.tmp_proj
 *_wpftmp.csproj
