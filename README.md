@@ -7,7 +7,9 @@ Created using the RAGE:MP C# Server Side API, EF Core, TS & VueJS.
 You can contact me at
 
 -Discord unclemole <br>
--[Gamemodes discord server](https://discord.gg/6WKZt68qJT)
+-[Gamemodes discord server](https://discord.gg/6WKZt68qJT) 
+The server includes a video tutorial showing you how to set it up the gamemode.
+This server is only in place to report bugs with the gamemode **NOT** issues you have setting it up. It is reccomended that before you attempt to use the gamemode you understand the basics of programming and have a decent knowledge of JS & C#. 
 
 ### Credits
 
