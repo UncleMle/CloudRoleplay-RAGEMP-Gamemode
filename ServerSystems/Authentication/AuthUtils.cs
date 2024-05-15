@@ -127,7 +127,7 @@ namespace CloudRP.ServerSystems.Authentication
         {
             string editedContext = "";
 
-            using (StreamReader sr = new StreamReader(Main.JsonDirectory + "emailFormat.json"))
+            using (StreamReader sr = new StreamReader(Main.jsonDirectory + "emailFormat.json"))
             {
                 HtmlEmailFormat emailFormat = JsonConvert.DeserializeObject<HtmlEmailFormat>(sr.ReadToEnd());
 

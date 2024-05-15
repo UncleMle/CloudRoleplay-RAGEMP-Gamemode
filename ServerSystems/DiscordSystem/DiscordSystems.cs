@@ -48,7 +48,7 @@ namespace CloudRP.ServerSystems.DiscordSystem
 
         private static async Task initDiscordSystem()
         {
-            if (Main.ProductionBuild == "true")
+            if (Main.productionBuild)
             {
                 string token = Main._discordToken;
 

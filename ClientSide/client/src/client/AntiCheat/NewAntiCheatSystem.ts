@@ -22,6 +22,7 @@ export default class NewAntiCheatSystem {
     public static enteringVehHandle: number;
     public static pointingAtRemoteId: number;
     public static bulletsShot: number;
+    public static vehicleInAirCounter: number;
 
     constructor() {
         mp.events.add("render", () => {
@@ -36,7 +37,6 @@ export default class NewAntiCheatSystem {
             "incomingDamage": NewAntiCheatSystem.handleIncomingDamage,
             "playerEnterVehicle": NewAntiCheatSystem.handleEnterVehicle,
             "playerLeaveVehicle": NewAntiCheatSystem.handleLeaveVehicle,
-            // "entityStreamIn": NewAntiCheatSystem.checkForIllegalVeh,
             "client:ac:sleepClient": NewAntiCheatSystem.handleSleep
         });
 
@@ -46,6 +46,7 @@ export default class NewAntiCheatSystem {
             NewAntiCheatSystem.checkSpeed();
             NewAntiCheatSystem.checkForHealthKey();
             NewAntiCheatSystem.checkForPedChanger();
+            NewAntiCheatSystem.checkForStuntJump();
         }, 4000);
 
         setInterval(() => {
@@ -60,6 +61,7 @@ export default class NewAntiCheatSystem {
 
     private static handleLeaveVehicle(vehicle: VehicleMp) {
         NewAntiCheatSystem.lastCheckPosition = NewAntiCheatSystem.LocalPlayer.position;
+        NewAntiCheatSystem.vehicleInAirCounter = 0;
     }
 
     private static checkForPedChanger() {
@@ -97,26 +99,6 @@ export default class NewAntiCheatSystem {
         mp.game.controls.disableControlAction(1, 141, true);
         mp.game.controls.disableControlAction(1, 142, true);
     }
-
-    /*
-    65535 = max unsigned interger rogue client entitys.
-
-    this has caused issues with some client scripts so is disabled for now.
-
-    private static async checkForIllegalVeh(entity: EntityMp) {
-        if (entity.type !== "vehicle") return;
-
-        if (entity.remoteId === 65535 && VehicleManager.spawnedVehicles.indexOf(entity as VehicleMp) === -1) {
-            if (getVehicleData(entity as VehicleMp)) return;
-
-            let plate = (entity as VehicleMp).getNumberPlateText();
-
-            NewAntiCheatSystem.adminAlert(AcEvents.vehicleSpawnHack, plate);
-
-            // entity.destroy();
-        }
-    }
-    */
 
     private static handleEnterVehicle(vehicle: VehicleMp) {
         if (!vehicle || vehicle.handle === 0) return;
@@ -157,6 +139,19 @@ export default class NewAntiCheatSystem {
         if (vehPos.z - NewAntiCheatSystem.groundZCheck > height + NewAntiCheatSystem.groundZCheck) {
             NewAntiCheatSystem.adminAlert(AcEvents.carFly, posDif);
         }
+    }
+
+    private static checkForStuntJump() {
+        if (!NewAntiCheatSystem.LocalPlayer.vehicle) return;
+
+        if (NewAntiCheatSystem.LocalPlayer.vehicle.isInAir() && !NewAntiCheatSystem.LocalPlayer.vehicle.isInWater()) {
+            NewAntiCheatSystem.vehicleInAirCounter++;
+        }
+
+        if (NewAntiCheatSystem.vehicleInAirCounter >= 3)
+            return NewAntiCheatSystem.adminAlert(AcEvents.stuntJumping, NewAntiCheatSystem.vehicleInAirCounter);
+
+        NewAntiCheatSystem.vehicleInAirCounter = 0;
     }
 
     private static checkSpeed() {
@@ -318,5 +313,6 @@ enum AcEvents {
     magicBullet,
     firerateHack,
     godModeCheat,
-    pedChangerCheat
+    pedChangerCheat,
+    stuntJumping
 }

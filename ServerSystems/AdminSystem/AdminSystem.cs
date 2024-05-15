@@ -169,6 +169,12 @@ namespace CloudRP.ServerSystems.Admin
         [Command("report", "~y~Use: ~w~/report [description]", GreedyArg = true)]
         public async void onReport(Player player, string desc)
         {
+            if(!Main.productionBuild)
+            {
+                CommandUtils.errorSay(player, $"This command is disabled on non-production builds of the server.");
+                return;
+            }
+
             User userData = player.getPlayerAccountData();
             DbCharacter characterData = player.getPlayerCharacterData();
 
@@ -2034,7 +2040,7 @@ namespace CloudRP.ServerSystems.Admin
 
             List<Vector3> positions = null;
             
-            using(StreamReader sr = new StreamReader(Main.JsonDirectory + "objectpositions.json"))
+            using(StreamReader sr = new StreamReader(Main.jsonDirectory + "objectpositions.json"))
             {
                 positions = JsonConvert.DeserializeObject<List<Vector3>>(sr.ReadToEnd());
             }
@@ -2043,7 +2049,7 @@ namespace CloudRP.ServerSystems.Admin
             if(positions != null)
             {
                 positions.Add(new Vector3(player.Position.X, player.Position.Y, player.Position.Z - 1));
-                File.WriteAllText(Main.JsonDirectory + "objectpositions.json", JsonConvert.SerializeObject(positions));
+                File.WriteAllText(Main.jsonDirectory + "objectpositions.json", JsonConvert.SerializeObject(positions));
             }
 
             uiHandling.sendNotification(player, $"~r~You spawned in a ped ~y~{objName}", false);

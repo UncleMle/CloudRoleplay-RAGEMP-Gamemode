@@ -204,7 +204,7 @@ namespace CloudRP.VehicleSystems.Vehicles
 
             try
             {
-                using (StreamReader sr = new StreamReader(Main.JsonDirectory + "vehicles.json"))
+                using (StreamReader sr = new StreamReader(Main.jsonDirectory + "vehicles.json"))
                 {
                     List<VehicleJsonData> vehicleData = JsonConvert.DeserializeObject<List<VehicleJsonData>>(sr.ReadToEnd());
 
@@ -229,7 +229,7 @@ namespace CloudRP.VehicleSystems.Vehicles
         {
             List<VehicleJsonData> vehicleData = null;
 
-            using (StreamReader sr = new StreamReader(Main.JsonDirectory + "vehicles.json"))
+            using (StreamReader sr = new StreamReader(Main.jsonDirectory + "vehicles.json"))
             {
                 vehicleData = JsonConvert.DeserializeObject<List<VehicleJsonData>>(sr.ReadToEnd());
             }
@@ -247,7 +247,7 @@ namespace CloudRP.VehicleSystems.Vehicles
 
                 string newJson = JsonConvert.SerializeObject(vehicleData);
 
-                File.WriteAllText(Main.JsonDirectory + "vehicles.json", newJson);
+                File.WriteAllText(Main.jsonDirectory + "vehicles.json", newJson);
             }
         }
 
@@ -294,7 +294,7 @@ namespace CloudRP.VehicleSystems.Vehicles
                     }
 
                     string newJson = JsonConvert.SerializeObject(vehicleData);
-                    File.WriteAllText(Main.JsonDirectory + "vehicles.json", newJson);
+                    File.WriteAllText(Main.jsonDirectory + "vehicles.json", newJson);
                     wasEdited = true;
                 }
             }

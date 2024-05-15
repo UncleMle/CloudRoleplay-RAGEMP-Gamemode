@@ -34,8 +34,8 @@ namespace CloudRP
         public static event PlayerEventsHandler playerDisconnect;
         public static event PlayerEventsHandler playerConnect;
 
-        public static string ProductionBuild = "";
-        public static string JsonDirectory = "";
+        public static bool productionBuild;
+        public static string jsonDirectory = "";
         public static string _dbHost = "";
         public static string _dbUser = "";
         public static string _dbPassword = "";
@@ -60,19 +60,14 @@ namespace CloudRP
             {
                 logException(eventArgs);
             };
-
-            DimensionChangeEvent.onDimensionChange += (player, oldDim, newDim) =>
-            {
-                Console.WriteLine($"Player {player.Id} changed dimension old {oldDim} new {newDim}");
-            };
         }
 
         [ServerEvent(Event.ResourceStart)]
         public void Start()
         {
-            ProductionBuild = NAPI.Resource.GetSetting<string>(this, "production");
+            productionBuild = bool.Parse(NAPI.Resource.GetSetting<string>(this, "production"));
 
-            JsonDirectory = Directory.GetCurrentDirectory() + NAPI.Resource.GetSetting<string>(this, "jsonentrypoint");
+            jsonDirectory = Directory.GetCurrentDirectory() + NAPI.Resource.GetSetting<string>(this, "jsonentrypoint");
             _dbHost = NAPI.Resource.GetSetting<string>(this, "host");
             _dbDatabase = NAPI.Resource.GetSetting<string>(this, "database");
             _dbUser = NAPI.Resource.GetSetting<string>(this, "username");
@@ -95,7 +90,7 @@ namespace CloudRP
 
             resourceStart();
 
-            string prod = ProductionBuild == "true" ? "[Production]" : "[Development]";
+            string prod = productionBuild ? "[Production]" : "[Development]";
 
             ChatUtils.formatConsolePrint($"{prod} {NAPI.Server.GetServerName()} gamemode has started. (Loaded {Commands.loadedCommands.Count()} total commands)", ConsoleColor.Cyan);
         }

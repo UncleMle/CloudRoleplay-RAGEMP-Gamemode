@@ -19,7 +19,7 @@ namespace CloudRP.ServerSystems.JsonParser
             {
                 jsonFiles.ForEach(file =>
                 {
-                    if (!File.Exists(Main.JsonDirectory + file))
+                    if (!File.Exists(Main.jsonDirectory + file))
                     {
                         ChatUtils.formatConsolePrint($"[ERROR] Json File {file} wasn't found.");
                     }
@@ -34,7 +34,7 @@ namespace CloudRP.ServerSystems.JsonParser
         {
             T jsonReturn;
 
-            using (StreamReader sr = new StreamReader(Main.JsonDirectory + fileName))
+            using (StreamReader sr = new StreamReader(Main.jsonDirectory + fileName))
             {
                 jsonReturn = JsonConvert.DeserializeObject<T>(sr.ReadToEnd());
             }
@@ -43,7 +43,7 @@ namespace CloudRP.ServerSystems.JsonParser
         }
 
         public static void setToJson<T>(string fileName, T value)
-        => File.WriteAllText(Main.JsonDirectory + fileName, JsonConvert.SerializeObject(value));
+        => File.WriteAllText(Main.jsonDirectory + fileName, JsonConvert.SerializeObject(value));
 
     }
 }
