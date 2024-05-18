@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CloudRP.ServerSystems.Admin;
 using CloudRP.ServerSystems.Utils;
+using CloudRP.ServerSystems.Authentication;
 
 namespace CloudRP.ServerSystems.DiscordSystem
 {
@@ -54,8 +55,8 @@ namespace CloudRP.ServerSystems.DiscordSystem
                 discord.MessageReceived += OnMessageReceived;
                 discord.ReactionAdded += OnReactionRecieved;
 
-                await discord.LoginAsync(TokenType.Bot, m_strToken).ConfigureAwait(true);
-                await discord.StartAsync().ConfigureAwait(true);
+                await discord.LoginAsync(TokenType.Bot, m_strToken);
+                await discord.StartAsync();
             }
             else
             {
@@ -63,82 +64,55 @@ namespace CloudRP.ServerSystems.DiscordSystem
             }
         }
 
-        private static Task OnReactionRecieved(Cacheable<IUserMessage, ulong> reactData, ISocketMessageChannel channel, SocketReaction reaction)
+        private static async Task OnReactionRecieved(Cacheable<IUserMessage, ulong> reactData, ISocketMessageChannel channel, SocketReaction reaction)
         {
-            if (IsSetupCompleted)
+            if (!IsSetupCompleted) return;
+
+            if (g_lstSubscribedChannels.Contains(channel.Id))
             {
-                NAPI.Task.Run(async () =>
+                IUserMessage mesg = await reactData.DownloadAsync();
+
+                Report validReport = Admin.AdminSystem.activeReports.Where(rep => rep.discordRefId == mesg.Id).FirstOrDefault();
+
+                if (validReport != null)
                 {
-                    try
-                    {
-                        if (g_lstSubscribedChannels.Contains(channel.Id))
-                        {
-                            IUserMessage mesg = await reactData.DownloadAsync();
-
-                            Report validReport = Admin.AdminSystem.activeReports.Where(rep => rep.discordRefId == mesg.Id).FirstOrDefault();
-
-                            if (validReport != null)
-                            {
-                                DiscordSystems.handleReportReaction(validReport, mesg, reaction);
-                                return;
-                            }
-                        }
-                    }
-                    catch
-                    {
-
-                    }
-                });
-
-                Task task = Task.Run(() => { });
-
-                return task;
+                    DiscordSystems.handleReportReaction(validReport, mesg, reaction);
+                }
             }
-            return null;
         }
 
-        private static Task OnMessageReceived(SocketMessage message)
+        private static async Task OnMessageReceived(SocketMessage message)
         {
-            if (IsSetupCompleted)
+            if (!IsSetupCompleted) return;
+            try
             {
-                NAPI.Task.Run(() =>
+                if (message.Author.IsBot) return;
+
+                Report findValidRep = Admin.AdminSystem.activeReports.Where(rep => rep.discordChannelId == message.Channel.Id).FirstOrDefault();
+
+                if (findValidRep != null)
                 {
-                    try
+                    await DiscordSystems.handleReportChannelMessage(findValidRep, message);
+                    return;
+                }
+
+                if (g_lstSubscribedChannels.Contains(message.Channel.Id))
+                {
+                    if (message.Content.Length > 0)
                     {
-                        if (message.Author.IsBot) return;
+                        string start = message.Content[..1];
 
-                        Report findValidRep = Admin.AdminSystem.activeReports.Where(rep => rep.discordChannelId == message.Channel.Id).FirstOrDefault();
+                        if (DiscordSystems.discordPrefix != start) return;
 
-                        if (findValidRep != null)
-                        {
-                            DiscordSystems.handleReportChannelMessage(findValidRep, message);
-                            return;
-                        }
+                        string[] args = message.Content.Substring(1).Split(" ");
 
-                        if (g_lstSubscribedChannels.Contains(message.Channel.Id))
-                        {
-                            if (message.Content.Length > 0)
-                            {
-                                string start = message.Content[..1];
-
-                                if (DiscordSystems.discordPrefix != start) return;
-
-                                string[] args = message.Content.Substring(1).Split(" ");
-
-                                DiscordSystems.handleDiscordCommand(args, message.Author);
-                            }
-                        }
+                        DiscordSystems.handleDiscordCommand(args, message.Author);
                     }
-                    catch
-                    {
-                    }
-                });
-
-                Task task = Task.Run(() => { });
-
-                return task;
+                }
             }
-            return null;
+            catch
+            {
+            }
         }
 
         public static async Task SendMessage(ulong discordChannelID, string strMessage, bool bStripMentions = true)
@@ -149,15 +123,13 @@ namespace CloudRP.ServerSystems.DiscordSystem
                 {
                     ISocketMessageChannel channel = (ISocketMessageChannel)discord.GetChannel(discordChannelID);
 
-                    if (channel != null)
-                    {
-                        RestUserMessage msg = await channel.SendMessageAsync(bStripMentions ? CleanFromTags(strMessage) : strMessage).ConfigureAwait(true);
-                    }
-                    else
+                    if(channel == null)
                     {
                         ThrowErrorMessage("Object reference not set to an instance of an object\nFailed to find a discord channel with the 'discordChannelID' you provided");
                         return;
                     }
+
+                    await channel.SendMessageAsync(bStripMentions ? CleanFromTags(strMessage) : strMessage);
                 }
                 catch
                 {
@@ -186,74 +158,64 @@ namespace CloudRP.ServerSystems.DiscordSystem
 
         public static async Task removeAChannel(ulong channelId)
         {
-            if (IsSetupCompleted)
+            if (!IsSetupCompleted) return;
+
+            try
             {
-                try
-                {
-                    NAPI.Task.Run(async () =>
-                    {
-                        SocketGuildChannel socketGuildChannel = discord.GetChannel(channelId) as SocketGuildChannel;
+                SocketGuildChannel socketGuildChannel = discord.GetChannel(channelId) as SocketGuildChannel;
 
-                        if (socketGuildChannel != null)
-                        {
-                            await socketGuildChannel.DeleteAsync();
-                        }
-                    });
-                }
-                catch
+                if (socketGuildChannel != null)
                 {
-
+                    await socketGuildChannel.DeleteAsync();
                 }
+            }
+            catch
+            {
+
             }
         }
 
         public static async Task removeAMessage(ulong channelId, ulong messageId)
         {
-            if (IsSetupCompleted)
+            if (!IsSetupCompleted) return;
+
+            try
             {
-                try
+                SocketTextChannel socketChannel = discord.GetChannel(channelId) as SocketTextChannel;
+
+                IMessage message = await socketChannel.GetMessageAsync(messageId);
+
+                if (message != null)
                 {
-                    NAPI.Task.Run(async () =>
-                    {
-                        SocketTextChannel socketChannel = discord.GetChannel(channelId) as SocketTextChannel;
-
-                        IMessage message = await socketChannel.GetMessageAsync(messageId);
-
-                        if (message != null)
-                        {
-                            await message.DeleteAsync();
-                        }
-                    });
+                    await message.DeleteAsync();
                 }
-                catch
-                {
+            }
+            catch
+            {
 
-                }
             }
         }
 
         public static async Task SendMessageToUser(ulong discordId, string strMessage)
         {
-            if (IsSetupCompleted)
+            if (!IsSetupCompleted) return;
+
+            try
             {
-                try
+                SocketUser user = discord.GetUser(discordId);
+
+                if (user != null)
                 {
-
-                    SocketUser user = discord.GetUser(discordId);
-
-                    if (user != null)
-                    {
-                        await user.SendMessageAsync(strMessage).ConfigureAwait(true);
-                    }
-                    else
-                    {
-                        ThrowErrorMessage("Object reference not set to an instance of an object\nFailed to find a discord channel with the 'discordChannelID' you provided");
-                    }
+                    await user.SendMessageAsync(strMessage);
                 }
-                catch
+                else
                 {
-
+                    ThrowErrorMessage("Object reference not set to an instance of an object\nFailed to find a discord channel with the 'discordChannelID' you provided");
                 }
+            }
+            catch
+            {
+
             }
         }
 
@@ -261,28 +223,26 @@ namespace CloudRP.ServerSystems.DiscordSystem
         {
             try
             {
-                NAPI.Task.Run(async () =>
+                ISocketMessageChannel channel = (ISocketMessageChannel)discord.GetChannel(discordChannelID);
+                
+                if(channel == null)
                 {
-                    ISocketMessageChannel channel = (ISocketMessageChannel)discord.GetChannel(discordChannelID);
-                    if (channel != null)
-                    {
-                        IUserMessage msg = await channel.SendMessageAsync(null, false, embed.Build());
+                    ThrowErrorMessage("Object reference not set to an instance of an object\nFailed to find a discord channel with the 'discordChannelID' you provided");
+                    return;
+                }
 
-                        if (report != null)
-                        {
-                            IEmote[] reactions = { joinReaction, closeReaction };
-                            msg.AddReactionsAsync(reactions);
-                            report.discordRefId = msg.Id;
-                        }
-                    }
-                    else
-                    {
-                        ThrowErrorMessage("Object reference not set to an instance of an object\nFailed to find a discord channel with the 'discordChannelID' you provided");
-                    }
-                });
+                IUserMessage msg = await channel.SendMessageAsync(null, false, embed.Build());
+
+                if (report != null)
+                {
+                    IEmote[] reactions = { joinReaction, closeReaction };
+                    await msg.AddReactionsAsync(reactions);
+                    report.discordRefId = msg.Id;
+                }
             }
             catch
             {
+
             }
         }
 
@@ -292,19 +252,22 @@ namespace CloudRP.ServerSystems.DiscordSystem
 
             try
             {
-                NAPI.Task.Run(async () =>
+                SocketGuild guild = discord.GetGuild(DiscordSystems.guildId);
+
+                SocketCategoryChannel newChannel = guild.GetCategoryChannel(DiscordSystems.reportCategory);
+
+                if (newChannel == null)
                 {
-                    SocketGuild guild = discord.GetGuild(DiscordSystems.guildId);
+                    ChatUtils.formatConsolePrint("Couldn't find report channel category. (Ensure its properly setup)");
+                    return;
+                }
 
-                    SocketCategoryChannel newChannel = guild.GetCategoryChannel(DiscordSystems.reportCategory);
+                foreach (SocketTextChannel channel in newChannel.Channels)
+                {
+                    await channel.DeleteAsync();
+                }
 
-                    foreach (SocketTextChannel channel in newChannel.Channels)
-                    {
-                        await channel.DeleteAsync();
-                    }
-
-                    ChatUtils.formatConsolePrint("Flushed old reports.", ConsoleColor.Magenta);
-                });
+                ChatUtils.formatConsolePrint("Flushed old reports.", ConsoleColor.Magenta);
             }
             catch
             {
@@ -314,7 +277,7 @@ namespace CloudRP.ServerSystems.DiscordSystem
 
         private static async Task OnReady()
         {
-            await UpdateStatus(m_strBotGameName, m_eActivityType, m_eUsterStatus).ConfigureAwait(true);
+            await UpdateStatus(m_strBotGameName, m_eActivityType, m_eUsterStatus);
         }
 
         public static async Task UpdateStatus(string strBotGameName, ActivityType eActivityType, UserStatus eUserStatus)
@@ -324,10 +287,9 @@ namespace CloudRP.ServerSystems.DiscordSystem
             m_eUsterStatus = eUserStatus;
 
             Game game = new Game(m_strBotGameName, m_eActivityType);
-            await discord.SetStatusAsync(m_eUsterStatus).ConfigureAwait(true);
-            await discord.SetActivityAsync(game).ConfigureAwait(true);
+            await discord.SetStatusAsync(m_eUsterStatus);
+            await discord.SetActivityAsync(game);
         }
-
 
         public static bool RegisterChannelForListenting(ulong channelID)
         {
@@ -367,7 +329,7 @@ namespace CloudRP.ServerSystems.DiscordSystem
             return false;
         }
 
-        private static string CleanFromTags(string strInput)
+        public static string CleanFromTags(string strInput)
         {
             return strInput.Replace("@", "@‎‏‏‎ ‎");
         }

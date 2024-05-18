@@ -27,24 +27,27 @@ namespace CloudRP.ServerSystems.CustomEvents
             };
 
             dimCheckTimer.Elapsed += (source, elapsed) => {
-                NAPI.Task.Run(() => checkDimensions());
+                checkDimensions();
             };
         }
 
         private static void checkDimensions()
         {
-            NAPI.Pools.GetAllPlayers().ForEach(p =>
+            NAPI.Task.Run(() =>
             {
-                if (!playerDimensions.ContainsKey(p.Id)) playerDimensions.Add(p.Id, p.Dimension);
-
-                if (playerDimensions[p.Id] != p.Dimension)
+                NAPI.Pools.GetAllPlayers().ForEach(p =>
                 {
-                    uint oldDim = playerDimensions[p.Id];
-                    uint newDim = p.Dimension;
+                    if (!playerDimensions.ContainsKey(p.Id)) playerDimensions.Add(p.Id, p.Dimension);
 
-                    playerDimensions[p.Id] = p.Dimension;
-                    onDimensionChange(p, oldDim, newDim);
-                }
+                    if (playerDimensions[p.Id] != p.Dimension)
+                    {
+                        uint oldDim = playerDimensions[p.Id];
+                        uint newDim = p.Dimension;
+
+                        playerDimensions[p.Id] = p.Dimension;
+                        onDimensionChange(p, oldDim, newDim);
+                    }
+                });
             });
         }
 

@@ -181,59 +181,56 @@ namespace CloudRP.PlayerSystems.PlayerData
             return aduty;
         }
 
-        public static void banPlayer(this Player banPlayer, int time, string adminName, int accountId, string username, string reason, string characterName = null)
+        public static async Task banPlayer(this Player banPlayer, int time, string adminName, int accountId, string username, string reason, string characterName = null)
         {
-            NAPI.Task.Run(async () =>
-            {
                 banPlayer.ResetData();
 
                 banPlayer.SetCustomData(PlayersData._isBanned, true);
 
-                using (DefaultDbContext dbContext = new DefaultDbContext())
+            using (DefaultDbContext dbContext = new DefaultDbContext())
+            {
+                long minuteSeconds = time * 60;
+                long issueDateUnix = CommandUtils.generateUnix();
+                long lift_unix_time = time == -1 ? -1 : CommandUtils.generateUnix() + minuteSeconds;
+
+                Ban ban = new Ban
                 {
-                    long minuteSeconds = time * 60;
-                    long issueDateUnix = CommandUtils.generateUnix();
-                    long lift_unix_time = time == -1 ? -1 : CommandUtils.generateUnix() + minuteSeconds;
+                    account_id = accountId,
+                    admin = adminName,
+                    ban_reason = reason,
+                    ip_address = banPlayer.Address,
+                    lift_unix_time = lift_unix_time,
+                    social_club_id = banPlayer.SocialClubId,
+                    social_club_name = banPlayer.SocialClubName,
+                    client_serial = banPlayer.Serial,
+                    CreatedDate = DateTime.Now,
+                    UpdatedDate = DateTime.Now,
+                    issue_unix_date = issueDateUnix,
+                    username = username
+                };
 
-                    Ban ban = new Ban
-                    {
-                        account_id = accountId,
-                        admin = adminName,
-                        ban_reason = reason,
-                        ip_address = banPlayer.Address,
-                        lift_unix_time = lift_unix_time,
-                        social_club_id = banPlayer.SocialClubId,
-                        social_club_name = banPlayer.SocialClubName,
-                        client_serial = banPlayer.Serial,
-                        CreatedDate = DateTime.Now,
-                        UpdatedDate = DateTime.Now,
-                        issue_unix_date = issueDateUnix,
-                        username = username
-                    };
+                Account findAccount = dbContext.accounts.Find(accountId);
 
-                    Account findAccount = dbContext.accounts.Find(accountId);
-
-                    if (findAccount != null)
-                    {
-                        findAccount.ban_status = 1;
-                        findAccount.auto_login = 0;
-                        dbContext.Update(findAccount);
-                    }
-
-                    dbContext.Add(ban);
-                    dbContext.SaveChanges();
-
-                    banPlayer.setPlayerToBanScreen(ban);
-                    uiHandling.toggleGui(banPlayer, false);
-
-                    ChatUtils.formatConsolePrint($"{ban.username} was banned with lift time being {lift_unix_time}. Reason {reason}");
-
-                    AdminPunishments.addNewPunishment(accountId, reason, adminName, PunishmentTypes.AdminBan, lift_unix_time);
-
-                    string endOfBanString = lift_unix_time == -1 ? "is permanent" : "expires at <t:" + lift_unix_time + ">";
-                    await Ban.sendBanWebhookMessageAsync($"{adminName} banned {(characterName != null ? characterName : username)} with reason ``{reason}`` ban {endOfBanString}.");
+                if (findAccount != null)
+                {
+                    findAccount.ban_status = 1;
+                    findAccount.auto_login = 0;
+                    dbContext.Update(findAccount);
                 }
-            });
+
+                dbContext.Add(ban);
+                dbContext.SaveChanges();
+
+                banPlayer.setPlayerToBanScreen(ban);
+                uiHandling.toggleGui(banPlayer, false);
+
+                ChatUtils.formatConsolePrint($"{ban.username} was banned with lift time being {lift_unix_time}. Reason {reason}");
+
+                AdminPunishments.addNewPunishment(accountId, reason, adminName, PunishmentTypes.AdminBan, lift_unix_time);
+
+                string endOfBanString = lift_unix_time == -1 ? "is permanent" : "expires at <t:" + lift_unix_time + ">";
+                await Ban.sendBanWebhookMessageAsync($"{adminName} banned {(characterName != null ? characterName : username)} with reason ``{reason}`` ban {endOfBanString}.");
+            }
         }
 
         public static bool isBanned(this Player player)

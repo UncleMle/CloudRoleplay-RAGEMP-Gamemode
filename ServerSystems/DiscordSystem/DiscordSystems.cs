@@ -450,40 +450,37 @@ namespace CloudRP.ServerSystems.DiscordSystem
             await DiscordIntegration.removeAChannel(report.discordChannelId);
         }
 
-        public static void handleReportChannelMessage(Report report, SocketMessage message)
+        public static async Task handleReportChannelMessage(Report report, SocketMessage message)
         {
-            NAPI.Task.Run(async () =>
+            try
             {
-                try
+                Player reportingPlayer = report.playerReporting;
+
+                SocketUser admin = message.Author;
+
+                string toPlayer = ChatUtils.reports + admin.Username + ChatUtils.red + " says: " + ChatUtils.White + DiscordIntegration.CleanFromTags(message.Content);
+                reportingPlayer.SendChatMessage(toPlayer);
+
+                if (reportingPlayer == null)
                 {
-                    Player reportingPlayer = report.playerReporting;
-
-                    SocketUser admin = message.Author;
-
-                    string toPlayer = ChatUtils.reports + admin.Username + ChatUtils.red + " says: " + ChatUtils.White + message.Content;
-                    reportingPlayer.SendChatMessage(toPlayer);
-
-                    if (reportingPlayer == null)
-                    {
-                        await DiscordIntegration.SendMessage(report.discordChannelId, "The player is not in the server closing report...");
-                        await closeAReport(report);
-                        return;
-                    }
-
-                    if (!report.discordAdminsHandling.Contains(admin.Id))
-                    {
-                        string msgUri = DiscordUtils.getRedirectUri(report.discordRefId);
-                        await DiscordIntegration.SendMessage(report.discordChannelId, "You must react to the report message to gain access to this report. (" + msgUri + ")");
-                        return;
-                    }
-
-                    await message.AddReactionAsync(DiscordIntegration.joinReaction);
-                    AdminUtils.sendToAdminsHandlingReport(report, toPlayer, reportingPlayer);
+                    await DiscordIntegration.SendMessage(report.discordChannelId, "The player is not in the server closing report...");
+                    await closeAReport(report);
+                    return;
                 }
-                catch
+
+                if (!report.discordAdminsHandling.Contains(admin.Id))
                 {
+                    string msgUri = DiscordUtils.getRedirectUri(report.discordRefId);
+                    await DiscordIntegration.SendMessage(report.discordChannelId, "You must react to the report message to gain access to this report. (" + msgUri + ")");
+                    return;
                 }
-            });
+
+                await message.AddReactionAsync(DiscordIntegration.joinReaction);
+                AdminUtils.sendToAdminsHandlingReport(report, toPlayer, reportingPlayer);
+            }
+            catch
+            {
+            }
         }
 
     }
