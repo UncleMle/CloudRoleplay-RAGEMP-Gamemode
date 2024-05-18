@@ -74,7 +74,7 @@ namespace CloudRP.ServerSystems.AntiCheat
                 AcEvents.pedChanger, "{0} [{1} | FPS {2}] Potential client ped changer cheat. Ped attempted to change to ped {3}"
             },
             {
-                AcEvents.carFly, "{0} [{1} | FPS {2}] Potential stunt jumping / vehicle fly counted {3} times within a 4 second interval"
+                AcEvents.stuntJumping, "{0} [{1} | FPS {2}] Potential stunt jumping / vehicle fly counted {3} times within a 4 second interval"
             }
         };
 
@@ -88,7 +88,7 @@ namespace CloudRP.ServerSystems.AntiCheat
 
             Main.resourceStart += () => ChatUtils.startupPrint($"Loaded a total of {Enum.GetNames(typeof(AcEvents)).Length} Anti cheat events.");
 
-            DimensionChangeEvent.onDimensionChange += async (player, oldDim, newDim) =>
+            DimensionChangeEvent.onDimensionChange += (player, oldDim, newDim) =>
             {
                 if (!NAPI.Player.IsPlayerConnected(player)) return;
 
