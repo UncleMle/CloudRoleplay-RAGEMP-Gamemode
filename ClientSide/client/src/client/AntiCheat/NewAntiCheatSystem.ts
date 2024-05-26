@@ -160,7 +160,7 @@ export default class NewAntiCheatSystem {
         if (NewAntiCheatSystem.aircraftClasses.indexOf(NewAntiCheatSystem.LocalPlayer.vehicle.getClass()) !== -1) return;
 
         let currentSpeed: number = NewAntiCheatSystem.LocalPlayer.vehicle.getSpeed();
-        let maxSpeed: number = mp.game.vehicle.getVehicleModelMaxSpeed(NewAntiCheatSystem.LocalPlayer.vehicle.model) + 10;
+        let maxSpeed: number = mp.game.vehicle.getVehicleModelMaxSpeed(NewAntiCheatSystem.LocalPlayer.vehicle.model) + 40;
 
         if (currentSpeed > maxSpeed) NewAntiCheatSystem.adminAlert(AcEvents.vehicleSpeedHack, `${Math.round(currentSpeed * 3.6)}kmh max speed is ${Math.round(maxSpeed * 3.6)}kmh`);
     }
