@@ -45,6 +45,7 @@ export default class VehicleCustoms {
 		VehicleCustoms.handleVehFreeze(true);
 
 		const indexData: ModInfo[] = [
+			{ name: "Spoiler", modNumber: veh.getNumMods(0) },
 			{ name: 'Front Bumper', modNumber: veh.getNumMods(1) },
 			{ name: 'Rear Bumper', modNumber: veh.getNumMods(2) },
 			{ name: 'Side Skirt', modNumber: veh.getNumMods(3) },

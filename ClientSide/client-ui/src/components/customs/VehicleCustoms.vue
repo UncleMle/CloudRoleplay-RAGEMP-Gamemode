@@ -1,4 +1,5 @@
 <template>
+
     <body class="vignette w-full text-white font-medium">
 
         <Transition name="fade">
@@ -9,11 +10,13 @@
                     <div
                         class="relative bg-black/70 rounded-2xl shadow-2xl shadow-black w-full h-22 border-b-4 border-t-4 border-purple-400/50">
 
-                        <p v-if="playerData.is_in_player_dealer" class="absolute mt-4 w-full text-xl">Are you sure you want to purchase a
+                        <p v-if="playerData.is_in_player_dealer" class="absolute mt-4 w-full text-xl">Are you sure you
+                            want to purchase a
                             <b>{{ uiStates.vehicleSpeedoData.displayName }}</b>?
                         </p>
-                        
-                        <p v-else class="absolute mt-4 w-full text-xl">Are you sure you want to purchase mods for your vehicle
+
+                        <p v-else class="absolute mt-4 w-full text-xl">Are you sure you want to purchase mods for your
+                            vehicle
                             <b>{{ uiStates.vehicleSpeedoData.displayName }}</b>?
                         </p>
 
@@ -53,7 +56,8 @@
         <main v-if="!loadingState && !promptActive" class="relative">
             <div class="absolute left-[3%] top-20">
 
-                <div class="colourBackground shadow-2xl shadow-black rounded-xl border-t-4 border-b-4 border-purple-400/50">
+                <div
+                    class="colourBackground shadow-2xl shadow-black rounded-xl border-t-4 border-b-4 border-purple-400/50">
                     <ui class="flex justify-center space-x-5 border-gray-400/40 p-4">
                         <button @click="browsingType = 'general'" class="hover:text-white">
                             <i class="fa-solid fa-car text-2xl text-gray-300"></i><br />
@@ -87,11 +91,13 @@
                                             <div v-for="item in generalItems" :key="item">
                                                 <div v-if="getMaxIdx(item.name) > 0" class="pb-5 duration-300">
                                                     <label for="steps-range"
-                                                        class="block mb-2 text-sm font-medium  text-white">{{ item.name }}
+                                                        class="block mb-2 text-sm font-medium  text-white">{{ item.name
+                                                        }}
                                                         ({{
                                                             formatMod(vehicleData[item.dbName]) }})</label>
-                                                    <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
-                                                        :min="getMinIdx(item.name)" :max="getMaxIdx(item.name)"
+                                                    <input id="steps-range" v-model="vehicleData[item.dbName]"
+                                                        type="range" :min="getMinIdx(item.name)"
+                                                        :max="getMaxIdx(item.name)"
                                                         class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-gray-400/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
                                                     <div v-if="!playerData.is_in_player_dealer">
                                                         <button
@@ -100,7 +106,8 @@
                                                             class="border-b-2 border-red-400 duration-300 w-[20%] mr-4 p-0.5 mt-2 hover:scale-105">
                                                             Reset <i class="fa-solid fa-rotate-left text-red-500"></i>
                                                         </button>
-                                                        <button @click="addToBasket(item.name, vehicleData[item.dbName])"
+                                                        <button
+                                                            @click="addToBasket(item.name, vehicleData[item.dbName])"
                                                             v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
                                                             class="border-b-2 border-green-400 duration-300 w-[20%] mr-4 p-0.5 mt-2 hover:scale-105">
                                                             Add <i class="fa-solid fa-plus text-green-500"></i>
@@ -116,11 +123,13 @@
                                             <div v-for="item in performanceItems" :key="item">
                                                 <div v-if="getMaxIdx(item.name) > 0" class="pb-5 duration-300">
                                                     <label for="steps-range"
-                                                        class="block mb-2 text-sm font-medium  text-white">{{ item.name }}
+                                                        class="block mb-2 text-sm font-medium  text-white">{{ item.name
+                                                        }}
                                                         ({{
                                                             formatMod(vehicleData[item.dbName]) }})</label>
-                                                    <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
-                                                        :min="getMinIdx(item.name)" :max="getMaxIdx(item.name)"
+                                                    <input id="steps-range" v-model="vehicleData[item.dbName]"
+                                                        type="range" :min="getMinIdx(item.name)"
+                                                        :max="getMaxIdx(item.name)"
                                                         class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-gray-400/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
                                                     <div v-if="!playerData.is_in_player_dealer">
                                                         <button
@@ -129,7 +138,8 @@
                                                             class="border-b-2 border-red-400 duration-300 w-[20%] mr-4 p-0.5 mt-2 hover:scale-105">
                                                             Reset <i class="fa-solid fa-rotate-left text-red-500"></i>
                                                         </button>
-                                                        <button @click="addToBasket(item.name, vehicleData[item.dbName])"
+                                                        <button
+                                                            @click="addToBasket(item.name, vehicleData[item.dbName])"
                                                             v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
                                                             class="border-b-2 border-green-400 duration-300 w-[20%] mr-4 p-0.5 mt-2 hover:scale-105">
                                                             Add <i class="fa-solid fa-plus text-green-500"></i>
@@ -146,10 +156,12 @@
                                                 <div v-if="getMaxIdx(item.name) > 0 || item.name == 'Xenon'"
                                                     class="pb-5 duration-300">
                                                     <label for="steps-range"
-                                                        class="block mb-2 text-sm font-medium  text-white">{{ item.name }}
+                                                        class="block mb-2 text-sm font-medium  text-white">{{ item.name
+                                                        }}
                                                         ({{
                                                             formatMod(vehicleData[item.dbName]) }})</label>
-                                                    <input id="steps-range" v-model="vehicleData[item.dbName]" type="range"
+                                                    <input id="steps-range" v-model="vehicleData[item.dbName]"
+                                                        type="range"
                                                         :min="item.name == 'Colour One' || item.name == 'Colour Two' ? 0 : getMinIdx(item.name)"
                                                         :max="item.maxIdx ? item.maxIdx : getMaxIdx(item.name)"
                                                         class="w-full h-4  rounded-lg appearance-none cursor-pointer bg-purple-400/30 border border-gray-400/40 accent-gray-300 accent-shadow-lg accent-shadow-black">
@@ -160,7 +172,8 @@
                                                             class="border-b-2 border-red-400 duration-300 w-[20%] mr-4 p-0.5 mt-2 hover:scale-105">
                                                             Reset <i class="fa-solid fa-rotate-left text-red-500"></i>
                                                         </button>
-                                                        <button @click="addToBasket(item.name, vehicleData[item.dbName])"
+                                                        <button
+                                                            @click="addToBasket(item.name, vehicleData[item.dbName])"
                                                             v-if="vehicleDataOld[item.dbName] != vehicleData[item.dbName] && !checkBasket(item.name, vehicleData[item.dbName])"
                                                             class="border-b-2 border-green-400 duration-300 w-[20%] mr-4 p-0.5 mt-2 hover:scale-105">
                                                             Add <i class="fa-solid fa-plus text-green-500"></i>
@@ -207,7 +220,8 @@
                             class="rounded-xl text-white w-full colourBackground border-t-4 border-b-4 border-purple-400/50 shadow-2xl shadow-black select-none max-h-[34vw]">
 
                             <div class="relative p-4">
-                                <h1 class="font-bold text-2xl pl-4"><i class="fa-solid fa-cart-shopping text-gray-300"></i>
+                                <h1 class="font-bold text-2xl pl-4"><i
+                                        class="fa-solid fa-cart-shopping text-gray-300"></i>
                                     Your basket
 
                                     <font class="text-green-500 absolute right-10">${{
@@ -306,6 +320,10 @@ export default {
             vehicleDataOld: null,
             vehImage: null,
             generalItems: [
+                {
+                    name: "Spoiler",
+                    dbName: "spoilers"
+                },
                 {
                     name: "Front Bumper",
                     dbName: "front_bumper",
