@@ -14,17 +14,19 @@ export default class GuiSystem {
 	public static hudToggle: boolean = true;
 
 	constructor() {
+		mp.events.add("render", GuiSystem.HandleRender);
+
 		mp.events.add('guiReady', () => GuiSystem.toggleHudComplete(false));
 		mp.events.add("gui:toggleHudComplete", GuiSystem.toggleHudComplete);
 		mp.keys.bind(_control_ids.F10, false, GuiSystem.toggleHud);
 
 		setInterval(() => {
-			GuiSystem.fillGuiRenderValues();
-		}, 700);
-
-		setInterval(() => {
 			if (GuiSystem.LocalPlayer.getVariable("playerIsBanned")) GuiSystem.toggleHudComplete(false);
 		}, 1000);
+	}
+
+	private static HandleRender() {
+		GuiSystem.fillGuiRenderValues();
 	}
 
 	public static toggleHud() {
